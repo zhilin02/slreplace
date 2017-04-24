@@ -93,6 +93,10 @@ function render(template, vars) {
 
 \section{Preliminaries}
 
+For $k \in \Nat$, let $[k] = \{1,\dots, k\}$.
+
+For a vector $\vec{x}=(x_1,\dots, x_n)$, let $|\vec{x}|$ denote $n$ and for each $i \in [n]$, let $\vec{x}(i)$ denote $x_i$.
+
 An alphabet $\Sigma$ is fixed.
 
 We consider the following data types: String data type $\str$, Integer data type $\intnum$, and Array of strings $\str [\ ]$.
@@ -241,38 +245,57 @@ The questions we plan to consider is summarlised in the following table
 
 \subsection{The automata $\cA_u$}
 
-If $|u|=1$, then $\cA_u$ is trivial, that is, $\cA_u$ comprises the self-loops $q_0 \xrightarrow{\sigma} q_0$ for each $\sigma \in \Sigma$.
+Let $u \in \Sigma^+$ and $k=|u| \ge 2$.
+Our goal is to construct an NFA $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
+In order to check that a substring of $v$ is \emph{not} in $\Sigma^\ast u \Sigma^\ast$, we introduce a concept of $k$-window profiles w.r.t. $u$.
 
-In the following, we assume that $|u| = k \ge 2$.
 
-We construct an NFA $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which over a string $v$, parses $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u_1 \dots u_{k-1} \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, and $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
-Let $u = u_1\dots u_k$ such that $u_i \in \Sigma$ for each $i \in [k]$.  A $k$-\emph{window profile} $\vec{W}$ w.r.t. $u$ is an element of $\{\bot,\top\}^{k}$. Intuitively, in the position $i$ of a string $v$, $\vec{W}$ is an abstraction of the substring $v_{i-k+1} \dots v_i$ such that for each $j \in [k]$, $\vec{W}(j) = \top$ iff $v_{i-j+1} \dots v_i = u_1 \dots u_i$. Let $\wprof_{u, k}$ denote the set of $k$-window profiles w.r.t. $u$.
+%If $u = \sigma$ for $\sigma \in \Sigma$, then $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$, where $Q_u = \{(q_0, \bot), (q_0, \top) \}$, $\delta_u = \{(q_0, \bot) \xrightarrow{\sigma} (q_0, \top), (q_0, \bot) \xrightarrow{\Sigma \setminus \sigma} (q_0, \bot), (q_0, \top) \xrightarrow{ \sigma} (q_0, \top), (q_0, \top) \xrightarrow{\Sigma \setminus \sigma} (q_0, \bot)\}$, $q_{0,u} = (q_0, \bot)$, and $F_u = Q_u$.
+
+%In the following, we assume that $|u| = k \ge 2$. Let $u = u_1 \dots u_k$, where each $u_i \in \Sigma$.
+
+%We construct an NFA $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which over a string $v$, parses $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u_1 \dots u_{k-1} \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, and $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
+%Let $u = u_1\dots u_k$ such that $u_i \in \Sigma$ for each $i \in [k]$.  
+
+A $k$-\emph{window profile $\vec{W}$ w.r.t. $u$} is an element of $\{\bot,\top\}^{k-1}$. Intuitively, in the position $i$ of a string $v$, $\vec{W}$ is an abstraction of the substring $v[i-k+2] \dots v[i]$ such that for each $j \in [k-1]$, $\vec{W}(j) = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Let $\wprof_{u, k}$ denote the set of $k$-window profiles w.r.t. $u$. In particular, if $k = 1$, then $\wprof_{u, k} = \emptyset$.
+
+The NFA $\cA_u$ is constructed as follows.
 \begin{itemize}
-\item  $Q_u = \{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k} \} \cup \{(\verify, j, \vec{W}) \mid 1 \le j \le k, \vec{W} \in \wprof_{u,k}\}$, where $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search''-mode to search the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$, 
+\item  $Q_u = \{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\} \cup \{(\verify, j, \vec{W}) \mid j \in [k-1], \vec{W} \in \wprof_{u,k}\}$, where $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search''-mode to search the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 %
-\item $q_{0,u}=(\search,\bot^k)$,  
+\item $q_{0,u}=(\search,\bot^k)$.
 
 \item $\delta_{u}$ comprises the following transitions,
 %guesses over each position, one of the following holds, the substring comprising the next $k$-symbols (including the current one) is $u$ or not.
 \begin{itemize}
-\item for each state $(\search, \vec{W})$ and $\sigma \in \Sigma$ such that $\vec{W}(k-1) = \bot$ or $\sigma \neq u_k$,
+\item for each state $(\search, \vec{W})$ and $\sigma \in \Sigma$ such that $\vec{W}(k-1) = \bot$ or $\sigma \neq u[k]$,
 \begin{itemize}
-\item $(\search, \vec{W}) \xrightarrow{\sigma} (\search, \vec{W}')$, where $\vec{W}'(1) = \top$ iff $\sigma = u_1$, and for each $i: 2 \le i \le k-1$, $\vec{W}'(i) =\top$ iff $\vec{W}({i-1}) = \top$ and $\sigma = u_{i}$, in addition, $\vec{W}'(k)=\bot$,
+\item $(\search, \vec{W}) \xrightarrow{\sigma} (\search, \vec{W}')$, where $\vec{W}'(1) = \top$ iff $\sigma = u[1]$, and for each $i: 2 \le i \le k-1$, $\vec{W}'(i) =\top$ iff $\vec{W}({i-1}) = \top$ and $\sigma = u[i]$,
 %
-\item if $\sigma = u_1$, then $(\search, \vec{W}) \xrightarrow{\sigma} (\verify, 1, \vec{W}')$,  where $\vec{W}'(1)=\top$,  and for each $i: 2 \le i \le k-1$, $\vec{W}'(i) =\top$ iff $\vec{W}({i-1}) = \top$ and $\sigma = u_{i}$, in addition, $\vec{W}'(k)=\bot$,
-%
-\end{itemize}
-%
-\item for each state $(\verify, i-1, \vec{W})$ such that $2 \le i \le k-1$, $\sigma = u_{i}$, and $\vec{W}(k-1)=\bot$ or $\sigma \neq u_k$,  we have $(\verify, i-1, \vec{W}) \xrightarrow{\sigma} (\verify, i, \vec{W}')$, where for each $j: 1 \le j < i$, $\vec{W}'(j)=\bot$, $\vec{W}'(i)=\top$, and for each $j: i < j < k$, $\vec{W}'(j) = \top$ iff $\vec{W}(j-1)=\top$ and $\sigma = u_j$, in addition, $\vec{W}'(k)=\bot$, 
-%
-\item for each state $(\verify, k-1, \vec{W})$, $(\verify, k-1, \vec{W}) \xrightarrow{u_k} (\search, \bot^k)$. 
+\item if $\sigma = u[1]$, then $(\search, \vec{W}) \xrightarrow{\sigma} (\verify, 1, \vec{W}')$,  where $\vec{W}'(1)=\top$,  and for each $i: 2 \le i \le k-1$, $\vec{W}'(i) =\top$ iff $\vec{W}({i-1}) = \top$ and $\sigma = u[i]$,
 %
 \end{itemize}
-Note that the constraint $W(k-1) = \bot$ or $\sigma \neq u_k$ is used to guarantee that $v_j u_1 \dots u_{k-1} \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
 %
-\item $F_u=\{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k} \} $.
+\item for each state $(\verify, i-1, \vec{W})$ such that
+\begin{itemize}
+\item $2 \le i \le k-1$,
+\item $\vec{W}(i-1)=\top$, $\sigma = u[i]$, and
+\item either $\vec{W}(k-1)=\bot$ or $\sigma \neq u[k]$, 
 \end{itemize}
-We would like to remark that $\cA_u$ is \emph{unambiguous}, more specifically, on each word $w$, there is \emph{exactly one accepting run} of $\cA_u$ on $w$.
+we have $(\verify, i-1, \vec{W}) \xrightarrow{\sigma} (\verify, i, \vec{W}')$, where for each $j: 2 \le j \le k-1$, $\vec{W}'(j) = \top$ iff $\vec{W}(j-1)=\top$ and $\sigma = u[j]$, 
+%
+\item for each state $(\verify, k-1, \vec{W})$ such that $\vec{W}(k-1)=\top$, we have $(\verify, k-1, \vec{W}) \xrightarrow{u[k]} (\search, \bot^k)$, where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
+%
+\end{itemize}
+Note that the constraint $\vec{W}(k-1) = \bot$ or $\sigma \neq u[k]$ is used to guarantee that when parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
+%
+\item $F_u=\{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k} \} $. Note that the states $(\verify, j, \vec{W})$ are not final states, since when in these states, the verification of the next occurrence of $u$ has not yet been complete.
+\end{itemize}
+In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \dots v_l u v_{l+1}$, the state sequence in the run is of the form 
+$$(\search, \bot^k)\ r_1\ (\search, \bot^k)\ r_2\ (\search, \bot^k)\ \dots\ r_l\ (\search, \bot^k)\ r_{l+1}$$ 
+such that  for each $j \in [l]$, $r_j \in (F_u \setminus \{(\search, \bot^k)\})^+ Q_{\verify, 1}  \dots  Q_{\verify, k-1}$, and $r_{l+1} \in (F_u)^+$, where $Q_{\verify, 1} = \{(\verify, 1, \vec{W}) \mid \vec{W} \in \wprof_{u,k}\}, \dots, Q_{\verify, k-1}=\{(\verify, k-1, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\}$. Intuitively, each occurence of $(\search, \bot^k)$, except the first one, witnesses the \emph{first} occurrence of $u$ after its previous occurrence or starting from the beginning.
+
+The NFA $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
 
 
 \subsection{The decision procedure}
