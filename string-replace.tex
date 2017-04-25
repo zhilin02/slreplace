@@ -261,13 +261,15 @@ A $k$-\emph{window profile $\vec{W}$ w.r.t. $u$} is an element of $\{\bot,\top\}
 
 The NFA $\cA_u$ is constructed as follows.
 \begin{itemize}
-\item  $Q_u = \{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\} \cup \{(\verify, j, \vec{W}) \mid j \in [k-1], \vec{W} \in \wprof_{u,k}\}$, where $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search''-mode to search the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
+\item  $Q_u =\{q_0\} \cup \{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\} \cup \{(\verify, j, \vec{W}) \mid j \in [k-1], \vec{W} \in \wprof_{u,k}\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search''-mode to search the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 %
-\item $q_{0,u}=(\search,\bot^k)$.
+\item $q_{0,u}=q_0$.
 
 \item $\delta_{u}$ comprises the following transitions,
 %guesses over each position, one of the following holds, the substring comprising the next $k$-symbols (including the current one) is $u$ or not.
 \begin{itemize}
+\item $q_0 \xrightarrow{\sigma} (\search, \vec{W})$, where $\vec{W}(1)=\top$ iff $\sigma = u[1]$, and for each $i: 2 \le i \le k-1$, $\vec{W}(i) = \bot$,
+%
 \item for each state $(\search, \vec{W})$ and $\sigma \in \Sigma$ such that $\vec{W}(k-1) = \bot$ or $\sigma \neq u[k]$,
 \begin{itemize}
 \item $(\search, \vec{W}) \xrightarrow{\sigma} (\search, \vec{W}')$, where $\vec{W}'(1) = \top$ iff $\sigma = u[1]$, and for each $i: 2 \le i \le k-1$, $\vec{W}'(i) =\top$ iff $\vec{W}({i-1}) = \top$ and $\sigma = u[i]$,
@@ -284,16 +286,17 @@ The NFA $\cA_u$ is constructed as follows.
 \end{itemize}
 we have $(\verify, i-1, \vec{W}) \xrightarrow{\sigma} (\verify, i, \vec{W}')$, where for each $j: 2 \le j \le k-1$, $\vec{W}'(j) = \top$ iff $\vec{W}(j-1)=\top$ and $\sigma = u[j]$, 
 %
-\item for each state $(\verify, k-1, \vec{W})$ such that $\vec{W}(k-1)=\top$, we have $(\verify, k-1, \vec{W}) \xrightarrow{u[k]} (\search, \bot^k)$, where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
+\item for each state $(\verify, k-1, \vec{W})$ such that $\vec{W}(k-1)=\top$, we have $(\verify, k-1, \vec{W}) \xrightarrow{u[k]} q_0$.
+%where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
 %
 \end{itemize}
 Note that the constraint $\vec{W}(k-1) = \bot$ or $\sigma \neq u[k]$ is used to guarantee that when parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
 %
-\item $F_u=\{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k} \} $. Note that the states $(\verify, j, \vec{W})$ are not final states, since when in these states, the verification of the next occurrence of $u$ has not yet been complete.
+\item $F_u=\{q_0\} \cup \{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k} \} $. Note that the states $(\verify, j, \vec{W})$ are not final states, since when in these states, the verification of the next occurrence of $u$ has not yet been complete.
 \end{itemize}
 In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \dots v_l u v_{l+1}$, the state sequence in the run is of the form 
-$$(\search, \bot^k)\ r_1\ (\search, \bot^k)\ r_2\ (\search, \bot^k)\ \dots\ r_l\ (\search, \bot^k)\ r_{l+1}$$ 
-such that  for each $j \in [l]$, $r_j \in (F_u \setminus \{(\search, \bot^k)\})^+ Q_{\verify, 1}  \dots  Q_{\verify, k-1}$, and $r_{l+1} \in (F_u)^+$, where $Q_{\verify, 1} = \{(\verify, 1, \vec{W}) \mid \vec{W} \in \wprof_{u,k}\}, \dots, Q_{\verify, k-1}=\{(\verify, k-1, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\}$. Intuitively, each occurence of $(\search, \bot^k)$, except the first one, witnesses the \emph{first} occurrence of $u$ after its previous occurrence or starting from the beginning.
+$$q_0\ r_1\ (\search, \bot^k)\ r_2\ q_0\ \dots\ r_l\ q_0\ r_{l+1}$$ 
+such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ Q_{\verify, 1}  \dots  Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^+$, where $Q_{\search}  = \{(\search, \vec{W}) \in \mid \vec{W} \in \wprof_{u,k}\}$, $Q_{\verify, 1} = \{(\verify, 1, \vec{W}) \mid \vec{W} \in \wprof_{u,k}\}, \dots, Q_{\verify, k-1}=\{(\verify, k-1, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\}$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ after its previous occurrence or starting from the beginning.
 
 The NFA $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
 
