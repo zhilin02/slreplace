@@ -247,7 +247,7 @@ The questions we plan to consider is summarized in the following table. Note tha
 
 Let $u \in \Sigma^+$ and $k=|u| \ge 2$.
 Our goal is to construct an NFA $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
-\tl{I am not clear what do you mean by parsing. what does $A_u$ accept? It should be $v_1 u v_2 u \dots v_l u v_{l+1}$ with the property that $v_ju[1] \dots u[k-1]$ does not contain $u$ as substring?}
+\tl{I am not clear what do you mean by parsing. what does $A_u$ accept? It should be $v_1 u v_2 u \dots v_l u v_{l+1}$ with the property that $v_ju[1] \dots u[k-1]$ does not contain $u$ as substring?}\zhilin{the purpose of $\cA_u$ is to mimic the semantics of replacement function, without actual replacing, in other words, decompose $v$ into $v_1, u, v_2, u, \dots ,v_l, u, v_{l+1}$ satisfying the desired constraints.}
 In order to check that a substring of $v$ is \emph{not} in $\Sigma^\ast u \Sigma^\ast$, we introduce a concept of $k$-window profiles w.r.t. $u$.
 
 
@@ -296,7 +296,7 @@ Note that the constraint $\vec{W}(k-1) = \bot$ or $\sigma \neq u[k]$ is used to 
 \item $F_u=\{q_0\} \cup \{(\search, \vec{W}) \mid \vec{W} \in \wprof_{u, k} \} $. Note that the states $(\verify, j, \vec{W})$ are not final states, since when in these states, the verification of the next occurrence of $u$ has not yet been complete.
 \end{itemize}
 In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \dots v_l u v_{l+1}$, the state sequence in the run is of the form 
-$$q_0\ r_1\ (\search, \bot^k)\ r_2\ q_0\ \dots\ r_l\ q_0\ r_{l+1}$$ 
+$$q_0\ r_1\ q_0\ r_2\ q_0\ \dots\ r_l\ q_0\ r_{l+1}$$ 
 such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ Q_{\verify, 1}  \dots  Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^+$, where $Q_{\search}  = \{(\search, \vec{W}) \in \mid \vec{W} \in \wprof_{u,k}\}$, $Q_{\verify, 1} = \{(\verify, 1, \vec{W}) \mid \vec{W} \in \wprof_{u,k}\}, \dots, Q_{\verify, k-1}=\{(\verify, k-1, \vec{W}) \mid \vec{W} \in \wprof_{u, k}\}$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ after its previous occurrence or starting from the beginning.
 
 The NFA $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
