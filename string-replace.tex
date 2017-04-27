@@ -247,6 +247,7 @@ The questions we plan to consider is summarlised in the following table
 
 Let $u \in \Sigma^+$ and $k=|u| \ge 2$.
 Our goal is to construct an NFA $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
+\tl{I am not clear what do you mean by parsing. what does $A_u$ accept? It should be $v_1 u v_2 u \dots v_l u v_{l+1}$ with the property that $v_ju[1] \dots u[k-1]$ does not contain $u$ as substring?}
 In order to check that a substring of $v$ is \emph{not} in $\Sigma^\ast u \Sigma^\ast$, we introduce a concept of $k$-window profiles w.r.t. $u$.
 
 
@@ -347,7 +348,9 @@ Let $\pi=z_1 \ell_1 \dots z_{k-1} \ell_{k-1} z_k$ be an initial path.  Then a $\
 \begin{itemize} 
 \item If the last edge of $\pi$ is an $\strtorep$-edge, then $\cB_\pi$ is the product of $\cB_{\pi'}$ and $\cA_{z_k}$.
 
-\item otherwise, let $\src_j$ be the label of the $\src$-edge out of $z_{k-1}$, the $\strtorep$-edge out of $z_{k-1}$ be from $z_{k-1}$ to $z'$, and $\pi'' = z_1 \dots z_{k-1} z'$. Then the definition of $\cB_\pi$ is parameterized by an element $f_{\pi''} \in \cM(\cB_{\pi''})$. From the definition, we know that $\cB_{\pi''}$ is the product of $\cB_{\pi'}$ and $\cA_{z'}$. The function $f_{\pi''}$ determines a function $f'_{\pi''} \in \cM(\cB_{\pi'})$. Then $\cB_\pi$ is defined as the DFA obtained by determinizing the product automaton of the DFA $\cA_{z_k}$ and the NFA $\cB'_{\pi}$ which includes the following transitions,
+\item otherwise, let $\src_j$ be the label of the $\src$-edge out of $z_{k-1}$, the $\strtorep$-edge out of $z_{k-1}$ be from $z_{k-1}$ to $z'$, and $\pi'' = z_1 \dots z_{k-1} z'$. Then the definition of $\cB_\pi$ is parameterized by an element $f_{\pi''} \in \cM(\cB_{\pi''})$. 
+\tl{where is $\cM$ defined?}
+From the definition, we know that $\cB_{\pi''}$ is the product of $\cB_{\pi'}$ and $\cA_{z'}$. The function $f_{\pi''}$ determines a function $f'_{\pi''} \in \cM(\cB_{\pi'})$. Then $\cB_\pi$ is defined as the DFA obtained by determinizing the product automaton of the DFA $\cA_{z_k}$ and the NFA $\cB'_{\pi}$ which includes the following transitions,
 \begin{itemize}
 \item $((\search, \vec{W}), q) \xrightarrow{\sigma} ((\search, \vec{W}'), q')$ such that $(\search, \vec{W}) \xrightarrow{\sigma} (\search, \vec{W}')$ is a transition in $\cA_{u_j}$ and $q \xrightarrow{\sigma} q'$ is a transition in $\cB_{\pi'}$,
 \item $((\search, \vec{W}), q) \xrightarrow{u_j[1]} ((\verify, 1, \vec{W}'), q')$ such that  $(\search, \vec{W}) \xrightarrow{u_j[1]} (\verify,1,  \vec{W}')$ is a transition in $\cA_{u_j}$ and $f'_{\pi''}(q)=q'$,
@@ -558,6 +561,16 @@ Some questions we have discussed:
 
 \item more generally, zhilin proposes parameterised string transducer, which is very interesting. 
 \end{itemize}
+
+\section{understanding the algorithm}
+Let me do some stupid thing with the aim to understand the algorithm. We start with the example $x=rep(y_1,a,y_2)$; in this case the dependency graph has only two edges $x$ to $y_1$ with label src, and $x$ to $y_2$ with label strToRep. 
+
+As the first step, we construct two $\pi$-automata. The first one (corresponding to strToRep) is just the product of $A_x$ and $A_{y_2}$. 
+
+The second one (corresponding to src), it is parameterized by $f\in M(A_{y_1})$. 
+
+
+
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
