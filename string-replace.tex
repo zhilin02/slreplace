@@ -478,6 +478,10 @@ Indeed, I think the following proposition holds:
 \begin{proposition}
 	Given $\cA_x$ and $\cA_y$, checking whether $x=\replaceall(y,a,y)$ holds is in NP. Moreover, if it holds, there is a solution for $x$ and $y$ which is only polynomial in the sizes of $\cA_x$ and $\cA_y$. 
 \end{proposition}	
+
+BTW, we discussed the idea of transforming a DAG into a tree (for the dependency graph), but there is a difficulty, i.e., how to verify two nodes with the same variable actually have the same value. This cannot be done with FAs, but can be done with pushdown automata ... Well just a thought, not clear whether this actually benefits. 
+
+OK, what we can do is to make the input to include not only values for $y$'s, but also for $x$'s. Using pushdown automata, one can check whether they are correct valuations. For instance, whether $v_3=\replaceall(v_1, a,v_2)$. We then can parallelise the verification for each constraint, without needs to go forward and backward.  
  
 \bibliographystyle{alpha}
 \bibliography{string}
