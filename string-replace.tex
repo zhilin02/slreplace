@@ -461,6 +461,24 @@ Similarly to the single-letter case, we can define the dependency graph $G_C$. I
 
 \section{A decision procedure for $\strline[\replaceall]$}
 
+%================================================================================================
+\appendix
+
+\section{An example}
+
+Consider the constraint $x_{m+1}=\replaceall(x_m,a,x_m)$ where $A_{x_m}$ only accepts the language $\{a^{2n}\mid n\geq 1\}$. (Clearly they all have only four states.)
+
+It follows that the minimal solution of $x_m$ is $a^{2^{m+1}}$, but this construction is not enough. What we need is enforce the solution of $x_0$ to be exponential in the size of $A$. 
+
+This is difficult for the unary case, as essentially one needs to find some $x$ such that $x\equiv a \bmod b$ and $x^2 \equiv c\bmod d$. The solution of $x$, if exists, would not be very large. So it might mean that we need a binary alphabet. 
+
+On a different matter, if we follow the construction by zhilin for the example $x=\replaceall(y,a,y)$. Then automaton is of exponential size, but has a special property, i.e., it is flat with a polynomial size diameter. So maybe the length cannot be very long at all?!
+
+Indeed, I think the following proposition holds:
+\begin{proposition}
+	Given $\cA_x$ and $\cA_y$, checking whether $x=\replaceall(y,a,y)$ holds is in NP. Moreover, if it holds, there is a solution for $x$ and $y$ which is only polynomial in the sizes of $\cA_x$ and $\cA_y$. 
+\end{proposition}	
+ 
 \bibliographystyle{alpha}
 \bibliography{string}
 \end{document}
