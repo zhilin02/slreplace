@@ -281,108 +281,143 @@ Consider the $\pstrline[\replaceall]$ formula $C=\varphi \wedge \psi$, whose dep
 
 
 
-We will construct a two-way DFA $\cA_C$ and reduce the satisfiability of $C=\varphi \wedge \psi$ to the nonemptiness of $\cA_C$. The inputs of $\cA_C$ are of the form $\triangleright \# v_1 \# \dots \# v_5\triangleleft$, where $v_1,\dots, v_5$ represent an assignment of the variables $y_1,\dots, y_5$. Intuitively, 
+We will construct an NFA $\cA_C$ and reduce the satisfiability of $C=\varphi \wedge \psi$ to the nonemptiness of $\cA_C$. The inputs of $\cA_C$ are of the form $\triangleright \# v_1 \# \dots \# v_5\triangleleft$, where $v_1,\dots, v_5$ represent an assignment of the variables $y_1,\dots, y_5$. Intuitively, 
 \begin{itemize}
 \item 
  $\cA_C$ checks whether for each $j \in [5]$, $v_j$ is accepted by $\cA_{y_j}$, 
 \item 
-in addition, let $\vec{v} = (v_1,\dots, v_5)$, then for each $i \in [4]$, $\cA_C$ moves left and right on $\triangleright \# v_1 \# \dots \# v_5\triangleleft$ to simulate the run of $\cA_{x_i}$ on $\val_{\vec{v}}(x_i)$ and check whether $\val_{\vec{v}}(x_i)$ is accepted by $\cA_{x_i}$.
+in addition, let $\vec{v} = (v_1,\dots, v_5)$, then $\cA_C$ reads $\triangleright \# v_1 \# \dots \# v_5\triangleleft$, from left to right, and checks whether $\val_{\vec{v}}(x_i)$ is accepted by $\cA_{x_i}$, for each $i \in [4]$.
 \end{itemize}
 
-In the following, we will use the running example to give a more specific description of $\cA_C$. Let us introduce an additional notation.
+In the following, we will use the running example to give a more specific description of $\cA_C$. Let us introduce some additional notations.
 
-\begin{definition}[$\cB_{\cA, a, f}$]
-Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA, $a \in \Sigma$, and $f$ is a function from $Q$ to $Q$. Then we construct a DFA $\cB_{\cA, a, f}=(Q, \delta', q_0, F)$, where $\delta'$ comprises the tuples $(q, a, f(q))$ for $q \in Q$ and all the tuples $(q, a', q') \in \delta$ with $a' \neq a$.
+\begin{definition}[$\cA$-context $\ctxt$ and $\red_\ctxt$]
+Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA. Then an $\cA$-\emph{context} $\ctxt$  is a vector $((a_1,f_1),\dots, (a_r, f_r))$ such that for each $i \in [r]$, $a_i \in \Sigma$ and $f_i$ is a function from $Q$ to $Q$. 
+For an $\cA$-context $\ctxt$, define the reduction of $\ctxt$, denoted by $\red_\ctxt$, as follows: $\red_\ctxt = ((a_{i_1},f_{i_1}), \dots, (a_{i_s}, f_{i_s}))$ such that for each $j \in [s]$, $a_{i_j} \not \in \{a_1,\dots, a_{i_j-1}\}$. 
 \end{definition}
-Intuitively, over an input $w$, the DFA $\cB_{\cA, a, f}$ simulates the run of $\cA$ on $w$, with the following adaptation: upon reading an occurrence of $a$, let $q$ be the current state, then after reading $a$, the state is changed to $f(q)$.
+Intuitively, a reduction of $\ctxt$ is obtained by keeping the first occurrence of the letters and removing the other copies.
+
+\begin{definition}[$\ctxt$ and $\cB_{\cA, \ctxt}$]
+Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA and $\ctxt$ is an $\cA$-context with $\red_\ctxt= ((a_1,f_1),\dots ,(a_r, f_r))$. We define a DFA $\cB_{\cA, \ctxt}$ as $(Q, \delta', q_0, F)$, where $\delta'$ comprises 1) all the tuples $(q, a', q') \in \delta$ with $a' \not \in \{a_1,\dots, a_r\}$, and 2) all the tuples $(q, a_i, f_i(q))$ such that $q \in Q$ and $i \in [r]$.
+\end{definition}
+Intuitively, over an input $w$, the DFA $\cB_{\cA, \ctxt}$ simulates the run of $\cA$ on $w$, with the following adaptation: upon reading an occurrence of $a_i$, let $q$ be the current state, then after reading $a_i$, the state is changed to $f_i(q)$.
+
+%\begin{definition}[Representatives of variables]
+%For a variable $z \in \vars(\varphi)$,
+%we define the representative of $z$, denoted by $\repr(z)$, as follows: If $z = y_j$ for some $j$, then $\repr(z) = y_j$, otherwise, let $\repr(z)$ be the unique source variable $y_j$ such that  there is a path from $x_i$ to $y_j$ where all edges are $\rpleft$-edges (The uniqueness of $y_j$ follows from the straight-line constraint). 
+%\end{definition}
+
+\begin{definition}[representative path]
+For a non-source variable $x_i \in \vars(\varphi)$, we define the representative path of $x_i$ as the unique path from $x_i$ to some source variable $y_j$ where all the edges are $\rpleft$-edges.  For a source variable $y_j$, define the representative path of $y_j$ be the empty path.
+%Note that for each non-source variable $x_i$, there is a unique source variable $y_j$ representing $x_i$. Let $\repr(x_i)$ denote this unique source variable $y_j$.
+\end{definition}
 
 
 We are ready to describe more details of the run of $\cA_C$ on $\triangleright \# v_1 \# \dots \# v_5\triangleleft$.
 
-At first, it is easy to check whether $v_j$ is accepted by $\cA_{y_j}$ for each $j \in [5]$.
-
-It is more involved to check whether $\val_{\vec{v}}(x_i)$ is accepted by $\cA_{x_i}$ for $i \in [4]$. 
-
-Let us start with $x_3$. Since the string $x_3$ is obtained from $y_1$ by replacing all occurrences of $a_3$ with $y_2$, $\cA_C$ checks whether $\val_{\vec{v}}(x_3)$ is accepted by $\cA_{x_3}$ as follows: 
-\begin{enumerate}
-\item At first, $\cA_{x_3}$ is run on $v_2$ so that 
- the function on the state space of $\cA_{x_3}$ induced by $v_2$, denoted by $f_{y_2,\cA_{x_3}}$, is computed. 
-%
- \item Then the DFA $\cB_{\cA_{x_3}, a_3, f_{y_2,\cA_{x_3}}}$ is run on $v_1$, so that  the function on the state space of $\cB_{\cA_{x_3}, a_3, f_{y_2,\cA_{x_3}}}$ (which is the same as that of $\cA_{x_3}$) induced by $v_1$, denoted by $f_{y_1, \cA_{x_3}}$, is computed.
-%
- \item If $f_{y_1, \cA_{x_3}}(q_{x_3,0}) \in F_{x_3}$, then return $\ltrue$, otherwise, return $\lfalse$, where $q_{x_3,0}$ is the initial state of $\cA_{x_3}$ and $F_{x_3}$ is the set of final states of $\cA_{x_3}$.
-\end{enumerate}
-It is similar to check  whether $\val_{\vec{v}}(x_4)$ is accepted by $\cA_{x_4}$.
-
-Next, let us consider $x_2$. The string $x_2$ is obtained from $x_3$ by replacing all occurrences of $a_2$ with $y_3$. A natural idea is to have an adapted run of $\cA_{x_2}$ on $\val_{\vec{v}}(x_3)$, by using $f_{y_3, \cA_{x_2}}$, similar to the adapted run of $\cA_{x_3}$ on $v_1$ above.
-But the difficulty is that we do not have $\val_{\vec{v}}(x_3)$ \emph{explicitly}. Instead, $\val_{\vec{v}}(x_3)$ is represented \emph{implicitly} by $\replaceall(v_1,a_3, v_2)$. Therefore, $\cA_C$ should run $\cA_{x_2}$ on $v_1$ and $v_2$, in order to check whether $\val_{\vec{v}}(x_3)$ is accepted by $\cA_{x_2}$. Specifically, 
-\begin{enumerate}
-\item Compute $f_{y_3, \cA_{x_2}}$ by running $\cA_{x_2}$ on $v_3$.
-%
-\item Compute $f_{y_2, \cA_{x_2}}$ by running $\cB_{\cA_{x_2}, a_2, f_{y_3, \cA_{x_2}}}$ on $v_2$.
-%
-\item Compute $f_{y_1, \cA_{x_2}}$ by running $\cB_{\cA_{x_2}, a_3, f_{y_2, \cA_{x_2}}}$ on $v_1$.
-%
- \item If $f_{y_1, \cA_{x_2}}(q_{x_2,0}) \in F_{x_2}$, then return $\ltrue$, otherwise, return $\lfalse$, where $q_{x_2,0}$ is the initial state of $\cA_{x_2}$ and $F_{x_2}$ is the set of final states of $\cA_{x_2}$.
-\end{enumerate}
-
-Finally, $\cA_C$ checks whether $\val_{\vec{v}}(x_1)$ is accepted by $\cA_{x_1}$ as follows:
-\begin{enumerate}
-\item Compute $f_{y_5,\cA_{x_1}}$  by running $\cA_{x_1}$ on $v_5$. 
-%
-\item Compute $f_{x_4, \cA_{x_1}}$ by running $\cB_{\cA_{x_1}, a_4, f_{y_5,\cA_{x_1}}}$ on $v_4$.
-%
-\item Compute $f_{y_3, \cA_{x_1}}$ by running $\cB_{\cA_{x_1}, a_1, f_{x_4, \cA_{x_1}}}$ on $v_3$. 
-%
-\item Compute $f_{y_2, \cA_{x_1}}$ by running $\cB_{\cA_{x_1}, a_2, f_{y_3, \cA_{x_1}}}$ on $v_2$.
-%
-\item Compute $f_{y_1, \cA_{x_1}}$ by running $\cB_{\cA_{x_1}, a_3, f_{y_2, \cA_{x_1}}}$ on $v_1$.
-%
- \item If $f_{y_1, \cA_{x_1}}(q_{x_1,0}) \in F_{x_1}$, then return $\ltrue$, otherwise, return $\lfalse$, where $q_{x_1,0}$ is the initial state of $\cA_{x_1}$ and $F_{x_1}$ is the set of final states of $\cA_{x_1}$.
-\end{enumerate}
+At first, for each path $\pi$ from a non-source variable $x_i$ to a source variable $y_j$, $\cA_C$ guesses a function $f_{\pi}$ on the state space of $\cA_{x_i}$, satisfying the following constraint: for each non-source variable $x_i$, let $\pi$ be the representative path of $x_i$, then $f_{\pi}(q_{0,x_i}) \in F_{x_i}$, where $q_{0, x_i}$ and $F_{x_i}$ are the initial state and the set of final states of $\cA_{x_i}$ respectively. Since $G_C$ is a tree, for simplicity, given a pair of distinct variables $z,z'$ such that $z'$ is reachable from $z$, we will use $\pi_{z,z'}$ to denote the unique path from $z$ to $z'$.  Let $\gfun$ denote the set of guessed functions.
 
 
-\vspace{-5mm}
-
-%============================================================================
-\begin{algorithm}[htbp]
-\KwData{A vertex $z$ in $G_C$, a vertex $z'$ reachable from $z$, a letter $a \in \Sigma \cup \{\varepsilon\}$, and a function $f$ on the state space of $\cA_z$.}
-\KwResult{A function on the state space of $\cA_z$.}
-\Begin{
-\If{$z'$ is a final vertex, say $y_j$}
-{
-\If{$a = \varepsilon$}
-{
-Compute $f_{z', \cA_z}$ by running $\cA_z$ on $v_j$\;
-}
-\Else
-{
-Compute $f_{z', \cA_z}$ by running $\cB_{\cA_z, a, f}$ on $v_j$\;
-}
-\Return $f_{z', \cA_z}$\;
-}
-\Else
-{
-Let $a' \in \Sigma$, $z''_1$ and $z''_2$ be two successors of $z$ such that the two edges from $z'$ to $z''_1$ and $z''_2$ respectively are labeled by $(\rpleft,a')$ and $(\rpright,a')$\;
-Let $f':=\dfs(z, z''_2, a, f)$\;
-\Return $\dfs(z, z''_1, a', f')$\;
-}
-%
-}
-\caption{$\dfs(z, z', a, f)$\label{alg-f-func}}
-\end{algorithm}
-\vspace{-3mm}
+Then $\cA_C$ verifies that the guessed functions satisfy some desired properties, when reading $\triangleright \# v_1 \# \dots \# v_5\triangleleft$.
 
 
-In a nutshell, $\cA_C$ works as follows: For each vertex $z$ in $G_C$, we do a depth-first traversal starting from $z$, where for each non-final vertex $x_i$,  the $\rpright$-edge out of $x_i$ is traversed before  the $\rpleft$-edge out of $x_i$. During the traversal, for each vertex $z'$ reachable from $z$, $f_{z', \cA_z}$ is computed. 
-The function $f_{z,\cA_z}$ contains enough information to decide whether $\val_{\vec{v}}(z)$ is accepted by $\cA_z$. The details of the depth-first traversal is given by the procedure $\dfs(z, z', a, f)$ in Algorithm~\ref{alg-f-func}. For each vertex $z$ in $G_C$, $\val_{\vec{v}}(z)$ is accepted by $\cA_z$ iff $\dfs(z, z, \varepsilon, {\sf id})(q_{z,0}) \in F_z$, where ${\sf id}$ is the identity function, $q_{z,0}$ is the initial state of $\cA_z$, and $F_z$ is the set of final states of $\cA_z$.
-
-Each state of $\cA_C$ records the following information: 
+For a path $\pi$, we define the context of $\pi$, denoted by $\ctxt_\pi$, inductively as follows: 
 \begin{itemize}
-\item the dependency graph $G_C$, 
-\item the content of the stack of the depth-first traversal (whose height is bounded by the maximum length of the paths in $G_C$).
+\item if $\pi$ is an empty path, then $\ctxt_\pi$ is the empty vector,
+% 
+\item otherwise, let the last edge of $\pi$ be from $z$ to $z'$ and $\pi'$ be the path obtained from $\pi$ by removing the last edge, then 
+\begin{itemize}
+\item if the last edge of $\pi$ is labeled by $(\rpright, a)$, then $\ctxt_\pi = \ctxt_{\pi'}$, 
+%
+\item if the last edge of $\pi$ is labeled by $(\rpleft, a)$,  let $z''$ be the destination vertex of the $\rpright$-edge out of $z$ and $\pi''$ denote the path obtained by concatenating $\pi'$, the $\rpright$-edge from $z$ to $z''$, and the representative path pf $z''$, then $\ctxt_\pi = (a, f_{\pi''}) \ctxt_{\pi'}$. 
+%
 \end{itemize}
-Therefore, $\cA_C$ contains at most doubly exponentially many states (w.r.t. the size of $C$). Since the nonemptiness of two-way DFA is in PSPACE, we deduce that the upper bound of the satisfiability problem in the single-letter case is 2EXPSPACE.
+\end{itemize}
+
+For instance,  
+$$
+\begin{array}{l c l}
+\ctxt_{\pi_{x_1, y_1}} &= & (a_3, f_{\pi_{x_1, y_2}}) \ctxt_{\pi_{x_1,x_3}} = (a_3, f_{\pi_{x_1, y_2}}) (a_2, f_{\pi_{x_1, y_3}}) \ctxt_{\pi_{x_1, x_2}}  \\
+& = & (a_3, f_{\pi_{x_1, y_2}}) (a_2, f_{\pi_{x_1, y_3}}) (a_1, f_{\pi_{x_1, y_4}}).
+\end{array}
+$$
+
+When reading $v_1$, $\cA_C$ does the following,
+\begin{itemize}
+\item $\cA_C$ runs $\cA_{y_1}$ on $v_1$ to check that $v_1$ is accepted by $\cA_{y_1}$,
+%
+\item $\cA_C$ runs $\cB_{\cA_{x_3}, \ctxt_{\pi_{x_3,y_1}}}$ on $v_1$ to compute a function $f'_{\pi_{x_3,y_1}}$ on the state space of $\cA_{x_3}$ and checks $f'_{\pi_{x_3, y_1}} = f_{\pi_{x_3, y_1}}$,
+%
+\item  $\cA_C$ runs $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_1}}}$ on $v_1$ to compute a function $f'_{\pi_{x_2,y_1}}$ on the state space of $\cA_{x_2}$ and checks $f'_{\pi_{x_2, y_1}} = f_{\pi_{x_2, y_1}}$, 
+
+% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
+%
+\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_1}}}$ on $v_1$ to compute a function $f'_{\pi_{x_1,y_1}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_1}} = f_{\pi_{x_1, y_1}}$.
+\end{itemize}
+We can also think the run of $\cA_C$ on $v_1$ as the run of $\cB_{y_1, \gfun}$ on $v_1$, where  $\cB_{y_1, \gfun}$ is the product automaton of $\cA_{y_1}$, $\cB_{\cA_{x_3}, \ctxt_{\pi_{x_3,y_1}}}$, $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_1}}}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_1}}}$. 
+
+When reading $v_2$, $\cA_C$ does the following,
+\begin{itemize}
+\item $\cA_C$ runs $\cA_{y_2}$ on $v_2$ to check that $v_2$ is accepted by $\cA_{y_2}$,
+%
+\item $\cA_C$ runs $ \cA_{x_3}$ on $v_2$ to compute a function $f'_{\pi_{x_3,y_2}}$ on the state space of $\cA_{x_3}$ and checks $f'_{\pi_{x_3,y_2}} = f_{\pi_{x_3, y_2}}$,
+%
+\item  $\cA_C$ runs $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_2}}}$ on $v_2$ to compute a function $f'_{\pi_{x_2,y_2}}$ on the state space of $\cA_{x_2}$ and checks $f'_{\pi_{x_2,y_2}} = f_{\pi_{x_2, y_2}}$, 
+
+% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
+%
+\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_2}}}$ on $v_2$ to compute a function $f'_{\pi_{x_1,y_2}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_2}} = f_{\pi_{x_1, y_2}}$.
+\end{itemize}
+We can also think the run of $\cA_C$ on $v_2$ as the run of $\cB_{y_2, \gfun}$ on $v_2$, where  $\cB_{y_2, \gfun}$ is the product automaton of $\cA_{y_2}$, $ \cA_{x_3}$, $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_2}}}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_2}}}$. 
+
+
+When reading $v_3$, $\cA_C$ does the following,
+\begin{itemize}
+\item $\cA_C$ runs $\cA_{y_3}$ on $v_3$ to check that $v_3$ is accepted by $\cA_{y_3}$,
+%
+\item  $\cA_C$ runs $\cA_{x_2}$ on $v_3$ to compute a function $f'_{\pi_{x_2,y_3}}$ on the state space of $\cA_{x_2}$ and checks $f'_{\pi_{x_2,y_3}} = f_{\pi_{x_2, y_3}}$, 
+
+% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
+%
+\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_3}}}$ on $v_3$ to compute a function $f'_{\pi_{x_1,y_3}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_3}} = f_{\pi_{x_1, y_3}}$.
+\end{itemize}
+We can also think the run of $\cA_C$ on $v_3$ as the run of $\cB_{y_3, \gfun}$ on $v_3$, where  $\cB_{y_3, \gfun}$ is the product automaton of $\cA_{y_3}$, $ \cA_{x_2}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_3}}}$. 
+
+
+When reading $v_4$, $\cA_C$ does the following,
+\begin{itemize}
+\item $\cA_C$ runs $\cA_{y_4}$ on $v_4$ to check that $v_4$ is accepted by $\cA_{y_4}$,
+%
+\item  $\cA_C$ runs $\cB_{\cA_{x_4}, \ctxt_{\pi_{x_4, y_4}}}$ on $v_4$ to compute a function $f'_{\pi_{x_4,y_4}}$ on the state space of $\cA_{x_4}$ and checks $f'_{\pi_{x_4,y_4}} = f_{\pi_{x_4, y_4}}$, 
+
+% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
+%
+\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_4}}}$ on $v_4$ to compute a function $f'_{\pi_{x_1,y_4}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_4}} = f_{\pi_{x_1, y_4}}$.
+\end{itemize}
+We can also think the run of $\cA_C$ on $v_4$ as the run of $\cB_{y_4, \gfun}$ on $v_3$, where  $\cB_{y_4, \gfun}$ is the product automaton of $\cA_{y_4}$, $\cB_{\cA_{x_4}, \ctxt_{\pi_{x_4, y_4}}}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_4}}}$. 
+
+
+When reading $v_5$, $\cA_C$ does the following,
+\begin{itemize}
+\item $\cA_C$ runs $\cA_{y_5}$ on $v_5$ to check that $v_5$ is accepted by $\cA_{y_5}$,
+%
+\item  $\cA_C$ runs $\cA_{x_4}$ on $v_5$ to compute a function $f'_{\pi_{x_4,y_5}}$ on the state space of $\cA_{x_4}$ and checks $f'_{\pi_{x_4,y_5}} = f_{\pi_{x_4, y_5}}$, 
+%
+\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_5}}}$ on $v_5$ to compute a function $f'_{\pi_{x_1,y_5}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_5}} = f_{\pi_{x_1, y_5}}$.
+\end{itemize}
+We can also think the run of $\cA_C$ on $v_5$ as the run of $\cB_{y_5, \gfun}$ on $v_3$, where  $\cB_{y_5, \gfun}$ is the product automaton of $\cA_{y_5}$, $\cA_{x_4}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_5}}}$. 
+
+The nonemptiness of $\cA_C$ can be solved in exponential space as follows: 
+\begin{description}
+\item [Step I.] For each path $\pi$ from a non-source variable $x_i$ to a source variable $y_j$, $\cA_C$ guesses a function $f_{\pi}$ on the state space of $\cA_{x_i}$.
+%
+\item  [Step II.] For each source variable $y_j$, guess an accepting run of $\cB_{y_j,\gfun}$.
+\end{description}
+Since at most exponentially many functions should be guessed, and each guessed function occupies polynomial space, it follows that the above procedure occupies only exponential space. If $G_C$ is a tree, then only polynomially many functions should be guessed and the above procedure occupies only polynomial space.
+
+%\begin{theorem}
+%The satisfiability of $\pstrline[\replaceall]$ is in EXPSPACE and PSPACE-complete for formulae whose dependency graphs trees.
+%\end{theorem}
  
 \subsection{The general case}
 
