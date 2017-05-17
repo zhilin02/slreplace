@@ -292,15 +292,15 @@ in addition, let $\vec{v} = (v_1,\dots, v_5)$, then $\cA_C$ reads $\trianglerigh
 In the following, we will use the running example to give a more specific description of $\cA_C$. Let us introduce some additional notations.
 
 \begin{definition}[$\cA$-context $\ctxt$ and $\red_\ctxt$]
-Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA. Then an $\cA$-\emph{context} $\ctxt$  is a vector $((a_1,f_1),\dots, (a_r, f_r))$ such that for each $i \in [r]$, $a_i \in \Sigma$ and $f_i$ is a function from $Q$ to $Q$. 
-For an $\cA$-context $\ctxt$, define the reduction of $\ctxt$, denoted by $\red_\ctxt$, as follows: $\red_\ctxt = ((a_{i_1},f_{i_1}), \dots, (a_{i_s}, f_{i_s}))$ such that for each $j \in [s]$, $a_{i_j} \not \in \{a_1,\dots, a_{i_j-1}\}$. 
+Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA. Then an $\cA$-\emph{context} $\ctxt$  is a sequence $(a_1,f_1) \dots  (a_r, f_r)$ such that for each $i \in [r]$, $a_i \in \Sigma$ and $f_i$ is a function from $Q$ to $Q$. 
+For an $\cA$-context $\ctxt$, define the reduction of $\ctxt$, denoted by $\red_\ctxt$, as follows: $\red_\ctxt = (a_{i_1},f_{i_1})  \dots  (a_{i_s}, f_{i_s})$ such that for each $j \in [s]$, $a_{i_j} \not \in \{a_1,\dots, a_{i_j-1}\}$. 
 \end{definition}
 Intuitively, a reduction of $\ctxt$ is obtained by keeping the first occurrence of the letters and removing the other copies.
 
-\begin{definition}[$\ctxt$ and $\cB_{\cA, \ctxt}$]
-Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA and $\ctxt$ is an $\cA$-context with $\red_\ctxt= ((a_1,f_1),\dots ,(a_r, f_r))$. We define a DFA $\cB_{\cA, \ctxt}$ as $(Q, \delta', q_0, F)$, where $\delta'$ comprises 1) all the tuples $(q, a', q') \in \delta$ with $a' \not \in \{a_1,\dots, a_r\}$, and 2) all the tuples $(q, a_i, f_i(q))$ such that $q \in Q$ and $i \in [r]$.
+\begin{definition}[$\cB_{\cA, \ctxt}$]
+Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA and $\ctxt$ is an $\cA$-context with $\red_\ctxt= (a_1,f_1) \dots  (a_r, f_r)$. We define a DFA $\cB_{\cA, \ctxt}$ as $(Q, \delta', q_0, F)$, where $\delta'$ comprises 1) all the tuples $(q, a', q') \in \delta$ with $a' \not \in \{a_1,\dots, a_r\}$, and 2) all the tuples $(q, a_i, f_i(q))$ such that $q \in Q$ and $i \in [r]$.
 \end{definition}
-Intuitively, over an input $w$, the DFA $\cB_{\cA, \ctxt}$ simulates the run of $\cA$ on $w$, with the following adaptation: upon reading an occurrence of $a_i$, let $q$ be the current state, then after reading $a_i$, the state is changed to $f_i(q)$.
+Intuitively, over an input $w$, the DFA $\cB_{\cA, \ctxt}$ simulates the run of $\cA$ on $w$, with the following adaptation: let $\red_\ctxt= (a_1,f_1) \dots (a_r, f_r)$, then upon reading an occurrence of $a_i$, let $q$ be the current state, then after reading $a_i$, the state is changed to $f_i(q)$.
 
 %\begin{definition}[Representatives of variables]
 %For a variable $z \in \vars(\varphi)$,
@@ -315,7 +315,14 @@ For a non-source variable $x_i \in \vars(\varphi)$, we define the representative
 
 We are ready to describe more details of the run of $\cA_C$ on $\triangleright \# v_1 \# \dots \# v_5\triangleleft$.
 
-At first, for each path $\pi$ from a non-source variable $x_i$ to a source variable $y_j$, $\cA_C$ guesses a function $f_{\pi}$ on the state space of $\cA_{x_i}$, satisfying the following constraint: for each non-source variable $x_i$, let $\pi$ be the representative path of $x_i$, then $f_{\pi}(q_{0,x_i}) \in F_{x_i}$, where $q_{0, x_i}$ and $F_{x_i}$ are the initial state and the set of final states of $\cA_{x_i}$ respectively. Since $G_C$ is a tree, for simplicity, given a pair of distinct variables $z,z'$ such that $z'$ is reachable from $z$, we will use $\pi_{z,z'}$ to denote the unique path from $z$ to $z'$.  Let $\gfun$ denote the set of guessed functions.
+At first, for each path $\pi$ from a non-source variable $x_i$ to a source variable $y_j$,
+ %such that the label sequence of $\pi$ belongs to $\rpright^\ast \rpleft^\ast$, 
+ $\cA_C$ guesses a function $f_{\pi}$ on the state space of $\cA_{x_i}$, satisfying the following constraint: for each non-source variable $x_i$, let $\pi$ be the representative path of $x_i$, then $f_{\pi}(q_{0,x_i}) \in F_{x_i}$, where $q_{0, x_i}$ and $F_{x_i}$ are the initial state and the set of final states of $\cA_{x_i}$ respectively. 
+% 
+%Notice that for a given pair of variables $(x_i, y_j)$, let $N$ be the maximum length (number of edges) of the paths from $x_i$ to $y_j$, then there are at most $N+1$ distinct paths from $x_i$ to $y_j$ whose label sequences belong to $\rpright^\ast \rpleft^\ast$. Therefore, \emph{only polynomially many functions are guessed}.
+%
+%
+Since $G_C$ is a tree, for simplicity, given a pair of distinct variables $z,z'$ such that $z'$ is reachable from $z$, we will use $\pi_{z,z'}$ to denote the unique path from $z$ to $z'$.  Let $\gfun$ denote the set of guessed functions.
 
 
 Then $\cA_C$ verifies that the guessed functions satisfy some desired properties, when reading $\triangleright \# v_1 \# \dots \# v_5\triangleleft$.
