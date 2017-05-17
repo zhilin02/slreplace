@@ -496,10 +496,15 @@ Similarly to the single-letter case, we can define the dependency graph $G_C$. I
 
 \section{A decision procedure for $\strline[\replaceall]$}
 
+
+\bibliographystyle{alpha}
+\bibliography{string}
+
+
 %================================================================================================
 \appendix
 
-\section{An example}
+\section{Notes by taolue, not intended to be read carefully :-)}
 
 Consider the constraint $x_{m+1}=\replaceall(x_m,a,x_m)$ where $A_{x_m}$ only accepts the language $\{a^{2n}\mid n\geq 1\}$. (Clearly they all have only four states.)
 
@@ -517,9 +522,18 @@ Indeed, I think the following proposition holds:
 BTW, we discussed the idea of transforming a DAG into a tree (for the dependency graph), but there is a difficulty, i.e., how to verify two nodes with the same variable actually have the same value. This cannot be done with FAs, but can be done with pushdown automata ... Well just a thought, not clear whether this actually benefits. 
 
 OK, what we can do is to make the input to include not only values for $y$'s, but also for $x$'s. Using pushdown automata, one can check whether they are correct valuations. For instance, whether $v_3=\replaceall(v_1, a,v_2)$. We then can parallelise the verification for each constraint, without needs to go forward and backward.  
- 
-\bibliographystyle{alpha}
-\bibliography{string}
+
+We may follow the writing of Zhilin, but introduce the nondeterminism of choosing different functions. For each function, we shall verify three things (take an example of $z=\replaceall(x, a,y)$)
+\begin{itemize}
+	\item whether the corresponding string is accepted by $\cA_y$;
+	\item whether the corresponding string is accepted by $\cA_x$;
+	\item whether the guessed function $f$ is consistent with $\cA_z$ by looking only at the string for $x$. 
+\end{itemize}
+
+The part for these three verification tasks is ``small", and (?) the accepting word should be bounded by the size of the automaton (which is exponential), so we might have an NEXPTIME (rather than EXPSPACE) upper bound?!
+
+Moreover, I am thinking to bring the ``monoid" back. Namely, for a constraint $z=\replaceall(x, a,y)$, we first do some precomputation, which returns a collection of functions $(f_a)_{a\in A}$ each of which is of $Q\rightarrow Q$ where $Q$ is the state space of $\cA_z$. 
+
 \end{document}
 
 
