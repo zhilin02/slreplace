@@ -30,14 +30,14 @@
 \newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
 \newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
 
-\title{Complete Decision Procedures for \\
-String Constraints with ReplaceAll function}
+\title{Decision Procedures for String Constraints \\
+with ReplaceAll function}
 \titlerunning{}
 \author{}
 \institute{}
 
 
-\author{Taolue Chen, Yan Chen, Anthony W. Lin, Zhilin Wu}
+\author{Taolue Chen, Yan Chen, Matthew Hague, Anthony W. Lin, Zhilin Wu}
 \begin{document}
 
 \maketitle
@@ -99,7 +99,7 @@ function render(template, vars) {
 
 For $k \in \Nat$, let $[k] = \{1,\dots, k\}$.
 
-For a vector $\vec{x}=(x_1,\dots, x_n)$, let $|\vec{x}|$ denote $n$ and for each $i \in [n]$, let $\vec{x}(i)$ denote $x_i$.
+For a vector $\vec{x}=(x_1,\dots, x_n)$, let $|\vec{x}|$ denote $n$ and for each $i \in [n]$, let $\vec{x}(i)$ denote $x_i$. For a vector $\vec{x} = (x_1, \dots, x_n)$, let $\red(\vec{x})$ denote $(x_{i_1},\dots, x_{i_m})$ such that for each $j \in [m]$, $x_{i_j}$ is different from all $x_1, \dots, x_{i_j-1}$.
 
 An alphabet $\Sigma$ is fixed.
 
@@ -499,7 +499,74 @@ The NFA $\cA_u$ constructed above is \emph{unambiguous} in the sense that for ea
 An example for $\cA_u$.
 \end{example}
 
-Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.
+%Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.
+
+\subsection{Extension to the case of regular expressions}
+
+Let us consider the case that the second parameter of the $\replaceall$ function may be a regular expression. 
+We will utilise the parsing-automaton $\cB_e$ for regular expressions $e$. 
+
+We will use the leftmost and longest semantics for regular expression matching.
+
+Let $e$ be a regular expression over $\Sigma$ and $\cA_e = (Q_e, \delta_e, q_{0,e}, F_e)$ be the DFA corresponding to $e$. Without loss of generality, we assume that $q_{0, e} \not \in F_e$ and there are no transitions going into $q_{0,e}$.
+Our goal is to construct an NFA $\cB_e=(Q'_e, \delta'_e, q'_{0,e}, F'_e)$ which parses a string $v \in \Sigma^\ast e \Sigma^\ast$ into $v_1 u_1 v_2 u_2 \dots v_l u_l v_{l+1}$ such that 
+\begin{itemize}
+\item for each $j \in [l]$, $u_j$ is the leftmost and longest matching of $e$ in $(v_1 u_1 \dots v_{j-1} u_{j-1})^{-1} v$,
+%
+%\item $v_j u_j[1] \dots u_j[|u_j|-1] \not \in \Sigma^\ast e \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$,
+\item $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$.
+\end{itemize}
+%
+Intuitively, in order to search for the leftmost and longest matching of $e$, 
+\begin{itemize}
+\item $\cB_e$ starts a new thread which runs $\cA_e$ in each position and keeps a vector of states of these threads, 
+%
+\item when a thread enters a final state, a matching of $e$ is found, $\cB_e$ nondeterministically guesses whether this matching is the longest matching, 
+%
+\item if $\cB_e$ makes the ``longest'' guessing, then $\cB_e$ forgets all the other threads, and continues running this thread to make sure that final states are not reached and the guessing is correct,
+%
+\item moreover, in order to keep the length of the vectors of states of threads \emph{bounded}, the following trick is applied: for two threads starting at the position $i$ and $j$ respectively such that $i < j$, if the current states of the two threads are the same, then the thread $j$ is removed.
+\end{itemize}
+%
+Formally, 
+\begin{itemize}
+\item the state set $Q'_e$ of $\cB_e$ comprises 
+\begin{itemize}
+\item the tuples $((q_{0,e}), \leftmost, S)$ such that $S \subseteq Q_e$,
+%
+\item $(\rho, \leftmost, S)$ such that  $\rho$ is a vector of \emph{pairwise distinct} states of $\cA_e$, $\rho \neq (q_{i,e})$, and $S \subseteq Q_e \setminus F_e$, 
+%
+% \item the tuples $(q_{0,e}, \longest, S)$ such that  $S \subseteq Q_e$,
+%
+\item the tuples $(q, \longest, S)$ such that $q \in Q_e$ and $S \subseteq Q_e \setminus F_e$;
+\end{itemize}
+%
+\item $q'_{0,e}= ((q_{0,e}), \leftmost, \emptyset)$,
+%
+\item $F'_{e}$ comprises the states of the form $(\rho, \leftmost, S) \in Q'_e$,
+%
+\item $\delta'_e$ comprises the following tuples: 
+\begin{itemize}
+%\item $((q_{0,e}, \leftmost, S), a, ((\delta_e(q_{0,e},a), q_{0,e}), \leftmost, \delta_e(S,a)))$, where $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$,
+%
+\item suppose $\rho = q_1 \dots q_m$,  $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$ contains \emph{no} states from $F_e$, $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+$$((\rho, \leftmost, S), a, (\red(\delta_e(\rho,a) q_{0,e}), \leftmost, \delta_e(S,a))) \in \delta'_e,$$ 
+%
+\item suppose $\rho = q_1 \dots q_m$, $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$ contains at least one state from $F_e$, $i \in [m]$ is the smallest index such that $\delta_e(q_i, a) \in F_e$,   and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+$$((\rho, \leftmost, S), a, (\delta_e(q_i, a), \longest, \delta_e(S,a))) \in  \delta'_e,$$ 
+%
+\item suppose $\rho = q_1 \dots q_m$, $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$, $\delta_e(\rho,a)$ contains at least one state from $F_e$, $i \in [m]$ is the smallest index such that $\delta_e(q_i, a) \in F_e$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+$$((\rho, \leftmost, S), a, ((q_{0,e}), \leftmost, \delta_e(S,a) \cup \{\delta_e(q_i, a)\})) \in  \delta'_e,$$ 
+%
+\item suppose $\delta_e(S,a) \cap F_e = \emptyset$, then 
+$$((q, \longest, S), a, (\delta_e(q,a), \longest, \delta_e(S,a)) \in \delta'_e,$$
+%
+\item suppose $\delta_e(q,a) \in F_e$ and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+$$((q, \longest, S), a, ((q_{0,e}), \leftmost, \delta_e(S,a) \cup \{\delta_e(q,a)\}) \in \delta'_e.$$
+\end{itemize}
+\end{itemize}
+
+
 
 \section{A decision procedure for $\strline[\replaceall]$}
 
