@@ -1,0 +1,147 @@
+\section{Preliminaries}
+
+For $k \in \Nat$, let $[k] = \{1,\dots, k\}$.
+
+For a vector $\vec{x}=(x_1,\dots, x_n)$, let $|\vec{x}|$ denote $n$ and for each $i \in [n]$, let $\vec{x}(i)$ denote $x_i$. For a vector $\vec{x} = (x_1, \dots, x_n)$, let $\red(\vec{x})$ denote $(x_{i_1},\dots, x_{i_m})$ such that for each $j \in [m]$, $x_{i_j}$ is different from all $x_1, \dots, x_{i_j-1}$.
+
+An alphabet $\Sigma$ is fixed.
+
+We consider the following data types: String data type $\str$, Integer data type $\intnum$, and Array of strings $\str [\ ]$.
+
+
+We assume a countably set of variables, of data types form $\dtypes$. We will use $x, y, z, \dots$ to denote the variables of data type $\str$, and $n, n', \dots$ to denote the variables of type $\intnum$. In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
+We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
+
+
+For a string $u \in \Sigma^+$, let $|u|$ denote the length of $u$, in addition, for $i \in [|u|]$, let $u[i]$ the $i$-th letter of $u$.
+
+\begin{definition}[Regular expressions $\regexp$]
+	\[e \eqdef a \mid e + e \mid e \concat e \mid e^\ast, \mbox{ where } a \in \Sigma. \]
+	We also use the abbreviations $\Sigma \equiv \cup_{a \in \Sigma}\ a$ and $\Sigma^\ast \equiv (\cup_{a \in \Sigma}\ a)^\ast$.
+\end{definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+	A regular expression $e$ is said to be \emph{bounded} if $e$ is defined by the rules, $e \eqdef a \mid u^\ast \mid e \concat e$, where $u$ is a constant string. For instance, $a (bc)^\ast$ is bounded, while $(ab^\ast)^\ast$ is not. A regular expression $e$ is a union of bounded regular expressions if $e = e_1 + \dots + e_k$ such that each $e_i$ is a bounded regular expression. We use UBR to abbreviate the set of regular expressions which are a union of bounded regular expressions.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+A nondeterministic finite automata (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of states, $q_0 \in Q$ is the initial state, $F \subseteq Q$ is the set of final states, and $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation. An NFA $\cA$ is deterministic if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is complete if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete. For a string $w = \sigma_1 \dots \sigma_n$, a run of $\cA$ on $w$ is a sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, \sigma_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is accepting if $q_n \in F$. A string $w$ is accepted by $\cA$ if there is an accepting run of $\cA$ on $w$. An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
+We also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, \sigma_i, q_{i+1}) \in \delta$.  
+
+
+\section{Semantics of the function $\replaceall$}
+
+The semantics of $\replaceall(x, u, y)$ is defined inductively as follows: let $u = u_1 \dots u_k$ (where $k \ge 1$),
+\begin{itemize}
+	\item if $x \not \in \Sigma^\ast u \Sigma^\ast$, then $\replaceall(x, u, y) = x$, 
+	%
+	\item otherwise, let $x = x' u z$ such that $x' u_1 \dots u_{k-1} \not \in \Sigma^\ast u \Sigma^\ast$, then $\replaceall(x, u, y) = x' v \cdot \replaceall(z, u, y)$.
+\end{itemize}
+For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a) = Java$.
+
+\tl{Anthony mentioned that there might be alternatives, for instance,  $\replaceall$ can be made nondeterministic ($\replaceall(aaaaa, aaa, y) = \{yaa, aya, aay\}$). This MIGHT be considered as well.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+	\smallskip
+	
+	\noindent The semantics of $split(x, u)$ is defined inductively as follows:
+	\begin{itemize}
+		\item if $x \not \in \Sigma^\ast u \Sigma^\ast$, then $split(x,u) = x$, 
+		%
+		\item otherwise, let $x = y u z$ such that $y \not \in \Sigma^\ast u \Sigma^\ast$, then $split(x, u) = concat([y], split(z, u))$, where $[y]$ is the array comprising one element $y$ and $concat$ operation concatenates two arrays into one.  
+	\end{itemize} 
+	
+	For instance, $split("Java", a) = [``J", ``v", ``"]$.
+	
+	\smallskip
+	
+	\noindent The semantics of $join(X)$ is defined inductively as follows: 
+	\begin{itemize}
+		\item if $X$ is the empty array, then $join(X) = ``''$,  
+		\item otherwise, let $X= concat([x], Y)$, then $join(X) = x\ \cdot\ ``," \ \cdot\ join(Y)$.
+	\end{itemize}
+	For instance, $join([``Tom", ``John", ``Henry"]) =``Tom,John,Henry"$.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Straight-line string constraint with $\replaceall$  function}
+
+
+\begin{definition}[Relational and regular constraints with $\replaceall$ function]
+	Relational constraints and regular constraints are defined by the following rules,
+	\[
+	\begin{array}{r c l cr}
+	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
+	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
+	\varphi &\eqdef & y = s_1 \concat \dots \concat s_n (n \in \Nat) \mid  x = \replaceall(y, u, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+	\psi & \eqdef & x \in e \mid \psi \wedge \psi \mid \psi \vee \psi \mid \neg \psi   & \ \ & \mbox{(regular constraints)} \\
+	\end{array}
+	\]
+	where $u \in \Sigma^\ast$ and $e$ is a regular expression. 
+	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
+\end{definition}
+For a formula $\varphi$, let $\vars(\varphi)$ denote the set of variables occurring in $\varphi$. Similarly for $\vars(\psi)$.
+
+\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}
+
+Given a relational constraint $\varphi$, a variable $x$ (of type $\str$) is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat \dots \concat s_n$ or $x = \replaceall(\dots)$.
+
+\tl{note that here the pattern $u$ is a constant, but we may also introduce a variable here, though its decidability is not clear.} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+	\begin{definition}[Dependency graph]
+		Let $\varphi$ be a relational constraint with $\replaceall$ function. Then the dependency graph of $\varphi$, denoted by $\cG_\varphi = (\vars(\varphi), E_\varphi)$, where $E_\varphi$ comprises the following edges,
+		\begin{itemize}
+			\item for each atomic formula $y= s_1 \concat \dots \concat s_n$ and each $i \in [n]$ such that $s_i$ is a variable, $(s_i, y) \in E_\varphi$,
+			\item for each atomic formula $x = \replaceall(y, u, s)$, $(y, x) \in E_\varphi$, in addition, if $s$ is a variable, then $(s, x) \in E_\varphi$, $(s, y) \in E_\varphi$, 
+		\end{itemize}
+	\end{definition}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}[Straight-line relational constraints with $\replaceall$ function]
+	A relational constraint $ \varphi$ with $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
+	\begin{itemize}
+		\item $x_1,\dots, x_m$ are mutually distinct,
+		\item for each $i \in [m]$, all the variables in $P_i$ are either source variables, or variables from $\{x_1,\dots, x_{i-1}\}$,
+	\end{itemize}
+\end{definition}
+Intuitively, in a straight-line relational constraint, the dependency graph of the string variables is acyclic.
+
+
+\begin{definition}[Straight-line string constraints with $\replaceall$ function]
+	A straight-line string constraint $C$ with $\replaceall$ function (denoted by $\strline[\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
+	\begin{itemize}
+		\item $\varphi$ is a straight-line relational constraint,  and
+		%
+		\item $\psi$ is a regular constraint.
+		%
+	\end{itemize}
+	%Let us use $\Cc$ to denote the set of straight-line string constraints with $\replaceall$ function.
+	An $\strline[\replaceall]$ constraint $\varphi \wedge \psi$ is called \emph{pure} if the concatenation symbol $\concat$ does not occur in $\varphi$. Let us use $\pstrline[\replaceall]$ to denote the set of pure $\strline[\replaceall]$ constraints.
+\end{definition}
+%An SL[$replace$] constraint $\Cc=\varphi \wedge \psi$ is \emph{recursion-free} if $\varphi$ is.
+
+
+\noindent {\bf Satisfiability problem}: Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.
+
+The questions we plan to consider is summarized in the following table. Note that for $x=\replaceall (y,u,z)$, $y$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
+
+\[
+\begin{tabular}{c|c|c|c}
+pattern (y)  &   replacement (z)        &   pure (without concatenation) &  full (with concatenation) \\
+\hline
+constant  &   constant                       & \cite{LB16}    &  \cite{LB16}   \\
+\hline
+constant  &   variable                       &  Section \ref{sec:replaceallpure}       &    \\
+\hline
+variable  &   constant                       &         &    \\
+\hline
+variable  &   variable                       &        &    \\
+\end{tabular}
+\]
