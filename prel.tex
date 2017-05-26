@@ -1,19 +1,12 @@
 \section{Preliminaries}
 
-For $k \in \Nat$, let $[k] = \{1,\dots, k\}$.
+\subsection*{General notations} 
+$\Nat$ stands for the set of natural numbers. For $k \in \Nat$, let $[k] = \{1,\dots, k\}$. For a vector $\vec{x}=(x_1,\dots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$ (i.e., $n$), and for each $i \in [n]$, let $\vec{x}(i)$ denote $x_i$. For a vector $\vec{x} = (x_1, \dots, x_n)$, let $\red(\vec{x})$ denote $(x_{i_1},\dots, x_{i_m})$ such that for each $j \in [m]$, $x_{i_j}$ is different from all $x_1, \dots, x_{i_j-1}$.
+\tl{red is for reduced?}
+The term DAG stands for \emph{directed acylic graphs}.
 
-For a vector $\vec{x}=(x_1,\dots, x_n)$, let $|\vec{x}|$ denote $n$ and for each $i \in [n]$, let $\vec{x}(i)$ denote $x_i$. For a vector $\vec{x} = (x_1, \dots, x_n)$, let $\red(\vec{x})$ denote $(x_{i_1},\dots, x_{i_m})$ such that for each $j \in [m]$, $x_{i_j}$ is different from all $x_1, \dots, x_{i_j-1}$.
-
-An alphabet $\Sigma$ is fixed.
-
-We consider the following data types: String data type $\str$, Integer data type $\intnum$, and Array of strings $\str [\ ]$.
-
-
-We assume a countably set of variables, of data types form $\dtypes$. We will use $x, y, z, \dots$ to denote the variables of data type $\str$, and $n, n', \dots$ to denote the variables of type $\intnum$. In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
-We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
-
-
-For a string $u \in \Sigma^+$, let $|u|$ denote the length of $u$, in addition, for $i \in [|u|]$, let $u[i]$ the $i$-th letter of $u$.
+\subsection*{Regular language}
+Fix a finite alphabet $\Sigma$. Elements in $\Sigma^*$ are called words or strings interchangeably. $\Sigma^+$ comprises words that are not empty. For a finite word $u \in \Sigma^+$, let $|u|$ denote the length of $u$, in addition, for $i \in [|u|]$, let $u[i]$ the $i$-th letter of $u$.
 
 \begin{definition}[Regular expressions $\regexp$]
 	\[e \eqdef a \mid e + e \mid e \concat e \mid e^\ast, \mbox{ where } a \in \Sigma. \]
@@ -29,8 +22,25 @@ For a string $u \in \Sigma^+$, let $|u|$ denote the length of $u$, in addition, 
 A nondeterministic finite automata (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of states, $q_0 \in Q$ is the initial state, $F \subseteq Q$ is the set of final states, and $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation. An NFA $\cA$ is deterministic if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is complete if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete. For a string $w = \sigma_1 \dots \sigma_n$, a run of $\cA$ on $w$ is a sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, \sigma_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is accepting if $q_n \in F$. A string $w$ is accepted by $\cA$ if there is an accepting run of $\cA$ on $w$. An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
 We also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, \sigma_i, q_{i+1}) \in \delta$.  
 
+\subsection*{Computational complexity}
+In this paper, we study not only decidability but also the complexity of string logics. 
 
-\section{Semantics of the function $\replaceall$}
+%=====================================================================================================
+
+\section{The core constraint language}
+
+In this section, we define a general string constraint language that supports concatenations and the replaceall function.  
+
+An alphabet $\Sigma$ is fixed.
+
+We consider the following data types: String data type $\str$, Integer data type $\intnum$, and Array of strings $\str [\ ]$.
+
+
+We assume a countably set of variables, of data types form $\dtypes$. We will use $x, y, z, \dots$ to denote the variables of data type $\str$, and $n, n', \dots$ to denote the variables of type $\intnum$. In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
+We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
+
+
+\subsection{Semantics of the function $\replaceall$}
 
 The semantics of $\replaceall(x, u, y)$ is defined inductively as follows: let $u = u_1 \dots u_k$ (where $k \ge 1$),
 \begin{itemize}
@@ -68,7 +78,7 @@ For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Straight-line string constraint with $\replaceall$  function}
+\subsection{The straight-line string fragment}
 
 
 \begin{definition}[Relational and regular constraints with $\replaceall$ function]
