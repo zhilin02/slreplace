@@ -110,7 +110,7 @@ For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a)
 	\begin{array}{r c l cr}
 	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
 	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
-	\varphi &\eqdef & x = s \concat \dots \concat s  \mid  x = \replaceall(s, e, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, e, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
 	\psi & \eqdef & x \in e \mid \psi \wedge \psi \mid \psi \vee \psi \mid \neg \psi   & \ \ & \mbox{(regular constraints)} \\
 	\end{array}
 	\]
@@ -119,7 +119,7 @@ For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a)
 \end{definition}
 
 \begin{remark}\label{rem-concat}
-The concatenation modality $x = s \concat \dots \concat s$ is redundant in the sense that $z = x \concat y$ can be rewritten as $z' = \replaceall(ab, a, x), z = \replaceall(z', b, y)$, where $a,b$ are two fresh letters.
+The concatenation modality $x = s \concat s$ is redundant in the sense that $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1), x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
 \end{remark}
 
 
@@ -182,11 +182,11 @@ The questions we plan to consider is summarized in the following table. Note tha
 \begin{tabular}{c|c|c|c}
 pattern (e)  &   replacement (z)        & complexity \\
 \hline
-constant string  &   constant                       & PSPACE-c (\cite{LB16})     \\
+constant string  &   constant   string                    & PSPACE-c (\cite{LB16})     \\
 \hline
 constant string  &   variable                       & PSPACE-c (Section \ref{sec:replaceallsl})       \\
 \hline
-regular expression  &   constant                       &    PSPACE-c (\cite{LB16}) ?      \\
+regular expression  &   constant string                      &    PSPACE-c (\cite{LB16}) ?     \\
 \hline
 regular expression  &   variable                       &           \\
 \end{tabular}
