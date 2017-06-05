@@ -1,7 +1,7 @@
+%!TEX root = popl2018.tex
 
 
-
-\section{A decision procedure for $\pstrline[\replaceall]$} \label{sec:replaceallpure}
+\section{Decision procedure for $\strline[\replaceall]$: The single-letter case} \label{sec:replaceallsl}
 
 \subsection{Encode concatenation by replaceall}
 
@@ -192,7 +192,7 @@ Since at most exponentially many functions should be guessed, and each guessed f
 %The satisfiability of $\pstrline[\replaceall]$ is in EXPSPACE and PSPACE-complete for formulae whose dependency graphs trees.
 %\end{theorem}
 
-\subsection{The general case}
+\section{Decision procedure for $\strline[\replaceall]$: The constant string case}
 
 For the general case, we utilise the parsing-automata $\cA_u$ defined below.
 
@@ -267,7 +267,7 @@ The NFA $\cA_u$ constructed above is \emph{unambiguous} in the sense that for ea
 
 %Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.
 
-\subsection{Extension to the case of regular expressions}
+\section{Decision procedure for $\strline[\replaceall]$: The regular expression case}
 
 Let us consider the case that the second parameter of the $\replaceall$ function may be a regular expression. 
 We will utilise the parsing-automaton $\cB_e$ for regular expressions $e$. 

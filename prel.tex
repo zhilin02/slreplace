@@ -1,3 +1,5 @@
+%!TEX root = popl2018.tex
+
 \section{Preliminaries}
 
 \subsection*{General notations} 
@@ -12,6 +14,8 @@ Fix a finite alphabet $\Sigma$. Elements in $\Sigma^*$ are called words or strin
 	\[e \eqdef a \mid e + e \mid e \concat e \mid e^\ast, \mbox{ where } a \in \Sigma. \]
 	We also use the abbreviations $\Sigma \equiv \cup_{a \in \Sigma}\ a$ and $\Sigma^\ast \equiv (\cup_{a \in \Sigma}\ a)^\ast$.
 \end{definition}
+
+We use $\Ll(e)$ to denote the set of strings that match $e$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
@@ -42,6 +46,25 @@ We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to den
 
 \subsection{Semantics of the function $\replaceall$}
 
+
+The semantics of $\replaceall(x, e, y)$, where $\Ll(e) \subseteq \Sigma^+$, is defined inductively as follows:
+\begin{itemize}
+	\item if $x \not \in \Ll(\Sigma^\ast e \Sigma^\ast)$, then $\replaceall(x, e, y) = x$, 
+	%
+	\item otherwise, let $x = x' u z$ such that $u$ is the \emph{first and longest} match of $e$ in $x$, more specifically, 1) $u \in \Ll(e)$, and $x' u' \not \in  \Ll(\Sigma^\ast e \Sigma^\ast)$ for every strict prefix $u'$ of $u$, 2) for every nonempty prefix $z'$ of $z$, $u z' \not \in \Ll(e)$, then $\replaceall(x, e, y) = x' y \cdot \replaceall(z, e, y)$.
+\end{itemize}
+For instance, let $e = a^+$, then $\replaceall(aaabaac, a^+, y)=ybyc$.
+
+\begin{remark}
+Follows the POSIX standard. Different from Javascript.
+\end{remark}
+
+\tl{Anthony mentioned that there might be alternatives, for instance,  $\replaceall$ can be made nondeterministic ($\replaceall(aaaaa, aaa, y) = \{yaa, aya, aay\}$). This MIGHT be considered as well.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 The semantics of $\replaceall(x, u, y)$ is defined inductively as follows: let $u = u_1 \dots u_k$ (where $k \ge 1$),
 \begin{itemize}
 	\item if $x \not \in \Sigma^\ast u \Sigma^\ast$, then $\replaceall(x, u, y) = x$, 
@@ -51,7 +74,7 @@ The semantics of $\replaceall(x, u, y)$ is defined inductively as follows: let $
 For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a) = Java$.
 
 \tl{Anthony mentioned that there might be alternatives, for instance,  $\replaceall$ can be made nondeterministic ($\replaceall(aaaaa, aaa, y) = \{yaa, aya, aay\}$). This MIGHT be considered as well.}
-
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
@@ -87,14 +110,21 @@ For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a)
 	\begin{array}{r c l cr}
 	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
 	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
-	\varphi &\eqdef & y = s_1 \concat \dots \concat s_n (n \in \Nat) \mid  x = \replaceall(y, u, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+	\varphi &\eqdef & x = s \concat \dots \concat s  \mid  x = \replaceall(s, e, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
 	\psi & \eqdef & x \in e \mid \psi \wedge \psi \mid \psi \vee \psi \mid \neg \psi   & \ \ & \mbox{(regular constraints)} \\
 	\end{array}
 	\]
 	where $u \in \Sigma^\ast$ and $e$ is a regular expression. 
 	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
 \end{definition}
+
+\begin{remark}\label{rem-concat}
+The concatenation modality $x = s \concat \dots \concat s$ is redundant in the sense that $z = x \concat y$ can be rewritten as $z' = \replaceall(ab, a, x), z = \replaceall(z', b, y)$, where $a,b$ are two fresh letters.
+\end{remark}
+
+
 For a formula $\varphi$, let $\vars(\varphi)$ denote the set of variables occurring in $\varphi$. Similarly for $\vars(\psi)$.
+
 
 \tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}
 
@@ -133,25 +163,31 @@ Intuitively, in a straight-line relational constraint, the dependency graph of t
 		%
 	\end{itemize}
 	%Let us use $\Cc$ to denote the set of straight-line string constraints with $\replaceall$ function.
-	An $\strline[\replaceall]$ constraint $\varphi \wedge \psi$ is called \emph{pure} if the concatenation symbol $\concat$ does not occur in $\varphi$. Let us use $\pstrline[\replaceall]$ to denote the set of pure $\strline[\replaceall]$ constraints.
 \end{definition}
-%An SL[$replace$] constraint $\Cc=\varphi \wedge \psi$ is \emph{recursion-free} if $\varphi$ is.
 
+By Remark~\ref{rem-concat}, without loss of generality, we assume that 
+in each $\strline[\replaceall]$ constraint $\varphi \wedge \psi$, the concatenation symbol $\concat$ does not occur in $\varphi$. 
 
-\noindent {\bf Satisfiability problem}: Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.
+%Let us use $\pstrline[\replaceall]$ to denote the set of pure $\strline[\replaceall]$ constraints.
+
+%\medskip
+
+\paragraph*{Satisfiability problem.} Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.
+
+\smallskip
 
 The questions we plan to consider is summarized in the following table. Note that for $x=\replaceall (y,u,z)$, $y$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
 
 \[
 \begin{tabular}{c|c|c|c}
-pattern (y)  &   replacement (z)        &   pure (without concatenation) &  full (with concatenation) \\
+pattern (e)  &   replacement (z)        & complexity \\
 \hline
-constant  &   constant                       & \cite{LB16}    &  \cite{LB16}   \\
+constant string  &   constant                       & PSPACE-c (\cite{LB16})     \\
 \hline
-constant  &   variable                       &  Section \ref{sec:replaceallpure}       &    \\
+constant string  &   variable                       & PSPACE-c (Section \ref{sec:replaceallsl})       \\
 \hline
-variable  &   constant                       &         &    \\
+regular expression  &   constant                       &    PSPACE-c (\cite{LB16}) ?      \\
 \hline
-variable  &   variable                       &        &    \\
+regular expression  &   variable                       &           \\
 \end{tabular}
 \]
