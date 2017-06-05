@@ -20,179 +20,52 @@ $x'=\replaceall(ab, a, x)$ and $x=\replaceall(x', b, z)$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{The single-letter case}
 
-We start with the single-letter special case, that is, given an $\pstrline[\replaceall]$ formula $C$, it holds that every term of the form $\replaceall(z, u, z')$ in $C$ satisfies that $u$ is a single letter.
+%\subsection{The single-letter case}
 
-We first introduce a concept of dependency graphs.
+In this section, we consider the single-letter special case, that is, given an $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, it holds that every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=a$ for $a \in \Sigma$.
 
-\begin{definition}[Dependency graph]
-	Let $C= \varphi \wedge \psi$ be an $\pstrline[\replaceall]$ formula such that $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are the source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, a_i, z')$, then $(x_i, (\rpleft, a_i), z) \in E_C$ and $(x_i, (\rpright, a_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft,a_i)$ and $(\rpright, a_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. 
-	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
-	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
-\end{definition}
-Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero. 
+%We first assume that the regular constraint $\psi = \bigwedge \limits_{x \in \vars(\varphi)} x \in e_x$, that is, there is exactly one atomic regular constraint for each variable.
 
+In the following, we will explain the basic idea of the decision procedure.
+  
+Let us start with the simple case that $C \equiv x = \replaceall(y, a, z) \wedge \bigwedge \limits_{i \in [k]} x \in e_{i}$.  In addition, for $i \in [k]$, suppose $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$ 
+%\cA_y = (Q_y, \delta_y, q_{0, y}, F_y), \cA_z = (Q_z, \delta_z, q_{0, z}, F_z)$ 
+is the NFA corresponding to $e_i$. 
+\begin{enumerate}
+\item For each $i \in [k]$, we will guess a set $T_{i, z} \subseteq Q_i \times Q_i$, which intuitively means that in $\cA_i$, for each state pair $(q, q') \in T_z$, starting from $q$, after reading $z$, the state $q' $ can be reached. The functions $(T_{i, z})_{i \in [k]}$ induce regular constraints $\Ll(\cA_i(q,q'))$ on $z$, where $i \in [k]$ and $(q,q') \in T_{i, z}$.
 
-For each tuple of strings $\vec{v}=(v_1,\dots, v_n)$, if for each $j \in [n]$, $y_j$ is assigned with the string $v_j$, then for each vertex $z$ in $G_C$, the value of $z$, denoted by $\val_{\vec{v}}(z)$, is determined by the values of those source variables $y_j$ that are reachable from $z$, and can be computed in a bottom-up way. 
-
-\smallskip
-
-
-We will use the following running example to illustrate the decision procedure.
-%\begin{example}
-Consider the $\pstrline[\replaceall]$ formula $C=\varphi \wedge \psi$, whose dependency graph of $\varphi$ is illustrated in Fig.~\ref{fig-one-letter} and the regular constraint $\psi = \bigwedge \limits_{i \in [4]} x_i \in e_i \wedge \bigwedge \limits_{j \in [5]} y_j \in e'_j$. For $i \in [4]$ and $j \in [5]$, let us use $\cA_{x_i}$ and $\cA_{y_j}$ to denote the DFA corresponding to $e_i$ and $e'_j$ respectively.
-\begin{figure}[htbp]
-	\begin{center}
-		\includegraphics[scale=0.9]{single-letter-example.pdf}
-	\end{center}
-	\caption{The running example for the single-letter case}\label{fig-one-letter}
-\end{figure}
-%\end{example}
+\item For each $i \in [k]$, we construct an NFA $\cB_{\cA_i, a,  T_{i, z}}$, which specifies some additional regular constraint on $y$. Intuitively, a string $v$ is accepted by $\cB_{\cA_i, a,  T_{i, z}}$ iff there is an accepting run of $\cA_i$ on $v$, with the following adaptation: upon reading an occurrence of the letter $a$, let $q$ be the current state, then some state $q' \in T_{i, z}(q)$, instead of some $q'' \in \delta_i(q,a)$, is reached, after reading $a$. The NFA $\cB_{\cA_i, a,  T_{i, z}}$ is constructed from $\cA_i$ with the following two-step procedure: 
+\begin{enumerate}
+\item Remove all the transitions $(q, a, q')$ in $\cA_i$.
 %
+\item For each $(q, q') \in T_{i, z}$, add a transition $(q, a, q')$.
+\end{enumerate}
+\end{enumerate}
 
+\begin{proposition}\label{prop-sat-sl-case}
+Let $C \equiv x = \replaceall(y, a, z) \wedge \bigwedge \limits_{i \in [k]} x \in e_{i}$. Then $C$ is satisfiable iff there are sets $T_{i, z} \subseteq Q_i \times Q_i$ such that $\bigcap \limits_{i \in [k]} \bigcap \limits_{(q,q') \in T_{i, z}} \Ll(\cA_{i}(q, q'))$ and $\bigcap \limits_{i \in [k]} \Ll(\cB_{\cA_i, a,  T_{i, z}})$ are nonempty.
+\end{proposition}
 
-
-We will construct an NFA $\cA_C$ and reduce the satisfiability of $C=\varphi \wedge \psi$ to the nonemptiness of $\cA_C$. The inputs of $\cA_C$ are of the form $\triangleright \# v_1 \# \dots \# v_5\triangleleft$, where $v_1,\dots, v_5$ represent an assignment of the variables $y_1,\dots, y_5$. Intuitively, 
-\begin{itemize}
-	\item 
-	$\cA_C$ checks whether for each $j \in [5]$, $v_j$ is accepted by $\cA_{y_j}$, 
-	\item 
-	in addition, let $\vec{v} = (v_1,\dots, v_5)$, then $\cA_C$ reads $\triangleright \# v_1 \# \dots \# v_5\triangleleft$, from left to right, and checks whether $\val_{\vec{v}}(x_i)$ is accepted by $\cA_{x_i}$, for each $i \in [4]$.
-\end{itemize}
-
-In the following, we will use the running example to give a more specific description of $\cA_C$. Let us introduce some additional notations.
-
-\begin{definition}[$\cA$-context $\ctxt$ and $\red_\ctxt$]
-	Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA. Then an $\cA$-\emph{context} $\ctxt$  is a sequence $(a_1,f_1) \dots  (a_r, f_r)$ such that for each $i \in [r]$, $a_i \in \Sigma$ and $f_i$ is a function from $Q$ to $Q$. 
-	For an $\cA$-context $\ctxt$, define the reduction of $\ctxt$, denoted by $\red_\ctxt$, as follows: $\red_\ctxt = (a_{i_1},f_{i_1})  \dots  (a_{i_s}, f_{i_s})$ such that for each $j \in [s]$, $a_{i_j} \not \in \{a_1,\dots, a_{i_j-1}\}$. 
-\end{definition}
-Intuitively, a reduction of $\ctxt$ is obtained by keeping the first occurrence of the letters and removing the other copies.
-
-\begin{definition}[$\cB_{\cA, \ctxt}$]
-	Suppose $\cA=(Q, \delta, q_0, F)$ is a DFA and $\ctxt$ is an $\cA$-context with $\red_\ctxt= (a_1,f_1) \dots  (a_r, f_r)$. We define a DFA $\cB_{\cA, \ctxt}$ as $(Q, \delta', q_0, F)$, where $\delta'$ comprises 1) all the tuples $(q, a', q') \in \delta$ with $a' \not \in \{a_1,\dots, a_r\}$, and 2) all the tuples $(q, a_i, f_i(q))$ such that $q \in Q$ and $i \in [r]$.
-\end{definition}
-Intuitively, over an input $w$, the DFA $\cB_{\cA, \ctxt}$ simulates the run of $\cA$ on $w$, with the following adaptation: let $\red_\ctxt= (a_1,f_1) \dots (a_r, f_r)$, then upon reading an occurrence of $a_i$, let $q$ be the current state, then after reading $a_i$, the state is changed to $f_i(q)$.
-
-%\begin{definition}[Representatives of variables]
-%For a variable $z \in \vars(\varphi)$,
-%we define the representative of $z$, denoted by $\repr(z)$, as follows: If $z = y_j$ for some $j$, then $\repr(z) = y_j$, otherwise, let $\repr(z)$ be the unique source variable $y_j$ such that  there is a path from $x_i$ to $y_j$ where all edges are $\rpleft$-edges (The uniqueness of $y_j$ follows from the straight-line constraint). 
-%\end{definition}
-
-\begin{definition}[representative path]
-	For a non-source variable $x_i \in \vars(\varphi)$, we define the representative path of $x_i$ as the unique path from $x_i$ to some source variable $y_j$ where all the edges are $\rpleft$-edges.  For a source variable $y_j$, define the representative path of $y_j$ be the empty path.
-	%Note that for each non-source variable $x_i$, there is a unique source variable $y_j$ representing $x_i$. Let $\repr(x_i)$ denote this unique source variable $y_j$.
-\end{definition}
-
-
-We are ready to describe more details of the run of $\cA_C$ on $\triangleright \# v_1 \# \dots \# v_5\triangleleft$.
-
-At first, for each path $\pi$ from a non-source variable $x_i$ to a source variable $y_j$,
-%such that the label sequence of $\pi$ belongs to $\rpright^\ast \rpleft^\ast$, 
-$\cA_C$ guesses a function $f_{\pi}$ on the state space of $\cA_{x_i}$, satisfying the following constraint: for each non-source variable $x_i$, let $\pi$ be the representative path of $x_i$, then $f_{\pi}(q_{0,x_i}) \in F_{x_i}$, where $q_{0, x_i}$ and $F_{x_i}$ are the initial state and the set of final states of $\cA_{x_i}$ respectively. 
-% 
-%Notice that for a given pair of variables $(x_i, y_j)$, let $N$ be the maximum length (number of edges) of the paths from $x_i$ to $y_j$, then there are at most $N+1$ distinct paths from $x_i$ to $y_j$ whose label sequences belong to $\rpright^\ast \rpleft^\ast$. Therefore, \emph{only polynomially many functions are guessed}.
-%
-%
-Since $G_C$ is a tree, for simplicity, given a pair of distinct variables $z,z'$ such that $z'$ is reachable from $z$, we will use $\pi_{z,z'}$ to denote the unique path from $z$ to $z'$.  Let $\gfun$ denote the set of guessed functions.
-
-
-Then $\cA_C$ verifies that the guessed functions satisfy some desired properties, when reading $\triangleright \# v_1 \# \dots \# v_5\triangleleft$.
-
-
-For a path $\pi$, we define the context of $\pi$, denoted by $\ctxt_\pi$, inductively as follows: 
-\begin{itemize}
-	\item if $\pi$ is an empty path, then $\ctxt_\pi$ is the empty vector,
-	% 
-	\item otherwise, let the last edge of $\pi$ be from $z$ to $z'$ and $\pi'$ be the path obtained from $\pi$ by removing the last edge, then 
-	\begin{itemize}
-		\item if the last edge of $\pi$ is labeled by $(\rpright, a)$, then $\ctxt_\pi = \ctxt_{\pi'}$, 
-		%
-		\item if the last edge of $\pi$ is labeled by $(\rpleft, a)$,  let $z''$ be the destination vertex of the $\rpright$-edge out of $z$ and $\pi''$ denote the path obtained by concatenating $\pi'$, the $\rpright$-edge from $z$ to $z''$, and the representative path pf $z''$, then $\ctxt_\pi = (a, f_{\pi''}) \ctxt_{\pi'}$. 
-		%
-	\end{itemize}
-\end{itemize}
-
-For instance,  
-$$
-\begin{array}{l c l}
-\ctxt_{\pi_{x_1, y_1}} &= & (a_3, f_{\pi_{x_1, y_2}}) \ctxt_{\pi_{x_1,x_3}} = (a_3, f_{\pi_{x_1, y_2}}) (a_2, f_{\pi_{x_1, y_3}}) \ctxt_{\pi_{x_1, x_2}}  \\
-& = & (a_3, f_{\pi_{x_1, y_2}}) (a_2, f_{\pi_{x_1, y_3}}) (a_1, f_{\pi_{x_1, y_4}}).
-\end{array}
-$$
-
-When reading $v_1$, $\cA_C$ does the following,
-\begin{itemize}
-	\item $\cA_C$ runs $\cA_{y_1}$ on $v_1$ to check that $v_1$ is accepted by $\cA_{y_1}$,
-	%
-	\item $\cA_C$ runs $\cB_{\cA_{x_3}, \ctxt_{\pi_{x_3,y_1}}}$ on $v_1$ to compute a function $f'_{\pi_{x_3,y_1}}$ on the state space of $\cA_{x_3}$ and checks $f'_{\pi_{x_3, y_1}} = f_{\pi_{x_3, y_1}}$,
-	%
-	\item  $\cA_C$ runs $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_1}}}$ on $v_1$ to compute a function $f'_{\pi_{x_2,y_1}}$ on the state space of $\cA_{x_2}$ and checks $f'_{\pi_{x_2, y_1}} = f_{\pi_{x_2, y_1}}$, 
-	
-	% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
-	%
-	\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_1}}}$ on $v_1$ to compute a function $f'_{\pi_{x_1,y_1}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_1}} = f_{\pi_{x_1, y_1}}$.
-\end{itemize}
-We can also think the run of $\cA_C$ on $v_1$ as the run of $\cB_{y_1, \gfun}$ on $v_1$, where  $\cB_{y_1, \gfun}$ is the product automaton of $\cA_{y_1}$, $\cB_{\cA_{x_3}, \ctxt_{\pi_{x_3,y_1}}}$, $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_1}}}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_1}}}$. 
-
-When reading $v_2$, $\cA_C$ does the following,
-\begin{itemize}
-	\item $\cA_C$ runs $\cA_{y_2}$ on $v_2$ to check that $v_2$ is accepted by $\cA_{y_2}$,
-	%
-	\item $\cA_C$ runs $ \cA_{x_3}$ on $v_2$ to compute a function $f'_{\pi_{x_3,y_2}}$ on the state space of $\cA_{x_3}$ and checks $f'_{\pi_{x_3,y_2}} = f_{\pi_{x_3, y_2}}$,
-	%
-	\item  $\cA_C$ runs $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_2}}}$ on $v_2$ to compute a function $f'_{\pi_{x_2,y_2}}$ on the state space of $\cA_{x_2}$ and checks $f'_{\pi_{x_2,y_2}} = f_{\pi_{x_2, y_2}}$, 
-	
-	% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
-	%
-	\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_2}}}$ on $v_2$ to compute a function $f'_{\pi_{x_1,y_2}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_2}} = f_{\pi_{x_1, y_2}}$.
-\end{itemize}
-We can also think the run of $\cA_C$ on $v_2$ as the run of $\cB_{y_2, \gfun}$ on $v_2$, where  $\cB_{y_2, \gfun}$ is the product automaton of $\cA_{y_2}$, $ \cA_{x_3}$, $\cB_{\cA_{x_2}, \ctxt_{\pi_{x_2,y_2}}}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_2}}}$. 
-
-
-When reading $v_3$, $\cA_C$ does the following,
-\begin{itemize}
-	\item $\cA_C$ runs $\cA_{y_3}$ on $v_3$ to check that $v_3$ is accepted by $\cA_{y_3}$,
-	%
-	\item  $\cA_C$ runs $\cA_{x_2}$ on $v_3$ to compute a function $f'_{\pi_{x_2,y_3}}$ on the state space of $\cA_{x_2}$ and checks $f'_{\pi_{x_2,y_3}} = f_{\pi_{x_2, y_3}}$, 
-	
-	% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
-	%
-	\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_3}}}$ on $v_3$ to compute a function $f'_{\pi_{x_1,y_3}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_3}} = f_{\pi_{x_1, y_3}}$.
-\end{itemize}
-We can also think the run of $\cA_C$ on $v_3$ as the run of $\cB_{y_3, \gfun}$ on $v_3$, where  $\cB_{y_3, \gfun}$ is the product automaton of $\cA_{y_3}$, $ \cA_{x_2}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_3}}}$. 
-
-
-When reading $v_4$, $\cA_C$ does the following,
-\begin{itemize}
-	\item $\cA_C$ runs $\cA_{y_4}$ on $v_4$ to check that $v_4$ is accepted by $\cA_{y_4}$,
-	%
-	\item  $\cA_C$ runs $\cB_{\cA_{x_4}, \ctxt_{\pi_{x_4, y_4}}}$ on $v_4$ to compute a function $f'_{\pi_{x_4,y_4}}$ on the state space of $\cA_{x_4}$ and checks $f'_{\pi_{x_4,y_4}} = f_{\pi_{x_4, y_4}}$, 
-	
-	% if $a_2 = a_3$, then $\cA_C$ runs $\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}$ on $v_1$ to compute a function $f'_{x_2,y_1}$  on the state space of $\cA_{x_2}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$, otherwise, $\cA_C$ runs $\cB_{\cB_{\cA_{x_2}, a_3, f_{x_2, y_2}}, a_2, f_{x_2, y_3}}$ on $v_1$ to compute $f'_{x_2,y_1}$ and checks $f'_{x_2, y_1} = f_{x_2, y_1}$,
-	%
-	\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_4}}}$ on $v_4$ to compute a function $f'_{\pi_{x_1,y_4}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_4}} = f_{\pi_{x_1, y_4}}$.
-\end{itemize}
-We can also think the run of $\cA_C$ on $v_4$ as the run of $\cB_{y_4, \gfun}$ on $v_3$, where  $\cB_{y_4, \gfun}$ is the product automaton of $\cA_{y_4}$, $\cB_{\cA_{x_4}, \ctxt_{\pi_{x_4, y_4}}}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_4}}}$. 
-
-
-When reading $v_5$, $\cA_C$ does the following,
-\begin{itemize}
-	\item $\cA_C$ runs $\cA_{y_5}$ on $v_5$ to check that $v_5$ is accepted by $\cA_{y_5}$,
-	%
-	\item  $\cA_C$ runs $\cA_{x_4}$ on $v_5$ to compute a function $f'_{\pi_{x_4,y_5}}$ on the state space of $\cA_{x_4}$ and checks $f'_{\pi_{x_4,y_5}} = f_{\pi_{x_4, y_5}}$, 
-	%
-	\item $\cA_C$ runs $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_5}}}$ on $v_5$ to compute a function $f'_{\pi_{x_1,y_5}}$  on the state space of $\cA_{x_1}$ and checks $f'_{\pi_{x_1, y_5}} = f_{\pi_{x_1, y_5}}$.
-\end{itemize}
-We can also think the run of $\cA_C$ on $v_5$ as the run of $\cB_{y_5, \gfun}$ on $v_3$, where  $\cB_{y_5, \gfun}$ is the product automaton of $\cA_{y_5}$, $\cA_{x_4}$, and $\cB_{\cA_{x_1}, \ctxt_{\pi_{x_1,y_5}}}$. 
-
-The nonemptiness of $\cA_C$ can be solved in exponential space as follows: 
+From Proposition~\ref{prop-sat-sl-case}, we can decide the satisfiability of $C$ in polynomial space as follows: 
 \begin{description}
-	\item [Step I.] For each path $\pi$ from a non-source variable $x_i$ to a source variable $y_j$, $\cA_C$ guesses a function $f_{\pi}$ on the state space of $\cA_{x_i}$.
-	%
-	\item  [Step II.] For each source variable $y_j$, guess an accepting run of $\cB_{y_j,\gfun}$.
+\item[Step I.] Guess $T_{i,z} \subseteq Q_i \times Q_i$. 
+%
+\item[Step II.] Guess an accepting run of the product automaton of $\cA_{i}(q, q')$ for $i \in [k]$ and $(q,q') \in T_{i, z}$. 
+%
+\item[Step III.] Guess an accepting run of the product automaton of $\cB_{\cA_i, a,  T_{i, z}}$ for $i \in [k]$.
 \end{description}
-Since at most exponentially many functions should be guessed, and each guessed function occupies polynomial space, it follows that the above procedure occupies only exponential space. If $G_C$ is a tree, then only polynomially many functions should be guessed and the above procedure occupies only polynomial space.
+
+Let us now consider the general case that $C$ contains multiple occurrences of $\replaceall(\cdots)$ terms.  We will utilise the dependency graph $C$ and do the following in a top-down manner: Let $\cA_1, \dots, \cA_m$ be the collection of regular constraints for $x$ and $x = \replaceall(y, a, z)$ be a conjunct of $\varphi$. Then guess $T_{i, z} \subseteq Q_i \times Q_i$ for $i \in [m]$ and add additional regular constraints to $y$ and $z$ as specified above. 
+
+%For doing this, we need deal with the typical situation that $x = \replaceall(y, a, z)$  and the regular constraints for $x$ are specified by 
+
+%We first introduce a concept of dependency graphs.
+
+
+\begin{example}
+\end{example}
+
 
 %\begin{theorem}
 %The satisfiability of $\pstrline[\replaceall]$ is in EXPSPACE and PSPACE-complete for formulae whose dependency graphs trees.
@@ -340,7 +213,7 @@ Formally,
 
 
 
-\section{Undecidable extensions: Character and Length constraints}
+\section{Undecidable extensions: Character and length constraints, Disequalities, IndexOf}
 
 
 

@@ -24,7 +24,7 @@ We use $\Ll(e)$ to denote the set of strings that match $e$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 A nondeterministic finite automata (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of states, $q_0 \in Q$ is the initial state, $F \subseteq Q$ is the set of final states, and $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation. An NFA $\cA$ is deterministic if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is complete if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete. For a string $w = \sigma_1 \dots \sigma_n$, a run of $\cA$ on $w$ is a sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, \sigma_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is accepting if $q_n \in F$. A string $w$ is accepted by $\cA$ if there is an accepting run of $\cA$ on $w$. An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
-We also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, \sigma_i, q_{i+1}) \in \delta$.  
+We also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, \sigma_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA which is obtained from $\cA$ by changing the initial state to $q$ and the set of final states to $\{q'\}$.
 
 \subsection*{Computational complexity}
 In this paper, we study not only decidability but also the complexity of string logics. 
@@ -191,3 +191,13 @@ regular expression  &   constant string                      &    PSPACE-c (\cit
 regular expression  &   variable                       &           \\
 \end{tabular}
 \]
+
+
+\begin{definition}[Dependency graph]
+	Let $C= \varphi \wedge \psi$ be an $\strline[\replaceall]$ formula such that $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are the source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. 
+	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
+	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
+\end{definition}
+Note that $G_C$ is a DAG (directed acyclic graph) where the out-degree of each vertex is two or zero. 
+
+
