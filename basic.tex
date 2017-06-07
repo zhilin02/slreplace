@@ -3,6 +3,8 @@
 
 \section{Decision procedure for $\strline[\replaceall]$: The single-letter case} \label{sec:replaceallsl}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
@@ -23,17 +25,17 @@ $x'=\replaceall(ab, a, x)$ and $x=\replaceall(x', b, z)$.
 
 %\subsection{The single-letter case}
 
-In this section, we consider the single-letter special case, that is, given an $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, it holds that every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=a$ for $a \in \Sigma$.
+In this section, we consider the single-letter special case, that is, for the $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=a$ for $a \in \Sigma$.
 
 %We first assume that the regular constraint $\psi = \bigwedge \limits_{x \in \vars(\varphi)} x \in e_x$, that is, there is exactly one atomic regular constraint for each variable.
 
-In the following, we will explain the basic idea of the decision procedure.
+We first explain the basic idea of the decision procedure.
   
 Let us start with the simple case that $C \equiv x = \replaceall(y, a, z) \wedge \bigwedge \limits_{i \in [k]} x \in e_{i}$.  In addition, for $i \in [k]$, suppose $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$ 
 %\cA_y = (Q_y, \delta_y, q_{0, y}, F_y), \cA_z = (Q_z, \delta_z, q_{0, z}, F_z)$ 
 is the NFA corresponding to $e_i$. 
 \begin{enumerate}
-\item For each $i \in [k]$, we will guess a set $T_{i, z} \subseteq Q_i \times Q_i$, which intuitively means that in $\cA_i$, for each state pair $(q, q') \in T_{i, z}$, starting from $q$, after reading $z$, the state $q' $ can be reached. The functions $(T_{i, z})_{i \in [k]}$ induce regular constraints $\Ll(\cA_i(q,q'))$ on $z$, where $i \in [k]$ and $(q,q') \in T_{i, z}$.
+\item For each $i \in [k]$, we will guess a set $T_{i, z} \subseteq Q_i \times Q_i$, which intuitively means that in $\cA_i$, for each state pair $(q, q') \in T_{i, z}$, starting from $q$, after reading $z$, the state $q' $ can be reached. The functions \tl{relations?} $(T_{i, z})_{i \in [k]}$ induce regular constraints $\Ll(\cA_i(q,q'))$ on $z$, where $i \in [k]$ and $(q,q') \in T_{i, z}$.
 
 \item For each $i \in [k]$, we construct an NFA $\cB_{\cA_i, a,  T_{i, z}}$, which specifies some additional regular constraint on $y$. Intuitively, a string $v$ is accepted by $\cB_{\cA_i, a,  T_{i, z}}$ iff there is an accepting run of $\cA_i$ on $v$, with the following adaptation: upon reading an occurrence of the letter $a$, let $q$ be the current state, then some state $q' \in T_{i, z}(q)$, instead of some $q'' \in \delta_i(q,a)$, is reached, after reading $a$. The NFA $\cB_{\cA_i, a,  T_{i, z}}$ is constructed from $\cA_i$ with the following two-step procedure: 
 \begin{enumerate}

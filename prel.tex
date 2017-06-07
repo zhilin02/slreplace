@@ -26,40 +26,63 @@ We use $\Ll(e)$ to denote the set of strings that match $e$.
 A nondeterministic finite automata (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of states, $q_0 \in Q$ is the initial state, $F \subseteq Q$ is the set of final states, and $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation. An NFA $\cA$ is deterministic if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is complete if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete. For a string $w = \sigma_1 \dots \sigma_n$, a run of $\cA$ on $w$ is a sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, \sigma_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is accepting if $q_n \in F$. A string $w$ is accepted by $\cA$ if there is an accepting run of $\cA$ on $w$. An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
 We also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, \sigma_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA which is obtained from $\cA$ by changing the initial state to $q$ and the set of final states to $\{q'\}$.
 
+% copy from Lin's paper. 
+
 \subsection*{Computational complexity}
-In this paper, we study not only decidability but also the complexity of string logics. 
+In this paper, we study not only decidability but also the complexity of string logics. Pinpointing the
+precise complexity of verification problems is not only of fundamental
+importance, but also it often suggests algorithmic techniques
+that are most suitable for attacking the problem in practice.
+In this paper, we deal with the following computational complexity
+classes (see \cite{} for more details): P (problems solvable
+in polynomial-time), PSPACE (problems solvable in polynomial
+space and exponential time), and EXPSPACE (problems solvable
+in exponential space and double exponential time). Verification
+problems that have complexity PSPACE or beyond — see [40, 60]
+for a few examples — have substantially benefited from techniques
+like symbolic model checking \cite{}. As we shall see later, our complexity
+upper bound also suggests the maximum lengths of words
+that need to be explored to guarantee completeness.
 
 %=====================================================================================================
 
 \section{The core constraint language}
 
-In this section, we define a general string constraint language that supports concatenations and the replaceall function.  
+In this section, we define a general string constraint language that supports concatenations and the replaceAll function.  Throughout this section, we fix an alphabet $\Sigma$.
 
-An alphabet $\Sigma$ is fixed.
-
-We consider the following data types: String data type $\str$, Integer data type $\intnum$, and Array of strings $\str [\ ]$.
-
-
-We assume a countably set of variables, of data types form $\dtypes$. We will use $x, y, z, \dots$ to denote the variables of data type $\str$, and $n, n', \dots$ to denote the variables of type $\intnum$. In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
-We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
 
 
 \subsection{Semantics of the function $\replaceall$}
+To define the semantics of the $\replaceall$ function, we note that the function has three parameters: the first parameter is the subject string, the second parameter is a pattern that is a regular expression in general. The third parameter is the replacement.  The most interesting case is when the second parameter is  a regular expression. However, there is no consensus on the semantics even for mainstream programming language such as Python and Javascript where replaceall functions are extensively used. This is particularly the case when interpreting the union operator in regular expressions. In this paper we follow the POSIX standard, and mainly focus on the following semantics. Intuitively we consider the first and longest match. 
 
 
+\begin{definition}
+Given two strings $u,v$, a regular expression $e$, we say $u$ is the \emph{first and longest} match of $e$ in $v$ if $v=x'uz$ and the following two conditions hold
+\begin{enumerate}
+	\item $u \in \Ll(e)$,  and $x' u' \not \in  \Ll(\Sigma^\ast e \Sigma^\ast)$ for every strict prefix $u'$ of $u$, 
+	\item for every nonempty prefix $z'$ of $z$, $u z' \not \in \Ll(e)$,
+\end{enumerate} 
+\end{definition}
+
+
+\begin{definition}
 The semantics of $\replaceall(x, e, y)$, where $\Ll(e) \subseteq \Sigma^+$, is defined inductively as follows:
 \begin{itemize}
-	\item if $x \not \in \Ll(\Sigma^\ast e \Sigma^\ast)$, then $\replaceall(x, e, y) = x$, 
+	\item if $x \not \in \Ll(\Sigma^\ast e \Sigma^\ast)$, i.e., $x$ does \emph{not} contain any word in $\Ll(e)$ as a substring, then $\replaceall(x, e, y) = x$, 
 	%
-	\item otherwise, let $x = x' u z$ such that $u$ is the \emph{first and longest} match of $e$ in $x$, more specifically, 1) $u \in \Ll(e)$, and $x' u' \not \in  \Ll(\Sigma^\ast e \Sigma^\ast)$ for every strict prefix $u'$ of $u$, 2) for every nonempty prefix $z'$ of $z$, $u z' \not \in \Ll(e)$, then $\replaceall(x, e, y) = x' y \cdot \replaceall(z, e, y)$.
+	\item otherwise, let $x = x' u z$ such that $u$ is the \emph{first and longest} match of $e$ in $v$.  Then $\replaceall(x, e, y) = x' y \cdot \replaceall(z, e, y)$.
 \end{itemize}
+\end{definition}
+
+\begin{example}
 For instance, let $e = a^+$, then $\replaceall(aaabaac, a^+, y)=ybyc$.
+\end{example}
 
-\begin{remark}
-Follows the POSIX standard. Different from Javascript.
-\end{remark}
-
-\tl{Anthony mentioned that there might be alternatives, for instance,  $\replaceall$ can be made nondeterministic ($\replaceall(aaaaa, aaa, y) = \{yaa, aya, aay\}$). This MIGHT be considered as well.}
+%\begin{remark}
+%Follows the POSIX standard. Different from Javascript.
+%\end{remark}
+%
+%\tl{Anthony mentioned that there might be alternatives, for instance,  $\replaceall$ can be made nondeterministic ($\replaceall(aaaaa, aaa, y) = \{yaa, aya, aay\}$). This MIGHT be considered as well.}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,33 +127,49 @@ For instance, $\replaceall(aaaaa, aaa, y) = yaa$, and $\replaceall("Jeve", e, a)
 \subsection{The straight-line string fragment}
 
 
+
+We consider the following data types: String data type $\str$, Integer data type $\intnum$, and Array of strings $\str [\ ]$. \tl{I do not think we need $\str[]$, right?}
+
+
+We assume a countably set of variables, of data types form $\dtypes$. We will use $x, y, z, \dots$ to denote the variables of data type $\str$, and $n, n', \dots$ to denote the variables of type $\intnum$. 
+
+In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
+
+We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
+
+
+
 \begin{definition}[Relational and regular constraints with $\replaceall$ function]
 	Relational constraints and regular constraints are defined by the following rules,
 	\[
 	\begin{array}{r c l cr}
 	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
+	r &\eqdef & x \mid e & \ \ & \mbox{(regular expression terms)}\\
 	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
-	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, e, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, r, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
 	\psi & \eqdef & x \in e \mid \psi \wedge \psi \mid \psi \vee \psi \mid \neg \psi   & \ \ & \mbox{(regular constraints)} \\
 	\end{array}
 	\]
 	where $u \in \Sigma^\ast$ and $e$ is a regular expression. 
+	
+	
+	\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}
 	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
 \end{definition}
 
 \begin{remark}\label{rem-concat}
 The concatenation modality $x = s \concat s$ is redundant in the sense that $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1), x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
 \end{remark}
+\tl{I suggest not put this remark here.}
 
 
 For a formula $\varphi$, let $\vars(\varphi)$ denote the set of variables occurring in $\varphi$. Similarly for $\vars(\psi)$.
 
 
-\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}
 
 Given a relational constraint $\varphi$, a variable $x$ (of type $\str$) is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat \dots \concat s_n$ or $x = \replaceall(\dots)$.
 
-\tl{note that here the pattern $u$ is a constant, but we may also introduce a variable here, though its decidability is not clear.} 
+ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
@@ -143,6 +182,10 @@ Given a relational constraint $\varphi$, a variable $x$ (of type $\str$) is call
 	\end{definition}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The generality of the constraint language makes it undecidable,
+even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``strainght-line fragment" of the language. This straight-line fragment captures the structure of straight-line manipulating
+programs with concatenations and replaceall as atomic string operations.  
 
 \begin{definition}[Straight-line relational constraints with $\replaceall$ function]
 	A relational constraint $ \varphi$ with $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
@@ -165,36 +208,50 @@ Intuitively, in a straight-line relational constraint, the dependency graph of t
 	%Let us use $\Cc$ to denote the set of straight-line string constraints with $\replaceall$ function.
 \end{definition}
 
+\begin{remark}
+Checking whether a relational constraint $\varphi$ can be made a straight-line constraint can be done in linear time. 
+\end{remark}
+
 By Remark~\ref{rem-concat}, without loss of generality, we assume that 
 in each $\strline[\replaceall]$ constraint $\varphi \wedge \psi$, the concatenation symbol $\concat$ does not occur in $\varphi$. 
+\tl{as mentioned, here I suggest that here we just provide a clean def of language}
 
 %Let us use $\pstrline[\replaceall]$ to denote the set of pure $\strline[\replaceall]$ constraints.
 
 %\medskip
 
-\paragraph*{Satisfiability problem.} Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.
-
+\subsection{Satisfiability problem} 
+\begin{quote}
+\framebox{Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.}
+\end{quote}
 \smallskip
 
-The questions we plan to consider is summarized in the following table. Note that for $x=\replaceall (y,u,z)$, $y$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
+The questions we plan to consider is summarised in the following table. Note that for $x=\replaceall (y,u,z)$, $y$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
 
 \[
-\begin{tabular}{c|c|c|c}
+\begin{tabular}{|c|c|c|c}
+\hline
 pattern (e)  &   replacement (z)        & complexity \\
 \hline
 constant string  &   constant   string                    & PSPACE-c (\cite{LB16})     \\
 \hline
-constant string  &   variable                       & PSPACE-c (Section \ref{sec:replaceallsl})       \\
-\hline
 regular expression  &   constant string                      &    PSPACE-c (\cite{LB16}) ?     \\
+
+\hline
+constant string  &   variable                       & PSPACE-c (Section \ref{sec:replaceallsl})       \\
+
 \hline
 regular expression  &   variable                       &           \\
+\hline
+variable &   constant string/variable                       &    undecidable       \\
+\hline
 \end{tabular}
 \]
 
 
+
 \begin{definition}[Dependency graph]
-	Let $C= \varphi \wedge \psi$ be an $\strline[\replaceall]$ formula such that $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are the source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. 
+	Let $C= \varphi \wedge \psi$ be an $\strline[\replaceall]$ formula such that $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. 
 	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
 	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
 \end{definition}
