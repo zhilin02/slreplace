@@ -4,24 +4,6 @@
 \section{Decision procedure for $\strline[\replaceall]$: The single-letter case} \label{sec:replaceallsl}
 
 
-In the decision procedure, we will utilise a concept of dependency graph defined below.
-
-\begin{definition}[Dependency graph]
-	Let $C= \varphi \wedge \psi$ be an $\strline[\replaceall]$ formula such that $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, p_i, z')$, then $(x_i, (\rpleft, p_i), z) \in E_C$ and $(x_i, (\rpright, p_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. 
-	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
-	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
-\end{definition}
-Note that $G_C$ is a DAG (directed acyclic graph) where the out-degree of each vertex is two or zero. 
-
-
-\begin{remark}\label{rem-concat}
-The concatenation modality $x = s \concat s$ is redundant in the sense that $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1), x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
-\end{remark}
-\tl{I suggest not put this remark here.}
-
-By Remark~\ref{rem-concat}, without loss of generality, we assume that 
-in each $\strline[\replaceall]$ constraint $\varphi \wedge \psi$, the concatenation symbol $\concat$ does not occur in $\varphi$. 
-\tl{as mentioned, here I suggest that here we just provide a clean def of language}
 
 
 
