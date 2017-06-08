@@ -239,12 +239,31 @@ The satisfiability problem of $\strline[\replaceall]$ is undecidable, if the sec
 \end{proposition}
 
 \begin{proof}
+	We reduce from the Post Correspondence Problem (PCP). The input of the problem consists of two finite lists $\alpha_{1},\ldots ,\alpha_{N}$ and $\beta_1,\ldots ,\beta_N$ of words over $\Sigma$ having at least two symbols. A solution to this problem is a sequence of indices $(i_{k})_{1\leq k\leq K}$ with $ K\geq 1$ and $ 1\leq i_{k}\leq N$ for all$k$, such that
+	\[
+	\alpha _{{i_{1}}}\ldots \alpha _{{i_{K}}}=\beta _{{i_{1}}}\ldots \beta _{{i_{K}}}.
+	\]
+	The decision problem then is to decide whether such a solution exists or not.
+	
+	We then introduce, for $i=1,\cdots, N$, 
+	$x_{i+1}=\replaceall(x_0, \alpha_i, i)$ and $y_{i+1}=\replaceall(y_0, \beta_i, i)$, 
+	$x_0'=\replaceall(x_0, \sharp, \epsilon)$ and $y_0'=\replaceall(y_0, \sharp, \epsilon)$
+	
+	$x_{N+1}=y_{N+1}$, $x_0'=y'_0$
+	
+	
+	with regular constraints $x_0\in \sharp((\sum_{i=1}^N\alpha_i)\sharp)^*$ and $y_0\in \sharp((\sum_{i=1}^N\beta_i)\sharp)^*$,
+	
+	where $z=z'$ can be encoded by 
+		$z''=\replaceall(z, z', \$)$ and $z''\in \$$. 
 \end{proof}
+
+\tl{I trust you guys can simplify this a lot; i am not a fan of PCP :-)}
 
 On the other hand, if the second parameters of the $\replaceall$ terms are regular expressions, then the satisfiability problem is decidable and PSPACE-complete. 
 
 \begin{theorem}\label{thm-main}
-The satisfiability problem of $\strline[\replaceall]$ is undecidable, if the second parameters of the $\replaceall$ terms are regular expressions.
+The satisfiability problem of $\strline[\replaceall]$ is decidable in PSPACE, if the second parameters of the $\replaceall$ terms are regular expressions.
 \end{theorem}
 
 The following three sections are devoted to the proof of Theorem~\ref{thm-main}. We start with the special case that the single-letter case that the second parameters of the $\replaceall$ terms are letters, then consider the constant-string case that the second parameters of the $\replaceall$ terms are constant strings, and finally the regular-expression case that the second parameters of the $\replaceall$ terms are regular expressions.
