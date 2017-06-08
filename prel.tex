@@ -112,7 +112,7 @@ The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a r
 For instance, $\replaceall(abac, a^*, d) =d a d b d a d c d$ and $\replaceall(abac, a^+, d)=dbdc$.
 \end{example}
 
-\subsection{The straight-line string fragment}
+\subsection{Straight-line string constraints with the $\replaceall$ function}
 
 
 
@@ -128,7 +128,7 @@ We assume a countably set of variables, of the data type $\str$ and  $\intnum$ r
 
 
 
-\begin{definition}[Relational and regular constraints with $\replaceall$ function]
+\begin{definition}[Relational and regular constraints with the $\replaceall$ function]
 	Relational constraints and regular constraints are defined by the following rules,
 	\[
 	\begin{array}{r c l cr}
@@ -158,7 +158,7 @@ The generality of the constraint language makes it undecidable,
 even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
 programs with concatenations and $\replaceall$ as atomic string operations.  
 
-\begin{definition}[Straight-line relational constraints with $\replaceall$ function]
+\begin{definition}[Straight-line relational constraints with the $\replaceall$ function]
 	A relational constraint $ \varphi$ with $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
 	\begin{itemize}
 		\item $x_1,\dots, x_m$ are mutually distinct,
@@ -168,8 +168,8 @@ programs with concatenations and $\replaceall$ as atomic string operations.
 Intuitively, in a straight-line relational constraint, the dependency graph of the string variables is acyclic.
 
 
-\begin{definition}[Straight-line string constraints with $\replaceall$ function]
-	A straight-line string constraint $C$ with $\replaceall$ function (denoted by $\strline[\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
+\begin{definition}[Straight-line string constraints with the $\replaceall$ function]
+	A straight-line string constraint $C$ with the $\replaceall$ function (denoted by $\strline[\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
 	\begin{itemize}
 		\item $\varphi$ is a straight-line relational constraint,  and
 		%
@@ -182,6 +182,9 @@ Intuitively, in a straight-line relational constraint, the dependency graph of t
 \begin{remark}
 Checking whether a relational constraint $\varphi$ is straight-line can be done in linear time. 
 \end{remark}
+
+\begin{example}
+\end{example}
 
 
 %Let us use $\pstrline[\replaceall]$ to denote the set of pure $\strline[\replaceall]$ constraints.
