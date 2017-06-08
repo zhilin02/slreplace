@@ -6,7 +6,7 @@
 Let $\Nat$ denote the set of natural numbers. For $k \in \Nat$, let $[k] = \{1,\cdots, k\}$. For a vector $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$ (i.e., $n$), and for each $i \in [n]$, let $\vec{x}[i]$ denote $x_i$. For a vector $\vec{x} = (x_1, \cdots, x_n)$, let $\red(\vec{x})$ denote the \emph{reduction} of $\vec{x}$, more specifically, the vector $(x_{i_1},\cdots, x_{i_m})$ such that for each $j \in [m]$, $x_{i_j}$ is different from all $x_1, \cdots, x_{i_j-1}$.
 \tl{red is for reduced?}
 
-The term DAG stands for \emph{directed acylic graphs}. \zhilin{maybe extended by including more graph-theoretical notations.}
+The term DAG stands for \emph{directed acylic graphs}. They are finite directed graphs with no directed cycles. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $v$ and follow a consistently-directed sequence of edges that eventually loops back to $v$ again. Equivalently, a DAG is a directed graph that has a topological ordering, a sequence of the vertices such that every edge is directed from earlier to later in the sequence. \zhilin{maybe extended by including more graph-theoretical notations.}
 
 \subsection*{Regular languages}
 Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$), in addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$. 
@@ -89,7 +89,7 @@ Given two strings $u,v$, a regular expression $e$ such that $\varepsilon \not \i
 \end{definition}
 
 
-\begin{definition}
+\begin{definition} \label{def:replaceall}
 The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a regular expression, is defined inductively as follows:
 \begin{itemize}
 	\item if $\varepsilon \in \Ll(e)$, then
@@ -109,12 +109,15 @@ The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a r
 \end{definition}
 
 \begin{example}
-For instance, $\replaceall(abac, a^*, d) =d a d b d a d c d$ and $\replaceall(abac, a^+, d)=dbdc$.
+When the second parameter is a string (or more specially a single letter), most programming languages take the same semantics which is consistent to Definition~\ref{def:replaceall}. For instance,  $\replaceall(abab, ab, d) =dd$. It is worth mentioning the case that the second parameter is an empty string, where, for instance,  $\replaceall(aaaa, ``", d) =dadadadad$.
+
+When the second parameter is a regular expression, some examples are $\replaceall(abac, a^*, d) =d a d b d a d c d$ and $\replaceall(abac, a^+, d)=dbdc$. However, when the regular expression contains $+$, programming languages diverge... 
+\tl{do we need to say more here?}
 \end{example}
 
 \subsection{Straight-line string constraints with the $\replaceall$ function}
 
-
+\tl{Int will not be used until very late. Some picky reviewers will complain. Shall we introduce them later?} 
 
 We consider the following data types: String data type $\str$ and Integer data type $\intnum$.
 %, and Array of strings $\str [\ ]$. \tl{I do not think we need $\str[]$, right?}
@@ -133,17 +136,19 @@ We assume a countably set of variables, of the data type $\str$ and  $\intnum$ r
 	\[
 	\begin{array}{r c l cr}
 	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
-	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
+	p &\eqdef & X \mid e & \ \ & \mbox{(pattern terms)}\\
 	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
 	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, p, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
-	\psi & \eqdef & x \in e \mid \psi \wedge \psi \mid \psi \vee \psi \mid \neg \psi   & \ \ & \mbox{(regular constraints)} \\
+	\psi & \eqdef & x \in e \mid \psi \wedge \psi %\mid \psi \vee \psi \mid \neg \psi   
+	& \ \ & \mbox{(regular constraints)} \\
 	\end{array}
 	\]
-	where $u \in \Sigma^\ast$ and $e$ is a regular expression. 
+	where $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$. 
 	
 	
 	\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}\zhilin{since the pspace upper bound holds for the general case, I do not see the necessity of the restriction here.}
 	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
+	\tl{zhilin, it is not a restriction, it is a simplification. Look at what we have now, I guess this is sufficient. feel free to change back if you do not like it.}
 \end{definition}
 
 
