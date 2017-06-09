@@ -2,7 +2,28 @@
 
 \section{Undecidable extensions}
 
-In this section, we extend the language SL with integer and character constraints. 
+In this section, we extend the language SL with integer and character constraints. The language will use two types of variables, str and int. 
+
+We start by defining integer constraints, which expresses length or number of occurrences of symbols in words. 
+
+\begin{definition}
+	Each term is either 
+	\begin{enumerate}
+		\item an integer variable $n$;
+		\item $|x|$ for a string variable;
+		\item $|x|_a$ for $a\in \Sigma$
+	\end{enumerate}
+\end{definition}
+
+Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is undecidable to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
+
+\begin{theorem}
+	The satisfiability problem for SL with length constraints is undecidable. 
+\end{theorem}
+
+\begin{proof}
+	We shall reduce from the aforementioned version of the Hilbert tenth problem. For any polynomial with positive integral  $f(x_1, \cdots, x_n)$ where each coefficient is a positive 
+\end{proof}
 
 \subsection{Undecidability of character and length constraints}
 
