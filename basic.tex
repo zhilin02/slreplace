@@ -27,43 +27,85 @@ $x'=\replaceall(ab, a, x)$ and $x=\replaceall(x', b, z)$.
 
 %\subsection{The single-letter case}
 
-In this section, we consider the single-letter special case, that is, for the $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=a$ for $a \in \Sigma$.
+In this section, we consider the single-letter case, that is, for the $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=a$ for $a \in \Sigma$.
 
 %We first assume that the regular constraint $\psi = \bigwedge \limits_{x \in \vars(\varphi)} x \in e_x$, that is, there is exactly one atomic regular constraint for each variable.
 
-We first explain the basic idea of the decision procedure.
-  
-Let us start with the simple case that $C \equiv x = \replaceall(y, a, z) \wedge \bigwedge \limits_{i \in [k]} x \in e_{i}$.  In addition, for $i \in [k]$, suppose $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$ 
+%We first explain the basic idea of the decision procedure.
+
+Let us start with the simple case that $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$.  For $i =1, 2, 3$, suppose  $\cA_i = (Q_i, \delta_i, q_{0,i}, F_i)$ 
 %\cA_y = (Q_y, \delta_y, q_{0, y}, F_y), \cA_z = (Q_z, \delta_z, q_{0, z}, F_z)$ 
 is the NFA corresponding to $e_i$. 
-\begin{enumerate}
-\item For each $i \in [k]$, we will guess a set $T_{i, z} \subseteq Q_i \times Q_i$, which intuitively means that in $\cA_i$, for each state pair $(q, q') \in T_{i, z}$, starting from $q$, after reading $z$, the state $q' $ can be reached. The functions \tl{relations?} $(T_{i, z})_{i \in [k]}$ induce regular constraints $\Ll(\cA_i(q,q'))$ on $z$, where $i \in [k]$ and $(q,q') \in T_{i, z}$.
 
-\item For each $i \in [k]$, we construct an NFA $\cB_{\cA_i, a,  T_{i, z}}$, which specifies some additional regular constraint on $y$. Intuitively, a string $v$ is accepted by $\cB_{\cA_i, a,  T_{i, z}}$ iff there is an accepting run of $\cA_i$ on $v$, with the following adaptation: upon reading an occurrence of the letter $a$, let $q$ be the current state, then some state $q' \in T_{i, z}(q)$, instead of some $q'' \in \delta_i(q,a)$, is reached, after reading $a$. The NFA $\cB_{\cA_i, a,  T_{i, z}}$ is constructed from $\cA_i$ with the following two-step procedure: 
-\begin{enumerate}
-\item Remove all the transitions $(q, a, q')$ in $\cA_i$.
+If $C$ is satisfiable, then $x, y, z$ can be assigned with strings $u, v, w$ so that $u$ is obtained from $v$ by replacing all the occurrences of $a$ with $w$, moreover, $u, v, w$ are accepted by $\cA_1, \cA_2, \cA_3$ respectively. From the fact that $u$ is accepted by $\cA_1$, we know that there is an accepting run of $\cA_1$ on $u$. Let $v = v_1 a v_2 a \cdots a v_k$ such that for each $i \in [k]$, $v_i \in (\Sigma \setminus \{a\})^*$. Then $u = v_1 w v_2 w \cdots w v_k$ and there are states $q_1, q'_1, \cdots, q_{k-1}, q'_{k-1}, q_k$  such that 
 %
-\item For each $(q, q') \in T_{i, z}$, add a transition $(q, a, q')$.
-\end{enumerate}
-\end{enumerate}
+$$
+q_{1,0} \xrightarrow[\cA_1]{v_1} q_1 \xrightarrow[\cA_1]{w} q'_1 \xrightarrow[\cA_1]{v_2} q_2 \xrightarrow[\cA_1]{w} q'_2 \cdots q_{k-1} \xrightarrow[\cA_1]{w} q'_{k-1} \xrightarrow[\cA_1]{v_k} q_k
+$$
+%
+ and $q_k \in F_{1}$. Let $T_z$ denote $\left\{(q_i, q'_i) \mid i \in [k-1] \right\}$. Then $w \in \Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q'))$. In addition, let  $\cB_{\cA_1,a,T_z}$ be the NFA obtained from $\cA_1$ by removing all the $a$-transitions first and adding the $a$-transitions $(q, a, q')$ for $(q, q') \in T_z$ next. Then 
+ %
+$$
+q_{1,0} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_1} q_1 \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_1 \xrightarrow[\cB_{\cA_1,a,T_z}]{v_2} q_2 \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_2 \cdots q_{k-1} \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_{k-1} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_k} q_k.
+$$
+%
+Therefore, 
+$v \in \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z})$. We deduce that there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z}) \neq \emptyset$. In addition, it is not hard to see that this condition is also sufficient for the satisfiability of $C$.
 
 \begin{proposition}\label{prop-sat-sl-case}
-Let $C \equiv x = \replaceall(y, a, z) \wedge \bigwedge \limits_{i \in [k]} x \in e_{i}$. Then $C$ is satisfiable iff there are sets $T_{i, z} \subseteq Q_i \times Q_i$ such that $\bigcap \limits_{i \in [k]} \bigcap \limits_{(q,q') \in T_{i, z}} \Ll(\cA_{i}(q, q'))$ and $\bigcap \limits_{i \in [k]} \Ll(\cB_{\cA_i, a,  T_{i, z}})$ are nonempty.
+Let $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. Then $C$ is satisfiable iff there is a set $T_{z} \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z}) \neq \emptyset$.
 \end{proposition}
 
 From Proposition~\ref{prop-sat-sl-case}, we can decide the satisfiability of $C$ in polynomial space as follows: 
 \begin{description}
-\item[Step I.] Guess $T_{i,z} \subseteq Q_i \times Q_i$. 
+\item[Step I.] Guess a set $T_{z} \subseteq Q_1 \times Q_1$. 
 %
-\item[Step II.] Guess an accepting run of the product automaton of $\cA_{i}(q, q')$ for $i \in [k]$ and $(q,q') \in T_{i, z}$. 
+\item[Step II.] Guess an accepting run of the product automaton of $\cA_3$ and $\cA_1(q, q')$ for $(q,q') \in T_{z}$. 
 %
-\item[Step III.] Guess an accepting run of the product automaton of $\cB_{\cA_i, a,  T_{i, z}}$ for $i \in [k]$.
+\item[Step III.] Guess an accepting run of the product automaton of $\cA_2$ and $\cB_{\cA_1, a,  T_{z}}$. 
 \end{description}
+During Step II and III, it is sufficient to record $T_z$ and a state of the product automaton, which occupies only a polynomial space.
 
-Let us now consider the general case that $C$ contains multiple occurrences of $\replaceall(\cdots)$ terms.  We will utilise the dependency graph $C$ and remove the edges (the $\rpleft$-edge and $\rpright$ edge) in a top-down manner as follows: 
-\begin{quote}
-\it Let $x$ be a node in the graph without predecessors and $x = \replaceall(y, a, z)$ be a conjunct of $\varphi$ and $\cA_1, \dots, \cA_m$ be a collection of regular constraints for $x$. Then remove the two edges out of $x$, guess $T_{i, z} \subseteq Q_i \times Q_i$ for $i \in [m]$, and add additional regular constraints to $y$ and $z$ as specified above. 
-\end{quote}
+The above decision procedure can be easily generalised to the case that there are multiple atomic regular constraints for $x$. For instance, let $x \in e_{1,1} \wedge x \in e_{1,2}$ and for $j = 1, 2$, $\cA_{1,j} = (Q_{1,j}, \delta_{1, j}, q_{0,1, j}, F_{1,j})$ be 
+the NFA corresponding to $e_{1,j}$. Then in Step I, two sets $T_{1,z} \subseteq Q_{1,1} \times Q_{1,1}$ and $T_{2,z} \subseteq Q_{1,2} \times Q_{1,2}$ are guessed and Step II and III are adjusted accordingly.
+
+\begin{example}
+
+\end{example}
+
+
+\zhilin{to be continued}
+
+Let us now consider the general case that $C$ contains multiple occurrences of $\replaceall(\cdots)$ terms. 
+Then the satisfiability of $C$ is decided by the following two-step procedure.
+
+\smallskip
+
+\noindent{\bf Step I.} We utilise the dependency graph $C$ and compute a collection of atomic regular constraints $\cE_x$ for each variable $x$, in a top-down manner as follows. 
+
+Initially, let $G:= G_C$ and repeat the following (nondeterministic) procedure until $G$ becomes an empty graph, i.e. a graph without edges. 
+
+Select a node $x$ of $G$ such that $x$ has no predecessors and has two successors in $G$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ and $\cE_x=\{\cA_1,\cdots, \cA_k\}$ is the collection of atomic regular constraints (specified in NFA) for $x$. For each $i \in [k]$, let $\cA_i = (Q_i, \delta_i, q_{0,i}, F_i)$. Then update $\cE_z$, $\cE_y$ and $G$ as follows:  
+\begin{enumerate}
+\item For each $i \in [k]$, guess a set $T_{i, z} \subseteq Q_i \times Q_i$.
+%
+\item Let 
+$$\cE_z:= \cE_z \cup \left\{\cA_i(q,q') \mid \cA_i \in \cE_x, (q,q') \in T_{i,z} \right\} \mbox{ and } \cE_y: = \cE_y \cup \left\{\cB_{\cA_i, a, T_{i,z}} \mid \cA_i \in \cE_x \right\}.$$
+%
+\item Let $G:= G \setminus \{(x, (\rpleft, a), y), (x, (\rpright,a), z)\}$.
+\end{enumerate}
+
+\smallskip
+
+\noindent {\bf Step II.} For each source variable $y$, guess an accepting run of the product automaton of all the NFA in $\cE_y$. 
+
+\smallskip
+
+Note that for each variable $x$, the cardinality of the set $\cE_x$ in Step I is bounded 
+
+%\begin{quote}
+%\it Let $x$ be a node in the graph without predecessors and $x = \replaceall(y, a, z)$ be a conjunct of $\varphi$ and $\cA_1, \dots, \cA_m$ be a collection of regular constraints for $x$. Then remove the two edges out of $x$, guess $T_{i, z} \subseteq Q_i \times Q_i$ for $i \in [m]$, and add additional regular constraints to $y$ and $z$ as specified above. 
+%\end{quote}
 
 %For doing this, we need deal with the typical situation that $x = \replaceall(y, a, z)$  and the regular constraints for $x$ are specified by 
 
