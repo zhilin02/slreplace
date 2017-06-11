@@ -73,35 +73,84 @@ the NFA corresponding to $e_{1,j}$. Then in Step I, two sets $T_{1,z} \subseteq 
 
 \end{example}
 
-
-\zhilin{to be continued}
-
 Let us now consider the general case that $C$ contains multiple occurrences of $\replaceall(\cdots)$ terms. 
 Then the satisfiability of $C$ is decided by the following two-step procedure.
 
 \smallskip
 
-\noindent{\bf Step I.} We utilise the dependency graph $C$ and compute a collection of atomic regular constraints $\cE_x$ for each variable $x$, in a top-down manner as follows. 
+\noindent{\bf Step I.} We utilise the dependency graph $C$ and compute a collection of atomic regular constraints $\cE(x)$ for each variable $x$, in a top-down manner as follows. 
 
-Initially, let $G:= G_C$ and repeat the following (nondeterministic) procedure until $G$ becomes an empty graph, i.e. a graph without edges. 
+Initially, let $G_0:= G_C$, and for each $x$, let $\cE_0(x)$ denote the set of NFA that correspond to the regular expressions $e$ such that $x \in e$ is a conjunct of $\psi$. Let $i: = 0$ and repeat the following (nondeterministic) procedure until $G_i$ becomes an empty graph, i.e. a graph without edges. 
 
-Select a node $x$ of $G$ such that $x$ has no predecessors and has two successors in $G$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ and $\cE_x=\{\cA_1,\cdots, \cA_k\}$ is the collection of atomic regular constraints (specified in NFA) for $x$. For each $i \in [k]$, let $\cA_i = (Q_i, \delta_i, q_{0,i}, F_i)$. Then update $\cE_z$, $\cE_y$ and $G$ as follows:  
 \begin{enumerate}
-\item For each $i \in [k]$, guess a set $T_{i, z} \subseteq Q_i \times Q_i$.
+\item Select a node $x$ of $G_i$ such that $x$ has no predecessors and has two successors in $G_i$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ in $G_i$ and $\cE_i(x)=\{\cA_1,\cdots, \cA_k\}$. For each $j \in [k]$, let $\cA_j = (Q_j, \delta_j, q_{0,j}, F_j)$. Then $\cE_{i+1}(z)$, $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:  
+\begin{enumerate}
+\item For each $j \in [k]$, guess a set $T_{j, z} \subseteq Q_j \times Q_j$.
 %
 \item Let 
-$$\cE_z:= \cE_z \cup \left\{\cA_i(q,q') \mid \cA_i \in \cE_x, (q,q') \in T_{i,z} \right\} \mbox{ and } \cE_y: = \cE_y \cup \left\{\cB_{\cA_i, a, T_{i,z}} \mid \cA_i \in \cE_x \right\}.$$
+$$\cE_{i+1}(z):= \cE_{i+1}(z) \cup \left\{\cA_j(q,q') \mid j \in [k], (q,q') \in T_{j,z} \right\}$$
+and 
+$$\cE_{i+1}(y): = \cE_{i+1}(y) \cup \left\{\cB_{\cA_j, a, T_{j,z}} \mid j \in [k] \right\}.$$
 %
-\item Let $G:= G \setminus \{(x, (\rpleft, a), y), (x, (\rpright,a), z)\}$.
+\item Let $G_{i+1}:= G_i \setminus \{(x, (\rpleft, a), y), (x, (\rpright,a), z)\}$.
+\end{enumerate}
+%
+\item Let $i: = i+1$.
 \end{enumerate}
 
-\smallskip
-
-\noindent {\bf Step II.} For each source variable $y$, guess an accepting run of the product automaton of all the NFA in $\cE_y$. 
+For each variable $x$, let $\cE(x)$ be the set $\cE_i(x)$ after exiting the above loop. 
 
 \smallskip
 
-Note that for each variable $x$, the cardinality of the set $\cE_x$ in Step I is bounded 
+\noindent {\bf Step II.} 
+For each source variable $x$, guess an accepting run of the product automaton of all the NFA in $\cE(x)$. 
+
+\smallskip
+
+Note that in the first sight, the cardinalities of the sets $\cE(x)$ seem exponential w.r.t. the size of $C$ in the worst case and the nondeterministic algorithm may take exponential space. By a refined analysis, we can see that the cardinalities of the sets $\cE(x)$ are in fact polynomial. 
+
+\begin{proposition}
+The cardinalities of $\cE(x)$ for variables $x$ in $G_C$ are polynomial w.r.t. the size of $C$.
+\end{proposition}
+
+\begin{proof}
+Let $K$ denote the maximum cardinality of $\cE_0(x)$ for nodes $x$ in $G_C$. In addition, let $M$ denote the maximum size (number of states) of the NFA in $\cE_0(x)$ for nodes $x$ in $G_C$. For each node $x$,  let $\#_{\sf anc}(x)$ denote the number of ancestors of $x$ in $G_C$ and $\#_{\sf lft}(x)$ denote the number of $\rpleft$-edges that are co-reachable from $x$ in $G_C$.
+
+\smallskip
+
+\noindent {\bf Claim}. For each node $x$ in $G_C$, $|\cE(x)| \le K+ (\#_{\sf anc}(x) + \#_{\sf lft}(x)) KM^2$.
+
+\smallskip
+
+We prove the claim by an induction on the number of edges in $G_C$. Note that the number of edges of $G_C$ is an even number.
+
+
+\smallskip
+
+
+\noindent {\it Induction base}: $G_C$ contains exactly two edges, say $(x, (\rpleft,a), y)$ and $(x, (\rpright, a), z)$. 
+
+Then evidently $\cE(x)=\cE_0(x)$, thus $|\cE(x)| = K \le K+ (\#_{\sf anc}(x) + \#_{\sf lft}(x)) KM^2$.
+
+Let us first assume $y \neq z$. Then $\#_{\sf anc}(y) = 1$, $\#_{\sf lft}(y)=1$, $\#_{\sf anc}(z) = 1$ and $\#_{\sf lft}(z)=0$.
+\begin{itemize}
+\item For the variable $z$, $\cE(z)$ is obtained from $\cE_0(z)$ by adding for each NFA in $\cE_0(x)$, at most $M^2$ NFA. Therefore, $\cE(z) \le |\cE_0(z)| + |\cE_0(x)| M^2 \le K + KM^2 = K + (\#_{\sf anc}(z)+\#_{\sf lft}(z))KM^2$. 
+\item In addition, for the variable $y$, $\cE(y)$ is obtained from $\cE_0(y)$ by adding an NFA for each NFA in $\cE_0(x)$. Therefore, $\cE(y) \le |\cE_0(y)| + |\cE_0(x)|  \le K + K  \le K + (\#_{\sf anc}(y)+\#_{\sf lft}(y)) KM^2$.
+\end{itemize}
+
+Next, let us assume that $y = z$. Then $\#_{\sf anc}(y) = \#_{\sf anc}(z)= 1$ and $\#_{\sf lft}(y)=\#_{\sf anc}(z)=1$.
+For the variable $y$, $\cE(y)$ is obtained from $\cE_0(y)$ by adding for each NFA in $\cE_0(x)$, at most $M^2$ NFA (corresponding to the $\rpright$-edge), and adding for each NFA in $\cE_0(x)$, one NFA (corresponding to the $\rpleft$-edge).
+Therefore, $\cE(y) \le |\cE_0(y)| + |\cE_0(x)| M^2 + |\cE_0(x)| \le K + 2KM^2 = K + (\#_{\sf anc}(z)+\#_{\sf lft}(z))KM^2$. 
+
+\smallskip
+
+\noindent {\it Induction step}: 
+
+\zhilin{to be continued}.
+
+\end{proof}
+
+The key point is that for an NFA $\cA$ and two pairs of states $(q,q'), (q'', q''')$ in $\cA$, we have $(\cA(q,q'))(q'', q''')= \cA(q'', q''')$. For each variable $x$, let $\cE^{(0)}_x$ denote the initial value of $\cE_x$ in the aforementioned procedure. Then during the computation, for each variable $x$, $\cE_x$ is the union of $\cE^{(0)}_x$ and a collection of $\cA(q,q')$ such that $\cA \in \cE^{(0)}_y$ for some ancestor $y$ of $x$. Suppose in the beginning of the aforementioned procedure, for each variable $x$, $\cE_x$ contains at most $k_x$ NFA and the size (number of states) of each such NFA is bounded by $l_x$. Then for each variable $x$, during the aforementioned procedure, the cardinality of $\cE_x$ is bounded by $k_x + \sum \limits_{y: \mbox{ ancestor of }x} l^2_y$.
 
 %\begin{quote}
 %\it Let $x$ be a node in the graph without predecessors and $x = \replaceall(y, a, z)$ be a conjunct of $\varphi$ and $\cA_1, \dots, \cA_m$ be a collection of regular constraints for $x$. Then remove the two edges out of $x$, guess $T_{i, z} \subseteq Q_i \times Q_i$ for $i \in [m]$, and add additional regular constraints to $y$ and $z$ as specified above. 
