@@ -78,19 +78,29 @@ Then the satisfiability of $C$ is decided by the following two-step procedure.
 
 \smallskip
 
-\noindent{\bf Step I.} We utilise the dependency graph $C$ and compute a collection of atomic regular constraints $\cE(x)$ for each variable $x$, in a top-down manner as follows. 
+\noindent{\bf Step I.} We utilise the dependency graph $C$ and compute nondeterministically a collection of atomic regular constraints $\cE(x)$ for each variable $x$, in a top-down manner as follows. 
 
-Initially, let $G_0:= G_C$, and for each $x$, let $\cE_0(x)$ denote the set of NFA that correspond to the regular expressions $e$ such that $x \in e$ is a conjunct of $\psi$. Let $i: = 0$ and repeat the following (nondeterministic) procedure until $G_i$ becomes an empty graph, i.e. a graph without edges. 
+During the computation, for each variable $x$, the collection of atomic regular constraints $\cE(x)$ is represented in a succinct way: That is, as a set of pairs $(\cT, \cP)$, where $\cT=(Q, \delta)$ is a transition graph and $\cP \subseteq Q \times Q$. The intention of $(\cT, \cP)$ is to represent succinctly the collection of the atomic regular constraints $(Q, \delta, q, \{q'\})$, where $q$ is the initial state and $\{q'\}$ is the set of final states, for $(q,q') \in \cP$.
 
+Initially, let $G_0:= G_C$. In addition, for each variable $x$, compute $\cE_0(x)$ as follows: Initially, let $\cE_0(x) := \emptyset$.
+For each conjunct $x \in e$ in $\psi$, let $\cA=(Q, \delta, q_0, F)$ be the NFA corresponding to $e$, then nondeterministically choose $q \in F$ and let $\cE_0(x):= \cE_0(x) \cup \{((Q, \delta), \{(q_0, q)\})\}$.
+% 
+
+Let $i: = 0$ and repeat the following procedure until $G_i$ becomes an empty graph, i.e. a graph without edges. 
 \begin{enumerate}
-\item Select a node $x$ of $G_i$ such that $x$ has no predecessors and has two successors in $G_i$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ in $G_i$ and $\cE_i(x)=\{\cA_1,\cdots, \cA_k\}$. For each $j \in [k]$, let $\cA_j = (Q_j, \delta_j, q_{0,j}, F_j)$. Then $\cE_{i+1}(z)$, $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:  
+\item Select a node $x$ of $G_i$ such that $x$ has no predecessors and has two successors in $G_i$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ in $G_i$ and $\cE_i(x)=\{(\cT_1,\cP_1), \cdots, (\cT_k, \cP_k)\}$. For each $j \in [k]$, let $\cT_j = (Q_j, \delta_j)$. Then $\cE_{i+1}(z)$ and  $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:  
 \begin{enumerate}
 \item For each $j \in [k]$, guess a set $T_{j, z} \subseteq Q_j \times Q_j$.
 %
-\item Let 
-$$\cE_{i+1}(z):= \cE_{i+1}(z) \cup \left\{\cA_j(q,q') \mid j \in [k], (q,q') \in T_{j,z} \right\}$$
+\item If $y \neq z$, then let 
+$$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\}$$
 and 
-$$\cE_{i+1}(y): = \cE_{i+1}(y) \cup \left\{\cB_{\cA_j, a, T_{j,z}} \mid j \in [k] \right\}.$$
+$$\cE_{i+1}(y): = \cE_{i}(y) \cup \left\{(\cT_{\cA_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\},$$
+where $\cT_{\cA_j, a, T_{j,z}}$ is the transition graph of $\cB_{\cA_j, a, T_{j,z}}$. 
+
+Otherwise, let
+$$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\} \cup \left\{(\cT_{\cA_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\}.$$
+In addition, for each node $x'$ distinct from $y, z$, let $\cE_{i+1}(x') := \cE_i(x')$.
 %
 \item Let $G_{i+1}:= G_i \setminus \{(x, (\rpleft, a), y), (x, (\rpright,a), z)\}$.
 \end{enumerate}
@@ -98,7 +108,7 @@ $$\cE_{i+1}(y): = \cE_{i+1}(y) \cup \left\{\cB_{\cA_j, a, T_{j,z}} \mid j \in [k
 \item Let $i: = i+1$.
 \end{enumerate}
 
-For each variable $x$, let $\cE(x)$ be the set $\cE_i(x)$ after exiting the above loop. 
+For each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$ after exiting the above loop. 
 
 \smallskip
 
@@ -107,50 +117,65 @@ For each source variable $x$, guess an accepting run of the product automaton of
 
 \smallskip
 
-Note that in the first sight, the cardinalities of the sets $\cE(x)$ seem exponential w.r.t. the size of $C$ in the worst case and the nondeterministic algorithm may take exponential space. By a refined analysis, we can see that the cardinalities of the sets $\cE(x)$ are in fact polynomial. 
+%Note that in the first sight, the cardinalities of the sets $\cE(x)$ seem exponential w.r.t. the size of $C$ in the worst case and the nondeterministic algorithm may take exponential space. 
+%By a refined analysis, we can see that the cardinalities of the sets $\cE(x)$ are in fact polynomial. 
+
+To show that the aforementioned nondeterministic decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$. 
 
 \begin{proposition}
-The cardinalities of $\cE(x)$ for variables $x$ in $G_C$ are polynomial w.r.t. the size of $C$.
+The cardinalities of $\cE(x)$ for variables $x$ in $G_C$ are at most exponential w.r.t. the size of $C$, and polynomial if $G_C$ is a tree.
 \end{proposition}
 
 \begin{proof}
-Let $K$ denote the maximum cardinality of $\cE_0(x)$ for nodes $x$ in $G_C$. In addition, let $M$ denote the maximum size (number of states) of the NFA in $\cE_0(x)$ for nodes $x$ in $G_C$. For each node $x$,  let $\#_{\sf anc}(x)$ denote the number of ancestors of $x$ in $G_C$ and $\#_{\sf lft}(x)$ denote the number of $\rpleft$-edges that are co-reachable from $x$ in $G_C$.
+The transition graphs $\cT=(Q, \delta)$ and $\cT'=(Q', \delta')$ are said to be \emph{isomorphic} if there is a bijection $\pi: Q \rightarrow Q'$ such that for each $q, q' \in Q$ and $a \in \Sigma$, $(q, a, q') \in \delta$ iff $(\pi(q), a, \pi(q')) \in \delta'$.
+
+Let $K$ denote the maximum cardinality of $\cE_0(x)$ for nodes $x$ in $G_C$. 
+%In addition, for each node $x$ in $G_C$, let $\#^{\sf anc}$ 
+%In addition, let $M$ denote the maximum size (number of states) of the NFA in $\cE_0(x)$ for nodes $x$ in $G_C$. 
+For each $i$ and each node $x$ in $G_C$,  let $\#^{\sf anc}_i(x)$ denote the number of ancestors of $x$ in $G_i$.
+
+%the number of edges of $G_0 \setminus G_i$ (i.e. the subgraph of $G_0$ comprising all the edges not in $G_i$) that are co-reachable from $x$ in  $G_0 \setminus G_i$. 
+
+% and $\#_{\sf lft}(x)$ denote the number of $\rpleft$-edges that are co-reachable from $x$ in $G_C$.
+
+%Then the proposition follows from the following claim, since for each node $x$, $|\cE(x)| \le |\cG(\cE(x))|M^2$.
+
+We first prove the following claim.
 
 \smallskip
 
-\noindent {\bf Claim}. For each node $x$ in $G_C$, $|\cE(x)| \le K+ (\#_{\sf anc}(x) + \#_{\sf lft}(x)) KM^2$.
+\noindent {\bf Claim}. For each $i$ and each node $x$ in $G_C$, 
+$|\cE_i(x)| \le 3^i K$. In addition, if $G_C$ is a tree, then $|\cE_i(x)| \le (\#^{\sf anc}_0(x)-\#^{\sf anc}_i(x)+1) K$.
 
 \smallskip
 
-We prove the claim by an induction on the number of edges in $G_C$. Note that the number of edges of $G_C$ is an even number.
-
+We prove the claim by an induction on $i$.
 
 \smallskip
 
 
-\noindent {\it Induction base}: $G_C$ contains exactly two edges, say $(x, (\rpleft,a), y)$ and $(x, (\rpright, a), z)$. 
-
-Then evidently $\cE(x)=\cE_0(x)$, thus $|\cE(x)| = K \le K+ (\#_{\sf anc}(x) + \#_{\sf lft}(x)) KM^2$.
-
-Let us first assume $y \neq z$. Then $\#_{\sf anc}(y) = 1$, $\#_{\sf lft}(y)=1$, $\#_{\sf anc}(z) = 1$ and $\#_{\sf lft}(z)=0$.
-\begin{itemize}
-\item For the variable $z$, $\cE(z)$ is obtained from $\cE_0(z)$ by adding for each NFA in $\cE_0(x)$, at most $M^2$ NFA. Therefore, $\cE(z) \le |\cE_0(z)| + |\cE_0(x)| M^2 \le K + KM^2 = K + (\#_{\sf anc}(z)+\#_{\sf lft}(z))KM^2$. 
-\item In addition, for the variable $y$, $\cE(y)$ is obtained from $\cE_0(y)$ by adding an NFA for each NFA in $\cE_0(x)$. Therefore, $\cE(y) \le |\cE_0(y)| + |\cE_0(x)|  \le K + K  \le K + (\#_{\sf anc}(y)+\#_{\sf lft}(y)) KM^2$.
-\end{itemize}
-
-Next, let us assume that $y = z$. Then $\#_{\sf anc}(y) = \#_{\sf anc}(z)= 1$ and $\#_{\sf lft}(y)=\#_{\sf anc}(z)=1$.
-For the variable $y$, $\cE(y)$ is obtained from $\cE_0(y)$ by adding for each NFA in $\cE_0(x)$, at most $M^2$ NFA (corresponding to the $\rpright$-edge), and adding for each NFA in $\cE_0(x)$, one NFA (corresponding to the $\rpleft$-edge).
-Therefore, $\cE(y) \le |\cE_0(y)| + |\cE_0(x)| M^2 + |\cE_0(x)| \le K + 2KM^2 = K + (\#_{\sf anc}(z)+\#_{\sf lft}(z))KM^2$. 
+\noindent {\it Induction base}: $i=0$. Evidently $|\cE_0(x)| \le K = 3^i K = (\#^{\sf anc}_0(x)-\#^{\sf anc}_0(x)+1) K$.
 
 \smallskip
 
 \noindent {\it Induction step}: 
+Suppose $i > 0$.
 
-\zhilin{to be continued}.
+Let $x$ be the node without predecessors and with successors in $G_{i-1}$ that is used to construct $G_{i}$. In addition, let $(x, (\rpleft, a), y)$ and $(x, (\rpright, a), z)$ be the two edges out of $x$ in $G_{i-1}$.
 
+Let us first assume $y \neq z$.
+Then $|\cE_{i}(z)| \le |\cE_{i-1}(z)| + |\cE_{i-1}(x)|$ and $|\cE_{i}(y)| \le |\cE_{i-1}(y)| + |\cE_{i-1}(x)|$.  By the induction hypothesis, $|\cE_{i-1}(x)| \le  3^{i-1} K$, $|\cE_{i-1}(y)| \le 3^{i-1} K$, and $|\cE_{i-1}(z)| \le 3^{i-1} K$. Therefore, $|\cE_{i}(z)|  \le |\cE_{i-1}(z)| + |\cE_{i-1}(x)| \le 3^{i-1} K + 3^{i-1} K \le 3^i K$. Similarly, $|\cE_{i}(y)| \le 3^i K$.
+
+Next, we assume $y = z$. Then $|\cE_{i}(z)| \le |\cE_{i-1}(z)| + |\cE_{i-1}(x)| + |\cE_{i-1}(x)| \le 3* 3^{i-1} K = 3^i K$. 
+
+For the special case that $G_C$ is a tree, we know that $y \neq z$. Then $\cE_{i-1}(z) = \cE_0(z)$ and $\cE_{i-1}(y) = \cE_0(y)$. Therefore, $|\cE_{i}(z)| \le |\cE_{i-1}(z)| + |\cE_{i-1}(x)| \le K + |\cE_{i-1}(x)|$. By the induction hypothesis, $|\cE_{i-1}(x)| \le (\#^{\sf anc}_{0}(x) - \#^{\sf anc}_{i-1}(x)+1)K$. We deduce that $|\cE_{i}(z)| \le K+ (\#^{\sf anc}_{0}(x) - \#^{\sf anc}_{i-1}(x)+1)K$. Moreover, since $\#^{\sf anc}_{0}(z) = \#^{\sf anc}_{0}(x)+1$ and $\#^{\sf anc}_{i-1}(x)=\#^{\sf anc}_{i}(x)= \#^{\sf anc}_{i}(z)=0$, we have $|\cE_{i}(z)| \le K+ (\#^{\sf anc}_{0}(z)-1 - \#^{\sf anc}_{i}(z)+1)K = (\#^{\sf anc}_{0}(z) - \#^{\sf anc}_{i}(z)+1)K$.
+Similarly, $|\cE_{i}(y)| \le |\cE_{i-1}(y)| + |\cE_{i-1}(x)| = |\cE_{0}(y)| + |\cE_{i-1}(x)| \le K+|\cE_{i-1}(x)| \le K+ (\#^{\sf anc}_{0}(x) - \#^{\sf anc}_{i-1}(x)+1)K \le K+ (\#^{\sf anc}_{0}(y)-1 - \#^{\sf anc}_{i}(y)+1)K = (\#^{\sf anc}_{0}(y) - \#^{\sf anc}_{i}(y)+1)K$.
+
+
+%From the construction, we know that $\#^{\sf rmv}_{i-1}(x)  = \#^{\sf rmv}_{i}(x)$, $ \#^{\sf rmv}_{i}(y) = \#^{\sf rmv}_{i-1}(y)-1$, and  $ \#^{\sf cor}_{i}(z) = \#^{\sf cor}_{i-1}(z)-1$. 
+
+%Otherwise, $|\cG(\cE_{i+1}(z))| \le |\cG(\cE_{i}(z))| + |\cE_{i}(x)| + |\cE_{i}(x)| \le K_i + K_i + K_i = 3K_i$. Therefore, we deduce that $K_{i+1} \le 3K_i$.
 \end{proof}
-
-The key point is that for an NFA $\cA$ and two pairs of states $(q,q'), (q'', q''')$ in $\cA$, we have $(\cA(q,q'))(q'', q''')= \cA(q'', q''')$. For each variable $x$, let $\cE^{(0)}_x$ denote the initial value of $\cE_x$ in the aforementioned procedure. Then during the computation, for each variable $x$, $\cE_x$ is the union of $\cE^{(0)}_x$ and a collection of $\cA(q,q')$ such that $\cA \in \cE^{(0)}_y$ for some ancestor $y$ of $x$. Suppose in the beginning of the aforementioned procedure, for each variable $x$, $\cE_x$ contains at most $k_x$ NFA and the size (number of states) of each such NFA is bounded by $l_x$. Then for each variable $x$, during the aforementioned procedure, the cardinality of $\cE_x$ is bounded by $k_x + \sum \limits_{y: \mbox{ ancestor of }x} l^2_y$.
 
 %\begin{quote}
 %\it Let $x$ be a node in the graph without predecessors and $x = \replaceall(y, a, z)$ be a conjunct of $\varphi$ and $\cA_1, \dots, \cA_m$ be a collection of regular constraints for $x$. Then remove the two edges out of $x$, guess $T_{i, z} \subseteq Q_i \times Q_i$ for $i \in [m]$, and add additional regular constraints to $y$ and $z$ as specified above. 
