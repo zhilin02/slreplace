@@ -2,7 +2,7 @@
 
 \section{Undecidable extensions}
 
-In this section, we extend the language SL with integer and character constraints. The language will use two types of variables, str and int. 
+In this section, we extend the language $\strline[\replaceall]$ with integer and character constraints. The language will use two types of variables, str and int. 
 
 We start by defining integer constraints, which expresses length or number of occurrences of symbols in words. 
 
@@ -26,5 +26,36 @@ Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a
 \end{proof}
 
 \subsection{Undecidability of character and length constraints}
+
+Character constraints allow use to compare symbols from different strings. 
+
+\begin{definition}
+	An atomic character constraint over $\Sigma$ is an expression of the form $x[u]=y[v]$ where $x$ and $y$ are either a variable or a word in $\Sigma^*$, and $u$ and $v$ are either integer variables or constants positive integers. 
+	
+	A character constraint over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
+\end{definition}
+
+Intuitively, $x[u]$ is interpreted as the $u$-th letter of $x$. 
+
+We have the following simple observation:
+
+\begin{lemma}
+	For any two strings $x,y\in a^*\$$, $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
+\end{lemma}
+\tl{I am not satisfied with this as the quantifier is used}
+
+\paragraph{IndexOf}
+One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define IndexOf, which is the most standard usage of IndexOf method in practice. We consider the \emph{first-occurrence} semantics, i.e., (the first position in $x$ where $w$ occurs).
+and the \emph{anywhere} semantics. 
+
+We have the following observation: 
+\begin{lemma}
+	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=IndexOf(x,y)=IndexOf(y,x)$.  
+\end{lemma}
+
+It follows that 
+\begin{proposition}
+	$\strline[\replaceall]$ extended with IndexOf is undecidable, regardless of the first-occurrence and the anywhere semantics. 
+\end{proposition}
 
 \subsection{Extensions with disequalities and IndexOf}
