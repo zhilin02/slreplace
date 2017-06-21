@@ -6,7 +6,14 @@ We have seen  a lot of work on solvers for constraint languages over strings (a.
 
 One main driving force behind this research direction is the application to analysis of security vulnerability in web applications against code injections and cross-site scripting (XSS), which are typically caused by improper handling of untrusted strings by the web applications, e.g., leading to an execution of malicious JavaScript in the clients' browsers. 
 
-$\replaceall$ function is widely used in Javascript programs.
+$\replaceall$ function is widely used in Javascript programs. In general, the $\replaceall$ function has three parameters, and in the current mainstream language such as Python and JavaScript, all of the three (? or just the first and the third?) parameters can be inserted as variables (with proper types such as strings). As result, when we perform program analysis for, for instance, detecting security vulnerabilities as described as above, one often end up with string constraints with, for instance $z=\replaceall(x,"aa", y)$, meaning that $z$ is obtained by replacing all occurrences of $aa$ in $x$ by $y$. Solving string constraints involving this type of constraints is crucial, but unfortunately, is not supported by the current technique. There are two reasons:
+\begin{itemize}
+	\item the state of the art approach which is based on transducers \cite{LB16}, when applied to tackle the replaceall function, requires the second and the third parameters to be constant. 
+	
+	\item for constraint such as $z=repalce(x,a,y)$, one may resort to solving word equations. However, this turns out to be difficult for the $\replaceall$ function.   
+\end{itemize}
+
+ 
 
 \input{motivation.tex}
 
@@ -27,9 +34,23 @@ The logic chain would be:
 	\item we carry out a systematic investigation of replaceall when other parameters can be set as variables 
 \end{itemize}
 
-\paragraph{Contribution.}
+\paragraph{Contribution.} We study the decidability of satisfiability over string logics with concatenations and the $\replaceall$ functions. Naively combining these two easily leads to an undecidability logic, hence, our strategy is explore the ``strainght-line" fragment, introduced in \cite{LB16}. 
 
-PSPACE-complete
+The fragment can express the program logics of straight-line string manipulating programs with concatenation and $\replaceall$ as atomic operations. Indeed, straight-line programs naturally arise when performing bounded model checking or dynamic symbolic executions. 
+
+We give an algorithm to check the satisfiability of the constraints. The advantages are 
+\begin{itemize}
+	\item it is an automata-theoretic algorithm, and when the constraints are satisfiable, one can synthesise the solution. 
+	
+	\item the algorithm admits a modular construction, and easy to implement, even symbolic implementation(???). 
+	
+	
+	\item The algorithm in general requires exponential space, but under a certain reasonable assumption it is actually running in polynomial space. 
+\end{itemize}
+
+
+
+EXPSPACE algorithm
 
 a table to summarise the results.
 
