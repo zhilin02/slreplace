@@ -49,8 +49,14 @@ Regular expressions and NFA are expressively equivalent. In particular, from a r
 \end{proposition}
 
 \subsection*{Graph-theoretical notations}
-The term DAG stands for \emph{directed acylic graphs}. They are finite directed graphs $(V, E)$ with no directed cycles. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $v$ and follow a consistently-directed sequence of edges that eventually loops back to $v$ again. Equivalently, a DAG is a directed graph that has a topological ordering, a sequence of the vertices such that every edge is directed from earlier to later in the sequence. Let $G=(V,E)$ be a DAG. An edge from $v$ to $v'$ in $G$ is called an \emph{incoming} edge of $v'$ and an \emph{outgoing} edge of $v$. If there is an edge from $v$ to $v'$ in $G$, then $v'$ is called a \emph{successor} of $v$ and $v$ is called a \emph{predecessor} of $v'$. A \emph{path} in $G$ is a sequence $v_0 e_1 v_1 \cdots v_{n-1} e_n v_n$ such that for each $i \in [n]$, $e_i$ is an edge from $v_{i-1}$ to $v_i$. If there is a path from $v$ to $v'$ (resp. $v'$ to $v$) in $G$, then $v'$ is said to be \emph{reachable} (resp. \emph{co-reachable}) from $v$ in $G$. If $v$ is reachable from $v'$ in $G$, then $v'$ is also called an \emph{ancestor} of $v$ in $G$. In addition, an edge from $v'$ to $v''$ is said to be reachable (resp. co-reachable) from $v$ if $v'$ is reachable from $v$ (resp. $v''$ is co-reachable from $v$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $v$ is the number of incoming (resp. outgoing) edges of $v$. A vertex $v$ in $G$ is said to be a \emph{join} vertex if the in-degree of $v$ is at least two. A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.  A \emph{subgraph} $G'$ of $G=(V,E)$ is a pair $(V', E')$ such that $V' \subseteq V$ and $E' \subseteq V' \times V'$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$. 
+The term DAG stands for \emph{directed acylic graphs}. They are finite directed graphs $(V, E)$ with no directed cycles. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $v$ and follow a consistently-directed sequence of edges that eventually loops back to $v$ again. Equivalently, a DAG is a directed graph that has a topological ordering, a sequence of the vertices such that every edge is directed from earlier to later in the sequence. Let $G=(V,E)$ be a DAG. An edge from $v$ to $v'$ in $G$ is called an \emph{incoming} edge of $v'$ and an \emph{outgoing} edge of $v$. If there is an edge from $v$ to $v'$ in $G$, then $v'$ is called a \emph{successor} of $v$ and $v$ is called a \emph{predecessor} of $v'$. A \emph{path} in $G$ is a sequence $v_0 e_1 v_1 \cdots v_{n-1} e_n v_n$ such that for each $i \in [n]$, $e_i$ is an edge from $v_{i-1}$ to $v_i$. The \emph{length} of a path $v_0 e_1 v_1 \cdots v_{n-1} e_n v_n$ in $G$ is $n+1$, i.e. the number of vertices in the path. If there is a path from $v$ to $v'$ (resp. $v'$ to $v$) in $G$, then $v'$ is said to be \emph{reachable} (resp. \emph{co-reachable}) from $v$ in $G$. If $v$ is reachable from $v'$ in $G$, then $v'$ is also called an \emph{ancestor} of $v$ in $G$. In addition, an edge from $v'$ to $v''$ is said to be reachable (resp. co-reachable) from $v$ if $v'$ is reachable from $v$ (resp. $v''$ is co-reachable from $v$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $v$ is the number of incoming (resp. outgoing) edges of $v$. A vertex $v$ in $G$ is said to be a \emph{join} vertex if the in-degree of $v$ is at least two. 
+%A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.  
+A \emph{subgraph} $G'$ of $G=(V,E)$ is a pair $(V', E')$ such that $V' \subseteq V$ and $E' \subseteq V' \times V'$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$. 
 
+
+%%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \begin{definition}[Diamond and diamond graph]
 Let $G=(V,E)$  be a DAG and $v,v' \in V$ with $v \neq v'$. Then a diamond in $G$ from $v$ to $v'$ is a pair of paths $\pi_1, \pi_2$ from $v$ to $v'$ such that  $\pi_1$ and $\pi_2$ are vertex-disjoint, except $v$ and $v'$. The diamond graph of $G$, denoted by $\cG_{\sf dmd}(G)$, is the graph $(G, E \cup E')$, where $E'$ comprises the pairs $(v,v')$ such that $v\neq v'$ and there is a diamond from $v$ to $v'$. The edges in $E'$ are called the diamond edges of $\cG_{\sf dmd}(G)$.
 \end{definition}
@@ -67,8 +73,9 @@ Example for diamond index
 \begin{proposition}\label{prop-num-path}
 Let $G=(V,E)$ be a DAG such that the out-degree of each vertex is at most two. Then there are $n^{O(\dmdidx(G))}$ different paths\footnote{two paths are different iff the set of edges in the two paths are different.}  in $G$.
 \end{proposition}
-
-
+}
+%%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % copy from Lin's paper. 
 
@@ -302,7 +309,9 @@ The proof of Theorem~\ref{thm-main} utilises a concept of dependency graphs defi
 \end{definition}
 Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero. 
 
-For $k \in \Nat$, let us use $\strline_k[\replaceall]$ to denote the class of $\strline[\replaceall]$ formulae $C$ such that $\arbidx(G_C) \le k$, i.e. the arborescence index of $G_C$ is no more than $k$.
+%For $k \in \Nat$, let us use $\strline_k[\replaceall]$ to denote the class of $\strline[\replaceall]$ formulae $C$ such that $\arbidx(G_C) \le k$, i.e. the arborescence index of $G_C$ is no more than $k$.
+
+For an $\strline[\replaceall]$ formula $C$, the dependency graph $G_C$ is called \emph{source-sharing} if the vertices with in-degree more than one in $G_C$ are \emph{all} source variables (this means that the non-source variables are not shared). Let us use $\strline_{\sf ss}[\replaceall]$ to denote the set of $\strline[\replaceall]$ formulae $C$  such that $G_C$ is source-sharing.
 
 
 In the definition of $\strline[\replaceall]$, we observe that
