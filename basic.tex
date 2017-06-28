@@ -39,7 +39,7 @@ where, for $i =1, 2, 3$, suppose  $\cA_i = (Q_i, \delta_i, q_{0,i}, F_i)$
 %\cA_y = (Q_y, \delta_y, q_{0, y}, F_y), \cA_z = (Q_z, \delta_z, q_{0, z}, F_z)$ 
 is the NFA corresponding to $e_i$. 
 
-$C$ is satisfiable if and only iff $x, y, z$ can be assigned with strings $u, v, w$ so that: (1) $u$ is obtained from $v$ by replacing all the occurrences of $a$ in $v$ with $w$, and (2) $u, v, w$ are accepted by $\cA_1, \cA_2, \cA_3$ respectively. As $u$ is accepted by $\cA_1$,  there must be an accepting run of $\cA_1$ on $u$. Let $v = v_1 a v_2 a \cdots a v_k$ such that for each $i \in [k]$, $v_i \in (\Sigma \setminus \{a\})^*$. Then $u = v_1 w v_2 w \cdots w v_k$ and there are states $q_1, q'_1, \cdots, q_{k-1}, q'_{k-1}, q_k$  such that 
+$C$ is satisfiable if and only if $x, y, z$ can be assigned with strings $u, v, w$ so that: (1) $u$ is obtained from $v$ by replacing all the occurrences of $a$ in $v$ with $w$, and (2) $u, v, w$ are accepted by $\cA_1, \cA_2, \cA_3$ respectively. As $u$ is accepted by $\cA_1$,  there must be an accepting run of $\cA_1$ on $u$. Let $v = v_1 a v_2 a \cdots a v_k$ such that for each $i \in [k]$, $v_i \in (\Sigma \setminus \{a\})^*$. Then $u = v_1 w v_2 w \cdots w v_k$ and there are states $q_1, q'_1, \cdots, q_{k-1}, q'_{k-1}, q_k$  such that 
 %
 $$
 q_{0,1} \xrightarrow[\cA_1]{v_1} q_1 \xrightarrow[\cA_1]{w} q'_1 \xrightarrow[\cA_1]{v_2} q_2 \xrightarrow[\cA_1]{w} q'_2 \cdots q_{k-1} \xrightarrow[\cA_1]{w} q'_{k-1} \xrightarrow[\cA_1]{v_k} q_k
@@ -69,7 +69,7 @@ From Proposition~\ref{prop-sat-sl-case}, we can decide the satisfiability of $C$
 During Step II and III, it is sufficient to record $T_z$ and a state of the product automaton, which occupies only a polynomial space.
 
 The above decision procedure can be easily generalised to the case that there are multiple atomic regular constraints for $x$. For instance, let $x \in e_{1,1} \wedge x \in e_{1,2}$ and for $j = 1, 2$, $\cA_{1,j} = (Q_{1,j}, \delta_{1, j}, q_{0,1, j}, F_{1,j})$ be 
-the NFA corresponding to $e_{1,j}$. Then in Step I, two sets $T_{1,z} \subseteq Q_{1,1} \times Q_{1,1}$ and $T_{2,z} \subseteq Q_{1,2} \times Q_{1,2}$ are guessed and Step II and III are adjusted accordingly.
+the NFA corresponding to $e_{1,j}$. Then in Step I, two sets $T_{1,z} \subseteq Q_{1,1} \times Q_{1,1}$ and $T_{2,z} \subseteq Q_{1,2} \times Q_{1,2}$ are guessed, moreover, Step II and III are adjusted accordingly.
 
 \begin{example}
 
@@ -96,7 +96,7 @@ Initially, let $G_0:= G_C$.  In addition, for each variable $x$ with the conjunc
 
 Let $i: = 0$ and repeat the following procedure until $G_i$ becomes an empty graph, i.e. a graph without edges. 
 \begin{enumerate}
-\item Select a node $x$ of $G_i$ such that $x$ has no predecessors \tl{parent} and has two successors in $G_i$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ in $G_i$ and $\cE_i(x)=\{(\cT_1,\cP_1), \cdots, (\cT_k, \cP_k)\}$, where for each $j \in [k]$, $\cT_j = (Q_j, \delta_j)$. Then $\cE_{i+1}(z)$ and  $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:  
+\item Select a vertex $x$ of $G_i$ such that $x$ has no predecessors \tl{parent} and has two successors in $G_i$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ in $G_i$ and $\cE_i(x)=\{(\cT_1,\cP_1), \cdots, (\cT_k, \cP_k)\}$, where for each $j \in [k]$, $\cT_j = (Q_j, \delta_j)$. Then $\cE_{i+1}(z)$ and  $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:  
 \begin{enumerate}
 \item For each $j \in [k]$, guess a set $T_{j, z} \subseteq Q_j \times Q_j$.
 %
@@ -108,7 +108,7 @@ where $\cT_{\cA_j, a, T_{j,z}}$ is the transition graph of $\cB_{\cA_j, a, T_{j,
 
 Otherwise, let
 $$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\} \cup \left\{(\cT_{\cA_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\}.$$
-In addition, for each node $x'$ distinct from $y, z$, let $\cE_{i+1}(x') := \cE_i(x')$.
+In addition, for each vertex $x'$ distinct from $y, z$, let $\cE_{i+1}(x') := \cE_i(x')$.
 %
 \item Let $G_{i+1}:= G_i \setminus \{(x, (\rpleft, a), y), (x, (\rpright,a), z)\}$.
 \end{enumerate}
@@ -131,16 +131,16 @@ For each source variable $x$, guess an accepting run of the product automaton of
 To show that the aforementioned nondeterministic decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$. 
 
 \begin{proposition}
-The cardinalities of $\cE(x)$ for variables $x$ in $G_C$ are at most exponential w.r.t. the size of $C$, and polynomial if $G_C$ is a tree.
+The cardinalities of $\cE(x)$ for variables $x$ in $G_C$ are at most exponential w.r.t. $\arbidx(G_C)$, the arborescence index of $G_C$.
 \end{proposition}
 
 \begin{proof}
 The transition graphs $\cT=(Q, \delta)$ and $\cT'=(Q', \delta')$ are said to be \emph{isomorphic} if there is a bijection $\pi: Q \rightarrow Q'$ such that for each $q, q' \in Q$ and $a \in \Sigma$, $(q, a, q') \in \delta$ iff $(\pi(q), a, \pi(q')) \in \delta'$.
 
-Let $K$ denote the maximum cardinality of $\cE_0(x)$ for nodes $x$ in $G_C$. 
+Let $K$ denote the maximum cardinality of $\cE_0(x)$ for vertices $x$ in $G_C$. 
 %In addition, for each node $x$ in $G_C$, let $\#^{\sf anc}$ 
 %In addition, let $M$ denote the maximum size (number of states) of the NFA in $\cE_0(x)$ for nodes $x$ in $G_C$. 
-For each $i$ and each node $x$ in $G_C$,  let $\#^{\sf anc}_i(x)$ denote the number of ancestors of $x$ in $G_i$.
+For each $i$ and each vertex $x$ in $G_C$, let  $\#^{\sf anc}_i(x)$ denote the number of ancestors of $x$ in $G_i$, in addition, let ${\sf Idx}^{\sf arb}_i(x)$ denote the maximum number of join vertices in a path starting from $x$ in $G_i$.
 
 %the number of edges of $G_0 \setminus G_i$ (i.e. the subgraph of $G_0$ comprising all the edges not in $G_i$) that are co-reachable from $x$ in  $G_0 \setminus G_i$. 
 
@@ -152,8 +152,9 @@ We first prove the following claim.
 
 \smallskip
 
-\noindent {\bf Claim}. For each $i$ and each node $x$ in $G_C$, 
-$|\cE_i(x)| \le 3^i K$. In addition, if $G_C$ is a tree, then $|\cE_i(x)| \le (\#^{\sf anc}_0(x)-\#^{\sf anc}_i(x)+1) K$.
+\noindent {\bf Claim}. For each $i$ and each vertex $x$ in $G_C$, 
+$|\cE_i(x)| \le 3^{{\sf Idx}^{\sf arb}_0(x)-{\sf Idx}^{\sf arb}_i(x)} K$. 
+%In addition, if $G_C$ is a tree, then $|\cE_i(x)| \le (\#^{\sf anc}_0(x)-\#^{\sf anc}_i(x)+1) K$.
 
 \smallskip
 
@@ -162,14 +163,15 @@ We prove the claim by an induction on $i$.
 \smallskip
 
 
-\noindent {\it Induction base}: $i=0$. Evidently $|\cE_0(x)| \le K = 3^i K = (\#^{\sf anc}_0(x)-\#^{\sf anc}_0(x)+1) K$.
+\noindent {\it Induction base}: $i=0$. Evidently $|\cE_0(x)| \le K = 3^{{\sf Idx}^{\sf arb}_0(x)-{\sf Idx}^{\sf arb}_0(x)} K$.
+% = (\#^{\sf anc}_0(x)-\#^{\sf anc}_0(x)+1) K$.
 
 \smallskip
 
 \noindent {\it Induction step}: 
 Suppose $i > 0$.
 
-Let $x$ be the node without predecessors and with successors in $G_{i-1}$ that is used to construct $G_{i}$. In addition, let $(x, (\rpleft, a), y)$ and $(x, (\rpright, a), z)$ be the two edges out of $x$ in $G_{i-1}$.
+Let $x$ be the vertex without predecessors and with successors in $G_{i-1}$ that is used to construct $G_{i}$. In addition, let $(x, (\rpleft, a), y)$ and $(x, (\rpright, a), z)$ be the two edges out of $x$ in $G_{i-1}$.
 
 Let us first assume $y \neq z$.
 Then $|\cE_{i}(z)| \le |\cE_{i-1}(z)| + |\cE_{i-1}(x)|$ and $|\cE_{i}(y)| \le |\cE_{i-1}(y)| + |\cE_{i-1}(x)|$.  By the induction hypothesis, $|\cE_{i-1}(x)| \le  3^{i-1} K$, $|\cE_{i-1}(y)| \le 3^{i-1} K$, and $|\cE_{i-1}(z)| \le 3^{i-1} K$. Therefore, $|\cE_{i}(z)|  \le |\cE_{i-1}(z)| + |\cE_{i-1}(x)| \le 3^{i-1} K + 3^{i-1} K \le 3^i K$. Similarly, $|\cE_{i}(y)| \le 3^i K$.
