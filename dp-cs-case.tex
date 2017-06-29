@@ -97,9 +97,9 @@ Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is us
 \end{definition}
 
 Let $Q_{\search}  = \left\{ \left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u,k} \right\}$,  and $Q_{\verify, i} = \left\{ \left(\verify, i, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u,k} \right\}$ for each $i \in [k-1]$. In addition, let $Q_{\verify} = \bigcup \limits_{i \in [k-1]} Q_{\verify,i}$.
-In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \dots v_l u v_{l+1}$, the state sequence in the run is of the form 
-$$q_0\ r_1\ q_0\ r_2\ q_0\ \dots\ r_l\ q_0\ r_{l+1}$$ 
-such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ Q_{\verify, 1}  \dots  Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^+$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.
+In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \cdots v_l u v_{l+1}$, the state sequence in the run is of the form 
+$q_0\ r_1\ q_0\ r_2\ q_0\ \cdots\ r_l\ q_0\ r_{l+1}$
+such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ \concat Q_{\verify, 1} \concat \cdots  \concat Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^+$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.
 
 %The parsing automaton $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
 
@@ -109,7 +109,7 @@ such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ Q_{\verify, 1}  \dots 
 
 We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u,  T_{z}}$ is constructed by the following three-step procedure.
 \begin{enumerate}
-\item Construct the product automaton $\cA_1 \times \cA_u$ of $\cA_1$ and $\cA_u$. Note that the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$. 
+\item Construct the product automaton $\cA_1 \times \cA_u$ of $\cA_1$ and $\cA_u$. Recall that the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$. 
 
 \item Remove from $\cA_1 \times \cA_u$ all the states in $Q_1 \times Q_{\verify}$ as well as the transitions associated with them.
 
