@@ -1,0 +1,114 @@
+%!TEX root = popl2018.tex
+
+\section{Decision procedure for $\strline[\replaceall]$: The constant-string case}
+
+In this section, we consider the constant-string special case, that is, given an $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, it holds that every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=u$ for $u \in \Sigma^+$.
+
+Let us start with the simple case that $C \equiv x = \replaceall(y, u, z) \wedge \bigwedge \limits_{i \in [k]} x \in e_{i}$ such that $|u| \ge 2$.  In addition, for $i \in [k]$, suppose $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$ 
+%\cA_y = (Q_y, \delta_y, q_{0, y}, F_y), \cA_z = (Q_z, \delta_z, q_{0, z}, F_z)$ 
+is the NFA corresponding to $e_i$. 
+\begin{enumerate}
+\item For each $i \in [k]$, we will guess a set $T_{i, z} \subseteq Q_i \times Q_i$, which intuitively means that in $\cA_i$, for each state pair $(q, q') \in T_{i, z}$, starting from $q$, after reading $z$, the state $q' $ can be reached. The functions $(T_{i, z})_{i \in [k]}$ induce regular constraints $\Ll(\cA_i(q,q'))$ on $z$, where $i \in [k]$ and $(q,q') \in T_{i, z}$.
+
+\item For each $i \in [k]$, we construct an NFA $\cB_{\cA_i, u,  T_{i, z}}$, which specifies some additional regular constraint on $y$. Intuitively, a string $v$ is accepted by $\cB_{\cA_i, u,  T_{i, z}}$ iff either $v \not \in \Sigma^\ast u \Sigma^\ast$ and $v$ is accepted by $\cA_i$, or otherwise, let $v = v'_1 u v'_2 u \dots v'_{k-1} u v'_{k}$ such that $v'_i u' \not \in \Sigma^\ast u \Sigma^\ast$ for each $i \in [k-1]$ and each strict prefix $u'$ of $u$ and $v'_k \not \in \Sigma^\ast u \Sigma^\ast$, then $q_{i,0} \xrightarrow{v'_1} q_1 \xrightarrow{T_{i,z}} q'_1 \xrightarrow{v'_2} q_2 \xrightarrow{T_{i,z}} q'_2 \dots \xrightarrow{v'_{k-1}} q_{k-1} \xrightarrow{T_{i,z}} q'_{k-1} \xrightarrow{v'_k} q_k$ for states $q_1, q'_1, \dots, q_{k-1}, q'_{k-1}, q_k \in Q_i$ with $q_k \in F_{i,z}$. 
+\end{enumerate}
+
+In order to construct the NFA $\cB_{\cA_i, u,  T_{i, z}}$, we introduce concepts of window profiles and parsing automata defined below.
+
+Let $u \in \Sigma^+$ and $k=|u| \ge 2$.
+
+
+%If $u = \sigma$ for $\sigma \in \Sigma$, then $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$, where $Q_u = \{(q_0, \bot), (q_0, \top) \}$, $\delta_u = \{(q_0, \bot) \xrightarrow{\sigma} (q_0, \top), (q_0, \bot) \xrightarrow{\Sigma \setminus \sigma} (q_0, \bot), (q_0, \top) \xrightarrow{ \sigma} (q_0, \top), (q_0, \top) \xrightarrow{\Sigma \setminus \sigma} (q_0, \bot)\}$, $q_{0,u} = (q_0, \bot)$, and $F_u = Q_u$.
+
+%In the following, we assume that $|u| = k \ge 2$. Let $u = u_1 \dots u_k$, where each $u_i \in \Sigma$.
+
+%We construct an NFA $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which over a string $v$, parses $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u_1 \dots u_{k-1} \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, and $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
+%Let $u = u_1\dots u_k$ such that $u_i \in \Sigma$ for each $i \in [k]$.  
+
+\begin{definition}[$k$-window profiles w.r.t. $u$]
+A $k$-\emph{window profile $\overrightarrow{W}$ w.r.t. $u$} is an element of $\{\bot,\top\}^{k-1}$. Intuitively, in the position $i$ of a string $v$, $\overrightarrow{W}$ is an abstraction of the substring $v[i-k+2] \dots v[i]$ such that for each $j \in [k-1]$, $\overrightarrow{W}(j) = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Let $\wprof_{u, k}$ denote the set of $k$-window profiles w.r.t. $u$. 
+%In particular, if $k = 1$, then $\wprof_{u, k} = \emptyset$. 
+\end{definition}
+
+%\zhilin{the following fact is noticed by Yan Chen.} 
+\begin{proposition}
+The number of $k$-window profiles w.r.t. $u$ is polynomial in the length of $u$. 
+\end{proposition}
+\begin{proof}
+The arguments for this fact proceed as follows: For each profile $\overrightarrow{W}$, let $v$ be a string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}(j) = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as the maximum index $j \in [k-1]$ such that $\overrightarrow{W}(j)=\top$. Then 
+\begin{itemize}
+	\item for each $j': j < j' < k$, $\overrightarrow{W}(j')=\bot$, 
+	\item in addition, since $v[i-{\sf idx}_{\overrightarrow{W}}+1] \dots v[i] = u[1] \dots u[{\sf idx}_{\overrightarrow{W}}]$, the values of $\overrightarrow{W}(1),\dots, \overrightarrow{W}({\sf idx}_{\overrightarrow{W}})$ are completely determined by $u[1] \dots u[{\sf idx}_{\overrightarrow{W}}]$.
+\end{itemize}
+From the above arguments, we can  conclude that the number of $k$-window profile $\vec{W}$ w.r.t. $u$ is actually at most $k$.
+\end{proof}
+
+From $u$, we will construct a parsing automaton $\cA_u=(Q_u, \delta_u, q_{0,u}, F_u)$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
+The concept of $k$-window profiles w.r.t. $u$ are used to check that a substring of $v$ is \emph{not} in $\Sigma^\ast u \Sigma^\ast$.
+Specifically, the NFA $\cA_u$ is constructed as follows.
+\begin{itemize}
+	\item  $Q_u =\{q_0\} \cup \{(\search, \overrightarrow{W}) \mid \overrightarrow{W} \in \wprof_{u, k}\} \cup \{(\verify, j, \overrightarrow{W}) \mid j \in [k-1], \overrightarrow{W} \in \wprof_{u,k}\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search''-mode to search the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
+	%
+	\item $q_{0,u}=q_0$.
+	
+	\item $\delta_{u}$ comprises the following transitions,
+	%guesses over each position, one of the following holds, the substring comprising the next $k$-symbols (including the current one) is $u$ or not.
+	\begin{itemize}
+		\item $q_0 \xrightarrow{\sigma} (\search, \overrightarrow{W})$, where $\overrightarrow{W}(1)=\top$ iff $\sigma = u[1]$, and for each $i: 2 \le i \le k-1$, $\overrightarrow{W}(i) = \bot$,
+		%
+		\item for each state $(\search, \overrightarrow{W})$ and $\sigma \in \Sigma$ such that $\overrightarrow{W}(k-1) = \bot$ or $\sigma \neq u[k]$,
+		\begin{itemize}
+			\item $(\search, \overrightarrow{W}) \xrightarrow{\sigma} (\search, \overrightarrow{W}')$, where $\vec{W}'(1) = \top$ iff $\sigma = u[1]$, and for each $i: 2 \le i \le k-1$, $\vec{W}'(i) =\top$ iff $\overrightarrow{W}({i-1}) = \top$ and $\sigma = u[i]$,
+			%
+			\item if $\sigma = u[1]$, then $(\search, \overrightarrow{W}) \xrightarrow{\sigma} (\verify, 1, \overrightarrow{W}')$,  where $\overrightarrow{W}'(1)=\top$,  and for each $i: 2 \le i \le k-1$, $\overrightarrow{W}'(i) =\top$ iff $\overrightarrow{W}({i-1}) = \top$ and $\sigma = u[i]$,
+			%
+		\end{itemize}
+		%
+		\item for each state $(\verify, i-1, \overrightarrow{W})$ such that
+		\begin{itemize}
+			\item $2 \le i \le k-1$,
+			\item $\overrightarrow{W}(i-1)=\top$, $\sigma = u[i]$, and
+			\item either $\overrightarrow{W}(k-1)=\bot$ or $\sigma \neq u[k]$, 
+		\end{itemize}
+		we have $(\verify, i-1, \overrightarrow{W}) \xrightarrow{\sigma} (\verify, i, \overrightarrow{W}')$, where for each $j: 2 \le j \le k-1$, $\overrightarrow{W}'(j) = \top$ iff $\overrightarrow{W}(j-1)=\top$ and $\sigma = u[j]$, 
+		%
+		\item for each state $(\verify, k-1, \overrightarrow{W})$ such that $\overrightarrow{W}(k-1)=\top$, we have $(\verify, k-1, \overrightarrow{W}) \xrightarrow{u[k]} q_0$.
+		%where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
+		%
+	\end{itemize}
+	Note that the constraint $\vec{W}(k-1) = \bot$ or $\sigma \neq u[k]$ is used to guarantee that when parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
+	%
+	\item $F_u=\{q_0\} \cup \{(\search, \overrightarrow{W}) \mid \overrightarrow{W} \in \wprof_{u, k} \} $. Note that the states $(\verify, j, \overrightarrow{W})$ are not final states, since when in these states, the verification of the next occurrence of $u$ has not yet been complete.
+\end{itemize}
+In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \dots v_l u v_{l+1}$, the state sequence in the run is of the form 
+$$q_0\ r_1\ q_0\ r_2\ q_0\ \dots\ r_l\ q_0\ r_{l+1}$$ 
+such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ Q_{\verify, 1}  \dots  Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^+$, where $Q_{\search}  = \{(\search, \overrightarrow{W}) \in \mid \overrightarrow{W} \in \wprof_{u,k}\}$ and $Q_{\verify, i} = \{(\verify, i, \overrightarrow{W}) \mid \overrightarrow{W} \in \wprof_{u,k}\}$ for $i \in [k-1]$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ after its previous occurrence or starting from the beginning.
+
+%The parsing automaton $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
+
+\begin{example}
+	An example for $\cA_u$.
+\end{example}
+
+We are ready to present the construction of $\cB_{\cA_i, u,  T_{i, z}}$. $\cB_{\cA_i, u,  T_{i, z}}$ is constructed by the following two-step procedure.
+\begin{enumerate}
+\item Construct the product of $\cA_i$ and $\cA_u$. Then remove all the states $(q, (\verify, j, \overrightarrow{W}))$ as well as the transitions associated with them.
+
+\item For each pair $(q,q') \in T_{i,z}$ and each sequence of transitions in $\cA_u$ of the form  
+$$
+\begin{array}{l}
+((\search, \overrightarrow{W}), u[1], (\verify, 1, \overrightarrow{W'_1})), ((\verify, 1, \overrightarrow{W'_1}), u[2], 
+ (\verify, 2, \overrightarrow{W'_2})), \\
+ \hspace{3cm} \dots, ((\verify, k-1, \overrightarrow{W'_{k-1}}), u[k], q_0),
+\end{array}
+$$ 
+add the transitions 
+$$
+\begin{array}{l}
+((q, (\search, \overrightarrow{W})), u[1], (q, (\verify, 1, \overrightarrow{W'_1}))), ((q, (\verify, 1, \overrightarrow{W'_1})), u[2], (q, (\verify, 2, \overrightarrow{W'_2}))), \dots,  \\
+((q, (\verify, k-2, \overrightarrow{W'_{k-2}})), u[k-1], (q, (\verify, k-1, \overrightarrow{W'_{k-1}}))), ((q, (\verify, k-1, \overrightarrow{W'_{k-1}})), u[k], (q', q_0)).
+\end{array}
+$$
+\end{enumerate}
+
+%Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.

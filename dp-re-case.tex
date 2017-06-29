@@ -1,0 +1,130 @@
+%!TEX root = popl2018.tex
+
+\section{Decision procedure for $\strline[\replaceall]$: The regular-expression case}
+
+Let us consider the case that the second parameter of the $\replaceall$ function may be a regular expression. 
+We will utilise the parsing-automaton $\cB_e$ for regular expressions $e$. 
+
+We will use the leftmost and longest semantics for regular expression matching.
+
+Let $e$ be a regular expression over $\Sigma$ and $\cA_e = (Q_e, \delta_e, q_{0,e}, F_e)$ be the DFA corresponding to $e$ \zhilin{it remains to consider NFA}. Without loss of generality, we assume that $q_{0, e} \not \in F_e$ and there are no transitions going into $q_{0,e}$.
+Our goal is to construct an NFA $\cB_e=(Q'_e, \delta'_e, q'_{0,e}, F'_e)$ which parses a string $v \in \Sigma^\ast e \Sigma^\ast$ into $v_1 u_1 v_2 u_2 \dots v_l u_l v_{l+1}$ such that 
+\begin{itemize}
+	\item for each $j \in [l]$, $u_j$ is the leftmost and longest matching of $e$ in $(v_1 u_1 \dots v_{j-1} u_{j-1})^{-1} v$,
+	%
+	%\item $v_j u_j[1] \dots u_j[|u_j|-1] \not \in \Sigma^\ast e \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$,
+	\item $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$.
+\end{itemize}
+%
+Intuitively, in order to search for the leftmost and longest matching of $e$, 
+\begin{itemize}
+\item $\cB_e$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the leftmost and longest matching respectively,
+ %
+	\item when in the ``$\searchleft$'' mode, $\cB_e$ starts a new thread of $\cA_e$ in each position and keeps a vector of states of these threads, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and search for the longest matching, moreover, it continues running all the threads that were started before to make sure that the final states will not be reached (thus, the guessing is valid),
+	%
+	\item when in the ``$\searchlong$'' mode, $\cB_e$ runs a thread to search for the longest matching, if the thread enters a final state, then $\cB_e$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the states and starts a new round of leftmost and longest matching,
+	%
+%	\item when a thread $i$ enters a final state, a matching of $e$ is found, $\cB_e$ nondeterministically guesses whether this matching is the leftmost matching or the longest matching, 
+	%
+%	\item if $\cB_e$ makes a ``leftmost and longest'' guessing, then $\cB_e$ forgets all the other threads that were started later than the thread $i$, and continues running the thread $i$ and all the threads that were started earlier than the thread $i$ to make sure that final states will not be reached and the ``leftmost and longest'' guessing is correct,
+%
+%	\item if $\cB_e$ makes a ``leftmost and non-longest'' guessing, then $\cB_e$ forgets all the other threads that were started later than the thread $i$, and continues running all the threads that were started earlier than the thread $i$ to make sure that final states will not be reached and the ``leftmost'' guessing is correct, in addition, it continues running the thread $i$ and searching for the longest matching,
+%
+%	\item if $\cB_e$ makes a ``non-leftmost'' guessing, then $\cB_e$ forgets the thread $i$ and all the other threads that were started later than the thread $i$, and continues running all the threads that were started earlier than the thread $i$ and searching for the leftmost matching,
+	%
+	\item moreover, in order to keep the length of the vectors of states of threads \emph{bounded}, the following trick is applied: for two threads starting at the position $i$ and $j$ respectively such that $i < j$, if the current states of the two threads are the same, then the thread $j$ is removed.
+\end{itemize}
+%
+Formally, 
+\begin{itemize}
+	\item the state set $Q'_e$ of $\cB_e$ comprises 
+	\begin{itemize}
+		\item the tuples $((q_{0,e}), \searchleft, S)$ such that $S \subseteq Q_e$,
+		%
+		\item $(\rho, \searchleft, S)$ such that  $\rho$ is a nonempty vector of \emph{pairwise distinct} states of $\cA_e$, $\rho \neq (q_{0,e})$, and $S \subseteq Q_e \setminus F_e$, 
+		%
+		% \item the tuples $(q_{0,e}, \longest, S)$ such that  $S \subseteq Q_e$,
+		%
+		\item the tuples $(q, \searchlong, S)$ such that $q \in Q_e$ and $S \subseteq Q_e \setminus F_e$;
+	\end{itemize}
+	%
+	\item $q'_{0,e}= ((q_{0,e}), \searchleft, \emptyset)$,
+	%
+	\item $F'_{e}$ comprises the states of the form $(-, \searchleft, -) \in Q'_e$,
+	%
+	\item $\delta'_e$ comprises the following tuples: 
+	\begin{itemize}
+		%\item $((q_{0,e}, \leftmost, S), a, ((\delta_e(q_{0,e},a), q_{0,e}), \leftmost, \delta_e(S,a)))$, where $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$,
+		%
+		\item suppose $\rho = q_1 \dots q_m$ (where $q_m = q_{0,e}$),  $a \in \Sigma$ and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((\rho, \searchleft, S), a, (\red(\delta_e(\rho,a))q_{0,e}, \searchleft, \delta_e(S,a))) \in \delta'_e,$$ 
+		%
+		\item suppose $\rho = q_1 \dots q_m$ (where $q_m = q_{0,e}$),  $a \in \Sigma$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((\rho, \searchleft, S), a, (\delta_e(q_m, a), \searchlong, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m-1]\})) \in \delta'_e,$$ 
+		%
+		\item suppose $\rho = q_1 \dots q_m$ (where $q_m = q_{0,e}$),  $a \in \Sigma$, $\delta_e(q_m, a) \in F_e$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((\rho, \searchleft, S), a, ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m]\})) \in \delta'_e,$$ 
+		%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+		\item suppose $\rho = q_1 \dots q_m$,  $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$ contains \emph{no} states from $F_e$, $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((\rho, \searchleft, S), a, (\red(\delta_e(\rho,a))q_{0,e}, \searchleft, \delta_e(S,a))) \in \delta'_e,$$ 
+		%
+		\item {\bf ``leftmost and longest'' guessing}: \\
+		suppose $\rho = q_1 \dots q_m$, $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$, $\delta_e(\rho,a)$ contains at least one state from $F_e$, $i \in [m]$ is the smallest index such that $\delta_e(q_i, a) \in F_e$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((\rho, \searchleft, S), a, ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid 1\le j \le i\})) \in  \delta'_e,$$ 
+		%
+%		intuitively, $\cB_e$ makes a ``leftmost and longest'' guessing and continues running all the threads of indices no greater than $i$,
+		\item {\bf ``leftmost and non-longest'' guessing}: \\
+		suppose $\rho = q_1 \dots q_m$, $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$ contains at least one state from $F_e$, $i \in [m]$ is the smallest index such that $\delta_e(q_i, a) \in F_e$,   and $\delta_e(S,a) \cap F_e = \emptyset$, then 		
+		$$((\rho, \searchleft, S), a, (\delta_e(q_i, a), \searchlong, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid 1 \le j \le i-1\})) \in  \delta'_e,$$ 
+		%
+		\item {\bf ``non-leftmost'' guessing}: \\
+		suppose $\rho = q_1 \dots q_m$, $a \in \Sigma$, $\delta_e(\rho, a) = \delta_e(q_1,a) \dots \delta_e(q_m, a)$ contains at least one state from $F_e$, $i \in [m]$ is the smallest index such that $\delta_e(q_i, a) \in F_e$, $i > 1$,  and $\delta_e(S,a) \cap F_e = \emptyset$, then 		
+		$$((\rho, \searchleft, S), a, (\red(\delta_e(q_1,a) \dots \delta_e(q_{i-1},a)), \searchleft, \delta_e(S,a)) \in  \delta'_e,$$ 
+%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\item suppose $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((q, \searchlong, S), a, (\delta_e(q,a), \searchlong, \delta_e(S,a)) \in \delta'_e,$$
+		%
+		\item suppose $\delta_e(q,a) \in F_e$ and $\delta_e(S,a) \cap F_e = \emptyset$, then 
+		$$((q, \searchlong, S), a, ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q,a)\}) \in \delta'_e.$$
+	\end{itemize}
+\end{itemize}
+
+
+Similarly to the constant-string case, the main technical difficulty is to construct $\cB_{\cA_i, e,  T_{i, z}}$. The NFA $\cB_{\cA_i, u,  T_{i, z}}$ is constructed by the following two-step procedure.
+\begin{enumerate}
+\item Construct the product of $\cA_i$ and $\cB_e$. Then remove all the states $(q, (-, \searchlong, -))$ as well as the transitions associated with them, in addition, remove all the transitions entering the states $(q, ((q_{0,e}), \searchleft,-))$.
+
+\item For each pair $(q,q') \in T_{i,z}$, do the following,
+\begin{itemize}
+\item for each transition
+$$((\rho, \searchleft, S), a, (\delta_e(q_m, a), \searchlong, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m-1]\})) \in \delta'_e,$$
+add a transition
+$$((q, (\rho, \searchleft, S)), a, (q, (\delta_e(q_m, a), \searchlong, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m-1]\}))),$$
+%
+\item for each transition 
+$$((q'', \searchlong, S), a, (\delta_e(q'', a), \searchlong, \delta_e(S,a))) \in \delta'_e,$$  
+add a transition 
+$$((q, (q'', \searchlong, S)), a, (q, (\delta_e(q'', a), \searchlong, \delta_e(S,a)))),$$
+%
+\item for each transition
+$$((q'', \searchlong, S), a, ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q'',a)\}) \in \delta'_e,$$
+add a transition
+$$((q, (q'', \searchlong, S)), a, (q', ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q,a)\}))),$$
+%
+\item for each transition
+$$((\rho, \searchleft, S), a, ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m]\})) \in \delta'_e,$$
+add a transition
+$$((q, (\rho, \searchleft, S)), a, ((q', (q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m]\}))).$$
+\end{itemize}
+\end{enumerate}
+
+
+%\subsection{A decision procedure for $\strline[\replaceall]$}
+
+
