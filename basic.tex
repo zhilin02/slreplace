@@ -52,7 +52,16 @@ q_{0,1} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_1} q_1 \xrightarrow[\cB_{\cA_1,a,T_z}]
 $$
 %
 Therefore, 
-$v \in \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z})$. We deduce that there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z}) \neq \emptyset$. In addition, it is not hard to see that this condition is also sufficient for the satisfiability of $C$. \zhilin{to be more specific}
+$v \in \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z})$. We deduce that there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z}) \neq \emptyset$. In addition, it is not hard to see that this condition is also sufficient for the satisfiability of $C$. The arguments proceed as follows: Let $v \in  \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z})$ and $w \in \Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q'))$. From $v \in \Ll(\cB_{\cA_1,a,T_z})$, we know that there is an accepting run of $\cB_{\cA_1,a,T_z}$ on $v$. Recall that $\cB_{\cA_1,a,T_z}$ is obtained form $\cA_1$ by first removing all the $a$-transitions, then adding all the transitions $(q,a,q')$ for $(q,q') \in T_z$.  Suppose $v = v_1 a v_2 \cdots a v_k$ such that $v_i \in (\Sigma \setminus \{a\})^*$ for each $i \in [k]$ and  
+$$
+q_{0,1} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_1} q_1 \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_1 \xrightarrow[\cB_{\cA_1,a,T_z}]{v_2} q_2 \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_2 \cdots q_{k-1} \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_{k-1} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_k} q_k
+$$
+is an accepting run of $\cB_{\cA_1,a,T_z}$ on $v$. Then $q_{0,1} \xrightarrow[\cA_1]{v_1} q_1$, for each $i \in [k-1]$, $(q_i, q'_i) \in T_z$ and $q'_i \xrightarrow[\cA_1]{v_{i+1}} q'_{i+1}$, moreover, $q_k \in F_1$.
+Let $u = \replaceall(v, a, w)=v_1 w v_2 \cdots w v_k$. Since $w \in \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q'))$,  we infer that
+$$
+q_{0,1} \xrightarrow[\cA_1]{v_1} q_1 \xrightarrow[\cA_1]{w} q'_1 \xrightarrow[\cA_1]{v_2} q_2 \xrightarrow[\cA_1]{w} q'_2 \cdots q_{k-1} \xrightarrow[\cA_1]{w} q'_{k-1} \xrightarrow[\cA_1]{v_k} q_k
+$$
+is an accepting run of $\cA_1$ on $u$. Therefore, $u$ is accepted by $\cA_1$ and $C$ is satisfiable.
 
 \begin{proposition}\label{prop-sat-sl-case}
 Let $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. Then $C$ is satisfiable iff there is a set $T_{z} \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3)\ \cap\ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z}) \neq \emptyset$.
