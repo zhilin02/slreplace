@@ -96,6 +96,7 @@ upper bound also suggests the maximum lengths of words
 that need to be explored to guarantee completeness.
 
 %=====================================================================================================
+%=====================================================================================================
 
 \section{The core constraint language}
 
@@ -146,16 +147,18 @@ When the second parameter is a regular expression, some examples are $\replaceal
 \tl{do we need to say more here?}
 \end{example}
 
+
+%====================================================
+
 \subsection{Straight-line string constraints with the $\replaceall$ function}
 
-\tl{Int will not be used until very late. Some picky reviewers will complain. Shall we introduce them later?} 
+%\tl{Int will not be used until very late. Some picky reviewers will complain. Shall we introduce them later?} 
 
-We consider the following data types: String data type $\str$ and Integer data type $\intnum$.
+We consider the following data types: String data type $\str$. % and Integer data type $\intnum$.
 %, and Array of strings $\str [\ ]$. \tl{I do not think we need $\str[]$, right?}
 %
 %
-We assume a countably set of variables, of the data type $\str$ and  $\intnum$ respectively. We will use $x, y, z, \cdots$ to denote the variables of data type $\str$, and $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of data type $\intnum$. 
-\tl{also shall we introduce the type for regular expressions? I replaced x by X in def 3.4 as I feel that they should be distinguished.}
+We assume a countably set of variables, of the data type $\str$. We will use $x, y, z, \cdots$ to denote the variables of data type $\str$. %, and $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of data type $\intnum$. \tl{also shall we introduce the type for regular expressions? I replaced x by X in def 3.4 as I feel that they should be distinguished.}
 
 %In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
 
@@ -168,7 +171,7 @@ We assume a countably set of variables, of the data type $\str$ and  $\intnum$ r
 	\[
 	\begin{array}{r c l cr}
 	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
-	p &\eqdef & X \mid e & \ \ & \mbox{(pattern terms)}\\
+	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
 	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
 	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, p, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
 	\psi & \eqdef & x \in e \mid \psi \wedge \psi %\mid \psi \vee \psi \mid \neg \psi   
@@ -177,18 +180,14 @@ We assume a countably set of variables, of the data type $\str$ and  $\intnum$ r
 	\]
 	where $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$. 
 	
-	
-	\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}\zhilin{since the pspace upper bound holds for the general case, I do not see the necessity of the restriction here.}
-	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
-	\tl{zhilin, it is not a restriction, it is a simplification. Look at what we have now, I guess this is sufficient. feel free to change back if you do not like it.}
+%	
+%	\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}\zhilin{since the pspace upper bound holds for the general case, I do not see the necessity of the restriction here.}
+%	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
+%	\tl{zhilin, it is not a restriction, it is a simplification. Look at what we have now, I guess this is sufficient. feel free to change back if you do not like it.}
 \end{definition}
 
 
-For a formula $\varphi$, let $\vars(\varphi)$ denote the set of variables occurring in $\varphi$. Similarly for $\vars(\psi)$.
-
-
-
-Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = \replaceall(\dots)$.
+For a formula $\varphi$, let $\vars(\varphi)$ denote the set of variables occurring in $\varphi$. Similarly for $\vars(\psi)$. Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = \replaceall(\dots)$.
 
  
 The generality of the constraint language makes it undecidable,
@@ -245,11 +244,11 @@ We plan to investigate extensively the satisfiability problem of the fragments o
 \hline
 pattern ($p$)  &   replacement ($z$)        & decidability/complexity \\
 \hline
-constant string  &   constant   string                    & PSPACE-c (\cite{LB16})     \\
+constant string  &   constant   string                    & PSPACE-c (Proposition~\ref{??})    \\
 \hline
-string variable &   constant   string                    &  undecidable (Proposition ~\ref{prop-und-pat-var})    \\
+string variable &   constant   string                    &  undecidable (Propositio~\ref{prop-und-pat-var})    \\
 \hline
-regular expression  &   constant string                      &    PSPACE-c (\cite{LB16}) ?     \\
+regular expression  &   constant string                      &    PSPACE-c (Proposition~\ref{??}) ?     \\
 
 \hline
 constant string  &   string variable                       & EXPSPACE (Theorem~\ref{thm-main})       \\

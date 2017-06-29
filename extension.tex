@@ -2,46 +2,91 @@
 
 \section{Undecidable extensions}
 
-In this section, we extend the language $\strline[\replaceall]$ with integer and character constraints. The language will use two types of variables, str and int. 
+In this section, we extend the language $\strline[\concat,\replaceall]$ with integer and character constraints. The language will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as \emph{integer variables}, ranges over the set $\mathbb{N}$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. s. The
+choice of omitting negative integers is only for simplicity, but our
+results easily extend to the case when $\intnum$ includes negative integers.
 
 We start by defining integer constraints, which expresses length or number of occurrences of symbols in words. 
 
-\begin{definition}
-	Each term is either 
+
+\begin{definition}[Integer constraints] An atomic integer constraints over $\Sigma$ is an expression of the form
+	\[a_1t_1+\cdots+a_nt_n\leq d\]
+where $a_1, \cdots, a_n,d\in \mathbb{Z}$ are constant integers (represented in binary), and each \emph{term} $t_i$ is either 
 	\begin{enumerate}
-		\item an integer variable $n$;
-		\item $|x|$ for a string variable;
-		\item $|x|_a$ for $a\in \Sigma$
+		\item an integer variable $\mathfrak{n}$;
+		\item $|x|$ where $x$ is a  string variable; or 
+		\item $|x|_a$ where $x$ is string variable and $a\in \Sigma$ is a constant letter.
 	\end{enumerate}
+Here, $|x|$ and $|x|_a$ denotes the length of $x$ and the number of occurrences of $a$ in $x$, respectively. 
+
+An \emph{integer constraint} over $\Sigma$ is a Boolean combination of atomic integer constraints over $\Sigma$
 \end{definition}
 
-Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is undecidable to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
+Character constraints, on the other hand, allow to compare symbols from different strings. The formal definitions are given as follows. 
+
+\begin{definition}[Character constraints]
+	An \emph{atomic character constraint} over $\Sigma$ is an expression of the form $x[u]=y[v]$ where 
+	\begin{itemize}
+		\item $x$ and $y$ are either a string variable or a word in $\Sigma^*$, and 
+		\item $u$ and $v$ are either integer variables or constants positive integers.
+	\end{itemize} 
+Here, the interpretation of $x[u]$ is $u$-th letter of $x$.	
+	
+A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
+\end{definition}
+
+
+Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
+
+\subsection{Undecidability of length constraints}
 
 \begin{theorem}
-	The satisfiability problem for SL with length constraints is undecidable. 
+	The satisfiability problem for SL[$\replaceall$] with \emph{length constraints} is undecidable. 
 \end{theorem}
 
 \begin{proof}
-	We shall reduce from the aforementioned version of the Hilbert tenth problem. For any polynomial with positive integral  $f(x_1, \cdots, x_n)$ where each coefficient is a positive 
+	We shall reduce from the aforementioned version of the Hilbert tenth problem. For any polynomial with positive integral  $f(x_1, \cdots, x_n)$ where each coefficient is a positive, we can construct a (division-free) arithmetic circuit (AC) is a directed  acyclic graph with nodes labelled with constants from $\mathbb{Z}$, or with some indeterminates $X_1, \cdots, X_m$, or with the operators $+, -, *$. The nodes labelled with constants are called constant nodes, while those labelled with indeterminates are called input nodes. Both constant and input nodes do not have incoming edges. Internal nodes are those labelled with $+,-,*$. Output node is the one which does not have out-going edges. Without loss of generality we assume that each internal node has in-degree 2, and there is only one output node. Each node in the circuit represents a multivariate polynomial $\mathbb{Z}[X_1, \cdots, X_m]$. Vice verse, each polynomial $f\in \mathbb{Z}[X_1, \cdots, X_m]$ can be represented as an AC, and, if the polynomial has only positive (integral) coefficients, the corresponding AC does not contain nodes labelled by $-$ or negative constants.  
+	
+	We observe that, given an AC, one can construct an SL[$\concat, \replaceall$] formula over the alphabet $\Sigma=\{a\}$ as follows. Each node $n$ of the AC is associated with a string variable $x_n$. As a result, each input node of the AC labelled by $X_i$ (i.e., the indeterminate) corresponds to a  source variable.   
+	\begin{itemize}
+		\item For each internal node $n$ labelled by $+$, suppose that $n$ has two children nodes $n_l$ and $n_r$, we introduce a string constraint $x_n= x_{n_l}\concat x_{n_l}$.  
+		
+		\item For each internal node $n$ labelled by $*$, suppose that $n$ has two children nodes $n_l$ and $n_r$, we introduce a string constraint $x_n= \replaceall(x_{n_l}, a, x_{n_l})$.  		
+	\end{itemize}
+Furthermore, we introduce, for each node $n$ labelled by a constant $c$, a regular constraint $x_n=a^c$. 
+
+It is straightforward to verify, according to the semantics of SL[$\concat, \replaceall$], that:
+\begin{itemize}
+	\item for relational constraint $x_n= x_{n_l}\concat x_{n_l}$, $|x_n|= |x_{n_l}|+|x_{n_l}|$; 
+	\item for relational constraint $x_n= \replaceall(x_{n_l}, a, x_{n_l})$,  $|x_n|= |x_{n_l}|\cdot |x_{n_l}|$; and 
+	\item for regular $x_n=a^c$, $|x_n|=c$. 
+\end{itemize}
+
+It follows that for each polynomial $f(x_1, \cdots, x_m)$ with positive integral coefficients, we can construct a straight-line string constraint $\varphi_{f}\wedge\psi_g$ over $\Sigma=\{a\}$ with $y_f$ as the output variant and $y_1, \cdots, y_n$ as source variables such that
+$f(c_1, \cdots, c_m)=|y|$ and, for each $1\leq i\leq m$, $|y_i|= c_i$ (i.e., $y_i=a^{c_i}$).  
+
+Consequently, when given two polynomials $f(x_1, \cdots, x_m)$ and $g(x_1, \cdots, x_m)$, we have straight-line string constraints $\varphi_{f}\wedge \varphi_{g}\wedge \psi_{f}\wedge \psi_g$ with two distinguished two variables  $y_f$ and $y_g$ such that  
+\[\exists x_1, \cdots, x_m. f(x_1, \cdots, x_m)=g(x_1, \cdots, x_m)\mbox{ iff } |y_f|=|y_g|\wedge \varphi_{f}\wedge \varphi_{g}\wedge \psi_{f}\wedge \psi_g\mbox{ is satisfiable} \]
+
+Finally, note that any  SL[$\concat, \replaceall$] constraints can be transformed into SL[$\replaceall$] constraints, we obtain a reduction from the Hilbert's 10th problem to the satisfiability problem of  SL[$\replaceall$] with length constraints, which entail that the latter problem is undecidable. The proof is completed. 
 \end{proof}
 
-\subsection{Undecidability of character and length constraints}
+\subsection{Undecidability of character constraints and IndexOf}
 
-Character constraints allow use to compare symbols from different strings. 
-
-\begin{definition}
-	An atomic character constraint over $\Sigma$ is an expression of the form $x[u]=y[v]$ where $x$ and $y$ are either a variable or a word in $\Sigma^*$, and $u$ and $v$ are either integer variables or constants positive integers. 
-	
-	A character constraint over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
-\end{definition}
-
-Intuitively, $x[u]$ is interpreted as the $u$-th letter of $x$. 
 
 We have the following simple observation:
 
 \begin{lemma}
 	For any two strings $x,y\in a^*\$$, $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
 \end{lemma}
+
+As SL[$\replaceall$] with length constraints is undecidable, we conclude that 
+
+\begin{theorem}
+	The satisfiability problem for SL[$\replaceall$] with \emph{character constraints} is undecidable. 
+\end{theorem}
+
+
 \tl{I am not satisfied with this as the quantifier is used}
 
 \paragraph{IndexOf}
@@ -58,4 +103,4 @@ It follows that
 	$\strline[\replaceall]$ extended with IndexOf is undecidable, regardless of the first-occurrence and the anywhere semantics. 
 \end{proposition}
 
-\subsection{Extensions with disequalities and IndexOf}
+ 
