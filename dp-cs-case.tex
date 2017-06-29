@@ -40,7 +40,7 @@ A $k$-\emph{window profile $\overrightarrow{W}$ w.r.t. $u$} is an element of $\{
 Intuitively, in a position $i$ of a string $v$, the $k$-window profile $\overrightarrow{W}$ of $i$ w.r.t. $u$ is an abstraction of the substring $v[i-k+2] \dots v[i]$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. 
 
 \begin{proposition}
-The number of $k$-window profiles w.r.t. $u$ is exactly $k$.
+$|\wprof_{u,k}|=k$.
 \end{proposition}
 \begin{proof}
 The arguments for this fact proceed as follows: For each profile $\overrightarrow{W}$, let $v$ be a string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as the maximum index $j \in [k-1]$ such that $\overrightarrow{W}[j]=\top$. Then 
@@ -107,11 +107,13 @@ such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ Q_{\verify, 1}  \dots 
 	An example for $\cA_u$.
 \end{example}
 
-We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u,  T_{z}}$ is constructed by the following two-step procedure.
+We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u,  T_{z}}$ is constructed by the following three-step procedure.
 \begin{enumerate}
-\item Construct the product automaton of $\cA_1$ and $\cA_u$. Then remove all the states from $Q_1 \times Q_{\verify}$ as well as the transitions associated with them.
+\item Construct the product automaton $\cA_1 \times \cA_u$ of $\cA_1$ and $\cA_u$. Note that the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$. 
 
-\item For each pair $(q,q') \in T_{z}$ and each sequence of transitions in $\cA_u$ of the form  
+\item Remove from $\cA_1 \times \cA_u$ all the states in $Q_1 \times Q_{\verify}$ as well as the transitions associated with them.
+
+\item For each pair $(q,q') \in T_{z}$ and each sequence of transitions in $\cA_u$ of the form 
 $$
 \begin{array}{l}
 \left( \left(\search, \overrightarrow{W} \right), u[1], \left(\verify, 1, \overrightarrow{W'_1} \right) \right), \left( \left(\verify, 1, \overrightarrow{W'_1} \right), u[2], 
@@ -128,6 +130,11 @@ $$
 \left(\left(q, \left(\verify, k-2, \overrightarrow{W'_{k-2}} \right) \right), u[k-1], \left (q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right) \right),\\ \left( \left(q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right), u[k], \left(q', q_0 \right)\right).
 \end{array}
 $$
+Note that the number of aforementioned sequences of transitions in $\cA_u$ is at most $|Q_{\search}|$, since  $ \overrightarrow{W'_1},\dots,  \overrightarrow{W'_{k-1}}$ are completely determined by $\overrightarrow{W} $ and $u$.
+Intuitively, when $\cA_u$ identifies an occurrence of $u$, if the current state of $\cA_1$ is $q$, then after reading the occurrence of $u$, $\cB_{\cA_1, u, T_z}$ jumps from $q$ to some state $q'$ such that $(q,q') \in T_z$.
 \end{enumerate}
+
+\begin{example}
+\end{example}
 
 %Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.
