@@ -3,26 +3,38 @@
 \section{Decision procedure for $\strline[\replaceall]$: The regular-expression case} \label{sec:replaceallre}
 
 Let us consider the case that the second parameter of the $\replaceall$ function may be a regular expression. 
-We will utilise the parsing-automaton $\cB_e$ for regular expressions $e$. 
 
-We will use the leftmost and longest semantics for regular expression matching.
+As in previous sections, let us still start with the simple situation that $C \equiv x = \replaceall(y, e_0, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. For $i=0,1,2,3$, let $\cA_i = (Q_i, \delta_i, q_{0,i}, F_i)$ be the NFA corresponding to $e_i$. 
 
-Let $e$ be a regular expression over $\Sigma$ and $\cA_e = (Q_e, \delta_e, q_{0,e}, F_e)$ be the DFA corresponding to $e$ \zhilin{it remains to consider NFA}. Without loss of generality, we assume that $q_{0, e} \not \in F_e$ and there are no transitions going into $q_{0,e}$.
-Our goal is to construct an NFA $\cB_e=(Q'_e, \delta'_e, q'_{0,e}, F'_e)$ which parses a string $v \in \Sigma^\ast e \Sigma^\ast$ into $v_1 u_1 v_2 u_2 \dots v_l u_l v_{l+1}$ such that 
+Let us first assume $\varepsilon \in \Ll(e_0)$. Then according to the semantics, for each string $u = a_1 \cdots a_n$, $\replaceall(u, e_0, v) = v a_1 v \cdots v a_n v$. Under this assumption, we can solve the satisfiability of $C$ as follows: 
+\begin{enumerate}
+\item Guess a set $T_z \subseteq Q_1 \times Q_1$. 
+%
+\item Construct $\cB_{\cA_1, \varepsilon, T_z}$ from $\cA_1$ and $T_z$ as follows: For each $(q,q') \in T_z$, add to $\cA_1$ a transition $(q, \varepsilon, q')$. Then transform the resulting NFA into one without $\varepsilon$-transitions (which can be done in polynomial time).
+%
+\item  Decide the nonemptiness of $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, \varepsilon, T_z})$ and $\Ll(\cA_3) \cap \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q,q'))$.
+\end{enumerate}
+
+Next, let us assume $\varepsilon \not \in \Ll(e_0)$.
+
+To solve the satisfiability of $C$, similar to the constant-string case, we construct a parsing automaton $\cA_{e_0}$ that parses a string $v \in \Sigma^\ast e_0 \Sigma^\ast$ into $v_1 u_1 v_2 u_2 \dots v_l u_l v_{l+1}$ such that 
 \begin{itemize}
-	\item for each $j \in [l]$, $u_j$ is the leftmost and longest matching of $e$ in $(v_1 u_1 \dots v_{j-1} u_{j-1})^{-1} v$,
+	\item for each $j \in [l]$, $u_j$ is the leftmost and longest matching of $e_0$ in $(v_1 u_1 \dots v_{j-1} u_{j-1})^{-1} v$,
 	%
 	%\item $v_j u_j[1] \dots u_j[|u_j|-1] \not \in \Sigma^\ast e \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$,
-	\item $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$.
+	\item $v_{l+1} \not \in \Sigma^\ast e_0 \Sigma^\ast$.
 \end{itemize}
+
+\zhilin{I stopped here}
+
 %
-Intuitively, in order to search for the leftmost and longest matching of $e$, 
+Intuitively, in order to search for the leftmost and longest matching of $e_0$, 
 \begin{itemize}
-\item $\cB_e$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the leftmost and longest matching respectively,
+\item $\cA_{e_0}$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the leftmost and longest matching respectively,
  %
-	\item when in the ``$\searchleft$'' mode, $\cB_e$ starts a new thread of $\cA_e$ in each position and keeps a vector of states of these threads, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and search for the longest matching, moreover, it continues running all the threads that were started before to make sure that the final states will not be reached (thus, the guessing is valid),
+	\item when in the ``$\searchleft$'' mode, $\cA_{e_0}$ starts a new thread of $\cA_0$ in each position and keeps a vector of states of these threads, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and search for the longest matching, moreover, it continues running all the threads that were started before to make sure that the final states will not be reached (thus, the guessing is valid),
 	%
-	\item when in the ``$\searchlong$'' mode, $\cB_e$ runs a thread to search for the longest matching, if the thread enters a final state, then $\cB_e$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the states and starts a new round of leftmost and longest matching,
+	\item when in the ``$\searchlong$'' mode, $\cA_{e_0}$ runs a thread to search for the longest matching, if the thread enters a final state, then $\cA_{e_0}$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the states and starts a new round of leftmost and longest matching,
 	%
 %	\item when a thread $i$ enters a final state, a matching of $e$ is found, $\cB_e$ nondeterministically guesses whether this matching is the leftmost matching or the longest matching, 
 	%
@@ -95,6 +107,10 @@ Formally,
 	\end{itemize}
 \end{itemize}
 
+\begin{example}
+$\cA_{e_0}$
+\end{example}
+
 
 Similarly to the constant-string case, the main technical difficulty is to construct $\cB_{\cA_i, e,  T_{i, z}}$. The NFA $\cB_{\cA_i, u,  T_{i, z}}$ is constructed by the following two-step procedure.
 \begin{enumerate}
@@ -124,6 +140,11 @@ $$((q, (\rho, \searchleft, S)), a, ((q', (q_{0,e}), \searchleft, \delta_e(S,a) \
 \end{itemize}
 \end{enumerate}
 
+\begin{example}
+$\cB_{\cA_1, e_0,  T_{z}}$
+\end{example}
+
+The more general case that there are multiple $\replaceall(\cdots)$ terms.
 
 %\subsection{A decision procedure for $\strline[\replaceall]$}
 
