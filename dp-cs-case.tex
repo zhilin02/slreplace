@@ -34,13 +34,19 @@ The construction of $\cB_{\cA_1, u, T_z}$ utilises the concepts of window profil
 
 
 \begin{definition}[$k$-window profiles w.r.t. $u$]
-A $k$-\emph{window profile $\overrightarrow{W}$ w.r.t. $u$} is an element of $\{\bot,\top\}^{k-1}$. Let $\wprof_{u, k}$ denote the set of $k$-window profiles w.r.t. $u$. 
+Let $v$ be a nonempty string and $i \in [|v|]$. Then the $k$-\emph{window profile of the position $i$ in $v$ w.r.t. $u$} is $\overrightarrow{W}  \in \{\bot,\top\}^{k-1}$ defined as follows: 
+\begin{itemize}
+\item If $i \ge k-1$, then for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \cdots v[i]=u[1] \cdots u[j]$. 
+%
+\item If $i < k-1$, then for each $j \in [i]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \cdots v[i]=u[1] \cdots u[j]$, and for each $j: i < j \le k-1$, $\overrightarrow{W}[j] = \bot$. 
+\end{itemize}
+Let $\wprof_{u, k}$ denote the set of $k$-window profiles of the positions in nonempty strings w.r.t. $u$. 
 \end{definition}
 
-Intuitively, in a position $i$ of a string $v$, the $k$-window profile $\overrightarrow{W}$ of $i$ w.r.t. $u$ is an abstraction of the substring $v[i-k+2] \dots v[i]$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. 
+%Intuitively, in a position $i$ of a string $v$, the $k$-window profile $\overrightarrow{W}$ of $i$ in $v$ w.r.t. $u$ is an abstraction of the substring $v[i-k+2] \dots v[i]$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. 
 
 \begin{proposition}
-$|\wprof_{u,k}|=k$.
+$|\wprof_{u,k}| \le k$.
 \end{proposition}
 \begin{proof}
 The arguments for this fact proceed as follows: For each profile $\overrightarrow{W}$, let $v$ be a string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as the maximum index $j \in [k-1]$ such that $\overrightarrow{W}[j]=\top$. Then 
@@ -48,11 +54,17 @@ The arguments for this fact proceed as follows: For each profile $\overrightarro
 	\item for each $j': {\sf idx}_{\overrightarrow{W}} < j' < k$, $\overrightarrow{W}[j']=\bot$, 
 	\item in addition, since $v[i-{\sf idx}_{\overrightarrow{W}}+1] \cdots v[i] = u[1] \cdots u[{\sf idx}_{\overrightarrow{W}}]$, the values of $\overrightarrow{W}[1],\cdots, \overrightarrow{W}[{\sf idx}_{\overrightarrow{W}}]$ are completely determined by $u[1] \cdots u[{\sf idx}_{\overrightarrow{W}}]$.
 \end{itemize}
-From the above arguments, we can  conclude that the number of $k$-window profile $\vec{W}$ w.r.t. $u$ is actually $k$.
+From the above arguments, we can  conclude that the number of $k$-window profile $\vec{W}$ w.r.t. $u$ is at most $k$.
 \end{proof}
 
-\begin{example}
-Let $u = $.
+\begin{example}\label{wprof-exmp}
+Let $u = 010$. Then $k=3$ and $\wprof_{u,k}=\{\bot\bot, \top\bot, \bot\top\}$. 
+\begin{itemize}
+\item Consider the string $v=1$ and the position $i=1$ in $v$. Since $v[1]=1 \neq u[1]=0$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\bot \bot$. 
+\item Consider the string $v=00$ and the position $i=2$ in $v$. Since $v[2]=u[1]$ and $v[1]v[2] \neq u[1]u[2]$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\top\bot$.
+\item Consider the string $v=01$ and the position $i=2$ in $v$. Since $v[2] \neq u[1]$ and $v[1]v[2] = u[1]u[2]$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\bot\top$.
+\end{itemize}
+Note that $\top\top \not \in \wprof_{u,k}$. Since for every string $v$ and the position $i$ in $v$, if $v[i-1]v[i]=u[1]u[2]=01$, then $v[i]=1 \neq 0= u[1]$. 
 \end{example}
 
 From $u$, we will construct a parsing automaton $\cA_u$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. 
@@ -68,31 +80,34 @@ The \emph{parsing automaton} $\cA_u$ of $u$ is the NFA $(Q_u, \delta_u, q_{0,u},
 	\item $\delta_{u}$ is defined as follows.
 	%guesses over each position, one of the following holds, the substring comprising the next $k$-symbols (including the current one) is $u$ or not.
 	\begin{itemize}
-		\item The transition $\left(q_0, a, \left(\search, \overrightarrow{W}\right)\right) \in \delta_u$, where $\overrightarrow{W}[1]=\top$ iff $a = u[1]$, and for each $i: 2 \le i \le k-1$, $\overrightarrow{W}[i] = \bot$,
+		\item The transition $\left(q_0, a, \left(\search, \overrightarrow{W}\right)\right) \in \delta_u$, where $\overrightarrow{W}[1]=\top$ iff $a = u[1]$, and for each $i: 2 \le i \le k-1$, $\overrightarrow{W}[i] = \bot$.
 		%
-		\item for each state $\left(\search, \overrightarrow{W} \right)$ and $a \in \Sigma$ such that $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$,
+		\item The transition $\left(q_0, u[1], \left(\verify, 1, \overrightarrow{W}\right)\right) \in \delta_u$, where $\overrightarrow{W}[1]=\top$ and for each $i: 2 \le i \le k-1$, $\overrightarrow{W}[i] = \bot$.
+%
+		\item For each state $\left(\search, \overrightarrow{W} \right)$ and $a \in \Sigma$ such that $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$,
 		\begin{itemize}
 			\item the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\search, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1] = \top$ iff $a = u[1]$, and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff $\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$,
 			%
-			\item if $a = u[1]$, then the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\verify, 1, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1]=\top$,  and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff $\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$,
+			\item if $a = u[1]$, then the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\verify, 1, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1]=\top$,  and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff $\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$.
 			%
 		\end{itemize}
 		%
-		\item for each state $\left(\verify, i-1, \overrightarrow{W} \right)$ such that 
+		\item For each state $\left(\verify, i-1, \overrightarrow{W} \right)$ such that 
 		\begin{itemize}
 			\item $2 \le i \le k-1$,
 			\item $\overrightarrow{W}[i-1]=\top$, $a = u[i]$, and
 			\item either $\overrightarrow{W}[k-1]=\bot$ or $a \neq u[k]$, 
 		\end{itemize}
-		we have $\left(\left(\verify, i-1, \overrightarrow{W} \right), a, \left(\verify, i, \overrightarrow{W}' \right)\right) \in \delta_u$, where for each $j: 2 \le j \le k-1$, $\overrightarrow{W}'[j] = \top$ iff $\overrightarrow{W}[j-1]=\top$ and $a = u[j]$, 
+		we have $\left(\left(\verify, i-1, \overrightarrow{W} \right), a, \left(\verify, i, \overrightarrow{W}' \right)\right) \in \delta_u$, where for each $j: 2 \le j \le k-1$, $\overrightarrow{W}'[j] = \top$ iff $\overrightarrow{W}[j-1]=\top$ and $a = u[j]$.
 		%
-		\item for each state $\left(\verify, k-1, \overrightarrow{W} \right)$ such that $\overrightarrow{W}[k-1]=\top$, $\left(\left(\verify, k-1, \overrightarrow{W} \right), u[k], q_0\right) \in \delta_u$.
+		\item For each state $\left(\verify, k-1, \overrightarrow{W} \right)$ such that $\overrightarrow{W}[k-1]=\top$, $\left(\left(\verify, k-1, \overrightarrow{W} \right), u[k], q_0\right) \in \delta_u$.
 		%where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
 		%
 	\end{itemize}
 Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is used to guarantee that when parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, we have $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
 	%
-	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u, k} \right\} $. Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since when in these states, the verification of the current occurrence of $u$ has not yet been complete.
+	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u, k} \right\} $. \\
+	Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since when in these states, the verification of the current occurrence of $u$ has not yet been complete.
 \end{itemize}
 \end{definition}
 
@@ -104,7 +119,13 @@ such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ \concat Q_{\verify, 1}
 %The parsing automaton $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
 
 \begin{example}
-	An example for $\cA_u$.
+Consider $u=010$ in Example~\ref{wprof-exmp}. The parsing automaton  $\cA_u$ is illustrated in Figure~\ref{fig-pa-exmp}. Note that there are no $0$-transitions out of $(\search, \bot\top)$, since this would imply an occurrence of $u = 010$, which should be verified by the states from $Q_{\verify}$.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.8]{parsing-automata-example.pdf}
+\end{center}
+\caption{The parsing automaton $\cA_u$ for $u = 010$}\label{fig-pa-exmp}
+\end{figure}
 \end{example}
 
 We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u,  T_{z}}$ is constructed by the following three-step procedure.
@@ -116,25 +137,43 @@ We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\
 \item For each pair $(q,q') \in T_{z}$ and each sequence of transitions in $\cA_u$ of the form 
 $$
 \begin{array}{l}
-\left( \left(\search, \overrightarrow{W} \right), u[1], \left(\verify, 1, \overrightarrow{W'_1} \right) \right), \left( \left(\verify, 1, \overrightarrow{W'_1} \right), u[2], 
+\left(p, u[1], \left(\verify, 1, \overrightarrow{W'_1} \right) \right), \left( \left(\verify, 1, \overrightarrow{W'_1} \right), u[2], 
  \left(\verify, 2, \overrightarrow{W'_2}\right) \right), \\
  \hspace{3cm} \cdots, \left(\left(\verify, k-1, \overrightarrow{W'_{k-1}} \right), u[k], q_0\right),
 \end{array}
 $$ 
+where  $p=q_0$ or $\left(\search, \overrightarrow{W} \right)$,
 add the transitions
 $$
 \begin{array}{c}
-\left( \left(q, \left(\search, \overrightarrow{W} \right) \right), u[1], \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right) \right), \\
+\left((q,p), u[1], \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right) \right), \\
 \left( \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right), u[2], \left(q, \left(\verify, 2, \overrightarrow{W'_2}\right)\right)\right),  \\
 \cdots, \\
 \left(\left(q, \left(\verify, k-2, \overrightarrow{W'_{k-2}} \right) \right), u[k-1], \left (q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right) \right),\\ \left( \left(q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right), u[k], \left(q', q_0 \right)\right).
 \end{array}
 $$
-Note that the number of aforementioned sequences of transitions in $\cA_u$ is at most $|Q_{\search}|$, since  $ \overrightarrow{W'_1},\dots,  \overrightarrow{W'_{k-1}}$ are completely determined by $\overrightarrow{W} $ and $u$.
+Note that the number of aforementioned sequences of transitions in $\cA_u$ is at most $|Q_{\search}|+1$, since  $ \overrightarrow{W'_1},\dots,  \overrightarrow{W'_{k-1}}$ are completely determined by $\overrightarrow{W} $ and $u$.
 Intuitively, when $\cA_u$ identifies an occurrence of $u$, if the current state of $\cA_1$ is $q$, then after reading the occurrence of $u$, $\cB_{\cA_1, u, T_z}$ jumps from $q$ to some state $q'$ such that $(q,q') \in T_z$.
 \end{enumerate}
 
 \begin{example}
+Let us consider $C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$, where $u = 010$, and $e_1,e_2,e_3$ are as in Example~\ref{exmp-sl} (cf. Figure~\ref{fig-sl-exmp}). The product automaton $\cA_1 \times \cA_u$ is illustrated in Figure~\ref{fig-cs-exmp}, where $\{q_2\} \times \cA_u$ denotes the automaton obtained from $\cA_u$ by changing each state $p$ in $\cA_u$ into $(q_2, p)$, similarly for $\{q_4\} \times \cA_u$. Let $T_z = \{(q_0,q_0),(q_1,q_2)\}$. Then the NFA $\cB_{\cA_1, u, T_z}$ is obtained from $\cA_1 \times \cA_u$ by first removing all the states $Q_1 \times Q_{\verify}$ and the transitions associated with them, then adding the transitions according to $T_z$ as aforementioned (see Figure~\ref{fig-cs-exmp-2}, where the thick edges denote the added transitions).  It is a routine to check that $01010101$ is accepted by both $\cB_{\cA_1, u, T_z}$ and $\cA_2$. Moreover, $10 \in \Ll(\cA_3) \cap \Ll(\cA_1(q_0,q_0)) \cap \Ll(\cA_1(q_1,q_2))$. Let $y$ be $01010101$ and $z$ be $10$. Then $x$ takes the value $\replaceall(01010101, 010, 10)=101101$, which is accepted by $\cA_1$. Therefore, $C$ is satisfiable.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.65]{constant-string-example.pdf}
+\end{center}
+\caption{The NFA $\cA_1 \times \cA_u$ for $u = 010$}\label{fig-cs-exmp}
+\end{figure}
+%
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.65]{constant-string-example-2.pdf}
+\end{center}
+\caption{The NFA $\cB_{\cA_1, u, T_z}$ for $u = 010$ and $T_z= \{(q_0,q_0),(q_1,q_2)\}$}\label{fig-cs-exmp-2}
+\end{figure}
 \end{example}
+
+
+For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similarly to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
 
 %Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.
