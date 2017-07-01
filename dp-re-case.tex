@@ -48,37 +48,53 @@ Intuitively, in order to search for the leftmost and longest matching of $e_0$,
 
 %\zhilin{i stopped here}
 
+\zhilin{the following construction not finished yet}
+
 Formally, $\cA_{e_0}=(Q_{e_0}, \delta_{e_0}, q_{0,e_0}, F_{e_0})$ is defined as follows.
 \begin{itemize}
 	\item $Q_{e_0}$ comprises 
 	\begin{itemize}
-		\item the tuples $((q_{0,0}), \searchleft, S)$ such that $S \subseteq Q_0$,
+		\item the tuples $(q_{0,0}, \searchleft, S)$ such that $S \subseteq Q_0$,
 		%
-		\item the tuples $(\rho, \searchleft, S)$ such that  $\rho$ is a nonempty vector of \emph{pairwise distinct} states of $\cA_0$, $\rho \neq (q_{0,0})$, and $S \subseteq Q_0 \setminus F_0$, 
+		\item the tuples $(\rho q_{0,0}, \searchleft, S)$ such that  $\rho$ is a nonempty vector of \emph{pairwise distinct} states from $Q_0 \setminus \{q_{0,0}\}$, and $S \subseteq Q_0 \setminus F_0$, 
 		%
 		% \item the tuples $(q_{0,e}, \longest, S)$ such that  $S \subseteq Q_e$,
 		%
 		\item the tuples $(q, \searchlong, S)$ such that $q \in Q_0$ and $S \subseteq Q_0 \setminus F_0$;
 	\end{itemize}
 	%
-	\item $q_{0,e_0}= ((q_{0,0}), \searchleft, \emptyset)$,
+	\item $q_{0,e_0}= (q_{0,0}, \searchleft, \emptyset)$,
 	%
-	\item $F_{e_0}$ comprises the states of the form $(-, \searchleft, -) \in Q_e$,
+	\item $F_{e_0}$ comprises the states of the form $(-, \searchleft, -) \in Q_{e_0}$,
 	%
 	\item $\delta_{e_0}$ is defined as follows: 
 	\begin{itemize}
 		%\item $((q_{0,e}, \leftmost, S), a, ((\delta_e(q_{0,e},a), q_{0,e}), \leftmost, \delta_e(S,a)))$, where $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$,
 		%
 		\item suppose $(\rho, \searchleft, S) \in Q_{e_0}$, $a \in \Sigma$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then 
-		$$((\rho, \searchleft, S), a, (\red(\delta_0(\rho,a))q_{0,0}, \searchleft, \delta_0(S,a))) \in \delta_{e_0},$$ 
+		$$\left((\rho, \searchleft, S), a, \left(\red(\delta_0(\rho,a))q_{0,0}, \searchleft, \delta_0(S,a) \right) \right) \in \delta_{e_0},$$ 
 		note that no states occur more than once in $\red(\delta_0(\rho,a))q_{0,0}$, since $q_{0,0}$ does not occur in $\red(\delta_0(\rho,a))$, as a result of the assumption that there are no incoming transitions for $q_{0,0}$ in $\cA_0$,
 		%
-		\item suppose $(\rho, \searchleft, S) \in Q_{e_0}$, $\rho = \rho' q_m$,  $a \in \Sigma$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then 
-		$$((\rho, \searchleft, S), a, (\delta_0(q_m, a), \searchlong, \delta_0(S,a) \cup \{\delta_0(q_j, a) \mid j \in [m-1]\})) \in \delta_{e_0},$$ 
+		\item suppose $(\rho q_{0,0}, \searchleft, S) \in Q_{e_0}$ such that $\rho = q_1 \cdots q_m$ with $m \ge 1$, $a \in \Sigma$, $\{\delta_0(q_j, a) \mid j \in [m]\} \cap F_0 = \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then
+		
+		\medskip
+		$\left((\rho q_{0,0}, \searchleft, S), a, \left(\delta_0(q_{0,0}, a), \searchlong, \delta_0(S, a) \cup \{\delta_0(q_j, a) \mid j \in [m]\} \right) \right) \in \delta_{e_0},$
+		
+		\medskip
+		intuitively, from a state $(\rho q_{0,0}, \searchleft, S)$ with $\rho = q_1 \cdots q_m$, when reading a letter $a$, if $\{\delta_0(q_j, a) \mid j \in [m]\} \cap F_0 = \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$ may guess that the current position is the first position of the leftmost and longest matching, then it goes to the ``$\searchlong$'' mode, in addition, it keeps in the first component of the control state only the state of the thread started in the current position, and put the states of all the threads that have been started before, namely, $\{\delta_0(q_j, a) \mid j \in [m]\}$, into the third component to guarantee that none of these threads will reach a final state in the future (thus the guessing that the current position is the first position of the leftmost and longest matching is correct),
 		%
-		\zhilin{i stopped here}
-		\item suppose $\rho = q_1 \dots q_m$ (where $q_m = q_{0,e}$),  $a \in \Sigma$, $\delta_e(q_m, a) \in F_e$, and $\delta_e(S,a) \cap F_e = \emptyset$, then 
-		$$((\rho, \searchleft, S), a, ((q_{0,e}), \searchleft, \delta_e(S,a) \cup \{\delta_e(q_j, a) \mid j \in [m]\})) \in \delta'_e,$$ 
+		\item suppose $(\rho q_{0,0}, \searchleft, S) \in Q_{e_0}$ such that $\rho = q_1 \cdots q_m$ with $m \ge 1$,  $a \in \Sigma$, $\{\delta_0(q_{j}, a) \mid j \in [m]\} \cap F_0 = \emptyset$, $\delta_0(q_{0,0}, a) \in F_0$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then
+		
+		\medskip
+		$\left(
+		\begin{array}{l l}
+		(\rho q_{0,0}, \searchleft, S), a, &\\
+		& \hspace{-2cm} \left(q_{0,0}, \searchleft, \delta_0(S,a) \cup \{\delta_0(q_j, a) \mid j \in [m]\} \cup \{\delta_0(q_{0,0},a)\} \right)
+		\end{array}
+		\right) \in \delta_{e_0},$
+		
+		\medskip
+		intuitively, from a state $(\rho q_{0,0}, \searchleft, S)$, when reading a letter $a$, if $\{\delta_0(q_{j}, a) \mid j \in [m]\} \cap F_0 = \emptyset$, $\delta_0(q_{0,0}, a) \in F_0$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$  may guess that $a$ is simply the leftmost and longest matching of $e_0$ (e.g. when $e_0= a$), then it directly goes to the ``$\searchleft$'' mode (without going to the ``$\searchlong$'' mode), resets the first component of the control state to $q_{0,0}$, and puts the states of all the threads that have been started, including the one started in the current position, namely, $\{\delta_0(q_j, a) \mid j \in [m]\} \cup \{\delta_0(q_{0,0},a)\}$, into the third component to  guarantee that none of these threads will reach a final state in the future (where $\{\delta_0(q_j, a) \mid j \in [m]\}$ is used to validate the leftmost guessing and $\{\delta_0(q_{0,0},a)\}$ is used to validate the longest guessing).
 		%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
