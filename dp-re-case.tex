@@ -25,16 +25,15 @@ To solve the satisfiability of $C$, similar to the constant-string case, we cons
 	\item $v_{l+1} \not \in \Sigma^\ast e_0 \Sigma^\ast$.
 \end{itemize}
 
-\zhilin{I stopped here}
 
 %
 Intuitively, in order to search for the leftmost and longest matching of $e_0$, 
 \begin{itemize}
-\item $\cA_{e_0}$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the leftmost and longest matching respectively,
+\item $\cA_{e_0}$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the first and last position of the leftmost and longest matching respectively,
  %
-	\item when in the ``$\searchleft$'' mode, $\cA_{e_0}$ starts a new thread of $\cA_0$ in each position and keeps a vector of states of these threads, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and search for the longest matching, moreover, it continues running all the threads that were started before to make sure that the final states will not be reached (thus, the guessing is valid),
+	\item when in the ``$\searchleft$'' mode, $\cA_{e_0}$ starts a new thread of $\cA_0$ in each position and records the states of the threads into a vector, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost and longest matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and search for the last position of the leftmost and longest matching, moreover, it stores in a set $S$ the states of all the threads that were started before the current position  and continues running these threads to make sure that in these threads the final states will not be reached (thus, the current position is indeed the first position of the leftmost and longest matching),
 	%
-	\item when in the ``$\searchlong$'' mode, $\cA_{e_0}$ runs a thread to search for the longest matching, if the thread enters a final state, then $\cA_{e_0}$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the states and starts a new round of leftmost and longest matching,
+	\item when in the ``$\searchlong$'' mode, $\cA_{e_0}$ runs a thread to search for the last position of the leftmost and longest matching, if the thread enters a final state, then $\cA_{e_0}$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the states and starts a new round of leftmost and longest matching,
 	%
 %	\item when a thread $i$ enters a final state, a matching of $e$ is found, $\cB_e$ nondeterministically guesses whether this matching is the leftmost matching or the longest matching, 
 	%
@@ -44,9 +43,11 @@ Intuitively, in order to search for the leftmost and longest matching of $e_0$,
 %
 %	\item if $\cB_e$ makes a ``non-leftmost'' guessing, then $\cB_e$ forgets the thread $i$ and all the other threads that were started later than the thread $i$, and continues running all the threads that were started earlier than the thread $i$ and searching for the leftmost matching,
 	%
-	\item moreover, in order to keep the length of the vectors of states of threads \emph{bounded}, the following trick is applied: for two threads starting at the position $i$ and $j$ respectively such that $i < j$, if the current states of the two threads are the same, then the thread $j$ is removed.
+	\item moreover, since the length of the vectors of states of the threads may become unbounded, in order to obtain a finite state automaton, the following trick is applied: suppose that $q_1 q_2 \cdots q_n$ is the vector of the current states of the threads, if $q_i = q_j$ for $i, j: i < j$, then remove $q_j$.
 \end{itemize}
-%
+
+\zhilin{i stopped here}
+
 Formally, 
 \begin{itemize}
 	\item the state set $Q'_e$ of $\cB_e$ comprises 
