@@ -9,7 +9,8 @@ results easily extend to the case when $\intnum$ includes negative integers.
 We start by defining integer constraints, which expresses length or number of occurrences of symbols in words. 
 
 
-\begin{definition}[Integer constraints] An atomic integer constraints over $\Sigma$ is an expression of the form
+\begin{definition}[Integer constraints] \label{def:intconst} 
+	An atomic integer constraints over $\Sigma$ is an expression of the form
 	\[a_1t_1+\cdots+a_nt_n\leq d\]
 where $a_1, \cdots, a_n,d\in \mathbb{Z}$ are constant integers (represented in binary), and each \emph{term} $t_i$ is either 
 	\begin{enumerate}
@@ -89,7 +90,7 @@ As SL[$\replaceall$] with length constraints is undecidable, we conclude that
 
 \tl{I am not satisfied with this as the quantifier is used}
 
-\paragraph{IndexOf}
+\subsection*{IndexOf}
 One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define IndexOf, which is the most standard usage of IndexOf method in practice. We consider the \emph{first-occurrence} semantics, i.e., (the first position in $x$ where $w$ occurs).
 and the \emph{anywhere} semantics. 
 
@@ -103,4 +104,33 @@ It follows that
 	$\strline[\replaceall]$ extended with IndexOf is undecidable, regardless of the first-occurrence and the anywhere semantics. 
 \end{proposition}
 
- 
+\subsection*{Further undecidability results}
+
+A \emph{linear polynomial} is a polynomial of the form $a_0 + a_1x_1 + \cdots + a_n x_n$ where
+each coefficient $a_i\in \mathbb{Z}$  for $0 \leq i \leq n$. 
+\begin{theorem}[\cite{ID02}]
+There exists some (fixed) $k$ such that no algorithm can solve Diophantine systmes in the following form
+\[t_1F_1=G_1, t_1H_1=I_1, \cdots, t_kF_k = G_k, t_kH_k = I_k,\] 
+%
+where $F_i, G_i, H_i, I_i$ for $1\leq i\leq k$ are nonnegative linear polynomials over natural number variables  $s_1, \cdots, s_m$.
+\end{theorem}
+
+From this class of Diophantine equations, we can introduce string variables $x_1, \cdots, x_k$ and $y_1, \cdots, y_m$, together with relational string constraints 
+\[z_{i,j}=\replaceall(x_i, a, y_j)\]
+for $1\leq i\leq k$ and $1\leq j\leq m$. Note that, for each $i$,  $t_i F_i=G_i$ can be written as
+\begin{equation} \label{eq:dio}
+t_i\cdot \left(a_0+\sum_{j=1}^s a_j s_j\right) =  b_0+\sum_{j=1}^s b_j s_j
+\end{equation}
+where $a$'s and $b$'s are all natural numbers. Moreover, \eqref{eq:dio} holds iff 
+\[a_0\cdot |y_i|+ \sum_{j=1}^s a_j |z_{i,j}| =  b_0+ \sum_{j=1}^s b_j |x_j| \] 
+which is an integer constraint defined in Definition~\ref{def:intconst}. This entails that
+\begin{proposition}
+	The satisfiability problem for SL[$\replaceall$] with \emph{length constraints} is undecidable, even when the relational constraints are \emph{not} nested.
+\end{proposition}
+
+%\begin{example}
+%We use the following example to illustrate the reduction. Suppose that we have two simultaneous Diophantine equation $t1(s1+s2)=s1+2s2$  and   $t1(2 s1+ 3 s2)=s1+s2$ 
+%	
+%	Then set x1=r(t1, a, s1), x2=r(t1, a, s2), and we require length (x1 x2 x2)= length (s1 s2 s2) and  length (x1 x1 x2 x2 x2 )= length (s1 s2)
+%	
+%\end{example}
