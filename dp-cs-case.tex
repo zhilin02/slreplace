@@ -112,9 +112,8 @@ Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is us
 \end{definition}
 
 Let $Q_{\search}  = \left\{ \left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u,k} \right\}$,  and $Q_{\verify, i} = \left\{ \left(\verify, i, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u,k} \right\}$ for each $i \in [k-1]$. In addition, let $Q_{\verify} = \bigcup \limits_{i \in [k-1]} Q_{\verify,i}$.
-In an accepting run $r$ of $\cA_u$ on a string $v = v_1 u v_2 u \cdots v_l u v_{l+1}$, the state sequence in the run is of the form 
-$q_0\ r_1\ q_0\ r_2\ q_0\ \cdots\ r_l\ q_0\ r_{l+1}$
-such that  for each $j \in [l]$, $r_j \in (Q_{\search})^+ \concat Q_{\verify, 1} \concat \cdots  \concat Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^+$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.
+Let $v = v_1 u v_2 u \cdots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. Then there exists a \emph{unique} accepting run $r$ of $\cA_u$ on $v$ such that the state sequence in $r$ is of the form 
+$q_0\ r_1\ q_0\ r_2\ q_0\ \cdots\ r_l\ q_0\ r_{l+1}$, where for each $j \in [l]$, $r_j \in (Q_{\search})^+ \concat Q_{\verify, 1} \concat \cdots  \concat Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^*$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.
 
 %The parsing automaton $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
 
