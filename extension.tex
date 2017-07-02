@@ -36,10 +36,18 @@ Here, the interpretation of $x[u]$ is $u$-th letter of $x$.
 A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
 \end{definition}
 
+One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define $\indexof(w,x)$ for $w\in \Sigma^*$, which is the most standard usage of IndexOf method in practice. There are in general two natural semantics, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics. We write $u=\indexof(w,x)$ where $u$ is an integer variable, which holds
+\begin{itemize}
+	\item under  the \emph{first-occurrence} semantics, if $u$ is the first position in $x$ where $w$ occurs;
+	
+	\item the \emph{anywhere} semantics, if $u$ is \emph{any} position in $x$ where $w$ occurs;
+\end{itemize}  
+ 
 
-Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
 
 \subsection{Undecidability of length constraints}
+
+Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
 
 \begin{theorem}
 	The satisfiability problem for SL[$\replaceall$] with \emph{length constraints} is undecidable. 
@@ -72,50 +80,19 @@ Consequently, when given two polynomials $f(x_1, \cdots, x_m)$ and $g(x_1, \cdot
 Finally, note that any  SL[$\concat, \replaceall$] constraints can be transformed into SL[$\replaceall$] constraints, we obtain a reduction from the Hilbert's 10th problem to the satisfiability problem of  SL[$\replaceall$] with length constraints, which entail that the latter problem is undecidable. The proof is completed. 
 \end{proof}
 
-\subsection{Undecidability of character constraints and IndexOf}
-
-
-We have the following simple observation:
-
-\begin{lemma}
-	For any two strings $x,y\in a^*\$$, $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
-\end{lemma}
-
-As SL[$\replaceall$] with length constraints is undecidable, we conclude that 
-
-\begin{theorem}
-	The satisfiability problem for SL[$\replaceall$] with \emph{character constraints} is undecidable. 
-\end{theorem}
-
-
-\tl{I am not satisfied with this as the quantifier is used}
-
-\subsection*{IndexOf}
-One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define IndexOf, which is the most standard usage of IndexOf method in practice. We consider the \emph{first-occurrence} semantics, i.e., (the first position in $x$ where $w$ occurs).
-and the \emph{anywhere} semantics. 
-
-We have the following observation: 
-\begin{lemma}
-	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=IndexOf(x,y)=IndexOf(y,x)$.  
-\end{lemma}
-
-It follows that 
-\begin{proposition}
-	$\strline[\replaceall]$ extended with IndexOf is undecidable, regardless of the first-occurrence and the anywhere semantics. 
-\end{proposition}
-
-\subsection*{Further undecidability results}
-
+The above proof essentially establishes a link between string constraints and Diophantine equations. With further result from Hilbert 10'th problem, we can strengthen the undecidability results shown that satisfiability of even very simple string constraints (e.g., the $\replaceall$ function is unnested) will be undecidable in conjunction with length constraints. 
+ 
 A \emph{linear polynomial} is a polynomial of the form $a_0 + a_1x_1 + \cdots + a_n x_n$ where
 each coefficient $a_i\in \mathbb{Z}$  for $0 \leq i \leq n$. 
+
 \begin{theorem}[\cite{ID02}]
-There exists some (fixed) $k$ such that no algorithm can solve Diophantine systmes in the following form
-\[t_1F_1=G_1, t_1H_1=I_1, \cdots, t_kF_k = G_k, t_kH_k = I_k,\] 
-%
-where $F_i, G_i, H_i, I_i$ for $1\leq i\leq k$ are nonnegative linear polynomials over natural number variables  $s_1, \cdots, s_m$.
+	There exists some (fixed) $k$ such that no algorithm can solve Diophantine systmes in the following form
+	\[t_1F_1=G_1, t_1H_1=I_1, \cdots, t_kF_k = G_k, t_kH_k = I_k,\] 
+	%
+	where $F_i, G_i, H_i, I_i$ for $1\leq i\leq k$ are nonnegative linear polynomials over natural number variables  $s_1, \cdots, s_m$.
 \end{theorem}
 
-From this class of Diophantine equations, we can introduce string variables $x_1, \cdots, x_k$ and $y_1, \cdots, y_m$, together with relational string constraints 
+From this class of quadratic Diophantine equations, we can introduce string variables $x_1, \cdots, x_k$ and $y_1, \cdots, y_m$, together with relational string constraints 
 \[z_{i,j}=\replaceall(x_i, a, y_j)\]
 for $1\leq i\leq k$ and $1\leq j\leq m$. Note that, for each $i$,  $t_i F_i=G_i$ can be written as
 \begin{equation} \label{eq:dio}
@@ -134,3 +111,38 @@ which is an integer constraint defined in Definition~\ref{def:intconst}. This en
 %	Then set x1=r(t1, a, s1), x2=r(t1, a, s2), and we require length (x1 x2 x2)= length (s1 s2 s2) and  length (x1 x1 x2 x2 x2 )= length (s1 s2)
 %	
 %\end{example}
+
+\subsection{Undecidability of character constraints}
+
+
+We have the following simple observation:
+
+\begin{lemma}
+	For any two strings $x,y\in a^*\$$, $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
+\end{lemma}
+
+As SL[$\replaceall$] with length constraints is undecidable, we conclude that 
+
+\begin{theorem}
+	The satisfiability problem for SL[$\replaceall$] with \emph{character constraints} is undecidable. 
+\end{theorem}
+
+
+\tl{I am not satisfied with this as the quantifier is used}
+
+\subsection{Undecidability of IndexOf}
+ 
+
+We have the following observation: 
+\begin{lemma}
+	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=\indexof(x,y)=\indexof(y,x)$.  
+\end{lemma}
+
+It follows that 
+\begin{proposition}
+	$\strline[\replaceall]$ extended with IndexOf is undecidable, regardless of the first-occurrence and the anywhere semantics. 
+\end{proposition}
+
+%\subsection*{Further undecidability results}
+
+
