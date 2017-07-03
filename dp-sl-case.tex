@@ -111,9 +111,9 @@ Then the satisfiability of $C$ is decided by the following two-step procedure.
 \noindent{\bf Step I.} We utilise the dependency graph $C$ and compute nondeterministically a collection of atomic regular constraints $\cE(x)$ for each variable $x$, in a top-down manner. 
 
 %During the computation, for each variable $x$, the collection of atomic regular constraints 
-Notice that $\cE(x)$ is represented succinctly as a set of pairs $(\cT, \cP)$, where $\cT=(Q, \delta)$ is a transition graph and $\cP \subseteq Q \times Q$. The intention of $(\cT, \cP)$ is to represent succinctly the collection of the atomic regular constraints $(Q, \delta, q, \{q'\})$, where $q$ is the initial state and $\{q'\}$ is the set of final states, for $(q,q') \in \cP$. \tl{you want to say that all regular constraints $\cE(x)$ share the same "underlying" graph, but differ in the initial and final states.}
+Notice that $\cE(x)$ is represented succinctly as a set of pairs $(\cT, \cP)$, where $\cT=(Q, \delta)$ is a transition graph and $\cP \subseteq Q \times Q$. The intention of $(\cT, \cP)$ is to represent succinctly the collection of the atomic regular constraints $(Q, \delta, q, \{q'\})$, where $q$ is the initial state and $\{q'\}$ is the set of final states, for $(q,q') \in \cP$. 
 
-\tl{I rephrased a bit-- the original was commented below. Check whether this is what you mean}
+%\tl{you want to say that all regular constraints $\cE(x)$ share the same "underlying" graph, but differ in the initial and final states.} \tl{I rephrased a bit-- the original was commented below. Check whether this is what you mean}
 
 Initially, let $G_0:= G_C$.  In addition, for each variable $x$ with the conjunct $x \in e$ in $\psi$, let $\cA=(Q, \delta, q_0, F)$ be the NFA corresponding to $e$. We nondeterministically choose $q \in F$ and let $\cE_0(x):=  \{((Q, \delta), \{(q_0, q)\})\}$.
 
