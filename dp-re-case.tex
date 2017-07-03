@@ -52,12 +52,14 @@ For $S \subseteq Q_0$ and $a \in \Sigma$, let $\delta_0(S,a)$ denote $\{q' \in Q
 
 For a vector $S_1 \cdots S_n$ such that $S_i \subseteq Q_0$ for each $i \in [n]$, define $\red(S_1 \cdots S_n)$ inductively as follows:  
 \begin{itemize}
-\item If $n = 1$, then $\red(S_1)=S_1$. 
-\item Otherwise, if $S_n \subseteq \bigcup \limits_{i \in [n-1]} S_i$, then $\red(S_1 \cdots S_n)=\red(S_1 \cdots S_{n-1})$, otherwise, $\red(S_1 \cdots S_n) = \red(S_1 \cdots S_{n-1}) (S_n \setminus \bigcup \limits_{i \in [n-1]} S_i) $.
+\item If $n = 1$, then $\red(S_1)=S_1$ if $S_1 \neq \emptyset$, and $\red(S_1)=\varepsilon$ otherwise.
+% 
+\item If $n > 1$, then $\red(S_1 \cdots S_n)=\red(S_1 \cdots S_{n-1})$ if $S_n \subseteq \bigcup \limits_{i \in [n-1]} S_i$, and $\red(S_1 \cdots S_n) = \red(S_1 \cdots S_{n-1}) (S_n \setminus \bigcup \limits_{i \in [n-1]} S_i) $ otherwise.
 \end{itemize}
 For instance, 
 %
-$\red(\{q_1, q_2\} \{q_1, q_3\} \{q_2, q_4\})=\red(\{q_1,q_2\}\{q_1,q_3\})\{q_4\}=\red(\{q_1,q_2\}) \{q_3\} \{q_4\}\ = \{q_1,q_2\} \{q_3\}\{q_4\}$.
+$\red(\emptyset\{q\})=\{q\}$ and 
+$$\red(\{q_1, q_2\} \{q_1, q_3\} \{q_2, q_4\})=\red(\{q_1,q_2\}\{q_1,q_3\})\{q_4\}= \red(\{q_1,q_2\}) \{q_3\} \{q_4\} = \{q_1,q_2\} \{q_3\}\{q_4\}.$$
 
 Formally, $\cA_{e_0}=(Q_{e_0}, \delta_{e_0}, q_{0,e_0}, F_{e_0})$ is defined as follows.
 \begin{itemize}
@@ -69,7 +71,7 @@ Formally, $\cA_{e_0}=(Q_{e_0}, \delta_{e_0}, q_{0,e_0}, F_{e_0})$ is defined as 
 		%
 		% \item the tuples $(q_{0,e}, \longest, S)$ such that  $S \subseteq Q_e$,
 		%
-		\item the tuples $(S_1, \searchlong, S)$ such that $S_1 \subseteq Q_0$ and $S \subseteq Q_0 \setminus F_0$;
+		\item the tuples $(S_1, \searchlong, S)$ such that $S_1 \subseteq Q_0$, $S \subseteq Q_0 \setminus F_0$ and $S_1 \not \subseteq S$;
 	\end{itemize}
 	%
 	\item $q_{0,e_0}= (\{q_{0,0}\}, \searchleft, \emptyset)$,
@@ -81,22 +83,22 @@ Formally, $\cA_{e_0}=(Q_{e_0}, \delta_{e_0}, q_{0,e_0}, F_{e_0})$ is defined as 
 		%\item $((q_{0,e}, \leftmost, S), a, ((\delta_e(q_{0,e},a), q_{0,e}), \leftmost, \delta_e(S,a)))$, where $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$,
 		%
 		\item suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$  ($n = 0$ means that $\rho$ is empty), $a \in \Sigma$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\},a)\big) \cap F_0 = \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then 
-		\smallskip
+		\medskip
 		
-		$\left((\rho, \searchleft, S), a, \left(\red(\delta_0(\rho\{q_{0,0}\}, a)) \{q_{0,0}\}, \searchleft, \delta_0(S,a) \right) \right) \in \delta_{e_0},$
+		\hspace{5mm} $\left((\rho  \{q_{0,0}\}, \searchleft, S), a, \left(\red(\delta_0(\rho\{q_{0,0}\}, a)) \{q_{0,0}\}, \searchleft, \delta_0(S,a) \right) \right) \in \delta_{e_0},$
 		
 		\medskip
 		 
 		intuitively, in a state $(\rho, \searchleft, S)$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\},a)\big) \cap F_0 = \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$ can choose to stay in the ``$\searchleft$'' mode,
 		moreover, no states occur more than once in $\red(\delta_0(\rho \{q_{0,0}\}, a)) \{q_{0,0}\}$, since $q_{0,0}$ does not occur in $\red(\delta_0(\rho\{q_{0,0}\}, a))$, as a result of the assumption that there are no incoming transitions for $q_{0,0}$ in $\cA_0$,
 		%
-		\item suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$, $a \in \Sigma$, and $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, moreover, $\delta_0(S,a) \cap F_0 = \emptyset$, then
+		\item suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$, $a \in \Sigma$, $\delta_0(S,a) \cap F_0 = \emptyset$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$,  and $\delta_0(\{q_{0,0}\}, a) \not \subseteq \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, then
 		
 		\medskip
 		$\left((\rho \{q_{0,0}\}, \searchleft, S), a, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \in \delta_{e_0},$
 		
 		\medskip
-		intuitively, from a state $(\rho \{q_{0,0}\}, \searchleft, S)$ with $\rho = S_1 \cdots S_n$, when reading a letter $a$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$ guesses that the current position is the first position of the leftmost and longest matching, it goes to the ``$\searchlong$'' mode, in addition, it keeps in the first component of the control state only the set of reachable states of the thread started in the current position, and puts the union of the sets of the reachable states of all the threads that have been started before, namely, $\bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, into the third component to guarantee that none of these threads will reach a final state in the future (thus the guessing that the current position is the first position of the leftmost and longest matching is correct),
+		intuitively, from a state $(\rho \{q_{0,0}\}, \searchleft, S)$ with $\rho = S_1 \cdots S_n$, when reading a letter $a$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, $\delta_0(S,a) \cap F_0 = \emptyset$, and $\delta_0(\{q_{0,0}\}, a) \not \subseteq \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, then $\cA_{e_0}$ guesses that the current position is the first position of the leftmost and longest matching, it goes to the ``$\searchlong$'' mode, in addition, it keeps in the first component of the control state only the set of reachable states of the thread started in the current position, and puts the union of the sets of the reachable states of all the threads that have been started before, namely, $\bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, into the third component to guarantee that none of these threads will reach a final state in the future (thus the guessing that the current position is the first position of the leftmost and longest matching is correct),
 		%
 		\item suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$ ($n = 0$ means that $\rho$ is empty),  $a \in \Sigma$, and $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, moreover, $\delta_0(\{q_{0,0}\}, a) \cap F_0 \neq \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then
 		
@@ -111,13 +113,13 @@ Formally, $\cA_{e_0}=(Q_{e_0}, \delta_{e_0}, q_{0,e_0}, F_{e_0})$ is defined as 
 		\medskip
 		intuitively, from a state $(\rho \{q_{0,0}\}, \searchleft, S)$ with $\rho = S_1 \cdots S_n$, when reading a letter $a$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, $\delta_0(\{q_{0,0}\}, a) \cap F_0 \neq \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$  guesses that $a$ is simply the leftmost and longest matching of $e_0$ (e.g. when $e_0= a$), then it directly goes to the ``$\searchleft$'' mode (without going to the ``$\searchlong$'' mode), resets the first component of the control state to $\{q_{0,0}\}$, and puts the union of the sets of the reachable states of all the threads that have been started, including the one started in the current position, namely, $\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a)$, into the third component to  guarantee that none of these threads will reach a final state in the future (where $\bigcup \limits_{j \in [n]} \delta_0(S_j, a)$ is used to validate the leftmost guessing and $\delta_0(\{q_{0,0}\}, a)$ is used to validate the longest guessing).
 		%
-		\item suppose $(S_1, \searchlong, S) \in Q_{e_0}$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then 
+		\item suppose $(S_1, \searchlong, S) \in Q_{e_0}$, $\delta_0(S,a) \cap F_0 = \emptyset$, and $\delta_0(S_1,a) \not \subseteq \delta_0(S,a)$, then 
 		$$((S_1, \searchlong, S), a, (\delta_0(S_1,a), \searchlong, \delta_0(S,a))) \in \delta_{e_0},$$
 		intuitively, $\cA_{e_0}$ guesses that the current position is not the last position of the leftmost and longest matching and continues the ``$\searchlong$'' mode,
 		%
-		\item suppose $(S_1, \searchlong, S) \in Q_{e_0}$, $\delta_0(S_1,a) \cap F_e \neq \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then 
+		\item suppose $(S_1, \searchlong, S) \in Q_{e_0}$, $\delta_0(S_1,a) \cap F_0 \neq \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then 
 		$$((S_1, \searchlong, S), a, (\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \delta_0(S_1,a))) \in \delta_{e_0},$$
-		intuitively, when $\delta_0(S_1,a) \cap F_e \neq \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, $\cA_{e_0}$ guesses that the current position is the last position of the leftmost and longest matching, resets the first component to $\{q_{0,0}\}$, goes to the ``$\searchleft$'' mode, and puts $\delta_0(S_1, a)$ to the third component to guarantee that the current thread will not reach a final state in the future (thus the guessing that the current position is the last position of the leftmost and longest matching is correct).
+		intuitively, when $\delta_0(S_1,a) \cap F_0 \neq \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, $\cA_{e_0}$ guesses that the current position is the last position of the leftmost and longest matching, resets the first component to $\{q_{0,0}\}$, goes to the ``$\searchleft$'' mode, and puts $\delta_0(S_1, a)$ to the third component to guarantee that the current thread will not reach a final state in the future (thus the guessing that the current position is the last position of the leftmost and longest matching is correct).
 	\end{itemize}
 \end{itemize}
 
@@ -141,8 +143,15 @@ Since in the first component $\rho q_{0,0}$ of each state of $\cA_{e_0}$, no sta
 
 %exponential in $|\cA_0|$. More precisely, the first components $\rho q_{0,0}$ of the control states of $\cA_{e_0}$ may take at most $\sum \limits_{i \in [|Q_0|-1]} (i+1)^{|Q_0|}$ values 
 
-\begin{example}
-Let $e_0 = 0^*0 11^* + 0^*10^*$. Then $\cA_{0}$ and $\cA_{e_0}$ are illustrated in Figure. 
+\begin{example}\label{exmp-pa-re}
+Let $e_0 = 0^*0 1(1^* + 0^*)$. Then $\cA_{0}$ and $\cA_{e_0}$ are illustrated in Figure~\ref{fig-re-exmp}, where ${\sf sleft}$ and ${\sf slong}$ are the abbreviations of $\searchleft$ and $\searchlong$ respectively. Let us use the state $(\{q_{0,1}\}\{q_{0,0}\}, {\sf sleft}, \emptyset)$ to illustrate the construction. Let us consider $a = 0$ first. Since $\big(\delta_0(\{q_{0,1}\}, 0) \cup \delta_0(\{q_{0,0}\}, 0)\big) \cap F_0 = \{q_{0,1}\} \cap F_0 = \emptyset$, $\delta_0(\emptyset, 0) \cap F_0 = \emptyset$, and $\red(\delta_0(\{q_{0,1}\}, 0) \delta_0(\{q_{0,0}\}, 0))=\{q_{0,1}\}$, we deduce that the transition $((\{q_{0,1}\}\{q_{0,0}\}, {\sf sleft}, \emptyset), 0, (\{q_{0,1}\} \{q_{0,0}\}, {\sf sleft}, \emptyset)) \in \delta_{e_0}$. On the other hand, it is impossible to go from the state $(\{q_{0,1}\}\{q_{0,0}\}, {\sf sleft}, \emptyset)$ to the ``$\searchlong$'' mode. This is due to the fact that $\delta_0(\{q_{0,0}\}, 0)=\{q_{0,1}\} \subseteq \delta_0(\{q_{0,1}\},0)=\{q_{0,1}\}$. In addition, there are no $1$-transitions out of $(\{q_{0,1}\}\{q_{0,0}\}, {\sf sleft}, \emptyset)$. This is due to the fact that $\delta_0(\{q_{0,1}\}, 1) \cap F_0 = \{q_{0,2}, q_{0,3}\} \cap F_0 \neq \emptyset$.
+%
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.7]{regular-expression-example.pdf}
+\end{center}
+\caption{The NFA $\cA_0$ and $\cA_{e_0}$}\label{fig-pa-re}
+\end{figure} 
 \end{example}
 
 Given $T_z \subseteq Q_1 \times Q_1$, we construct $\cB_{\cA_1, e_0,  T_{z}}$ by  the following three-step procedure.
@@ -209,7 +218,13 @@ add a transition
 Since $|\cA_{e_0}|$ is $2^{O(p(|\cA_0|))}$, it follows that $|\cB_{\cA_1, e_0, T_z}|$ is $|\cA_1| \cdot 2^{O(p(|\cA_0|))}$. In addition, since $|\cA_0|=O(|e_0|)$, we deduce that $|\cB_{\cA_1, e_0, T_z}|$ is $|\cA_1| \cdot 2^{O(p(|e_0|))}$.
 
 \begin{example}
-$\cB_{\cA_1, e_0,  T_{z}}$
+Let $C \equiv x = \replaceall(y, e_0, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$, where $e_1,e_2,e_3$ are as in Example~\ref{exmp-sl} (cf. Figure~\ref{fig-sl-exmp}) and $e_0$ is as in Example~\ref{exmp-pa-re} (cf. Figure~\ref{fig-pa-re}). Suppose $T_z = \{(q_0, q_0), (q_1, q_2)\}$. Then the NFA $\cB_{\cA_1, e_0, T_z}$ is as illustrated in Figure.
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[scale=0.68]{regular-expression-example-2.pdf}
+\end{center}
+\caption{The NFA $\cB_{\cA_1, e_0, T_z}$}\label{fig-re-exmp}
+\end{figure} 
 \end{example}
 
 For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, we still nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables. 
