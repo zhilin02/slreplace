@@ -26,7 +26,7 @@ An \emph{integer constraint} over $\Sigma$ is a Boolean combination of atomic in
 Character constraints, on the other hand, allow to compare symbols from different strings. The formal definitions are given as follows. 
 
 \begin{definition}[Character constraints]
-	An \emph{atomic character constraint} over $\Sigma$ is an expression of the form $x[t_1]=y[t_2]$ where 
+	An \emph{atomic character constraint} over $\Sigma$ is an equation of the form $x[t_1]=y[t_2]$ where 
 	\begin{itemize}
 		\item $x$ and $y$ are either a string variable or a constant string in $\Sigma^*$, and 
 		\item $t_1$ and $t_2$ are either integer variables or constant positive integers.
@@ -36,12 +36,27 @@ Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$.
 A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
 \end{definition}
 
-We also consider the constraints involving $\indexof$ functions, namely $t =\indexof(s_1, s_2)$, where $t$ is an integer variable, or a natural number, or the value $-1$ (denoting that there are no occurrences of $s_1$ in $s_2$), and $s_1,s_2$ are either string variables or constant strings. There are two natural semantics of $\indexof$, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics.  More specifically, $t=\indexof(s_1, s_2)$ holds 
+We also consider the constraints involving the $\indexof$ function.
+
+\begin{definition}[$\indexof$ Constraints]
+An atomic $\indexof$ constraint over $\Sigma$ is a formula of the form $t\ \mathfrak{o}\ \indexof(s_1, s_2)$, where 
 \begin{itemize}
-	\item under the \emph{first-occurrence} semantics, if $t$ is the first position in $s_2$ where $s_1$ occurs;
-	
-	\item under the \emph{anywhere} semantics, if $t$ is \emph{any} position in $s_2$ where $s_1$ occurs.
-\end{itemize}  
+\item $t$ is an integer variable, or a positive integer (here we assume that the first position of a string is $1$), or the value $0$ (denoting that there are no occurrences of $s_1$ in $s_2$), 
+\item $\mathfrak{o} \in \{\ge, \le\}$, 
+%
+\item and $s_1,s_2$ are either string variables or constant strings. 
+\end{itemize}
+We consider the \emph{first-occurrence} semantics of $\indexof$.  More specifically, $t \ge \indexof(s_1, s_2)$ holds if $t$ is no less than the first position in $s_2$ where $s_1$ occurs, similarly for $t \le \indexof(s_1, s_2)$.
+
+An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\indexof$ constraints over $\Sigma$.
+\end{definition}
+
+%There are two natural semantics of $\indexof$, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics.  More specifically, $t \ge \indexof(s_1, s_2)$ holds 
+%\begin{itemize}
+%	\item under the \emph{first-occurrence} semantics, if $t$ is no less than the first position in $s_2$ where $s_1$ occurs;
+%	
+%	\item under the \emph{anywhere} semantics, if $t$ is no less than \emph{any} position in $s_2$ where $s_1$ occurs.
+%\end{itemize}  
 
 
 %One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define $\indexof(w,x)$ for $w\in \Sigma^*$, which is the most standard usage of IndexOf method in practice. There are in general two natural semantics, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics. We write $u=\indexof(w,x)$ where $u$ is an integer variable, which holds
@@ -53,7 +68,7 @@ We also consider the constraints involving $\indexof$ functions, namely $t =\ind
  
 
 
-\subsection{Undecidability of integer constraints}
+\subsection{Undecidability of the integer constraints}
 
 We will show that the extension of $\strline[\replaceall]$ with integer constraints entails undecidability, by a reduction from (a variant of) the Hilbert's 10th problem: Given two polynomials (aka Diophantine equations) $f(x_1, \cdots, x_n)$ and $g(x_1,\cdots, x_n)$ with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, decide whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. It is well-known that Hilbert's 10th problem is undecidable \cite{Mat93}.
 
@@ -174,7 +189,7 @@ Therefore, we get the following undecidability result.
 %	
 %\end{example}
 
-\subsection{Undecidability of character constraints}
+\subsection{Undecidability of the character constraints}
 
 \begin{proposition}\label{prop-ext-char}
 	For the extension of $\strline[\replaceall]$ with character constraints, the satisfiability problem is undecidable. 
@@ -210,23 +225,22 @@ Therefore, we get a reduction from Hilbert's tenth problem to the satisfiability
 %
 %\tl{I am not satisfied with this as the quantifier is used}
 
-\subsection{Undecidability of IndexOf}
+\subsection{Undecidability of the $\indexof$ constraints}
  
  \begin{proposition}
-	For the extension of $\strline[\replaceall]$ with $\indexof$ function, the satisfiability problem is undecidable, regardless of the first-occurrence and the anywhere semantics. 
+	For the extension of $\strline[\replaceall]$ with the $\indexof$ constraints, the satisfiability problem is undecidable. 
 \end{proposition}
 
 Proposition~\ref{prop-ext-char} follows from the following observation and Theorem~\ref{thm-ext-int}: For any two string variables $x,y$ over a unary alphabet, 
-$\indexof(x,y) = 1$ if $x$ is a prefix of $y$. 
-$|x| = |y|$ iff $ \indexof(x,y) = 1 \wedge \indexof(y,x)= 1$.
+$1= \indexof(x,y)$ iff $x$ is a prefix of $y$. Therefore, $|x| = |y|$ iff $1=  \indexof(x,y) \wedge 1= \indexof(y,x)$. This implies that in the proof of Theorem~\ref{thm-ext-int}, we can replace $|y_f| = |y_g|$ with $1=\indexof(y_f, y_g) \wedge 1 = \indexof(y_g, y_f)$ and get a reduction from Hilbert's tenth problem to the satisfiability problem for the extension of $\strline[\replaceall]$ with the $\indexof$ constraints.
 
 
-We have the following observation: 
-\begin{lemma}
-	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=\indexof(x,y)=\indexof(y,x)$.  
-\end{lemma}
-
-It follows that 
+%We have the following observation: 
+%\begin{lemma}
+%	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=\indexof(x,y)=\indexof(y,x)$.  
+%\end{lemma}
+%
+%It follows that 
 
 %\subsection*{Further undecidability results}
 
