@@ -11,6 +11,7 @@ Let us first assume $\varepsilon \in \Ll(e_0)$. Then according to the semantics,
 \item Guess a set $T_z \subseteq Q_1 \times Q_1$. 
 %
 \item Construct $\cB_{\cA_1, \varepsilon, T_z}$ from $\cA_1$ and $T_z$ as follows: For each $(q,q') \in T_z$, add to $\cA_1$ a transition $(q, \varepsilon, q')$. Then transform the resulting NFA into one without $\varepsilon$-transitions (which can be done in polynomial time).
+\mat{presumably it's important that the state space does not change?}
 %
 \item  Decide the nonemptiness of $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, \varepsilon, T_z})$ and $\Ll(\cA_3) \cap \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q,q'))$.
 \end{enumerate}
@@ -31,9 +32,11 @@ Intuitively, in order to search for the leftmost and longest matching of $e_0$,
 \begin{itemize}
 \item $\cA_{e_0}$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the first and last position of the leftmost and longest matching respectively,
  %
-	\item when in the ``$\searchleft$'' mode, $\cA_{e_0}$ starts a new thread of $\cA_0$ in each position and records \emph{the set of reachable states} of the threads into a vector, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost and longest matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and search for the last position of the leftmost and longest matching, moreover, it stores in a set $S$ the union of the sets of reachable states of all the threads that were started before the current position and continues running these threads to make sure that in these threads, the final states will not be reached (thus, the current position is indeed the first position of the leftmost and longest matching),
+	\item when in the ``$\searchleft$'' mode, $\cA_{e_0}$ starts a new thread
+    \mat{How can an automaton start a thread?  Is the vector of sets of reachable states unbounded in length?} 
+     of $\cA_0$ in each position and records \emph{the set of reachable states} of the threads into a vector, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost and longest matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and searches for the last position of the leftmost and longest matching, moreover, it stores in a set $S$ the union of the sets of reachable states of all the threads that were started before the current position and continues running these threads to make sure that in these threads, the final states will not be reached (thus, the current position is indeed the first position of the leftmost and longest matching),
 	%
-	\item when in the ``$\searchlong$'' mode, $\cA_{e_0}$ runs a thread of $\cA_{e_0}$ to search for the last position of the leftmost and longest matching, if the set of reachable states of the thread contains a final state, then $\cA_{e_0}$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the set of reachable states of the thread and starts a new round of searching for the leftmost and longest matching, in addition, it stores the original set of reachable states of the thread into a set $S$ and continues running the thread to make sure that in this thread, the final states  will not be reached (thus, the current position is indeed the last position of the leftmost and longest matching),
+	\item when in the ``$\searchlong$'' mode, $\cA_{e_0}$ runs a thread of $\cA_{e_0}$ \mat{You mean $\cA_0$?} to search for the last position of the leftmost and longest matching, if the set of reachable states of the thread contains a final state, then $\cA_{e_0}$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the set of reachable states of the thread and starts a new round of searching for the leftmost and longest matching, in addition, it stores the original set of reachable states of the thread into a set $S$ and continues running the thread to make sure that in this thread, the final states  will not be reached (thus, the current position is indeed the last position of the leftmost and longest matching),
 	%
 %	\item when a thread $i$ enters a final state, a matching of $e$ is found, $\cB_e$ nondeterministically guesses whether this matching is the leftmost matching or the longest matching, 
 	%
@@ -46,7 +49,14 @@ Intuitively, in order to search for the leftmost and longest matching of $e_0$,
 	\item moreover, since the length of the vectors of the sets of reachable states of the threads may become unbounded, in order to obtain a finite state automaton, the following trick is applied: suppose that $S_1 S_2 \cdots S_n$ is the vector of the sets of reachable states of the threads, for each pair of indices $i, j: i < j$ and each $q \in S_i \cap S_j$, remove $q$ from $S_j$. Note that the application of this trick is justified by the following arguments: Since $q$ occurs in both $S_i$ and $S_j$ and the thread $i$ was started before the thread $j$, even if from $q$  a final state can be reached in the future, the position where the thread $j$ was started \emph{cannot} be the first position of the leftmost and longest matching, since the state $q$ is also a state of the thread $i$ and the position where the thread $i$ was started is before the position where the thread $i$ was started.
 \end{itemize}
 
-In the following, we will present the construction of $\cA_{e_0}$ in detail. Before that, let us introduce some additional notations.
+\mat{
+    I am out of time: 
+    i will have a look at the construction below tomorrow and give you any comments.
+    Then i'll think about how the description above might be updated.
+    I may be slow though, since i have four meetings tomorrow.
+}
+
+In the following, we will present the construction of $\cA_{e_0}$ in detail. Before that, let us introduce some additional notation.
 
 For $S \subseteq Q_0$ and $a \in \Sigma$, let $\delta_0(S,a)$ denote $\{q' \in Q_0 \mid \exists q \in S.\ (q,a,q') \in \delta_0 \}$. For $a \in \Sigma$ and a vector $\rho = S_1 \cdots S_n$ such that $S_i \subseteq Q_0$ for each $i \in [n]$, let $\delta_0(\rho,a)=\delta_0(S_1,a) \cdots \delta_0(S_n, a)$.
 
