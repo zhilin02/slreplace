@@ -46,9 +46,9 @@ results preserves the decidability remains a long-standing open problem
 
 %\OMIT{
 %which is crucial for 
-Another frequently used string operation (especially, in popular scripting
+Another important string operation (especially, in popular scripting
 languages like Python, JavaScript, and PHP) is the string-replace function, 
-which may be used either to replace either the first occurrence or to replace 
+which may be used either to replace either the first occurrence or
 all occurrences of a string (a string constant/variable, or a pattern) by 
 another string (a string constant/variable). The replace function (especially 
 the replace-all functionality) is omnipresent in HTML5 applications, as has
@@ -60,10 +60,19 @@ This is typically done by %replacing every occurrence of
 various metacharacter-escaping mechanisms (e.g. see 
 \cite{Kern14,BEK,OWASP-XSS}), e.g., backslash-escape, which replaces \emph{every
 occurrence} of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
-string by \verb+\'+ and \verb+\"+. These can typically be expressed by
-(perhaps multiple) applications of the string-replace function. Notice,
-however, that this \emph{cannot} be expressed using the theory of concatenation 
-with regular constraints alone.
+string by \verb+\'+ and \verb+\"+. 
+In addition
+to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
+and \texttt{innerHTML} apply an \emph{implicit browser transduction} --- which
+decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input 
+string --- before inserting the input string into the DOM.
+Both of these examples can be expressed by (perhaps multiple) 
+applications of the string-replace function.
+
+The string-replace function is yet another string operation that lies beyond 
+the expressive power of the theory of concatenation. In fact, it was shown in
+\cite{LB16} that incorporating the string-replace function into the theory of 
+concatenation results in an undecidable theory of strings. A partial answer ..
 
 \OMIT{
 Such string functions, however, cannot
