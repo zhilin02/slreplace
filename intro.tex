@@ -3,7 +3,8 @@
 \section{Introduction}
 
 The problem of %satisfiability of logical theories over strings
-solving string constraints
+solving string constraints (a.k.a. satisfiability of logical theories over
+strings)
 is an important automated reasoning problem that has in recent years witnessed
 renewed interests %in the programming language and verification community
 \cite{Berkeley-JavaScript,TCJ16,LB16,YABI14,S3,Abdulla14,Abdulla17,,DV13,symbolic-transducer,BEK,...} 
@@ -31,20 +32,24 @@ the replace-all functions, among many others.
 %There are several well-established research threads on this satisfiability 
 %problem depending on 
 %which string operations are permitted in the theory. 
-Perhaps the most well-known
-such theory is the theory of strings with concatenation (a.k.a. \emph{word 
-equations}),
+Perhaps the most well-known theory of strings for applications to analysing
+string-manipulating programs is the theory of strings with concatenation 
+(a.k.a. \emph{word equations}),
 whose decidability status was settled positively by Makanin \cite{Makanin}
-in 1977 after it was open for many years. %More importantly, 
-
-
+in 1977 after it was open for many years. More importantly, 
 The theory of strings with concatenation remains 
 decidable even when regular expression matching is incorporated into the 
-language \cite{??}, which is crucial for such applications as string analysis
+language \cite{Schulz}. However, whether adding the string-length function
+results preserves the decidability remains a long-standing open problem
+\cite{Vijay-length,buchi}.
+
+\OMIT{
+which is crucial for such applications as string analysis
 for JavaScript applications against cross-site scripting (XSS) vulnerabilities
 \cite{Berkeley-JavaScript}, which are typically caused by improper handling
 of untrusted strings leading to an execution of malicious script in the
 clients' browsers.
+}
 
 One main driving force behind this research direction is the application to analysis of security vulnerability
 in web applications against cross-site scripting (XSS) and code injections 
