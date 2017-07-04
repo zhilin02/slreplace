@@ -2,15 +2,15 @@
 
 \section{Undecidable extensions}
 
-In this section, we extend the language $\strline[\concat,\replaceall]$ with integer and character constraints. The language will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as \emph{integer variables}, ranges over the set $\mathbb{N}$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. s. The
+In this section, we extend the language $\strline[\concat,\replaceall]$ with integer and character constraints. The language will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as \emph{integer variables}, ranges over the set $\Nat$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. The
 choice of omitting negative integers is only for simplicity, but our
-results easily extend to the case when $\intnum$ includes negative integers.
+results can be easily extended to the case where $\intnum$ includes negative integers.
 
-We start by defining integer constraints, which expresses length or number of occurrences of symbols in words. 
+We start by defining integer constraints, which expresses constraints on the length or number of occurrences of symbols in words. 
 
 
 \begin{definition}[Integer constraints] \label{def:intconst} 
-	An atomic integer constraints over $\Sigma$ is an expression of the form
+	An atomic integer constraint over $\Sigma$ is an expression of the form
 	\[a_1t_1+\cdots+a_nt_n\leq d\]
 where $a_1, \cdots, a_n,d\in \mathbb{Z}$ are constant integers (represented in binary), and each \emph{term} $t_i$ is either 
 	\begin{enumerate}
@@ -18,42 +18,85 @@ where $a_1, \cdots, a_n,d\in \mathbb{Z}$ are constant integers (represented in b
 		\item $|x|$ where $x$ is a  string variable; or 
 		\item $|x|_a$ where $x$ is string variable and $a\in \Sigma$ is a constant letter.
 	\end{enumerate}
-Here, $|x|$ and $|x|_a$ denotes the length of $x$ and the number of occurrences of $a$ in $x$, respectively. 
+Here, $|x|$ and $|x|_a$ denote the length of $x$ and the number of occurrences of $a$ in $x$, respectively. 
 
-An \emph{integer constraint} over $\Sigma$ is a Boolean combination of atomic integer constraints over $\Sigma$
+An \emph{integer constraint} over $\Sigma$ is a Boolean combination of atomic integer constraints over $\Sigma$.
 \end{definition}
 
 Character constraints, on the other hand, allow to compare symbols from different strings. The formal definitions are given as follows. 
 
 \begin{definition}[Character constraints]
-	An \emph{atomic character constraint} over $\Sigma$ is an expression of the form $x[u]=y[v]$ where 
+	An \emph{atomic character constraint} over $\Sigma$ is an equation of the form $x[t_1]=y[t_2]$ where 
 	\begin{itemize}
-		\item $x$ and $y$ are either a string variable or a word in $\Sigma^*$, and 
-		\item $u$ and $v$ are either integer variables or constants positive integers.
+		\item $x$ and $y$ are either a string variable or a constant string in $\Sigma^*$, and 
+		\item $t_1$ and $t_2$ are either integer variables or constant positive integers.
 	\end{itemize} 
-Here, the interpretation of $x[u]$ is $u$-th letter of $x$.	
+Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$.	
 	
 A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
 \end{definition}
 
-One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define $\indexof(w,x)$ for $w\in \Sigma^*$, which is the most standard usage of IndexOf method in practice. There are in general two natural semantics, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics. We write $u=\indexof(w,x)$ where $u$ is an integer variable, which holds
+We also consider the constraints involving the $\indexof$ function.
+
+\begin{definition}[$\indexof$ Constraints]
+An atomic $\indexof$ constraint over $\Sigma$ is a formula of the form $t\ \mathfrak{o}\ \indexof(s_1, s_2)$, where 
 \begin{itemize}
-	\item under  the \emph{first-occurrence} semantics, if $u$ is the first position in $x$ where $w$ occurs;
-	
-	\item the \emph{anywhere} semantics, if $u$ is \emph{any} position in $x$ where $w$ occurs;
-\end{itemize}  
+\item $t$ is an integer variable, or a positive integer (here we assume that the first position of a string is $1$), or the value $0$ (denoting that there are no occurrences of $s_1$ in $s_2$), 
+\item $\mathfrak{o} \in \{\ge, \le\}$, 
+%
+\item and $s_1,s_2$ are either string variables or constant strings. 
+\end{itemize}
+We consider the \emph{first-occurrence} semantics of $\indexof$.  More specifically, $t \ge \indexof(s_1, s_2)$ holds if $t$ is no less than the first position in $s_2$ where $s_1$ occurs, similarly for $t \le \indexof(s_1, s_2)$.
+
+An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\indexof$ constraints over $\Sigma$.
+\end{definition}
+
+%There are two natural semantics of $\indexof$, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics.  More specifically, $t \ge \indexof(s_1, s_2)$ holds 
+%\begin{itemize}
+%	\item under the \emph{first-occurrence} semantics, if $t$ is no less than the first position in $s_2$ where $s_1$ occurs;
+%	
+%	\item under the \emph{anywhere} semantics, if $t$ is no less than \emph{any} position in $s_2$ where $s_1$ occurs.
+%\end{itemize}  
+
+
+%One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define $\indexof(w,x)$ for $w\in \Sigma^*$, which is the most standard usage of IndexOf method in practice. There are in general two natural semantics, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics. We write $u=\indexof(w,x)$ where $u$ is an integer variable, which holds
+%\begin{itemize}
+%	\item under  the \emph{first-occurrence} semantics, if $u$ is the first position in $x$ where $w$ occurs;
+%	
+%	\item the \emph{anywhere} semantics, if $u$ is \emph{any} position in $x$ where $w$ occurs;
+%\end{itemize}  
  
 
 
-\subsection{Undecidability of length constraints}
+\subsection{Undecidability of the integer constraints}
 
-Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
+We will show that the extension of $\strline[\replaceall]$ with integer constraints entails undecidability, by a reduction from (a variant of) the Hilbert's 10th problem: Given two polynomials (aka Diophantine equations) $f(x_1, \cdots, x_n)$ and $g(x_1,\cdots, x_n)$ with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, decide whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. It is well-known that Hilbert's 10th problem is undecidable \cite{Mat93}.
 
-\begin{theorem}
-	The satisfiability problem for SL[$\replaceall$] with \emph{length constraints} is undecidable. 
+%Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
+
+\begin{theorem}\label{thm-ext-int}
+	For the extension of $\strline[\replaceall]$ with \emph{integer constraints}, the satisfiability problem is undecidable. 
 \end{theorem}
 
 \begin{proof}
+The basic idea of the reduction is to simulate the two polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, where $x_1,\cdots,x_n$ range over the set of natural numbers, with two $\strline[\replaceall]$ formulae $C_f, C_g$ over a unary alphabet $\{a\}$, with the output string variables $y_f, y_g$ respectively, and simulate the equality $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ with the integer constraint $|y_f|=|y_g|$ (which is equivalent to $y_f = y_g$, since $y_f, y_g$ represent strings over the unary alphabet $\{a\}$).
+
+A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$ and the multiplication operator $*$ is simulated by $\replaceall$. Since it is easy to figure out how the simulation proceeds, we will only use an example to illustrate it and omit the details here. Let us consider $f(x_1,x_2) = x_1^2 + 2 x_1 x_2 + 5$. By abusing the notation a bit, we also use $x_1,x_2$ as string variables in the simulation. We will introduce a string variable for each subexpression in $(x_1,x_2)$, namely the variables $y_{x_1^2}, y_{x_1x_2}, y_{2x_1x_2}, y_{x_1^2+2x_1x_2}, y_{f(x_1,x_2)}$. Then $f(x_1,x_2)$ is simulated by the $\strline[\replaceall]$ formula
+\[
+\begin{array} {l c l }
+C_f & \equiv & y_{x_1^2} = \replaceall(x_1,a, x_1)\ \wedge y_{x_1x_2} = \replaceall(x_1, a, x_2)\ \wedge \\
+& & y_{2x_1x_2} = \replaceall(aa, a, y_{x_1x_2})\ \wedge y_{x_1^2+2x_1x_2} = y_{x_1^2} \concat y_{2x_1x_2}\ \wedge  \\
+& & y_{f(x_1,x_2)}=y_{x_1^2+2x_1x_2} \concat a a a a a\ \wedge x_1 \in a^*\ \wedge x_2 \in a^*.
+\end{array}
+\]
+Notice that in $C_f$, the $\concat$ operator is used. Nevertheless, according to Proposition~\ref{prop-concat}, the $\concat$ operator can be simulated easily by the $\replaceall$ function.
+ 
+Since $C_f$ and $C_g$ share only source variables $x_1,\cdots, x_n$, we know that $C_f \wedge C_g$ is still an $\strline[\replaceall]$ formula.
+From the construction of $C_f, C_g$, it is evident that for every pair of polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C_f \wedge C_g \wedge |y_f| = |y_g|$ is satisfiable. The proof is complete.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 	We shall reduce from the aforementioned version of the Hilbert tenth problem. For any polynomial with positive integral  $f(x_1, \cdots, x_n)$ where each coefficient is a positive, we can construct a (division-free) arithmetic circuit (AC) is a directed  acyclic graph with nodes labelled with constants from $\mathbb{Z}$, or with some indeterminates $X_1, \cdots, X_m$, or with the operators $+, -, *$. The nodes labelled with constants are called constant nodes, while those labelled with indeterminates are called input nodes. Both constant and input nodes do not have incoming edges. Internal nodes are those labelled with $+,-,*$. Output node is the one which does not have out-going edges. Without loss of generality we assume that each internal node has in-degree 2, and there is only one output node. Each node in the circuit represents a multivariate polynomial $\mathbb{Z}[X_1, \cdots, X_m]$. Vice verse, each polynomial $f\in \mathbb{Z}[X_1, \cdots, X_m]$ can be represented as an AC, and, if the polynomial has only positive (integral) coefficients, the corresponding AC does not contain nodes labelled by $-$ or negative constants.  
 	
 	We observe that, given an AC, one can construct an SL[$\concat, \replaceall$] formula over the alphabet $\Sigma=\{a\}$ as follows. Each node $n$ of the AC is associated with a string variable $x_n$. As a result, each input node of the AC labelled by $X_i$ (i.e., the indeterminate) corresponds to a  source variable.   
@@ -78,20 +121,48 @@ Consequently, when given two polynomials $f(x_1, \cdots, x_m)$ and $g(x_1, \cdot
 \[\exists x_1, \cdots, x_m. f(x_1, \cdots, x_m)=g(x_1, \cdots, x_m)\mbox{ iff } |y_f|=|y_g|\wedge \varphi_{f}\wedge \varphi_{g}\wedge \psi_{f}\wedge \psi_g\mbox{ is satisfiable} \]
 
 Finally, note that any  SL[$\concat, \replaceall$] constraints can be transformed into SL[$\replaceall$] constraints, we obtain a reduction from the Hilbert's 10th problem to the satisfiability problem of  SL[$\replaceall$] with length constraints, which entail that the latter problem is undecidable. The proof is completed. 
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{proof}
 
-The above proof essentially establishes a link between string constraints and Diophantine equations. With further result from Hilbert 10'th problem, we can strengthen the undecidability results shown that satisfiability of even very simple string constraints (e.g., the $\replaceall$ function is unnested) will be undecidable in conjunction with length constraints. 
- 
-A \emph{linear polynomial} is a polynomial of the form $a_0 + a_1x_1 + \cdots + a_n x_n$ where
-each coefficient $a_i\in \mathbb{Z}$  for $0 \leq i \leq n$. 
+We would like to remark that in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with a very simple integer constraint of the form $|x| = |y|$ entails undecidability.
+On the other hand, in the following, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are very simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
-\begin{theorem}[\cite{ID02}]
-	There exists some (fixed) $k$ such that no algorithm can solve Diophantine systmes in the following form
-	\[t_1F_1=G_1, t_1H_1=I_1, \cdots, t_kF_k = G_k, t_kH_k = I_k,\] 
+% The above proof essentially establishes a link between Diophantine equations and the extension of $\strline[\replaceall]$ with integer constraints over a unary alphabet. 
+%
+%With a further result from Hilbert 10'th problem, we can strengthen the undecidability results shown that satisfiability of even very simple string constraints (e.g., the $\replaceall$ function is unnested) will be undecidable in conjunction with length constraints. 
+ 
+A \emph{linear polynomial} (resp. quadratic polynomial) is a polynomial with degree at most one (resp. with degree at most two) where each coefficient is an integer. %of the form $a_0 + a_1x_1 + \cdots + a_n x_n$ (resp. a polynomial with degree at most two) where each coefficient $a_i\in \mathbb{Z}$  for $0 \leq i \leq n$. A quadratic polynomial
+
+\begin{theorem}[\cite{ID04}]\label{thm-quad-eq}
+%	There exists some (fixed) $k$ such that no algorithm can solve Diophantine systems in the following form
+%	\[y_1F_1=G_1, t_1H_1=I_1, \cdots, t_kF_k = G_k, t_kH_k = I_k,\] 
 	%
-	where $F_i, G_i, H_i, I_i$ for $1\leq i\leq k$ are nonnegative linear polynomials over natural number variables  $s_1, \cdots, s_m$.
+%	where $F_i, G_i, H_i, I_i$ for $1\leq i\leq k$ are nonnegative linear polynomials over natural number variables  $s_1, \cdots, s_m$.
+	The following problem is undecidable: Determine whether a system of equations of the following form has a solution in natural numbers, 
+	\[
+	\begin{array} {l l }
+	A_i = B_i, & i =1, \cdots, k,\\
+	y_iF_i=G_i \wedge y_i H_i = I_i, & i =1, \cdots, m, 
+	\end{array}
+	\] 
+	%
+	where $A_i, B_i, F_i, G_i$ are linear polynomials on the variables $x_1,\cdots, x_n$ (Note that each variable $y_i$ occurs in exactly two quadratic equations).
 \end{theorem}
 
+We can get a reduction from the problem in Theorem~\ref{thm-quad-eq} to the satisfiability of the extension of $\strline[\replaceall]$ with integer constraints as follows: For each monomial $y_i x_j$ in the quadratic polynomials, we use a $\strline[\replaceall]$ formula $z_{y_i x_j} = \replaceall(y_i, a, x_j)$ to simulate $y_i x_j$, where $z_{y_i x_j}$ are freshly introduced string variables. Since each equation $y_iF_i=G_i$ or $y_i H_i = I_i$ can be seen as a linear combination of the terms $y_i x_j$ and $x_j$ for $i \in [m]$ and $j \in [n]$, we can replace each variable $x_j$ with $|x_j|$, and each term $y_ix_j$ with $|z_{y_i x_j}|$,  thus transform them into the (linear) integer constraints $F'_i = G'_i$ or $H'_i = I'_i$. Similarly, after replacing each variable $x_j$ with $|x_j|$, we transform each equation $A_i= B_i$ into an integer constraint $A'_i = B'_i$. Therefore, we get a formula 
+$$
+\begin{array}{l c l }
+\bigwedge \limits_{i \in [m], j \in [n]} z_{y_i x_j} = \replaceall(y_i, a, x_j) \wedge \bigwedge \limits_{i \in [m]} y_i \in a^*\ \wedge  \bigwedge \limits_{j \in [n]} x_j \in a^* \  \wedge\\
+ \hspace{2cm} \bigwedge \limits_{i \in [k]} A'_i = B'_i \wedge \bigwedge \limits_{i \in [m]} (F'_i = G'_i \wedge H'_i = I'_i),
+ \end{array}
+$$
+where the dependency graph of the $\strline[\replaceall]$ subformula is of depth at most one.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 From this class of quadratic Diophantine equations, we can introduce string variables $x_1, \cdots, x_k$ and $y_1, \cdots, y_m$, together with relational string constraints 
 \[z_{i,j}=\replaceall(x_i, a, y_j)\]
 for $1\leq i\leq k$ and $1\leq j\leq m$. Note that, for each $i$,  $t_i F_i=G_i$ can be written as
@@ -101,9 +172,15 @@ t_i\cdot \left(a_0+\sum_{j=1}^s a_j s_j\right) =  b_0+\sum_{j=1}^s b_j s_j
 where $a$'s and $b$'s are all natural numbers. Moreover, \eqref{eq:dio} holds iff 
 \[a_0\cdot |y_i|+ \sum_{j=1}^s a_j |z_{i,j}| =  b_0+ \sum_{j=1}^s b_j |x_j| \] 
 which is an integer constraint defined in Definition~\ref{def:intconst}. This entails that
-\begin{proposition}
-	The satisfiability problem for SL[$\replaceall$] with \emph{length constraints} is undecidable, even when the relational constraints are \emph{not} nested.
-\end{proposition}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Therefore, we get the following undecidability result.
+
+\begin{theorem}\label{thm-ext-int-strong}
+	For the extension of $\strline[\replaceall]$ with integer constraints, even if $\strline[\replaceall]$ formulae are restricted to those whose dependency graphs are of depth at most one, the satisfiability problem is still undecidable.
+\end{theorem}
 
 %\begin{example}
 %We use the following example to illustrate the reduction. Suppose that we have two simultaneous Diophantine equation $t1(s1+s2)=s1+2s2$  and   $t1(2 s1+ 3 s2)=s1+s2$ 
@@ -112,36 +189,58 @@ which is an integer constraint defined in Definition~\ref{def:intconst}. This en
 %	
 %\end{example}
 
-\subsection{Undecidability of character constraints}
+\subsection{Undecidability of the character constraints}
 
-
-We have the following simple observation:
-
-\begin{lemma}
-	For any two strings $x,y\in a^*\$$, $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
-\end{lemma}
-
-As SL[$\replaceall$] with length constraints is undecidable, we conclude that 
-
-\begin{theorem}
-	The satisfiability problem for SL[$\replaceall$] with \emph{character constraints} is undecidable. 
-\end{theorem}
-
-
-\tl{I am not satisfied with this as the quantifier is used}
-
-\subsection{Undecidability of IndexOf}
- 
-
-We have the following observation: 
-\begin{lemma}
-	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=\indexof(x,y)=\indexof(y,x)$.  
-\end{lemma}
-
-It follows that 
-\begin{proposition}
-	$\strline[\replaceall]$ extended with IndexOf is undecidable, regardless of the first-occurrence and the anywhere semantics. 
+\begin{proposition}\label{prop-ext-char}
+	For the extension of $\strline[\replaceall]$ with character constraints, the satisfiability problem is undecidable. 
 \end{proposition}
+
+The arguments for Proposition~\ref{prop-ext-char} proceed as follows: 
+%\begin{quote}
+Recall that in the proof of Theorem~\ref{thm-ext-int}, we get a formula $C_f \wedge C_g \wedge |y_f| = |y_g|$ such that $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C_f \wedge C_g \wedge |y_f| = |y_g|$ is satisfiable. Let $\$ \neq a$. Suppose  $z_f = y_f \concat \$$, and $z_g = y_g \concat \$$. Then $|y_f| = |y_g|$ can be specified by $z_f[\mathfrak{n}] = \$[1] \wedge  z_g[\mathfrak{n}] = \$[1]$, where $\mathfrak{n}$ is a variable of type $\intnum$. More precisely, 
+%
+we have 
+\begin{quote}
+\centering
+$C_f \wedge C_g \wedge |y_f|= |y_g|$ is satisfiable \\
+%
+iff \\
+%
+$C_f \wedge C_g \wedge z_f = y_f \concat \$ \wedge z_g = y_g \concat \$ \wedge z_f[\mathfrak{n}] = \$[1] \wedge  z_g[\mathfrak{n}] = \$[1]$ is satisfiable. 
+\end{quote}
+Therefore, we get a reduction from Hilbert's tenth problem to the satisfiability problem for the extension of $\strline[\replaceall]$ with character constraints. 
+
+%For any two string variables $x,y$ on the unary alphabet $\{a\}$, let $x' = x \concat \$$ and $y' = y \concat \$$, then $|x| = |y|$ iff .
+%
+% $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
+%
+%
+%\begin{lemma}
+%	For any two strings $x,y\in a^*\$$, $|x|=|y|$ iff $\exists n. x[n]=y[n]=\$$. 
+%\end{lemma}
+%
+%As SL[$\replaceall$] with length constraints is undecidable, we conclude that 
+%
+%
+%
+%\tl{I am not satisfied with this as the quantifier is used}
+
+\subsection{Undecidability of the $\indexof$ constraints}
+ 
+ \begin{proposition}
+	For the extension of $\strline[\replaceall]$ with the $\indexof$ constraints, the satisfiability problem is undecidable. 
+\end{proposition}
+
+Proposition~\ref{prop-ext-char} follows from the following observation and Theorem~\ref{thm-ext-int}: For any two string variables $x,y$ over a unary alphabet, 
+$1= \indexof(x,y)$ iff $x$ is a prefix of $y$. Therefore, $|x| = |y|$ iff $1=  \indexof(x,y) \wedge 1= \indexof(y,x)$. This implies that in the proof of Theorem~\ref{thm-ext-int}, we can replace $|y_f| = |y_g|$ with $1=\indexof(y_f, y_g) \wedge 1 = \indexof(y_g, y_f)$ and get a reduction from Hilbert's tenth problem to the satisfiability problem for the extension of $\strline[\replaceall]$ with the $\indexof$ constraints.
+
+
+%We have the following observation: 
+%\begin{lemma}
+%	For any two strings $x,y$ over $\{a\}$, $x=y$ iff $1=\indexof(x,y)=\indexof(y,x)$.  
+%\end{lemma}
+%
+%It follows that 
 
 %\subsection*{Further undecidability results}
 
