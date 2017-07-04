@@ -23,8 +23,9 @@ crucial that the constraint language precisely model the data types in the
 program, along with the used string operations. In the context of
 string-manipulating programs, the string constraints should be expressive enough
 to capture the operations that are used in the programs. This could include 
-concatenation, regular expression matching, string-length functions, and
-the replace-all functions, among many others.
+concatenation, regular constraints (i.e. pattern matching against a regular
+expression), string-length functions, and the string-replace functions, among 
+many others.
 
 %For scripting
 %languages (e.g. Python, PHP, and JavaScript), which have grown in popularity
@@ -37,26 +38,45 @@ string-manipulating programs is the theory of strings with concatenation
 (a.k.a. \emph{word equations}),
 whose decidability status was settled positively by Makanin \cite{Makanin}
 in 1977 after it was open for many years. More importantly, 
-The theory of strings with concatenation remains 
-decidable even when regular expression matching is incorporated into the 
+the theory of strings with concatenation remains 
+decidable even when regular constraints are incorporated into the 
 language \cite{Schulz}. However, whether adding the string-length function
 results preserves the decidability remains a long-standing open problem
 \cite{Vijay-length,buchi}.
 
-\OMIT{
-which is crucial for such applications as string analysis
-for JavaScript applications against cross-site scripting (XSS) vulnerabilities
+%\OMIT{
+%which is crucial for 
+Another frequently used string function is the string-replace function, which
+may be used to replace either the first occurrence or all occurrences of
+a string (a string constant/variable, or a pattern) by another string
+(a string constant/variable). Such a function is frequently used in 
+%especially the way it is used to replace \emph{all} occurrences
+
+
+One important application %of string solving 
+for the analysis of string-manipulating programs is an automatic detection
+%for JavaScript applications 
+of cross-site scripting (XSS) vulnerabilities
 \cite{Berkeley-JavaScript}, which are typically caused by improper handling
 of untrusted strings leading to an execution of malicious script in the
-clients' browsers.
-}
+clients' browsers. A standard industry defense against XSS is to sanitise these
+untrusted strings before adding them into the DOM (Document Object Model) or 
+the HTML document. This is typically done by %replacing every occurrence of
+certain metacharacter-escaping mechanisms (e.g. see 
+\cite{Kern14,BEK,OWASP-XSS}), e.g., backslash-escape, which replaces every 
+occurrence of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
+string by \verb+\'+ and \verb+\"+. Such string functions, however, cannot
+be modelled by 
+%}
 
+\OMIT{
 One main driving force behind this research direction is the application to analysis of security vulnerability
 in web applications against cross-site scripting (XSS) and code injections 
 \cite{??}, which 
 are typically caused by improper handling of untrusted strings by the web 
 applications, e.g., leading to an execution of malicious JavaScript in the 
 clients' browsers. 
+}
 
 The second thread
 is the study of the theory of strings with \emph{rational relations} \cite{??},
