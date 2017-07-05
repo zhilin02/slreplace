@@ -7,13 +7,13 @@ In this section, we consider the constant-string special case, that is, given an
 Let us still start with the simple situation that
 $$C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3,$$
 where $|u| \ge 2$. For $i=1,2,3$, let $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$
-be the NFA corresponding to $e_i$. In addition, let $u = a_1 \cdots a_k$ with $a_i \in \Sigma$ for each $i \in [k]$.
+be the NFA corresponding to $e_i$. In addition, let $k = |u|$ and $u = a_1 \cdots a_k$ with $a_i \in \Sigma$ for each $i \in [k]$.
 
 From the semantics, $C$ is satisfiable iff $x, y, z$ can be assigned with  strings $v, w, w'$ such that: (1) $v = \replaceall(w, u, w')$, (2) $v,w, w'$ are accepted by $\cA_1, \cA_2, \cA_3$ respectively. Let $v, w, w'$ be the strings satisfying these two constraints. Since $v = \replaceall(w, u, w')$, we know that there are strings $w_1, w_2, \cdots, w_n$ such that $w= w_1 u w_2 \cdots u w_n$ and $v = w_1 w' w_2 \cdots w' w_n$. As $v$ is accepted by $\cA_1$, there is an accepting run of $\cA_1$ on $v$, say
 $$
 q_{0,1} \xrightarrow[\cA_1]{w_1} q_1 \xrightarrow[\cA_1]{w'} q'_1 \xrightarrow[\cA_1]{w_2} q_2 \xrightarrow[\cA_1]{w'} q'_2 \cdots q_{n-1} \xrightarrow[\cA_1]{w'} q'_{n-1} \xrightarrow[\cA_1]{w_n} q_n.
 $$
-Let $T_z = \{(q_i, q'_i) \mid i \in [n]\}$. Then $w' \in \Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q'))$. Therefore, $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$. Similar to the single letter case, in the following, we will construct an NFA $\cB_{\cA_1, u, T_z}$ to characterise the satisfiability of $C$.  More precisely, $C$ is satisfiable iff there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and
+Let $T_z = \{(q_i, q'_i) \mid i \in [n]\}$. Then $w' \in \Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q'))$. Therefore, $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$. Similar to the single-letter case, in the following, we will construct an NFA $\cB_{\cA_1, u, T_z}$ to characterise the satisfiability of $C$.  More precisely, $C$ is satisfiable iff there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and
 $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, u, T_z}) \neq \emptyset$. Intuitively, when reading the string $w$, $\cB_{\cA_1, u, T_z}$ simulates the generation of $v$ from $w$ and $w'$, that is, simulates the replacement of  every occurrence of $u$ in $w$ with $w'$, and verifies that $v$ is accepted by $\cA_1$, by using $T_z$.
 The construction of $\cB_{\cA_1, u, T_z}$ utilises the concepts of window profiles and parsing automata defined below.
 %
@@ -48,36 +48,37 @@ Let $\wprof_{u, k}$ denote the set of $k$-window profiles of the positions in no
 \begin{proposition}
 $|\wprof_{u,k}| \le k$.
 \end{proposition}
+%
 \begin{proof}
-The arguments for this fact proceed as follows: For each profile $\overrightarrow{W}$, let $v$ be a string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as the maximum index $j \in [k-1]$ such that $\overrightarrow{W}[j]=\top$. Then
+The arguments for this fact proceed as follows: For each profile $\overrightarrow{W}$, let $v$ be a nonempty string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as follows: If there is $j \in [k-1]$ such that $\overrightarrow{W}[j]=\top$, then ${\sf idx}_{\overrightarrow{W}}$ is the maximum of such indices $j \in [k-1]$, otherwise, ${\sf idx}_{\overrightarrow{W}} =0$. The following fact holds for $\overrightarrow{W}$ and ${\sf idx}_{\overrightarrow{W}}$: 
 \begin{itemize}
-	\item for each $j': {\sf idx}_{\overrightarrow{W}} < j' < k$, $\overrightarrow{W}[j']=\bot$,
+	\item for each $j': {\sf idx}_{\overrightarrow{W}} < j' \le k-1$, $\overrightarrow{W}[j']=\bot$,
 	\item in addition, since $v[i-{\sf idx}_{\overrightarrow{W}}+1] \cdots v[i] = u[1] \cdots u[{\sf idx}_{\overrightarrow{W}}]$, the values of $\overrightarrow{W}[1],\cdots, \overrightarrow{W}[{\sf idx}_{\overrightarrow{W}}]$ are completely determined by $u[1] \cdots u[{\sf idx}_{\overrightarrow{W}}]$.
 \end{itemize}
-From the above arguments, we can  conclude that the number of $k$-window profile $\vec{W}$ w.r.t. $u$ is at most $k$.
+Let $\eta: \wprof_{u, k} \rightarrow \{0\} \cup [k-1]$ be a function such that for each $\overrightarrow{W} \in \wprof_{u,k}$, $\eta(\overrightarrow{W})={\sf idx}_{\overrightarrow{W}}$. Then $\eta$ is an injective function, since for every $\overrightarrow{W}, \overrightarrow{W'} \in \wprof_{u, k}$, ${\sf idx}_{\overrightarrow{W}}  = {\sf idx}_{\overrightarrow{W'}}$ iff $\overrightarrow{W} = \overrightarrow{W'}$. Therefore, we conclude that  $ |\wprof_{u, k}| \le k$.
 \end{proof}
 
 \begin{example}\label{wprof-exmp}
-Let $u = 010$. Then $k=3$ and $\wprof_{u,k}=\{\bot\bot, \top\bot, \bot\top\}$.
+Let $\Sigma = \{0,1\}$ and $u = 010$. Then $k=3$ and $\wprof_{u,k}=\{\bot\bot, \top\bot, \bot\top\}$.
 \begin{itemize}
 \item Consider the string $v=1$ and the position $i=1$ in $v$. Since $v[1]=1 \neq u[1]=0$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\bot \bot$.
 \item Consider the string $v=00$ and the position $i=2$ in $v$. Since $v[2]=u[1]$ and $v[1]v[2] \neq u[1]u[2]$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\top\bot$.
 \item Consider the string $v=01$ and the position $i=2$ in $v$. Since $v[2] \neq u[1]$ and $v[1]v[2] = u[1]u[2]$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\bot\top$.
 \end{itemize}
-Note that $\top\top \not \in \wprof_{u,k}$. Since for every string $v$ and the position $i$ in $v$, if $v[i-1]v[i]=u[1]u[2]=01$, then $v[i]=1 \neq 0= u[1]$.
+Note that $\top\top \not \in \wprof_{u,k}$, since for every string $v$ and the position $i$ in $v$, if $v[i-1]v[i]=u[1]u[2]=01$, then $v[i]=1 \neq 0= u[1]$.
 \end{example}
 
-\mat{In the below, do you mean $v \in (\Sigma^\ast u \Sigma^\ast)^\ast$?  I'm surprised that the repetition of $u$ is not specified somehow.}\zhilin{($\Sigma^\ast u \Sigma^\ast)^\ast = \{\varepsilon\} \cup \Sigma^\ast u \Sigma^\ast$. Here I just wan to say that at least one occurrence of $u$ occurs.}
-\mat{Also below, should $u[1]\dots u[k-1]$ be $u[j] \dots u[k-1]$ (this appears in the def of the parsing automaton too)?}
-\mat{Finally, below, can $u$ appear in $v_j$ for $j < l + 1$?}\zhilin{$v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ implies that $u$ does not occur in $v_j$. $u[1] \cdots u[k-1]$ is the maximal strict prefix of $u$. $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ says that $u$ does not appear in the strict prefixes of $v_j u$.}
+%\mat{Updated the paragraph below to reflect our earlier discussion.}
 
-From $u$, we will construct a parsing automaton $\cA_u$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
-The $k$-window profiles w.r.t. $u$ are used to check that a substring of $v$ is \emph{not} in $\Sigma^\ast u \Sigma^\ast$.
+From $u$, we will construct a parsing automaton $\cA_u$ which parses a string $v$ containing at least one instance of $u$ (i.e.\ $v \in \Sigma^\ast u \Sigma^\ast$) into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
+This ensures that the only (and first) instance of $u$ in each $v_j u$ is the suffix.
+Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
+The $k$-window profiles w.r.t. $u$ will be used by the parsing automaton to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrence of $u$ are correctly identified.
 
 \begin{definition}[Parsing automata]
 The \emph{parsing automaton} $\cA_u$ of $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
 \begin{itemize}
-	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \mid j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  the labels $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
+	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  the labels $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 	%
 	\item $q_{0,u}=q_0$.
 
@@ -96,33 +97,36 @@ The \emph{parsing automaton} $\cA_u$ of $u$ is the NFA $(Q_u, \delta_u, q_{0,u},
 			%
 		\end{itemize}
 		%
-		\item For each state $\left(\verify, i-1, \overrightarrow{W} \right)$ such that
+		\item For each state $\left(\verify, i-1, \overrightarrow{W} \right)$ and $a \in \Sigma$ such that
 		\begin{itemize}
 			\item $2 \le i \le k-1$,
 			\item $\overrightarrow{W}[i-1]=\top$, $a = u[i]$, and
 			\item either $\overrightarrow{W}[k-1]=\bot$ or $a \neq u[k]$,
 		\end{itemize}
-		we have $\left(\left(\verify, i-1, \overrightarrow{W} \right), a, \left(\verify, i, \overrightarrow{W}' \right)\right) \in \delta_u$, where for each $j: 2 \le j \le k-1$, $\overrightarrow{W}'[j] = \top$ iff $\overrightarrow{W}[j-1]=\top$ and $a = u[j]$.
+		we have $\left(\left(\verify, i-1, \overrightarrow{W} \right), a, \left(\verify, i, \overrightarrow{W'} \right)\right) \in \delta_u$, where for each $j: 2 \le j \le k-1$, $\overrightarrow{W'}[j] = \top$ iff $\overrightarrow{W}[j-1]=\top$ and $a = u[j]$.
 		%
-		\item For each state $\left(\verify, k-1, \overrightarrow{W} \right)$ such that $\overrightarrow{W}[k-1]=\top$, $\left(\left(\verify, k-1, \overrightarrow{W} \right), u[k], q_0\right) \in \delta_u$.
+		\item For each state $\left(\verify, k-1, \overrightarrow{W} \right)$ and $a \in \Sigma$ such that $\overrightarrow{W}[k-1]=\top$ and $a  = u[k]$, we have $\left(\left(\verify, k-1, \overrightarrow{W} \right), a, q_0\right) \in \delta_u$.
 		%where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
 		%
 	\end{itemize}
-Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is used to guarantee that when parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, we have $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
+Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is used to guarantee that each occurrence of the state $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence. In other words, the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is an invariant to guarantee that after an occurrence of $q_0$, if $q_0$ has not been reached again,  then $u$ is forbidden to occur.
+
+% parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, we have $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
 	%
-	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u, k} \right\} $. \\
-	Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since when in these states, the verification of the current occurrence of $u$ has not yet been complete.
+	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} $. \\
+	Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since when in these states, the verification of the current occurrence of $u$ has not been complete yet.
 \end{itemize}
 \end{definition}
 
-Let $Q_{\search}  = \left\{ \left(\search, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u,k} \right\}$,  and $Q_{\verify, i} = \left\{ \left(\verify, i, \overrightarrow{W} \right) \mid \overrightarrow{W} \in \wprof_{u,k} \right\}$ for each $i \in [k-1]$. In addition, let $Q_{\verify} = \bigcup \limits_{i \in [k-1]} Q_{\verify,i}$.
-Let $v = v_1 u v_2 u \cdots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. Then there exists a \emph{unique} accepting run $r$ of $\cA_u$ on $v$ such that the state sequence in $r$ is of the form
-$q_0\ r_1\ q_0\ r_2\ q_0\ \cdots\ r_l\ q_0\ r_{l+1}$, where for each $j \in [l]$, $r_j \in (Q_{\search})^+ \concat Q_{\verify, 1} \concat \cdots  \concat Q_{\verify, k-1}$, and $r_{l+1} \in (Q_{\search})^*$. Intuitively, each occurence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.
+Let $Q_{\search}  = \left\{ \left(\search, \overrightarrow{W} \right) \ \big\vert\ \overrightarrow{W} \in \wprof_{u,k} \right\}$,  and $Q_{\verify, i} = \left\{ \left(\verify, i, \overrightarrow{W} \right) \ \big\vert\ \overrightarrow{W} \in \wprof_{u,k} \right\}$ for each $i \in [k-1]$. In addition, let $Q_{\verify} = \bigcup \limits_{i \in [k-1]} Q_{\verify,i}$.
+Suppose $v = v_1 u v_2 u \cdots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. Then there exists a \emph{unique} accepting run $r$ of $\cA_u$ on $v$ such that the state sequence in $r$ is of the form
+$q_0\ r_1\ q_0\ r_2\ q_0\ \cdots\ r_l\ q_0\ r_{l+1}$, where for each $j \in [l]$, $r_j \in  \Ll((Q_{\search})^+ \concat Q_{\verify, 1} \concat \cdots  \concat Q_{\verify, k-1})$, and $r_{l+1} \in \Ll((Q_{\search})^*)$. 
+%Intuitively, each occurrence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.
 
 %The parsing automaton $\cA_u$ constructed above is \emph{unambiguous} in the sense that for each string $v \in \Sigma^+$, there is \emph{exactly one accepting run} of $\cA_u$ on $v$.
 
 \begin{example}
-Consider $u=010$ in Example~\ref{wprof-exmp}. The parsing automaton  $\cA_u$ is illustrated in Figure~\ref{fig-pa-exmp}. Note that there are no $0$-transitions out of $(\search, \bot\top)$, since this would imply an occurrence of $u = 010$, which should be verified by the states from $Q_{\verify}$.
+Consider $u=010$ in Example~\ref{wprof-exmp}. The parsing automaton  $\cA_u$ is illustrated in Figure~\ref{fig-pa-exmp}. Note that there are no $0$-transitions out of $(\search, \bot\top)$, since this would imply an occurrence of $u = 010$, which should be verified by the states from $Q_{\verify}$, more precisely, by the state sequence $q_0 (\verify, 1, \top\bot) (\verify, 2, \bot\top)q_0$.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[scale=0.8]{parsing-automata-example.pdf}
@@ -133,10 +137,9 @@ Consider $u=010$ in Example~\ref{wprof-exmp}. The parsing automaton  $\cA_u$ is 
 
 We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u,  T_{z}}$ is constructed by the following three-step procedure.
 \begin{enumerate}
-\item Construct the product automaton $\cA_1 \times \cA_u$ of $\cA_1$ and $\cA_u$. Recall that the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$.
+\item Construct the product automaton $\cA_1 \times \cA_u$. Note that the initial state of $\cA_1 \times \cA_u$ is $(q_{0},q_0)$ and the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$.
 
 \item Remove from $\cA_1 \times \cA_u$ all the (incoming or outgoing) transitions associated with the states from $Q_1 \times Q_{\verify}$.
-\mat{Don't you want to keep the states since you use them below?}\zhilin{you are right. I mean removing the transitions associated with them.}
 
 \item For each pair $(q,q') \in T_{z}$ and each sequence of transitions in $\cA_u$ of the form
 $$
@@ -146,8 +149,8 @@ $$
  \hspace{3cm} \cdots, \left(\left(\verify, k-1, \overrightarrow{W'_{k-1}} \right), u[k], q_0\right),
 \end{array}
 $$
-where  $p=q_0$ or $\left(\search, \overrightarrow{W} \right)$,
-add the transitions
+where  $p=q_0$ or $p = \left(\search, \overrightarrow{W} \right)$,
+add the following transitions
 $$
 \begin{array}{c}
 \left((q,p), u[1], \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right) \right), \\
@@ -161,7 +164,7 @@ Intuitively, when $\cA_u$ identifies an occurrence of $u$, if the current state 
 \end{enumerate}
 
 \begin{example}\label{exmp-cs-case}
-Let us consider $C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$, where $u = 010$, and $e_1,e_2,e_3$ are as in Example~\ref{exmp-sl} (cf. Figure~\ref{fig-sl-exmp}). The product automaton $\cA_1 \times \cA_u$ is illustrated in Figure~\ref{fig-cs-exmp}, where $\{q_2\} \times \cA_u$ denotes the automaton obtained from $\cA_u$ by changing each state $p$ in $\cA_u$ into $(q_2, p)$, similarly for $\{q_4\} \times \cA_u$. Let $T_z = \{(q_0,q_0),(q_1,q_2)\}$. Then the NFA $\cB_{\cA_1, u, T_z}$ is obtained from $\cA_1 \times \cA_u$ by first removing all the states $Q_1 \times Q_{\verify}$ and the transitions associated with them, then adding the transitions according to $T_z$ as aforementioned (see Figure~\ref{fig-cs-exmp-2}, where the thick edges denote the added transitions).  It is a routine to check that $01010101$ is accepted by both $\cB_{\cA_1, u, T_z}$ and $\cA_2$. Moreover, $10 \in \Ll(\cA_3) \cap \Ll(\cA_1(q_0,q_0)) \cap \Ll(\cA_1(q_1,q_2))$. Let $y$ be $01010101$ and $z$ be $10$. Then $x$ takes the value $\replaceall(01010101, 010, 10)=101101$, which is accepted by $\cA_1$. Therefore, $C$ is satisfiable.
+Let us consider $C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$, where $u = 010$, and $e_1,e_2,e_3$ are as in Example~\ref{exmp-sl} (cf. Figure~\ref{fig-sl-exmp}). The product automaton $\cA_1 \times \cA_u$ is illustrated in Figure~\ref{fig-cs-exmp}, where $\{q_2\} \times \cA_u$ denotes the automaton obtained from $\cA_u$ by changing each state $p$ in $\cA_u$ into $(q_2, p)$, similarly for $\{q_4\} \times \cA_u$. Let $T_z = \{(q_0,q_0),(q_1,q_2)\}$. Then the NFA $\cB_{\cA_1, u, T_z}$ is obtained from $\cA_1 \times \cA_u$ by first removing all the transitions  associated with the states from $Q_1 \times Q_{\verify}$, then adding the transitions according to $T_z$ as aforementioned (see Figure~\ref{fig-cs-exmp-2}, where the thick edges denote the added transitions).  It is a routine to check that $01010101$ is accepted by both $\cB_{\cA_1, u, T_z}$ and $\cA_2$. Moreover, $10 \in \Ll(\cA_3) \cap \Ll(\cA_1(q_0,q_0)) \cap \Ll(\cA_1(q_1,q_2))$. Let $y$ be $01010101$ and $z$ be $10$. Then $x$ takes the value $\replaceall(01010101, 010, 10)=101101$, which is accepted by $\cA_1$. Therefore, $C$ is satisfiable.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[scale=0.65]{constant-string-example.pdf}
@@ -171,18 +174,23 @@ Let us consider $C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in
 %
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[scale=0.65]{constant-string-example-2.pdf}
+\includegraphics[scale=0.68]{constant-string-example-2.pdf}
 \end{center}
 \caption{The NFA $\cB_{\cA_1, u, T_z}$ for $u = 010$ and $T_z= \{(q_0,q_0),(q_1,q_2)\}$}\label{fig-cs-exmp-2}
 \end{figure}
 \end{example}
 
-\paragraph*{Complexity}.
-For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similarly to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
-In each step of the reduction, suppose the two edges out of $x$ are currently removed, let the two edges be from $x$ to $y$ and $z$ and labeled by $({\sf l}, u)$ and $({\sf r}, u)$ respectively, then each element of $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$, meanwhile, it may also be transformed into an element $(\cT'', \cP'')$ of $\cE_{i+1}(z)$ such that $\cT''$ has the same state space as $\cT$.
-%\mat{Also need to say the same about $z$?}\zhilin{the state space of the regular constraint for $z$ is not changed.}
-Thus, after the reduction, for each source variable, there may be exponentially many regular constraints generated, and each of them may have a state space of at most exponential size. To solve the nonemptiness problem of the intersection of all these regular constraints, the exponential space is sufficient. Consequently, in this case, we still obtain a EXPSPACE upper bound. In addition, if $\lftlen(G_C)$, the $\rpleft$-length of $G_C$, is bounded by a constant $c$, then $\dmdidx(G_C)$ is also bounded by $c$, therefore, according to Proposition~\ref{prop-di}, there are at most polynomially different paths in $G_C$, we deduce that for each source variable $x$, $\cE(x)$ contains at most polynomially many elements. In addition, since the number of $\rpleft$-edges in each path is bounded by $c$, during the execution of the decision procedure, the number of times when $|\cT'| = O(|u||\cT|)$ happens is bounded by $c$. Therefore, for each source variable $x$ and each element $(\cT'', \cP'')$ in $\cE(x)$,  $|\cT''|$ is at most polynomial in the size of $C$. We then conclude that for each source variable $x$, the nonemptiness of the intersection of all the regular constraints in $\cE(x)$ can be solved in polynomial space. In this case, we obtain a PSPACE upper bound.
+For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similar to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
 
-\mat{One might object that this bit is too sketchy, though perhaps an attempt to be formal will be tedious and repetitive.}\zhilin{polished, still sketchy, please have a look. }
+\paragraph*{Complexity}
+When constructing $G_{i+1}$ from $G_i$, suppose the two edges from $x$ to $y$ and $z$ respectively are currently removed, let the labels of the two edges be $({\sf l}, u)$ and $({\sf r}, u)$ respectively, then each element $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$, meanwhile, it may also be transformed into an element $(\cT'', \cP'')$ of $\cE_{i+1}(z)$ such that $\cT''$ has the same state space as $\cT$.
+%\mat{Also need to say the same about $z$?}\zhilin{the state space of the regular constraint for $z$ is not changed.}
+Thus, for each source variable $x$, $\cE(x)$ contains at most exponentially many elements, and each of them may have a state space of at most exponential size. For instance, for a path from $x'$ to $x$ where the constant strings $u_1,\cdots, u_n$ occur in the labels of edges, an element $(\cT,\cP) \in \cE_0(x')$ may induce an element $(\cT', \cP')$ of $\cE(x)$ such that $|\cT'| \le |\cT| |u_1| \cdots |u_n|$, which is exponential in the worst case. 
+%
+To solve the nonemptiness problem of the intersection of all these regular constraints, the exponential space is sufficient. Consequently, in this case, we still obtain a EXPSPACE upper bound. 
+
+Let us now consider the special situation that the $\rpleft$-length of $G_C$ is bounded by a constant $c$.
+Since $\dmdidx(G_C) \le \lftlen(G_C)$, we know that $\dmdidx(G_C)$ is also bounded by $c$. Therefore, according to Proposition~\ref{prop-di}, there are at most polynomially different paths in $G_C$, we deduce that for each source variable $x$, $\cE(x)$ contains at most polynomially many elements. In addition, since the number of $\rpleft$-edges in each path is bounded by $c$, during the execution of the decision procedure, the number of times when $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$ is bounded by $c$.
+Therefore, for each source variable $x$ and each element $(\cT'', \cP'')$ in $\cE(x)$,  $|\cT''|$ is at most polynomial in the size of $C$. We then conclude that for each source variable $x$, $\cE(x)$ corresponds to the intersection of polynomially many regular constraints such that each of them has a state space of polynomial size. Therefore, the nonemptiness of the intersection of all the regular constraints in $\cE(x)$ can be solved in polynomial space. In this situation, we obtain a PSPACE upper bound.
 
 %Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.

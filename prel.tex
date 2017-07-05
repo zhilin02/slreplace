@@ -326,7 +326,11 @@ The main result of the paper is summarised as the following Theorem~\ref{thm-mai
 	The satisfiability problem of $\strline[\concat, \replaceall]$ is decidable in EXPSPACE, if the second parameters of the $\replaceall$ terms are regular expressions.  
 \end{theorem}
 
-The following three sections are devoted to the proof of Theorem~\ref{thm-main}.  We start with the single-letter case that the second parameters of the $\replaceall$ terms are single letters (Section~\ref{sec:replaceallsl}), then consider the constant-string case that the second parameters of the $\replaceall$ terms are constant strings  (Section~\ref{sec:replaceallcs}), and finally the regular-expression case that the second parameters of the $\replaceall$ terms are regular expressions  (Section~\ref{sec:replaceallre}).
+The following three sections are devoted to the proof of Theorem~\ref{thm-main}.  
+\begin{itemize}
+\item We start with the \emph{single-letter} case that the second parameters of the $\replaceall$ terms are single letters (Section~\ref{sec:replaceallsl}),
+\item then consider the \emph{constant-string} case that the second parameters of the $\replaceall$ terms are constant strings  (Section~\ref{sec:replaceallcs}), \item and finally the \emph{regular-expression} case that the second parameters of the $\replaceall$ terms are regular expressions  (Section~\ref{sec:replaceallre}).
+\end{itemize}
 
 Towards a complete solution of $\strline[\concat, \replaceall]$, let us start with a simple observation  which shows it is sufficient to focus on $\strline[\replaceall]$ as the concatenation can be readily encoded by the $\replaceall$ function.  %This also  demonstrates the power of the 
 
@@ -373,12 +377,12 @@ In Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we will also apply a 
 \begin{corollary}\label{cor-pspace}
 The satisfiability problem is PSPACE-complete for the following fragments of $\strline[\replaceall]$:
 \begin{itemize}
-\item the class of $\strline[\replaceall]$ formulae where the second parameters of all $\replaceall$ terms are single letters and the diamond indices of the dependency graphs are bounded by a constant $c$, 
+\item the single-letter case, plus the condition that the diamond indices of the dependency graphs are bounded by a constant $c$, 
 %
-\item the class of $\strline[\replaceall]$ formulae where the second parameters of all $\replaceall$ terms are constant strings and the $\rpleft$-lengths of the dependency graphs are bounded by a constant $c$, 
+\item the constant-string case, plus the condition that the $\rpleft$-lengths of the dependency graphs are bounded by a constant $c$, 
 
 %
-\item the class of $\strline[\replaceall]$ formulae where the $\rpleft$-lengths of the dependency graphs are at most $1$.
+\item the regular-expression case, plus the condition that the $\rpleft$-lengths of the dependency graphs are at most $1$.
 \end{itemize}
 \end{corollary}
 
