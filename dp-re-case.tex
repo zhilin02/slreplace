@@ -11,7 +11,7 @@ Let us first assume $\varepsilon \in \Ll(e_0)$. Then according to the semantics,
 \item Guess a set $T_z \subseteq Q_1 \times Q_1$. 
 %
 \item Construct $\cB_{\cA_1, \varepsilon, T_z}$ from $\cA_1$ and $T_z$ as follows: For each $(q,q') \in T_z$, add to $\cA_1$ a transition $(q, \varepsilon, q')$. Then transform the resulting NFA into one without $\varepsilon$-transitions (which can be done in polynomial time).
-\mat{presumably it's important that the state space does not change?}
+\mat{presumably it's important that the state space does not change?}\zhilin{not really, since for $\varepsilon \not \in \Ll(e_0)$, the state space will be increased anyway}
 %
 \item  Decide the nonemptiness of $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, \varepsilon, T_z})$ and $\Ll(\cA_3) \cap \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q,q'))$.
 \end{enumerate}
@@ -33,7 +33,7 @@ Intuitively, in order to search for the leftmost and longest matching of $e_0$,
 \item $\cA_{e_0}$ has two modes, ``$\searchleft$'' and ``$\searchlong$'', which intuitively means search for the first and last position of the leftmost and longest matching respectively,
  %
 	\item when in the ``$\searchleft$'' mode, $\cA_{e_0}$ starts a new thread
-    \mat{How can an automaton start a thread?  Is the vector of sets of reachable states unbounded in length?} 
+    \mat{How can an automaton start a thread?  Is the vector of sets of reachable states unbounded in length?}\zhilin{the description is similar to that for alternating automata: one can think multiple threads are running in parallel, each thread responsible for one state. the vector of sets of reachable states will be made bounded by applying the trick specified below.} 
      of $\cA_0$ in each position and records \emph{the set of reachable states} of the threads into a vector, in addition, it nondeterministically makes a ``leftmost'' guessing, that is, guesses that the current position is the first position of the leftmost and longest matching, if it makes such a guessing, then it enters the ``$\searchlong$'' mode, it runs the thread started in the current position and searches for the last position of the leftmost and longest matching, moreover, it stores in a set $S$ the union of the sets of reachable states of all the threads that were started before the current position and continues running these threads to make sure that in these threads, the final states will not be reached (thus, the current position is indeed the first position of the leftmost and longest matching),
 	%
 	\item when in the ``$\searchlong$'' mode, $\cA_{e_0}$ runs a thread of $\cA_{e_0}$ \mat{You mean $\cA_0$?} to search for the last position of the leftmost and longest matching, if the set of reachable states of the thread contains a final state, then $\cA_{e_0}$ nondeterministically makes a ``longest'' guessing, that is, guesses that the current position is the last position of the leftmost and longest matching, if it makes such a guessing, then it resets the set of reachable states of the thread and starts a new round of searching for the leftmost and longest matching, in addition, it stores the original set of reachable states of the thread into a set $S$ and continues running the thread to make sure that in this thread, the final states  will not be reached (thus, the current position is indeed the last position of the leftmost and longest matching),
