@@ -177,7 +177,7 @@ Let us consider $C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in
 \end{figure}
 \end{example}
 
-\paragraph*{Complexity}.
+\paragraph*{Complexity}
 For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similarly to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
 In each step of the reduction, suppose the two edges out of $x$ are currently removed, let the two edges be from $x$ to $y$ and $z$ and labeled by $({\sf l}, u)$ and $({\sf r}, u)$ respectively, then each element of $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$, meanwhile, it may also be transformed into an element $(\cT'', \cP'')$ of $\cE_{i+1}(z)$ such that $\cT''$ has the same state space as $\cT$.
 %\mat{Also need to say the same about $z$?}\zhilin{the state space of the regular constraint for $z$ is not changed.}
