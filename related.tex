@@ -2,3 +2,28 @@
 
 \section{Related work}
 
+In this section, we discuss some related work. 
+
+  Makanin’s and Plandowski’s  on the decidability
+and complexity of satisfiability for word equations, i.e., a conjunction of equations of $v=w$, where $v, w$ are concatenation of string constants and variable. 
+
+In addition, it is still a long-standing open problem whether word equations with length constraints is decidable, though it is known that letter-counting (i.e., counting the number of occurrences of 0s and 1s separately) yields undeciability.  
+
+\subsection*{Heuristics and string solver implementation}
+
+There is a large amount of work in the past years on developing practical string solvers. String solvers that support concatenations and the replace-all operator are available. \cite{BTV09, TCJ14, YABI14,TCJ16}
+
+
+%Progressive Reasoning over Recursively-Defined Strings
+\cite{TCJ16} 
+Trinh et al considered %the problem of reasoning over an expressive constraint language for unbounded strings. 
+%In particular, they considered 
+a very expressive way to define functions manipulating strings. This includes  
+
+The difficulty comes from “recursively defined” functions such as replace, making state-of-the-art algorithms non-terminating. Our first contribution is a progressive search algorithm to not only mitigate the problem of non-terminating reasoning but also guide the search towards a “minimal solution” when the input formula is in fact satisfiable. We have implemented our method using the state-of-the-art Z3 framework. Importantly, we have enabled conflict clause learning for string theory so that our solver can be used effectively in the setting of program verification. Finally, our experimental evaluation shows leadership in a large benchmark suite, and a first deployment for another benchmark suite which requires reasoning about string formulas of a class that has not been solved before.
+
+A Decision Procedure for String Logic with Equations, Regular Membership and Length Constraints \cite{L16}
+
+In this paper, we consider the satisfiability problem for string logic with equations, regular membership and Presburger constraints over length functions. The difficulty comes from multiple occurrences of string variables making state-of-the-art algorithms non-terminating. Our main contribution is to show that the satisfiability problem in a fragment where no string variable occurs more than twice in an equation is decidable. In particular, we propose a semi-decision procedure for arbitrary string formulae with word equations, regular membership and length functions. The essence of our procedure is an algorithm to enumerate an equivalent set of solvable disjuncts for the formula. We further show that the algorithm always terminates for the aforementioned decidable fragment. Finally, we provide a complexity analysis of our decision procedure to prove that it runs, in the worst case, in factorial time.
+
+The focus of our work is on the fundamental issue of decidability, and this is complementary to the work. Our result may be considered a completeness guarantee for existing string solver. 
