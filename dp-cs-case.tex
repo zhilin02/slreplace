@@ -67,12 +67,12 @@ Let $u = 010$. Then $k=3$ and $\wprof_{u,k}=\{\bot\bot, \top\bot, \bot\top\}$.
 Note that $\top\top \not \in \wprof_{u,k}$. Since for every string $v$ and the position $i$ in $v$, if $v[i-1]v[i]=u[1]u[2]=01$, then $v[i]=1 \neq 0= u[1]$.
 \end{example}
 
-\mat{In the below, do you mean $v \in (\Sigma^\ast u \Sigma^\ast)^\ast$?  I'm surprised that the repetition of $u$ is not specified somehow.}\zhilin{($\Sigma^\ast u \Sigma^\ast)^\ast = \{\varepsilon\} \cup \Sigma^\ast u \Sigma^\ast$. Here I just wan to say that at least one occurrence of $u$ occurs.}
-\mat{Also below, should $u[1]\dots u[k-1]$ be $u[j] \dots u[k-1]$ (this appears in the def of the parsing automaton too)?}
-\mat{Finally, below, can $u$ appear in $v_j$ for $j < l + 1$?}\zhilin{$v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ implies that $u$ does not occur in $v_j$. $u[1] \cdots u[k-1]$ is the maximal strict prefix of $u$. $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ says that $u$ does not appear in the strict prefixes of $v_j u$.}
+\mat{Updated the paragraph below to reflect our earlier discussion.}
 
-From $u$, we will construct a parsing automaton $\cA_u$ which parses a string $v \in \Sigma^\ast u \Sigma^\ast$ into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
-The $k$-window profiles w.r.t. $u$ are used to check that a substring of $v$ is \emph{not} in $\Sigma^\ast u \Sigma^\ast$.
+From $u$, we will construct a parsing automaton $\cA_u$ which parses a string $v$ containing at least one instance of $u$ (i.e.\ $v \in \Sigma^\ast u \Sigma^\ast$) into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
+This ensures that the only (and first) instance of $u$ in each $v_j u$ is the suffix.
+Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
+The $k$-window profiles w.r.t. $u$ will be used by the parsing automaton to ensure that it does not miss any occurrences of $u$.
 
 \begin{definition}[Parsing automata]
 The \emph{parsing automaton} $\cA_u$ of $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
@@ -136,7 +136,6 @@ We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\
 \item Construct the product automaton $\cA_1 \times \cA_u$ of $\cA_1$ and $\cA_u$. Recall that the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$.
 
 \item Remove from $\cA_1 \times \cA_u$ all the (incoming or outgoing) transitions associated with the states from $Q_1 \times Q_{\verify}$.
-\mat{Don't you want to keep the states since you use them below?}\zhilin{you are right. I mean removing the transitions associated with them.}
 
 \item For each pair $(q,q') \in T_{z}$ and each sequence of transitions in $\cA_u$ of the form
 $$
@@ -178,11 +177,16 @@ Let us consider $C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in
 \end{example}
 
 \paragraph*{Complexity}
-For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similarly to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
+For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similar to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
 In each step of the reduction, suppose the two edges out of $x$ are currently removed, let the two edges be from $x$ to $y$ and $z$ and labeled by $({\sf l}, u)$ and $({\sf r}, u)$ respectively, then each element of $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$, meanwhile, it may also be transformed into an element $(\cT'', \cP'')$ of $\cE_{i+1}(z)$ such that $\cT''$ has the same state space as $\cT$.
 %\mat{Also need to say the same about $z$?}\zhilin{the state space of the regular constraint for $z$ is not changed.}
-Thus, after the reduction, for each source variable, there may be exponentially many regular constraints generated, and each of them may have a state space of at most exponential size. To solve the nonemptiness problem of the intersection of all these regular constraints, the exponential space is sufficient. Consequently, in this case, we still obtain a EXPSPACE upper bound. In addition, if $\lftlen(G_C)$, the $\rpleft$-length of $G_C$, is bounded by a constant $c$, then $\dmdidx(G_C)$ is also bounded by $c$, therefore, according to Proposition~\ref{prop-di}, there are at most polynomially different paths in $G_C$, we deduce that for each source variable $x$, $\cE(x)$ contains at most polynomially many elements. In addition, since the number of $\rpleft$-edges in each path is bounded by $c$, during the execution of the decision procedure, the number of times when $|\cT'| = O(|u||\cT|)$ happens is bounded by $c$. Therefore, for each source variable $x$ and each element $(\cT'', \cP'')$ in $\cE(x)$,  $|\cT''|$ is at most polynomial in the size of $C$. We then conclude that for each source variable $x$, the nonemptiness of the intersection of all the regular constraints in $\cE(x)$ can be solved in polynomial space. In this case, we obtain a PSPACE upper bound.
+Thus, after the reduction, for each source variable, there may be exponentially many regular constraints generated, and each of them may have a state space of at most exponential size. To solve the nonemptiness problem of the intersection of all these regular constraints, the exponential space is sufficient. Consequently, in this case, we still obtain a EXPSPACE upper bound. 
 
-\mat{One might object that this bit is too sketchy, though perhaps an attempt to be formal will be tedious and repetitive.}\zhilin{polished, still sketchy, please have a look. }
+In addition, if $\lftlen(G_C)$, the $\rpleft$-length of $G_C$, is bounded by a constant $c$, then $\dmdidx(G_C)$ is also bounded by $c$, therefore, according to Proposition~\ref{prop-di}, there are at most polynomially different paths in $G_C$, we deduce that for each source variable $x$, $\cE(x)$ contains at most polynomially many elements. In addition, since the number of $\rpleft$-edges in each path is bounded by $c$, during the execution of the decision procedure, the number of times when $|\cT'| = O(|u||\cT|)$ happens is bounded by $c$. 
+\mat{
+    I find ``the number of times when ... happens'' to be a bit ambiguous.
+    Do you mean something like ``the number of times when $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$ is bounded by a $c$''?
+}
+Therefore, for each source variable $x$ and each element $(\cT'', \cP'')$ in $\cE(x)$,  $|\cT''|$ is at most polynomial in the size of $C$. We then conclude that for each source variable $x$, the nonemptiness of the intersection of all the regular constraints in $\cE(x)$ can be solved in polynomial space. In this case, we obtain a PSPACE upper bound.
 
 %Similarly to the single-letter case, we can define the dependency graph $G_C$. In addition, we can adapt $\dfs(z, z', a, f)$ into a procedure $\dfs(z, z', u, f)$, which integrates the automata $\cA_{u'}$ into the computation of the functions $f_{z', \cA_z}$, where $u,u'$ are constant strings occurring in the edge-labels in $G_C$.
