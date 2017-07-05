@@ -2,11 +2,14 @@
 
 \section{Undecidable extensions}
 
-In this section, we extend the language $\strline[\concat,\replaceall]$ with integer and character constraints. The language will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as \emph{integer variables}, ranges over the set $\Nat$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. The
+In this section, we consider the language $\strline[\concat,\replaceall]$ extended with either integer constraints, character constraints, or $\indexof$ constraints. 
+\mat{Should $\concat$ be removed?}
+We will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as an \emph{integer variable}, ranges over the set $\Nat$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. The
 choice of omitting negative integers is only for simplicity, but our
 results can be easily extended to the case where $\intnum$ includes negative integers.
 
-We start by defining integer constraints, which expresses constraints on the length or number of occurrences of symbols in words. 
+We begin by defining the kinds of constraints we will use to extend $\strline[\concat,\replaceall]$.
+First, we describe integer constraints, which express constraints on the length or number of occurrences of symbols in words. 
 
 
 \begin{definition}[Integer constraints] \label{def:intconst} 
@@ -32,6 +35,7 @@ Character constraints, on the other hand, allow to compare symbols from differen
 		\item $t_1$ and $t_2$ are either integer variables or constant positive integers.
 	\end{itemize} 
 Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$.	
+\mat{What if $x$ doesn't have a $t_1$th letter?}
 	
 A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
 \end{definition}
@@ -47,6 +51,7 @@ An atomic $\indexof$ constraint over $\Sigma$ is a formula of the form $t\ \math
 \item and $s_1,s_2$ are either string variables or constant strings. 
 \end{itemize}
 We consider the \emph{first-occurrence} semantics of $\indexof$.  More specifically, $t \ge \indexof(s_1, s_2)$ holds if $t$ is no less than the first position in $s_2$ where $s_1$ occurs, similarly for $t \le \indexof(s_1, s_2)$.
+\mat{What if $s_1$ does not appear in $s_2$?}
 
 An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\indexof$ constraints over $\Sigma$.
 \end{definition}
@@ -75,13 +80,15 @@ We will show that the extension of $\strline[\replaceall]$ with integer constrai
 %Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
 
 \begin{theorem}\label{thm-ext-int}
-	For the extension of $\strline[\replaceall]$ with \emph{integer constraints}, the satisfiability problem is undecidable. 
+	For the extension of $\strline[\replaceall]$ with \emph{integer constraints}, the satisfiability problem is undecidable, even if only a single integer constraint $|x| = |y|$ is used.
 \end{theorem}
 
 \begin{proof}
 The basic idea of the reduction is to simulate the two polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, where $x_1,\cdots,x_n$ range over the set of natural numbers, with two $\strline[\replaceall]$ formulae $C_f, C_g$ over a unary alphabet $\{a\}$, with the output string variables $y_f, y_g$ respectively, and simulate the equality $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ with the integer constraint $|y_f|=|y_g|$ (which is equivalent to $y_f = y_g$, since $y_f, y_g$ represent strings over the unary alphabet $\{a\}$).
 
-A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$ and the multiplication operator $*$ is simulated by $\replaceall$. Since it is easy to figure out how the simulation proceeds, we will only use an example to illustrate it and omit the details here. Let us consider $f(x_1,x_2) = x_1^2 + 2 x_1 x_2 + 5$. By abusing the notation a bit, we also use $x_1,x_2$ as string variables in the simulation. We will introduce a string variable for each subexpression in $(x_1,x_2)$, namely the variables $y_{x_1^2}, y_{x_1x_2}, y_{2x_1x_2}, y_{x_1^2+2x_1x_2}, y_{f(x_1,x_2)}$. Then $f(x_1,x_2)$ is simulated by the $\strline[\replaceall]$ formula
+A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$
+\mat{$\concat$ is not part of $\strline[\replaceall]$, can it be simulated when the string alphabet is unary, or do we need two extra characters?}
+and the multiplication operator $*$ is simulated by $\replaceall$. Since it is easy to figure out how the simulation proceeds, we will only use an example to illustrate it and omit the details here. Let us consider $f(x_1,x_2) = x_1^2 + 2 x_1 x_2 + 5$. By abusing the notation, we also use $x_1,x_2$ as string variables in the simulation. We will introduce a string variable for each subexpression in $f(x_1,x_2)$, namely the variables $y_{x_1^2}, y_{x_1x_2}, y_{2x_1x_2}, y_{x_1^2+2x_1x_2}, y_{f(x_1,x_2)}$. Then $f(x_1,x_2)$ is simulated by the $\strline[\replaceall]$ formula
 \[
 \begin{array} {l c l }
 C_f & \equiv & y_{x_1^2} = \replaceall(x_1,a, x_1)\ \wedge y_{x_1x_2} = \replaceall(x_1, a, x_2)\ \wedge \\
@@ -90,6 +97,7 @@ C_f & \equiv & y_{x_1^2} = \replaceall(x_1,a, x_1)\ \wedge y_{x_1x_2} = \replace
 \end{array}
 \]
 Notice that in $C_f$, the $\concat$ operator is used. Nevertheless, according to Proposition~\ref{prop-concat}, the $\concat$ operator can be simulated easily by the $\replaceall$ function.
+\mat{But we may have to give up the unary alphabet?}
  
 Since $C_f$ and $C_g$ share only source variables $x_1,\cdots, x_n$, we know that $C_f \wedge C_g$ is still an $\strline[\replaceall]$ formula.
 From the construction of $C_f, C_g$, it is evident that for every pair of polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C_f \wedge C_g \wedge |y_f| = |y_g|$ is satisfiable. The proof is complete.
@@ -126,14 +134,14 @@ Finally, note that any  SL[$\concat, \replaceall$] constraints can be transforme
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{proof}
 
-We would like to remark that in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with a very simple integer constraint of the form $|x| = |y|$ entails undecidability.
-On the other hand, in the following, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are very simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
+Notice, in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability.
+On the other hand, in the following, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
 % The above proof essentially establishes a link between Diophantine equations and the extension of $\strline[\replaceall]$ with integer constraints over a unary alphabet. 
 %
 %With a further result from Hilbert 10'th problem, we can strengthen the undecidability results shown that satisfiability of even very simple string constraints (e.g., the $\replaceall$ function is unnested) will be undecidable in conjunction with length constraints. 
  
-A \emph{linear polynomial} (resp. quadratic polynomial) is a polynomial with degree at most one (resp. with degree at most two) where each coefficient is an integer. %of the form $a_0 + a_1x_1 + \cdots + a_n x_n$ (resp. a polynomial with degree at most two) where each coefficient $a_i\in \mathbb{Z}$  for $0 \leq i \leq n$. A quadratic polynomial
+A \emph{linear polynomial} (resp.\ quadratic polynomial) is a polynomial with degree at most one (resp.\ with degree at most two) where each coefficient is an integer. %of the form $a_0 + a_1x_1 + \cdots + a_n x_n$ (resp. a polynomial with degree at most two) where each coefficient $a_i\in \mathbb{Z}$  for $0 \leq i \leq n$. A quadratic polynomial
 
 \begin{theorem}[\cite{ID04}]\label{thm-quad-eq}
 %	There exists some (fixed) $k$ such that no algorithm can solve Diophantine systems in the following form
@@ -151,7 +159,7 @@ A \emph{linear polynomial} (resp. quadratic polynomial) is a polynomial with deg
 	where $A_i, B_i, F_i, G_i$ are linear polynomials on the variables $x_1,\cdots, x_n$ (Note that each variable $y_i$ occurs in exactly two quadratic equations).
 \end{theorem}
 
-We can get a reduction from the problem in Theorem~\ref{thm-quad-eq} to the satisfiability of the extension of $\strline[\replaceall]$ with integer constraints as follows: For each monomial $y_i x_j$ in the quadratic polynomials, we use a $\strline[\replaceall]$ formula $z_{y_i x_j} = \replaceall(y_i, a, x_j)$ to simulate $y_i x_j$, where $z_{y_i x_j}$ are freshly introduced string variables. Since each equation $y_iF_i=G_i$ or $y_i H_i = I_i$ can be seen as a linear combination of the terms $y_i x_j$ and $x_j$ for $i \in [m]$ and $j \in [n]$, we can replace each variable $x_j$ with $|x_j|$, and each term $y_ix_j$ with $|z_{y_i x_j}|$,  thus transform them into the (linear) integer constraints $F'_i = G'_i$ or $H'_i = I'_i$. Similarly, after replacing each variable $x_j$ with $|x_j|$, we transform each equation $A_i= B_i$ into an integer constraint $A'_i = B'_i$. Therefore, we get a formula 
+We can get a reduction from the problem in Theorem~\ref{thm-quad-eq} to the satisfiability of the extension of $\strline[\replaceall]$ with integer constraints as follows: For each monomial $y_i x_j$ in the quadratic polynomials, we use an $\strline[\replaceall]$ formula $z_{y_i x_j} = \replaceall(y_i, a, x_j)$ to simulate $y_i x_j$, where $z_{y_i x_j}$ are freshly introduced string variables. Since each equation $y_iF_i=G_i$ or $y_i H_i = I_i$ can be seen as a linear combination of the terms $y_i x_j$ and $x_j$ for $i \in [m]$ and $j \in [n]$, we can replace each variable $x_j$ with $|x_j|$, and each term $y_ix_j$ with $|z_{y_i x_j}|$,  thus transform them into the (linear) integer constraints $F'_i = G'_i$ or $H'_i = I'_i$. Similarly, after replacing each variable $x_j$ with $|x_j|$, we transform each equation $A_i= B_i$ into an integer constraint $A'_i = B'_i$. Therefore, we get a formula 
 $$
 \begin{array}{l c l }
 \bigwedge \limits_{i \in [m], j \in [n]} z_{y_i x_j} = \replaceall(y_i, a, x_j) \wedge \bigwedge \limits_{i \in [m]} y_i \in a^*\ \wedge  \bigwedge \limits_{j \in [n]} x_j \in a^* \  \wedge\\
@@ -233,6 +241,8 @@ Therefore, we get a reduction from Hilbert's tenth problem to the satisfiability
 
 Proposition~\ref{prop-ext-char} follows from the following observation and Theorem~\ref{thm-ext-int}: For any two string variables $x,y$ over a unary alphabet, 
 $1= \indexof(x,y)$ iff $x$ is a prefix of $y$. Therefore, $|x| = |y|$ iff $1=  \indexof(x,y) \wedge 1= \indexof(y,x)$. This implies that in the proof of Theorem~\ref{thm-ext-int}, we can replace $|y_f| = |y_g|$ with $1=\indexof(y_f, y_g) \wedge 1 = \indexof(y_g, y_f)$ and get a reduction from Hilbert's tenth problem to the satisfiability problem for the extension of $\strline[\replaceall]$ with the $\indexof$ constraints.
+Note that $=$ can be simulated as a conjunction of $\leq$ and $\geq$.
+\mat{added final note since we're not strictly allowed $=$}
 
 
 %We have the following observation: 
