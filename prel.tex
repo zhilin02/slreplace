@@ -323,7 +323,7 @@ In light of Proposition~\ref{prop-und-pat-var}, we shall focus on the case that 
 The main result of the paper is summarised as the following Theorem~\ref{thm-main}.
 
 \begin{theorem}\label{thm-main}
-	The satisfiability problem of $\strline[\concat, \replaceall]$ is decidable in EXPSPACE, if the second parameters of the $\replaceall$ terms are regular expressions.  Moreover, for the class of $\strline[\concat, \replaceall]$ formulae whose dependency graphs are source-sharing, the satisfiability problem is PSPACE-complete.
+	The satisfiability problem of $\strline[\concat, \replaceall]$ is decidable in EXPSPACE, if the second parameters of the $\replaceall$ terms are regular expressions.  
 \end{theorem}
 
 The following three sections are devoted to the proof of Theorem~\ref{thm-main}.  We start with the single-letter case that the second parameters of the $\replaceall$ terms are single letters (Section~\ref{sec:replaceallsl}), then consider the constant-string case that the second parameters of the $\replaceall$ terms are constant strings  (Section~\ref{sec:replaceallcs}), and finally the regular-expression case that the second parameters of the $\replaceall$ terms are regular expressions  (Section~\ref{sec:replaceallre}).
@@ -347,11 +347,32 @@ As a consequence, in Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we 
 \end{definition}
 Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero. 
 
-%For $k \in \Nat$, let us use $\strline_k[\replaceall]$ to denote the class of $\strline[\replaceall]$ formulae $C$ such that $\arbidx(G_C) \le k$, i.e. the arborescence index of $G_C$ is no more than $k$.
+\begin{definition}[Diamond index and $\rpleft$-length]
+Let $C$  be an  $\strline[\replaceall]$ formula and $G_C=(\vars(\varphi), E_C)$ be its dependency graph. A \emph{diamond} $\Delta$ in $G_C$ is a pair of vertex-disjoint simple paths from $z$ to $z'$ for some $z,z' \in \vars(\varphi)$. The vertices $z$ and $z'$ are called the \emph{source} and \emph{destination} vertex of the diamond respectively. A diamond $\Delta_2$ with the source vertex $z_2$ and destination vertex $z'_2$ is said to be reachable from  another diamond $\Delta_1$ with the source vertex $z_1$ and destination vertex $z'_1$ if $z_2$ is reachable from $z'_1$ (possibly $z_2= z'_1$). The \emph{diamond index} of $G_C$, denoted by $\dmdidx(G_C)$, is defined as the maximum length of the diamond sequences $\Delta_1 \cdots \Delta_n$ in $G_C$ such that for each $i \in [n-1]$, $\Delta_{i+1}$ is reachable from $\Delta_i$. The \emph{$\rpleft$-length} of a path in $G_C$ is the number of $\rpleft$-edges in the path. The $\rpleft$-length of $G_C$, denoted by $\lftlen(G_C)$, is the maximum $\rpleft$-length of paths in $G_C$.
+\end{definition}
+For each dependency graph $G_C$, since each diamond uses at least one $\rpleft$-edge, we know that $\dmdidx(G_C) \le \lftlen(G_C)$.
+%For an $\strline[\replaceall]$ formula $C$, the dependency graph $G_C$ is called \emph{source-sharing} if the vertices with in-degree more than one in $G_C$ are \emph{all} source variables (this means that the non-source variables are not shared). Let us use $\strline_{\sf ss}[\replaceall]$ to denote the set of $\strline[\replaceall]$ formulae $C$  such that $G_C$ is source-sharing.
 
-For an $\strline[\replaceall]$ formula $C$, the dependency graph $G_C$ is called \emph{source-sharing} if the vertices with in-degree more than one in $G_C$ are \emph{all} source variables (this means that the non-source variables are not shared). Let us use $\strline_{\sf ss}[\replaceall]$ to denote the set of $\strline[\replaceall]$ formulae $C$  such that $G_C$ is source-sharing.
+\begin{proposition}\label{prop-di}
+Let $C$  be an  $\strline[\replaceall]$ formula and $G_C=(\vars(\varphi), E_C)$ be its dependency graph. For each pair of distinct vertices $z,z'$ in $G_C$, there are at most $(|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$ different paths from $z$ to $z'$.
+\end{proposition}
+It follows from Proposition~\ref{prop-di} that for the class of $\strline[\replaceall]$ formulae $C$ such that $\dmdidx(G_C)$ is bounded by a constant $c$,  there are polynomially many different paths between each pair of distinct vertices in $G_C$.
 
+In Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we will also apply a refined analysis of the complexity of the decision procedures and get the following results.
 
+\begin{corollary}\label{cor-pspace}
+The satisfiability problem is PSPACE-complete for the following fragments of $\strline[\replaceall]$:
+\begin{itemize}
+\item the class of $\strline[\replaceall]$ formulae where the second parameters of all $\replaceall$ terms are single letters and the diamond indices of the dependency graphs are bounded by a constant $c$, 
+%
+\item the class of $\strline[\replaceall]$ formulae where the second parameters of all $\replaceall$ terms are constant strings and the $\rpleft$-lengths of the dependency graphs are bounded by a constant $c$, 
+
+%
+\item the class of $\strline[\replaceall]$ formulae where the $\rpleft$-lengths of the dependency graphs are at most $1$.
+\end{itemize}
+\end{corollary}
+
+Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter and constant-string cases first, then the regular-expression case: While the second parameters of $\replaceall$ terms become less restrictive and the decision procedures become more involved, more constraints should be put on the dependency graphs in order to achieve the PSPACE upper bound.
 
 %The proof of Theorem~\ref{thm-main} utilises a concept of dependency graphs defined below.
 
