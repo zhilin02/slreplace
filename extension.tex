@@ -2,8 +2,8 @@
 
 \section{Undecidable extensions}
 
-In this section, we consider the language $\strline[\concat,\replaceall]$ extended with either integer constraints, character constraints, or $\indexof$ constraints. 
-\mat{Should $\concat$ be removed?}
+In this section, we consider the language $\strline[\replaceall]$ extended with either integer constraints, character constraints, or $\indexof$ constraints and show that each such an extension leads to undecidability. 
+\mat{Should $\concat$ be removed?}\zhilin{agree, since the undecidability result is stronger if stated for $\strline[\replaceall]$}
 We will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as an \emph{integer variable}, ranges over the set $\Nat$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. The
 choice of omitting negative integers is only for simplicity, but our
 results can be easily extended to the case where $\intnum$ includes negative integers.
@@ -34,8 +34,8 @@ Character constraints, on the other hand, allow to compare symbols from differen
 		\item $x$ and $y$ are either a string variable or a constant string in $\Sigma^*$, and 
 		\item $t_1$ and $t_2$ are either integer variables or constant positive integers.
 	\end{itemize} 
-Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$.	
-\mat{What if $x$ doesn't have a $t_1$th letter?}
+Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$. In case that $x$ does not have the $t_1$-th letter, the constraint $x[t_1] = y[t_2]$ is false by convention.  Similarly for $y[t_2]$.
+\mat{What if $x$ doesn't have a $t_1$th letter?}\zhilin{how about this ?}
 	
 A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
 \end{definition}
@@ -51,7 +51,7 @@ An atomic $\indexof$ constraint over $\Sigma$ is a formula of the form $t\ \math
 \item and $s_1,s_2$ are either string variables or constant strings. 
 \end{itemize}
 We consider the \emph{first-occurrence} semantics of $\indexof$.  More specifically, $t \ge \indexof(s_1, s_2)$ holds if $t$ is no less than the first position in $s_2$ where $s_1$ occurs, similarly for $t \le \indexof(s_1, s_2)$.
-\mat{What if $s_1$ does not appear in $s_2$?}
+\mat{What if $s_1$ does not appear in $s_2$?}\zhilin{if $s_1$ does not appear in $s_2$, then $\indexof(s_1, s_2)=0$, as defined above.}
 
 An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\indexof$ constraints over $\Sigma$.
 \end{definition}
@@ -84,11 +84,11 @@ We will show that the extension of $\strline[\replaceall]$ with integer constrai
 \end{theorem}
 
 \begin{proof}
-The basic idea of the reduction is to simulate the two polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, where $x_1,\cdots,x_n$ range over the set of natural numbers, with two $\strline[\replaceall]$ formulae $C_f, C_g$ over a unary alphabet $\{a\}$, with the output string variables $y_f, y_g$ respectively, and simulate the equality $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ with the integer constraint $|y_f|=|y_g|$ (which is equivalent to $y_f = y_g$, since $y_f, y_g$ represent strings over the unary alphabet $\{a\}$).
+The basic idea of the reduction is to simulate the two polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, where $x_1,\cdots,x_n$ range over the set of natural numbers, with two $\strline[\concat,\replaceall]$ formulae $C_f, C_g$ over a unary alphabet $\{a\}$, with the output string variables $y_f, y_g$ respectively, and simulate the equality $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ with the integer constraint $|y_f|=|y_g|$ (which is equivalent to $y_f = y_g$, since $y_f, y_g$ represent strings over the unary alphabet $\{a\}$). 
 
-A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$
-\mat{$\concat$ is not part of $\strline[\replaceall]$, can it be simulated when the string alphabet is unary, or do we need two extra characters?}
-and the multiplication operator $*$ is simulated by $\replaceall$. Since it is easy to figure out how the simulation proceeds, we will only use an example to illustrate it and omit the details here. Let us consider $f(x_1,x_2) = x_1^2 + 2 x_1 x_2 + 5$. By abusing the notation, we also use $x_1,x_2$ as string variables in the simulation. We will introduce a string variable for each subexpression in $f(x_1,x_2)$, namely the variables $y_{x_1^2}, y_{x_1x_2}, y_{2x_1x_2}, y_{x_1^2+2x_1x_2}, y_{f(x_1,x_2)}$. Then $f(x_1,x_2)$ is simulated by the $\strline[\replaceall]$ formula
+A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\concat,\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$
+\mat{$\concat$ is not part of $\strline[\replaceall]$, can it be simulated when the string alphabet is unary, or do we need two extra characters?}\zhilin{changed to $\strline[\concat,\replaceall]$.}
+and the multiplication operator $*$ is simulated by $\replaceall$. Since it is easy to figure out how the simulation proceeds, we will only use an example to illustrate it and omit the details here. Let us consider $f(x_1,x_2) = x_1^2 + 2 x_1 x_2 + 5$. By abusing the notation, we also use $x_1,x_2$ as string variables in the simulation. We will introduce a string variable for each subexpression in $f(x_1,x_2)$, namely the variables $y_{x_1^2}, y_{x_1x_2}, y_{2x_1x_2}, y_{x_1^2+2x_1x_2}, y_{f(x_1,x_2)}$. Then $f(x_1,x_2)$ is simulated by the $\strline[\concat,\replaceall]$ formula
 \[
 \begin{array} {l c l }
 C_f & \equiv & y_{x_1^2} = \replaceall(x_1,a, x_1)\ \wedge y_{x_1x_2} = \replaceall(x_1, a, x_2)\ \wedge \\
@@ -96,11 +96,11 @@ C_f & \equiv & y_{x_1^2} = \replaceall(x_1,a, x_1)\ \wedge y_{x_1x_2} = \replace
 & & y_{f(x_1,x_2)}=y_{x_1^2+2x_1x_2} \concat a a a a a\ \wedge x_1 \in a^*\ \wedge x_2 \in a^*.
 \end{array}
 \]
-Notice that in $C_f$, the $\concat$ operator is used. Nevertheless, according to Proposition~\ref{prop-concat}, the $\concat$ operator can be simulated easily by the $\replaceall$ function.
-\mat{But we may have to give up the unary alphabet?}
+Then according to Proposition~\ref{prop-concat}, $C_f, C_g$ can be turned into equivalent $\strline[\replaceall]$ formula $C'_f, C'_g$ by introducing fresh letters.
+\mat{But we may have to give up the unary alphabet?}\zhilin{yes, you are  right, it is fine.}
  
-Since $C_f$ and $C_g$ share only source variables $x_1,\cdots, x_n$, we know that $C_f \wedge C_g$ is still an $\strline[\replaceall]$ formula.
-From the construction of $C_f, C_g$, it is evident that for every pair of polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C_f \wedge C_g \wedge |y_f| = |y_g|$ is satisfiable. The proof is complete.
+Since $C'_f$ and $C'_g$ share only source variables $x_1,\cdots, x_n$, we know that $C'_f \wedge C'_g$ is still an $\strline[\replaceall]$ formula.
+From the construction of $C'_f, C'_g$, it is evident that for every pair of polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C'_f \wedge C'_g \wedge |y_f| = |y_g|$ is satisfiable. The proof is complete.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -242,7 +242,6 @@ Therefore, we get a reduction from Hilbert's tenth problem to the satisfiability
 Proposition~\ref{prop-ext-char} follows from the following observation and Theorem~\ref{thm-ext-int}: For any two string variables $x,y$ over a unary alphabet, 
 $1= \indexof(x,y)$ iff $x$ is a prefix of $y$. Therefore, $|x| = |y|$ iff $1=  \indexof(x,y) \wedge 1= \indexof(y,x)$. This implies that in the proof of Theorem~\ref{thm-ext-int}, we can replace $|y_f| = |y_g|$ with $1=\indexof(y_f, y_g) \wedge 1 = \indexof(y_g, y_f)$ and get a reduction from Hilbert's tenth problem to the satisfiability problem for the extension of $\strline[\replaceall]$ with the $\indexof$ constraints.
 Note that $=$ can be simulated as a conjunction of $\leq$ and $\geq$.
-\mat{added final note since we're not strictly allowed $=$}
 
 
 %We have the following observation: 
