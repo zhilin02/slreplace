@@ -61,7 +61,8 @@ provided algorithms which make use of a symbolic representation so that membersh
 %
 %We evaluate S3 on a well-known set of practical benchmarks, demonstrating both
 %its robustness (more definitive answers) and its efficiency (about 20
-%times faster) against the state-of-the-art.
+%times faster) against the state-of-the-art.
+
 
 
 %Progressive Reasoning over Recursively-Defined Strings
@@ -80,6 +81,12 @@ This fragment is largely incomparable to ours, as no replace-all functions are a
 %The essence of our procedure is an algorithm to enumerate an equivalent set of solvable disjuncts for the formula. We further show that the algorithm always terminates for the aforementioned decidable fragment. Finally, we provide a complexity analysis of our decision procedure to prove that it runs, in the worst case, in factorial time.
 
 The focus of our work is on the fundamental issue of decidability, and this is complementary to the work. Our result may be considered a completeness guarantee for existing string solver. 
- 
-symbolic transducers, fang yu?s stuff, arrays with fold function
- 
+
+The $\replaceall$ function is a special yet expressive string transformation function, aka. string transducer. With this viewpoint, 
+the $\replaceall$ function is also related to two recently introduced transducer models: streaming string transducers \cite{AC10} and symbolic transducers \cite{symbolic-transducer}. 
+
+A streaming string transducer is a finite state machine where  a finite set of string variables are used to store the intermediate results for output. The $\replaceall(x, e, y)$ term can be modelled by an extension of streaming string transducers with parameters, that is, a streaming string transducer which reads an input string (interpreted as the value of $x$), uses $y$ as a free string variable which is presumed to be read-only, and updates a string variable $z$, which stores the computation result, by a string term which may involve $y$. Nevertheless, to the best of our knowledge, this extension of streaming string transducers has not been investigated so far. 
+
+Symbolic transducers is an extension of Mealy machine to infinite alphabets by using a variable $cur$ to represent the symbol in the current position, and replacing the input and output letters in transitions with unary predicates $\varphi(cur)$ and terms involving $cur$ respectively. It is an interesting future work to consider an extension of the $\replaceall$ function to sequences of numerical values, by following the idea of symbolic transducers. For instance, one may consider the term $\replaceall(x, cur \equiv 0 \bmod 2, y)$ which replaces every even number in $x$ with $y$.
+
+In \cite{DHK16}, Daca et al. considered an extension of the quantifier-free theory of integer arrays, called array folds logic, to express counting. The main feature of the logic is the \emph{fold} terms, borrowed from the folding concept in functional languages. Intuitively, a fold term applies a function to every element of the array to compute an output. If strings are taken as arrays where the elements are from a finite domain (the alphabet), the $\replaceall$ function can be seen as a fold term on arrays. Nevertheless, the $\replaceall$ function goes beyond the fold terms in \cite{DHK16}, since it outputs a string (an array), instead of an integer. Therefore, the results in \cite{DHK16} cannot be applied here.
