@@ -3,20 +3,48 @@
 \section{Related work}
 
  
-In this section, we discuss some related work. 
+In this section, we discuss some related work. We will classify our discussions into two categories: (1) theoretical results; (2) practical approaches used in string solvers.  We shall emphasise work regarding replace-all functions as these are our main focus. 
 
-\paragraph{Word equations} Makanin's and Plandowski's  on the decidability
-and complexity of satisfiability for word equations, i.e., a conjunction of equations of $v=w$, where $v, w$ are concatenation of string constants and variable. 
-
+\paragraph{Word equations} Our work is closely related to solving word equations, which are a conjunction of equations of $v=w$, where $v, w$ are concatenation of string constants and variable. The computational complexity of this problem remains unknown, with the best lower and upper bounds being NP and PSPACE. Makanin refuted a conjecture that the problem is undecidable, and %Plandowski's  on the decidability and complexity of satisfiability for word equations, i.e., 
+Plandowski explored an approach of compression and proposed a PSPACE algorithm \cite{P04}.  This is the best bound up to date, though a simpler PSPACE solution with smaller space consumption based on compression was proposed by Jez \cite{J16}  gives a (nondeterministic) $\mathcal{O}(n \log n)$ space complexity. Very recently, \cite{J17}, Jez shows that word equations are in nondeterministic linear space. 
+%The connection between compression and word equations was first observed by Plandowski and Rytter \cite{PR98}. %, who showed that a length-minimal solution of size N has a compressed representation
+%of size poly(n, log N). 
 In addition, it is still a long-standing open problem whether word equations with length constraints is decidable, though it is known that letter-counting (i.e., counting the number of occurrences of 0s and 1s separately) yields undeciability.  
+
+
+
+%Solving word equation was an intriguing problem since the beginning of computer science, investigated
+%initially due to its ties to Hilbert’s 10th problem. Initially it was conjectured that this
+%problem is undecidable, which was disproved by Makanin [10]. At the beginning little attention
+%was given to computational complexity of Makanin’s algorithm and the problem itself; these questions
+%were reinvestigated in the ’90 [6, 18, 9], culminating in the EXPSPACE implementation of
+%Makanin’s algorithm by Gutiérrez [5].
+
+
+%\cite{J17}
+%Word equations in linear space
+%
+%Word equations are an important problem on the intersection of formal languages and algebra. Given two sequences consisting of letters and variables we are to decide whether there is a substitution for the variables that turns this equation into true equality of strings. The computational complexity of this problem remains unknown, with the best lower and upper bounds being NP and PSPACE. Recently, a novel technique of recompression was applied to this problem, simplifying the known proofs and lowering the space complexity to (nondeterministic) O(n log n). In this paper we show that word equations are in nondeterministic linear space, thus the language of satisfiable word equations is context-sensitive. We use the known recompression-based algorithm and additionally employ Huffman coding for letters. The proof, however, uses analysis of how the fragments of the equation depend on each other as well as a new strategy for nondeterministic choices of the algorithm, which uses several new ideas to limit the space occupied by the letters.
+
+
+In \cite{BTV09} the authors discussed the problem of path feasibility for programs manipulating strings using a collection of standard string library functions. They prove results on the complexity of this problem, including its undecidability in the general case and decidability of some special cases. 
+
+
+%A Decision Procedure for String Logic with Equations, Regular Membership and Length Constraints 
+\cite{L16}, the author considered the satisfiability problem for string logic with equations, regular membership and Presburger constraints over length functions. %The difficulty comes from multiple occurrences of string variables making state-of-the-art algorithms non-terminating. Our main contribution is to 
+He show that the satisfiability problem in a fragment where no string variable occurs more than twice in an equation is decidable. In particular, he proposed a semi-decision procedure for arbitrary string formulae with word equations, regular membership and length functions, and showed that the algorithm always terminates for the aforementioned decidable fragment, with a complexity analysis. 
+This fragment is largely incomparable to ours, as no replace-all functions are addressed therein. (However, it allows more expressive Presburger constraints over length functions.)
+%The essence of our procedure is an algorithm to enumerate an equivalent set of solvable disjuncts for the formula. We further show that the algorithm always terminates for the aforementioned decidable fragment. Finally, we provide a complexity analysis of our decision procedure to prove that it runs, in the worst case, in factorial time.
+
 
 \subsection*{Heuristics and string solver implementation}
 
 There is a large amount of work in the past years on developing practical string solvers
 \tl{plz help to put reference here}. String solvers that support concatenations and the replace-all operator are available. \cite{BTV09, TCJ14, YABI14,TCJ16}
 
+\cite{BTV09} considered an efficient finite model finding method for string constraints. They develop a two-tier finite model finding procedure. First, an integer abstraction of string constraints are passed to an SMT (Satisfiability Modulo Theories) solver. The abstraction is either unsatisfiable, or the solver produces a model that fixes lengths of enough strings to reduce the entire problem to be finite domain. The resulting fixed-length string constraints are then solved in a second phase. 
 
-\cite{BTV09} We discuss the problem of path feasibility for programs manipulating strings using a collection of standard string library functions. We prove results on the complexity of this problem, including its undecidability in the general case and decidability of some special cases. In the context of test-case generation, we are interested in an efficient finite model finding method for string constraints. To this end we develop a two-tier finite model finding procedure. First, an integer abstraction of string constraints are passed to an SMT (Satisfiability Modulo Theories) solver. The abstraction is either unsatisfiable, or the solver produces a model that fixes lengths of enough strings to reduce the entire problem to be finite domain. The resulting fixed-length string constraints are then solved in a second phase. We implemented the procedure in a symbolic execution framework, report on the encouraging results and discuss directions for improving the method further.
+%We implemented the procedure in a symbolic execution framework, report on the encouraging results and discuss directions for improving the method further.
 
 
 \cite{YABI14} %Verifying string manipulating programs is a crucial problem in computer security. String operations are used extensively within web applications to manipulate user input, and their erroneous use is the most common cause of security vulnerabilities in web applications. We 
@@ -61,7 +89,8 @@ provided algorithms which make use of a symbolic representation so that membersh
 %
 %We evaluate S3 on a well-known set of practical benchmarks, demonstrating both
 %its robustness (more definitive answers) and its efficiency (about 20
-%times faster) against the state-of-the-art.
+%times faster) against the state-of-the-art.
+
 
 
 %Progressive Reasoning over Recursively-Defined Strings
@@ -73,13 +102,14 @@ implemented within the state-of-the-art Z3 framework, with experimental evaluati
 
 %Importantly, we have enabled conflict clause learning for string theory so that our solver can be used effectively in the setting of program verification. Finally, our experimental evaluation shows leadership in a large benchmark suite, and a first deployment for another benchmark suite which requires reasoning about string formulas of a class that has not been solved before.
 
-%A Decision Procedure for String Logic with Equations, Regular Membership and Length Constraints 
-\cite{L16}, the author considered the satisfiability problem for string logic with equations, regular membership and Presburger constraints over length functions. %The difficulty comes from multiple occurrences of string variables making state-of-the-art algorithms non-terminating. Our main contribution is to 
-He show that the satisfiability problem in a fragment where no string variable occurs more than twice in an equation is decidable. In particular, he proposed a semi-decision procedure for arbitrary string formulae with word equations, regular membership and length functions, and showed that the algorithm always terminates for the aforementioned decidable fragment, with a complexity analysis. 
-This fragment is largely incomparable to ours, as no replace-all functions are addressed therein. (However, it allows more expressive Presburger constraints over length functions.)
-%The essence of our procedure is an algorithm to enumerate an equivalent set of solvable disjuncts for the formula. We further show that the algorithm always terminates for the aforementioned decidable fragment. Finally, we provide a complexity analysis of our decision procedure to prove that it runs, in the worst case, in factorial time.
 
 The focus of our work is on the fundamental issue of decidability, and this is complementary to the work. Our result may be considered a completeness guarantee for existing string solver. 
  
-symbolic transducers, fang yu?s stuff, arrays with fold function
- 
+The $\replaceall$ function is a special yet expressive string transformation function, aka. string transducer. With this viewpoint, 
+the $\replaceall$ function is also related to two recently introduced transducer models: streaming string transducers \cite{AC10} and symbolic transducers \cite{symbolic-transducer}. 
+
+A streaming string transducer is a finite state machine where  a finite set of string variables are used to store the intermediate results for output. The $\replaceall(x, e, y)$ term can be modelled by an extension of streaming string transducers with parameters, that is, a streaming string transducer which reads an input string (interpreted as the value of $x$), uses $y$ as a free string variable which is presumed to be read-only, and updates a string variable $z$, which stores the computation result, by a string term which may involve $y$. Nevertheless, to the best of our knowledge, this extension of streaming string transducers has not been investigated so far. 
+
+Symbolic transducers is an extension of Mealy machine to infinite alphabets by using a variable $cur$ to represent the symbol in the current position, and replacing the input and output letters in transitions with unary predicates $\varphi(cur)$ and terms involving $cur$ respectively. It is an interesting future work to consider an extension of the $\replaceall$ function to sequences of numerical values, by following the idea of symbolic transducers. For instance, one may consider the term $\replaceall(x, cur \equiv 0 \bmod 2, y)$ which replaces every even number in $x$ with $y$.
+
+In \cite{DHK16}, Daca et al. considered an extension of the quantifier-free theory of integer arrays, called array folds logic, to express counting. The main feature of the logic is the \emph{fold} terms, borrowed from the folding concept in functional languages. Intuitively, a fold term applies a function to every element of the array to compute an output. If strings are taken as arrays where the elements are from a finite domain (the alphabet), the $\replaceall$ function can be seen as a fold term on arrays. Nevertheless, the $\replaceall$ function goes beyond the fold terms in \cite{DHK16}, since it outputs a string (an array), instead of an integer. Therefore, the results in \cite{DHK16} cannot be applied here.
