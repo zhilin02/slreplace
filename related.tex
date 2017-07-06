@@ -5,11 +5,15 @@
  
 In this section, we discuss some related work. We will classify our discussions into two categories: (1) theoretical results; (2) practical approaches used in string solvers.  We shall emphasise work regarding replace-all functions as these are our main focus. 
 
-\paragraph{Word equations} Our work is closely related to solving word equations, which are a conjunction of equations of $v=w$, where $v, w$ are concatenation of string constants and variable. The computational complexity of this problem remains unknown, with the best lower and upper bounds being NP and PSPACE. Makanin refuted a conjecture that the problem is undecidable, and %Plandowski's  on the decidability and complexity of satisfiability for word equations, i.e., 
+\subsection*{Theoretical results}
+Our work is closely related to solving word equations, which are a conjunction of equations of $v=w$, where $v, w$ are concatenation of string constants and variable. The computational complexity of this problem remains unknown, with the best lower and upper bounds being NP and PSPACE. Makanin %refuted a conjecture 
+showed, perhaps surprisingly, that the problem is undecidable, and %Plandowski's  on the decidability and complexity of satisfiability for word equations, i.e., 
 Plandowski explored an approach of compression and proposed a PSPACE algorithm \cite{P04}.  This is the best bound up to date, though a simpler PSPACE solution with smaller space consumption based on compression was proposed by Jez \cite{J16}  gives a (nondeterministic) $\mathcal{O}(n \log n)$ space complexity. Very recently, \cite{J17}, Jez shows that word equations are in nondeterministic linear space. 
 %The connection between compression and word equations was first observed by Plandowski and Rytter \cite{PR98}. %, who showed that a length-minimal solution of size N has a compressed representation
 %of size poly(n, log N). 
-In addition, it is still a long-standing open problem whether word equations with length constraints is decidable, though it is known that letter-counting (i.e., counting the number of occurrences of 0s and 1s separately) yields undeciability.  
+Essentially, the constraint language  $\strline[\concat, \replaceall]$ studied in this paper is word equation extended with the $\replaceall$ function, but subject to structural restriction that each formula must be straight-line.  
+
+In addition, it is still a long-standing open problem whether word equations with length constraints is decidable, though it is known that letter-counting (i.e., counting the number of occurrences of 0s and 1s separately) yields undeciability. In contrast, for  $\strline[\concat, \replaceall]$ with length constraints, we show undecidability outright. 
 
 
 
@@ -27,7 +31,7 @@ In addition, it is still a long-standing open problem whether word equations wit
 %Word equations are an important problem on the intersection of formal languages and algebra. Given two sequences consisting of letters and variables we are to decide whether there is a substitution for the variables that turns this equation into true equality of strings. The computational complexity of this problem remains unknown, with the best lower and upper bounds being NP and PSPACE. Recently, a novel technique of recompression was applied to this problem, simplifying the known proofs and lowering the space complexity to (nondeterministic) O(n log n). In this paper we show that word equations are in nondeterministic linear space, thus the language of satisfiable word equations is context-sensitive. We use the known recompression-based algorithm and additionally employ Huffman coding for letters. The proof, however, uses analysis of how the fragments of the equation depend on each other as well as a new strategy for nondeterministic choices of the algorithm, which uses several new ideas to limit the space occupied by the letters.
 
 
-In \cite{BTV09} the authors discussed the problem of path feasibility for programs manipulating strings using a collection of standard string library functions. They prove results on the complexity of this problem, including its undecidability in the general case and decidability of some special cases. 
+In \cite{BTV09} the authors discussed the problem of path feasibility for programs manipulating strings using a collection of standard string library functions. They prove results on the complexity of this problem, including its undecidability in the general case and decidability of some special cases. \tl{how would it connect to ours?}
 
 
 %A Decision Procedure for String Logic with Equations, Regular Membership and Length Constraints 
@@ -37,7 +41,7 @@ This fragment is largely incomparable to ours, as no replace-all functions are a
 %The essence of our procedure is an algorithm to enumerate an equivalent set of solvable disjuncts for the formula. We further show that the algorithm always terminates for the aforementioned decidable fragment. Finally, we provide a complexity analysis of our decision procedure to prove that it runs, in the worst case, in factorial time.
 
 
-\subsection*{Heuristics and string solver implementation}
+\subsection*{Practical approaches}
 
 There is a large amount of work in the past years on developing practical string solvers
 \tl{plz help to put reference here}. String solvers that support concatenations and the replace-all operator are available. \cite{BTV09, TCJ14, YABI14,TCJ16}
@@ -47,19 +51,17 @@ There is a large amount of work in the past years on developing practical string
 %We implemented the procedure in a symbolic execution framework, report on the encouraging results and discuss directions for improving the method further.
 
 
-\cite{YABI14} %Verifying string manipulating programs is a crucial problem in computer security. String operations are used extensively within web applications to manipulate user input, and their erroneous use is the most common cause of security vulnerabilities in web applications. We 
-The authors present an automata-based approach for symbolic analysis of string manipulating programs. 
-
-For the string operations, the authors focus on two common ones: concatenation and replacement. For the latter, two semantics are considered, i.e., longest match and first match. The replacement operation provides an over-approximation of such more restricted replace semantics. 
-
-\cite{SMV12} translating regular expression matching into transducer. 
-
-They use deterministic finite automata (DFAs) to represent possible values of string variables. Using forward reachability analysis we compute an over-approximation of all possible values that string variables can take at each program point. They also implemented Stranger, an automata-based string analysis tool, with experiments. 
+In \cite{YABI14}, %Verifying string manipulating programs is a crucial problem in computer security. String operations are used extensively within web applications to manipulate user input, and their erroneous use is the most common cause of security vulnerabilities in web applications. We 
+The authors present an automata-based approach for symbolic analysis of string manipulating programs. For the string operations, the authors focus on two common ones: concatenation and replacement. The latter is close to---but not the same as---the $\replaceall$ function considered in this paper. However, in this paper, Yu et al provided   an \emph{over-approximation} of more %restricted replace 
+commonly used semantics, i.e., the longest match and first match semantics. 
+%
+%\cite{SMV12} translating regular expression matching into transducer. 
+%
+They use deterministic finite automata (DFAs) to represent possible values of string variables. Using forward reachability analysis we compute an over-approximation of all possible values that string variables can take at each program point. They also implemented Stranger, an automata-based string analysis tool, with experiments. In general, this is essentially an abstract interpretation based approach.  In comparison, our algorithm is also automata-based, but we work on a semantics of $\replaceall$, but not its approximation. \tl{more need to be said here}
 
 %Intersecting these with a given attack pattern yields the potential attack strings if the program is vulnerable. Based on the presented techniques, we have implemented Stranger, an automata-based string analysis tool for detecting string-related security vulnerabilities in PHP applications. We evaluated Stranger on several open-source Web applications including one with 350,000+ lines of code. Stranger is able to detect known/unknown vulnerabilities, and, after inserting proper sanitization routines, prove the absence of vulnerabilities with respect to given attack patterns.
 
-%Motivated by the vulnerability analysis of web programs which
-work on string inputs, we 
+ 
 \cite{TCJ14}, the authors present S3 (which stands for Symbolic String Solver), a new symbolic string solver.
 %Our solver employs a new algorithm for a constraint language that
 %is expressive enough for widespread applicability. Specifically, our
@@ -103,6 +105,40 @@ implemented within the state-of-the-art Z3 framework, with experimental evaluati
 
 
 The focus of our work is on the fundamental issue of decidability, and this is complementary to the work. Our result may be considered a completeness guarantee for existing string solver. 
+
+===========================================================
  
-symbolic transducers, fang yu?s stuff, arrays with fold function
- 
+symbolic transducers,   arrays with fold function
+
+%Symbolic Finite State Transducers:
+%Algorithms and Applications
+%
+%Finite automata and finite transducers are used in a wide
+%range of applications in software engineering, from regular
+%expressions to specification languages. We extend these
+%classic objects with symbolic alphabets represented as parametric
+%theories. Admitting potentially infinite alphabets
+%makes this representation strictly more general and succinct
+%than classical finite transducers and automata over strings.
+%Despite this, the main operations, including composition,
+%checking that a transducer is single-valued, and equivalence
+%checking for single-valued symbolic finite transducers are
+%effective given a decision procedure for the background theory.
+%We provide novel algorithms for these operations and
+%extend composition to symbolic transducers augmented with
+%registers. Our base algorithms are unusual in that they are
+%nonconstructive, therefore, we also supply a separate model
+%generation algorithm that can quickly find counterexamples
+%in the case two symbolic finite transducers are not
+%equivalent. The algorithms give rise to a complete decidable
+%algebra of symbolic transducers. Unlike previous work, we
+%do not need any syntactic restriction of the formulas on the
+%transitions, only a decision procedure. In practice we leverage
+%recent advances in satisfiability modulo theory (SMT)
+%solvers. We demonstrate our techniques on four case studies,
+%covering a wide range of applications. Our techniques
+%can synthesize string pre-images in excess of 8, 000 bytes
+%in roughly a minute, and we find that our new encodings
+%significantly outperform previous techniques in succinctness
+%and speed of analysis
+% 
