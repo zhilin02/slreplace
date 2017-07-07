@@ -125,7 +125,8 @@ When the second parameter is a string, the semantics is somehow self-explanatory
  %where replaceall functions are extensively used. 
  This is particularly the case when interpreting the union operator in regular expressions. In this paper we follow the POSIX standard, and mainly focus on the  semantics of the leftmost and longest matching.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \begin{definition}
 Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ be a regular expression such that $\varepsilon \not \in \Ll(e)$. We say that $u$ is the \emph{leftmost and longest} matching of $e$ in $v$ if the following two conditions hold
 \begin{enumerate}
@@ -133,32 +134,56 @@ Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ b
 	\item longest: for every nonempty prefix $v'_2$ of $v_2$, $u \cdot v'_2 \not \in \Ll(e)$.
 \end{enumerate} 
 \end{definition}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}
+Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ be a regular expression. We say that $u$ is the \emph{leftmost and longest} matching of $e$ in $v$ if one of the following two conditions hold,
+\begin{itemize}
+\item $\varepsilon \not \in \Ll(e)$, in addition, 
+\begin{enumerate}
+	\item leftmost: $u \in \Ll(e)$,  and $(v'_1)^{-1} v \not \in  \Ll(e \concat \Sigma^*)$ for every strict prefix $v'_1$ of $v_1$, 
+	\item longest: for every nonempty prefix $v'_2$ of $v_2$, $u \cdot v'_2 \not \in \Ll(e)$.
+\end{enumerate} 
+%
+\item $\varepsilon \in \Ll(e)$, 
+\begin{enumerate}
+	\item leftmost: $u \in \Ll(e)$, and $v_1 = \varepsilon$, 
+	\item longest: for every nonempty prefix $v'_2$ of $v_2$, $u \cdot v'_2 \not \in \Ll(e)$.
+\end{enumerate} 
+\end{itemize}
+\end{definition}
+
 
 \begin{example}
-Let $\Sigma = \{0,1\}$, $v=1010101$, $v_1 =1$, $u = 010$, $v_2 = 101$, and $e = 0^*01(0^*+ 1^*)$. Then $v= v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), in addition, none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belongs to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). 
+Let us first consider $\Sigma = \{0,1\}$, $v=1010101$, $v_1 =1$, $u = 010$, $v_2 = 101$, and $e = 0^*01(0^*+ 1^*)$. Then $v= v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), in addition, none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belongs to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). Then let us consider $\Sigma = \{a,b,c\}$, $v=baac$, $v_1 = \varepsilon$, $u =\varepsilon$, $v_2 = v$, and $e = a^*$. Then $v = v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $v_1 = \varepsilon$, and $b, ba, baa, baac \not \in \Ll(e)$. On the other hand, similarly, one can verify that the leftmost and longest match of $e=a^*$ in $v=aac$ is $aa$.
 \end{example}
 
 \begin{definition} \label{def:replaceall}
 The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a regular expression, is defined inductively as follows:
 \begin{itemize}
-	\item if $\varepsilon \in \Ll(e)$, then
-	\begin{itemize}
-	\item if $u = \varepsilon$, then $\replaceall(u,e, v) = v$,
-	
-	\item otherwise, let $u = a \cdot u'$ for $a \in \Sigma$, then $\replaceall(u, e, v) =v \cdot a \cdot \replaceall(u', e, v)$,
-	\end{itemize}
+%	\item if $\varepsilon \in \Ll(e)$, then
+%	\begin{itemize}
+%	\item if $u = \varepsilon$, then $\replaceall(u,e, v) = v$,
+%	
+%	\item otherwise, let $u = a \cdot u'$ for $a \in \Sigma$, then $\replaceall(u, e, v) =v \cdot a \cdot \replaceall(u', e, v)$,
+%	\end{itemize}
 %
-	\item otherwise,
-	\begin{itemize}
-	\item if $u \not \in \Ll(\Sigma^\ast e \Sigma^\ast)$, i.e., $u$ does \emph{not} contain any substring from $\Ll(e)$, then $\replaceall(u, e, v) = u$, 
+%	\item otherwise,
+%	\begin{itemize}
+	\item if $u \not \in \Ll(\Sigma^\ast \concat e \concat \Sigma^\ast)$, that is, $u$ does \emph{not} contain any substring from $\Ll(e)$, then $\replaceall(u, e, v) = u$, 
 	%
-	\item otherwise, let $u = u' \cdot u \cdot u''$ such that $u$ is the \emph{leftmost and longest} matching of $e$ in $v$, then $\replaceall(u, e, v) = u' \cdot v \cdot \replaceall(u'', e, v)$.
+	\item otherwise, let $u = u_1 \cdot u_2 \cdot u_3$ such that $u_2$ is the \emph{leftmost and longest} matching of $e$ in $u$, then 
+	\begin{itemize}
+	\item if $u_2 \neq \varepsilon$, then $\replaceall(u, e, v) = u_1 \cdot v \cdot \replaceall(u_3, e, v)$,
+	\item otherwise (in this case, $u_2 = \varepsilon \in \Ll(e)$, thus $u_1 = \varepsilon$ as well), if $u = \varepsilon$, then $\replaceall(u, e, v) = v$, otherwise,  let $u = a \cdot u'$ for some $a \in \Sigma$ and $u' \in \Sigma^*$, then $\replaceall(u, e, v) = v \cdot a \cdot \replaceall(u', e, v)$. 
 	\end{itemize}
+%	\end{itemize}
 \end{itemize}
 \end{definition}
 
 \begin{example}
-$\replaceall(abab, ab, d) =dd$, $\replaceall(aaaa, ``", d) =dadadadad$. In addition, $\replaceall(abac, a^*, d) =d a d b d a d c d$, and $\replaceall(abac, a^+, d)=dbdc$. 
+At first, we have $\replaceall(abab, ab, d) =dd$ and $\replaceall(baac, a^+, b)=bbc$. In addition, $\replaceall(aaaa, ``", d) =dadadadad$ and $\replaceall(baac, a^*, b) =bbbc$.  The arguments for $\replaceall(baac, a^*, b) = bbbc$ proceeds as follows: The leftmost and longest matching of $a^*$ in $baac$ is $u_2 =\varepsilon$, where $baac = u_1 \cdot u_2 \cdot u_3$, $u_1 = \varepsilon$, $u_2 = \varepsilon$, and $u_3 = baac$. Since $baac \neq \varepsilon$ and $baac = b \cdot aac$, we deduce that $\replaceall(baac, a^*, b) = b \cdot b \cdot \replaceall(aac, a^*, b)$. Since $aa$ is the leftmost and longest matching of $a^*$ in $aac$, $\replaceall(aac, a^*, b) = b \cdot \replaceall(c, a^*, b) = bbcb$. Therefore, we get $\replaceall(baac, a^*, b) = bb bb cb$.
 \end{example}
 %However, when the regular expression contains $+$, programming languages diverge... 
 %\tl{do we need to say more here?}
