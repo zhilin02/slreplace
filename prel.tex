@@ -88,13 +88,13 @@ precise complexity of verification problems is not only of fundamental
 importance, but also it often suggests algorithmic techniques
 that are most suitable for attacking the problem in practice.
 In this paper, we deal with the following computational complexity
-classes (see \cite{} for more details): P (problems solvable
+classes (see \cite{HU79} for more details): P (problems solvable
 in polynomial-time), PSPACE (problems solvable in polynomial
 space and thus in exponential time), and EXPSPACE (problems solvable
 in exponential space and thus in double exponential time). Verification
-problems that have complexity PSPACE or beyond (see \cite{}
+problems that have complexity PSPACE or beyond (see \cite{BK08}
 for a few examples) have substantially benefited from techniques
-like symbolic model checking \cite{}. As we shall see later, our complexity
+like symbolic model checking \cite{McMillan}. As we shall see later, our complexity
 upper bound also suggests the maximum lengths of words
 that need to be explored to guarantee completeness.
 
@@ -149,8 +149,9 @@ The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a r
 \begin{example}
 When the second parameter is a string (or more specially a single letter), most programming languages take the same semantics which is consistent to Definition~\ref{def:replaceall}. For instance,  $\replaceall(abab, ab, d) =dd$. It is worth mentioning the case that the second parameter is an empty string, where, for instance,  $\replaceall(aaaa, ``", d) =dadadadad$.
 
-When the second parameter is a regular expression, some examples are $\replaceall(abac, a^*, d) =d a d b d a d c d$ and $\replaceall(abac, a^+, d)=dbdc$. However, when the regular expression contains $+$, programming languages diverge... 
-\tl{do we need to say more here?}
+When the second parameter is a regular expression, we use the semantics of the leftmost and longest matching. For instance, $\replaceall(abac, a^*, d) =d a d b d a d c d$ and $\replaceall(abac, a^+, d)=dbdc$. 
+%However, when the regular expression contains $+$, programming languages diverge... 
+%\tl{do we need to say more here?}
 \end{example}
 
 
