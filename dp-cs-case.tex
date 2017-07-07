@@ -9,13 +9,13 @@ $$C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \
 where $|u| \ge 2$. For $i=1,2,3$, let $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$
 be the NFA corresponding to $e_i$. In addition, let $k = |u|$ and $u = a_1 \cdots a_k$ with $a_i \in \Sigma$ for each $i \in [k]$.
 
-According to the semantics, $C$ is satisfiable iff $x, y, z$ can be assigned with  strings $v, w, w'$ such that: (1) $v = \replaceall(w, u, w')$, and (2) $v,w, w'$ are accepted by $\cA_1, \cA_2, \cA_3$ respectively. Let $v, w, w'$ be the strings satisfying these two constraints. Since $v = \replaceall(w, u, w')$, we know that there are strings $w_1, w_2, \cdots, w_n$ such that $w= w_1 u w_2 \cdots u w_n$ and $v = w_1 w' w_2 \cdots w' w_n$. As $v$ is accepted by $\cA_1$, there is an accepting run of $\cA_1$ on $v$, say
+From the semantics, $C$ is satisfiable iff $x, y, z$ can be assigned with  strings $v, w, w'$ such that: (1) $v = \replaceall(w, u, w')$, and (2) $v,w, w'$ are accepted by $\cA_1, \cA_2, \cA_3$ respectively. Let $v, w, w'$ be the strings satisfying these two constraints. Since $v = \replaceall(w, u, w')$, we know that there are strings $w_1, w_2, \cdots, w_n$ such that $w= w_1 u w_2 \cdots u w_n$ and $v = w_1 w' w_2 \cdots w' w_n$. As $v$ is accepted by $\cA_1$, there is an accepting run of $\cA_1$ on $v$, say
 $$
 q_{0,1} \xrightarrow[\cA_1]{w_1} q_1 \xrightarrow[\cA_1]{w'} q'_1 \xrightarrow[\cA_1]{w_2} q_2 \xrightarrow[\cA_1]{w'} q'_2 \cdots q_{n-1} \xrightarrow[\cA_1]{w'} q'_{n-1} \xrightarrow[\cA_1]{w_n} q_n.
 $$
-Let $T_z = \{(q_i, q'_i) \mid i \in [n]\}$. Then $w' \in \Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q'))$. Therefore, $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$. Similar to the single-letter case, we will construct an NFA $\cB_{\cA_1, u, T_z}$ to characterise the satisfiability of $C$.  More precisely, $C$ is satisfiable iff there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and
+Let $T_z = \{(q_i, q'_i) \mid i \in [n]\}$. Then $w' \in \Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q'))$. Therefore, $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$. Similar to the single-letter case, we construct an NFA $\cB_{\cA_1, u, T_z}$ to characterise the satisfiability of $C$.  More precisely, $C$ is satisfiable iff there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and
 $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, u, T_z}) \neq \emptyset$. Intuitively, when reading the string $w$, $\cB_{\cA_1, u, T_z}$ simulates the generation of $v$ from $w$ and $w'$, that is, simulates the replacement of  every occurrence of $u$ in $w$ with $w'$, and verifies that $v$ is accepted by $\cA_1$, by using $T_z$.
-The construction of $\cB_{\cA_1, u, T_z}$ utilises the concepts of window profiles and parsing automata defined below.
+To build $\cB_{\cA_1, u, T_z}$ we utilise the concepts of window profiles and parsing automata defined below.
 %
 %Intuitively, the window profiles encode the matching of the suffixes of a string of length $|u|$ w.r.t. the prefixes of $u$ and a parsing automaton for $u$ uses window profiles of $u$ to pinpoint the first, second, \dots, occurrence of $u$ in a string.
 
@@ -72,9 +72,9 @@ Note that $\top\top \not \in \wprof_{u,k}$, since for every string $v$ and the p
 %\mat{Updated the paragraph below to reflect our earlier discussion.}
 
 We will construct a parsing automaton $\cA_u$ from $u$, which parses a string $v$ containing at least one occurrence of $u$ (i.e.\ $v \in \Sigma^\ast u \Sigma^\ast$) into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
-This ensures that the only (and the first) occurrence of $u$ in each $v_j u$ is a suffix.
+This ensures that the only occurrence of $u$ in each $v_j u$ is a suffix.
 Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
-The $k$-window profiles w.r.t. $u$ will be used by the parsing automaton to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
+The $k$-window profiles w.r.t. $u$ will be used to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
 
 \begin{definition}[Parsing automata]
 The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.

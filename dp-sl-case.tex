@@ -97,7 +97,7 @@ In addition, $\cB_{\cA_1, 0, T_z}$ (also illustrated in Figure~\ref{fig-sl-exmp}
 $$
  \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,0,T_z})   =  \Ll((01)^*) \cap \Ll((0+1)^* 10 1^*) \neq \emptyset.
 $$
-Therefore, we can choose $z$ to be a string from $\Ll(\cA_3) \cap \ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q'))=\Ll((10)^*) \cap \Ll((0+1)^*) \cap \Ll(1(0+1)^*)$, say $10$, and $y$ to be a string from $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,0,T_z})   =  \Ll((01)^*) \cap \Ll((0+1)^* 10 1^*)$, say $0101$,  then $x$ gets the value $\replaceall(0101, 0, 10)=101101$, which is in $\Ll(\cA_1)$. Therefore, $C$ is satisfiable.\qed
+We can choose $z$ to be a string from $\Ll(\cA_3) \cap \ \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q'))=\Ll((10)^*) \cap \Ll((0+1)^*) \cap \Ll(1(0+1)^*)$, say $10$, and $y$ to be a string from $ \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,0,T_z})   =  \Ll((01)^*) \cap \Ll((0+1)^* 10 1^*)$, say $0101$,  then we set $x$ to $\replaceall(0101, 0, 10)=101101$, which is in $\Ll(\cA_1)$. Thus, $C$ is satisfiable.\qed
 %
 \begin{figure}[htbp]
 \begin{center}
@@ -132,13 +132,12 @@ Initially, let $G_0:= G_C$.  In addition, for each variable $x$ with the conjunc
 We begin with $i:= 0$ and repeat the following procedure until we reach some $i$ where $G_i$ is an empty graph, i.e. a graph without edges.
 Note that $G_0$ was defined above.
 \begin{enumerate}
-\item Select a vertex $x$ of $G_i$ such that $x$ has no predecessors  and has two successors in $G_i$. Suppose $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the two edges out of $x$ in $G_i$ and $\cE_i(x)=\{(\cT_1,\cP_1), \cdots, (\cT_k, \cP_k)\}$, where for each $j \in [k]$, $\cT_j = (Q_j, \delta_j)$. Then $\cE_{i+1}(z)$ and  $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:
+\item Select a vertex $x$ of $G_i$ such that $x$ has no predecessors  and has two successors via edges $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ in $G_i$.  Suppose $\cE_i(x)=\{(\cT_1,\cP_1), \cdots, (\cT_k, \cP_k)\}$, where for each $j \in [k]$, $\cT_j = (Q_j, \delta_j)$. Then $\cE_{i+1}(z)$ and  $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:
 \begin{enumerate}
 \item For each $j \in [k]$, guess a set $T_{j, z} \subseteq Q_j \times Q_j$.
 %
 \item If $y \neq z$, then let
-$$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\}$$
-and
+$$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\}, \text{ and}$$
 $$\cE_{i+1}(y): = \cE_{i}(y) \cup \left\{(\cT_{\cT_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\},$$
 where $\cT_{\cT_j, a, T_{j,z}}$ is obtained from $\cT_j$ by first removing all the $a$-transitions, then adding all the transitions $(q, a, q')$ for $(q,q') \in T_{j,z}$.
 
@@ -158,7 +157,7 @@ For each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$ after exiting the 
 \smallskip
 
 \noindent {\bf Step II.}
-For each source variable $x$, guess an accepting run of the product automaton of all the NFA in $\cE(x)$.
+For each source variable $x$, guess an accepting run of the product of all the NFA in $\cE(x)$.
 
 \smallskip
 
@@ -166,9 +165,9 @@ For each source variable $x$, guess an accepting run of the product automaton of
 %By a refined analysis, we can see that the cardinalities of the sets $\cE(x)$ are in fact polynomial.
 
 It remains to argue the correctness and complexity of the above procedure.
-Correctness follows a similar argument to Proposition~\ref{prop-sat-sl-case} and is presented in Appendix~\cite{sec:dp-dl-correctness}.
+Correctness follows a similar argument to Proposition~\ref{prop-sat-sl-case} and is presented in Appendix~\ref{sec:dp-dl-correctness}.
 \mat{How do we reference the appendix?}
-Intuitively, Proposition~\ref{prop-sat-sl-case} shows that our decision procedure correctly eliminates occurrences of $\replaceall$ until only regular constraints remain.
+Intuitively, Proposition~\ref{prop-sat-sl-case} shows our procedure correctly eliminates occurrences of $\replaceall$ until only regular constraints remain.
 We now give an example then argue the complexity.
 
 \begin{example}
@@ -179,10 +178,9 @@ Suppose $C \equiv x= \replaceall(y, 0, z) \wedge y = \replaceall(y', 1, z') \wed
 \item Select the vertex $x$ in $G_0$, construct $\cE_1(y)$ and $\cE_1(z)$ as in Example~\ref{exmp-sl}, that is, nondeterministically choose $T_z =\{(q_0, q_0), (q_1,q_2)\}$, let $\cE_1(z) = \{(\cT_3, \{(q^{\prime\prime}_0, q^{\prime\prime}_0)\}), (\cT_1, \{(q_0,q_0), (q_1, q_2)\})\}$ and $\cE_1(y)=\{(\cT_2, \{(q^\prime_0, q^\prime_0)\}), (\cT_{\cT_1, 0, T_z}, \{(q_0,q_2)\})\}$, where $\cT_{\cT_1, 0, T_z}$ is the transition graph of $\cB_{\cA_1, 0, T_z}$ illustrated in Figure~\ref{fig-sl-exmp}. In addition, $\cE_1(x)=\cE_0(x)$, $\cE_1(y')=\cE_0(y')$ and $\cE_1(z')=\cE_0(z')$. Finally, $G_1$ is obtained from $G_0$ by removing the two edges out of $x$.
 %
 \item Select the vertex $y$ in $G_1$, construct $\cE_2(y')$ and $\cE_2(z')$ as follows: Nondeterministically choose $T_{1,z'} = \{(q^\prime_0, q^\prime_0)\}$  for $\cT_2$ and $T_{2,z'}=\{(q_0,q_1),(q_1,q_2)\}$ for $\cT_{\cT_1, 0, T_z}$, let
-$$\cE_2(z')=\left\{(\cT_5, \{(p^{\prime}_0, p^{\prime}_1)\}), (\cT_2, \{(q^\prime_0, q^\prime_0)\}), (\cT_{\cT_1, 0, T_z}, \{(q_0,q_1),(q_1,q_2)\}) \right\},$$
-and
+$$\cE_2(z')=\left\{(\cT_5, \{(p^{\prime}_0, p^{\prime}_1)\}), (\cT_2, \{(q^\prime_0, q^\prime_0)\}), (\cT_{\cT_1, 0, T_z}, \{(q_0,q_1),(q_1,q_2)\}) \right\}, \text{ and}$$
 $$\cE_2(y')=\left\{ (\cT_4, \{(p_0, p_1)\}), (\cT_{\cT_2, 1, T_{1,z'}}, \{(q^\prime_0, q^\prime_0)\}), (\cT_{\cT_{\cT_1, 0, T_z}, 1, T_{2,z'}}, \{(q_0,q_2)\}) \right\},$$
-where $\cT_{\cT_2, 1, T_{1,z'}}$ and $\cT_{\cT_{\cT_1, 0, T_z}, 1, T_{2,z'}}$ are illustrated in Figure~\ref{fig-sl-exmp-nested-2}. In addition, $\cE_2(x)=\cE_1(x)$, $\cE_2(y)=\cE_1(y)$, and $\cE_2(z)=\cE_1(z)$. Finally, $G_2$ is obtained from $G_1$ by removing the two edges out of $y$.
+where $\cT_{\cT_2, 1, T_{1,z'}}$ and $\cT_{\cT_{\cT_1, 0, T_z}, 1, T_{2,z'}}$ are shown in Figure~\ref{fig-sl-exmp-nested-2}. In addition, $\cE_2(x)=\cE_1(x)$, $\cE_2(y)=\cE_1(y)$, and $\cE_2(z)=\cE_1(z)$. Finally, $G_2$ is obtained from $G_1$ by removing the two edges out of $y$.
 %
 \end{itemize}
 Since $G_2$ contains no edges, we have $\cE(x)=\cE_2(x)$, similarly for $\cE(y)$, $\cE(z)$, $\cE(y')$, and $\cE(z')$.
@@ -207,7 +205,7 @@ For the three source variables $y', z', z$, it is not hard to check that $01$ be
 
 \subsubsection{Complexity}
 
-To show that the aforementioned nondeterministic decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$.
+To show our decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$.
 
 \begin{proposition}\label{prop-sl-comp}
 The cardinalities of $\cE(x)$ for the variables $x$ in $G_C$ are at most exponential in $\dmdidx(G_C)$, the diamond index of $G_C$.
@@ -216,7 +214,6 @@ Therefore, according to Proposition~\ref{prop-sl-comp}, if the diamond index of 
 
 \begin{proof}[Proof of Proposition~\ref{prop-sl-comp}]
 Let $K$ be the maximum of $|\cE_0(x)|$ for $x \in \vars(\varphi)$. 
-
 For each variable $x$ in $G_C$, all the regular constraints in $\cE(x)$ are either from $\cE_0(x)$, or are generated from some regular constraints from $\cE_0(x')$ for the ancestors $x'$ of $x$. Let $x'$ be an ancestor of $x$. Then for each $(\cT, \cP) \in \cE_0(x')$, according to Step I in the decision procedure, by an induction on the maximum length of the paths in from $x'$ to $x$, we can show that the number of elements in $\cE(x)$ that are generated from $(\cT, \cP)$ is at most the number of different paths from $x'$ to $x$. 
 %
 From Proposition~\ref{prop-di}, we know that there are at most $(|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$ different paths from $x'$ to $x$. Since there are at most $|\vars(\varphi)|$ ancestors of $x$, we deduce that $|\cE(x)| \le |\vars(\varphi)|\ K\ (|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$.
