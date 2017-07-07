@@ -4,11 +4,9 @@
 
 The problem of %satisfiability of logical theories over strings
 automatically solving string constraints (aka satisfiability of logical theories over
-strings) has recently witnessed
-renewed interest %in the programming language and verification community
+strings) has recently witnessed renewed interest %in the programming language and verification community
 \cite{Berkeley-JavaScript,TCJ16,LB16,YABI14,S3,Abdulla14,Abdulla17,DV13,symbolic-transducer,BEK} 
-because of important applications in the analysis of 
-string-manipulating programs. For example,
+because of important applications in the analysis of string-manipulating programs. For example,
 program analysis techniques like symbolic execution \cite{king76,DART,EXE} 
 would
 %. For example, program analysis techniques like
@@ -31,21 +29,16 @@ many others.
 %There are several well-established research threads on this satisfiability 
 %problem depending on 
 %which string operations are permitted in the theory. 
-Perhaps the most well-known theory of strings for applications to analysing
-string-manipulating programs is the theory of strings with concatenation 
-(aka \emph{word equations}),
-whose decidability status was settled positively by Makanin \cite{Makanin}
-in 1977 after it was open for many years. More importantly, 
-this theory remains 
-decidable even when regular constraints are incorporated into the 
+Perhaps the most well-known theory of strings for applications to analysing string-manipulating programs is the theory of strings with concatenation  (aka \emph{word equations}), whose decidability status was settled positively by Makanin \cite{Makanin} in 1977 after it was open for many years. More importantly, 
+this theory remains decidable even when regular constraints are incorporated into the 
 language \cite{Schulz}. However, whether adding the string-length function
 results preserves the decidability remains a long-standing open problem
-\cite{Vijay-length,buchi}.
+\cite{Vijay-length,buchi}. (See Section~\ref{sec-rel} for more recent results about solving word equations. )
 
 %\OMIT{
 %which is crucial for 
-Another important string operation (especially, in popular scripting
-languages like Python, JavaScript, and PHP) is the string-replace function, 
+Another important string operation---especially in popular scripting
+languages like Python, JavaScript, and PHP---is the \emph{string-replace function}, 
 which may be used to replace either the first occurrence or
 all occurrences of a string (a string constant/variable, or a regular expression) by 
 another string (a string constant/variable). The replace function (especially 
@@ -56,12 +49,11 @@ For example, a standard industry defense against cross-site scripting
 (XSS) vulnerabilities includes sanitising untrusted strings before adding them
 into the DOM (Document Object Model) or the HTML document. 
 This is typically done by %replacing every occurrence of
-various metacharacter-escaping mechanisms (e.g. see 
+various metacharacter-escaping mechanisms (see, for instance, 
 \cite{Kern14,BEK,OWASP-XSS}), e.g., backslash-escape, which replaces \emph{every
 occurrence} of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
 string by \verb+\'+ and \verb+\"+. 
-In addition
-to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
+In addition to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
 and \texttt{innerHTML} apply an \emph{implicit browser transduction} --- which
 decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input 
 string --- before inserting the input string into the DOM.
@@ -69,16 +61,68 @@ Both of these examples can be expressed by (perhaps multiple)
 applications of the string-replace function.
 Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} and Closure Templates~\cite{Closure} demonstrate the need for replacements involving variables.
 Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
-\mat{Need to say more what template systems are?}
-\anthony{Better mention closure templates I think, Matt. They do both
-mustache-kind of replace plus sanitisers. They call these strict autoescaping
-templates. See \cite{SSS11}.}
-\mat{Mentioned closure, and changed footnote to reflect the fact that neither autoescaping mechanism kills our example.}
+
+%\mat{Need to say more what template systems are?}
+%\anthony{Better mention closure templates I think, Matt. They do both
+%mustache-kind of replace plus sanitisers. They call these strict autoescaping
+%templates. See \cite{SSS11}.}
+%\mat{Mentioned closure, and changed footnote to reflect the fact that neither autoescaping mechanism kills our example.}
 
 %Concatenation: 8\%
 %Replace-all: 8\%
 
-In general, the string-replace function has three parameters, and in the current mainstream language such as Python and JavaScript, all of the three parameters can be inserted as string variables. As result, when we perform program analysis for, for instance, detecting security vulnerabilities as described as above, one often obtains string constraints of the form $z= \replaceall(x, p, y)$, where $x,y$ are string constants/variables, and $p$ is either a string constant/variable, or a regular expression.
+
+%\anthony{I think the following example should appear earlier no? Perhaps	after Matt mentioned about Mustache? We need to get	the reader to be convinced first that general replaceall is useful.}
+%which we address in this article.
+%\mat{Am i right to say we tackle it here?}
+
+%% If you're looking for all the omitted and hidden semi-paragraphs that were here, checkout version 407adea8bf0c0564f064f43ae3b355fc8ac901d7. -- Matt
+
+
+\paragraph{Example}
+We give a simple example demonstrating a (naive) XSS vulnerability to illustrate the use of string-replace functions.
+Consider the HTML fragment below.
+\begin{minted}{html}
+<h1>User 
+<span onMouseOver="popupText('{{bio}}')">
+{{userName}} </span> </h1>
+\end{minted}
+This HTML fragment is a template as might be used with systems such as Mustache to display a user on a webpage.
+For each user that is to be displayed -- with their username and biography stored in variables \emph{name} and \emph{biography} respectively -- the string \verb+{{userName}}+ will be replaced by \emph{name} and the string \verb+{{bio}}+ will be replaced by \emph{bio}.
+For example, a user \verb+Amelia+ with biography \verb+Amelia was born in 1979...+ would result in the HTML below.
+\begin{minted}{html}
+<h1>User 
+<span onMouseOver="popupText('Amelia was born in 1979...')">
+Amelia </span> </h1>
+\end{minted}
+This HTML would display \verb+User Amelia+, and, when the mouse is placed over \verb+Amelia+, her biography would appear, thanks to the \verb+onMouseOver+ attribute in the \verb+span+ element.
+
+Unfortunately, this template could be insecure if the user biography is not adequately sanitised: 
+A user could enter a malicious biography, such as \verb+'); alert('Boo!'); alert('+ which would cause the following instantiation of the \verb+span+ element\footnote{
+	Readers familiar with Mustache and Closure Templates may expect single quotes to be automatically escaped.
+	However, we have tested our example with the latest versions of mustache.js~\cite{MustacheJS} and Closure Templates~\cite{Closure} (as of July 2017) and observed that the exploit is not disarmed by their automatic escaping features.
+}.
+\begin{minted}{html}
+<span onMouseOver="popupText(''); alert('Boo!'); alert('')">
+\end{minted}
+Now, when the mouse is placed over the user name, the malicious JavaScript \verb+alert('Boo!')+ is executed.
+
+The presence of such malicious injections of code can be detected using string constraint solving and XSS \emph{attack patterns} $P$, which are given as regular expressions~\cite{BCFJKKV08,SAHMMS10,YABI14}.
+For our example, given an attack pattern $P$ and template $t$, we would generate the constraint
+\[
+x_1 = \replaceall(t, \verb+{{userName}}+, \mathit{user})
+\land
+x_2 = \replaceall(x_1, \verb+{{bio}}+, \mathit{bio})
+\land
+x_2 \in P
+\]
+which would detect if the HTML generated by instantiating the template is susceptible to the attack identified by $P$.
+\mat{ANTHONY: can you verify/expand on my use of attack patterns?  I just copied it wholesale and blindly from your POPL 2016.}
+
+
+
+
+In general, the string-replace function has three parameters, and in the current mainstream language such as Python and JavaScript, \emph{all of the three parameters can be inserted as string variables}. As result, when we perform program analysis for, for instance, detecting security vulnerabilities as described as above, one often obtains string constraints of the form $z= \replaceall(x, p, y)$, where $x,y$ are string constants/variables, and $p$ is either a string constant/variable, or a regular expression.
 Such a constraint means that $z$ is obtained by replacing all occurrences of $p$ in $x$ by $y$. For convenience, we call $x, p, y$ as the subject, the pattern, and the replacement parameters respectively. 
 
 %for instance $z=\replaceall(x,"aa", y)$, meaning that $z$ is obtained by replacing all occurrences of $aa$ in $x$ by $y$. Solving string constraints involving this type of constraints is crucial, but unfortunately, is not supported by the current technique. There are two reasons:
@@ -89,7 +133,7 @@ Such a constraint means that $z$ is obtained by replacing all occurrences of $p$
 
 
 The $\replaceall$ function is a powerful string operation that goes beyond the 
-expressiveness of concatenation. 
+expressiveness of concatenation. (On the contrary, as we will see later, concatenation can be expressed by the $\replaceall$ function easily.) 
 Recently, it was shown in the recent POPL paper \cite{LB16} that any theory of strings containing the 
 string-replace function (even the most restricted version where 
 pattern/replacement strings are both constant strings) becomes undecidable if 
@@ -116,71 +160,23 @@ A partial decidability result
 can be deduced from \cite{LB16}
 %from the following recent POPL paper in~\cite{LB16} provides decidability
 for the straight-line fragment of the theory of strings involving 
-concatenation, regular constraints, and the $\replaceall$ function where the 
-pattern and the replacement are both string constants. 
+concatenation, regular constraints, and the $\replaceall$ function where \emph{the 
+pattern and the replacement are both string constants}. 
 The decision procedure therein was obtained for finite-state transducers, which
 subsume the aforementioned simple form of the $\replaceall$ function, but
-\emph{not} in its most form.
+\emph{not} in its most general form.
 %The straight-line restriction is natural in the sense that it reflects the shape of formulas typically generated by symbolic execution.  
 Nevertheless, the decidability boundary of the straight-line fragment of string
-constraints involving the $\replaceall$ function in the most general form, e.g. 
+constraints involving the $\replaceall$ function in the most general form, e.g., 
 when the replacement parameter is a variable, remains an open question.
 
-\anthony{I think the following example should appear earlier no? Perhaps
-after Matt mentioned about Mustache? We need to get
-the reader to be convinced first that general replaceall is useful.}
-%which we address in this article.
-%\mat{Am i right to say we tackle it here?}
 
-%% If you're looking for all the omitted and hidden semi-paragraphs that were here, checkout version 407adea8bf0c0564f064f43ae3b355fc8ac901d7. -- Matt
-
-
-\paragraph{Example}
-
-We give a simple example demonstrating a (naive) XSS vulnerability to illustrate the use of string-replace functions.
-Consider the HTML fragment below.
-\begin{minted}{html}
-    <h1>User 
-        <span onMouseOver="popupText('{{bio}}')">
-            {{userName}} </span> </h1>
-\end{minted}
-This HTML fragment is a template as might be used with systems such as Mustache to display a user on a webpage.
-For each user that is to be displayed -- with their username and biography stored in variables \emph{name} and \emph{biography} respectively -- the string \verb+{{userName}}+ will be replaced by \emph{name} and the string \verb+{{bio}}+ will be replaced by \emph{bio}.
-For example, a user \verb+Amelia+ with biography \verb+Amelia was born in 1979...+ would result in the HTML below.
-\begin{minted}{html}
-    <h1>User 
-        <span onMouseOver="popupText('Amelia was born in 1979...')">
-            Amelia </span> </h1>
-\end{minted}
-This HTML would display \verb+User Amelia+, and, when the mouse is placed over \verb+Amelia+, her biography would appear, thanks to the \verb+onMouseOver+ attribute in the \verb+span+ element.
-
-Unfortunately, this template could be insecure if the user biography is not adequately sanitised: 
-A user could enter a malicious biography, such as \verb+'); alert('Boo!'); alert('+ which would cause the following instantiation of the \verb+span+ element\footnote{
-    Readers familiar with Mustache and Closure Templates may expect single quotes to be automatically escaped.
-    However, we have tested our example with the latest versions of mustache.js~\cite{MustacheJS} and Closure Templates~\cite{Closure} (as of July 2017) and observed that the exploit is not disarmed by their automatic escaping features.
-}.
-\begin{minted}{html}
-    <span onMouseOver="popupText(''); alert('Boo!'); alert('')">
-\end{minted}
-Now, when the mouse is placed over the user name, the malicious JavaScript \verb+alert('Boo!')+ is executed.
-
-The presence of such malicious injections of code can be detected using string constraint solving and XSS \emph{attack patterns} $P$, which are given as regular expressions~\cite{BCFJKKV08,SAHMMS10,YABI14}.
-For our example, given an attack pattern $P$ and template $t$, we would generate the constraint
-\[
-    x_1 = \replaceall(t, \verb+{{userName}}+, \mathit{user})
-    \land
-    x_2 = \replaceall(x_1, \verb+{{bio}}+, \mathit{bio})
-    \land
-    x_2 \in P
-\]
-which would detect if the HTML generated by instantiating the template is susceptible to the attack identified by $P$.
-\mat{ANTHONY: can you verify/expand on my use of attack patterns?  I just copied it wholesale and blindly from your POPL 2016.}
 
 
 
 \paragraph{Contribution.} We investigate the decidability boundary of the theory of strings involving concatenation, regular constraints, and the $\replaceall$ function, with the straight-line constraint introduced in \cite{LB16}. 
 
-We first show that with the $\replaceall$ function in its general form, the concatenation operation is in fact \emph{redundant}, in the sense that it can be simulated by the $\replaceall$ function. This motivates us to consider a theory of strings where the $\replaceall$ function, instead of the concatenation operation, and the regular constraints, are the basic modalities. We focus on the straight-line fragment of this theory, denoted by $\strline[\replaceall]$.
+We first show that---as mentioned earlier---with the $\replaceall$ function in its general form, the concatenation operation is in fact \emph{redundant}, in the sense that it can be simulated by the $\replaceall$ function. This motivates us to consider a theory of strings where the $\replaceall$ function, instead of the concatenation operation, and the regular constraints, are the basic modalities. We focus on the straight-line fragment of this theory, denoted by $\strline[\replaceall]$.
 
 We obtain the following results for the satisfiability problem of $\strline[\replaceall]$.
 \begin{itemize}
