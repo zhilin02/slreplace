@@ -17,6 +17,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Proof of Proposition~\ref{prop-und-pat-var}}
+\label{sec:prop-und-pat-var-proof}
 
 \noindent \textsc{Proposition}~\ref{prop-und-pat-var}
 {\em The satisfiability problem of $\strline[\replaceall]$ is undecidable, if the second parameters of the $\replaceall$ terms are allowed to be variables.
@@ -64,6 +65,7 @@
 
 
 \section{Section~\ref{sec:replaceallsl}: The Correctness of the decision procedure}
+\label{sec:dp-sl-correctness}
 
 Finally, we argue that the above procedure is correct.
 Note that Proposition~\ref{prop-sat-sl-case} removed a single $\replaceall(\cdots)$ to obtain only regular constraints.
@@ -139,7 +141,10 @@ On the other hand, for the situation that the $\rpleft$-length of $G_C$ is at mo
 
 
 
-\section{Proof of Theorem~\ref{thm-ext-int}}
+\section{Undecidability Proofs for Section~\ref{sec-ext}}
+\label{sec:ext-undec-proofs}
+
+\subsection{Proof of Theorem~\ref{thm-ext-int}}
 
 \begin{proof}
 	The basic idea of the reduction is to simulate the two polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, where $x_1,\cdots,x_n$ range over the set of natural numbers, with two $\strline[\concat,\replaceall]$ formulae $C_f, C_g$ over a unary alphabet $\{a\}$, with the output string variables $y_f, y_g$ respectively, and simulate the equality $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ with the integer constraint $|y_f|=|y_g|$ (which is equivalent to $y_f = y_g$, since $y_f, y_g$ represent strings over the unary alphabet $\{a\}$). 
