@@ -68,7 +68,7 @@ decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input
 string --- before inserting the input string into the DOM.
 Both of these examples can be expressed by (perhaps multiple) 
 applications of the string-replace function.
-Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} demonstrate the need for replacements involving variables.
+Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} and Closure Templates~\cite{Closure} demonstrate the need for replacements involving variables.
 Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
 \mat{Need to say more what template systems are?}
 
@@ -118,7 +118,7 @@ This HTML would display \verb+User Amelia+, and, when the mouse is placed over \
 Unfortunately, this template could be insecure if the user biography is not adequately sanitised: 
 A user could enter a malicious biography, such as \verb+'); alert('Boo!'); alert('+ which would cause the following instantiation of the \verb+span+ element\footnote{
     Readers familiar with Mustache may expect single quotes to be automatically escaped.
-    However, this was not part of the specification until 2014, before which, support was inconsistent, which may have caught some developers off-guard~\cite{MustacheSingleQuote}.    
+    However, we have tested our example with the latest versions of mustache.js~\cite{MustacheJS} and Closure Templates~\cite{Closure} (as of July 2017) and observed that the exploit is not disarmed by their automatic escaping features.
 }.
 \begin{minted}{html}
     <span onMouseOver="popupText(''); alert('Boo!'); alert('')">
