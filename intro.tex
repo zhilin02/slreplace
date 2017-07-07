@@ -73,12 +73,17 @@ applications of the string-replace function.
 %Concatenation: 8\%
 %Replace-all: 8\%
 
-solving string-replace is difficult and state-of-the-art: the third parameter is a constant
+The string-replace function is formalised as $\replaceall(x, p, y)$, where $x,y$ are string constants/variables, and $p$ is a pattern which is either a string constant/variable, or a regular expression. Intuitively, $\replaceall(x, p, y)$ replaces all occurrences of $p$ in $x$ with $y$.
 
-The string-replace function is yet another string operation that lies beyond 
-the expressive power of the theory of concatenation. In fact, it was shown in
-\cite{LB16} that incorporating the string-replace function into the theory of 
-concatenation results in an undecidable theory of strings. A partial answer ..
+
+Since the string-replace function is a quite powerful string operation, 
+%that lies beyond 
+%the expressiveness of the theory of concatenation, 
+it is a challenging task to reason about the string-replace function. In~\cite{LB16}, finite state transducers, thus a simple form of the $\replaceall$ function, where the second and third parameters are both string constants, were considered.  It was shown in~\cite{LB16} that incorporating the simple form of the $\replaceall$ function into the theory of concatenations already results in an undecidable theory of strings. On the other hand, in the same paper, it was also shown that if the straight-line constraint is added, then an EXPSACE decision procedure can be obtained. Nevertheless, it is still an open question about the decidability boundary of the straight-line fragment of the string constraints involving the general forms of the $\replaceall$ function, which is the focus of this paper.
+
+The general forms of the $\replaceall$ function, in particular, the forms of the $\replaceall$ function where the third parameter is a variable, are indeed used in the programs from the practice.  XXX is such an example, where ``username'' is replaced by the variable $username$.
+
+\zhilin{i stopped here}
 
 \OMIT{
 Such string functions, however, cannot
