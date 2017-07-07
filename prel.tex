@@ -13,13 +13,13 @@ Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{s
 For two strings $u_1, u_2$, we use $u_1 \cdot u_2$ to denote the \emph{concatenation} of $u_1$ and $u_2$, that is, the string $v$ such that $|v|= |u_1| + |u_2|$ and for each $i \in |u_1|$, $v[i]= u_1[i]$ and for each $i \in |u_2|$, $v[|u_1|+i]=u_2[i]$. Let $u, v$ be two strings. If $v = u \cdot v'$ for some string $v'$, then $u$ is said to be a \emph{prefix} of $v$. In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then 
 we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
 
-A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$. We will use $L_1, L_2, \dots$ to denote the languages. For two languages $L_1, L_2$, we use $L_1 \cup L_2$ to denote the union of $L_1$ and $L_2$, and $L_1 \cdot L_2$ to denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. For a language $L$ and $n \in \Nat$, we define $L^n$, the \emph{iteration} of $L$ for $n$ times, inductively as follows: $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote the iteration of $L$ for arbitrarily many times, that is, $L^* = \bigcup \limits_{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup \limits_{n \in \Nat \setminus \{0\}} L^n$.
+A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$. We will use $L_1, L_2, \dots$ to denote languages. For two languages $L_1, L_2$, we use $L_1 \cup L_2$ to denote the union of $L_1$ and $L_2$, and $L_1 \cdot L_2$ to denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. For a language $L$ and $n \in \Nat$, we define $L^n$, the \emph{iteration} of $L$ for $n$ times, inductively as follows: $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote the iteration of $L$ for arbitrarily many times, that is, $L^* = \bigcup \limits_{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup \limits_{n \in \Nat \setminus \{0\}} L^n$.
 
 \begin{definition}[Regular expressions $\regexp$]
 	\[e \eqdef \varepsilon \mid a \mid e + e \mid e \concat e \mid e^*, \mbox{ where } a \in \Sigma. \]
 	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. We use the abbreviation $e^+ \equiv e \concat e^*$. Moreover, for $\Gamma = \{a_1, \cdots, a_n\}\subseteq \Sigma$, we use the abbreviations $\Gamma \equiv a_1 + \cdots + a_n$ and $\Gamma^\ast \equiv (a_1 + \cdots + a_n)^\ast$. 
 \end{definition}
-We define $\Ll(e)$, the language defined by $e$, that is, the set of strings that match $e$, inductively as follows: 
+We define $\Ll(e)$ to be the language defined by $e$, that is, the set of strings that match $e$, inductively as follows: 
 %\begin{itemize}
 %\item 
 $\Ll(\varepsilon) =\{\varepsilon\}$,
@@ -38,21 +38,28 @@ $\Ll(e_1^*)=(\Ll(e_1))^*$.
 %\end{itemize}
 In addition, we use $|e|$ to denote the number of symbols occurring in $e$.
 
-A \emph{nondeterministic finite automaton} (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of \emph{states}, $q_0 \in Q$ is the \emph{initial} state, $F \subseteq Q$ is the set of \emph{final} states, and $\delta \subseteq Q \times \Sigma \times Q$ is the \emph{transition relation}. For a string $w = a_1 \dots a_n$, a \emph{run} of $\cA$ on $w$ is a state sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, a_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is \emph{accepting} if $q_n \in F$. A string $w$ is \emph{accepted} by $\cA$ if there is an accepting run of $\cA$ on $w$. We use $\Ll(\cA)$ to denote the language defined by $\cA$, that is, the set of strings accepted by $\cA$. We will use $\cA, \cB, \cdots$ to denote NFA. An NFA $\cA$ is \emph{deterministic} if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is \emph{complete} if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete.  An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
-%<<<<<<< HEAD
-%For a string $w= a_1 \dots a_n$, we also write $q_1 \xrightarrow[\cA]{w} q_{n+1}$ if there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, a_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA which is obtained from $\cA$ by setting the initial state to be $q$ and the set of final states to be $\{q'\}$. The \emph{size} of an NFA $\cA=(Q, \delta, q_0, F)$ is defined to be $|Q|$, the number of states. For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
-%=======
-For a string $w= a_1 \dots a_n$, we also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, a_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA which is obtained from $\cA$ by changing the initial state to $q$ and the set of final states to $\{q'\}$. The \emph{size} of an NFA $\cA=(Q, \delta, q_0, F)$, denoted by $|\cA|$, is defined as $|Q|$, the number of states. For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}. 
-%>>>>>>> f493f70d7a83afc84154b8a3afd88b0d7e44733b
+A \emph{nondeterministic finite automaton} (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of \emph{states}, $q_0 \in Q$ is the \emph{initial} state, $F \subseteq Q$ is the set of \emph{final} states, and $\delta \subseteq Q \times \Sigma \times Q$ is the \emph{transition relation}. For a string $w = a_1 \dots a_n$, a \emph{run} of $\cA$ on $w$ is a state sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, a_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is \emph{accepting} if $q_n \in F$. A string $w$ is \emph{accepted} by $\cA$ if there is an accepting run of $\cA$ on $w$. We use $\Ll(\cA)$ to denote the language defined by $\cA$, that is, the set of strings accepted by $\cA$. We will use $\cA, \cB, \cdots$ to denote NFA. 
+%An NFA $\cA$ is \emph{deterministic} if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is \emph{complete} if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete.  An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
+For a string $w= a_1 \dots a_n$, we also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, a_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA obtained from $\cA$ by changing the initial state to $q$ and the set of final states to $\{q'\}$. The \emph{size} of an NFA $\cA=(Q, \delta, q_0, F)$, denoted by $|\cA|$, is defined as $|Q|$, the number of states. For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}. 
+
 
 \begin{proposition}[\cite{HU79}]
-Regular expressions and NFA are expressively equivalent. In particular, from a regular expression, an equivalent NFA can be constructed in linear time.
+The following facts hold for regular expressions and NFAs.
+\begin{itemize}
+\item Regular expressions and NFAs are expressively equivalent. In particular, from a regular expression, an equivalent NFA can be constructed in linear time.  
+%
+\item NFAs are closed under all Boolean operations, namely, union, intersection, and complementation.
+\end{itemize}
 \end{proposition}
 
-Given two NFA $\cA_1=(Q_1, \delta_1, q_{0,1}, F_1)$ and $\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, the \emph{product automaton} of $\cA_1$ and $\cA_2$, denoted by $\cA_1 \times \cA_2$, is the NFA $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.  
+In particular, given two NFA $\cA_1=(Q_1, \delta_1, q_{0,1}, F_1)$ and $\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, to define the intersection of $\Ll(\cA_1)$ and $\Ll(\cA_2)$, the \emph{product automaton} of $\cA_1$ and $\cA_2$, denoted by $\cA_1 \times \cA_2$, is constructed as the NFA $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.  
+
+\mat{If we cite this, don't we also need that NFA are closed under boolean operations, since we use it often?}\zhilin{added}
+
 
 \subsection*{Graph-theoretical notations}
-The term DAG stands for \emph{directed acyclic graphs}, which are finite directed graphs $(V, E)$ with no directed cycles. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $v$ and follow a consistently-directed sequence of edges that eventually loops back to $v$ again. Equivalently, a DAG is a directed graph that has a topological ordering, a sequence of the vertices such that every edge is directed from earlier to later in the sequence. Let $G=(V,E)$ be a DAG. An edge from $v$ to $v'$ in $G$ is called an \emph{incoming} edge of $v'$ and an \emph{outgoing} edge of $v$. If there is an edge from $v$ to $v'$ in $G$, then $v'$ is called a \emph{successor} of $v$ and $v$ is called a \emph{predecessor} of $v'$. A \emph{path} in $G$ is a sequence $v_0 e_1 v_1 \cdots v_{n-1} e_n v_n$ such that for each $i \in [n]$, $e_i$ is an edge from $v_{i-1}$ to $v_i$. The \emph{length} of a path $v_0 e_1 v_1 \cdots v_{n-1} e_n v_n$ in $G$ is $n+1$, i.e. the number of vertices in the path. If there is a path from $v$ to $v'$ (resp. $v'$ to $v$) in $G$, then $v'$ is said to be \emph{reachable} (resp. \emph{co-reachable}) from $v$ in $G$. If $v$ is reachable from $v'$ in $G$, then $v'$ is also called an \emph{ancestor} of $v$ in $G$. In addition, an edge from $v'$ to $v''$ is said to be reachable (resp. co-reachable) from $v$ if $v'$ is reachable from $v$ (resp. $v''$ is co-reachable from $v$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $v$ is the number of incoming (resp. outgoing) edges of $v$. A vertex $v$ in $G$ is said to be a \emph{join} vertex if the in-degree of $v$ is at least two. 
+The term DAG stands for \emph{directed acyclic graphs}, which are finite directed graphs $(V, E)$ with no directed cycles. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $\mathit{v}$ and follow a consistently-directed sequence of edges that eventually loops back to $\mathit{v}$ again. Equivalently, a DAG is a directed graph that has a topological ordering, which is a sequence of the vertices such that every edge is directed from earlier to later in the sequence. Let $G=(V,E)$ be a DAG. An edge from $\mathit{v}$ to $\mathit{v'}$ in $G$ is called an \emph{incoming} edge of $\mathit{v'}$ and an \emph{outgoing} edge of $\mathit{v}$. If there is an edge from $\mathit{v}$ to $\mathit{v'}$ in $G$, then $\mathit{v'}$ is called a \emph{successor} of $\mathit{v}$ and $\mathit{v}$ is called a \emph{predecessor} of $\mathit{v'}$. A \emph{path} in $G$ is a sequence $\mathit{v}_0 \mathit{e}_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} \mathit{e}_n \mathit{v}_n$ such that for each $i \in [n]$, $e_i$ is an edge from $\mathit{v}_{i-1}$ to $\mathit{v}_i$. The \emph{length} of a path $\mathit{v}_0 e_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} e_n \mathit{v}_n$ in $G$ is $n$, i.e. the number of edges in the path. If there is a path from $\mathit{v}$ to $\mathit{v'}$ (resp. from $\mathit{v'}$ to $\mathit{v}$) in $G$, then $\mathit{v'}$ is said to be \emph{reachable} (resp. \emph{co-reachable}) from $\mathit{v}$ in $G$. If $\mathit{v}$ is reachable from $\mathit{v'}$ in $G$, then $\mathit{v'}$ is also called an \emph{ancestor} of $\mathit{v}$ in $G$. In addition, an edge from $\mathit{v'}$ to $\mathit{v''}$ is said to be reachable (resp. co-reachable) from $\mathit{v}$ if $\mathit{v'}$ is reachable from $\mathit{v}$ (resp. $\mathit{v''}$ is co-reachable from $\mathit{v}$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $\mathit{v}$ is the number of incoming (resp. outgoing) edges of $\mathit{v}$. 
+%A vertex $\mathit{v}$ in $G$ is said to be a \emph{join} vertex if the in-degree of $\mathit{v}$ is at least two. 
 %A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.  
 A \emph{subgraph} $G'$ of $G=(V,E)$ is a pair $(V', E')$ such that $V' \subseteq V$ and $E' \subseteq V' \times V'$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$. 
 
@@ -83,13 +90,17 @@ Let $G=(V,E)$ be a DAG such that the out-degree of each vertex is at most two. T
 % copy from Lin's paper. 
 
 \subsection*{Computational complexity}
-In this paper, we study not only decidability but also the complexity of string logics. Pinpointing the
-precise complexity of verification problems is not only of fundamental
-importance, but also it often suggests algorithmic techniques
-that are most suitable for attacking the problem in practice.
+In this paper, we study not only decidability but also the complexity of string logics. 
+%Pinpointing the
+%precise complexity of verification problems is not only of fundamental
+%importance, 
+%\mat{Do we want to stress this?  We have gaps!}
+%but also it often suggests algorithmic techniques
+%that are most suitable for attacking the problem in practice.
 In this paper, we deal with the following computational complexity
-classes (see \cite{HU79} for more details): P (problems solvable
-in polynomial-time), PSPACE (problems solvable in polynomial
+classes (see \cite{HU79} for more details): 
+%P (problems solvable in polynomial-time), 
+PSPACE (problems solvable in polynomial
 space and thus in exponential time), and EXPSPACE (problems solvable
 in exponential space and thus in double exponential time). Verification
 problems that have complexity PSPACE or beyond (see \cite{BK08}
