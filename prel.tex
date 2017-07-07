@@ -118,8 +118,10 @@ In this section, we define a general string constraint language that supports wo
 \subsection{Semantics of the $\replaceall$ function}
 To define the semantics of the $\replaceall$ function, we note that the function encompasses three parameters: the first parameter is the \emph{subject} string, the second parameter is a \emph{pattern} that is a string or a regular expression, and the third parameter is the \emph{replacement} string. When the second parameter is a string, the semantics is somehow self-explanatory. However, when the second parameter is a regular expression, there is no consensus on the semantics of the $\replaceall$ function even for the mainstream programming languages such as Python and Javascript.
  %where replaceall functions are extensively used. 
- This is particularly the case when interpreting the union operator in regular expressions. In this paper we mainly 
- focus on the following semantics of the leftmost and longest matching, which is consistent with the implementation in Python and SED-POSIX, as tested by us. 
+ This is particularly the case when interpreting the union operator in regular expressions or performing a $\replaceall$ with a pattern that matches $\varepsilon$. In this paper we mainly 
+ focus on the following semantics of the leftmost and longest matching.
+Our handling of $\varepsilon$ matches is consistent with our testing of the implementation in Python and the \texttt{sed} command with the \texttt{--posix} flag.
+We also assume union is commutative (e.g.\ $\replaceall(aa, a + aa, b) = \replaceall(aa, aa + a, b) = b$) as specified by POSIX, but often ignored in practice (where $bb$ is a common result in the former case).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
