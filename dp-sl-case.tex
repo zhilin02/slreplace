@@ -101,7 +101,7 @@ Therefore, we can choose $z$ to be a string from $\Ll(\cA_3) \cap \ \bigcap \lim
 %
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[scale=0.8]{single-letter-example.pdf}
+\includegraphics[scale=0.65]{single-letter-example.pdf}
 \end{center}
 \caption{An example for the single-letter case: One $\replaceall$}\label{fig-sl-exmp}
 \end{figure}
@@ -187,14 +187,14 @@ Since $G_2$ contains no edges, we have $\cE(x)=\cE_2(x)$, similarly for $\cE(y)$
 For the three source variables $y', z', z$, it is not hard to check that $01$ belongs to the intersection of the regular constraints in $\cE(z')$, $11$ belongs to the intersection of the regular constraints in $\cE(y')$, and $10$ belongs to the intersection of the regular constraints in $\cE(z)$. Then $y$ takes the value $\replaceall(11, 1, 01)=0101 \in \Ll(e_2)$, and $x$ takes the value $\replaceall(0101, 0, 10)=101101 \in \Ll(e_1)$. Therefore, $C$ is satisfiable. \qed
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[scale=0.8]{single-letter-example-nested.pdf}
+\includegraphics[scale=0.7]{single-letter-example-nested.pdf}
 \end{center}
 \caption{An example for the single-letter case: Multiple $\replaceall$}\label{fig-sl-exmp-nested}
 \end{figure}
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[scale=0.8]{single-letter-example-nested-2.pdf}
+\includegraphics[scale=0.7]{single-letter-example-nested-2.pdf}
 \end{center}
 \caption{$\cT_{\cT_2, 1, T_{1,z'}}$ and $\cT_{\cT_{\cT_1, 0, T_z}, 1, T_{2,z'}}$}\label{fig-sl-exmp-nested-2}
 \end{figure}
@@ -297,47 +297,3 @@ Therefore, we conclude that if $C \in \strline_{\sf ss}[\replaceall]$, then the 
 %We first introduce a concept of dependency graphs.
 
 
-\subsubsection{Correctness}
-
-Finally, we argue that the above procedure is correct.
-Note that Proposition~\ref{prop-sat-sl-case} removed a single $\replaceall(\cdots)$ to obtain only regular constraints.
-Each step of our decision procedure effectively eliminates a $\replaceall(\cdots)$.
-Similar to Proposition~\ref{prop-sat-sl-case}, each step maintains the satisfiability from the preceding step.
-
-In more detail, from each $G_i$ we can define a constraint $C_i$. This constraint is a conjunction of the following atomic constraints.
-\begin{itemize}
-\item For each variable $x$ such that $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the edges in $G_i$, we assert in $C_i$ that $x = \replaceall(y, a, z)$.
-\item In addition, for each variable $x$ such that $\cE_i(x)$ is not empty, moreover, \emph{either $x$ is a source variable in $G_C$ (not $G_i$) or there are (incoming or outgoing) edges connected to $x$ in $G_i$}, let $e_i(x)$ be the regular expression equivalent to the conjunction of all constraints in $\cE_i(x)$ (Note that the conjunction of multiple regular expressions still defines a regular language). We assert in $C_i$ that $x \in e_i(x)$. Note that if $x$ is not a source variable in $G_C$ and there are no edges connected to $x$ in $G_i$, then the regular constraints in $\cE_i(x)$ are not included into $C_i$.
-\end{itemize}
-
-%This constraint is a conjunction of the following clauses.
-%For each variable $x$ such that $\cE_i(x)$ is not empty, we let $e_i(x)$ be the regular expression equivalent to the conjunction of all constraints in $\cE_i(x)$.
-%Since this is the conjunction of multiple regular expressions (NFAs), it is regular.
-%We assert in $C_i$ that $x \in e_i(x)$.
-
-It is immediate that $C_0$ is equivalent to $C$.
-We require the following proposition, which gives us the correctness of the decision procedure by induction.
-Note that the final $C_i$ when exiting the loop will be a conjunction of regular constraints on the source variables.
-
-\begin{proposition}
-    For each $i$,  let the $\rpleft$-edge and the $\rpright$-edge from $x$ to $y$ and $z$ respectively be the two edges removed from $G_i$ to construct $G_{i+1}$. Then $C_i$ is satisfiable iff there are sets $T_{j, z}$ such that $C_{i+1}$ is satisfiable.
-\end{proposition}
-
-We can see the above proposition by observing that, in each step, $C_i$ is of the form
-\[
-    x = \replaceall(y, a, z) \wedge x \in e_i(x) \wedge y \in e_i(y) \wedge z \in e_i(z) \wedge C'
-\]
-where $C'$ does not contain $x$, and $C_{i+1}$ is of the form
-\[
-    y \in e_{i+1}(y) \wedge z \in e_{i+1}(z) \wedge C' \ .
-\]
-Note that $C'$ remains unchanged since only the two edges out $x$ are removed from $G_i$ and $\cE_{i+1}(x') = \cE_i(x')$ for all $x'$ distinct from $x$, $y$, and $z$.
-First assume $y \neq z$.
-Supposing $C_i$ is satisfiable, an argument similar to that of Proposition~\ref{prop-sat-sl-case} shows that there are sets $T_{j,z}$ such that the same values of $y$ and $z$ also satisfy $e_{i+1}(y)$ and $e_{i+1}(z)$.
-Since $C'$ is unchanged, all $x'$ distinct from $x$, $y$, and $z$ can also keep the same value.
-Thus, $C_{i+1}$ is also satisfiable.
-In the other direction, suppose that there are sets $T_{j, z}$ such that $C_{i+1}$ is satisfiable. Take a satisfying assignment to $C_{i+1}$.
-From the assignment to $y$ and $z$ we obtain as in Proposition~\ref{prop-sat-sl-case} an assignment to $x$ that satisfies $\replaceall(y, a, z) \wedge x \in e_i(x)$.
-Furthermore, the assignments for $y$ and $z$ also satisfy $e_i(y)$ and $e_i(z)$ since $\cE_i(y)$ and $\cE_i(z)$ are subsets of $\cE_{i+1}(y)$ and $\cE_{i+1}(z)$.
-Finally, since $C'$ is unchanged, the assignments to all other variables also transfer, giving us a satisfying assignment to $C_i$ as required.
-In the case where $y = z$, the arguments proceed analogously to the case $y \neq z$.
