@@ -3,7 +3,7 @@
 \section{Undecidable extensions}\label{sec-ext}
 
 In this section, we consider the language $\strline[\replaceall]$ extended with either integer constraints, character constraints, or $\indexof$ constraints and show that each such an extension leads to undecidability. 
-\mat{Should $\concat$ be removed?}\zhilin{agree, since the undecidability result is stronger if stated for $\strline[\replaceall]$}
+%\mat{Should $\concat$ be removed?}\zhilin{agree, since the undecidability result is stronger if stated for $\strline[\replaceall]$}
 We will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as an \emph{integer variable}, ranges over the set $\Nat$ of all natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. The
 choice of omitting negative integers is only for simplicity, but our
 results can be easily extended to the case where $\intnum$ includes negative integers.
@@ -34,8 +34,9 @@ Character constraints, on the other hand, allow to compare symbols from differen
 		\item $x$ and $y$ are either a string variable or a constant string in $\Sigma^*$, and 
 		\item $t_1$ and $t_2$ are either integer variables or constant positive integers.
 	\end{itemize} 
-Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$. In case that $x$ does not have the $t_1$-th letter, the constraint $x[t_1] = y[t_2]$ is false by convention.  Similarly for $y[t_2]$.
-\mat{What if $x$ doesn't have a $t_1$th letter?}\zhilin{how about this ?}
+Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$. In case that $x$ does not have the $t_1$-th letter \emph{or} $y$ does not have the $t_2$-th letter, the constraint $x[t_1] = y[t_2]$ is false by convention.  
+%Similarly for $y[t_2]$.
+%\mat{What if $x$ doesn't have a $t_1$th letter?}\zhilin{how about this ?}
 	
 A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
 \end{definition}
@@ -45,13 +46,13 @@ We also consider the constraints involving the $\indexof$ function.
 \begin{definition}[$\indexof$ Constraints]
 An atomic $\indexof$ constraint over $\Sigma$ is a formula of the form $t\ \mathfrak{o}\ \indexof(s_1, s_2)$, where 
 \begin{itemize}
-\item $t$ is an integer variable, or a positive integer (here we assume that the first position of a string is $1$), or the value $0$ (denoting that there are no occurrences of $s_1$ in $s_2$), 
-\item $\mathfrak{o} \in \{\ge, \le\}$, 
+\item $t$ is an integer variable, or a positive integer (recall that here we assume that the first position of a string is $1$), or the value $0$ (denoting that there is no occurrence of $s_1$ in $s_2$), 
+\item $\mathfrak{o} \in \{\ge, \le\}$, and
 %
-\item and $s_1,s_2$ are either string variables or constant strings. 
+\item  $s_1,s_2$ are either string variables or constant strings. 
 \end{itemize}
 We consider the \emph{first-occurrence} semantics of $\indexof$.  More specifically, $t \ge \indexof(s_1, s_2)$ holds if $t$ is no less than the first position in $s_2$ where $s_1$ occurs, similarly for $t \le \indexof(s_1, s_2)$.
-\mat{What if $s_1$ does not appear in $s_2$?}\zhilin{if $s_1$ does not appear in $s_2$, then $\indexof(s_1, s_2)=0$, as defined above.}
+%\mat{What if $s_1$ does not appear in $s_2$?}\zhilin{if $s_1$ does not appear in $s_2$, then $\indexof(s_1, s_2)=0$, as defined above.}
 
 An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\indexof$ constraints over $\Sigma$.
 \end{definition}
@@ -86,8 +87,8 @@ We will show that the extension of $\strline[\replaceall]$ with integer constrai
 \begin{proof}
 The basic idea of the reduction is to simulate the two polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, where $x_1,\cdots,x_n$ range over the set of natural numbers, with two $\strline[\concat,\replaceall]$ formulae $C_f, C_g$ over a unary alphabet $\{a\}$, with the output string variables $y_f, y_g$ respectively, and simulate the equality $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ with the integer constraint $|y_f|=|y_g|$ (which is equivalent to $y_f = y_g$, since $y_f, y_g$ represent strings over the unary alphabet $\{a\}$). 
 
-A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\concat,\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$
-\mat{$\concat$ is not part of $\strline[\replaceall]$, can it be simulated when the string alphabet is unary, or do we need two extra characters?}\zhilin{changed to $\strline[\concat,\replaceall]$.}
+A polynomial $f(x_1,\cdots, x_n)$ or $g(x_1,\cdots, x_n)$ where $x_1, \cdots, x_n$ range over the set of natural numbers, can be simulated by an $\strline[\concat,\replaceall]$ formula over an unary alphabet $\{a\}$ as follows: The natural numbers are represented by the strings over the alphabet $\{a\}$. A string variable is introduced for each subexpression of $f(x_1,\cdots, x_n)$. The numerical addition operator $+$ is simulated by the string operation $\concat$ 
+%\mat{$\concat$ is not part of $\strline[\replaceall]$, can it be simulated when the string alphabet is unary, or do we need two extra characters?}\zhilin{changed to $\strline[\concat,\replaceall]$.}
 and the multiplication operator $*$ is simulated by $\replaceall$. Since it is easy to figure out how the simulation proceeds, we will only use an example to illustrate it and omit the details here. Let us consider $f(x_1,x_2) = x_1^2 + 2 x_1 x_2 + 5$. By abusing the notation, we also use $x_1,x_2$ as string variables in the simulation. We will introduce a string variable for each subexpression in $f(x_1,x_2)$, namely the variables $y_{x_1^2}, y_{x_1x_2}, y_{2x_1x_2}, y_{x_1^2+2x_1x_2}, y_{f(x_1,x_2)}$. Then $f(x_1,x_2)$ is simulated by the $\strline[\concat,\replaceall]$ formula
 \[
 \begin{array} {l c l }
@@ -97,7 +98,7 @@ C_f & \equiv & y_{x_1^2} = \replaceall(x_1,a, x_1)\ \wedge y_{x_1x_2} = \replace
 \end{array}
 \]
 Then according to Proposition~\ref{prop-concat}, $C_f, C_g$ can be turned into equivalent $\strline[\replaceall]$ formula $C'_f, C'_g$ by introducing fresh letters.
-\mat{But we may have to give up the unary alphabet?}\zhilin{yes, you are  right, it is fine.}
+%\mat{But we may have to give up the unary alphabet?}\zhilin{yes, you are  right, it is fine.}
  
 Since $C'_f$ and $C'_g$ share only source variables $x_1,\cdots, x_n$, we know that $C'_f \wedge C'_g$ is still an $\strline[\replaceall]$ formula.
 From the construction of $C'_f, C'_g$, it is evident that for every pair of polynomials $f(x_1,\cdots, x_n)$ and $g(x_1,\cdots, x_n)$, $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C'_f \wedge C'_g \wedge |y_f| = |y_g|$ is satisfiable. The proof is complete.
@@ -135,7 +136,7 @@ Finally, note that any  SL[$\concat, \replaceall$] constraints can be transforme
 \end{proof}
 
 Notice, in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability.
-On the other hand, in the following, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
+On the other hand, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
 % The above proof essentially establishes a link between Diophantine equations and the extension of $\strline[\replaceall]$ with integer constraints over a unary alphabet. 
 %
@@ -203,9 +204,7 @@ Therefore, we get the following undecidability result.
 	For the extension of $\strline[\replaceall]$ with character constraints, the satisfiability problem is undecidable. 
 \end{proposition}
 
-The arguments for Proposition~\ref{prop-ext-char} proceed as follows: 
-%\begin{quote}
-Recall that in the proof of Theorem~\ref{thm-ext-int}, we get a formula $C_f \wedge C_g \wedge |y_f| = |y_g|$ such that $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C_f \wedge C_g \wedge |y_f| = |y_g|$ is satisfiable. Let $\$ \neq a$. Suppose  $z_f = y_f \concat \$$, and $z_g = y_g \concat \$$. Then $|y_f| = |y_g|$ can be specified by $z_f[\mathfrak{n}] = \$[1] \wedge  z_g[\mathfrak{n}] = \$[1]$, where $\mathfrak{n}$ is a variable of type $\intnum$. More precisely, 
+The arguments for Proposition~\ref{prop-ext-char} proceed as follows. Recall that in the proof of Theorem~\ref{thm-ext-int}, we get a formula $C_f \wedge C_g \wedge |y_f| = |y_g|$ such that $f(x_1,\cdots, x_n) = g(x_1,\cdots, x_n)$ has a solution in natural numbers iff $C_f \wedge C_g \wedge |y_f| = |y_g|$ is satisfiable. Let $\$ \neq a$. Suppose  $z_f = y_f \concat \$$, and $z_g = y_g \concat \$$. Then $|y_f| = |y_g|$ can be captured by $z_f[\mathfrak{n}] = \$[1] \wedge  z_g[\mathfrak{n}] = \$[1]$, where $\mathfrak{n}$ is a variable of type $\intnum$. More precisely, 
 %
 we have 
 \begin{quote}
