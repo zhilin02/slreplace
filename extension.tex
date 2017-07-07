@@ -74,9 +74,11 @@ An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\inde
  
 
 
-\subsection{Undecidability of the integer constraints}
+\subsection{Undecidability of the extensions}
 
-We will show that the extension of $\strline[\replaceall]$ with integer constraints entails undecidability, by a reduction from (a variant of) the Hilbert's 10th problem: Given two polynomials (aka Diophantine equations) $f(x_1, \cdots, x_n)$ and $g(x_1,\cdots, x_n)$ with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, decide whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. It is well-known that Hilbert's 10th problem is undecidable \cite{Mat93}.
+We will show that the extension of $\strline[\replaceall]$ with integer constraints entails undecidability, by a reduction from (a variant of) the Hilbert's 10th problem, which is well-known to be undecidable \cite{Mat93}. 
+
+%: Given two polynomials (aka Diophantine equations) $f(x_1, \cdots, x_n)$ and $g(x_1,\cdots, x_n)$ with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, decide whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. It is well-known that Hilbert's 10th problem is undecidable \cite{Mat93}.
 
 %Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
 
@@ -85,9 +87,11 @@ We will show that the extension of $\strline[\replaceall]$ with integer constrai
 \end{theorem}
 
 
+%
+%Notice, in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability.
+%On the other hand, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
-Notice, in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability.
-On the other hand, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
+Notice that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability. By utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
 % The above proof essentially establishes a link between Diophantine equations and the extension of $\strline[\replaceall]$ with integer constraints over a unary alphabet. 
 %
@@ -95,17 +99,15 @@ On the other hand, by utilising a further result on Diophantine equations, we wi
  
 
 
-Therefore, we get the following undecidability result.
+%Therefore, we get the following undecidability result.
 
 \begin{theorem}\label{thm-ext-int-strong}
 	For the extension of $\strline[\replaceall]$ with integer constraints, even if $\strline[\replaceall]$ formulae are restricted to those whose dependency graphs are of depth at most one, the satisfiability problem is still undecidable.
 \end{theorem}
 
-%\begin{example}
-%We use the following example to illustrate the reduction. Suppose that we have two simultaneous Diophantine equation $t1(s1+s2)=s1+2s2$  and   $t1(2 s1+ 3 s2)=s1+s2$ 
-%	
-%	Then set x1=r(t1, a, s1), x2=r(t1, a, s2), and we require length (x1 x2 x2)= length (s1 s2 s2) and  length (x1 x1 x2 x2 x2 )= length (s1 s2)
-%	
-%\end{example}
+By essentially encoding $|x|=|y|$ by character or $\indexof$ Constraints, we show:
 
+\begin{proposition}
+	For the extension of $\strline[\replaceall]$ with either the character constraints or the $\indexof$ constraints, the satisfiability problem is undecidable. 
+\end{proposition}
 
