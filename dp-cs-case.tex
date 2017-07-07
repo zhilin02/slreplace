@@ -2,7 +2,7 @@
 
 \section{Decision procedure for $\strline[\replaceall]$: The constant-string case}\label{sec:replaceallcs}
 
-In this section, we consider the constant-string special case, that is, for an $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=u$ for $u \in \Sigma^+$.  
+In this section, we consider the constant-string special case, that is, for an $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=u$ for $u \in \Sigma^+$. Note that the case when $u=\epsilon$ will be dealt with in Section~\ref{sec:replaceallre}. 
 
 Again, let us start with the simple situation that
 $$C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3,$$
@@ -71,15 +71,15 @@ Note that $\top\top \not \in \wprof_{u,k}$, since for every string $v$ and the p
 
 %\mat{Updated the paragraph below to reflect our earlier discussion.}
 
-From $u$, we will construct a parsing automaton $\cA_u$ which parses a string $v$ containing at least one instance of $u$ (i.e.\ $v \in \Sigma^\ast u \Sigma^\ast$) into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
-This ensures that the only (and first) instance of $u$ in each $v_j u$ is the suffix.
+We will construct a parsing automaton $\cA_u$ from $u$, which parses a string $v$ containing at least one occurrence of $u$ (i.e.\ $v \in \Sigma^\ast u \Sigma^\ast$) into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
+This ensures that the only (and the first) occurrence of $u$ in each $v_j u$ is a suffix.
 Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
-The $k$-window profiles w.r.t. $u$ will be used by the parsing automaton to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrence of $u$ are correctly identified.
+The $k$-window profiles w.r.t. $u$ will be used by the parsing automaton to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
 
 \begin{definition}[Parsing automata]
-The \emph{parsing automaton} $\cA_u$ of $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
+The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
 \begin{itemize}
-	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  the labels $\search$ and $\verify$ are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
+	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 	%
 	\item $q_{0,u}=q_0$.
 
@@ -115,7 +115,7 @@ Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is us
 % parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, we have $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
 	%
 	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} $. \\
-	Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since when in these states, the verification of the current occurrence of $u$ has not been complete yet.
+	Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since, when in these states, the verification of the current occurrence of $u$ has not been complete yet.
 \end{itemize}
 \end{definition}
 
@@ -136,7 +136,7 @@ Consider $u=010$ in Example~\ref{wprof-exmp}. The parsing automaton  $\cA_u$ is 
 \end{figure}
 \end{example}
 
-We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u,  T_{z}}$ is constructed by the following three-step procedure.
+We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\cB_{\cA_1, u, T_{z}}$ is constructed by the following three-step procedure.
 \begin{enumerate}
 \item Construct the product automaton $\cA_1 \times \cA_u$. Note that the initial state of $\cA_1 \times \cA_u$ is $(q_{0},q_0)$ and the set of final states of $\cA_1 \times \cA_u$ is $F_1 \times F_u$.
 
@@ -188,7 +188,7 @@ When constructing $G_{i+1}$ from $G_i$, suppose the two edges from $x$ to $y$ an
 %\mat{Also need to say the same about $z$?}\zhilin{the state space of the regular constraint for $z$ is not changed.}
 Thus, for each source variable $x$, $\cE(x)$ contains at most exponentially many elements, and each of them may have a state space of at most exponential size. For instance, for a path from $x'$ to $x$ where the constant strings $u_1,\cdots, u_n$ occur in the labels of edges, an element $(\cT,\cP) \in \cE_0(x')$ may induce an element $(\cT', \cP')$ of $\cE(x)$ such that $|\cT'| \le |\cT| |u_1| \cdots |u_n|$, which is exponential in the worst case. 
 %
-To solve the nonemptiness problem of the intersection of all these regular constraints, the exponential space is sufficient. Consequently, in this case, we still obtain a EXPSPACE upper bound. 
+To solve the nonemptiness problem of the intersection of all these regular constraints, the exponential space is sufficient. Consequently, in this case, we still obtain an EXPSPACE upper bound. 
 
 Let us now consider the special situation that the $\rpleft$-length of $G_C$ is bounded by a constant $c$.
 Since $\dmdidx(G_C) \le \lftlen(G_C)$, we know that $\dmdidx(G_C)$ is also bounded by $c$. Therefore, according to Proposition~\ref{prop-di}, there are at most polynomially different paths in $G_C$, we deduce that for each source variable $x$, $\cE(x)$ contains at most polynomially many elements. In addition, since the number of $\rpleft$-edges in each path is bounded by $c$, during the execution of the decision procedure, the number of times when $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$ is bounded by $c$.
