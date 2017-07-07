@@ -49,11 +49,10 @@ languages like Python, JavaScript, and PHP) is the string-replace function,
 which may be used to replace either the first occurrence or
 all occurrences of a string (a string constant/variable, or a regular expression) by 
 another string (a string constant/variable). The replace function (especially 
-the replace-all functionality) is omnipresent in HTML5 applications, as has
-been convincingly argued in \cite{LB16,TCJ16,YABI14}. 
-\mat{What does it mean for the replace function to be convincingly argued?}
-For
-example, a standard industry defense against cross-site scripting 
+the replace-all functionality) is omnipresent in HTML5 applications
+\cite{LB16,TCJ16,YABI14}. 
+%\mat{What does it mean for the replace function to be convincingly argued?}
+For example, a standard industry defense against cross-site scripting 
 (XSS) vulnerabilities includes sanitising untrusted strings before adding them
 into the DOM (Document Object Model) or the HTML document. 
 This is typically done by %replacing every occurrence of
@@ -71,6 +70,9 @@ applications of the string-replace function.
 Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} demonstrate the need for replacements involving variables.
 Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
 \mat{Need to say more what template systems are?}
+\anthony{Better mention closure templates I think, Matt. They do both
+mustache-kind of replace plus sanitisers. They call these strict autoescaping
+templates. See \cite{SSS11}.}
 
 %Concatenation: 8\%
 %Replace-all: 8\%
