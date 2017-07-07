@@ -123,50 +123,73 @@ To define the semantics of the $\replaceall$ function, we note that the function
 %The most interesting case is when the second parameter is  a regular expression. 
 When the second parameter is a string, the semantics is somehow self-explanatory. However, when the second parameter is a regular expression, there is no consensus on the semantics of the $\replaceall$ function even for the mainstream programming languages such as Python and Javascript.
  %where replaceall functions are extensively used. 
- This is particularly the case when interpreting the union operator in regular expressions. In this paper we follow the POSIX standard, and mainly focus on the following semantics. Intuitively we consider the leftmost and longest match. 
+ This is particularly the case when interpreting the union operator in regular expressions. In this paper we follow the POSIX standard, and mainly focus on the  semantics of the leftmost and longest matching.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \begin{definition}
-Given two strings $u,v$, a regular expression $e$ such that $\varepsilon \not \in \Ll(e)$, we say that $u$ is the \emph{leftmost and longest} match of $e$ in $v$ if $v=v_1\cdot u \cdot v_2$ and the following two conditions hold
+Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ be a regular expression such that $\varepsilon \not \in \Ll(e)$. We say that $u$ is the \emph{leftmost and longest} matching of $e$ in $v$ if the following two conditions hold
 \begin{enumerate}
 	\item leftmost: $u \in \Ll(e)$,  and $(v'_1)^{-1} v \not \in  \Ll(e \concat \Sigma^*)$ for every strict prefix $v'_1$ of $v_1$, 
 	\item longest: for every nonempty prefix $v'_2$ of $v_2$, $u \cdot v'_2 \not \in \Ll(e)$.
 \end{enumerate} 
 \end{definition}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{definition}
+Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ be a regular expression. We say that $u$ is the \emph{leftmost and longest} matching of $e$ in $v$ if one of the following two conditions hold,
+\begin{itemize}
+\item $\varepsilon \not \in \Ll(e)$, in addition, 
+\begin{enumerate}
+	\item leftmost: $u \in \Ll(e)$,  and $(v'_1)^{-1} v \not \in  \Ll(e \concat \Sigma^*)$ for every strict prefix $v'_1$ of $v_1$, 
+	\item longest: for every nonempty prefix $v'_2$ of $v_2$, $u \cdot v'_2 \not \in \Ll(e)$.
+\end{enumerate} 
+%
+\item $\varepsilon \in \Ll(e)$, 
+\begin{enumerate}
+	\item leftmost: $u \in \Ll(e)$, and $v_1 = \varepsilon$, 
+	\item longest: for every nonempty prefix $v'_2$ of $v_2$, $u \cdot v'_2 \not \in \Ll(e)$.
+\end{enumerate} 
+\end{itemize}
+\end{definition}
+
 
 \begin{example}
-Let $\Sigma = \{0,1\}$, $v=1010101$, and $e = 0^*01(0^*+ 1^*)$. Then the leftmost and longest match of $e$ in $v$ is $u=010$, since $v = v_1 u v_2 $, where  $v_1 = 1$, $v_2 = 101$, $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), in addition, none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belongs to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). 
+Let us first consider $\Sigma = \{0,1\}$, $v=1010101$, $v_1 =1$, $u = 010$, $v_2 = 101$, and $e = 0^*01(0^*+ 1^*)$. Then $v= v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), in addition, none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belongs to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). Then let us consider $\Sigma = \{a,b,c\}$, $v=baac$, $v_1 = \varepsilon$, $u =\varepsilon$, $v_2 = v$, and $e = a^*$. Then $v = v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $v_1 = \varepsilon$, and $b, ba, baa, baac \not \in \Ll(e)$. On the other hand, similarly, one can verify that the leftmost and longest match of $e=a^*$ in $v=aac$ is $aa$.
 \end{example}
 
 \begin{definition} \label{def:replaceall}
 The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a regular expression, is defined inductively as follows:
 \begin{itemize}
-	\item if $\varepsilon \in \Ll(e)$, then
-	\begin{itemize}
-	\item if $u = \varepsilon$, then $\replaceall(u,e, v) = v$,
-	
-	\item otherwise, let $u = a \cdot u'$ for $a \in \Sigma$, then $\replaceall(u, e, v) =v \cdot a \cdot \replaceall(u', e, v)$,
-	\end{itemize}
+%	\item if $\varepsilon \in \Ll(e)$, then
+%	\begin{itemize}
+%	\item if $u = \varepsilon$, then $\replaceall(u,e, v) = v$,
+%	
+%	\item otherwise, let $u = a \cdot u'$ for $a \in \Sigma$, then $\replaceall(u, e, v) =v \cdot a \cdot \replaceall(u', e, v)$,
+%	\end{itemize}
 %
-	\item otherwise,
-	\begin{itemize}
-	\item if $u \not \in \Ll(\Sigma^\ast e \Sigma^\ast)$, i.e., $u$ does \emph{not} contain any substring from $\Ll(e)$, then $\replaceall(u, e, v) = u$, 
+%	\item otherwise,
+%	\begin{itemize}
+	\item if $u \not \in \Ll(\Sigma^\ast \concat e \concat \Sigma^\ast)$, that is, $u$ does \emph{not} contain any substring from $\Ll(e)$, then $\replaceall(u, e, v) = u$, 
 	%
-	\item otherwise, let $u = u' \cdot u \cdot u''$ such that $u$ is the \emph{leftmost and longest} match of $e$ in $v$, then $\replaceall(u, e, v) = u' \cdot v \cdot \replaceall(u'', e, v)$.
+	\item otherwise, let $u = u_1 \cdot u_2 \cdot u_3$ such that $u_2$ is the \emph{leftmost and longest} matching of $e$ in $u$, then 
+	\begin{itemize}
+	\item if $u_2 \neq \varepsilon$, then $\replaceall(u, e, v) = u_1 \cdot v \cdot \replaceall(u_3, e, v)$,
+	\item otherwise (in this case, $u_2 = \varepsilon \in \Ll(e)$, thus $u_1 = \varepsilon$ as well), if $u = \varepsilon$, then $\replaceall(u, e, v) = v$, otherwise,  let $u = a \cdot u'$ for some $a \in \Sigma$ and $u' \in \Sigma^*$, then $\replaceall(u, e, v) = v \cdot a \cdot \replaceall(u', e, v)$. 
 	\end{itemize}
+%	\end{itemize}
 \end{itemize}
 \end{definition}
 
 \begin{example}
-When the second parameter is a string (or more specially a single letter), most programming languages take the same semantics which is consistent to Definition~\ref{def:replaceall}. For instance,  $\replaceall(abab, ab, d) =dd$. It is worth mentioning the case that the second parameter is an empty string, where, for instance,  $\replaceall(aaaa, ``", d) =dadadadad$.
-
-When the second parameter is a regular expression, we use the semantics of the leftmost and longest matching. For instance, $\replaceall(abac, a^*, d) =d a d b d a d c d$ and $\replaceall(abac, a^+, d)=dbdc$. 
+At first, we have $\replaceall(abab, ab, d) =dd$ and $\replaceall(baac, a^+, b)=bbc$. In addition, $\replaceall(aaaa, ``", d) =dadadadad$ and $\replaceall(baac, a^*, b) =bbbc$.  The arguments for $\replaceall(baac, a^*, b) = bbbc$ proceeds as follows: The leftmost and longest matching of $a^*$ in $baac$ is $u_2 =\varepsilon$, where $baac = u_1 \cdot u_2 \cdot u_3$, $u_1 = \varepsilon$, $u_2 = \varepsilon$, and $u_3 = baac$. Since $baac \neq \varepsilon$ and $baac = b \cdot aac$, we deduce that $\replaceall(baac, a^*, b) = b \cdot b \cdot \replaceall(aac, a^*, b)$. Since $aa$ is the leftmost and longest matching of $a^*$ in $aac$, $\replaceall(aac, a^*, b) = b \cdot \replaceall(c, a^*, b) = bbcb$. Therefore, we get $\replaceall(baac, a^*, b) = bb bb cb$.
+\end{example}
 %However, when the regular expression contains $+$, programming languages diverge... 
 %\tl{do we need to say more here?}
-\end{example}
-
 
 %====================================================
+
 
 \subsection{Straight-line string constraints with the $\replaceall$ function}
 
@@ -176,7 +199,6 @@ We consider the String data type $\str$, and assume a countably set of variables
 %In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
 
 %We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
-
 
 
 \begin{definition}[Relational and regular constraints]
@@ -202,39 +224,54 @@ We consider the String data type $\str$, and assume a countably set of variables
 
 For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)$) denote the set of variables occurring in $\varphi$ (resp. $\psi$). Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = \replaceall(\dots)$.
 
- 
+We then notice that with the $\replaceall$ function in its general form, the concatenation operation is in fact redundant.
+
+\begin{proposition}\label{prop-concat}
+	The $\concat$ operation can be simulated  by the $\replaceall$ function.
+\end{proposition}
+\begin{proof}
+	It is sufficient to observe that %the concatenation operator $s_1 \concat s_2$ is redundant in the sense that 
+	a relational constraint $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1), x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
+\end{proof}
+
+Therefore, from now on, we will \emph{ignore the concatenation operator} and focus on the string constraints that involve only the $\replaceall$ function.
+
 The generality of the constraint language makes it undecidable,
 even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
 programs with concatenations and $\replaceall$ as atomic string operations.  
 
 \begin{definition}[Straight-line relational constraints]
-	A relational constraint $ \varphi$ with $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
+	A relational constraint $ \varphi$ with the $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
 	\begin{itemize}
 		\item $x_1,\dots, x_m$ are mutually distinct,
 		\item for each $i \in [m]$, all the variables in $P_i$ are either source variables, or variables from $\{x_1,\dots, x_{i-1}\}$,
 	\end{itemize}
-Occasionally we refer to $x_m$ as output variable. 
+Occasionally we refer to $x_m$ as the output variable. 
 \end{definition}
 Intuitively, in a straight-line relational constraint, the dependency graph of the string variables is acyclic.
 
 
+
 \begin{definition}[Straight-line string constraints]
-	A straight-line string constraint $C$ with the concatenation and $\replaceall$ function (denoted by $\strline[\concat,\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
+	A straight-line string constraint $C$ with the $\replaceall$ function (denoted by $\strline[\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
 	\begin{itemize}
-		\item $\varphi$ is a straight-line relational constraint with the concatenation and $\replaceall$ functions,  and
+		\item $\varphi$ is a straight-line relational constraint with the $\replaceall$ function,  and
 		%
 		\item $\psi$ is a regular constraint.
 		%
 	\end{itemize}
 	%Let us use $\Cc$ to denote the set of straight-line string constraints with $\replaceall$ function.
-When the concatenation $\concat$ is excluded, we usually denote the constraints as  $\strline[\replaceall]$. 
+%When the concatenation $\concat$ is excluded, we usually denote the constraints as  $\strline[\replaceall]$. 
 \end{definition}
 
 \begin{remark}
 Checking whether a relational constraint $\varphi$ is straight-line can be done in linear time. 
 \end{remark}
 
+
 \begin{example}
+The following string constraint belongs to $\strline[\replaceall]$: 
+$$C \equiv x_2 = \replaceall(x_1, 0, y_1) \wedge x_3 = \replaceall(x_2, 1, y_2) \wedge x_1 \in \{0,1\}^* \wedge y_1 \in 1^* \wedge y_2 \in 0^*.$$
 \end{example}
 
 
@@ -243,16 +280,24 @@ Checking whether a relational constraint $\varphi$ is straight-line can be done 
 %\medskip
 
 \section{The satisfiability problem} \label{sec-sat}
+<<<<<<< HEAD
 In this paper, we focus on the satisfiability problem of $\strline[\concat,\replaceall]$, which is formalised as follows. 
+=======
+In this paper, we focus on the satisfiability problem of $\strline[\replaceall]$, which if formalised as follows. 
+>>>>>>> 1de4ed9ac33c2427e79c50f07dfe617af6f799ef
 
 \smallskip
 
 \begin{quote}
-\framebox{Given an $\strline[\concat, \replaceall]$ constraint $C$, decide whether $C$ is satisfiable.}
+\framebox{Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.}
 \end{quote}
 \smallskip
 
+<<<<<<< HEAD
 To approach this problem, we identify several fragments of  $\strline[\concat,\replaceall]$, depending on whether the second and the third parameters are constants or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\concat, \replaceall]$ (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
+=======
+To approach this problem, we identify several fragments of  $\strline[\replaceall]$, depending on whether the second and the third parameters are constant or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\replaceall]$ (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
+>>>>>>> 1de4ed9ac33c2427e79c50f07dfe617af6f799ef
 
 
 \tl{to decide later where to put this table.}
@@ -335,7 +380,7 @@ In light of Proposition~\ref{prop-und-pat-var}, we shall focus on the case that 
 The main result of the paper is summarised as the following Theorem~\ref{thm-main}.
 
 \begin{theorem}\label{thm-main}
-	The satisfiability problem of $\strline[\concat, \replaceall]$ is decidable in EXPSPACE, if the second parameters of the $\replaceall$ terms are regular expressions.  
+	The satisfiability problem of $\strline[\replaceall]$ is decidable in EXPSPACE, if the second parameters of the $\replaceall$ terms are regular expressions.  
 \end{theorem}
 
 The following three sections are devoted to the proof of Theorem~\ref{thm-main}.  
@@ -344,20 +389,15 @@ The following three sections are devoted to the proof of Theorem~\ref{thm-main}.
 \item then consider the \emph{constant-string} case that the second parameters of the $\replaceall$ terms are constant strings  (Section~\ref{sec:replaceallcs}), \item and finally the \emph{regular-expression} case that the second parameters of the $\replaceall$ terms are regular expressions  (Section~\ref{sec:replaceallre}).
 \end{itemize}
 
-Towards a complete solution of $\strline[\concat, \replaceall]$, let us start with a simple observation  which shows it is sufficient to focus on $\strline[\replaceall]$ as the concatenation can be readily encoded by the $\replaceall$ function.  %This also  demonstrates the power of the 
+%Towards a complete solution of $\strline[\concat, \replaceall]$, let us start with a simple observation  which shows it is sufficient to focus on $\strline[\replaceall]$ as the concatenation can be readily encoded by the $\replaceall$ function.  %This also  demonstrates the power of the 
 
-\begin{proposition}\label{prop-concat}
-	$\strline[\concat, \replaceall]$ constraints can be transformed in linear time into $\strline[\replaceall]$ constraints which are equisatisfiable. 
-\end{proposition}
-\begin{proof}
-	It is sufficient to observe that %the concatenation operator $s_1 \concat s_2$ is redundant in the sense that 
-	a relational constraint $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1), x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
-\end{proof}
 
-As a consequence, in Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we shall focus on $\strline[\replaceall]$. We first introduce a graphical representation as follows.    
+%As a consequence, in Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we shall focus on $\strline[\replaceall]$. 
+
+We first introduce a graphical representation as follows.    
 
 \begin{definition}[Dependency graph]
-	Let $C= \varphi \wedge \psi$ be an $\strline[\replaceall]$ formula where the second parameters of the $\replaceall$ terms are regular expressions. Suppose $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. The \emph{depth} of $G_C$ is $M-1$, where $M$ is the maximum length of the paths in $G_C$. In particular, if $\varphi$ is empty, then the depth of $G_C$ is zero. 
+	Let $C= \varphi \wedge \psi$ be an $\strline[\replaceall]$ formula where the second parameters of the $\replaceall$ terms are regular expressions. Suppose $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables. Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labeled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. The \emph{depth} of $G_C$ is the maximum length of the paths in $G_C$. In particular, if $\varphi$ is empty, then the depth of $G_C$ is zero. 
 	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
 	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
 \end{definition}
@@ -375,7 +415,7 @@ Let $C$  be an  $\strline[\replaceall]$ formula and $G_C=(\vars(\varphi), E_C)$ 
 It follows from Proposition~\ref{prop-di} that for the class of $\strline[\replaceall]$ formulae $C$ such that $\dmdidx(G_C)$ is bounded by a constant $c$,  there are polynomially many different paths between each pair of distinct vertices in $G_C$.
 
 \begin{example}
-Let $G_C$ be the dependency graph illustrated in Figure~\ref{fig-dmdidx-exmp}. It is easy to see that $\dmdidx(G_C)$ is $3$. In addition, there are $2^3=8$ paths from $x_1$ to $y_1$. If we generalise $G_C$ in Figure~\ref{fig-dmdidx-exmp} to a dependency graph comprising $n$ diamonds from $x_1$ to $x_2$, $\cdots$, from $x_n$ to $y_1$ respectively, then the diamond index of the resulting dependency graph is $n$ and there are $2^n$ paths from $x_1$ to $y_1$ in the graph.
+Let $G_C$ be the dependency graph illustrated in Figure~\ref{fig-dmdidx-exmp}. It is easy to see that $\dmdidx(G_C)$ is $3$. In addition, there are $2^3=8$ paths from $x_1$ to $y_1$. If we generalise $G_C$ in Figure~\ref{fig-dmdidx-exmp} to a dependency graph comprising $n$ diamonds from $x_1$ to $x_2$, $\cdots$, from $x_{n-1}$ to $x_n$, and from $x_n$ to $y_1$ respectively, then the diamond index of the resulting dependency graph is $n$ and there are $2^n$ paths from $x_1$ to $y_1$ in the graph.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[scale=0.7]{dmdidx-example.pdf}
@@ -384,7 +424,7 @@ Let $G_C$ be the dependency graph illustrated in Figure~\ref{fig-dmdidx-exmp}. I
 \end{figure}
 \end{example}
 
-In Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we will also apply a refined analysis of the complexity of the decision procedures and get the following results.
+In Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we will apply a refined analysis of the complexity of the decision procedures and get the following results.
 
 \begin{corollary}\label{cor-pspace}
 The satisfiability problem is PSPACE-complete for the following fragments of $\strline[\replaceall]$:
@@ -398,7 +438,7 @@ The satisfiability problem is PSPACE-complete for the following fragments of $\s
 \end{itemize}
 \end{corollary}
 
-Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter and constant-string cases first, then the regular-expression case: While the second parameters of $\replaceall$ terms become less restrictive and the decision procedures become more involved, more constraints should be put on the dependency graphs in order to achieve the PSPACE upper bound.
+Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter and constant-string cases first, then the regular-expression case. Intuitively, when the second parameters of $\replaceall$ terms become less restrictive, the decision procedures become more involved, and more constraints should be put on the dependency graphs in order to achieve the PSPACE upper bound.
 
 %The proof of Theorem~\ref{thm-main} utilises a concept of dependency graphs defined below.
 
