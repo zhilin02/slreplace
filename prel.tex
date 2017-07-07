@@ -121,8 +121,8 @@ In this section, we define a general string constraint language that supports wo
 \subsection{Semantics of the $\replaceall$ function}
 To define the semantics of the $\replaceall$ function, we note that the function encompasses three parameters: the first parameter is the \emph{subject} string, the second parameter is a \emph{pattern} that is a string or a regular expression, and the third parameter is the \emph{replacement} string. When the second parameter is a string, the semantics is somehow self-explanatory. However, when the second parameter is a regular expression, there is no consensus on the semantics of the $\replaceall$ function even for the mainstream programming languages such as Python and Javascript.
  %where replaceall functions are extensively used. 
- This is particularly the case when interpreting the union operator in regular expressions. In this paper we %we follow the POSIX standard, and mainly 
- focus on the  semantics of the leftmost and longest matching exclusively.
+ This is particularly the case when interpreting the union operator in regular expressions. In this paper we mainly 
+ focus on the following semantics of the leftmost and longest matching, which is consistent with the implementation in Python and SED-POSIX, as tested by us. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
@@ -158,6 +158,10 @@ Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ b
 Let us first consider $\Sigma = \{0,1\}$, $v=1010101$, $v_1 =1$, $u = 010$, $v_2 = 101$, and $e = 0^*01(0^*+ 1^*)$. Then $v= v_1 u v_2$, and the leftmost and longest match of $e$ in $v$ is $u$. This is because $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), and none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belong to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). For another example, let us consider $\Sigma = \{a,b,c\}$, $v=baac$, $v_1 = \varepsilon$, $u =\varepsilon$, $v_2 = v$, and $e = a^*$. Then $v = v_1 u v_2$ and  the leftmost and longest match of $e$ in $v$ is $u$. This is because $u \in \Ll(e)$, $v_1 = \varepsilon$, and $b, ba, baa, baac \not \in \Ll(e)$. On the other hand, similarly, one can verify that the leftmost and longest match of $e=a^*$ in $v=aac$ is $aa$.
 \end{example}
 
+
+%%%%%%%%%%the semantics of Javascript%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%the semantics of Javascript%%%%%%%%%%%%%%%%%%
+\hide{
 \begin{definition} \label{def:replaceall}
 The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a regular expression, is defined inductively as follows:
 \begin{itemize}
@@ -180,10 +184,41 @@ The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a r
 %	\end{itemize}
 \end{itemize}
 \end{definition}
+}
+%%%%%%%%%%the semantics of Javascript%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%the semantics of Javascript%%%%%%%%%%%%%%%%%%
+
+
+\begin{definition} \label{def:replaceall}
+The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a regular expression, is defined inductively as follows:
+\begin{itemize}
+%	\item if $\varepsilon \in \Ll(e)$, then
+%	\begin{itemize}
+%	\item if $u = \varepsilon$, then $\replaceall(u,e, v) = v$,
+%	
+%	\item otherwise, let $u = a \cdot u'$ for $a \in \Sigma$, then $\replaceall(u, e, v) =v \cdot a \cdot \replaceall(u', e, v)$,
+%	\end{itemize}
+%
+%	\item otherwise,
+%	\begin{itemize}
+	\item if $u \not \in \Ll(\Sigma^\ast \concat e \concat \Sigma^\ast)$, that is, $u$ does \emph{not} contain any substring from $\Ll(e)$, then $\replaceall(u, e, v) = u$, 
+	%
+	\item otherwise, 
+	\begin{itemize}
+	\item if $\varepsilon \in \Ll(e)$ and $u$ is the leftmost and longest matching of $e$ in $u$, then $\replaceall(u, e, v) = v$,
+	\item if $\varepsilon \in \Ll(e)$, $u = u_1 \cdot  a \cdot  u_2$, $u_1$ is the leftmost and longest matching of $e$ in $u$, and $a \in \Sigma$, then $\replaceall(u, e, v) = v \cdot a \cdot \replaceall(u_2, e, v)$,
+	\item if $\varepsilon \not \in \Ll(e)$, $u = u_1\cdot  u_2\cdot  u_3$, and $u_2$ is the leftmost and longest matching of $e$ in $u$,  then 
+$\replaceall(u, e, v) = u_1 \cdot v \cdot \replaceall(u_3, e, v)$. 
+	\end{itemize}
+%	\end{itemize}
+\end{itemize}
+\end{definition}
+
+
 
 \begin{example}
 	
-At first, we have $\replaceall(abab, ab, d) =dd$ and $\replaceall(baac, a^+, b)=bbc$. In addition, $\replaceall(aaaa, ``", d) =dadadadad$ and $\replaceall(baac, a^*, b) =bbbbcb$.  The argument for $\replaceall(baac, a^*, b) = bbbbcb$ proceeds as follows: The leftmost and longest matching of $a^*$ in $baac$ is $u_2 =\varepsilon$, where $baac = u_1 \cdot u_2 \cdot u_3$, $u_1 = \varepsilon$, $u_2 = \varepsilon$, and $u_3 = baac$. Since $baac \neq \varepsilon$ and $baac = b \cdot aac$, we deduce that $\replaceall(baac, a^*, b) = b \cdot b \cdot \replaceall(aac, a^*, b)$. Since $aa$ is the leftmost and longest matching of $a^*$ in $aac$, $\replaceall(aac, a^*, b) = b \cdot \replaceall(c, a^*, b) = bbc\cdot \replace(\epsilon,a^*,b)=bbcb$. Therefore, we get $\replaceall(baac, a^*, b) = bb bb cb$. (The readers are encouraged to test this in Javascript.)
+At first, we have $\replaceall(abab, ab, d) =dd$ and $\replaceall(baac, a^+, b)=bbc$. In addition, $\replaceall(aaaa, ``", d) =dadadadad$ and $\replaceall(baac, a^*, b) =bbbbcb$.  The argument for $\replaceall(baac, a^*, b) = bbbcb$ proceeds as follows: The leftmost and longest matching of $a^*$ in $baac$ is $u_1 =\varepsilon$, where $baac = u_1 \cdot b \cdot u_2$, $u_1 = \varepsilon$, and $u_2 = aac$. Then $\replaceall(baac, a^*, b) = b \cdot b \cdot \replaceall(aac, a^*, b)$. Since $aa$ is the leftmost and longest matching of $a^*$ in $aac$, $\replaceall(aac, a^*, b) = b \cdot c \cdot \replaceall(\epsilon, a^*, b) = bcb$. Therefore, we get $\replaceall(baac, a^*, b) = bbbcb$. (The readers are invited to test this in Python and SED-POSIX.)
 
 
 \end{example}
