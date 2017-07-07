@@ -73,6 +73,7 @@ Using Mustache, a web-developer, for example, may define an HTML fragment with p
 \anthony{Better mention closure templates I think, Matt. They do both
 mustache-kind of replace plus sanitisers. They call these strict autoescaping
 templates. See \cite{SSS11}.}
+\mat{Mentioned closure, and changed footnote to reflect the fact that neither autoescaping mechanism kills our example.}
 
 %Concatenation: 8\%
 %Replace-all: 8\%
@@ -138,7 +139,7 @@ This HTML would display \verb+User Amelia+, and, when the mouse is placed over \
 
 Unfortunately, this template could be insecure if the user biography is not adequately sanitised: 
 A user could enter a malicious biography, such as \verb+'); alert('Boo!'); alert('+ which would cause the following instantiation of the \verb+span+ element\footnote{
-    Readers familiar with Mustache may expect single quotes to be automatically escaped.
+    Readers familiar with Mustache and Closure Templates may expect single quotes to be automatically escaped.
     However, we have tested our example with the latest versions of mustache.js~\cite{MustacheJS} and Closure Templates~\cite{Closure} (as of July 2017) and observed that the exploit is not disarmed by their automatic escaping features.
 }.
 \begin{minted}{html}
