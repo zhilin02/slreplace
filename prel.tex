@@ -320,7 +320,7 @@ To approach this problem, we identify several fragments of  $\strline[\replaceal
 %\end{table}
 
 %\subsection{Some undecidability results}
-We embark on the case that the second parameter of the $\replaceall$ term is a variable. It turns out that in this case the satisfiability problem of $\strline[\replaceall]$ is undecidable.
+We begin with the case where the second parameter of the $\replaceall$ term is a variable. It turns out that in this case the satisfiability problem of $\strline[\replaceall]$ is undecidable.
 
 \begin{proposition}\label{prop-und-pat-var}
 The satisfiability problem of $\strline[\replaceall]$ is undecidable, if the second parameters of the $\replaceall$ terms are allowed to be variables.
@@ -332,7 +332,7 @@ $	\alpha _{{i_{1}}}\ldots \alpha _{{i_{K}}}=\beta _{{i_{1}}}\ldots \beta _{{i_{K
 $
 	The PCP problem is to decide whether such a solution exists or not.
 
-	Without loss of generality, suppose $\Sigma \cap [N] = \emptyset$ and $\$ \not \in \Sigma \cup [N]$. Let $\Sigma' = \Sigma \cup [N] \cup \{\$\}$. We will construct a $\strline[\replaceall]$ formula $C$ over $\Sigma'$ such that the PCP instance has a solution iff $C$ is satisfiable. To this end, the formula $C$ utilises the capability that the second parameter of $\replaceall$ terms are variables.
+	Without loss of generality, suppose $\Sigma \cap [N] = \emptyset$ and $\$ \not \in \Sigma \cup [N]$. Let $\Sigma' = \Sigma \cup [N] \cup \{\$\}$. We will construct an $\strline[\replaceall]$ formula $C$ over $\Sigma'$ such that the PCP instance has a solution iff $C$ is satisfiable. To this end, the formula $C$ utilises the capability that the second parameter of the $\replaceall$ terms may be variables.
 	
 	Let $x_1, \cdots, x_N, y_1, \cdots, y_N, z$ be mutually distinct string variables. Then the formula $C = \varphi \wedge \psi$, where 
 %
@@ -408,7 +408,7 @@ Let $C$  be an  $\strline[\replaceall]$ formula and $G_C=(\vars(\varphi), E_C)$ 
 It follows from Proposition~\ref{prop-di} that for the class of $\strline[\replaceall]$ formulae $C$ such that $\dmdidx(G_C)$ is bounded by a constant $c$,  there are polynomially many different paths between each pair of distinct vertices in $G_C$.
 
 \begin{example}
-Let $G_C$ be the dependency graph illustrated in Figure~\ref{fig-dmdidx-exmp}. It is easy to see that $\dmdidx(G_C)$ is $3$. In addition, there are $2^3=8$ paths form $x_1$ to $y_1$. If we generalise $G_C$ in Figure~\ref{fig-dmdidx-exmp} to a dependency graph comprising $n$ diamonds from $x_1$ to $x_2$, $\cdots$, from $x_{n-1}$ to $x_n$, and from $x_n$ to $y_1$ respectively, then the diamond index of the resulting dependency graph is $n$ and there are $2^n$ paths from $x_1$ to $y_1$ in the graph.
+Let $G_C$ be the dependency graph illustrated in Figure~\ref{fig-dmdidx-exmp}. It is easy to see that $\dmdidx(G_C)$ is $3$. In addition, there are $2^3=8$ paths from $x_1$ to $y_1$. If we generalise $G_C$ in Figure~\ref{fig-dmdidx-exmp} to a dependency graph comprising $n$ diamonds from $x_1$ to $x_2$, $\cdots$, from $x_{n-1}$ to $x_n$, and from $x_n$ to $y_1$ respectively, then the diamond index of the resulting dependency graph is $n$ and there are $2^n$ paths from $x_1$ to $y_1$ in the graph.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[scale=0.7]{dmdidx-example.pdf}
