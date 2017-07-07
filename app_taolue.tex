@@ -1,12 +1,19 @@
-\subsection{Removing concatenation}
+ 
 
-We will transform a given constraint $\varphi$ into a constraint $\varphi'$ which is concatenation free. As the first step, we extend the original alphabet with two fresh letters $a,b$. 
 
-For each $x=yz$, we introduce a new variable $x'$ and replace $x=yz$ by two new constraints 
-$x'=\replaceall(ab, a, x)$ and $x=\replaceall(x', b, z)$. 
+\section{Parikh image}
 
-\begin{proposition}
-$\varphi$ and $\varphi'$ are equisatisfiable. 	
-\end{proposition}
+We write $\wp(\cdot)$ for the Parikh image. The problem is to decide whether there are $\vec{x}$ such that $\wp(f(\vec{x})) \neq \wp(g(\vec{x}))$. The point here is, for $x=\replaceall(y, a,z)$, we have 
+\[\wp(x)_a =  \wp(z)_a\]
+and, for $b\neq a$
+\[\wp(x)_b =  \wp(y)_b+ \wp(y)_a\cdot \wp(z)_b\]
 
-\subsection{Undecidability}
+Then it is done. 
+
+The next question is that, can we find an example that $\exists \vec{y}, f(\vec{y})\neq g(\vec{y})$ and $\forall \vec{y}. \wp(f(\vec{y})) = \wp(g(\vec{y}))$. (Trivial example exists: $x=\replaceall(ab,c,y)$ and $x'=\replaceall(ba,c,y)$.)
+
+But we may consider an extended Parikh image, viz, consider the occurrence of $aa, ab, ba, bb$, then it can be detected. The question is whether can %suppose that the source variables have really an impact on the Parikh image. 
+
+\section{Evaluation problem}
+
+Given a straight-line string constraint, the inputs for all the source variables, an index $n$, decide whether the $n$-th letter of the root string is $a$. 
