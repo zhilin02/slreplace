@@ -119,9 +119,7 @@ In this section, we define a general string constraint language that supports wo
 
 
 \subsection{Semantics of the $\replaceall$ function}
-To define the semantics of the $\replaceall$ function, we note that the function encompasses three parameters: the first parameter is the \emph{subject} string, the second parameter is a \emph{pattern} that is a string or a regular expression, and the third parameter is the \emph{replacement} string.  
-%The most interesting case is when the second parameter is  a regular expression. 
-When the second parameter is a string, the semantics is somehow self-explanatory. However, when the second parameter is a regular expression, there is no consensus on the semantics of the $\replaceall$ function even for the mainstream programming languages such as Python and Javascript.
+To define the semantics of the $\replaceall$ function, we note that the function encompasses three parameters: the first parameter is the \emph{subject} string, the second parameter is a \emph{pattern} that is a string or a regular expression, and the third parameter is the \emph{replacement} string. When the second parameter is a string, the semantics is somehow self-explanatory. However, when the second parameter is a regular expression, there is no consensus on the semantics of the $\replaceall$ function even for the mainstream programming languages such as Python and Javascript.
  %where replaceall functions are extensively used. 
  This is particularly the case when interpreting the union operator in regular expressions. In this paper we follow the POSIX standard, and mainly focus on the  semantics of the leftmost and longest matching.
 
@@ -156,7 +154,7 @@ Let $u, v$ be two strings such that $v = v_1 u v_2$ for some $v_1,v_2$ and $e$ b
 
 
 \begin{example}
-Let us first consider $\Sigma = \{0,1\}$, $v=1010101$, $v_1 =1$, $u = 010$, $v_2 = 101$, and $e = 0^*01(0^*+ 1^*)$. Then $v= v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), in addition, none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belongs to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). Then let us consider $\Sigma = \{a,b,c\}$, $v=baac$, $v_1 = \varepsilon$, $u =\varepsilon$, $v_2 = v$, and $e = a^*$. Then $v = v_1 u v_2$. In addition, the leftmost and longest match of $e$ in $v$ is $u$, since $u \in \Ll(e)$, $v_1 = \varepsilon$, and $b, ba, baa, baac \not \in \Ll(e)$. On the other hand, similarly, one can verify that the leftmost and longest match of $e=a^*$ in $v=aac$ is $aa$.
+Let us first consider $\Sigma = \{0,1\}$, $v=1010101$, $v_1 =1$, $u = 010$, $v_2 = 101$, and $e = 0^*01(0^*+ 1^*)$. Then $v= v_1 u v_2$, and the leftmost and longest match of $e$ in $v$ is $u$. This is because $u \in \Ll(e)$, $\varepsilon^{-1} v = v \not \in \Ll(e \concat \Sigma^*)$ (notice that $v_1$ has only one strict prefix, i.e. $\varepsilon$), and none of $u 1=0101$, $u 10=01010$, and $u101=010101$ belong to $\Ll(e)$ (notice that $v_2$ has three nonempty prefixes, i.e. $1,10,101$). For another example, let us consider $\Sigma = \{a,b,c\}$, $v=baac$, $v_1 = \varepsilon$, $u =\varepsilon$, $v_2 = v$, and $e = a^*$. Then $v = v_1 u v_2$ and  the leftmost and longest match of $e$ in $v$ is $u$. This is because $u \in \Ll(e)$, $v_1 = \varepsilon$, and $b, ba, baa, baac \not \in \Ll(e)$. On the other hand, similarly, one can verify that the leftmost and longest match of $e=a^*$ in $v=aac$ is $aa$.
 \end{example}
 
 \begin{definition} \label{def:replaceall}
@@ -183,7 +181,7 @@ The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a r
 \end{definition}
 
 \begin{example}
-At first, we have $\replaceall(abab, ab, d) =dd$ and $\replaceall(baac, a^+, b)=bbc$. In addition, $\replaceall(aaaa, ``", d) =dadadadad$ and $\replaceall(baac, a^*, b) =bbbc$.  The arguments for $\replaceall(baac, a^*, b) = bbbc$ proceeds as follows: The leftmost and longest matching of $a^*$ in $baac$ is $u_2 =\varepsilon$, where $baac = u_1 \cdot u_2 \cdot u_3$, $u_1 = \varepsilon$, $u_2 = \varepsilon$, and $u_3 = baac$. Since $baac \neq \varepsilon$ and $baac = b \cdot aac$, we deduce that $\replaceall(baac, a^*, b) = b \cdot b \cdot \replaceall(aac, a^*, b)$. Since $aa$ is the leftmost and longest matching of $a^*$ in $aac$, $\replaceall(aac, a^*, b) = b \cdot \replaceall(c, a^*, b) = bbcb$. Therefore, we get $\replaceall(baac, a^*, b) = bb bb cb$.
+At first, we have $\replaceall(abab, ab, d) =dd$ and $\replaceall(baac, a^+, b)=bbc$. In addition, $\replaceall(aaaa, ``", d) =dadadadad$ and $\replaceall(baac, a^*, b) =bbbc$.  The argument for $\replaceall(baac, a^*, b) = bbbc$ proceeds as follows: The leftmost and longest matching of $a^*$ in $baac$ is $u_2 =\varepsilon$, where $baac = u_1 \cdot u_2 \cdot u_3$, $u_1 = \varepsilon$, $u_2 = \varepsilon$, and $u_3 = baac$. Since $baac \neq \varepsilon$ and $baac = b \cdot aac$, we deduce that $\replaceall(baac, a^*, b) = b \cdot b \cdot \replaceall(aac, a^*, b)$. Since $aa$ is the leftmost and longest matching of $a^*$ in $aac$, $\replaceall(aac, a^*, b) = b \cdot \replaceall(c, a^*, b) = bbc\cdot \replace(\epsilon,a^*,b)=bbcb$. Therefore, we get $\replaceall(baac, a^*, b) = bb bb cb$. (The readers are encouraged to test this in Javascript.)
 \end{example}
 %However, when the regular expression contains $+$, programming languages diverge... 
 %\tl{do we need to say more here?}
@@ -234,7 +232,10 @@ We then notice that with the $\replaceall$ function in its general form, the con
 	a relational constraint $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1), x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
 \end{proof}
 
-Therefore, from now on, we will \emph{ignore the concatenation operator} and focus on the string constraints that involve only the $\replaceall$ function.
+In light of Proposition~\ref{prop-concat}, from now on, we will \emph{dispense the concatenation operator} mostly and focus on \textbf{the string constraints that involve  the $\replaceall$ function only}.
+
+
+\medskip
 
 The generality of the constraint language makes it undecidable,
 even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
@@ -280,43 +281,43 @@ $$C \equiv x_2 = \replaceall(x_1, 0, y_1) \wedge x_3 = \replaceall(x_2, 1, y_2) 
 %\medskip
 
 \section{The satisfiability problem} \label{sec-sat}
-In this paper, we focus on the satisfiability problem of $\strline[\replaceall]$, which if formalised as follows. 
+In this paper, we focus on the satisfiability problem of $\strline[\replaceall]$, which is formalised as follows. 
 
 \smallskip
 
-\begin{quote}
+\begin{quote} \centering
 \framebox{Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.}
 \end{quote}
 \smallskip
 
-To approach this problem, we identify several fragments of  $\strline[\replaceall]$, depending on whether the second and the third parameters are constant or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\replaceall]$ (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
+To approach this problem, we identify several fragments of  $\strline[\replaceall]$, depending on whether the second and the third parameters are constants or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\replaceall]$. % (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
 
 
-\tl{to decide later where to put this table.}
-
-\begin{table}[htbp]
-\begin{tabular}{|c|c|c|c}
-\hline
-pattern ($p$)  &   replacement ($z$)        & decidability/complexity \\
-\hline
-constant string  &   constant   string                    & PSPACE-c (Proposition~\ref{??})    \\
-\hline
-string variable &   constant   string                    &  undecidable (Propositio~\ref{prop-und-pat-var})    \\
-\hline
-regular expression  &   constant string                      &    PSPACE-c (Proposition~\ref{??}) ?     \\
-
-\hline
-constant string  &   string variable                       & EXPSPACE (Theorem~\ref{thm-main})       \\
-
-\hline
-string variable  &   string variable                       & undecidable   (Proposition ~\ref{prop-und-pat-var})   \\
-
-\hline
-regular expression  &   string variable                       &      EXPSPACE (Theorem~\ref{thm-main})      \\
-\hline
-\end{tabular}
-\caption{Fragments of $\strline[\replaceall]$}\label{tab-sum}
-\end{table}
+%\tl{to decide later where to put this table.}
+%
+%\begin{table}[htbp]
+%\begin{tabular}{|c|c|c|c}
+%\hline
+%pattern ($p$)  &   replacement ($z$)        & decidability/complexity \\
+%\hline
+%constant string  &   constant   string                    & PSPACE-c (Proposition~\ref{??})    \\
+%\hline
+%string variable &   constant   string                    &  undecidable (Propositio~\ref{prop-und-pat-var})    \\
+%\hline
+%regular expression  &   constant string                      &    PSPACE-c (Proposition~\ref{??}) ?     \\
+%
+%\hline
+%constant string  &   string variable                       & EXPSPACE (Theorem~\ref{thm-main})       \\
+%
+%\hline
+%string variable  &   string variable                       & undecidable   (Proposition ~\ref{prop-und-pat-var})   \\
+%
+%\hline
+%regular expression  &   string variable                       &      EXPSPACE (Theorem~\ref{thm-main})      \\
+%\hline
+%\end{tabular}
+%\caption{Fragments of $\strline[\replaceall]$}\label{tab-sum}
+%\end{table}
 
 %\subsection{Some undecidability results}
 We embark on the case that the second parameter of the $\replaceall$ term is a variable. It turns out that in this case the satisfiability problem of $\strline[\replaceall]$ is undecidable.
