@@ -6,7 +6,7 @@ In this section, we consider the case that the second parameter of the $\replace
 
 As in the previous sections, we will again start with the simple situation that $C \equiv x = \replaceall(y, e_0, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. For $0\leq i\leq 3$, let $\cA_i = (Q_i, \delta_i, q_{0,i}, F_i)$ be the NFA corresponding to $e_i$. 
 
-If $\varepsilon \in \Ll(e_0)$, then according to the semantics, for each string $u = a_1 \cdots a_n$, $\replaceall(u, e_0, v) = v a_1 v \cdots v a_n v$. We  can then solve the satisfiability of $C$ as follows: 
+Let us first consider the special case $\Ll(e_0)= \{\varepsilon\}$. Then according to the semantics, for each string $u = a_1 \cdots a_n$, $\replaceall(u, e_0, v) = v a_1 v \cdots v a_n v$. We  can then solve the satisfiability of $C$ as follows: 
 \begin{enumerate}
 \item Guess a set $T_z \subseteq Q_1 \times Q_1$. 
 %
@@ -15,7 +15,10 @@ If $\varepsilon \in \Ll(e_0)$, then according to the semantics, for each string 
 \item  Decide the nonemptiness of $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, \varepsilon, T_z})$ and $\Ll(\cA_3) \cap \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q,q'))$.
 \end{enumerate}
 
-We now assume $\varepsilon \not \in \Ll(e_0)$. Then $q_{0,0} \not \in F_0$. In addition, without loss of generality, we assume that there are no incoming transitions for $q_{0,0}$ in $\cA_0$.
+Next, let us assume that $\Ll(e_0) \neq \{\varepsilon\}$. For simplicity of presentation, 
+we assume $\varepsilon \not \in \Ll(e_0)$. The case that $\varepsilon \in \Ll(e_0)$ can be dealt with in a slightly more technical albeit similar way.
+
+Since $\varepsilon \not \in \Ll(e_0)$, we have $q_{0,0} \not \in F_0$. In addition, without loss of generality, we assume that there are no incoming transitions for $q_{0,0}$ in $\cA_0$.
 
 To check the satisfiability of $C$, similar to the constant-string case, we construct a parsing automaton $\cA_{e_0}$ that parses a string $v \in \Sigma^\ast e_0 \Sigma^\ast$ into $v_1 u_1 v_2 u_2 \dots v_l u_l v_{l+1}$ such that 
 \begin{itemize}
