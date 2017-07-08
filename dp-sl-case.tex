@@ -28,14 +28,14 @@ $x'=\replaceall(ab, a, x)$ and $x=\replaceall(x', b, z)$.
 %\subsection{The single-letter case}
 
 In this section, we consider the single-letter case, that is, for the $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=a$ for $a \in \Sigma$.
-We begin by explaining the idea of the decision procedure in the case where there is a single use of a $\replaceall(\cdots)$ term.
+We begin by explaining the idea of the decision procedure in the case where there is a single use of a $\replaceall(-, - ,-)$ term.
 Then we describe the decision procedure in full details.
 
 %We first assume that the regular constraint $\psi = \bigwedge \limits_{x \in \vars(\varphi)} x \in e_x$, that is, there is exactly one atomic regular constraint for each variable.
 
 %We first explain the basic idea of the decision procedure.
 
-\subsection{A single use of $\replaceall(\cdots)$}
+\subsection{A single use of $\replaceall(-, -, -)$}
 
 Let us start with the simple case that
 \[C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3,\]
@@ -111,7 +111,7 @@ We can choose $z$ to be a string from $\Ll(\cA_3) \cap \ \bigcap \limits_{(q, q'
 \subsection{The general case}
 \label{sec:dp-sl-general}
 
-Let us now consider the general case where $C$ contains multiple occurrences of $\replaceall(\cdots)$ terms.
+Let us now consider the general case where $C$ contains multiple occurrences of $\replaceall(-, -, -)$ terms.
 Then the satisfiability of $C$ is decided by the following two-step procedure.
 
 \smallskip
