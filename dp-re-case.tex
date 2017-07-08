@@ -116,7 +116,7 @@ Finally $S$ is the set of states representing all threads for which final states
 		\medskip
 
 		Intuitively, in a state $(\rho, \searchleft, S)$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\},a)\big) \cap F_0 = \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$ can choose to stay in the ``$\searchleft$'' mode.
-		Moreover, no states occur more than once in $\red(\delta_0(\rho \{q_{0,0}\}, a)) \{q_{0,0}\}$, since $q_{0,0}$ does not occur in $\red(\delta_0(\rho\{q_{0,0}\}, a))$, as a result of the assumption that there are no incoming transitions for $q_{0,0}$ in $\cA_0$,
+		Moreover, no states occur more than once in $\red(\delta_0(\rho \{q_{0,0}\}, a)) \{q_{0,0}\}$, since $q_{0,0}$ does not occur in $\red(\delta_0(\rho\{q_{0,0}\}, a))$, (from the assumption that there are no incoming transitions for $q_{0,0}$ in $\cA_0$),
         %
 		\item (start $\searchlong$) suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$, $a \in \Sigma$, $\delta_0(S,a) \cap F_0 = \emptyset$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$,  and $\delta_0(\{q_{0,0}\}, a) \not \subseteq \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, then
 
@@ -165,6 +165,7 @@ $
 }
 \medskip
 
+\noindent
 where for each $j \in [l]$, $r_j \in \Ll((Q_{\searchleft})^* \concat (Q_{\searchlong})^*)$, and $r_{l+1} \in \Ll((Q_{\searchleft})^*)$. Intuitively, each occurrence of the state subsequence from $\Ll((Q_{\searchlong})^* \concat (\{q_{0,0}\}, \searchleft,-))$, except the first one, witnesses the \emph{leftmost and longest} matching of $e_0$ in $v$ from the beginning or after the previous such a matching.
 
 Since in the first component $\rho q_{0,0}$ of each state of $\cA_{e_0}$, no states from $\cA_0$ occur more than once,  it is not hard to see that $|\cA_{e_0}|$ is $2^{O(p(|\cA_0|))}$ for some polynomial $p$.
