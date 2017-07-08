@@ -194,7 +194,15 @@ $\strline[\replaceall]$:
 \begin{itemize}
 \item If the pattern parameters of the $\replaceall$ function are allowed to be variables, then the satisfiability of $\strline[\replaceall]$ is undecidable (cf. Proposition~\ref{prop-und-pat-var}).
 %
-\item If the pattern parameters of the $\replaceall$ function are regular expressions, then the satisfiability of $\strline[\replaceall]$ is decidable and in EXPSPACE (cf. Theorem~\ref{thm-main}). In addition, we show that the satisfiability problem is PSPACE-complete for several cases that are meaningful in practice (cf. Corollary~\ref{cor-pspace}).
+\item If the pattern parameters of the $\replaceall$ function are regular
+    expressions, then the satisfiability of $\strline[\replaceall]$ is decidable
+        and in EXPSPACE (cf. Theorem~\ref{thm-main}). In addition, we show that
+        the satisfiability problem is PSPACE-complete for several cases that are
+        meaningful in practice (cf. Corollary~\ref{cor-pspace}). This strictly
+        generalises the decidability result in \cite{LB16} of the straight-line 
+        fragment with concatenation, regular constraints, and the $\replaceall$ 
+        function where
+        patterns/replacement parameters are constant strings.
 %
 \item If $\strline[\replaceall]$, where the pattern parameters of the
     $\replaceall$ function are regular expressions, is extended with the 
@@ -215,12 +223,24 @@ Suppose that $\cA_1,\cA_2,\cA_3$ are the nondeterministic finite state automata 
 We effectively eliminate the use of $\replaceall$ by nondeterministically generating from $\cA_1$ a new regular constraint $\cA'_2$ for $y$ -- and $\cA'_3$ for $z$ respectively -- that incorporates the effect of the $\replaceall$. Then the satisfiability of $C$ is turned into testing the nonemptiness of the intersection of $\cA_2$ and $\cA'_2$, as well as the nonemptiness of the intersection of $\cA_3$ and $\cA'_3$. When there are multiple occurrences of the $\replaceall$ function, this process can be iterated. 
 Our decision procedure enjoys the following advantages:
 \begin{itemize}
-	\item it is automata-theoretic and built on a simple automata construction, moreover, when the formula is satisfiable, a solution can be synthesised, 
-	
-	\item the decision procedure is modular and amenable to implementation,  in the sense that the $\replaceall$ terms are removed one by one to generate more and more regular constraints,
-	
-	\item the decision procedure requires exponential space, but for the cases that are meaningful in practice, the decision procedure uses only polynomial space. 
+	\item it is automata-theoretic and built on a clean automata construction, 
+        moreover, when the formula is satisfiable, a solution can be 
+        synthesised, 
+	\item the decision procedure is modular and amenable to implementation,  in
+        the sense that the $\replaceall$ terms are removed one by one to
+        generate more and more regular constraints (emptiness of the
+        intersection of regular constraints could be efficiently handled by
+        the state-of-the-art string solver like \cite{fang-yu-circuits}),
+    \item the decision procedure requires exponential space (i.e. double
+        exponential time), but under assumptions that are reasonable practice, 
+        the decision procedure uses only polynomial space, which is not
+        worse than other string logics (which can encode the PSPACE-complete
+        problem of checking emptiness of the intersection of regular 
+        constraints). 
 \end{itemize}
+%Finally, a corollary our result is a simpler decision procedure for
+%the straight-line fragment of the theory of strings with concatenation,
+
 
 %EXPSPACE algorithm
 %
