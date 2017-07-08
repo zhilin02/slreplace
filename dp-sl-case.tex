@@ -60,7 +60,7 @@ $v \in \Ll(\cA_2) \cap \Ll(\cB_{\cA_1,a,T_z})$. We deduce that there is $T_z \su
 $$
 q_{0,1} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_1} q_1 \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_1 \xrightarrow[\cB_{\cA_1,a,T_z}]{v_2} q_2 \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_2 \cdots q_{k-1} \xrightarrow[\cB_{\cA_1,a,T_z}]{a} q'_{k-1} \xrightarrow[\cB_{\cA_1,a,T_z}]{v_k} q_k
 $$
-is an accepting run of $\cB_{\cA_1,a,T_z}$ on $v$. Then $q_{0,1} \xrightarrow[\cA_1]{v_1} q_1$, and for each $i \in [k-1]$ we have $(q_i, q'_i) \in T_z$ and $q'_i \xrightarrow[\cA_1]{v_{i+1}} q'_{i+1}$; moreover, $q_k \in F_1$.
+is an accepting run of $\cB_{\cA_1,a,T_z}$ on $v$. Then $q_{0,1} \xrightarrow[\cA_1]{v_1} q_1$, and for each $i \in [k-1]$ we have $(q_i, q'_i) \in T_z$ and $q'_i \xrightarrow[\cA_1]{v_{i+1}} q_{i+1}$; moreover, $q_k \in F_1$.
 Let $u = \replaceall(v, a, w)=v_1 w v_2 \cdots w v_k$. Since $w \in \bigcap \limits_{(q, q') \in T_z} \Ll(\cA_1(q, q'))$,  we infer that
 $$
 q_{0,1} \xrightarrow[\cA_1]{v_1} q_1 \xrightarrow[\cA_1]{w} q'_1 \xrightarrow[\cA_1]{v_2} q_2 \xrightarrow[\cA_1]{w} q'_2 \cdots q_{k-1} \xrightarrow[\cA_1]{w} q'_{k-1} \xrightarrow[\cA_1]{v_k} q_k
@@ -73,16 +73,16 @@ Let $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge 
 
 From Proposition~\ref{prop-sat-sl-case}, we can decide the satisfiability of $C$ in polynomial space as follows:
 \begin{description}
-\item[Step I.] Guess a set $T_{z} \subseteq Q_1 \times Q_1$.
+\item[Step I.] Nondeterministically choose a set $T_{z} \subseteq Q_1 \times Q_1$.
 %
-\item[Step II.] Guess an accepting run of the product automaton of $\cA_3$ and $\cA_1(q, q')$ for $(q,q') \in T_{z}$.
+\item[Step II.] Nondeterministically choose an accepting run of the product automaton of $\cA_3$ and $\cA_1(q, q')$ for $(q,q') \in T_{z}$.
 %
-\item[Step III.] Guess an accepting run of the product automaton of $\cA_2$ and $\cB_{\cA_1, a,  T_{z}}$.
+\item[Step III.] Nondeterministically choose an accepting run of the product automaton of $\cA_2$ and $\cB_{\cA_1, a,  T_{z}}$.
 \end{description}
 During Step II and III, it is sufficient to record $T_z$ and a state of the product automaton, which occupies only a polynomial space.
 
 The above decision procedure can be easily generalised to the case that there are multiple atomic regular constraints for $x$. For instance, let $x \in e_{1,1} \wedge x \in e_{1,2}$ and for $j = 1, 2$, $\cA_{1,j} = (Q_{1,j}, \delta_{1, j}, q_{0,1, j}, F_{1,j})$ be
-the NFA corresponding to $e_{1,j}$. Then in Step I, two sets $T_{1,z} \subseteq Q_{1,1} \times Q_{1,1}$ and $T_{2,z} \subseteq Q_{1,2} \times Q_{1,2}$ are guessed, moreover, Step II and III are adjusted accordingly.
+the NFA corresponding to $e_{1,j}$. Then in Step I, two sets $T_{1,z} \subseteq Q_{1,1} \times Q_{1,1}$ and $T_{2,z} \subseteq Q_{1,2} \times Q_{1,2}$ are nondeterministically chosen, moreover, Step II and III are adjusted accordingly.
 
 \begin{example}\label{exmp-sl}
 Let $C \equiv x= \replaceall(y, 0, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$, where $e_1=(0+1)^* (00(0+1)^* + 11(0+1)^*)$,  $e_2= (01)^*$,  and $e_3 = (10)^*$. The NFA $\cA_{1}, \cA_{2}, \cA_{3}$ corresponding to $e_1, e_2, e_3$ respectively are illustrated in Figure~\ref{fig-sl-exmp}. Let $T_z = \{(q_0, q_0), (q_1, q_2)\}$.  Then
@@ -122,7 +122,7 @@ Notice that $\cE(x)$ is represented succinctly as a set of pairs $(\cT, \cP)$, w
 
 %\tl{you want to say that all regular constraints $\cE(x)$ share the same "underlying" graph, but differ in the initial and final states.} \tl{I rephrased a bit-- the original was commented below. Check whether this is what you mean}
 
-Initially, let $G_0:= G_C$.  In addition, for each variable $x$ with the conjunct $x \in e$ in $\psi$ we define $\cE_0(x)$ as follows.  Let $\cA=(Q, \delta, q_0, F)$ be the NFA corresponding to $e$. We nondeterministically choose $q \in F$ and set $\cE_0(x):=  \{((Q, \delta), \{(q_0, q)\})\}$.
+Initially, let $G_0:= G_C$. In addition, for each variable $x$, we define $\cE_0(x)$ as follows: Let $x \in e_1 \wedge \cdots \wedge x \in e_n$ be the conjunction of all the atomic regular constraints related to $x$ in $C$. For each $i \in [n]$, let $\cA_i=(Q_i, \delta_i, q_{0,i}, F_i)$ be the NFA corresponding to $e_i$. We nondeterministically choose $q_i \in F_i$ and set $\cE_0(x):=  \left\{((Q_i, \delta_i), \{(q_{0,i}, q_i)\}) \mid i \in [n] \right\}$.
 
 
 %In addition, for each variable $x$, compute $\cE_0(x)$ as follows: Initially, let $\cE_0(x) := \emptyset$.
@@ -134,7 +134,7 @@ Note that $G_0$ was defined above.
 \begin{enumerate}
 \item Select a vertex $x$ of $G_i$ such that $x$ has no predecessors  and has two successors via edges $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ in $G_i$.  Suppose $\cE_i(x)=\{(\cT_1,\cP_1), \cdots, (\cT_k, \cP_k)\}$, where for each $j \in [k]$, $\cT_j = (Q_j, \delta_j)$. Then $\cE_{i+1}(z)$ and  $\cE_{i+1}(y)$ and $G_{i+1}$ are computed as follows:
 \begin{enumerate}
-\item For each $j \in [k]$, guess a set $T_{j, z} \subseteq Q_j \times Q_j$.
+\item For each $j \in [k]$, nondeterministically choose a set $T_{j, z} \subseteq Q_j \times Q_j$.
 %
 \item If $y \neq z$, then let
 $$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\}, \text{ and}$$
@@ -143,8 +143,8 @@ where $\cT_{\cT_j, a, T_{j,z}}$ is obtained from $\cT_j$ by first removing all t
 
 Otherwise, let
 $$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\} \cup \left\{(\cT_{\cT_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\}.$$
-In addition, for each vertex $x'$ distinct from $x, y, z$, let $\cE_{i+1}(x') := \cE_i(x')$.
-We set $\cE_{i+1}(x) = \emptyset$.
+In addition, for each vertex $x'$ distinct from $y, z$, let $\cE_{i+1}(x') := \cE_i(x')$.
+%We set $\cE_{i+1}(x) = \emptyset$.
 %
 \item Let $G_{i+1}:= G_i \setminus \{(x, (\rpleft, a), y), (x, (\rpright,a), z)\}$.
 \end{enumerate}
@@ -157,7 +157,7 @@ For each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$ after exiting the 
 \smallskip
 
 \noindent {\bf Step II.}
-For each source variable $x$, guess an accepting run of the product of all the NFA in $\cE(x)$.
+For each source variable $x$, nondeterministically choose an accepting run of the product of all the NFA in $\cE(x)$.
 
 \smallskip
 
@@ -166,14 +166,14 @@ For each source variable $x$, guess an accepting run of the product of all the N
 
 It remains to argue the correctness and complexity of the above procedure.
 Correctness follows a similar argument to Proposition~\ref{prop-sat-sl-case} and is presented in Appendix~\ref{sec:dp-dl-correctness}.
-\mat{How do we reference the appendix?}
+%\mat{How do we reference the appendix?}
 Intuitively, Proposition~\ref{prop-sat-sl-case} shows our procedure correctly eliminates occurrences of $\replaceall$ until only regular constraints remain.
 We now give an example then argue the complexity.
 
 \begin{example}
 Suppose $C \equiv x= \replaceall(y, 0, z) \wedge y = \replaceall(y', 1, z') \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3 \wedge y' \in e_4  \wedge z' \in e_5$, where $e_1, e_2, e_3$ are as in Example~\ref{exmp-sl}, $e_4=0^* 1^* 0^* 1^*$, and $e_5=0^*1^*$. Let $\cA_4,\cA_5$ be the NFA corresponding to $e_4$ and $e_5$ respectively (see Figure~\ref{fig-sl-exmp-nested}). The dependency graph $G_C$ of $C$ is illustrated in Figure~\ref{fig-sl-exmp-nested}. Let $\cT_1,\cdots, \cT_5$ be the transition graph of $\cA_1,\cdots, \cA_5$ respectively. Then the collection of regular constraints $\cE(\cdot)$ are computed as follows.
 \begin{itemize}
-\item Let $G_0=G_C$. We nondeterministically choose $\cE_0(x) = \{(\cT_1, \{(q_0, q_2)\})\}$, $\cE_0(y) = \{(\cT_2, \{(q^\prime_0, q^\prime_0)\})\}$, $\cE_0(z) = \{(\cT_3, \{(q^{\prime\prime}_0, q^{\prime\prime}_0)\})\}$, $\cE_0(y^\prime) = \{(\cT_4, \{(p_0, p_1)\})\}$, $\cE_0(z^\prime) = \{(\cT_5, \{(p^{\prime}_0, p^{\prime}_1)\})\}$.
+\item Let $G_0=G_C$. Choose nondeterministically $\cE_0(x) = \{(\cT_1, \{(q_0, q_2)\})\}$, $\cE_0(y) = \{(\cT_2, \{(q^\prime_0, q^\prime_0)\})\}$, $\cE_0(z) = \{(\cT_3, \{(q^{\prime\prime}_0, q^{\prime\prime}_0)\})\}$, $\cE_0(y^\prime) = \{(\cT_4, \{(p_0, p_1)\})\}$, $\cE_0(z^\prime) = \{(\cT_5, \{(p^{\prime}_0, p^{\prime}_1)\})\}$.
 %
 \item Select the vertex $x$ in $G_0$, construct $\cE_1(y)$ and $\cE_1(z)$ as in Example~\ref{exmp-sl}, that is, nondeterministically choose $T_z =\{(q_0, q_0), (q_1,q_2)\}$, let $\cE_1(z) = \{(\cT_3, \{(q^{\prime\prime}_0, q^{\prime\prime}_0)\}), (\cT_1, \{(q_0,q_0), (q_1, q_2)\})\}$ and $\cE_1(y)=\{(\cT_2, \{(q^\prime_0, q^\prime_0)\}), (\cT_{\cT_1, 0, T_z}, \{(q_0,q_2)\})\}$, where $\cT_{\cT_1, 0, T_z}$ is the transition graph of $\cB_{\cA_1, 0, T_z}$ illustrated in Figure~\ref{fig-sl-exmp}. In addition, $\cE_1(x)=\cE_0(x)$, $\cE_1(y')=\cE_0(y')$ and $\cE_1(z')=\cE_0(z')$. Finally, $G_1$ is obtained from $G_0$ by removing the two edges out of $x$.
 %
