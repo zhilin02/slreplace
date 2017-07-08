@@ -223,22 +223,22 @@ automata-theoretic approach. The key idea can be illustrated as follows. Let
 us consider the simple formula $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. 
 Suppose that $\cA_1,\cA_2,\cA_3$ are the nondeterministic finite state automata corresponding to $e_1,e_2,e_3$ respectively. 
 We effectively eliminate the use of $\replaceall$ by nondeterministically
-generating from $\cA_1$ a new regular constraint $\cA'_2$ for $y$ -- and
-$\cA'_3$ for $z$ respectively -- that incorporates the effect of the
-$\replaceall$ function (i.e. all regular constraints are on the ``source'' variables).
-Then the satisfiability of $C$ is turned into testing the nonemptiness of the intersection of $\cA_2$ and $\cA'_2$, as well as the nonemptiness of the intersection of $\cA_3$ and $\cA'_3$. When there are multiple occurrences of the $\replaceall$ function, this process can be iterated. 
+generating from $\cA_1$ a new regular constraint $\cA'_2$ for $y$ as well as a new regular constraint
+$\cA'_3$ for $z$.   These constraints incorporate the effect of the
+$\replaceall$ function (i.e.\ all regular constraints are on the ``source'' variables).
+Then, the satisfiability of $C$ is turned into testing the nonemptiness of the intersection of $\cA_2$ and $\cA'_2$, as well as the nonemptiness of the intersection of $\cA_3$ and $\cA'_3$. When there are multiple occurrences of the $\replaceall$ function, this process can be iterated. 
 Our decision procedure enjoys the following advantages:
 \begin{itemize}
-	\item It is automata-theoretic and built on a clean automata construction, 
+	\item It is automata-theoretic and built on clean automaton constructions, 
         moreover, when the formula is satisfiable, a solution can be 
         synthesised. For example, in the aforementioned XSS vulnerability detection example, one can synthesise the values of the variables $user$ and $bio$ for a potential attack. 
 	\item The decision procedure is modular in
         the sense that the $\replaceall$ terms are removed one by one to
         generate more and more regular constraints (emptiness of the
         intersection of regular constraints could be efficiently handled by
-        the state-of-the-art string solver like \cite{fang-yu-circuits}).  
+        state-of-the-art string solvers like \cite{fang-yu-circuits}).  
     \item The decision procedure requires exponential space (thus double
-        exponential time), but under assumptions that are reasonable practice, 
+        exponential time), but under assumptions that are reasonable in practice, 
         the decision procedure uses only polynomial space, which is not
         worse than other string logics (which can encode the PSPACE-complete
         problem of checking emptiness of the intersection of regular 
