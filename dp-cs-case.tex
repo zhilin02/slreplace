@@ -14,8 +14,8 @@ $$
 q_{0,1} \xrightarrow[\cA_1]{w_1} q_1 \xrightarrow[\cA_1]{w'} q'_1 \xrightarrow[\cA_1]{w_2} q_2 \xrightarrow[\cA_1]{w'} q'_2 \cdots q_{n-1} \xrightarrow[\cA_1]{w'} q'_{n-1} \xrightarrow[\cA_1]{w_n} q_n.
 $$
 Let $T_z = \{(q_i, q'_i) \mid i \in [n]\}$. Then $w' \in \Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q'))$. Therefore, $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$. Similar to the single-letter case, we construct an NFA $\cB_{\cA_1, u, T_z}$ to characterise the satisfiability of $C$.  More precisely, $C$ is satisfiable iff there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and
-$\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, u, T_z}) \neq \emptyset$. Intuitively, when reading the string $w$, $\cB_{\cA_1, u, T_z}$ simulates the generation of $v$ from $w$ and $w'$, that is, simulates the replacement of  every occurrence of $u$ in $w$ with $w'$, and verifies that $v$ is accepted by $\cA_1$, by using $T_z$.
-To build $\cB_{\cA_1, u, T_z}$ we utilise the concepts of window profiles and parsing automata defined below.
+$\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, u, T_z}) \neq \emptyset$. Intuitively, when reading the string $w$, $\cB_{\cA_1, u, T_z}$ simulates the generation of $v$ from $w$ and $w'$ (that is, the replacement of  every occurrence of $u$ in $w$ with $w'$) and verifies that $v$ is accepted by $\cA_1$, by using $T_z$.
+To build $\cB_{\cA_1, u, T_z}$, we utilise the concepts of window profiles and parsing automata defined below.
 %
 %Intuitively, the window profiles encode the matching of the suffixes of a string of length $|u|$ w.r.t. the prefixes of $u$ and a parsing automaton for $u$ uses window profiles of $u$ to pinpoint the first, second, \dots, occurrence of $u$ in a string.
 
@@ -79,7 +79,7 @@ The $k$-window profiles w.r.t. $u$ will be used to ensure that $v$ is correctly 
 \begin{definition}[Parsing automata]
 The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
 \begin{itemize}
-	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
+	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  and the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 	%
 	\item $q_{0,u}=q_0$.
 
@@ -92,9 +92,9 @@ The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u,
 %
 		\item For each state $\left(\search, \overrightarrow{W} \right)$ and $a \in \Sigma$ such that $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$,
 		\begin{itemize}
-			\item the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\search, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1] = \top$ iff $a = u[1]$, and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff $\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$,
+			\item the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\search, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1] = \top$ iff $a = u[1]$, and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff ($\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$),
 			%
-			\item if $a = u[1]$, then the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\verify, 1, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1]=\top$,  and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff $\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$.
+			\item if $a = u[1]$, then the transition $\left(\left(\search, \overrightarrow{W} \right), a, \left(\verify, 1, \overrightarrow{W'} \right)\right) \in \delta_u$, where $\overrightarrow{W'}[1]=\top$,  and for each $i: 2 \le i \le k-1$, $\overrightarrow{W'}[i] =\top$ iff ($\overrightarrow{W}[{i-1}] = \top$ and $a = u[i]$).
 			%
 		\end{itemize}
 		%
@@ -110,7 +110,7 @@ The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u,
 		%where $\bot^k$ in $(\search, \bot^k)$ is used to \emph{reinitialise} the $k$-window profile w.r.t. $u$.
 		%
 	\end{itemize}
-Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is used to guarantee that each occurrence of the state $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence. In other words, the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is an invariant to guarantee that after an occurrence of $q_0$, if $q_0$ has not been reached again,  then $u$ is forbidden to occur.
+Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is used to guarantee that each occurrence of the state $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence. In other words, the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is used to guarantee that after an occurrence of $q_0$, if $q_0$ has not been reached again,  then $u$ is forbidden to occur.
 
 % parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, we have $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
 	%
@@ -186,7 +186,7 @@ Let $T_z = \{(q_0,q_0),(q_1,q_2)\}$. Then the NFA $\cB_{\cA_1, u, T_z}$ is obtai
 For the more general case that the $\strline[\replaceall]$ formula $C$ contains more than one occurrence of $\replaceall(\cdots)$ terms, similar to the single-letter case in Section~\ref{sec:replaceallsl}, we can nondeterministically remove the edges in the dependency graph $G_C$ in a top-down manner and reduce the satisfiability of $C$ to the satisfiability of a collection of regular constraints for source variables.
 
 \paragraph*{Complexity}
-When constructing $G_{i+1}$ from $G_i$, suppose the two edges from $x$ to $y$ and $z$ respectively are currently removed, let the labels of the two edges be $({\sf l}, u)$ and $({\sf r}, u)$ respectively, then each element $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$, meanwhile, it may also be transformed into an element $(\cT'', \cP'')$ of $\cE_{i+1}(z)$ such that $\cT''$ has the same state space as $\cT$. Although in each step of the decision procedure, the state space of the regular constraints may be multiplied by a factor $|u|$. In general, the state space of these regular constraints is at most exponential in the end, so that we can still solve the nonemptiness problem of the intersection of all these regular constraints in exponential space. In addition, if the $\rpleft$-length of $G_C$ is bounded by a constant $c$, we can get a polynomial space algorithm.
+When constructing $G_{i+1}$ from $G_i$, suppose the two edges from $x$ to $y$ and $z$ respectively are currently removed, let the labels of the two edges be $({\sf l}, u)$ and $({\sf r}, u)$ respectively. Then each element $(\cT, \cP)$ of $\cE_i(x)$ may be transformed into an element $(\cT', \cP')$ of $\cE_{i+1}(y)$ such that $|\cT'| = O(|u||\cT|)$, meanwhile, it may also be transformed into an element $(\cT'', \cP'')$ of $\cE_{i+1}(z)$ such that $\cT''$ has the same state space as $\cT$. In each step of the decision procedure, the state space of the regular constraints may be multiplied by a factor $|u|$. The state space of these regular constraints is at most exponential in the end, so that we can still solve the nonemptiness problem of the intersection of all these regular constraints in exponential space. In addition, if the $\rpleft$-length of $G_C$ is bounded by a constant $c$, then for each source variable, we get polynomially many regular constraints, where each of them has a state space of polynomial size. Therefore, we can get a polynomial space algorithm. See Appendix~\ref{sec:cs-complexity-full} for a detailed analysis.
 
 %\mat{Also need to say the same about $z$?}\zhilin{the state space of the regular constraint for $z$ is not changed.}
 

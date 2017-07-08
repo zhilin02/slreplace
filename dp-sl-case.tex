@@ -206,7 +206,7 @@ For the three source variables $y', z', z$, it is not hard to check that $01$ be
 
 \subsubsection{Complexity}
 
-To show our decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$.
+To show our decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$. 
 
 \begin{proposition}\label{prop-sl-comp}
 The cardinalities of $\cE(x)$ for the variables $x$ in $G_C$ are at most exponential in $\dmdidx(G_C)$, the diamond index of $G_C$.
@@ -217,7 +217,7 @@ Therefore, according to Proposition~\ref{prop-sl-comp}, if the diamond index of 
 Let $K$ be the maximum of $|\cE_0(x)|$ for $x \in \vars(\varphi)$. 
 For each variable $x$ in $G_C$, all the regular constraints in $\cE(x)$ are either from $\cE_0(x)$, or are generated from some regular constraints from $\cE_0(x')$ for the ancestors $x'$ of $x$. Let $x'$ be an ancestor of $x$. Then for each $(\cT, \cP) \in \cE_0(x')$, according to Step I in the decision procedure, by an induction on the maximum length of the paths in from $x'$ to $x$, we can show that the number of elements in $\cE(x)$ that are generated from $(\cT, \cP)$ is at most the number of different paths from $x'$ to $x$. 
 %
-From Proposition~\ref{prop-di}, we know that there are at most $(|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$ different paths from $x'$ to $x$. Since there are at most $|\vars(\varphi)|$ ancestors of $x$, we deduce that $|\cE(x)| \le |\vars(\varphi)|\ K\ (|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$.
+From Proposition~\ref{prop-di}, we know that there are at most $(|\vars(\varphi)|\cdot |E_C|)^{O(\dmdidx(G_C))}$ different paths from $x'$ to $x$. Since there are at most $|\vars(\varphi)|$ ancestors of $x$, we deduce that $|\cE(x)| \le K \cdot |\vars(\varphi)| \cdot (|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%the original complexity analysis%%%%%%%%%%%%%%%%%%%%%%%%
