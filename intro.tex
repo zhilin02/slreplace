@@ -223,10 +223,10 @@ automata-theoretic approach. The key idea can be illustrated as follows. Let
 us consider the simple formula $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. 
 Suppose that $\cA_1,\cA_2,\cA_3$ are the nondeterministic finite state automata corresponding to $e_1,e_2,e_3$ respectively. 
 We effectively eliminate the use of $\replaceall$ by nondeterministically
-generating from $\cA_1$ a new regular constraint $\cA'_2$ for $y$ -- and
-$\cA'_3$ for $z$ respectively -- that incorporates the effect of the
-$\replaceall$ function (i.e. all regular constraints are on the ``source'' variables).
-Then the satisfiability of $C$ is turned into testing the nonemptiness of the intersection of $\cA_2$ and $\cA'_2$, as well as the nonemptiness of the intersection of $\cA_3$ and $\cA'_3$. When there are multiple occurrences of the $\replaceall$ function, this process can be iterated. 
+generating from $\cA_1$ a new regular constraint $\cA'_2$ for $y$ as well as a new regular constraint
+$\cA'_3$ for $z$.   These constraints incorporate the effect of the
+$\replaceall$ function (i.e.\ all regular constraints are on the ``source'' variables).
+Then, the satisfiability of $C$ is turned into testing the nonemptiness of the intersection of $\cA_2$ and $\cA'_2$, as well as the nonemptiness of the intersection of $\cA_3$ and $\cA'_3$. When there are multiple occurrences of the $\replaceall$ function, this process can be iterated. 
 Our decision procedure enjoys the following advantages:
 \begin{itemize}
 	\item It is automata-theoretic and built on a clean automata construction, 
