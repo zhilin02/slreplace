@@ -2,5 +2,26 @@
 
 \section{Conclusion}
 
-In this paper, we have investigated extensively the decidability boundary of the satisfiability problem for the string constraints involving the $\replaceall$ function and regular constraints. The $\replaceall$ functions are considered in their most general form, that is, $\replaceall(x, e, y)$, where $x,y$ can be string variables, and $e$ is either a string constant/variable, or a regular expression. As the satisfiability problem is undecidable in general, we focused on the straight-line fragment. We showed that while it remains to be undecidable if the second parameter of the $\replaceall$ function is a variable, it becomes decidable, more precisely in EXPSPACE, if the second parameter is a regular expression. The decision procedure was obtained by an automata-theoretic construction, which is modular and amenable to implementations. In addition, we proved that the decision procedure is in fact PSPACE-complete for several special cases that are meaningful in practice. Finally, we show that extending the decidable straight-line fragment with any of the integer constraints, character constraints, and constraints involving the $\indexof$ function, leads to the undecidability immediately. 
-Our work clarified important fundamental issues surrounding the $\replaceall$ functions in string constraint solving and provided a novel decision procedure which paved a way to a string solver that is able to fully support the $\replaceall$ function. This would be the most direct future work. 
+\OMIT{
+Since any theory of strings containing the string-replace function (even the 
+most restricted version where pattern/replacement strings are both constant 
+strings) is undecidable unless we impose some kind of straight-line restriction 
+on the formulas, 
+}
+We have initiated a systematic investigation of the decidability of 
+the satisfiability problem for the straight-line fragments of string 
+constraints involving the $\replaceall$ function and regular constraints.
+This is a fragment with applications in symbolic execution of 
+string-manipulating programs \cite{LB16,TCJ16}. Our main result is a decision 
+procedure for a large fragment of the logic, wherein the pattern string is
+a regular expression (which covers a large proportion of the usage of the 
+$\replaceall$ function in practice). We have shown that the decidability
+of this fragment cannot be substantially extended. This is achieved by showing
+that if either (1) the pattern string is a variable, or (2) the length
+constraint is incorporated in the fragment, then undecidability results.
+%boundary of string constraints with the $\replaceall$ function by show
+%The $\replaceall$ functions are considered in their most general form, that is, $\replaceall(x, e, y)$, where $x,y$ can be string variables, and $e$ is either a string constant/variable, or a regular expression. As the satisfiability problem is undecidable in general, we focused on the straight-line fragment. We showed that while it remains to be undecidable if the second parameter of the $\replaceall$ function is a variable, it becomes decidable, more precisely in EXPSPACE, if the second parameter is a regular expression. The decision procedure was obtained by an automata-theoretic construction, which is modular and amenable to implementations. In addition, we proved that the decision procedure is in fact PSPACE-complete for several special cases that are meaningful in practice. Finally, we show that extending the decidable straight-line fragment with any of the integer constraints, character constraints, and constraints involving the $\indexof$ function, leads to the undecidability immediately. 
+Our work clarified important fundamental issues surrounding the $\replaceall$
+functions in string constraint solving and provided a novel decision procedure
+which paved a way to a string solver that is able to fully support the
+$\replaceall$ function. This would be the most immediate future work. 
