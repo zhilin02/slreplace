@@ -113,7 +113,12 @@ They use deterministic finite automata (DFAs) to represent possible values of st
 %Intersecting these with a given attack pattern yields the potential attack strings if the program is vulnerable. Based on the presented techniques, we have implemented Stranger, an automata-based string analysis tool for detecting string-related security vulnerabilities in PHP applications. We evaluated Stranger on several open-source Web applications including one with 350,000+ lines of code. Stranger is able to detect known/unknown vulnerabilities, and, after inserting proper sanitization routines, prove the absence of vulnerabilities with respect to given attack patterns.
 
  
-The S3 and S3P tools also support the $\replaceall$ function, where some progressive searching strategies were provided to deal with the non-termination problem brought out by the recursively defined string operations (of which the $\replaceall$ function is a special case). Nevertheless, their algorithms are doomed to be incomplete as reasoning about unbounded strings defined recursively is in general an undecidable problem.
+The S3 and S3P tools also support the $\replaceall$ function, where some
+progressive searching strategies were provided to deal with the non-termination
+problem brought out by the recursively defined string operations (of which the
+$\replaceall$ function is a special case). Nevertheless, the solvers are 
+incomplete as reasoning about unbounded strings defined recursively is in 
+general an undecidable problem.
 
 
 %, the authors present S3 (which stands for Symbolic String Solver), a new symbolic string solver.
