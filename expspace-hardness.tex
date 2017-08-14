@@ -1,0 +1,92 @@
+\documentclass{article}
+
+% Some recommended packages.
+%\usepackage{latexsym}
+%\usepackage{setspace}
+%\usepackage{cancel}
+%\usepackage{listings}
+%\usepackage{graphicx}
+%\usepackage{appendix}
+%\usepackage{amssymb}
+%\usepackage{stmaryrd}
+%\usepackage{amsmath}
+%\usepackage{leftidx}
+\usepackage{mathtools}
+%\usepackage{paralist}
+%\usepackage{color}
+%\usepackage{mathrsfs}
+%\usepackage{tikz}
+%\usetikzlibrary{shapes}
+%\usepackage[linesnumbered,ruled]{algorithm2e}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+
+%==========================================================
+\input{expspace-macros.tex}
+\input{macros.tex}
+\input{comm-anthony}
+%==========================================================
+
+\newcommand{\anthony}[1]{\color{red} {YA: #1 :AY} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+
+\newcommand{\concat} {\circ}
+\newcommand{\replace} {{\sf replace}}
+\newcommand{\str} {{\sf Str}}
+\newcommand{\intnum} {{\sf Int}}
+\newcommand{\regexp} {{\sf RegExp}}
+\newcommand{\strarr} {{\sf StringArray}}
+\newcommand{\dtypes} {{\sf DataTypes}}
+\newcommand{\anarr} {{\mathbb{A}}}
+
+%============================================================
+
+
+\title{EXPSPACE-hardness of $\strline[\replaceall]$}
+\author{Taolue Chen, Matthew Hague, Anthony Widjaja Lin, Zhilin Wu, and Zhilin's Student (apologies, i have lost the name)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+We will attempt to show the following result.
+
+\begin{theorem}
+    Satisfiability of $\strline[\replaceall]$, even in the single-letter case, is EXPSPACE-hard.
+\end{theorem}
+
+To show the above result, we will give a constraint that represents a straight-line program which ``transforms'' an automaton into exponentially many different automata.
+These exponentially many automata will be used to check the vertical tiling relation for a tiling problem with an exponentially wide corridor.
+Since such tiling problems are EXPSPACE-hard, the result follows.
+
+After introducing the tiling problem, we will show the form of the constraint without specifying the regular languages used.
+We will then describe the effect that eliminating the $\replaceall$ and string concatenations has on the regular languages.
+Then, we will give a simple example of how this effect may be used to generate interesting languages.
+Finally, we will give the precise languages needed to obtain our result.
+
+\subsection*{The Tiling Problem}
+
+\begin{definition}[Tiling Problems]
+    A \emph{tiling problem} is a tuple
+    $\tup{\tiles, \inittile, \fintile, \hcons, \vcons, \width}$
+    where
+        $\tiles$ is a finite set of tiles,
+        $\inittile, \fintile \in \tiles$ are initial and final tiles respectively,
+        $\hcons, \vcons \in \tiles \times \tiles$
+            are horizontal and vertical matching relations respectively, and
+        $\width$ is the width of the tiling corridor.
+\end{definition}
+
+
+
+
+\subsection*{The Constraint}
+
+
+
+
+\end{document}
