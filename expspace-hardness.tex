@@ -152,11 +152,11 @@ Note, we have a different character for each bit position, e.g. $\nbit{2}{0}$ is
 The $\resetchar$ will be used to mark the beginning and end of the word and is required for technical reasons.
 
 To reach such a solution, we will use the constraints to effectively generate an exponential number of languages.
-We can number these languages in binary, i.e.\ $0\cdots00$ to $1\cdots11$.
-In addition to $\resetchar$, $0$, and $1$, we will also introduce characters of the form
+We can number these languages in binary, i.e.\ $L_{0\cdots00}$ to $L_{1\cdots11}$.
+In addition to $\resetchar$, $\nbit{i}{0}$, and $\nbit{i}{1}$, we will also introduce characters of the form
 $\repl{i}{\bit}{\bit'}$.
 In language
-$\bit_1\cdots\bit_n$,
+$L_{\bit_1\cdots\bit_n}$,
 the character
 $\repl{i}{\bit}{\bit'}$
 will mean that if $\bit_i = \bit$, then match the character
@@ -167,12 +167,12 @@ This will become clearer when we show an example, but first we will give the con
 
 The constraint we will need to encode solutions to the tiling problem is below.
 It gives a straight-line program that can be read top to bottom.
-The language constraints on $x_1$ will enforce that any solution also gives a solution to the tiling problem if we do not enforce the vertical tiling relation.
+The language constraints on $x_1$ will enforce that any solution also gives a solution to the tiling problem if we do not enforce the vertical matching relation.
 To enforce the vertical matching relation we use the constraint on $x_n$ at the end.
 Notice that each sequence of uses of $\replaceall$ translates between
 $\repl{i}{\bit}{\bit'}$
 and the values $\nbit{i}{0}$ and $\nbit{i}{1}$, where the $y$ variables handle the case where $\bit$ is $0$, and the $z$ when $\bit$ is $1$.
-This process will be illuminated in later with an example.
+This process will be illuminated later with an example.
 \[
     \begin{array}{rcl}
         \varphi &=& x_1 \in L \land
@@ -224,6 +224,7 @@ This leads to $x_{n-1} \in L_{0}$, where $L_{0}$ is $L'_{0}$ except all $\repl{n
 Similarly, we also have $x_{n-1} \in L_{1}$, where $L_{1}$ is $L'_{1}$ except all $\repl{n}{1}{\bit}$ characters have been replaced by $\nbit{n}{\bit}$.
 Note that different $\repl{n}{\bit'}{\bit}$ characters have been replaced in $L_{0}$ and $L_{1}$.
 The languages have begun to diverge.
+This divergence is best seen in the example in the next section.
 
 We then eliminate
 $x_{n-1} = y^1_{n-1} \concat z^1_{n-1}$.
@@ -254,10 +255,13 @@ By following this procedure, we eventually obtain the constraints
 Notice, furthermore, that
 $L_{\bit_1 \ldots \bit_n}$
 has all
-$\repl{i}{\bit_i}{\bit'}$
-replaced by $\nbit{i}{\bit'}$
+$\repl{i}{\bit_i}{0}$
+replaced by $\nbit{i}{0}$
+and all
+$\repl{i}{\bit_i}{1}$
+replaced by $\nbit{i}{1}$
 but all characters
-$\repl{i}{\bit'_i}{\bit'}$
+$\repl{i}{\bit'_i}{\bit}$
 where
 $\bit'_i \neq \bit_i$
 are unchanged.
@@ -294,7 +298,7 @@ We first eliminate $x_3 = y^1_3 \concat z^1_3$ and then
         z^1_3 &=& \replaceall(z^0_3, \nbit{3}{1}, \repl{3}{1}{1}) \ .
     \end{array}
 \]
-Note, from $L'_{0}$ we replace the $\repl{3}{0}{0}$- and $\repl{3}{0}{1}$-transitions (although the later does not appear in $\cA$), while from $L'_{1}$ we replace the $\repl{3}{1}{0}$- and $\repl{3}{1}{1}$-transitions.
+Note, from $L'_{0}$ we replace the $\repl{3}{0}{0}$- and $\repl{3}{0}{1}$-transitions (although the latter does not appear in $\cA$), while from $L'_{1}$ we replace the $\repl{3}{1}{0}$- and $\repl{3}{1}{1}$-transitions.
 This leaves us with
 \[
     x_{2} \in L_{0} \land x_{2} \in L_{1}
@@ -450,7 +454,7 @@ $\bit_1\ldots\bit_n$th
 column of the tiling obeys the vertical matching relation.
 Each
 $L_{\bit_1\ldots\bit_n}$
-can be seen to be representable by a polynomially sized automata that stores in its states the last tile seen after the sequence
+can be seen to be representable by a polynomially sized automaton that stores in its states the last tile seen after the sequence
 $\bit_1\ldots\bit_n$.
 Then, when the sequence next occurs, the new tile can be compared with the previous one.
 The automaton will proceed by storing the new tile and forgetting the old.
@@ -606,7 +610,8 @@ where
                & & \setcomp{q_i
                             \xrightarrow{\repl{i}{\bit}{\bit'}}
                             p_{i+1}}
-                           {1 \leq i < n \land \bit \in \set{0,1}} \ \cup \\
+                           {1 \leq i < n \land
+                            \bit \neq \bit' \in \set{0,1}} \ \cup \\
                & & \setcomp{\tup{q_i, \tile}
                             \xrightarrow{\repl{i}{\bit}{\bit'}}
                             \tup{p_{i+1}, \tile}}
@@ -664,7 +669,7 @@ If we are in state $\tup{q_n, \tile}$ then we are reading the
 $\bit_1\ldots\bit_n$th
 column, but this is the not the first row and we have to verify the matching relation.
 Wherefrom, there is only a transition reading $\tile'$ if
-$\top{\tile, \tile'} \in \vcons$.
+$\tup{\tile, \tile'} \in \vcons$.
 The tile $\tile'$ is then saved for comparison with the next tile.
 
 Otherwise, if we are in a state $p_n$ or $\tup{p_n, \tile}$ then we are not in the correct column and there is nothing to verify.
@@ -673,10 +678,11 @@ In this case we simply skip over the tile and continue.
 
 \subsection{Conclusion}
 
-Given a tiling problem over a corridor of width $2^n$, we have given an
+Given a tiling problem over a corridor of width $2^n$, we have given a (polynomially sized in $n$)
 $\strline[\replaceall]$
 constraint $\varphi$ using languages
 $L$, $L_\vcons$, $L_\hcons$, $L_1$, \ldots, $L_n$
+(representable by automata polynomially sized in $n$)
 such that $\varphi$ is satisfiable iff the variable $x_1$ takes on a value
 \[
     \resetchar
