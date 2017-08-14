@@ -491,92 +491,98 @@ $\tup{q_1, \tile_j}$
 will be analogous to those from
 $\tup{q_1, \tile}$.
 
-\begin{center}
-\begin{tikzpicture}[node distance=2.5cm,on grid,auto,bend angle=65,shorten >= 1pt]
-   \node[state] (q1)   {$\tup{q_1, \tile}$};
-   \node[state] (q2) [right=of q1] {$\tup{q_2, \tile}$};
-   \node[state] (q3) [right=of q2] {$\tup{q_3, \tile}$};
-   \node        (qdots) [right=of q3] {$\cdots$};
-   \node[state] (qn) [right=of qdots] {$\tup{q_n, \tile}$};
-   \node[state] (qt1) [above right=of qn] {$\tup{q_1, \tile_1}$};
-   \node        (qtdots) [right=of qn] {$\vdots$};
-   \node[state] (qtm) [below right=of qn] {$\tup{q_1, \tile_m}$};
-   \node[state] (p2) [below=of q2] {$\tup{p_2, \tile}$};
-   \node[state] (p3) [below=of q3] {$\tup{p_3, \tile}$};
-   \node        (pdots) [below=of qdots] {$\cdots$};
-   \node[state] (pn) [below=of qn] {$\tup{p_n, \tile}$};
-   \path[->]
-     (q1) edge node [above] {$\repl{1}{0}{0}$} (q2)
-     (q1) edge node [below] {$\repl{1}{1}{1}$} (q2)
-     (q1) edge node [above] {$\repl{1}{0}{1}$} (p2)
-     (q1) edge node [below] {$\repl{1}{1}{0}$} (p2)
-     %
-     (q2) edge node [above] {$\repl{2}{0}{0}$} (q3)
-     (q2) edge node [below] {$\repl{2}{1}{1}$} (q3)
-     (q2) edge node [above] {$\repl{2}{0}{1}$} (p3)
-     (q2) edge node [below] {$\repl{2}{1}{0}$} (p3)
-     %
-     (q3) edge node [above] {$\repl{3}{0}{0}$} (qdots)
-     (q3) edge node [below] {$\repl{3}{1}{1}$} (qdots)
-     (q3) edge node [above] {$\repl{3}{0}{1}$} (pdots)
-     (q3) edge node [below] {$\repl{3}{1}{0}$} (pdots)
-     %
-     (qdots) edge node [above] {$\repl{n}{0}{0}$} (qn)
-     (qdots) edge node [below] {$\repl{n}{1}{1}$} (qn)
-     (qdots) edge node [above] {$\repl{n}{0}{1}$} (pn)
-     (qdots) edge node [below] {$\repl{n}{1}{0}$} (pn)
-     %
-     (p2) edge node [above] {$\replall{2}$} (p3)
-     (p3) edge node [above] {$\replall{3}$} (pdots)
-     (pdots) edge node [above] {$\replall{n}$} (pn)
-     %
-     (pn) edge [bend left] node [below] {$\tiles$} (q1)
-     (qn) edge node [above] {$\tile_1$} (qt1)
-     (qn) edge node [above] {$\tile_m$} (qtm);
-\end{tikzpicture}
-\end{center}
+\scalebox{.8}{
+    \begin{center}
+    \begin{tikzpicture}[node distance=3cm and 2.5cm,on grid,auto,bend angle=75,shorten >= 1pt]
+       \node[state] (q1)   {$\tup{q_1, \tile}$};
+       \node[state] (q2) [right=of q1] {$\tup{q_2, \tile}$};
+       \node[state] (q3) [right=of q2] {$\tup{q_3, \tile}$};
+       \node        (qdots) [right=of q3] {$\cdots$};
+       \node[state] (qn) [right=of qdots] {$\tup{q_n, \tile}$};
+       \node[state] (qt1) [above right=of qn,yshift=-1.5cm] {$\tup{q_1, \tile_1}$};
+       \node        (qtdots) [right=of qn] {$\vdots$};
+       \node[state] (qtm) [below right=of qn,yshift=1.5cm] {$\tup{q_1, \tile_m}$};
+       \node[state] (p2) [below=of q2] {$\tup{p_2, \tile}$};
+       \node[state] (p3) [below=of q3] {$\tup{p_3, \tile}$};
+       \node        (pdots) [below=of qdots] {$\cdots$};
+       \node[state] (pn) [below=of qn] {$\tup{p_n, \tile}$};
+       \path[->]
+         (q1) edge node [above] {$\repl{1}{0}{0}$} (q2)
+         (q1) edge node [below] {$\repl{1}{1}{1}$} (q2)
+         (q1) edge node [above] {$\repl{1}{0}{1}$} (p2)
+         (q1) edge node [below] {$\repl{1}{1}{0}$} (p2)
+         %
+         (q2) edge node [above] {$\repl{2}{0}{0}$} (q3)
+         (q2) edge node [below] {$\repl{2}{1}{1}$} (q3)
+         (q2) edge node [above] {$\repl{2}{0}{1}$} (p3)
+         (q2) edge node [below] {$\repl{2}{1}{0}$} (p3)
+         %
+         (q3) edge node [above] {$\repl{3}{0}{0}$} (qdots)
+         (q3) edge node [below] {$\repl{3}{1}{1}$} (qdots)
+         (q3) edge node [above] {$\repl{3}{0}{1}$} (pdots)
+         (q3) edge node [below] {$\repl{3}{1}{0}$} (pdots)
+         %
+         (qdots) edge node [above] {$\repl{n}{0}{0}$} (qn)
+         (qdots) edge node [below] {$\repl{n}{1}{1}$} (qn)
+         (qdots) edge node [above] {$\repl{n}{0}{1}$} (pn)
+         (qdots) edge node [below] {$\repl{n}{1}{0}$} (pn)
+         %
+         (p2) edge node [above] {$\replall{2}$} (p3)
+         (p3) edge node [above] {$\replall{3}$} (pdots)
+         (pdots) edge node [above] {$\replall{n}$} (pn)
+         %
+         (pn) edge [bend left] node [below] {$\tiles$} (q1)
+         (qn) edge node [above] {$\tile_1$} (qt1)
+         (qn) edge node [above] {$\tile_m$} (qtm);
+    \end{tikzpicture}
+    \end{center}
+}
+
 To see the pattern of the automaton extract, we show how it would be instantiated for $L_{0\ldots00}$ with all edges labelled by
 $\repl{i}{\bit}{\bit'}$
 removed.
-\begin{center}
-\begin{tikzpicture}[node distance=2.5cm,on grid,auto,bend angle=65,shorten >= 1pt]
-   \node[state] (q1)   {$\tup{q_1, \tile}$};
-   \node[state] (q2) [right=of q1] {$\tup{q_2, \tile}$};
-   \node[state] (q3) [right=of q2] {$\tup{q_3, \tile}$};
-   \node        (qdots) [right=of q3] {$\cdots$};
-   \node[state] (qn) [right=of qdots] {$\tup{q_n, \tile}$};
-   \node[state] (qt1) [above right=of qn] {$\tup{q_1, \tile_1}$};
-   \node        (qtdots) [right=of qn] {$\vdots$};
-   \node[state] (qtm) [below right=of qn] {$\tup{q_1, \tile_m}$};
-   \node[state] (p2) [below=of q2] {$\tup{p_2, \tile}$};
-   \node[state] (p3) [below=of q3] {$\tup{p_3, \tile}$};
-   \node        (pdots) [below=of qdots] {$\cdots$};
-   \node[state] (pn) [below=of qn] {$\tup{p_n, \tile}$};
-   \path[->]
-     (q1) edge node [above] {$\nbit{1}{0}$} (q2)
-     (q1) edge node [below] {$\nbit{1}{1}$} (p2)
-     %
-     (q2) edge node [above] {$\nbit{2}{0}$} (q3)
-     (q2) edge node [above] {$\nbit{2}{1}$} (p3)
-     %
-     (q3) edge node [above] {$\nbit{3}{0}$} (qdots)
-     (q3) edge node [above] {$\nbit{3}{1}$} (pdots)
-     %
-     (qdots) edge node [above] {$\nbit{n}{0}$} (qn)
-     (qdots) edge node [above] {$\nbit{n}{1}$} (pn)
-     %
-     (p2) edge node [above] {$\nbit{2}{0}$} (p3)
-     (p2) edge node [below] {$\nbit{2}{1}$} (p3)
-     (p3) edge node [above] {$\nbit{3}{0}$} (pdots)
-     (p3) edge node [below] {$\nbit{3}{1}$} (pdots)
-     (pdots) edge node [above] {$\nbit{n}{0}$} (pn)
-     (pdots) edge node [below] {$\nbit{n}{1}$} (pn)
-     %
-     (pn) edge [bend left] node [below] {$\tiles$} (q1)
-     (qn) edge node [above] {$\tile_1$} (qt1)
-     (qn) edge node [above] {$\tile_m$} (qtm);
-\end{tikzpicture}
-\end{center}
+
+\scalebox{.8}{
+    \begin{center}
+    \begin{tikzpicture}[node distance=3cm and 2.5cm,on grid,auto,bend angle=75,shorten >= 1pt]
+       \node[state] (q1)   {$\tup{q_1, \tile}$};
+       \node[state] (q2) [right=of q1] {$\tup{q_2, \tile}$};
+       \node[state] (q3) [right=of q2] {$\tup{q_3, \tile}$};
+       \node        (qdots) [right=of q3] {$\cdots$};
+       \node[state] (qn) [right=of qdots] {$\tup{q_n, \tile}$};
+       \node[state] (qt1) [above right=of qn,yshift=-1.5cm] {$\tup{q_1, \tile_1}$};
+       \node        (qtdots) [right=of qn] {$\vdots$};
+       \node[state] (qtm) [below right=of qn,yshift=1.5cm] {$\tup{q_1, \tile_m}$};
+       \node[state] (p2) [below=of q2] {$\tup{p_2, \tile}$};
+       \node[state] (p3) [below=of q3] {$\tup{p_3, \tile}$};
+       \node        (pdots) [below=of qdots] {$\cdots$};
+       \node[state] (pn) [below=of qn] {$\tup{p_n, \tile}$};
+       \path[->]
+         (q1) edge node [above] {$\nbit{1}{0}$} (q2)
+         (q1) edge node [below] {$\nbit{1}{1}$} (p2)
+         %
+         (q2) edge node [above] {$\nbit{2}{0}$} (q3)
+         (q2) edge node [above] {$\nbit{2}{1}$} (p3)
+         %
+         (q3) edge node [above] {$\nbit{3}{0}$} (qdots)
+         (q3) edge node [above] {$\nbit{3}{1}$} (pdots)
+         %
+         (qdots) edge node [above] {$\nbit{n}{0}$} (qn)
+         (qdots) edge node [above] {$\nbit{n}{1}$} (pn)
+         %
+         (p2) edge node [above] {$\nbit{2}{0}$} (p3)
+         (p2) edge node [below] {$\nbit{2}{1}$} (p3)
+         (p3) edge node [above] {$\nbit{3}{0}$} (pdots)
+         (p3) edge node [below] {$\nbit{3}{1}$} (pdots)
+         (pdots) edge node [above] {$\nbit{n}{0}$} (pn)
+         (pdots) edge node [below] {$\nbit{n}{1}$} (pn)
+         %
+         (pn) edge [bend left] node [below] {$\tiles$} (q1)
+         (qn) edge node [above] {$\tile_1$} (qt1)
+         (qn) edge node [above] {$\tile_m$} (qtm);
+    \end{tikzpicture}
+    \end{center}
+}
 
 Hence, we are ready to define an automaton $\cA_\vcons$ giving the language $L_\vcons$.
 We give the definition first, and explanation below.
