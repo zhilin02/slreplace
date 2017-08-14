@@ -216,7 +216,7 @@ $x_n = y^1_n \concat z^1_n$.
 and replacing it with
 $y^1_n \in L'_{0} \land z^1_n \in L'_{1}$
 where $L_\vcons = L'_{0} \concat L'_{1}$.
-This can be done by taking an automaton $A$ such that $L_\vcons = \lang{A}$ and guessing the state at the split between $y^1_n$ and $z^1_n$ in an accepting run over the value of $x_n$.
+This can be done by taking an automaton $\cA$ such that $L_\vcons = \lang{\cA}$ and guessing the state at the split between $y^1_n$ and $z^1_n$ in an accepting run over the value of $x_n$.
 This means that $L_{0}$ and $L_{1}$ can be represented by automata with the same states and transitions, but different initial and final states.
 
 Next, we eliminate the $\replaceall$ functions.
@@ -280,7 +280,7 @@ Let $n = 3$ and $L_\vcons$ be defined by the automaton below.
     (q_1) edge [bend left]  node [above] {$\repl{2}{0}{0}$} (q_2)
           edge [bend right] node [below] {$\repl{2}{1}{1}$} (q_2)
     (q_2) edge [bend left]  node [above] {$\repl{3}{0}{0}$} (q_3)
-          edge [bend right] node [below] {$\repl{3}{1}{1}$} (q_3)
+          edge [bend right] node [below] {$\repl{3}{1}{1}$} (q_3);
 \end{tikzpicture}
 \end{center}
 
@@ -294,7 +294,7 @@ We first eliminate $x_3 = y^1_3 \concat z^1_3$ and then
         z^1_3 &=& \replaceall(z^0_3, \nbit{3}{1}, \repl{3}{1}{1}) \ .
     \end{array}
 \]
-Note, from $L'_{0}$ we replace the $\repl{3}{0}{0}$- and $\repl{3}{0}{1}$-transitions (although the later does not appear in $A$), while from $L'_{1}$ we replace the $\repl{3}{1}{0}$- and $\repl{3}{1}{1}$-transitions.
+Note, from $L'_{0}$ we replace the $\repl{3}{0}{0}$- and $\repl{3}{0}{1}$-transitions (although the later does not appear in $\cA$), while from $L'_{1}$ we replace the $\repl{3}{1}{0}$- and $\repl{3}{1}{1}$-transitions.
 This leaves us with
 \[
     x_{2} \in L_{0} \land x_{2} \in L_{1}
@@ -312,7 +312,7 @@ where $L_{0}$ is given by
     (q_1) edge [bend left]  node [above] {$\repl{2}{0}{0}$} (q_2)
           edge [bend right] node [below] {$\repl{2}{1}{1}$} (q_2)
     (q_2) edge [bend left]  node [above] {$\nbit{3}{0}$} (q_3)
-          edge [bend right] node [below] {$\repl{3}{1}{1}$} (q_3)
+          edge [bend right] node [below] {$\repl{3}{1}{1}$} (q_3);
 \end{tikzpicture}
 \end{center}
 and $L_{1}$ is given by
@@ -328,7 +328,7 @@ and $L_{1}$ is given by
     (q_1) edge [bend left]  node [above] {$\repl{2}{0}{0}$} (q_2)
           edge [bend right] node [below] {$\repl{2}{1}{1}$} (q_2)
     (q_2) edge [bend left]  node [above] {$\repl{3}{0}{0}$} (q_3)
-          edge [bend right] node [below] {$\nbit{3}{1}$} (q_3)
+          edge [bend right] node [below] {$\nbit{3}{1}$} (q_3);
 \end{tikzpicture}
 \end{center}
 
@@ -350,7 +350,7 @@ where, for example, $L_{010}$ is given by
     (q_1) edge [bend left]  node [above] {$\repl{2}{0}{0}$} (q_2)
           edge [bend right] node [below] {$\nbit{2}{1}$} (q_2)
     (q_2) edge [bend left]  node [above] {$\nbit{3}{0}$} (q_3)
-          edge [bend right] node [below] {$\repl{3}{1}{1}$} (q_3)
+          edge [bend right] node [below] {$\repl{3}{1}{1}$} (q_3);
 \end{tikzpicture}
 \end{center}
 If we further insist that $x_1$ contains only characters from
@@ -450,7 +450,7 @@ column of the tiling obeys the vertical matching relation.
 Each
 $L_{\bit_1\ldots\bit_n}$
 can be seen to be representable by a polynomially sized automata that stores in its states the last tile seen after the sequence
-$\nbit{1}{\bit_1}\ldots\nbit{n}{\bit_n}$.
+$\bit_1\ldots\bit_n$.
 Then, when the sequence next occurs, the new tile can be compared with the previous one.
 The automaton will proceed by storing the new tile and forgetting the old.
 
@@ -468,8 +468,243 @@ The automaton for $L_\vcons$ will treat $\resetchar$ as a kind of ``reset'' char
 Before giving the formal definition, we will give an extract of the automaton that will check for the sequence
 $\bit_1\ldots\bit_n$
 and check the tiling relation.
-Each state is of the form $(q, t)$ where $t$ is the previously saved tile.
+Each state is of the form $\tup{q, \tile}$ where $\tile$ is the previously saved tile.
+In the diagram, $\replall{i}$ denotes the set of all characters
+$\repl{i}{\bit}{\bit'}$
+for all $\bit, \bit' \in \set{0,1}$.
+I.e.\ the transition can read any of these characters.
+The top row of the automaton shows the run whilst the correct sequence is being read (and the tile needs to be checked), whilst the bottom is for all bit sequences that diverge from
+$\bit_1\ldots\bit_n$
+(another column is being read).
+From $\tup{q_n, \tile}$ the tiles
+$t_1, \ldots, t_m$
+are all tiles such that
+$\tup{t, t_j} \in \vcons$
+for all $j$.
+The transitions from each
+$\tup{q_1, \tile_j}$
+will be analogous to those from
+$\tup{q_1, \tile}$.
 
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm,on grid,auto,bend angle=65,shorten >= 1pt]
+   \node[state] (q1)   {$\tup{q_1, \tile}$};
+   \node[state] (q2) [right=of q1] {$\tup{q_2, \tile}$};
+   \node[state] (q3) [right=of q2] {$\tup{q_3, \tile}$};
+   \node        (qdots) [right=of q3] {$\cdots$};
+   \node[state] (qn) [right=of qdots] {$\tup{q_n, \tile}$};
+   \node[state] (qt1) [above right=of qn] {$\tup{q_1, \tile_1}$};
+   \node        (qtdots) [right=of qn] {$\vdots$};
+   \node[state] (qtm) [below right=of qn] {$\tup{q_1, \tile_m}$};
+   \node[state] (p2) [below=of q2] {$\tup{p_2, \tile}$};
+   \node[state] (p3) [below=of q3] {$\tup{p_3, \tile}$};
+   \node        (pdots) [below=of qdots] {$\cdots$};
+   \node[state] (pn) [below=of qn] {$\tup{p_n, \tile}$};
+   \path[->]
+     (q1) edge node [above] {$\repl{1}{0}{0}$} (q2)
+     (q1) edge node [below] {$\repl{1}{1}{1}$} (q2)
+     (q1) edge node [above] {$\repl{1}{0}{1}$} (p2)
+     (q1) edge node [below] {$\repl{1}{1}{0}$} (p2)
+     %
+     (q2) edge node [above] {$\repl{2}{0}{0}$} (q3)
+     (q2) edge node [below] {$\repl{2}{1}{1}$} (q3)
+     (q2) edge node [above] {$\repl{2}{0}{1}$} (p3)
+     (q2) edge node [below] {$\repl{2}{1}{0}$} (p3)
+     %
+     (q3) edge node [above] {$\repl{3}{0}{0}$} (qdots)
+     (q3) edge node [below] {$\repl{3}{1}{1}$} (qdots)
+     (q3) edge node [above] {$\repl{3}{0}{1}$} (pdots)
+     (q3) edge node [below] {$\repl{3}{1}{0}$} (pdots)
+     %
+     (qdots) edge node [above] {$\repl{n}{0}{0}$} (qn)
+     (qdots) edge node [below] {$\repl{n}{1}{1}$} (qn)
+     (qdots) edge node [above] {$\repl{n}{0}{1}$} (pn)
+     (qdots) edge node [below] {$\repl{n}{1}{0}$} (pn)
+     %
+     (p2) edge node [above] {$\replall{2}$} (p3)
+     (p3) edge node [above] {$\replall{3}$} (pdots)
+     (pdots) edge node [above] {$\replall{n}$} (pn)
+     %
+     (pn) edge [bend left] node [below] {$\tiles$} (q1)
+     (qn) edge node [above] {$\tile_1$} (qt1)
+     (qn) edge node [above] {$\tile_m$} (qtm);
+\end{tikzpicture}
+\end{center}
+To see the pattern of the automaton extract, we show how it would be instantiated for $L_{0\ldots00}$ with all edges labelled by
+$\repl{i}{\bit}{\bit'}$
+removed.
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm,on grid,auto,bend angle=65,shorten >= 1pt]
+   \node[state] (q1)   {$\tup{q_1, \tile}$};
+   \node[state] (q2) [right=of q1] {$\tup{q_2, \tile}$};
+   \node[state] (q3) [right=of q2] {$\tup{q_3, \tile}$};
+   \node        (qdots) [right=of q3] {$\cdots$};
+   \node[state] (qn) [right=of qdots] {$\tup{q_n, \tile}$};
+   \node[state] (qt1) [above right=of qn] {$\tup{q_1, \tile_1}$};
+   \node        (qtdots) [right=of qn] {$\vdots$};
+   \node[state] (qtm) [below right=of qn] {$\tup{q_1, \tile_m}$};
+   \node[state] (p2) [below=of q2] {$\tup{p_2, \tile}$};
+   \node[state] (p3) [below=of q3] {$\tup{p_3, \tile}$};
+   \node        (pdots) [below=of qdots] {$\cdots$};
+   \node[state] (pn) [below=of qn] {$\tup{p_n, \tile}$};
+   \path[->]
+     (q1) edge node [above] {$\nbit{1}{0}$} (q2)
+     (q1) edge node [below] {$\nbit{1}{1}$} (p2)
+     %
+     (q2) edge node [above] {$\nbit{2}{0}$} (q3)
+     (q2) edge node [above] {$\nbit{2}{1}$} (p3)
+     %
+     (q3) edge node [above] {$\nbit{3}{0}$} (qdots)
+     (q3) edge node [above] {$\nbit{3}{1}$} (pdots)
+     %
+     (qdots) edge node [above] {$\nbit{n}{0}$} (qn)
+     (qdots) edge node [above] {$\nbit{n}{1}$} (pn)
+     %
+     (p2) edge node [above] {$\nbit{2}{0}$} (p3)
+     (p2) edge node [below] {$\nbit{2}{1}$} (p3)
+     (p3) edge node [above] {$\nbit{3}{0}$} (pdots)
+     (p3) edge node [below] {$\nbit{3}{1}$} (pdots)
+     (pdots) edge node [above] {$\nbit{n}{0}$} (pn)
+     (pdots) edge node [below] {$\nbit{n}{1}$} (pn)
+     %
+     (pn) edge [bend left] node [below] {$\tiles$} (q1)
+     (qn) edge node [above] {$\tile_1$} (qt1)
+     (qn) edge node [above] {$\tile_m$} (qtm);
+\end{tikzpicture}
+\end{center}
+
+Hence, we are ready to define an automaton $\cA_\vcons$ giving the language $L_\vcons$.
+We give the definition first, and explanation below.
+We define
+\[
+    \cA_\vcons = \tup{Q, \delta, q_0, F}
+\]
+where
+\[
+    \begin{array}{rcl}
+        Q &=& \set{q_0, \ldots, q_n, p_2, \ldots, p_n} \ \cup \\
+          & & \setcomp{\tup{q_i, \tile}}
+                      {0 \leq i \leq n \land \tile \in \tiles} \ \cup \\
+          & & \setcomp{\tup{p_i, \tile}}
+                      {2 \leq i \leq n \land \tile \in \tiles} \\
+        \\
+        \delta &=& \setcomp{q \xrightarrow{\resetchar} q_0}{q \in Q} \ \cup \\
+               & & \set{q_0 \xrightarrow{\rowdelim} q_1} \cup
+                   \setcomp{\tup{q_0, \tile}
+                            \xrightarrow{\rowdelim}
+                            \tup{q_1, \tile}}
+                           {\tile \in \tiles} \ \cup \\
+               & & \setcomp{q_i
+                            \xrightarrow{\repl{i}{\bit}{\bit}}
+                            q_{i+1}}
+                           {1 \leq i < n \land \bit \in \set{0,1}} \ \cup \\
+               & & \setcomp{\tup{q_i, \tile}
+                            \xrightarrow{\repl{i}{\bit}{\bit}}
+                            \tup{q_{i+1}, \tile}}
+                           {1 \leq i < n \land \bit \in \set{0,1}} \ \cup \\
+               & & \setcomp{q_i
+                            \xrightarrow{\repl{i}{\bit}{\bit'}}
+                            p_{i+1}}
+                           {1 \leq i < n \land \bit \in \set{0,1}} \ \cup \\
+               & & \setcomp{\tup{q_i, \tile}
+                            \xrightarrow{\repl{i}{\bit}{\bit'}}
+                            \tup{p_{i+1}, \tile}}
+                           {1 \leq i < n \land
+                            \bit \neq \bit' \in \set{0,1}} \ \cup \\
+               & & \setcomp{p_i
+                            \xrightarrow{\repl{i}{\bit}{\bit'}}
+                            p_{i+1}}
+                           {2 \leq i < n \land \bit, \bit' \in \set{0,1}} \ \cup \\
+               & & \setcomp{q_n \xrightarrow{\tile} \tup{q_0, \tile}}
+                           {\tile \in \tiles} \ \cup \\
+               & & \setcomp{\tup{q_n, \tile}
+                            \xrightarrow{\tile'}
+                            \tup{q_0, \tile'}}
+                           {\tup{\tile, \tile'} \in \vcons} \ \cup \\
+               & & \setcomp{\tup{p_n, \tile}
+                            \xrightarrow{\tile'}
+                            \tup{q_0, \tile'}}
+                           {\tile, \tile' \in \tiles} \\
+        \\
+        F &=& \set{q_0}
+    \end{array}
+\]
+The first set of transitions in $\delta$ are the reset transitions.
+From all states (including $q_0$) a $\resetchar$ will bring the automaton back to its initial state.
+Since we enforce separately that the value of $x_0$ begins and ends with $\resetchar$, it will remain true through the concatenations and $\replaceall$ operations that the value of $x_i$ still begins and ends with $\resetchar$.
+Thus, the only initial and final state that can occur on a solution to the string constraints is $q_0$.
+
+Next, we define the transitions over $\rowdelim$ which simply track the beginning of a new row.
+
+The next transitions read
+$\repl{i}{\bit}{\bit}$
+characters.
+This means that in
+$L_{\bit_1 \ldots \bit_n}$
+we are reading the value $\bit = \bit_i$ at position $i$.
+Thus, this is part of the sequence of bits identifying the column
+$L_{\bit_1 \ldots \bit_n}$
+is checking.
+\mat{Is this confusing?}
+Thus, we continue reading the sequence of bits in the $q$ states.
+
+Conversely, we next deal with the case when
+$\repl{i}{\bit}{\bit'}$
+with $\bit \neq \bit'$ is being read.
+That is, we are reading a column that is not the
+$\bit_1\ldots\bit_n$th
+and hence we simply skip over it by using the $p$ states.
+
+Finally, we read the tiles.
+If we are in state $q_n$ then we are reading the
+$\bit_1\ldots\bit_n$th
+column, but this is the first row (after a reset) and thus there is no matching relation to verify.
+If we are in state $\tup{q_n, \tile}$ then we are reading the
+$\bit_1\ldots\bit_n$th
+column, but this is the not the first row and we have to verify the matching relation.
+Wherefrom, there is only a transition reading $\tile'$ if
+$\top{\tile, \tile'} \in \vcons$.
+The tile $\tile'$ is then saved for comparison with the next tile.
+
+Otherwise, if we are in a state $p_n$ or $\tup{p_n, \tile}$ then we are not in the correct column and there is nothing to verify.
+In this case we simply skip over the tile and continue.
+
+
+\subsection{Conclusion}
+
+Given a tiling problem over a corridor of width $2^n$, we have given an
+$\strline[\replaceall]$
+constraint $\varphi$ using languages
+$L$, $L_\vcons$, $L_\hcons$, $L_1$, \ldots, $L_n$
+such that $\varphi$ is satisfiable iff the variable $x_1$ takes on a value
+\[
+    \resetchar
+    \rowdelim \nbit{1}{0} \cdots \nbit{n}{0} \tile^1_1
+              \nbit{1}{0} \cdots \nbit{n}{1} \tile^1_2
+              \cdots
+              \nbit{1}{1} \cdots \nbit{n}{1} \tile^1_\width
+    \rowdelim \cdots
+    \rowdelim \nbit{1}{0} \cdots \nbit{n}{0} \tile^\height_1
+              \cdots
+              \nbit{1}{1} \cdots \nbit{n}{1} \tile^\height_\width
+    \rowdelim
+    \resetchar
+\]
+such that
+\[
+    \rowdelim \tile^1_1 \cdots \tile^1_\width
+    \rowdelim \tile^2_1 \cdots \tile^2_\width
+    \rowdelim \cdots
+    \rowdelim \tile^\height_1 \cdots \tile^\height_\width
+    \rowdelim
+\]
+is a solution to the tiling problem.
+Since such a tiling problem is $2^n$-SPACE-hard, we have shown EXPSPACE-hardness of
+$\strline[\replaceall]$.
+\mat{
+    The previous pages are a proof of this, i think.
+    Let me know if you would like something more formal.
+}
 
 
 \end{document}

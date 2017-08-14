@@ -3,6 +3,12 @@
 \newcommand\brac[1]{\left(#1\right)}
 \newcommand\tup\brac
 
+% \setcomp{ele}{comp} = { ele | comp }
+\newcommand\setcomp[2]{\left\{{#1}\ \middle|\ {#2}\right\}}
+
+% \lang{A} = L(A)
+\newcommand\lang[1]{\mathcal{L}\mathord{\brac{#1}}}
+
 
 % Tiling
 
@@ -21,7 +27,8 @@
 \newcommand\bit{b}
 
 % \nbit[i][0] = 0_i, similarly for 1
-\newcommand\nbit[2]{#2_{#1}}
+\newcommand\nbit[2]{{#2}_{#1}}
 
 % \repl{n}{0}{1} = $^1_{n,0} means if nth bit is 0, turn into a 1
 \newcommand\repl[3]{\$^{#3}_{#1, #2}}
+\newcommand\replall[1]{\$_{#1}}
