@@ -158,17 +158,30 @@ For each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$ after exiting the 
 \smallskip
 
 \noindent {\bf Step II.}
-For each source variable $x$, nondeterministically choose an accepting run of the product of all the NFA in $\cE(x)$.
+Output ``satisfiable'' if for each source variable $x$ there is an accepting run of the product of all the NFA in $\cE(x)$; otherwise, output ``unsatisfiable''.
+
+\mat{Changed the wording of Step II to satisfy Reviewer 2 -- will talk about obtaining satisfying assignments in a following paragraph}
 
 \smallskip
 
 %Note that in the first sight, the cardinalities of the sets $\cE(x)$ seem exponential w.r.t. the size of $C$ in the worst case and the nondeterministic algorithm may take exponential space.
 %By a refined analysis, we can see that the cardinalities of the sets $\cE(x)$ are in fact polynomial.
 
-It remains to argue the correctness and complexity of the above procedure.
+It remains to argue the correctness and complexity of the above procedure and show how to obtain satisfying assignments to satisfiable constraints.
 Correctness follows a similar argument to Proposition~\ref{prop-sat-sl-case} and is presented in Appendix~\ref{sec:dp-sl-correctness}.
 %\mat{How do we reference the appendix?}
 Intuitively, Proposition~\ref{prop-sat-sl-case} shows our procedure correctly eliminates occurrences of $\replaceall$ until only regular constraints remain.
+
+\mat{Describing model extraction below.}
+If, in the case that the equation is satisfiable, one wishes to obtain a satisfying assignment to all variables, we can proceed as follows.
+First, for each source variable $x$, nondeterministically choose an accepting run of the product of all the NFA in $\cE(x)$.
+As argued in Appendix~\ref{sec:dp-sl-correctness}, the word labelling this run satisfies all regular constraints on $x$ since it is taken from a language that is guaranteed to be a subset of the set of words satisfying the original constraints.
+For non-source variables, we derive an assignment as in Proposition~\ref{prop-sat-sl-case}, proceeding by induction from the source variables.
+That is, select some variable $x$ such that $x$ is derived from variables $y$ and $z$ and assignments to both $y$ and $z$ have already been obtained.
+The value for $x$ is immediately obtained by performing the $\replaceall$ operation using the assignments to $y$ and $z$.
+That this value satisfies all regular constraints on $x$ follows the same argument as Proposition~\ref{prop-sat-sl-case}.
+The procedure terminates when all variables have been assigned.
+
 We now give an example then argue the complexity.
 
 \begin{example}
@@ -206,7 +219,7 @@ For the three source variables $y', z', z$, it is not hard to check that $01$ be
 
 \subsubsection{Complexity}
 
-To show our decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$. 
+To show our decision procedure works in exponential space, it is sufficient to show that the cardinalities of the sets $\cE(x)$ are exponential w.r.t. the size of $C$.
 
 \begin{proposition}\label{prop-sl-comp}
 The cardinalities of $\cE(x)$ for the variables $x$ in $G_C$ are at most exponential in $\dmdidx(G_C)$, the diamond index of $G_C$.
@@ -214,8 +227,8 @@ The cardinalities of $\cE(x)$ for the variables $x$ in $G_C$ are at most exponen
 Therefore, according to Proposition~\ref{prop-sl-comp}, if the diamond index of $G_C$ is bounded by a constant $c$, then the cardinalities of $\cE(x)$ become \emph{polynomial} in the size of $C$ and we obtain a polynomial space decision procedure. In this case, we conclude that the satisfiability problem is PSPACE-complete.
 
 \begin{proof}[Proof of Proposition~\ref{prop-sl-comp}]
-Let $K$ be the maximum of $|\cE_0(x)|$ for $x \in \vars(\varphi)$. 
-For each variable $x$ in $G_C$, all the regular constraints in $\cE(x)$ are either from $\cE_0(x)$, or are generated from some regular constraints from $\cE_0(x')$ for the ancestors $x'$ of $x$. Let $x'$ be an ancestor of $x$. Then for each $(\cT, \cP) \in \cE_0(x')$, according to Step I in the decision procedure, by an induction on the maximum length of the paths in from $x'$ to $x$, we can show that the number of elements in $\cE(x)$ that are generated from $(\cT, \cP)$ is at most the number of different paths from $x'$ to $x$. 
+Let $K$ be the maximum of $|\cE_0(x)|$ for $x \in \vars(\varphi)$.
+For each variable $x$ in $G_C$, all the regular constraints in $\cE(x)$ are either from $\cE_0(x)$, or are generated from some regular constraints from $\cE_0(x')$ for the ancestors $x'$ of $x$. Let $x'$ be an ancestor of $x$. Then for each $(\cT, \cP) \in \cE_0(x')$, according to Step I in the decision procedure, by an induction on the maximum length of the paths in from $x'$ to $x$, we can show that the number of elements in $\cE(x)$ that are generated from $(\cT, \cP)$ is at most the number of different paths from $x'$ to $x$.
 %
 From Proposition~\ref{prop-di}, we know that there are at most $(|\vars(\varphi)|\cdot |E_C|)^{O(\dmdidx(G_C))}$ different paths from $x'$ to $x$. Since there are at most $|\vars(\varphi)|$ ancestors of $x$, we deduce that $|\cE(x)| \le K \cdot |\vars(\varphi)| \cdot (|\vars(\varphi)||E_C|)^{O(\dmdidx(G_C))}$.
 \end{proof}
