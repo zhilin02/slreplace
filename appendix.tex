@@ -86,7 +86,7 @@ Note that Proposition~\ref{prop-sat-sl-case} removed a single $\replaceall(-,-,-
 Each step of our decision procedure effectively eliminates a $\replaceall(-,-,-)$.
 Similar to Proposition~\ref{prop-sat-sl-case}, each step maintains the satisfiability from the preceding step.
 
-In more details, from each $G_i$ we can define a constraint $C_i$. This constraint is a conjunction of the following atomic constraints.
+In more detail, from each $G_i$ we can define a constraint $C_i$. This constraint is a conjunction of the following atomic constraints.
 \begin{itemize}
 \item For each variable $x$ such that $(x, (\rpleft, a), y)$ and $(x, (\rpright,a), z)$ are the edges in $G_i$, we assert in $C_i$ that $x = \replaceall(y, a, z)$.
 \item In addition, for each variable $x$ such that $\cE_i(x)$ is not empty, moreover, \emph{either $x$ is a source variable in $G_C$ (not $G_i$) or there are (incoming or outgoing) edges connected to $x$ in $G_i$}, let $e_i(x)$ be the regular expression equivalent to the conjunction of all constraints in $\cE_i(x)$ (Note that the conjunction of multiple regular expressions still defines a regular language). We assert in $C_i$ that $x \in e_i(x)$. Note that if $x$ is not a source variable in $G_C$ and there are no edges connected to $x$ in $G_i$, then the regular constraints in $\cE_i(x)$ are not included into $C_i$.
@@ -113,7 +113,7 @@ where $C'$ does not contain $x$, and $C_{i+1}$ is of the form
 \[
     y \in e_{i+1}(y) \wedge z \in e_{i+1}(z) \wedge C' \ .
 \]
-Note that $C'$ remains unchanged since only the two edges out $x$ are removed from $G_i$ and $\cE_{i+1}(x') = \cE_i(x')$ for all $x'$ distinct from $x$, $y$, and $z$.
+Note that $C'$ remains unchanged since only the two edges leaving $x$ are removed from $G_i$ and $\cE_{i+1}(x') = \cE_i(x')$ for all $x'$ distinct from $x$, $y$, and $z$.
 First assume $y \neq z$.
 Supposing $C_i$ is satisfiable, an argument similar to that of Proposition~\ref{prop-sat-sl-case} shows that there are sets $T_{j,z}$ such that the same values of $y$ and $z$ also satisfy $e_{i+1}(y)$ and $e_{i+1}(z)$.
 Since $C'$ is unchanged, all $x'$ distinct from $x$, $y$, and $z$ can also keep the same value.
