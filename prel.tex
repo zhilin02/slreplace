@@ -9,8 +9,8 @@ Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers respe
 
 
 \paragraph{Regular languages}
-Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$. 
-For two strings $u_1, u_2$, we use $u_1 \cdot u_2$ to denote the \emph{concatenation} of $u_1$ and $u_2$, that is, the string $v$ such that $|v|= |u_1| + |u_2|$ and for each $i \in |u_1|$, $v[i]= u_1[i]$ and for each $i \in |u_2|$, $v[|u_1|+i]=u_2[i]$. Let $u, v$ be two strings. If $v = u \cdot v'$ for some string $v'$, then $u$ is said to be a \emph{prefix} of $v$. In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then 
+Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$). A \emph{position} of a nonempty string $u$ of length $n$ is a number $i \in [n]$ (Note that the first position is $1$, instead of  0). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$. 
+For two strings $u_1, u_2$, we use $u_1 \cdot u_2$ to denote the \emph{concatenation} of $u_1$ and $u_2$, that is, the string $v$ such that $|v|= |u_1| + |u_2|$ and for each $i \in [|u_1|]$, $v[i]= u_1[i]$ and for each $i \in |u_2|$, $v[|u_1|+i]=u_2[i]$. Let $u, v$ be two strings. If $v = u \cdot v'$ for some string $v'$, then $u$ is said to be a \emph{prefix} of $v$. In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then 
 we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
 
 A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$. We will use $L_1, L_2, \dots$ to denote languages. For two languages $L_1, L_2$, we use $L_1 \cup L_2$ to denote the union of $L_1$ and $L_2$, and $L_1 \cdot L_2$ to denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. For a language $L$ and $n \in \Nat$, we define $L^n$, the \emph{iteration} of $L$ for $n$ times, inductively as follows: $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote the iteration of $L$ for arbitrarily many times, that is, $L^* = \bigcup \limits_{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup \limits_{n \in \Nat \setminus \{0\}} L^n$.
@@ -84,35 +84,24 @@ Let $G=(V,E)$ be a DAG such that the out-degree of each vertex is at most two. T
 %%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% copy from Lin's paper. 
 
 \paragraph{Computational complexity}
 In this paper, we study not only decidability but also the complexity of string logics. 
-%Pinpointing the
-%precise complexity of verification problems is not only of fundamental
-%importance, 
-%\mat{Do we want to stress this?  We have gaps!}
-%but also it often suggests algorithmic techniques
-%that are most suitable for attacking the problem in practice.
-In this paper, we deal with the following computational complexity
-classes (see \cite{HU79} for more details): 
-%P (problems solvable in polynomial-time), 
-PSPACE (problems solvable in polynomial
+In particular, we shall deal with the following computational complexity
+classes (see \cite{HU79} for more details): PSPACE (problems solvable in polynomial
 space and thus in exponential time), and EXPSPACE (problems solvable
 in exponential space and thus in double exponential time). Verification
 problems that have complexity PSPACE or beyond (see \cite{BK08}
 for a few examples) have substantially benefited from techniques
-like symbolic model checking \cite{McMillan}. 
-%As we shall see later, our complexity
-%upper bound also suggests the maximum lengths of words
-%that need to be explored to guarantee completeness.
+such as symbolic model checking \cite{McMillan}. 
+
 
 %=====================================================================================================
 %=====================================================================================================
 
 \section{The core constraint language}\label{sec-core}
 
-In this section, we define a general string constraint language that supports word equations, the concatenation, the $\replaceall$ function, and regular constraints.  Throughout this section, we fix an alphabet $\Sigma$.
+In this section, we define a general string constraint language that supports word equations, the concatenation, the $\replaceall$ function, and regular constraints. Throughout this section, we fix an alphabet $\Sigma$.
 
 
 
@@ -192,25 +181,14 @@ The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a r
 \begin{definition} \label{def:replaceall}
 The semantics of $\replaceall(u, e, v)$, where $u, v$ are strings and $e$ is a regular expression, is defined inductively as follows:
 \begin{itemize}
-%	\item if $\varepsilon \in \Ll(e)$, then
-%	\begin{itemize}
-%	\item if $u = \varepsilon$, then $\replaceall(u,e, v) = v$,
-%	
-%	\item otherwise, let $u = a \cdot u'$ for $a \in \Sigma$, then $\replaceall(u, e, v) =v \cdot a \cdot \replaceall(u', e, v)$,
-%	\end{itemize}
-%
-%	\item otherwise,
-%	\begin{itemize}
 	\item if $u \not \in \Ll(\Sigma^\ast \concat e \concat \Sigma^\ast)$, that is, $u$ does \emph{not} contain any substring from $\Ll(e)$, then $\replaceall(u, e, v) = u$, 
 	%
 	\item otherwise, 
 	\begin{itemize}
 	\item if $\varepsilon \in \Ll(e)$ and $u$ is the leftmost and longest matching of $e$ in $u$, then $\replaceall(u, e, v) = v$,
 	\item if $\varepsilon \in \Ll(e)$, $u = u_1 \cdot  a \cdot  u_2$, $u_1$ is the leftmost and longest matching of $e$ in $u$, and $a \in \Sigma$, then $\replaceall(u, e, v) = v \cdot a \cdot \replaceall(u_2, e, v)$,
-	\item if $\varepsilon \not \in \Ll(e)$, $u = u_1\cdot  u_2\cdot  u_3$, and $u_2$ is the leftmost and longest matching of $e$ in $u$,  then 
-$\replaceall(u, e, v) = u_1 \cdot v \cdot \replaceall(u_3, e, v)$. 
+	\item if $\varepsilon \not \in \Ll(e)$, $u = u_1\cdot  u_2\cdot  u_3$, and $u_2$ is the leftmost and longest matching of $e$ in $u$,  then $\replaceall(u, e, v) = u_1 \cdot v \cdot \replaceall(u_3, e, v)$. 
 	\end{itemize}
-%	\end{itemize}
 \end{itemize}
 \end{definition}
 
@@ -222,20 +200,15 @@ At first, $\replaceall(abab, ab, d) =d \cdot \replaceall(ab, ab, d)= dd \cdot \r
 
 
 \end{example}
-%However, when the regular expression contains $+$, programming languages diverge... 
-%\tl{do we need to say more here?}
+ 
 
 %====================================================
 
 
 \subsection{Straight-line string constraints with the $\replaceall$ function}
 
-%\tl{Int will not be used until very late. Some picky reviewers will complain. Shall we introduce them later?} 
 
 We consider the String data type $\str$, and assume a countable set of variables of $\str$, which is, in general, ranged over by $x, y, z, \cdots$.  
-%In addition, we use $X, Y, Z, \dots$ to denote the variables of data type $\str[\ ]$.
-
-%We use $u, v, w, \dots$ to denote the constant strings, and $c, c',\dots$ to denote the constant integers.
 
 
 \begin{definition}[Relational and regular constraints]
@@ -251,11 +224,7 @@ We consider the String data type $\str$, and assume a countable set of variables
 	\end{array}
 	\]
 	where $x$ is a string variable, $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$. 
-	
-%	
-%	\tl{can the regular constraints be simplified to just a conjunction of $x\in e$?}\zhilin{since the pspace upper bound holds for the general case, I do not see the necessity of the restriction here.}
-%	%A regular constraint $\psi$ is a UBR constraint if for each atom $x \in e$ occurring in $\psi$, $e$ is in UBR.
-%	\tl{zhilin, it is not a restriction, it is a simplification. Look at what we have now, I guess this is sufficient. feel free to change back if you do not like it.}
+
 \end{definition}
 
 
@@ -264,14 +233,15 @@ For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)
 We then notice that, with the $\replaceall$ function in its general form, the concatenation operation is in fact redundant.
 
 \begin{proposition}\label{prop-concat}
-	The $\concat$ operation can be simulated  by the $\replaceall$ function.
+	The concatenation  operation ($\concat$) can be simulated  by the $\replaceall$ function.
 \end{proposition}
 \begin{proof}
 	It is sufficient to observe that %the concatenation operator $s_1 \concat s_2$ is redundant in the sense that 
-	a relational constraint $x = s_1 \concat s_2$ can be rewritten as $x' = \replaceall(ab, a, s_1) \wedge x = \replaceall(x', b, s_2)$, where $a,b$ are two fresh letters.
+	a relational constraint $x = s_1 \concat s_2$ can be rewritten as
+	\[x' = \replaceall(ab, a, s_1) \wedge x = \replaceall(x', b, s_2),\] where $a,b$ are two fresh letters.
 \end{proof}
 
-In light of Proposition~\ref{prop-concat}, from now on, we will \emph{dispense the concatenation operator} mostly and focus on \textbf{the string constraints that involve  the $\replaceall$ function only}.
+In light of Proposition~\ref{prop-concat}, in the sequel, we will \emph{dispense the concatenation operator} mostly and focus on \textbf{the string constraints that involve  the $\replaceall$ function only}.
 
 Another example to show the power of the $\replaceall$ function is that it can simulate the extension of regular expressions with string variables, which is  supported by the mainstream scripting languages like Python, Javascript, and PHP. For instance, $x \in y^*$ can be expressed by $x =\replaceall(x', a, y) \wedge x' \in a^*$, where $x'$ is a fresh variable and $a$ is a fresh letter. 
 
@@ -315,11 +285,10 @@ Checking whether a relational constraint $\varphi$ is straight-line can be done 
 The following string constraint belongs to $\strline[\replaceall]$: 
 $$C \equiv x_2 = \replaceall(x_1, 0, y_1) \wedge x_3 = \replaceall(x_2, 1, y_2) \wedge x_1 \in \{0,1\}^* \wedge y_1 \in 1^* \wedge y_2 \in 0^*.$$
 \end{example}
-
-
-%Let us use $\pstrline[\replaceall]$ to denote the set of pure $\strline[\replaceall]$ constraints.
-
-%\medskip
+ 
+%==================================================================================
+%New section
+%====================================================================================== 
 
 \section{The satisfiability problem} \label{sec-sat}
 In this paper, we focus on the satisfiability problem of $\strline[\replaceall]$, which is formalised as follows. 
@@ -372,8 +341,6 @@ The satisfiability problem of $\strline[\replaceall]$ is undecidable, if the pat
 \end{proposition}
 
 
- 
-
 In light of Proposition~\ref{prop-und-pat-var}, we shall focus on the case that the pattern parameters of the $\replaceall$ terms are constants, being a single letter, a constant string, or a regular expression. 
 %
 The main result of the paper is summarised as the following Theorem~\ref{thm-main}.
@@ -393,7 +360,7 @@ The following three sections are devoted to the proof of Theorem~\ref{thm-main}.
 
 %As a consequence, in Section~\ref{sec:replaceallsl}--\ref{sec:replaceallre}, we shall focus on $\strline[\replaceall]$. 
 
-We first introduce a graphical representation of $\strline[\replaceall]$ formulas as follows.    
+We first introduce a graphical representation of $\strline[\replaceall]$ formulae as follows.    
 
 \begin{definition}[Dependency graph]
 \label{def:dep-graph}
@@ -439,7 +406,12 @@ The satisfiability problem is PSPACE-complete for the following fragments of $\s
 \end{itemize}
 \end{corollary}
 
-Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter, constant-string, and regular-expression case separately. Intuitively, when the pattern parameters of $\replaceall$ terms become less restrictive, the decision procedures become more involved, and more constraints should be put on the dependency graphs in order to achieve the PSPACE upper bound.
+Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter, constant-string, and regular-expression case separately. Intuitively, when the pattern parameters  of the $\replaceall$ terms become less restrictive, the decision procedures  become more involved, and more constraints should be imposed on the dependency graphs in order to achieve the PSPACE upper-bound. The PSPACE lowe-bound follows from the observation that  nonemptiness of the intersection of the regular expressions $e_1, \cdots, e_n$ over the alphabet $\{0,1\}$, which is a PSPACE-complete problem, can be reduced to the satisfiability of the formula $x \in e_1 \wedge \cdots \wedge x \in e_n$, 
+%
+%the satisfiability of the formula $y = \replaceall((a b)^n, a, x) \wedge x \in (0+1)^\ast \wedge y \in e_1 \circ b  \circ \cdots \circ b \circ e_n$ (where $a, b \not \in \{0,1\}$), 
+which falls into all fragments of $\strline[\replaceall]$ specified in Corollary~\ref{cor-pspace}.\zhilin{Remark for the pspace lower bound, please check.}\tl{seems to be fine.I edited a little bit}
+%
+At last, we  remark that the restrictions in Corollary~\ref{cor-pspace} are partially inspired by the  benchmarks in practice. Diamond indices (intuitively, the ``nesting depth'' of $\replaceall(x,a,x)$) are likely to be small in practice because the constraints like $\replaceall(x,a,x)$ are rather artificial and rarely occur in practice. Moreover, the $l$-length reflects the nesting depth of replaceall w.r.t. the first parameter, which is also likely to be small. Finally, for string constraints with concatenation and $\replaceall$ where pattern/replacement parameters are constants, the diamond index is no greater than the ``dimension'' defined in \cite{LB16}, where it was shown that existing benchmarks mostly have ``dimensions" at most three for such string constraints. \zhilin{In the rebuttal, we stated that diamond index and dimension for constraints which use only concatenation. But I think the statement is wrong. Please check.}\tl{the current version is fine. I edited a little bit.}
 
 %The proof of Theorem~\ref{thm-main} utilises a concept of dependency graphs defined below.
 

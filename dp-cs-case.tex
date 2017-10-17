@@ -33,40 +33,40 @@ To build $\cB_{\cA_1, u, T_z}$, we utilise the concepts of window profiles and p
 %Let $u \in \Sigma^+$ and $k=|u| \ge 2$.
 
 
-\begin{definition}[$k$-window profiles w.r.t. $u$]
-Let $v$ be a nonempty string and $i \in [|v|]$. Then the $k$-\emph{window profile of the position $i$ in $v$ w.r.t. $u$} is $\overrightarrow{W}  \in \{\bot,\top\}^{k-1}$ defined as follows:
+\begin{definition}[window profiles w.r.t. $u$]\zhilin{I changed the notation from $k$-window profile to window profile, and $\wprof_{u,k}$ to $\wprof_u$. Please check whether there are still occurrences of the old notation below.}
+Let $v$ be a nonempty string with $k=|v|$, and $i \in [k]$. Then the \emph{window profile of the position $i$ in $v$ w.r.t. $u$} is $\overrightarrow{W}  \in \{\bot,\top\}^{k-1}$ defined as follows:
 \begin{itemize}
 \item If $i \ge k-1$, then for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \cdots v[i]=u[1] \cdots u[j]$.
 %
 \item If $i < k-1$, then for each $j \in [i]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \cdots v[i]=u[1] \cdots u[j]$, and for each $j: i < j \le k-1$, $\overrightarrow{W}[j] = \bot$.
 \end{itemize}
-Let $\wprof_{u, k}$ denote the set of $k$-window profiles of the positions in nonempty strings w.r.t. $u$.
+Let $\wprof_{u}$ denote the set of window profiles of the positions in nonempty strings w.r.t. $u$.
 \end{definition}
 
 %Intuitively, in a position $i$ of a string $v$, the $k$-window profile $\overrightarrow{W}$ of $i$ in $v$ w.r.t. $u$ is an abstraction of the substring $v[i-k+2] \dots v[i]$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$.
 
 \begin{proposition}
-$|\wprof_{u,k}| \le k$.
+$|\wprof_{u}| \le |u|$.
 \end{proposition}
 %
 \begin{proof}
 %The arguments for this fact proceed as follows: 
-For each profile $\overrightarrow{W}$, let $v$ be a nonempty string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as follows: If there is $j \in [k-1]$ such that $\overrightarrow{W}[j]=\top$, then ${\sf idx}_{\overrightarrow{W}}$ is the maximum of such indices $j \in [k-1]$, otherwise, ${\sf idx}_{\overrightarrow{W}} =0$. The following fact holds for $\overrightarrow{W}$ and ${\sf idx}_{\overrightarrow{W}}$: 
+Let $k=|u|$. For each profile $\overrightarrow{W}$, let $v$ be a nonempty string and $i$ be a position of $v$ such that for each $j \in [k-1]$, $\overrightarrow{W}[j] = \top$ iff $v[i-j+1] \dots v[i] = u[1] \dots u[j]$. Define ${\sf idx}_{\overrightarrow{W}}$ as follows: If there is $j \in [k-1]$ such that $\overrightarrow{W}[j]=\top$, then ${\sf idx}_{\overrightarrow{W}}$ is the maximum of such indices $j \in [k-1]$, otherwise, ${\sf idx}_{\overrightarrow{W}} =0$. The following fact holds for $\overrightarrow{W}$ and ${\sf idx}_{\overrightarrow{W}}$: 
 \begin{itemize}
 	\item for each $j': {\sf idx}_{\overrightarrow{W}} < j' \le k-1$, $\overrightarrow{W}[j']=\bot$,
 	\item in addition, since $v[i-{\sf idx}_{\overrightarrow{W}}+1] \cdots v[i] = u[1] \cdots u[{\sf idx}_{\overrightarrow{W}}]$, the values of $\overrightarrow{W}[1],\cdots, \overrightarrow{W}[{\sf idx}_{\overrightarrow{W}}]$ are completely determined by $u[1] \cdots u[{\sf idx}_{\overrightarrow{W}}]$.
 \end{itemize}
-Let $\eta: \wprof_{u, k} \rightarrow \{0\} \cup [k-1]$ be a function such that for each $\overrightarrow{W} \in \wprof_{u,k}$, $\eta(\overrightarrow{W})={\sf idx}_{\overrightarrow{W}}$. Then $\eta$ is an injective function, since for every $\overrightarrow{W}, \overrightarrow{W'} \in \wprof_{u, k}$, ${\sf idx}_{\overrightarrow{W}}  = {\sf idx}_{\overrightarrow{W'}}$ iff $\overrightarrow{W} = \overrightarrow{W'}$. Therefore, we conclude that  $ |\wprof_{u, k}| \le k$.
+Let $\eta: \wprof_{u} \rightarrow \{0\} \cup [k-1]$ be a function such that for each $\overrightarrow{W} \in \wprof_{u}$, $\eta(\overrightarrow{W})={\sf idx}_{\overrightarrow{W}}$. Then $\eta$ is an injective function, since for every $\overrightarrow{W}, \overrightarrow{W'} \in \wprof_{u}$, ${\sf idx}_{\overrightarrow{W}}  = {\sf idx}_{\overrightarrow{W'}}$ iff $\overrightarrow{W} = \overrightarrow{W'}$. Therefore, we conclude that  $ |\wprof_{u}| \le k$.
 \end{proof}
 
 \begin{example}\label{wprof-exmp}
-Let $\Sigma = \{0,1\}$ and $u = 010$. Then $k=3$ and $\wprof_{u,k}=\{\bot\bot, \top\bot, \bot\top\}$.
+Let $\Sigma = \{0,1\}$, $u = 010$. Then $\wprof_{u}=\{\bot\bot, \top\bot, \bot\top\}$.
 \begin{itemize}
-\item Consider the string $v=1$ and the position $i=1$ in $v$. Since $v[1]=1 \neq u[1]=0$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\bot \bot$.
-\item Consider the string $v=00$ and the position $i=2$ in $v$. Since $v[2]=u[1]$ and $v[1]v[2] \neq u[1]u[2]$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\top\bot$.
-\item Consider the string $v=01$ and the position $i=2$ in $v$. Since $v[2] \neq u[1]$ and $v[1]v[2] = u[1]u[2]$, the $k$-window profile of $i$ in $v$ w.r.t. $u$ is $\bot\top$.
+\item Consider the string $v=1$ and the position $i=1$ in $v$. Since $v[1]=1 \neq u[1]=0$, the window profile of $i$ in $v$ w.r.t. $u$ is $\bot \bot$.
+\item Consider the string $v=00$ and the position $i=2$ in $v$. Since $v[2]=u[1]$ and $v[1]v[2] \neq u[1]u[2]$, the window profile of $i$ in $v$ w.r.t. $u$ is $\top\bot$.
+\item Consider the string $v=01$ and the position $i=2$ in $v$. Since $v[2] \neq u[1]$ and $v[1]v[2] = u[1]u[2]$, the window profile of $i$ in $v$ w.r.t. $u$ is $\bot\top$.
 \end{itemize}
-Note that $\top\top \not \in \wprof_{u,k}$, since for every string $v$ and the position $i$ in $v$, if $v[i-1]v[i]=u[1]u[2]=01$, then $v[i]=1 \neq 0= u[1]$.
+Note that $\top\top \not \in \wprof_{u}$, since for every string $v$ and the position $i$ in $v$, if $v[i-1]v[i]=u[1]u[2]=01$, then $v[i]=1 \neq 0= u[1]$.
 \end{example}
 
 %\mat{Updated the paragraph below to reflect our earlier discussion.}
@@ -74,12 +74,12 @@ Note that $\top\top \not \in \wprof_{u,k}$, since for every string $v$ and the p
 We will construct a parsing automaton $\cA_u$ from $u$, which parses a string $v$ containing at least one occurrence of $u$ (i.e.\ $v \in \Sigma^\ast u \Sigma^\ast$) into $v_1 u v_2 u \dots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$.
 This ensures that the only occurrence of $u$ in each $v_j u$ is a suffix.
 Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
-The $k$-window profiles w.r.t. $u$ will be used to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
+The window profiles w.r.t. $u$ will be used to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
 
 \begin{definition}[Parsing automata]
 The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
 \begin{itemize}
-	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u,k} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  and the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
+	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  and the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 	%
 	\item $q_{0,u}=q_0$.
 
@@ -114,12 +114,12 @@ Note that the constraint $\overrightarrow{W}[k-1] = \bot$ or $a \neq u[k]$ is us
 
 % parsing a string $v$ into $v_1 u v_2 u \dots v_{l} u v_{l+1}$, we have $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $j \in [l]$, in addition, $v_{l+1} \not \in  \Sigma^\ast u \Sigma^\ast$.
 	%
-	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u, k} \right\} $. \\
+	\item $F_u= \left\{q_0 \right\} \cup \left\{\left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u} \right\} $. \\
 	Note that the states $\left(\verify, j, \overrightarrow{W} \right)$ are not final states, since, when in these states, the verification of the current occurrence of $u$ has not been complete yet.
 \end{itemize}
 \end{definition}
 
-Let $Q_{\search}  = \left\{ \left(\search, \overrightarrow{W} \right) \ \big\vert\ \overrightarrow{W} \in \wprof_{u,k} \right\}$,  and $Q_{\verify, i} = \left\{ \left(\verify, i, \overrightarrow{W} \right) \ \big\vert\ \overrightarrow{W} \in \wprof_{u,k} \right\}$ for each $i \in [k-1]$. In addition, let $Q_{\verify} = \bigcup \limits_{i \in [k-1]} Q_{\verify,i}$.
+Let $Q_{\search}  = \left\{ \left(\search, \overrightarrow{W} \right) \ \big\vert\ \overrightarrow{W} \in \wprof_{u} \right\}$,  and $Q_{\verify, i} = \left\{ \left(\verify, i, \overrightarrow{W} \right) \ \big\vert\ \overrightarrow{W} \in \wprof_{u} \right\}$ for each $i \in [k-1]$. In addition, let $Q_{\verify} = \bigcup \limits_{i \in [k-1]} Q_{\verify,i}$.
 Suppose $v = v_1 u v_2 u \cdots v_l u v_{l+1}$ such that $v_j u[1] \dots u[k-1] \not \in \Sigma^\ast u \Sigma^\ast$ for each $1 \le j \le l$, in addition, $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$. Then there exists a \emph{unique} accepting run $r$ of $\cA_u$ on $v$ such that the state sequence in $r$ is of the form
 $q_0\ r_1\ q_0\ r_2\ q_0\ \cdots\ r_l\ q_0\ r_{l+1}$, where for each $j \in [l]$, $r_j \in  \Ll((Q_{\search})^+ \concat Q_{\verify, 1} \concat \cdots  \concat Q_{\verify, k-1})$, and $r_{l+1} \in \Ll((Q_{\search})^*)$. 
 %Intuitively, each occurrence of $q_0$, except the first one, witnesses the \emph{first} occurrence of $u$ from the beginning or after its previous occurrence.

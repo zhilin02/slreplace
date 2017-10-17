@@ -74,9 +74,6 @@ An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\inde
  
  \medskip
 
-
-%\subsection{Undecidability of the extensions}
-
 We will show that the extension of $\strline[\replaceall]$ with integer constraints entails undecidability, by a reduction from (a variant of) the Hilbert's 10th problem, which is well-known to be undecidable \cite{Mat93}. 
 For space reasons, all proofs appear in Appendix~\ref{sec:ext-undec-proofs}.
 Intuitively, we want to find a solution to $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ in the natural numbers, where $f$ and $g$ are polynomials with positive coefficients.
@@ -89,7 +86,8 @@ The integer constraint $|x| = |y|$ asserts the equality of $f$ and $g$. Note tha
 %Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
 
 \begin{theorem}\label{thm-ext-int}
-	For the extension of $\strline[\replaceall]$ with \emph{integer constraints}, the satisfiability problem is undecidable, even if only a single integer constraint $|x| = |y|$ is used.
+	For the extension of $\strline[\replaceall]$ with \emph{integer constraints}, the satisfiability problem is undecidable, even if only a single integer constraint of the form $|x| = |y|$ or $|x|_a = |y|_a$ is used.
+  %  \mat{Changed this in reponse to reviewer 4}
 \end{theorem}
 
 
@@ -97,7 +95,11 @@ The integer constraint $|x| = |y|$ asserts the equality of $f$ and $g$. Note tha
 %Notice, in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability.
 %On the other hand, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
-Notice that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability. By utilising a further result on Diophantine equations, we show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
+Notice that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability. \zhilin{a remark for the Buchi and Senger's result about undecidability, please check} \tl{rephrased slightly}
+We remark that the undecidability result here does \emph{not} follow from the undecidability result for the extension of word equations with the letter-counting modalities in \cite{buchi}, % does \emph{not} apply to the setting here 
+since the formula used in  the reduction of \cite{buchi} is not straight-line. 
+
+By utilising a further result on Diophantine equations, we show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple (in the sense that their dependency graphs are of depth at most one), the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
 % The above proof essentially establishes a link between Diophantine equations and the extension of $\strline[\replaceall]$ with integer constraints over a unary alphabet. 
 %
@@ -111,7 +113,7 @@ Notice that the extension of $\strline[\replaceall]$ with only one integer const
 	For the extension of $\strline[\replaceall]$ with integer constraints, even if $\strline[\replaceall]$ formulae are restricted to those whose dependency graphs are of depth at most one, the satisfiability problem is still undecidable.
 \end{theorem}
 
-By essentially encoding $|x|=|y|$ with character or $\indexof$ Constraints, we show:
+By essentially encoding $|x|=|y|$ with \emph{character} or \emph{$\indexof$ constraints}, we show:
 
 \begin{proposition}\label{prop-ext-ch-index}
 	For the extension of $\strline[\replaceall]$ with either the character constraints or the $\indexof$ constraints, the satisfiability problem is undecidable. 
