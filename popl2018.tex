@@ -39,10 +39,19 @@
 \input{comm-anthony}
 %==========================================================
 
+\newif\ifdraft\drafttrue
+%\newif\ifdraft\draftfalse
+\ifdraft
 \newcommand{\anthony}[1]{\color{red} {YA: #1 :AY} \color{black}}
 \newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
 \newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
 \newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\fi
 
 \newcommand{\concat} {\circ}
 \newcommand{\replace} {{\sf replace}}
@@ -299,6 +308,9 @@ T. Chen is supported by \grantsponsor{}{Engineering and Physical Sciences Resear
     \grantsponsor{GS501100000266}{Engineering and Physical Sciences Research Council}
                  {http://dx.doi.org/10.13039/501100000266}
     under Grant No.~\grantnum{GS501100000266}{EP/K009907/1}.
+    A.~Lin is supported by European Research Council (ERC) under the European
+    Union's Horizon 2020 research and innovation programme (grant agreement no
+    759969).
     %
     Z. Wu is supported by 
     \grantsponsor{}{National Natural Science Foundation of China}{}
