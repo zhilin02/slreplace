@@ -109,9 +109,10 @@ Finally $S$ is the set of states representing all threads for which final states
 		%\item $((q_{0,e}, \leftmost, S), a, ((\delta_e(q_{0,e},a), q_{0,e}), \leftmost, \delta_e(S,a)))$, where $\delta_e(S,a) = \{\delta_e(q,a) \mid q \in S \}$,
 		%
 		\item (continue $\searchleft$) suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$  ($n = 0$ means that $\rho$ is empty), $a \in \Sigma$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\},a)\big) \cap F_0 = \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then
-		\medskip
+%		\medskip
 
-		\hspace{5mm} $\left((\rho  \{q_{0,0}\}, \searchleft, S), a, \left(\red(\delta_0(\rho\{q_{0,0}\}, a)) \{q_{0,0}\}, \searchleft, \delta_0(S,a) \right) \right) \in \delta_{e_0},$
+%		\hspace{5mm} 
+		$$\left((\rho  \{q_{0,0}\}, \searchleft, S), a, \left(\red(\delta_0(\rho\{q_{0,0}\}, a)) \{q_{0,0}\}, \searchleft, \delta_0(S,a) \right) \right) \in \delta_{e_0},$$
 
 		\medskip
 
@@ -119,11 +120,10 @@ Finally $S$ is the set of states representing all threads for which final states
 		Moreover, no states occur more than once in $\red(\delta_0(\rho \{q_{0,0}\}, a)) \{q_{0,0}\}$, since $q_{0,0}$ does not occur in $\red(\delta_0(\rho\{q_{0,0}\}, a))$, (from the assumption that there are no incoming transitions for $q_{0,0}$ in $\cA_0$),
         %
 		\item (start $\searchlong$) suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$, $a \in \Sigma$, $\delta_0(S,a) \cap F_0 = \emptyset$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$,  and $\delta_0(\{q_{0,0}\}, a) \not \subseteq \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, then
+%		\medskip
+		$$\left((\rho \{q_{0,0}\}, \searchleft, S), a, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \in \delta_{e_0}.$$
 
-		\medskip
-		$\left((\rho \{q_{0,0}\}, \searchleft, S), a, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \in \delta_{e_0}.$
-
-		\medskip
+%		\medskip
 		Intuitively, from a state $(\rho \{q_{0,0}\}, \searchleft, S)$ with $\rho = S_1 \cdots S_n$, when reading a letter $a$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, $\delta_0(S,a) \cap F_0 = \emptyset$, and $\delta_0(\{q_{0,0}\}, a) \not \subseteq \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, then $\cA_{e_0}$ guesses that the current position is the first position of the leftmost and longest matching, it goes to the ``$\searchlong$'' mode, in addition, it keeps in the first component of the control state only the set of states of the thread started in the current position, and puts the union of the sets of the states of all the threads that have been started before, namely, $\bigcup \limits_{j \in [n]} \delta_0(S_j, a)$, into the third component to guarantee that none of these threads will reach a final state in the future (thus the guessing that the current position is the first position of the leftmost and longest matching is correct),
 
 
@@ -137,35 +137,36 @@ Finally $S$ is the set of states representing all threads for which final states
 		intuitively, when $\delta_0(S_1,a) \cap F_0 \neq \emptyset$ and $\delta_0(S,a) \cap F_0 = \emptyset$, $\cA_{e_0}$ guesses that the current position is the last position of the leftmost and longest matching, resets the first component to $\{q_{0,0}\}$, goes to the ``$\searchleft$'' mode, and puts $\delta_0(S_1, a)$ to the third component to guarantee that the current thread will not reach a final state in the future (thus the guessing that the current position is the last position of the leftmost and longest matching is correct).
         %
 		\item ($a$ matches $e_0$) suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$,  $a \in \Sigma$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, $\delta_0(\{q_{0,0}\}, a) \cap F_0 \neq \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then
-
-		\medskip
-		$\left(
-		\begin{array}{l l}
-		(\rho \{q_{0,0}\}, \searchleft, S), a, &\\
-		& \hspace{-2cm} \left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)
-		\end{array}
-		\right) \in \delta_{e_0},$
-
-		\medskip
+%
+%		\medskip
+		$$\left(
+%		\begin{array}{l l}
+		(\rho \{q_{0,0}\}, \searchleft, S), a, 
+		%&\\
+		%& \hspace{-2cm} 
+		\left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)
+%		\end{array}
+		\right) \in \delta_{e_0},$$
+%
+%		\medskip
 		intuitively, from a state $(\rho \{q_{0,0}\}, \searchleft, S)$ with $\rho = S_1 \cdots S_n$, when reading a letter $a$, if $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \big) \cap F_0 = \emptyset$, $\delta_0(\{q_{0,0}\}, a) \cap F_0 \neq \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then $\cA_{e_0}$  guesses that $a$ is simply the leftmost and longest matching of $e_0$ (e.g. when $e_0= a$), then it directly goes to the ``$\searchleft$'' mode (without going to the ``$\searchlong$'' mode), resets the first component of the control state to $\{q_{0,0}\}$, and puts the union of the sets of the states of all the threads that have been started, including the one started in the current position, namely, $\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a)$, into the third component to  guarantee that none of these threads will reach a final state in the future (where $\bigcup \limits_{j \in [n]} \delta_0(S_j, a)$ is used to validate the leftmost guessing and $\delta_0(\{q_{0,0}\}, a)$ is used to validate the longest guessing).
 	\end{itemize}
 \end{itemize}
 
-Let $Q_{\searchleft}  = \{ (-, \searchleft, -) \in Q_{e_0} \}$,  and $Q_{\searchlong} = \{ (-, \searchlong, -)  \in Q_{e_0}\}$.
-Let $v = v_1 u_1 v_2 u_2 \cdots v_l u_l v_{l+1}$ such that $u_j$ is the leftmost and longest matching of $e_0$ in $(v_1 u_1 \cdots v_{j-1} u_{j-1})^{-1} v$ for each $j \in [l]$, in addition, $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$. Then there exists a \emph{unique} accepting run $r$ of $\cA_{e_0}$ on $v$ such that the state sequence in $r$ is of the form
-
-\medskip
-{\small
-$
+Let $Q_{\searchleft}  = \{ (-, \searchleft, -) \in Q_{e_0} \}$,  $Q_{\searchlong} = \{ (-, \searchlong, -)  \in Q_{e_0}\}$, and $v = v_1 u_1 v_2 u_2 \cdots v_l u_l v_{l+1}$ such that $u_j$ is the leftmost and longest matching of $e_0$ in $(v_1 u_1 \cdots v_{j-1} u_{j-1})^{-1} v$ for each $j \in [l]$, in addition, $v_{l+1} \not \in \Sigma^\ast e \Sigma^\ast$. Then there exists a \emph{unique} accepting run $r$ of $\cA_{e_0}$ on $v$ such that the state sequence in $r$ is of the form
+%
+%\medskip
+%{\small
+$$
 %\begin{array}{l}
 (\{q_{0,0}\}, \searchleft, \emptyset)\ r_1\ ( \{q_{0,0}\}, \searchleft, -) \ r_2\ ( \{q_{0,0}\}, \searchleft, -)
 \cdots r_l\ ( \{q_{0,0}\}, \searchleft, -)\ r_{l+1},
 %\end{array}
-$
-}
-\medskip
-
-\noindent
+$$
+%}
+%\medskip
+%
+%\noindent
 where for each $j \in [l]$, $r_j \in \Ll((Q_{\searchleft})^* \concat (Q_{\searchlong})^*)$, and $r_{l+1} \in \Ll((Q_{\searchleft})^*)$. Intuitively, each occurrence of the state subsequence from $\Ll((Q_{\searchlong})^* \concat (\{q_{0,0}\}, \searchleft,-))$, except the first one, witnesses the \emph{leftmost and longest} matching of $e_0$ in $v$ from the beginning or after the previous such a matching.
 
 Since in the first component $\rho q_{0,0}$ of each state of $\cA_{e_0}$, no states from $\cA_0$ occur more than once,  it is not hard to see that $|\cA_{e_0}|$ is $2^{O(p(|\cA_0|))}$ for some polynomial $p$.
@@ -185,21 +186,21 @@ Given $T_z \subseteq Q_1 \times Q_1$, we construct $\cB_{\cA_1, e_0,  T_{z}}$ by
 \item For each pair $(q,q') \in T_{z}$, do the following,
 \begin{itemize}
 \item for each transition
-
-\medskip
-
-$\left((\rho \{q_{0,0}\}, \searchleft, S), a, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \in \delta_{e_0}$,
-
-\medskip
-
+%
+%\medskip
+%
+$$\left((\rho \{q_{0,0}\}, \searchleft, S), a, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \in \delta_{e_0},$$
+%
+%\medskip
+%
 add a transition
-
-\medskip
-
-$\left( \left(q, (\rho \{q_{0,0}\}, \searchleft, S) \right), a, \left(q, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \right)$,
-
-\medskip
-
+%
+%\medskip
+%
+$$\left( \left(q, (\rho \{q_{0,0}\}, \searchleft, S) \right), a, \left(q, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \right),$$
+%
+%\medskip
+%
 %
 \item for each transition
 		$$((S_1, \searchlong, S), a, (\delta_0(S_1,a), \searchlong, \delta_0(S,a))) \in \delta_{e_0},$$
@@ -212,29 +213,33 @@ add a transition
 		$$((q, (S_1, \searchlong, S)), a, (q', (\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \delta_0(S_1,a)))),$$
 %
 \item for each transition
-
-\medskip
-
-		$\left(
-		\begin{array}{l l}
-		(\rho \{q_{0,0}\}, \searchleft, S), a, &\\
-		& \hspace{-2cm} \left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)
-		\end{array}
-		\right) \in \delta_{e_0},$
-
-\medskip
-
+%
+%\medskip
+%
+		$$\left(
+%		\begin{array}{l l}
+		(\rho \{q_{0,0}\}, \searchleft, S), a, 
+		%&\\
+		%& \hspace{-2cm} 
+		\left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)
+%		\end{array}
+		\right) \in \delta_{e_0},$$
+%
+%\medskip
+%
 add a transition
-
-\medskip
-		$\left(
-		\begin{array}{l l}
-		(q, (\rho \{q_{0,0}\}, \searchleft, S)), a, &\\
-		& \hspace{-2cm} \left(q', \left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)\right)
-		\end{array}
-		\right).$
-\medskip
-
+%
+%\medskip
+		$$\left(
+%		\begin{array}{l l}
+		(q, (\rho \{q_{0,0}\}, \searchleft, S)), a, 
+		%&\\
+		%& \hspace{-2cm} 
+		\left(q', \left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)\right)
+%		\end{array}
+		\right).$$
+%\medskip
+%
 \end{itemize}
 \end{enumerate}
 Since $|\cA_{e_0}|$ is $2^{O(p(|\cA_0|))}$, it follows that $|\cB_{\cA_1, e_0, T_z}|$ is $|\cA_1| \cdot 2^{O(p(|\cA_0|))}$. In addition, since $|\cA_0|=O(|e_0|)$, we deduce that $|\cB_{\cA_1, e_0, T_z}|$ is $|\cA_1| \cdot 2^{O(p(|e_0|))}$.

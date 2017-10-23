@@ -138,12 +138,11 @@ Note that $G_0$ was defined above.
 \item For each $j \in [k]$, nondeterministically choose a set $T_{j, z} \subseteq Q_j \times Q_j$.
 %
 \item If $y \neq z$, then let
-$$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\}, \text{ and}$$
-$$\cE_{i+1}(y): = \cE_{i}(y) \cup \left\{(\cT_{\cT_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\},$$
+$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\}$ and $\cE_{i+1}(y): = \cE_{i}(y) \cup \left\{(\cT_{\cT_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\}$,
 where $\cT_{\cT_j, a, T_{j,z}}$ is obtained from $\cT_j$ by first removing all the $a$-transitions, then adding all the transitions $(q, a, q')$ for $(q,q') \in T_{j,z}$.
-
+%
 Otherwise, let
-$$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\} \cup \left\{(\cT_{\cT_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\}.$$
+$\cE_{i+1}(z):= \cE_{i}(z) \cup \left\{(\cT_j, T_{j,z}) \mid j \in [k] \right\} \cup \left\{(\cT_{\cT_j, a, T_{j,z}}, \cP_j) \mid j \in [k] \right\}$.
 In addition, for each vertex $x'$ distinct from $y, z$, let $\cE_{i+1}(x') := \cE_i(x')$.
 %We set $\cE_{i+1}(x) = \emptyset$.
 %
