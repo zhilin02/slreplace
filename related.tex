@@ -3,7 +3,7 @@
 \section{Related work}\label{sec-rel}
 
  
-In this section, we discuss some related work. We will classify our discussions into two main categories: (1) theoretical results in terms of decidability and complexity; (2) practical (but generally incomplete) approaches used in string solvers.  We shall emphasise work regarding $\replaceall$ functions as they are our main focus. 
+We now discuss some related work. We split our discussion into two categories: (1) theoretical results in terms of decidability and complexity; (2) practical (but generally incomplete) approaches used in string solvers.  We emphasise work on $\replaceall$ functions as they are our focus. 
 
 \paragraph{Theoretical results}
 We have discussed in Section \ref{sec:intro} works on string constraints with 
@@ -85,7 +85,7 @@ For instance, one may consider the term $\replaceall(x, cur \equiv 0 \bmod 2, y)
 Finally, the $\replaceall$ function is related to Array Folds Logic introduced by Daca et al \cite{DHK16}. The authors considered an extension of the quantifier-free theory of integer arrays with counting. The main feature of the logic is the \emph{fold} terms, borrowed from the folding concept in functional programming languages. Intuitively, a fold term applies a function to every element of the array to compute an output. If strings are treated as arrays over a finite domain (the alphabet), the $\replaceall$ function can be seen as a fold term. Nevertheless, the $\replaceall$ function goes beyond the fold terms considered in \cite{DHK16}, since it outputs a string (an array), instead of an integer. Therefore, the results in \cite{DHK16} cannot be applied to our setting.
 
 \paragraph{Practical Solvers}
-There is a large amount of recent work on developing practical string solvers
+A large amount of recent work develops practical string solvers
 including  Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI}, 
 Z3-str~\cite{Z3-str}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14}, Norn~\cite{Abdulla14}, S3 and S3P~\cite{S3,TCJ16}, and FAT~\cite{Abdulla17}.
 Among them, only Stranger, S3, and S3P support $\replaceall$.  
@@ -118,8 +118,8 @@ They use deterministic finite automata (DFAs) to represent possible values of st
  
 The S3 and S3P tools also support the $\replaceall$ function, where some
 progressive searching strategies were provided to deal with the non-termination
-problem brought out by the recursively defined string operations (of which the
-$\replaceall$ function is a special case). Nevertheless, the solvers are 
+problem caused by the recursively defined string operations (of which 
+$\replaceall$ is a special case). Nevertheless, the solvers are 
 incomplete as reasoning about unbounded strings defined recursively is in 
 general an undecidable problem.
 

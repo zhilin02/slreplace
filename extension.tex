@@ -4,7 +4,7 @@
 
 In this section, we consider the language $\strline[\replaceall]$ extended with either integer constraints, character constraints, or $\indexof$ constraints, and show that each of such extensions leads to undecidability. 
 %\mat{Should $\concat$ be removed?}\zhilin{agree, since the undecidability result is stronger if stated for $\strline[\replaceall]$}
-We will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as an \emph{integer variable}, ranges over the set $\Nat$ of natural numbers. Recall that, in previous sections, we have used $x, y, z, \cdots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \cdots$ to denote the variables of $\intnum$. The
+We will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as an \emph{integer variable}, ranges over the set $\Nat$ of natural numbers. Recall that, in previous sections, we have used $x, y, z, \ldots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \ldots$ to denote the variables of $\intnum$. The
 choice of omitting negative integers is for simplicity. Our
 results can be easily extended to the case where $\intnum$ includes negative integers.
 
@@ -14,7 +14,7 @@ First, we describe integer constraints, which express constraints on the length 
 
 \begin{definition}[Integer constraints] \label{def:intconst} 
 	An atomic integer constraint over $\Sigma$ is an expression of the form
-	\[a_1t_1+\cdots+a_nt_n\leq d\]
+	$a_1t_1+\cdots+a_nt_n\leq d$
 where $a_1, \cdots, a_n,d\in \mathbb{Z}$ are constant integers (represented in binary), and each \emph{term} $t_i$ is either 
 	\begin{enumerate}
 		\item an integer variable $\mathfrak{n}$;
@@ -97,7 +97,7 @@ The integer constraint $|x| = |y|$ asserts the equality of $f$ and $g$. Note tha
 
 Notice that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability. \zhilin{a remark for the Buchi and Senger's result about undecidability, please check} \tl{rephrased slightly}
 We remark that the undecidability result here does \emph{not} follow from the undecidability result for the extension of word equations with the letter-counting modalities in \cite{buchi}, % does \emph{not} apply to the setting here 
-since the formula used in  the reduction of \cite{buchi} is not straight-line. 
+since the formula by \cite{buchi} is not straight-line. 
 
 By utilising a further result on Diophantine equations, we show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple (in the sense that their dependency graphs are of depth at most one), the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
 
