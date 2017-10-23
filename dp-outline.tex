@@ -1,0 +1,36 @@
+
+\section{Outline of Decision Procedures}
+
+We describe our decision procedure across three sections (Section~\ref{sec:replaceallsl}--Section~\ref{sec:replaceallre}).
+This means the ideas can be introduced in a step-by-step fashion, which we hope helps the reader.
+In addition, by presenting separate algorithms, we can give the fine-grained complexity analysis required to show Corollary~\ref{cor-pspace}.
+We first outline the main ideas needed by our approach.
+
+We will use automata-theoretic techniques.
+That is, we make use of the fact that regular expressions can be represented as NFAs.
+We can then consider a very simple string expression, which is a single regular constraint $x \in e$.
+It is well-known that an NFA $\cA$ can be constructed that is equivalent to $e$.
+We can also test in LOGSPACE whether there is some word $w$ accepted by $\cA$.
+If this is the case, then this word can be assigned to $x$, giving a satisfying assignment to the constraint.
+If this is not the case, then there is no satisfying assignment.
+
+A more complex case is a conjunction of several constraints of the form $x \in e$.
+If the constraints apply to different variables, they can be treated independently to find satisfying assignments.
+If the constraints apply to the same variable, then they can be merged into a single NFA.\@
+Intuitively, take $x \in e_1 \land x \in e_2$ and $\cA_1$ and $\cA_2$ equivalent to $e_1$ and $e_2$ respectively.
+We can use the fact that NFA are closed under intersection a check if there is a word accepted by $\cA_1 \times \cA_2$.
+If this is the case, we can construct a satisfying assignment to $x$ from an accepting run of $\cA_1 \times \cA_2$.
+
+
+In the general case, however, variables are not independent, but may be related by a use of $\replaceall$.
+In this case, we perform a kind of \emph{$\replaceall$ elimination}.
+That is, we successively remove instances of $\replaceall$ from the constraint, building up an expanded set of regular constraints (represented as automata).
+Once there are no more instances of $\replaceall$ we can solve the regular constraints as above.
+Briefly, we identify some $x = \replaceall(y, e, z)$ where $x$ does not appear as an argument to any other use of $\replaceall$.
+We then transform any regular constraints on $x$ into additional constraints on $y$ and $z$.
+This allows us to remove the variable $x$ since the extended constraints on $y$ and $z$ are sufficient for determining satisfiability.
+Moreover, from a satisfying assignment to $y$ and $z$ we can construct a satisfying assignment to $x$ as well.
+This is the technical part of our decision procedure and is explained in detail in the following sections, for increasingly complex uses of $\replaceall$.
+
+
+
