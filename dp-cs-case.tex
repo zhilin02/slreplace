@@ -5,7 +5,7 @@
 In this section, we consider the constant-string special case, that is, for an $\strline[\replaceall]$ formula $C = \varphi \wedge \psi$, every term of the form $\replaceall(z, e, z')$ in $\varphi$ satisfies that $e=u$ for $u \in \Sigma^+$. Note that the case when $u=\epsilon$ will be dealt with in Section~\ref{sec:replaceallre}. 
 
 Again, let us start with the simple situation that
-$$C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3,$$
+$C \equiv x = \replaceall(y, u, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$,
 where $|u| \ge 2$. For $i=1,2,3$, let $\cA_i = (Q_i, \delta_i, q_{0, i}, F_i)$
 be the NFA corresponding to $e_i$. In addition, let $k = |u|$ and $u = a_1 \cdots a_k$ with $a_i \in \Sigma$ for each $i \in [k]$.
 
@@ -144,20 +144,26 @@ We are ready to present the construction of $\cB_{\cA_1, u,  T_{z}}$. The NFA $\
 
 \item For each pair $(q,q') \in T_{z}$ and each sequence of transitions in $\cA_u$ of the form
 $$
-\begin{array}{l}
+%\begin{array}{l}
 \left(p, u[1], \left(\verify, 1, \overrightarrow{W'_1} \right) \right), \left( \left(\verify, 1, \overrightarrow{W'_1} \right), u[2],
- \left(\verify, 2, \overrightarrow{W'_2}\right) \right), \\
- \hspace{3cm} \cdots, \left(\left(\verify, k-1, \overrightarrow{W'_{k-1}} \right), u[k], q_0\right),
-\end{array}
+ \left(\verify, 2, \overrightarrow{W'_2}\right) \right), 
+ %\\
+ %\hspace{3cm} 
+ \cdots, \left(\left(\verify, k-1, \overrightarrow{W'_{k-1}} \right), u[k], q_0\right),
+%\end{array}
 $$
 where  $p=q_0$ or $p = \left(\search, \overrightarrow{W} \right)$,
 add the following transitions
 $$
 \begin{array}{c}
-\left((q,p), u[1], \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right) \right), \\
-\left( \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right), u[2], \left(q, \left(\verify, 2, \overrightarrow{W'_2}\right)\right)\right),  \\
+\left((q,p), u[1], \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right) \right), 
+%\\
+\left( \left(q, \left(\verify, 1, \overrightarrow{W'_1} \right) \right), u[2], \left(q, \left(\verify, 2, \overrightarrow{W'_2}\right)\right)\right),  
+%\\
 \cdots, \\
-\left(\left(q, \left(\verify, k-2, \overrightarrow{W'_{k-2}} \right) \right), u[k-1], \left (q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right) \right),\\ \left( \left(q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right), u[k], \left(q', q_0 \right)\right).
+\left(\left(q, \left(\verify, k-2, \overrightarrow{W'_{k-2}} \right) \right), u[k-1], \left (q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right) \right),
+%\\ 
+\left( \left(q, \left (\verify, k-1, \overrightarrow{W'_{k-1}} \right) \right), u[k], \left(q', q_0 \right)\right).
 \end{array}
 $$
 Note that the number of aforementioned sequences of transitions in $\cA_u$ is at most $|Q_{\search}|+1$, since  $ \overrightarrow{W'_1},\dots,  \overrightarrow{W'_{k-1}}$ are completely determined by $\overrightarrow{W} $ and $u$.

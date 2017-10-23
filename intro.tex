@@ -5,7 +5,7 @@
 
 The problem of %satisfiability of logical theories over strings
 automatically solving string constraints (aka satisfiability of logical theories over
-strings) has recently witnessed renewed interest %in the programming language and verification community
+strings) has recently witnessed renewed interests %in the programming language and verification community
 \cite{Berkeley-JavaScript,TCJ16,LB16,YABI14,S3,Abdulla14,Abdulla17,DV13,symbolic-transducer,BEK,HAMPI,cvc4,Z3-str,fang-yu-circuits,BTV09} 
 because of important applications in the analysis of string-manipulating  programs. For example,
 program analysis techniques like symbolic execution
@@ -31,18 +31,20 @@ many others.
 %There are several well-established research threads on this satisfiability 
 %problem depending on 
 %which string operations are permitted in the theory. 
-Perhaps the most well-known theory of strings for applications to analysing string-manipulating programs is the theory of strings with concatenation  (aka \emph{word equations}), whose decidability was shown by Makanin \cite{Makanin} in 1977 after it was open for many years. More importantly, 
+Perhaps the most well-known theory of strings for such applications as the
+analysis of string-manipulating programs is the theory of strings with concatenation  (aka \emph{word equations}), whose decidability was shown by Makanin \cite{Makanin} in 1977 after it was open for many years. More importantly, 
 this theory remains decidable even when regular constraints are incorporated into the 
 language \cite{Schulz}. However, whether adding the string-length function
  preserves the decidability remains a long-standing open problem
-\cite{Vijay-length,buchi}. (See Section~\ref{sec-rel} for more recent results about solving word equations. )
+\cite{Vijay-length,buchi}. 
+%[See Section~\ref{sec-rel} for more recent results about solving word equations.]
 
 %\OMIT{
 %which is crucial for 
 Another important string operation---especially in popular scripting
 languages like Python, JavaScript, and PHP---is the \emph{string-replace function}, 
-which may be used to replace either the first occurrence or
-all occurrences of a string (a string constant/variable, or a regular expression) by 
+which may be used to replace either the \emph{first} occurrence or
+\emph{all} occurrences of a string (a string constant/variable, or a regular expression) by 
 another string (a string constant/variable). The replace function (especially 
 the replace-all functionality) is omnipresent in HTML5 applications
 \cite{LB16,TCJ16,YABI14}. 
@@ -85,17 +87,13 @@ Using Mustache, a web-developer, for example, may define an HTML fragment with p
 We give a simple example demonstrating a (naive) XSS vulnerability to illustrate the use of string-replace functions.
 Consider the HTML fragment below.
 \begin{minted}{html}
-    <h1>User 
-        <span onMouseOver="popupText('{{bio}}')">
-            {{userName}} </span> </h1>
+   <h1> User <span onMouseOver="popupText('{{bio}}')">{{userName}}</span> </h1>
 \end{minted}
 This HTML fragment is a template as might be used with systems such as Mustache to display a user on a webpage.
 For each user that is to be displayed -- with their username and biography stored in variables \emph{user} and \emph{bio} respectively -- the string \verb+{{userName}}+ will be replaced by \emph{user} and the string \verb+{{bio}}+ will be replaced by \emph{bio}.
 For example, a user \verb+Amelia+ with biography \verb+Amelia was born in 1979...+ would result in the HTML below.
 \begin{minted}{html}
-    <h1>User 
-        <span onMouseOver="popupText('Amelia was born in 1979...')">
-            Amelia </span> </h1>
+   <h1> User <span onMouseOver="popupText('Amelia was born in 1979...')">Amelia</span> </h1>
 \end{minted}
 This HTML would display \verb+User Amelia+, and, when the mouse is placed over \verb+Amelia+, her biography would appear, thanks to the \verb+onMouseOver+ attribute in the \verb+span+ element.
 
@@ -254,4 +252,12 @@ Our decision procedure enjoys the following advantages:
 
 
 \paragraph{Organisation.} 
-This paper is organised as follows: Preliminaries are given in Section~\ref{sec-prel}. The core string language is defined in Section~\ref{sec-core}. The main results of this paper are summarised in Section~\ref{sec-sat}. The decision procedure is presented in Section~\ref{sec:replaceallsl}-\ref{sec:replaceallre}, case by case. The extensions of the core string language are investigated in Section~\ref{sec-ext}. The related work can be found in Section~\ref{sec-rel}.
+This paper is organised as follows: Preliminaries are given in
+Section~\ref{sec-prel}. The core string language is defined in
+Section~\ref{sec-core}. The main results of this paper are summarised in
+Section~\ref{sec-sat}. The decision procedure is presented in
+Section~\ref{sec:replaceallsl}-\ref{sec:replaceallre}, case by case. The
+extensions of the core string language are investigated in
+Section~\ref{sec-ext}. The related work can be found in Section~\ref{sec-rel}.
+The \shortlong{full version}{appendix} contains missing proofs and additional
+examples.
