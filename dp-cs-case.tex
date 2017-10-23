@@ -77,7 +77,7 @@ Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
 The window profiles w.r.t. $u$ will be used to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
 
 \begin{definition}[Parsing automata]
-The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
+Given a string $u$ we define the \emph{parsing automaton} $\cA_u$ to be the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ where the components are given below.
 \begin{itemize}
 	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  and the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 	%
