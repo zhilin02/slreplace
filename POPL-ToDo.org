@@ -1,6 +1,9 @@
 * Reviewer 1
 ** DONE, add a sentence in the end of section 4: A concern is that while lower bound (PSPACE-hardness) results are claimed, no proof (or a proof sketch) is given in the paper or the supplemental material.
 
+Response: We have added an explanation in the last paragraph of Section 5
+("The PSPACE lower-bound follows from...").
+
 ** DONE: No empirical evaluation is provided, but I think the results are of interest on their own. However, maybe the authors can comment on whether the restricted fragments from Corollary 4.7 are practically relevant.
 
 ** DONE Minor: line 1243: abstraction-interpretation -> abstract interpretation
@@ -8,7 +11,16 @@
 * Reviewer 2
 ** DONE The procedure in Section 5.2 need to be clarified, since the output of the procedure is not explicitly specified. Instead there is an implicit assumption I think that when it is possible to choose an accepting run of the product automata (line 615), then the problem is satisfiable, where there is a connection with Proposition 5.1. The section would be much more readable if this was explicitly stated as a procedure with a defined output. It would also help to specify whether the accepting run of the automata indeed corresponds to a model of the original problem, and prove this is the case.
 
+Response: we have rewritten Step II in Section 5.2 to explicitly give the
+output.  Construction of a satisfying assignment was explained in full in the
+Appendix previously.  We have added a paragraph after Step II to give an
+informal description of how this is done (with pointers to the appendix for
+the proof).
+
 ** TODO In Section 5.2, It also may help if some of the definitions (e.g. dependency graph) were inlined so that are more local to where they are used in the paper.
+
+Response: we have decided to keep the definitions together so that they are
+easier to find from anywhere in the document.
 
 ** DONE, add the definition in section 2: in section 6, "position" of a string is not explicitly introduced, I was confused at first whether this was intended to begin at 0 or 1. 
 
@@ -32,6 +44,10 @@
 
 ** DONE. The authors do state that the theory is undecidable even if only a single integer constraint of the form “|X| = |Y|” is used; in this case, why is the letter-counting term necessary?
 
+Response: undecidability also holds if only a single letter-counting term is
+used.  We have updated the statement of Theorem 8.4 to include this
+information.
+
 ** DONE, add comments after Cor. 4.7: The restrictions used to ensure the complexity of each of the fragments is PSPACE-complete is not justified, especially that of the largest fragment of regular expressions. Some discussion of the practical implications of these restrictions would strengthen the paper.
 
 ** DONE, remove k from the notation: I found the use of k-window profiles difficult to understand. Perhaps more motivation would help here. I also found the use of k confusing, since it seems to be |u| as defined in the beginning of section 6. If this is the case, why not remove it from the notation of WP_{u, k}?
@@ -39,5 +55,8 @@
 ** DONE. Improper notation is used on line 210: terms of the form “i in |u_i|” should read “i in [|u_i|]”, etc.
 
 ** TODO Section 2 could be edited down significantly; most of the automata-theoretic background can be simplified and condensed as it is already commonly known. The introduction is also extremely long and I would suggest editing this content for size before final submission.
+
+Response: we have chosen to keep the definitions as is since we don't think
+it can be assumed that readers are comfortably familiar with automata theory. 
 
 ** TODO In Section 3.1, the letters “e” and “epsilon” are used in close proximity to each other, and the font used makes them hard to distinguish. I would suggest using “r” as the letter representing a regular expression to avoid confusion.
