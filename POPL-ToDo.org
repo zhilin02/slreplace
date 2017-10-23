@@ -32,6 +32,10 @@ Response: WP_{u,k} is now WP_u.
 * Reviewer 3
 
 ** TODO Please provide some motivation/intuition about the straight-line restriction. The authors try to motivate that this fragment is useful by referring to dynamic symbolic execution, but this is only mentioned in the introduction and not properly developed. There are also many static analysis/verification techniques that need to reason about string constraints – why should we expect that the constraints generated in that context also have this straight-line property? What is the intuition about why the straight-line restriction makes the problem decidable?
+Response: we have made this more explicit in the introduction by adding a
+direct statement of the number of benchmarks that satisfy the straight line
+requirement (50000+) as well as giving a description from BV09 describing
+where the straight line restriction comes into play with symbolic execution.
 
 ** TODO I strongly suggest that the authors implement the proposed decision procedure and provide some experimental evaluation. The paper is motivated by practical concerns (e.g., ubiquity of replaceAll in web applications), but there is no evidence to show that the results can be used in a practical string constraint solver.
 Response: we have not provided an implementation as this is not possible in
@@ -46,8 +50,15 @@ approach.  However, we also agree that a high-level overview was missing, and
 have added a new Section 5 to address this issue. 
 
 ** TODO There is a reference to symbolic model checking checking techniques being useful for solving problems that have PSPACE or worse complexity. I didn’t understand the relevance of this claim to this paper. (page 6)
+Response: we have left this sentence as is.  The sentence explicitly
+restricts attention to verification problems of high complexity, for which
+practical techniques (such as symbolic model checking) have provided
+successful implementations.
 
 ** TODO It would be helpful to give an example of a constraint that is not in the straight-line fragment and discuss why the straight-line fragment is still reasonable.
+Response: we have characterised the straight line fragment in the
+introduction with a programming language and put it into context wrt symbolic
+execution.
 
 * Reviewer 4
 
