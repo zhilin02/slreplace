@@ -1,0 +1,177 @@
+
+We include a list of issues raised by reviewers, and how we have addressed them.
+
+Reviewer 1
+----------
+
+* "add a sentence in the end of section 4: A concern is that while lower bound
+  (PSPACE-hardness) results are claimed, no proof (or a proof sketch) is given
+  in the paper or the supplemental material."
+
+Response: We have added an explanation in the last paragraph of Section 5
+("The PSPACE lower-bound follows from...").
+
+* "No empirical evaluation is provided, but I think the results are of interest
+  on their own. However, maybe the authors can comment on whether the
+  restricted fragments from Corollary 4.7 are practically relevant."
+
+Response: we have extended the final paragraph of Section 4 to include some
+comments on the practical relevance of the fragments.
+
+* "Minor: line 1243: abstraction-interpretation -> abstract interpretation"
+
+Response: done.
+
+Reviewer 2
+----------
+
+* "The procedure in Section 5.2 need to be clarified, since the output of the
+  procedure is not explicitly specified. Instead there is an implicit
+  assumption I think that when it is possible to choose an accepting run of the
+  product automata (line 615), then the problem is satisfiable, where there is
+  a connection with Proposition 5.1. The section would be much more readable if
+  this was explicitly stated as a procedure with a defined output. It would
+  also help to specify whether the accepting run of the automata indeed
+  corresponds to a model of the original problem, and prove this is the case."
+
+Response: we have rewritten Step II in Section 5.2 to explicitly give the
+output.  Construction of a satisfying assignment was explained in full in the
+Appendix previously.  We have added a paragraph after Step II to give an
+informal description of how this is done (with pointers to the appendix for
+the proof).
+
+* "In Section 5.2, It also may help if some of the definitions (e.g. dependency
+  graph) were inlined so that are more local to where they are used in the
+  paper."
+
+Response: we have decided to keep the definitions together so that they are
+easier to find from anywhere in the document.
+
+* "add the definition in section 2: in section 6, "position" of a string is not
+  explicitly introduced, I was confused at first whether this was intended to
+  begin at 0 or 1."
+
+Response: position is now defined in Section 2 under the paragraph "Regular
+languages".
+
+* "remove k from the notation. In Example 6.3, perhaps it is clearer to say
+  "let k=3" instead of "then k=3". This is partly confusing since k is a global
+  variable throughout the section."
+
+Response: WP_{u,k} is now WP_u.
+
+Reviewer 3
+----------
+
+* "Please provide some motivation/intuition about the straight-line
+  restriction. The authors try to motivate that this fragment is useful by
+  referring to dynamic symbolic execution, but this is only mentioned in the
+  introduction and not properly developed. There are also many static
+  analysis/verification techniques that need to reason about string constraints
+  – why should we expect that the constraints generated in that context also
+  have this straight-line property? What is the intuition about why the
+  straight-line restriction makes the problem decidable?"
+
+Response: we have made this more explicit in the introduction by adding a
+direct statement of the number of benchmarks that satisfy the straight line
+requirement (50000+) as well as giving a description from BV09 describing
+where the straight line restriction comes into play with symbolic execution.
+
+* "I strongly suggest that the authors implement the proposed decision
+  procedure and provide some experimental evaluation. The paper is motivated by
+  practical concerns (e.g., ubiquity of replaceAll in web applications), but
+  there is no evidence to show that the results can be used in a practical
+  string constraint solver."
+
+Response: we have not provided an implementation as this is not possible in
+the time provided.  Moreover, it would mean adding new unreviewed results.
+
+* "As mentioned above, the paper is really thin on providing intuition about
+  the results/decision procedures; therefore, the paper is hard (and rather
+  tedious) to read. Given that most of the POPL readers are not experts on
+  string constraints, I think it is particularly important for the paper to
+  provide high-level intuition."
+
+Response: we believe that we provide a large amount of intuition.  Indeed, we
+present the decision procedure in four steps of increasing difficulty
+(Section 6.1, 6.2, 7, and 8 in the update document).  This includes 3 fully
+worked examples.  Reviewers B and D both comment on the helpfulness of this
+approach.  However, we agree that a high-level overview was missing, and
+have added a new Section 5 to address this issue. 
+
+* "There is a reference to symbolic model checking checking techniques being
+  useful for solving problems that have PSPACE or worse complexity. I didn’t
+  understand the relevance of this claim to this paper. (page 6)"
+
+Response: we have left this sentence as is.  The sentence explicitly
+restricts attention to verification problems of high complexity, for which
+practical techniques (such as symbolic model checking) have provided
+successful implementations.
+
+* "It would be helpful to give an example of a constraint that is not in the
+  straight-line fragment and discuss why the straight-line fragment is still
+  reasonable."
+
+Response: we have characterised the straight line fragment in the introduction
+with a programming language and put it into context wrt symbolic execution.
+
+Reviewer 4
+----------
+
+* "In Section 8 during the discussion of length constraints, the authors
+  introduce a term that counts the number of occurrences of a specific
+  character in a string (line 1130). As the authors mention later in Section 9,
+  it is known that letter-counting yields undecidability from a result by Buchi
+  and Senger. Wouldn’t any extension of the theory with this predicate
+  trivially introduce undecidability, regardless of the presence of ReplaceAll
+  terms."
+
+Response: A paragraph has been added (after Theorem 9.4) explaining why the
+result does not follow from Buchi and Senger.
+
+* "The authors do state that the theory is undecidable even if only a single
+  integer constraint of the form “|X| = |Y|” is used; in this case, why is the
+  letter-counting term necessary?"
+
+Response: undecidability also holds if only a single letter-counting term is
+used.  We have updated the statement of Theorem 8.4 to include this
+information.
+
+* "add comments after Cor. 4.7: The restrictions used to ensure the complexity
+  of each of the fragments is PSPACE-complete is not justified, especially that
+  of the largest fragment of regular expressions. Some discussion of the
+  practical implications of these restrictions would strengthen the paper."
+
+Response: (as above) we have extended the final paragraph of Section 4 to
+include some comments on the practical relevance of the fragments.
+
+* "remove k from the notation: I found the use of k-window profiles difficult
+  to understand. Perhaps more motivation would help here. I also found the use
+  of k confusing, since it seems to be |u| as defined in the beginning of
+  section 6. If this is the case, why not remove it from the notation of WP_{u,
+  k}?"
+
+Response: (as above) WP_{u, k} is now WP_u.
+
+
+* "Improper notation is used on line 210: terms of the form “i in |u_i|” should
+  read “i in [|u_i|]”, etc."
+
+Response: done.
+
+* "Section 2 could be edited down significantly; most of the automata-theoretic
+  background can be simplified and condensed as it is already commonly known.
+  The introduction is also extremely long and I would suggest editing this
+  content for size before final submission."
+
+Response: we have chosen to keep the definitions as is since we don't think
+it can be assumed that readers are comfortably familiar with automata theory. 
+
+* "In Section 3.1, the letters “e” and “epsilon” are used in close proximity to
+  each other, and the font used makes them hard to distinguish. I would suggest
+  using “r” as the letter representing a regular expression to avoid
+  confusion."
+
+Response: we would rather not change this since it risks causing inconsistency
+throughout the document.  The letters "e" and "(var)epsilon" are not too
+similar.
