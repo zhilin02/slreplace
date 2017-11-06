@@ -1,0 +1,370 @@
+%!TEX root = popl2018.tex
+
+\newcommand{\set}[1]{\{ #1 \}}
+\newcommand{\sequence}[2]{(#1, \ldots, #2)}
+\newcommand{\couple}[2]{(#1,#2)}
+\newcommand{\pair}[2]{(#1,#2)}
+\newcommand{\triple}[3]{(#1,#2,#3)}
+\newcommand{\quadruple}[4]{(#1,#2,#3,#4)}
+\newcommand{\tuple}[2]{(#1,\ldots,#2)}
+\newcommand{\Nat}{\ensuremath{\mathbb{N}}}
+\newcommand{\Rat}{\ensuremath{\mathbb{Q}}}
+\newcommand{\Rea}{\ensuremath{\mathbb{R}}}
+\newcommand{\Zed}{\ensuremath{\mathbb{Z}}}
+%\newcommand{\true}{\top}
+%\newcommand{\false}{\perp}
+\newcommand{\bottom}{\perp}
+%% \newcommand{\powerset}[1]{{\cal P}(#1)}
+\newcommand{\npowerset}[2]{{\cal P}^{#1}(#2)}
+\newcommand{\finitepowerset}[1]{{\cal P}_f(#1)}
+\newcommand{\level}[2]{L_{#1}(#2)}
+\newcommand{\card}[1]{\mbox{card}(#1)}
+\newcommand{\range}[1]{\mathtt{ran}(#1)}
+\newcommand{\astring}{s}
+
+\newcommand{\Cc}{\mathcal{C}}
+
+
+\newcommand {\notof}{\ensuremath{\neg}}
+\newcommand {\myand}{\ensuremath{\wedge}}
+\newcommand {\myor}{\ensuremath{\vee}}
+\newcommand {\mynext}{\mbox{{\sf X}}}
+\newcommand {\until}{\mbox{{\sf U}}}
+\newcommand {\sometimes}{\mbox{{\sf F}}}
+\newcommand {\previous}{\mynext^{-1}}
+\newcommand {\since}{\mbox{{\sf S}}}
+\newcommand {\fminusone}{\mbox{{\sf F}}^{-1}}
+\newcommand {\everywhere}[1]{\mbox{{\sf Everywhere}}(#1)}
+
+
+
+\newcommand{\aatomic}{{\rm A}}
+\newcommand{\aset}{X}
+\newcommand{\asetbis}{Y}
+\newcommand{\asetter}{Z}
+
+\newcommand{\avarprop}{p}
+\newcommand{\avarpropbis}{q}
+\newcommand{\avarpropter}{r}
+\newcommand{\varprop}{{\rm PROP}} % Set of atomic propositions (for a given logic)
+
+% formulae
+
+\newcommand{\aformula}{\astateformula} % a formula
+\newcommand{\aformulabis}{\astateformulabis} % another formula (when at least 2 are present)
+\newcommand{\aformulater}{\astateformulater} % another formula (when at least 3 are present)
+\newcommand{\asetformulae}{X}
+\newcommand{\subf}[1]{sub(#1)}
+
+\newcommand{\aautomaton}{{\mathbb A}}
+\newcommand{\aautomatonbis}{{\mathbb B}}
+
+\newcommand {\length}[1] {\ensuremath{|#1|}}
+
+
+
+% Equivalences
+\newcommand{\egdef}{\stackrel{\mbox{\begin{tiny}def\end{tiny}}}{=}} % =def=
+\newcommand{\eqdef}{\stackrel{\mbox{\begin{tiny}def\end{tiny}}}{=}} % =def=
+\newcommand{\equivdef}{\stackrel{\mbox{\begin{tiny}def\end{tiny}}}{\equivaut}} % <=def=>
+\newcommand{\equivaut}{\;\Leftrightarrow\;}
+
+\newcommand{\ainfword}{\sigma}
+
+\newcommand{\amap}{\mathfrak{f}}
+\newcommand{\amapbis}{\mathfrak{g}}
+
+\newcommand{\step}[1]{\xrightarrow{\!\!#1\!\!}}
+\newcommand{\backstep}[1]{\xleftarrow{\!\!#1\!\!}}
+
+\newcommand {\aedge}[1] {\ensuremath{\stackrel{#1}{\longrightarrow}}}
+\newcommand {\aedgeprime}[1] {\ensuremath{\stackrel{#1}{\longrightarrow'}}}
+\newcommand {\afrac}[1] {\ensuremath{\mathit{frac}(#1)}}
+\newcommand {\cl}[1] {\ensuremath{\mathit{cl}(#1)}}
+\newcommand {\sfc}[1] {\ensuremath{\mathit{sfc}(#1)}}
+\newcommand {\dunion} {\ensuremath{\uplus}}
+\newcommand {\edge} {\ensuremath{\longrightarrow}}
+\newcommand {\emptyword}{\ensuremath{\epsilon}}
+\newcommand {\floor}[1] {\ensuremath{\lfloor #1 \rfloor}}
+\newcommand {\intersection} {\ensuremath{\cap}}
+\newcommand {\union} {\ensuremath{\cup}}
+\newcommand {\vals}[2] {\ensuremath{\mathit{val}_{#2}(#1)}}
+
+
+
+\newcommand {\pspace} {\textsc{pspace}}
+\newcommand {\nlogspace} {\textsc{nlogspace}}
+\newcommand {\logspace} {\textsc{logspace}}
+\newcommand {\expspace} {\textsc{expspace}}
+\newcommand {\np} {\textsc{np}}
+\newcommand {\threeexptime} {\textsc{3exptime}}
+\newcommand {\polytime} {\textsc{p}}
+\newcommand{\twoexpspace}{\textsc{2expspace}}
+\newcommand{\threeexpspace}{\textsc{3expspace}}
+\newcommand {\nexptime} {\textsc{nexptime}}
+
+
+
+\newcommand{\aalphabet}{\Sigma}     % an alphabet, A is already used for atoms
+\newcommand{\aword}{\mathfrak{u}}
+\newcommand{\awordbis}{\mathfrak{v}}
+
+
+
+\newcommand{\aassertion}{P}
+\newcommand{\aassertionbis}{Q}
+\newcommand{\aexpression}{e}
+\newcommand{\aexpressionbis}{f}
+\newcommand{\avariable}{\mathtt{x}}
+\newcommand{\uniquevar}{\mathtt{u}}
+\newcommand{\uniquevarbis}{\mathtt{v}}
+\newcommand{\avariablebis}{\mathtt{y}}
+\newcommand{\avariableter}{\mathtt{z}}
+\newcommand{\nullconstant}{\mathtt{null}}
+\newcommand{\nilvalue}{nil}
+\newcommand{\emptyconstant}{\mathtt{emp}}
+\newcommand{\infheap}{\mathtt{inf}}
+\newcommand{\saturated}{\mathtt{Saturated}}
+
+\newcommand{\astateformula}{\phi}
+\newcommand{\astateformulabis}{\psi}
+\newcommand{\astateformulater}{\varphi}
+%%
+\newcommand{\separate}{\ast}
+\newcommand{\sep}{\separate}
+\newcommand{\size}{\mathtt{size}}
+\newcommand{\sizeeq}[1]{\mathtt{size} \ = \ #1}
+\newcommand{\alloc}[1]{\mathtt{alloc}(#1)}
+\newcommand{\allocb}[2]{\mathtt{alloc}^{-1}[#2](#1)}
+\newcommand{\isol}[1]{\mathtt{isoloc}(#1)}
+\newcommand{\icell}{\mathtt{isocell}}
+\newcommand{\malloc}{\mathtt{malloc}}
+\newcommand{\cons}{\mathtt{cons}}
+\newcommand{\new}{\mathtt{new}}
+\newcommand{\free}[1]{\mathtt{free} \ #1}
+\newcommand{\maxform}[1]{\mathtt{maxForms}(#1)}
+\newcommand{\locations}[1]{\mathtt{loc}(#1)}
+\newcommand{\values}{\mathtt{Val}}
+\newcommand{\aheap}{\mathfrak{h}}
+\newcommand{\avaluation}{\mathfrak{V}}
+\newcommand{\heaps}{\mathcal{H}}
+\newcommand{\astore}{\mathfrak{s}}
+\newcommand{\stores}{\mathcal{S}}
+\newcommand{\amodel}{\mathfrak{M}}
+\newcommand{\alabel}{\ell}
+
+\newcommand{\aprogram}{\mathtt{PROG}}
+\newcommand{\programs}{\mathtt{P}}
+\newcommand{\ctprograms}{\programs^{ct}}
+\newcommand{\aninstruction}{\mathtt{instr}}
+\newcommand{\ainstruction}{\mathtt{instr}}
+\newcommand{\instructions}{\mathtt{I}}
+\newcommand{\aguard}{\ensuremath{g}}
+\newcommand{\guards}{\ensuremath{G}}
+\newcommand{\domain}[1]{\mathtt{dom}(#1)}
+\newcommand{\memory}{\stores\times\heaps}
+\newcommand{\skipinstruction}{\mathtt{skip}}
+
+\newcommand{\execution}{\mathtt{comp}}
+\newcommand{\aux}{\mathtt{embd}}
+\newcommand{\runof}{run}
+\newcommand{\anexecution}{e}
+
+
+\newcommand{\aletter}{\ensuremath{a}}
+\newcommand{\aletterbis}{\ensuremath{b}}
+\newcommand{\alocation}{\mathfrak{l}}
+
+\newcommand{\pointsl}[1]{\stackrel{#1}{\hookrightarrow}}
+\newcommand{\ppointsl}[1]{\stackrel{#1}{\mapsto}}
+\newcommand{\ourhook}[1]{\stackrel{#1}{\hookrightarrow}}
+\newcommand{\ltrue}{{\sf true}}
+\newcommand{\lfalse}{{\sf false}}
+
+
+\newcommand{\variables}{\mathtt{FVAR}}
+\newcommand{\pvariables}{\mathtt{PVAR}}
+\newcommand{\secvariables}{\mathtt{SVAR}}
+\newcommand{\logique}[1]{\mathtt{FO}(#1)}
+
+
+
+\newcommand{\atranslation}{\mathfrak{t}}
+\newcommand{\nbpred}[1]{\widetilde{\sharp #1}}
+\newcommand{\nbpredstar}[1]{\widetilde{\sharp #1}^{\star}}
+\newcommand{\isolated}{\mathtt{isol}}
+\newcommand{\stdmarks}{\mathtt{envir}}
+\newcommand{\relation}[1]{\mathtt{relation}_{#1}}
+\newcommand{\freevar}{\mathtt{FV}}
+\newcommand{\notonmark}{\mathtt{notonenv}}
+\newcommand{\InVal}[1]{\mathtt{InVal}\!\left(#1\right)}
+\newcommand{\NotOnEnv}[1]{\mathtt{NotOnEnv}\!\left(#1\right)}
+\newcommand{\PartOfVal}[1]{\mathtt{PartOfVal}\!\left(#1\right)}
+%\newcommand{\nbpreds}[3]{\sharp #1 \geq #2}
+\newcommand{\defstyle}[1]{{\emph{#1}}}
+
+\newcommand{\cut}[1]{}
+\newcommand{\interval}[2]{[#1,#2]}
+\newcommand{\buniquevar}{\overline{\uniquevar}}
+\newcommand{\bbuniquevar}{\overline{\overline{\uniquevar}}}
+\newcommand{\magicwand}{\mathop{\mbox{$\mbox{$-~$}\!\!\!\!\ast$}}}
+\newcommand{\wand}{\magicwand}
+\newcommand{\septraction}{\stackrel{\hsize0pt \vbox to0pt{\vss\hbox to0pt{\hss\raisebox{-6pt}{\footnotesize$\lnot$}\hss}\vss}}{\magicwand}}
+%% \newcommand{\reach}{\mathtt{reach}}
+\mathchardef\mhyphen="2D % hyphen while in math mode
+
+\newcommand{\adataword}{\mathfrak{dw}}
+\newcommand{\adatum}{\mathfrak{d}}
+
+\newcommand{\collectionknives}{\mathtt{ks}}
+\newcommand{\collectionknivesfork}[1]{\mathtt{ksfs}_{=#1}}
+\newcommand{\collectionknivesforks}{\mathtt{ksfs}}
+\newcommand{\collectionkniveslargeforks}{\mathtt{kslfs}}
+
+
+\newcommand{\acounter}{\mathtt{C}}
+
+\newcommand{\fotwo}[3]{{\mbox{FO2}_{#1,#2}(#3)}}
+\newcommand{\mtrans}[1]{t\!\left(#1\right)^{\Box}}
+\newcommand{\mbtrans}[2]{\mtrans{#2}_{#1}}
+
+
+\newcommand{\alogic}{\mathfrak{L}}
+
+
+\newcommand{\semantics}[1]{\ensuremath{[ #1 ]}}
+
+
+\newcommand{\adomino}{\mathfrak{d}}
+\newcommand{\atile}{\mathfrak{d}}
+\newcommand{\atiling}{\mathfrak{t}}
+
+\newcommand{\hori}{\mathtt{h}}
+\newcommand{\verti}{\mathtt{v}}
+\newcommand{\domi}{\mathtt{d}}
+
+\newcommand{\cpyrel}{\mathfrak{cp}}
+
+\newcommand{\cntcmp}{\mathfrak{C}}
+
+\newcommand{\heapdag}{\mathfrak{G}}
+
+\newcommand{\onmainpath}{\mathtt{mp}}
+
+\newcommand{\tree}{\mathtt{tree}}
+
+%\newcommand{\tile}{\mathtt{tile}}
+
+\newcommand{\type}{\mathtt{type}}
+
+\newcommand{\ptype}{\mathtt{ptype}}
+
+\newcommand{\exttype}{\mathtt{exttype}}
+
+\newcommand{\anctypes}{\mathtt{AncTypes}}
+
+\newcommand{\destypes}{\mathtt{DesTypes}}
+
+\newcommand{\inctypes}{\mathtt{IncTypes}}
+
+\newcommand{\treeic}{\mathtt{treeIC}}
+
+\newcommand{\trs}{\mathfrak{trs}}
+
+
+\newcommand{\nin}{\not \in}
+\newcommand{\cupplus}{\uplus}
+\newcommand{\aunarypred}{\mathtt{P}}
+
+
+\newcommand{\hide}[1]{}
+
+\newcommand{\eval}[2]{\llbracket#1\rrbracket_{#2}}
+\newcommand\cur{\mathsf{cur}}
+\newcommand\dom{\mathsf{dom}}
+\newcommand\rng{\mathsf{rng}}
+
+\newcommand\dd{\mathbb{D}}
+\newcommand\nat{\mathbb{N}}
+
+
+\newcommand\cA{\mathcal{A}}
+\newcommand\cB{\mathcal{B}}
+\newcommand\cC{\mathcal{C}}
+\newcommand\cE{\mathcal{E}}
+\newcommand\cG{\mathcal{G}}
+\newcommand\Ll{\mathcal{L}}
+\newcommand\cM{\mathcal{M}}
+\newcommand\cP{\mathcal{P}}
+\newcommand\cR{\mathcal{R}}
+\newcommand\cS{\mathcal{S}}
+\newcommand\cT{\mathcal{T}}
+
+\newcommand\vard{\mathfrak{d}}
+
+\newcommand\replaceall{\mathsf{replaceAll}}
+\newcommand\indexof{\mathsf{IndexOf}}
+
+
+\newcommand\strline{\mathsf{SL}}
+
+\newcommand\pstrline{\mathsf{SL_{pure}}}
+
+\newcommand\search{\mathsf{search}}
+
+\newcommand\verify{\mathsf{verify}}
+
+\newcommand\searchleft{\mathsf{searchLeft}}
+
+\newcommand\searchlong{\mathsf{searchLong}}
+
+
+\newcommand\pref{\mathsf{Pref}}
+
+\newcommand\wprof{\mathsf{WP}}
+
+\newcommand\vars{\mathsf{Vars}}
+
+\newcommand\dep{\mathsf{Dep}}
+\newcommand\ptn{\mathsf{Ptn}}
+
+\newcommand\src{\mathsf{src}}
+\newcommand\strtorep{\mathsf{strToRep}}
+
+\newcommand\rpleft{\mathsf{l}}
+\newcommand\rpright{\mathsf{r}}
+
+
+\newcommand\srcnd{\mathsf{srcND}}
+
+\newcommand\ctxt{\mathsf{ctxt}}
+
+
+\newcommand\ctxts{\mathsf{Ctxts}}
+
+\newcommand\sprt{\mathsf{sprt}}
+
+\newcommand\val{\mathsf{val}}
+
+\newcommand\srclen{\mathsf{srcLen}}
+
+\newcommand\rpleftlen{\mathsf{lLen}}
+
+
+\newcommand\dfs{\mathsf{DFS}}
+
+\newcommand\repr{\mathsf{rep}}
+
+\newcommand\red{\mathsf{red}}
+
+\newcommand\gfun{\mathcal{F}}
+
+
+\newcommand{\leftmost}{{\sf leftmost}}
+\newcommand{\longest}{{\sf longest}}
+
+\newcommand{\arbidx}{{\sf Idx_{arb}}}
+\newcommand{\dmdidx}{{\sf Idx_{dmd}}}
+\newcommand{\lftlen}{{\sf Len_{lft}}}
+
+%\newtheorem{remark}[theorem]{Remark}
