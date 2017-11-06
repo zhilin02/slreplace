@@ -16,6 +16,7 @@ $$
 Let $T_z = \{(q_i, q'_i) \mid i \in [n]\}$. Then $w' \in \Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q'))$. Therefore, $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$. Similar to the single-letter case, we construct an NFA $\cB_{\cA_1, u, T_z}$ to characterise the satisfiability of $C$.  More precisely, $C$ is satisfiable iff there is $T_z \subseteq Q_1 \times Q_1$ such that $\Ll(\cA_3) \cap\ \bigcap \limits_{(q,q') \in T_z} \Ll(\cA_1(q, q')) \neq \emptyset$ and
 $\Ll(\cA_2) \cap \Ll(\cB_{\cA_1, u, T_z}) \neq \emptyset$. Intuitively, when reading the string $w$, $\cB_{\cA_1, u, T_z}$ simulates the generation of $v$ from $w$ and $w'$ (that is, the replacement of  every occurrence of $u$ in $w$ with $w'$) and verifies that $v$ is accepted by $\cA_1$, by using $T_z$.
 To build $\cB_{\cA_1, u, T_z}$, we utilise the concepts of window profiles and parsing automata defined below.
+Intuitively, a window profile keeps track of which positions in the preceding characters could form the beginning of a match of $u$.
 %
 %Intuitively, the window profiles encode the matching of the suffixes of a string of length $|u|$ w.r.t. the prefixes of $u$ and a parsing automaton for $u$ uses window profiles of $u$ to pinpoint the first, second, \dots, occurrence of $u$ in a string.
 
@@ -77,11 +78,10 @@ Finally, we also require $v_{l+1} \not \in \Sigma^\ast u \Sigma^\ast$.
 The window profiles w.r.t. $u$ will be used to ensure that $v$ is correctly parsed, namely, the first, second, $\cdots$, occurrences of $u$ are correctly identified.
 
 \begin{definition}[Parsing automata]
-The \emph{parsing automaton} $\cA_u$ of a string $u$ is the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ defined as follows.
+Given a string $u$ we define the \emph{parsing automaton} $\cA_u$ to be the NFA $(Q_u, \delta_u, q_{0,u}, F_u)$ where $q_{0,u}=q_0$ and the remaining components are given below.
 \begin{itemize}
 	\item  $Q_u =\left\{q_0 \right\} \cup \left\{ \left(\search, \overrightarrow{W} \right)\ \big\vert\ \overrightarrow{W} \in \wprof_{u} \right\} \cup  \left\{ \left(\verify, j, \overrightarrow{W} \right) \ \big\vert\ j \in [k-1], \overrightarrow{W} \in \wprof_{u} \right\}$, where $q_0$ is a distinguished state whose purpose will become clear later on,  and the tags ``$\search$" and ``$\verify$" are used to denote whether $\cA_u$ is in the ``search'' mode to search for the next occurrence of $u$, or in the ``verify'' mode to verify that the current position is a part of an occurrence of $u$.
 	%
-	\item $q_{0,u}=q_0$.
 
 	\item $\delta_{u}$ is defined as follows.
 	%guesses over each position, one of the following holds, the substring comprising the next $k$-symbols (including the current one) is $u$ or not.

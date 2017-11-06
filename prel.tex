@@ -2,13 +2,13 @@
 
 \section{Preliminaries}\label{sec-prel}
 
-\paragraph{General notation} 
+\paragraph{General Notation} 
 Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers respectively. For $k \in \Nat$, let $[k] = \{1,\cdots, k\}$. For a vector $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$ (i.e., $n$) and  $\vec{x}[i]$ denote $x_i$ for each $i \in [n]$. %, . For a vector $\vec{x} = (x_1, \cdots, x_n)$, let 
 %$\red(\vec{x})$ denote the \emph{reduction} of $\vec{x}$, more specifically, the vector $(x_{i_1},\cdots, x_{i_m})$ such that for each $j \in [m]$, $x_{i_j}$ is different from all $x_1, \cdots, x_{i_j-1}$. For instance, $\red(a,a,b,b,c)=(a,b,c)$.
 %\tl{red is for reduced?}
 
 
-\paragraph{Regular languages}
+\paragraph{Regular Languages}
 Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$). A \emph{position} of a nonempty string $u$ of length $n$ is a number $i \in [n]$ (Note that the first position is $1$, instead of  0). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$. 
 For two strings $u_1, u_2$, we use $u_1 \cdot u_2$ to denote the \emph{concatenation} of $u_1$ and $u_2$, that is, the string $v$ such that $|v|= |u_1| + |u_2|$ and for each $i \in [|u_1|]$, $v[i]= u_1[i]$ and for each $i \in |u_2|$, $v[|u_1|+i]=u_2[i]$. Let $u, v$ be two strings. If $v = u \cdot v'$ for some string $v'$, then $u$ is said to be a \emph{prefix} of $v$. In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then 
 we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
@@ -52,7 +52,7 @@ $\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, the intersection $\Ll(\cA_1)
 \cap \Ll(\cA_2)$ is recognised by the \emph{product automaton} $\cA_1 \times
 \cA_2$ of $\cA_1$ and $\cA_2$ defined as $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.  
 
-\paragraph{Graph-theoretical notation}
+\paragraph{Graph-Theoretical Notation}
 %In this paper, we use standard graph-theoretic concepts and notation (e.g.~see
 %\cite{Diestel05}).
 A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
@@ -107,7 +107,7 @@ Let $G=(V,E)$ be a DAG such that the out-degree of each vertex is at most two. T
 %%%%%%%%%%%%%%%%%%%%%%diamond removed for simplicity%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\paragraph{Computational complexity}
+\paragraph{Computational Complexity}
 In this paper, we study not only decidability but also the complexity of string logics. 
 In particular, we shall deal with the following computational complexity
 classes (see \cite{HU79} for more details): PSPACE (problems solvable in polynomial
@@ -123,11 +123,12 @@ such as symbolic model checking \cite{McMillan}.
 
 \section{The core constraint language}\label{sec-core}
 
-In this section, we define a general string constraint language that supports word equations, the concatenation, the $\replaceall$ function, and regular constraints. Throughout this section, we fix an alphabet $\Sigma$.
+In this section, we define a general string constraint language that supports 
+concatenation, the $\replaceall$ function, and regular constraints. Throughout this section, we fix an alphabet $\Sigma$.
 
 
 
-\subsection{Semantics of the $\replaceall$ function}
+\subsection{Semantics of the $\replaceall$ Function}
 To define the semantics of the $\replaceall$ function, we note that the function encompasses three parameters: the first parameter is the \emph{subject} string, the second parameter is a \emph{pattern} that is a string or a regular expression, and the third parameter is the \emph{replacement} string. When the pattern parameter is a string, the semantics is somehow self-explanatory. However, when it is a regular expression, there is no consensus on the semantics even for the mainstream programming languages such as Python and Javascript.
  %where replaceall functions are extensively used. 
  This is particularly the case when interpreting the union (aka alternation) operator in regular expressions or performing a $\replaceall$ with a pattern that matches $\varepsilon$. In this paper, we mainly 
@@ -227,10 +228,11 @@ At first, $\replaceall(abab, ab, d) =d \cdot \replaceall(ab, ab, d)= dd \cdot \r
 %====================================================
 
 
-\subsection{Straight-line string constraints with the $\replaceall$ function}
+\subsection{Straight-Line String Constraints With the $\replaceall$ Function}
 
 
-We consider the String data type $\str$, and assume a countable set of variables of $\str$, which is, in general, ranged over by $x, y, z, \cdots$.  
+We consider the String data type $\str$, and assume a countable set of variables
+$x, y, z, \cdots$ of $\str$.  
 
 
 \begin{definition}[Relational and regular constraints]
@@ -428,7 +430,7 @@ The satisfiability problem is PSPACE-complete for the following fragments of $\s
 \end{itemize}
 \end{corollary}
 
-Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter, constant-string, and regular-expression case separately. Intuitively, when the pattern parameters  of the $\replaceall$ terms become less restrictive, the decision procedures  become more involved, and more constraints should be imposed on the dependency graphs in order to achieve the PSPACE upper-bound. The PSPACE lowe-bound follows from the observation that  nonemptiness of the intersection of the regular expressions $e_1, \cdots, e_n$ over the alphabet $\{0,1\}$, which is a PSPACE-complete problem, can be reduced to the satisfiability of the formula $x \in e_1 \wedge \cdots \wedge x \in e_n$, 
+Corollary~\ref{cor-pspace} partially justifies our choice to present the decision procedures for the single-letter, constant-string, and regular-expression case separately. Intuitively, when the pattern parameters  of the $\replaceall$ terms become less restrictive, the decision procedures  become more involved, and more constraints should be imposed on the dependency graphs in order to achieve the PSPACE upper-bound. The PSPACE lower-bound follows from the observation that  nonemptiness of the intersection of the regular expressions $e_1, \cdots, e_n$ over the alphabet $\{0,1\}$, which is a PSPACE-complete problem, can be reduced to the satisfiability of the formula $x \in e_1 \wedge \cdots \wedge x \in e_n$, 
 %
 %the satisfiability of the formula $y = \replaceall((a b)^n, a, x) \wedge x \in (0+1)^\ast \wedge y \in e_1 \circ b  \circ \cdots \circ b \circ e_n$ (where $a, b \not \in \{0,1\}$), 
 which falls into all fragments of $\strline[\replaceall]$ specified in Corollary~\ref{cor-pspace}.\zhilin{Remark for the pspace lower bound, please check.}\tl{seems to be fine.I edited a little bit}

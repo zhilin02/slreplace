@@ -111,7 +111,7 @@ Finally $S$ is the set of states representing all threads for which final states
 		\item (continue $\searchleft$) suppose $(\rho \{q_{0,0}\}, \searchleft, S) \in Q_{e_0}$ such that $\rho = S_1 \cdots S_n$ with $n \ge 0$  ($n = 0$ means that $\rho$ is empty), $a \in \Sigma$, $\big(\bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\},a)\big) \cap F_0 = \emptyset$, and $\delta_0(S,a) \cap F_0 = \emptyset$, then
 %		\medskip
 
-%		\hspace{5mm} 
+%		\hspace{5mm}
 		$$\left((\rho  \{q_{0,0}\}, \searchleft, S), a, \left(\red(\delta_0(\rho\{q_{0,0}\}, a)) \{q_{0,0}\}, \searchleft, \delta_0(S,a) \right) \right) \in \delta_{e_0},$$
 
 		\medskip
@@ -141,9 +141,9 @@ Finally $S$ is the set of states representing all threads for which final states
 %		\medskip
 		$$\left(
 %		\begin{array}{l l}
-		(\rho \{q_{0,0}\}, \searchleft, S), a, 
+		(\rho \{q_{0,0}\}, \searchleft, S), a,
 		%&\\
-		%& \hspace{-2cm} 
+		%& \hspace{-2cm}
 		\left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)
 %		\end{array}
 		\right) \in \delta_{e_0},$$
@@ -181,7 +181,7 @@ Given $T_z \subseteq Q_1 \times Q_1$, we construct $\cB_{\cA_1, e_0,  T_{z}}$ by
 \begin{enumerate}
 \item Construct the product of $\cA_1$ and $\cA_{e_0}$.
 
-\item Remove all the transitions associated with the states from $Q_1 \times Q_{\searchlong}$, in addition, remove all the transitions of the form $((q, (\rho\{q_{0,0}\}, \searchleft, S)), a, (q', (\{q_{0,0}\}, \searchleft,S')))$ such that $\delta_0(q_{0,0},a) \cap F_0 \neq \emptyset$.
+\item Remove all transitions associated with states from $Q_1 \times Q_{\searchlong}$, in addition, remove all transitions of the form $((q, (\rho\{q_{0,0}\}, \searchleft, S)), a, (q', (\{q_{0,0}\}, \searchleft,S')))$ such that $\delta_0(q_{0,0},a) \cap F_0 \neq \emptyset$.
 
 \item For each pair $(q,q') \in T_{z}$, do the following,
 \begin{itemize}
@@ -197,7 +197,7 @@ add a transition
 %
 %\medskip
 %
-$$\left( \left(q, (\rho \{q_{0,0}\}, \searchleft, S) \right), a, \left(q, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \right),$$
+$\left( \left(q, (\rho \{q_{0,0}\}, \searchleft, S) \right), a, \left(q, \left(\delta_0(\{q_{0,0}\}, a), \searchlong, \delta_0(S, a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \right) \right) \right),$
 %
 %\medskip
 %
@@ -205,25 +205,25 @@ $$\left( \left(q, (\rho \{q_{0,0}\}, \searchleft, S) \right), a, \left(q, \left(
 \item for each transition
 		$$((S_1, \searchlong, S), a, (\delta_0(S_1,a), \searchlong, \delta_0(S,a))) \in \delta_{e_0},$$
 add a transition
-$$\left((q, (S_1, \searchlong, S)), a, (q, (\delta_0(S_1,a), \searchlong, \delta_0(S,a))) \right),$$
+$\left((q, (S_1, \searchlong, S)), a, (q, (\delta_0(S_1,a), \searchlong, \delta_0(S,a))) \right),$
 %
 \item for each transition
 		$$((S_1, \searchlong, S), a, (\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \delta_0(S_1,a))) \in \delta_{e_0},$$
 add a transition
-		$$((q, (S_1, \searchlong, S)), a, (q', (\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \delta_0(S_1,a)))),$$
+		$((q, (S_1, \searchlong, S)), a, (q', (\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \delta_0(S_1,a)))),$
 %
-\item for each transition
+\item for each
 %
 %\medskip
 %
-		$$\left(
+		$\left(
 %		\begin{array}{l l}
-		(\rho \{q_{0,0}\}, \searchleft, S), a, 
+		(\rho \{q_{0,0}\}, \searchleft, S), a,
 		%&\\
-		%& \hspace{-2cm} 
+		%& \hspace{-2cm}
 		\left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)
 %		\end{array}
-		\right) \in \delta_{e_0},$$
+		\right) \in \delta_{e_0},$
 %
 %\medskip
 %
@@ -232,9 +232,9 @@ add a transition
 %\medskip
 		$$\left(
 %		\begin{array}{l l}
-		(q, (\rho \{q_{0,0}\}, \searchleft, S)), a, 
+		(q, (\rho \{q_{0,0}\}, \searchleft, S)), a,
 		%&\\
-		%& \hspace{-2cm} 
+		%& \hspace{-2cm}
 		\left(q', \left(\{q_{0,0}\}, \searchleft, \delta_0(S,a) \cup \bigcup \limits_{j \in [n]} \delta_0(S_j, a) \cup \delta_0(\{q_{0,0}\}, a) \right)\right)
 %		\end{array}
 		\right).$$
