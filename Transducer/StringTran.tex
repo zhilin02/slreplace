@@ -1,0 +1,120 @@
+
+\documentclass{llncs}
+ 
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+%\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{amsmath}
+\usepackage{leftidx}
+\usepackage{mathtools}
+\usepackage{paralist}
+\usepackage{color}
+\usepackage{mathrsfs}
+\usepackage{tikz}
+\usepackage[draft]{minted}
+\usetikzlibrary{shapes}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+%==========================================================
+\input{macros.tex}
+\input{comm-anthony}
+%==========================================================
+
+%\newcommand\shortlong[2]{#2}
+\newcommand\shortlong[2]{#1}
+
+\newif\ifdraft\drafttrue
+%\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {YA: #1 :AY} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\fi
+
+\newcommand{\concat} {\circ}
+\newcommand{\replace} {{\sf replace}}
+\newcommand{\str} {{\sf Str}}
+\newcommand{\intnum} {{\sf Int}}
+\newcommand{\regexp} {{\sf RegExp}}
+\newcommand{\strarr} {{\sf StringArray}}
+\newcommand{\dtypes} {{\sf DataTypes}}
+\newcommand{\anarr} {{\mathbb{A}}}
+
+%============================================================
+\begin{document} 
+
+\title{Constraint Solving with String Manipulating Functions Defined By Transducers}
+
+\author{}
+\institute{}
+
+
+
+	
+\maketitle
+	
+\begin{abstract}
+	The purpose of the project is to generalise the replaceall function considered recently in the POPL'18 to transducers, along the line of the POPL'16 paper. 
+\end{abstract}
+
+ 
+
+\section{Introduction}
+
+\section{Preliminaries}
+
+\begin{definition}[two-way finite state automata]
+A non-deterministic two-way finite state automaton 
+(2NFA) over a finite alphabet $\Sigma$ is a tuple $A =
+(Q, q_0, F, \Delta)$ where $Q$ is a finite set of states, $q_0\in Q$ is
+the initial state, $F\subseteq Q$ is a set of final states, and $\Delta$ is the
+transition relation, of type $\Delta\subseteq Q \times \Sigma\times Q \times \{+1, -1\}$. 
+
+A non-deterministic (one-way) finite state automaton (NFA)
+is a 2NFA such that $\Delta\subseteq Q \times \Sigma\times Q \times \{+1\}$, therefore we
+will often see $\Delta\subseteq Q \times \Sigma \times Q$. Any 2NFA is
+effectively equivalent to an NFA.  
+\end{definition}
+
+
+\begin{definition}[Two-way Finite transducers]
+  Non-deterministic two-way finite state transducers (2NFTs) over $\Sigma$ and $\Gamma$ extend NFAs with a one-way left-to-right output tape. They are defined as 2NFAs except that the transition relation $\Delta$ is extended with outputs: $\Delta\subseteq Q \times \Sigma \times \Gamma \times  Q \times \{-1, +1\}$. If a transition $(q, a, b, q′, m)$ is enabled on a letter $a\in \Sigma$, the letter $b\in \Gamma$ is appended to the right of
+	the output tape and the transducer goes to state $q'$. 
+\end{definition}
+
+
+\tl{Other relevant models such as SST, when appropriate, will be put here.}
+
+Let $\vec{y}=\{y_1, \cdots, y_m\}$.
+
+The general idea is to encode a general string manipulating function $f(x, \vec{y})$ as a NFT $T$ over $\Sigma$ and $\Sigma\cup\{\vec{y}\}$. The question for the pre-image computation is formalised as follows:
+\begin{itemize}
+\item INPUT: A NFT $T$, a regular language $\mathcal{A}$. 
+\item OUTPUT: $(L^{(0)}_i, L^{(1)}_i, \cdots, L^{(m)}_i )_{i=1}^\ell$, such that 
+\[\exists z\in\mathcal{A} \wedge z=f(x, \vec{y})\mbox{ iff }\exists k. x\in L^{(0)}_k \wedge y_i\in L^{(i)}_k \]
+\end{itemize}
+
+
+\begin{definition}
+	Given a finite alphabet $\Sigma$, a binary relation $R\subseteq \Sigma^*\times \Sigma^*$ is a recognisable relations if $R=\bigcup_{i=1}^n L_i\times L_i'$ where $L_i$ and $L_i'$ are both regular languages. 
+
+[One can certainly generalise this to $n$-ary relations. ]
+\end{definition}
+\end{document}
