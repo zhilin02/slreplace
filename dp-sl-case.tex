@@ -173,14 +173,16 @@ Output ``satisfiable'' if for each source variable $x$ there is an accepting run
 %By a refined analysis, we can see that the cardinalities of the sets $\cE(x)$ are in fact polynomial.
 
 It remains to argue the correctness and complexity of the above procedure and show how to obtain satisfying assignments to satisfiable constraints.
-Correctness follows a similar argument to Proposition~\ref{prop-sat-sl-case} and is presented in Appendix~\ref{sec:dp-sl-correctness}.
+Correctness follows a similar argument to Proposition~\ref{prop-sat-sl-case} and
+is presented in \shortlong{the full
+version}{Appendix~\ref{sec:dp-sl-correctness}}.
 %\mat{How do we reference the appendix?}
 Intuitively, Proposition~\ref{prop-sat-sl-case} shows our procedure correctly eliminates occurrences of $\replaceall$ until only regular constraints remain.
 
 \mat{Describing model extraction below.}\zhilin{The description is nice. I think we should remove the reference to the appendix.}\tl{zhilin, which refernce?}
 If, in the case that the equation \tl{constraint?} is satisfiable, one wishes to obtain a satisfying assignment to all variables, we can proceed as follows.
 First, for each source variable $x$, nondeterministically choose an accepting run of the product of all the NFA in $\cE(x)$.
-As argued in Appendix~\ref{sec:dp-sl-correctness}, the word labelling this run satisfies all regular constraints on $x$ since it is taken from a language that is guaranteed to be a subset of the set of words satisfying the original constraints.
+As argued in \shortlong{the full version}{Appendix~\ref{sec:dp-sl-correctness}}, the word labelling this run satisfies all regular constraints on $x$ since it is taken from a language that is guaranteed to be a subset of the set of words satisfying the original constraints.
 For non-source variables, we derive an assignment as in Proposition~\ref{prop-sat-sl-case}, proceeding by induction from the source variables.
 That is, select some variable $x$ such that $x$ is derived from variables $y$ and $z$ and assignments to both $y$ and $z$ have already been obtained.
 The value for $x$ is immediately obtained by performing the $\replaceall$ operation using the assignments to $y$ and $z$.
