@@ -1,0 +1,205 @@
+
+\section{Recognisability}
+
+In this section we prove the following theorem.
+
+\begin{theorem}[Recognisable Pre-Image]
+    Given a nested $\numtapes$-tape transducer
+    $$\ducer = \tup{\tstates, \alphabet, \tdelta, \tfinals}$$,
+    some
+    $\tstate \in \tstates$,
+    and a regular language $\lang$, the relation
+    \[
+        \preimage{\ducer}{\tstate}{\lang} =
+        \setcomp{
+            \tup{\iword_1, \ldots, \iword_\numtapes}
+        }{
+            \exists \oword\ .\ %
+                \oword \in
+                    \tlangof{\ducer}
+                            {\tstate}
+                            {\iword_1, \ldots, \iword_\numtapes}
+                    \cap
+                    \lang
+        }
+    \]
+    is recognisable and computable.
+\end{theorem}
+
+The proof is by induction over the number of tapes in the transducer.
+In the base case we have a $1$-tape transducer and it is known that
+$\preimage{\ducer}{\tstate}{\lang}$
+is a regular language~\cite{??}.
+
+Now suppose we have a $(\numtapes+1)$-tape transducer $\ducer$.
+
+
+The idea is to summarise the $(\numtapes+1)$th state as the set of tuples
+\[
+    \tup{\tstate, \astate, \tstate', \astate'}
+    \in
+    \tstates \times \astates \times \tstates \times \astates
+\]
+over which there is a run
+\[
+    \tup{
+        \tstate,
+        \iword_1, \tapepos_1,
+        \ldots,
+        \iword_\numtapes, \tapepos_\numtapes,
+        \iword_{\numtapes+1}, 1,
+        \varepsilon
+    }
+    \trunidx{\set{\numtapes+1}}
+    \tup{
+        \tstate',
+        \iword_1, \tapepos_1,
+        \ldots,
+        \iword_\numtapes, \tapepos_\numtapes,
+        \iword_{\numtapes+1}, 1,
+        \oword
+    }
+\]
+with
+$\astate \arun{\oword} \astate'$
+for some $\oword$.
+Let
+$\summaries = 2^{\tstates \times \astates \times \tstates \times \astates}$.
+We will show
+\[
+    \preimage{\ducer}{\tstate}{\lang} =
+        \bigcup\limits_{\summary \subseteq \summaries}
+            \rel_\summary \ .
+\]
+where each $\rel_\summary$ is recognisable.
+The finite union of a finite set of recognisable languages can easily be seen to be recognisable also.
+
+First, we define a version of the pre-image where we can define exact initial and finite states, as well as which tapes are used.
+\[
+    \preimageidx{\ducer}{\tstate}{\tstate'}{\tidxs}{\lang} =
+    \setcomp{
+        \tup{\iword_1, \ldots, \iword_\numtapes}
+    }{
+        \exists \oword\ .\ %
+            \oword \in
+                \tlangofidx{\ducer}
+                           {\tstate}
+                           {\tstate'}
+                           {\tidxs}
+                           {\iword_1, \ldots, \iword_\numtapes}
+                \cap
+                \lang
+    }
+\]
+Recall, in this definition, all tapes with indices in $\tidxs$ must start at being at their initial position, while we are agnostic about the position of heads on the other tapes (they cannot affect the computation).
+
+For a summary $\summary$ we compute the set of values of
+$\iword_{\numtapes+1}$
+over which the transducer can move from $\tstate$ to $\tstate'$ while producing output which takes $\aut$ from $\astate$ to $\astate'$.
+In particular, we need the regular language
+\[
+    \lang_\summary =
+        \bigcap\limits_{
+            \tup{\tstate, \astate, \tstate', \astate'}
+            \in
+            \summary
+        }
+        \ap{\proj{\numtapes+1}}{
+            \preimageidx{\ducer}{\tstate}{\tstate'}{\set{\numtapes+1}}{
+                \alangofstates{\aut}{\astate}{\astate'}
+            }
+        } \ .
+\]
+Note that such a language is computable because the transducer can only use the
+$(\numtapes+1)$th
+input tape during the run, making it effectively single-tape.
+The projection to the
+$(\numtapes+1)$th
+component simply removes all values for the other elements, which have no effect on the computation and can thus be anything.
+Hence, since we can compute the pre-image of a single-tape transudcer given a particular regular language, we can compute $\lang_\summary$ above.
+
+Next, we construct a $\numtapes$-tape transducer where the
+$(\numtapes+1)$th
+tape is replaced by $\summary$.
+The transducer simply outputs a character
+$\tup{\astate, \astate'}$
+instead of beginning (and completing) a computation of the
+$(\numtapes+1)$th
+tape that would have moved the automaton from state $\astate$ to $\astate'$.
+The automaton $\aut$ will be adjusted to interpret these characters correctly.
+Formally, the transducer is
+\[
+    \ducer_\summary =
+        \tup{\tstates, \alphabet_\summary, \tdelta_\summary, \tfinals}
+\]
+where
+$\alphabet_\summary = \alphabet \uplus \astates \times \astates$
+and
+\[
+    \begin{array}{rcl}
+        \tdelta_\summary
+        &=&
+        \tdelta \setminus
+            \setcomp{
+                \ttran{\tstate}{\cha}{\tidx}{\chb}{\tdir}{\tstate'}
+                \in
+                \tdelta
+            }{\tidx = \numtapes + 1}
+        \ \cup\ \\
+        & &
+        \setcomp{
+            \ttran{\tstate}{\cha}{1}{\tup{\astate, \astate'}}{\tnoop}{\tstate'}
+        }{
+            \begin{array}{c}
+                \tup{\tstate, \astate, \tstate', \astate'} \in \summary
+                \ \land\ \\
+                \cha \in \alphabet
+            \end{array}
+        }
+    \end{array}
+\]
+The new automaton is
+\[
+    \aut_\summary =
+        \tup{
+            \astates,
+            \alphabet_\summary,
+            \adelta_\summary,
+            \astateinit,
+            \afinals
+        }
+\]
+where $\alphabet_\summary$ is as above and
+\[
+    \begin{array}{rcl}
+        \adelta_\summary
+        &=&
+        \adelta \cup
+            \setcomp{\atran{\astate}{\tup{\astate, \astate'}}{\astate'}}
+                    {\tup{\astate, \astate'} \in \astates \times \astates} \ .
+    \end{array}
+\]
+
+By induction over the number of tapes, we know that
+$\preimage{\ducer_\summary}{\tstate}{\alangof{\aut_\summary}}$
+is recognisable and computable.
+Let this relation be $\rel$.
+From this, we construct
+\[
+    \rel_\summary = \rel \times \lang_\summary \ .
+\]
+
+We have thus far shown that
+\[
+    \bigcup\limits_{\summary \subseteq \summaries}
+        \rel_\summary
+\]
+is recognisable.
+It remains to show that it is equal to
+$\preimage{\ducer}{\tstate}{\lang}$.
+
+\begin{remark}
+    This is where i cop out.
+    A proper proof requires some run surgery.
+    However, i hope this so far is reminiscent enough of our POPL proof to be convincing.
+\end{remark}

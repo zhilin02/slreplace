@@ -1,0 +1,219 @@
+
+\section{Definition}
+
+We define $\numtapes$-tape transducers before introducing the nesting restriction.
+
+
+\subsection{$\numtapes$-Tape Transducers}
+
+\begin{definition}[$\numtapes$-Tape Transducers]
+    A \emph{$\numtapes$-tape transducer} is a tuple
+    $\ducer = \tup{\tstates, \alphabet, \tdelta, \tfinals}$
+    where
+        $\tstates$ is a finite set of control states,
+        $\alphabet$ is a finite alphabet,
+        $\tfinals \subseteq \tstates$ is a set of final states, and
+        $\tdelta \subseteq
+            \tstates \times
+            \alphabet \times \interval{1}{\numtapes} \times
+            \brac{\alphabet \cup \set{\eword}}
+            \set{\tleft, \tright, \tnoop} \times \tstates$.
+\end{definition}
+
+A $\numtapes$-tape transducer takes $\numtapes$ input words over $\alphabet$ and (nondeterministically) produces an output word also over $\alphabet$.
+Thus, a configuration is a tuple
+\[
+    \tconfig =
+    \tup{
+        \tstate,
+        \iword_1, \tapepos_1,
+        \ldots,
+        \iword_\numtapes, \tapepos_\numtapes,
+        \oword
+    }
+\]
+where for each
+$1 \leq \idxi \leq \numtapes$
+we have
+    the state $\tstate \in \tstates$ is the current control state,
+    $\iword_\idxi \in \alphabet^\ast$
+        is the word on the $\idxi$th input tape,
+    $\tapepos_\idxi \in \interval{1}{\wlen{\iword_\idxi}}$
+        is the position of the tape head on the $\idxi$th tape, and
+    $\oword$ is the current output word.
+
+We write
+\[
+    \ttran{\tstate}{\cha}{\tidx}{\chb}{\tdir}{\tstate'}
+\]
+for a transition
+$\tup{\tstate, \cha, \tidx, \chb, \tdir, \tstate'} \in \tdelta$.
+We have move
+\[
+    \tup{
+        \tstate,
+        \iword_1, \tapepos_1,
+        \ldots,
+        \iword_\numtapes, \tapepos_\numtapes,
+        \oword
+    }
+    \tmove
+    \tup{
+        \tstate',
+        \iword_1, \tapepos'_1,
+        \ldots,
+        \iword_\numtapes, \tapepos'_\numtapes,
+        \oword'
+    }
+\]
+whenever we have a transition
+$\ttran{\tstate}{\cha}{\tidx}{\chb}{\tdir}{\tstate'}$
+with
+\begin{itemize}
+\item
+    $\wpos{\iword_\tidx}{\tapepos_\tidx} = \cha$,
+\item
+    $\tapepos'_\tidx = \tapepos_\tidx + 1$
+        if $\tapepos_\tidx < \wlen{\iword_\tidx}$
+        and $\tdir = \tright$,
+\item
+    $\tapepos'_\tidx = \tapepos_\tidx - 1$
+        if $\tapepos_\tidx > 1$
+        and $\tdir = \tleft$,
+\item
+    $\tapepos'_\tidx = \tapepos_\tidx$
+        if $\tapepos_\tidx > 1$
+        and $\tdir = \tnoop$,
+\item
+    $\tapepos'_\idxi = \tapepos_\idxi$
+        for all $\idxi \neq \tidx$,
+\item
+    $\oword' = \oword \chb$.
+\end{itemize}
+We denote a run
+\[
+    \tconfig \trun \tconfig'
+    \quad
+    \text{whenever}
+    \quad
+    \exists
+        \tconfig_0, \ldots, \tconfig_\runlen \ .\ %
+    \tconfig = \tconfig_0 \tmove \cdots \tmove \tconfig_\runlen = \tconfig' \ .
+\]
+Then, we define
+\begin{multline*}
+    \tlangof{\ducer}{\tstate}{\iword_1, \ldots, \iword_\numtapes}
+    = \\
+    \setcomp{\oword}{
+        \tup{
+            \tstate,
+            \iword_1, 1,
+            \ldots,
+            \iword_\numtapes, 1,
+            \varepsilon
+        }
+        \trun
+        \tup{
+            \tstate',
+            \iword_1, 1,
+            \ldots,
+            \iword_\numtapes, 1,
+            \oword
+        }
+        \land
+        \tstate' \in \tfinals
+    } \ .
+\end{multline*}
+
+In the sequel, it will be convenient to refer to runs only using a restricted set of tapes.
+Thus, we define
+$\tconfig \tmoveidx{\tidxs} \tconfig'$
+when there is a move from $\tconfig$ to $\tconfig'$ using a transition
+$\ttran{\tstate}{\cha}{\tidx}{\chb}{\tdir}{\tstate'}$
+with $\tidx \in \tidxs$.
+Similarly, we define runs
+$\tconfig \trunidx{\tidxs} \tconfig'$.
+Finally, we define
+\begin{multline*}
+    \tlangofidx{\ducer}
+               {\tstate}
+               {\tstate'}
+               {\tidxs}
+               {\iword_1, \ldots, \iword_\numtapes}
+    = \\
+    \setcomp{\oword}{\begin{array}{c}
+        \tup{
+            \tstate,
+            \iword_1, \tapepos_1,
+            \ldots,
+            \iword_\numtapes, \tapepos_\numtapes,
+            \varepsilon
+        }
+        \trunidx{\tidxs}
+        \tup{
+            \tstate',
+            \iword_1, \tapepos_1,
+            \ldots,
+            \iword_\numtapes, \tapepos_\numtapes,
+            \oword
+        }
+        \\ \land \\
+        \forall \tidx \in \tidxs\ .\ %
+            \tapepos_\tidx = 1
+    \end{array}} \ .
+\end{multline*}
+Note, in the above, we do not care about the head positions of tapes that are not read by any transitions.
+Heads on tapes that may be used must start and finish at the initial position of the tape.
+
+
+\begin{remark}
+    An accepting run must return all tape heads to the initial position.
+    This can easily be achieved using $\eword$-transitions.
+    I.e.~transitions that add $\eword$ to $\oword$.
+\end{remark}
+
+\begin{remark}
+    Each transition can only inspect the tape contents of a single tape.
+    An alternative definition may allow transitions to depend on the character under each tape head.
+    We can encode this by tracking the characters under the tape heads in the control state, at the cost of an exponential blow-up.
+    However, to subsume existing results i don't think we need it.
+    If we do, i suspect all proofs can easily be adapted.
+\end{remark}
+
+\begin{remark}
+    If one wishes, one can keep in the control state a tape index $\tidx$, allowing the transducer to explicitly transfer control from one tape to another.
+    We do not insist on this explicit index for the sake of simplicity of proofs.
+\end{remark}
+
+
+\subsection{Nesting Restriction}
+
+Intuitively, the nesting restriction is a semantic restriction on runs of the transducer.
+A move manipulating track $\tidx$ can only be applied if the tape heads on all tapes with index $\tidx' > \tidx$ are at the first position of their input words.
+
+More formally, a nested $\numtapes$-tape transducer has a move
+\[
+    \tup{
+        \tstate,
+        \iword_1, \tapepos_1,
+        \ldots,
+        \iword_\numtapes, \tapepos_\numtapes,
+        \oword
+    }
+    \tmove
+    \tup{
+        \tstate',
+        \iword_1, \tapepos'_1,
+        \ldots,
+        \iword_\numtapes, \tapepos'_\numtapes,
+        \oword'
+    }
+\]
+via a transition
+$\ttran{\tstate}{\cha}{\tidx}{\chb}{\tdir}{\tstate'}$
+only if for all
+$\tidx < \tidx' \leq \numtapes$
+we have
+$\tapepos_{\tidx'} = 1$.
+All other definitions carry through as in the non-nested case above.
+
