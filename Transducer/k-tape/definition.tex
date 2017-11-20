@@ -17,7 +17,8 @@ We define $\numtapes$-tape transducers before introducing the nesting restrictio
             \tstates \times
             \alphabet \times \interval{1}{\numtapes} \times
             \brac{\alphabet \cup \set{\eword}} \times
-            \set{\tleft, \tright, \tnoop} \times \tstates$.
+            \set{\tleft, \tright, \tnoop} \times \tstates$
+        is the transition relation.
 \end{definition}
 
 A $\numtapes$-tape transducer takes $\numtapes$ input words over $\alphabet$ and (nondeterministically) produces an output word also over $\alphabet$.
@@ -82,8 +83,7 @@ with
         and $\tdir = \tleft$,
 \item
     $\tapepos'_\tidx = \tapepos_\tidx$
-        if $\tapepos_\tidx > 1$
-        and $\tdir = \tnoop$,
+        if $\tdir = \tnoop$,
 \item
     $\tapepos'_\idxi = \tapepos_\idxi$
         for all $\idxi \neq \tidx$,

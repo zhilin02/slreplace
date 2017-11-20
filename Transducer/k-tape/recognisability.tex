@@ -5,7 +5,9 @@ In this section we prove the following theorem.
 
 \begin{theorem}[Recognisable Pre-Image]
     Given a nested $\numtapes$-tape transducer
-    $$\ducer = \tup{\tstates, \alphabet, \tdelta, \tfinals}$$,
+    \[
+        \ducer = \tup{\tstates, \alphabet, \tdelta, \tfinals},
+    \]
     some
     $\tstate \in \tstates$,
     and a regular language $\lang$, the relation
@@ -32,15 +34,14 @@ $\preimage{\ducer}{\tstate}{\lang}$
 is a regular language~\cite{??}.
 
 Now suppose we have a $(\numtapes+1)$-tape transducer $\ducer$.
-
-
-The idea is to summarise the $(\numtapes+1)$th state as the set of tuples
+The idea is to summarise the $(\numtapes+1)$th tape as a set of tuples
 \[
     \tup{\tstate, \astate, \tstate', \astate'}
     \in
     \tstates \times \astates \times \tstates \times \astates
 \]
-over which there is a run
+indicating that reading the $(\numtapes+1)$th input tape can take the transducer from $\tstate$ to $\tstate'$ and produce an output word that takes $\aut$ from $\astate$ to $\astate'$.
+That is, such a tuple means there is a run
 \[
     \tup{
         \tstate,
@@ -63,12 +64,13 @@ over which there is a run
 with
 $\astate \arun{\oword} \astate'$
 for some $\oword$.
+In fact, summaries will be sets of such tuples.
 Let
 $\summaries = 2^{\tstates \times \astates \times \tstates \times \astates}$.
 We will show
 \[
     \preimage{\ducer}{\tstate}{\lang} =
-        \bigcup\limits_{\summary \subseteq \summaries}
+        \bigcup\limits_{\summary \in \summaries}
             \rel_\summary \ .
 \]
 where each $\rel_\summary$ is recognisable.
@@ -76,7 +78,9 @@ The finite union of a finite set of recognisable languages can easily be seen to
 
 First, we define a version of the pre-image where we can define exact initial and finite states, as well as which tapes are used.
 \[
-    \preimageidx{\ducer}{\tstate}{\tstate'}{\tidxs}{\lang} =
+    \preimageidx{\ducer}{\tstate}{\tstate'}{\tidxs}{
+        \alangofstates{\aut}{\astate}{\astate'}
+    } =
     \setcomp{
         \tup{\iword_1, \ldots, \iword_\numtapes}
     }{
@@ -88,10 +92,10 @@ First, we define a version of the pre-image where we can define exact initial an
                            {\tidxs}
                            {\iword_1, \ldots, \iword_\numtapes}
                 \cap
-                \lang
+                \alangofstates{\aut}{\astate}{\astate'}
     }
 \]
-Recall, in this definition, all tapes with indices in $\tidxs$ must start at being at their initial position, while we are agnostic about the position of heads on the other tapes (they cannot affect the computation).
+Recall, in this definition, all tapes with indices in $\tidxs$ must start at their initial position, while we are agnostic about the position of heads on the other tapes (they cannot affect the computation).
 
 For a summary $\summary$ we compute the set of values of
 $\iword_{\numtapes+1}$
@@ -116,7 +120,7 @@ input tape during the run, making it effectively single-tape.
 The projection to the
 $(\numtapes+1)$th
 component simply removes all values for the other elements, which have no effect on the computation and can thus be anything.
-Hence, since we can compute the pre-image of a single-tape transudcer given a particular regular language, we can compute $\lang_\summary$ above.
+Hence, since we can compute the pre-image of a single-tape transducer given a particular regular language, we can compute $\lang_\summary$ above.
 
 Next, we construct a $\numtapes$-tape transducer where the
 $(\numtapes+1)$th
@@ -133,7 +137,7 @@ Formally, the transducer is
         \tup{\tstates, \alphabet_\summary, \tdelta_\summary, \tfinals}
 \]
 where
-$\alphabet_\summary = \alphabet \uplus \astates \times \astates$
+$\alphabet_\summary = \alphabet \uplus \brac{\astates \times \astates}$
 and
 \[
     \begin{array}{rcl}
@@ -191,7 +195,7 @@ From this, we construct
 
 We have thus far shown that
 \[
-    \bigcup\limits_{\summary \subseteq \summaries}
+    \bigcup\limits_{\summary \in \summaries}
         \rel_\summary
 \]
 is recognisable.

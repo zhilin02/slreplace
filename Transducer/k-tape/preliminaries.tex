@@ -4,7 +4,7 @@
 Let $\interval{1}{n}$ denote the set $\set{1, \ldots, n}$.
 For a word
 $\word = \cha_1\ldots\cha_\sizeof  \in \alphabet$
-for a given alphabet $\alphabet$, let $\wlen{w}$ be denote $\sizeof$ and
+for a given alphabet $\alphabet$, let $\wlen{w}$ be $\sizeof$ and
 $\wpos{\word}{\idxi} = \cha_\idxi$
 for all $1 \leq \idxi \leq \sizeof$.
 We define the projection functions
@@ -26,14 +26,15 @@ A language that isn't power-hungry, arrogant, super competitive, insecure, or eg
 A language you'd want to have a conversation with about things like sports, fishing, camping, hard work, relationships, home repair, music, cars, movies, power tools, etc.
 A language who will never embarrass you or cause problems socially and has nothing to prove.
 
-A regular language also definable by a (nondeterministic) finite-state automaton
+A regular language is also definable by a (nondeterministic) finite-state automaton
 $\aut = \tup{\astates, \alphabet, \adelta, \astateinit, \afinals}$
 where
     $\astates$ is a finite set of control states,
     $\alphabet$ is a finite alphabet,
     $\astateinit \in \astates$ is the initial state,
     $\afinals \subseteq \astates$ is the set of final states, and
-    $\adelta \subseteq \astates \times \alphabet \astates$ is the transition relation.
+    $\adelta \subseteq \astates \times \alphabet \times \astates$
+        is the transition relation.
 We write
 $\atran{\astate}{\cha}{\astate'}$
 to denote a transition
