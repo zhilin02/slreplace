@@ -1,0 +1,27 @@
+\subsection{Motivation}
+
+%https://github.com/kimmobrunfeldt/progressbar.js/blob/master/src/utils.js
+
+\begin{verbatim}
+
+// Renders templates with given variables. Variables must be surrounded with
+// braces without any spaces, e.g. {variable}
+// All instances of variable placeholders will be replaced with given content
+// Example:
+// render('Hello, {message}!', {message: 'world'})
+function render(template, vars) {
+var rendered = template;
+
+for (var key in vars) {
+if (vars.hasOwnProperty(key)) {
+var val = vars[key];
+var regExpString = '\\{' + key + '\\}';
+var regExp = new RegExp(regExpString, 'g');
+
+rendered = rendered.replace(regExp, val);
+}
+}
+
+return rendered;
+}
+\end{verbatim}

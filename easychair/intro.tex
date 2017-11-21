@@ -1,0 +1,293 @@
+%!TEX root = popl2018.tex
+
+\section{Introduction}
+\label{sec:intro}
+
+The problem of %satisfiability of logical theories over strings
+automatically solving string constraints (aka satisfiability of logical theories over
+strings) has recently witnessed renewed interests %in the programming language and verification community
+\cite{Berkeley-JavaScript,TCJ16,LB16,YABI14,S3,Abdulla14,Abdulla17,DV13,symbolic-transducer,BEK,HAMPI,cvc4,Z3-str,fang-yu-circuits,BTV09} 
+because of important applications in the analysis of string-manipulating  programs. For example,
+program analysis techniques like symbolic execution
+\cite{king76,DART,EXE,jalangi} 
+would
+%. For example, program analysis techniques like
+%symbolic execution \cite{king76} (or variants like dynamic symbolic execution
+%\cite{DART,EXE}) will 
+systematically explore executions in a program and collect symbolic path 
+constraints, which could then be solved using a constraint solver and
+used to determine which location in the program to continue exploring.
+To successfully apply a constraint solver in this instance, it is
+crucial that the constraint language precisely models the data types in the
+program, along with the data-type operations used. In the context of
+string-manipulating programs, this could include 
+concatenation, regular constraints (i.e. pattern matching against a regular
+expression), string-length functions, and the string-replace functions, among 
+many others.
+
+%For scripting
+%languages (e.g. Python, PHP, and JavaScript), which have grown in popularity
+%in recent years, numerous string 
+%There are several well-established research threads on this satisfiability 
+%problem depending on 
+%which string operations are permitted in the theory. 
+Perhaps the most well-known theory of strings for such applications as the
+analysis of string-manipulating programs is the theory of strings with concatenation  (aka \emph{word equations}), whose decidability was shown by Makanin \cite{Makanin} in 1977 after it was open for many years. More importantly, 
+this theory remains decidable even when regular constraints are incorporated into the 
+language \cite{Schulz}. However, whether adding the string-length function
+ preserves the decidability remains a long-standing open problem
+\cite{Vijay-length,buchi}. 
+%[See Section~\ref{sec-rel} for more recent results about solving word equations.]
+
+%\OMIT{
+%which is crucial for 
+Another important string operation---especially in popular scripting
+languages like Python, JavaScript, and PHP---is the \emph{string-replace function}, 
+which may be used to replace either the \emph{first} occurrence or
+\emph{all} occurrences of a string (a string constant/variable, or a regular expression) by 
+another string (a string constant/variable). The replace function (especially 
+the replace-all functionality) is omnipresent in HTML5 applications
+\cite{LB16,TCJ16,YABI14}. 
+%\mat{What does it mean for the replace function to be convincingly argued?}
+For example, a standard industry defense against cross-site scripting 
+(XSS) vulnerabilities includes sanitising untrusted strings before adding them
+into the DOM (Document Object Model) or the HTML document. 
+This is typically done by %replacing every occurrence of
+various metacharacter-escaping mechanisms (see, for instance, 
+\cite{Kern14,BEK,OWASP-XSS}). An example of such a mechanism is backslash-escape, which replaces \emph{every
+occurrence} of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
+string by \verb+\'+ and \verb+\"+. 
+In addition to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
+and \texttt{innerHTML} apply an \emph{implicit browser transduction} --- which
+decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input 
+string --- before inserting the input string into the DOM.
+Both of these examples can be expressed by (perhaps multiple) 
+applications of the string-replace function.
+Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} and Closure Templates~\cite{Closure} demonstrate the need for replacements involving variables.
+Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
+
+%\mat{Need to say more what template systems are?}
+%\anthony{Better mention closure templates I think, Matt. They do both
+%mustache-kind of replace plus sanitisers. They call these strict autoescaping
+%templates. See \cite{SSS11}.}
+%\mat{Mentioned closure, and changed footnote to reflect the fact that neither autoescaping mechanism kills our example.}
+
+%Concatenation: 8\%
+%Replace-all: 8\%
+
+
+%\anthony{I think the following example should appear earlier no? Perhaps	after Matt mentioned about Mustache? We need to get	the reader to be convinced first that general replaceall is useful.}
+%which we address in this article.
+%\mat{Am i right to say we tackle it here?}
+
+%% If you're looking for all the omitted and hidden semi-paragraphs that were here, checkout version 407adea8bf0c0564f064f43ae3b355fc8ac901d7. -- Matt
+
+
+\begin{example}
+We give a simple example demonstrating a (naive) XSS vulnerability to illustrate the use of string-replace functions.
+Consider the HTML fragment below.
+\begin{minted}{html}
+   <h1> User <span onMouseOver="popupText('{{bio}}')">{{userName}}</span> </h1>
+\end{minted}
+This HTML fragment is a template as might be used with systems such as Mustache to display a user on a webpage.
+For each user that is to be displayed -- with their username and biography stored in variables \emph{user} and \emph{bio} respectively -- the string \verb+{{userName}}+ will be replaced by \emph{user} and the string \verb+{{bio}}+ will be replaced by \emph{bio}.
+For example, a user \verb+Amelia+ with biography \verb+Amelia was born in 1979...+ would result in the HTML below.
+\begin{minted}{html}
+   <h1> User 
+        <span onMouseOver="popupText('Amelia was born in 1979...')">
+            Amelia </span> </h1>
+\end{minted}
+This HTML would display \verb+User Amelia+, and, when the mouse is placed over \verb+Amelia+, her biography would appear, thanks to the \verb+onMouseOver+ attribute in the \verb+span+ element.
+
+Unfortunately, this template could be insecure if the user biography is not adequately sanitised: 
+A user could enter a malicious biography, such as \verb+'); alert('Boo!'); alert('+ which would cause the following instantiation of the \verb+span+ element\footnote{
+	Readers familiar with Mustache and Closure Templates may expect single quotes to be automatically escaped.
+	However, we have tested our example with the latest versions of mustache.js~\cite{MustacheJS} and Closure Templates~\cite{Closure} (as of July 2017) and observed that the exploit is not disarmed by their automatic escaping features.
+}.
+\begin{minted}{html}
+    <span onMouseOver="popupText(''); alert('Boo!'); alert('')">
+\end{minted}
+Now, when the mouse is placed over the user name, the malicious JavaScript \verb+alert('Boo!')+ is executed.
+
+The presence of such malicious injections of code can be detected using string constraint solving and XSS \emph{attack patterns} given as regular expressions~\cite{BCFJKKV08,Berkeley-JavaScript,YABI14}.
+For our example, given an attack pattern $P$ and template $temp$, we would generate the constraint
+\[
+    x_1 = \replaceall(temp, \verb+{{userName}}+, \mathit{user})
+    \land
+    x_2 = \replaceall(x_1, \verb+{{bio}}+, \mathit{bio})
+    \land
+    x_2 \in P
+\]
+which would detect if the HTML generated by instantiating the template is
+    susceptible to the attack identified by $P$. \qed
+\end{example}
+%\mat{ANTHONY: can you verify/expand on my use of attack patterns?  I just copied it wholesale and blindly from your POPL 2016.}
+
+In general, the string-replace function has three parameters, and in the current mainstream language such as Python and JavaScript, \emph{all of the three parameters can be inserted as string variables}. As result, when we perform program analysis for, for instance, detecting security vulnerabilities as described above, one often obtains string constraints of the form $z= \replaceall(x, p, y)$, where $x,y$ are string constants/variables, and $p$ is either a string constant/variable or a regular expression.
+Such a constraint means that $z$ is obtained by replacing all occurrences of $p$
+in $x$ with $y$. For convenience, we call $x, p, y$ as the \emph{subject}, the
+\emph{pattern}, and the \emph{replacement} parameters respectively. 
+
+%for instance $z=\replaceall(x,"aa", y)$, meaning that $z$ is obtained by replacing all occurrences of $aa$ in $x$ by $y$. Solving string constraints involving this type of constraints is crucial, but unfortunately, is not supported by the current technique. There are two reasons:
+
+%The string-replace function is formalised as $\replaceall(x, p, y)$, where $x,y$ are string constants/variables, and $p$ is either a string constant/variable, or a regular expression. The semantics of $\replaceall(x, p, y)$ is to replace all occurrences of $p$ in $x$ with $y$. For convenience, we call $x, p, y$ as the subject, the pattern, and the replacement parameters respectively. 
+
+%The string-replace function is a quite powerful string operation. To see this, let us consider the constraint $C \equiv z = \replaceall(x, 0, y) \wedge x \in (01)^* \wedge y \in 0^*$. Then the set of values of $z$ that make $C$ satisfied is $\{(0^n 1)^* \mid n \in \Nat \}$.
+
+
+The $\replaceall$ function is a powerful string operation that goes beyond the 
+expressiveness of concatenation. (On the contrary, as we will see later, concatenation can be expressed by the $\replaceall$ function easily.) 
+It was shown in a recent POPL paper \cite{LB16} that any theory of strings containing the 
+string-replace function (even the most restricted version where 
+pattern/replacement strings are both constant strings) becomes undecidable if 
+we do not impose some kind of
+\emph{straight-line restriction}\footnote{Similar notions that appear in the 
+literature of string constraints (without replace) include acyclicity 
+\cite{Abdulla14} and solved form \cite{Vijay-length}} on 
+the formulas. Nonetheless, as already noted in \cite{LB16},
+the straight-line restriction is reasonable since it
+is typically satisfied by constraints that are generated by symbolic 
+execution, e.g., all constraints in the standard Kaluza benchmarks
+\cite{Berkeley-JavaScript} with 50,000+ test cases
+generated by symbolic execution on JavaScript applications were
+noted in \cite{Vijay-length} to satisfy this condition. 
+%This was noted already
+%in \cite{LB16}, which provides other interesting examples of programs whose 
+%program logic can be modelled by the straight-line fragment.
+Intuitively, as elegantly described in \cite{BTV09}, constraints from symbolic 
+execution on string-manipulating programs can be viewed as the problem of path 
+feasibility over loopless string-manipulating programs $S$ with variable 
+assignments and assertions, i.e., generated by the grammar
+\begin{equation*}
+    S ::= y := f(x_1,\ldots,x_n) \ |\ \text{\ASSERT{$g(x_1,\ldots,x_n)$}}\ |\ 
+            S_1; S_2\ 
+    %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n) 
+\end{equation*}
+where $f: (\Sigma^*)^n \to \Sigma^*$ and $g: (\Sigma^*)^n \to \{0,1\}$ are
+some string functions.
+Straight-line programs with assertions can be obtained by turning such programs 
+into a Static Single Assignment (SSA) form (i.e. introduce a new variable 
+on the left hand side of each assignment).
+%To see why the straight-line fragment can naturally model constraints from
+%symbolic execution, we may view 
+%In addition, the
+%straight-line fragment naturally corresponds to the path feasibility problem for
+%string-manipulating programs \cite{BTV09}. 
+%arguments for straight-line restriction can be found in \cite{LB16}.
+\OMIT{
+As a matter of fact, it was shown in~\cite{LB16} that any 
+incorporating a simple form of the $\replaceall$ function, where the pattern and the replacement are both string constants, into the theory of concatenations already results in an undecidable theory of strings.  
+%that lies beyond 
+%the expressiveness of the theory of concatenation, 
+Therefore, it is challenging to reason about the string-replace function in its general form. 
+}
+%In~\cite{LB16}, a theory of strings involving concatenation and finite state transducers was considered. The $\replaceall$ function where the pattern is a string constant or regular expression, the third parameter is a constant can be seen as a special case of finite state transducers. It was shown therein that incorporating the simple form of the $\replaceall$ function into the theory of concatenations already results in an undecidable theory of strings. 
+A partial decidability result 
+can be deduced from \cite{LB16}
+%from the following recent POPL paper in~\cite{LB16} provides decidability
+for the straight-line fragment of the theory of strings, where (1) $f$ in the 
+above
+grammar is either a concatenation of string constants and variables, or 
+the $\replaceall$ function where \emph{the 
+pattern and the replacement are both string constants}, and (2) $g$ is
+a boolean combination of regular constraints.
+%concatenation, regular constraints, and 
+%the $\replaceall$ function where \emph{the 
+%pattern and the replacement are both string constants}. 
+In fact, the decision procedure therein admits finite-state transducers, which
+subsume only the aforementioned simple form of the $\replaceall$ function.
+%, but
+%\emph{not} its most general form.
+%The straight-line restriction is natural in the sense that it reflects the shape of formulas typically generated by symbolic execution.  
+The decidability boundary of the straight-line fragment involving the 
+$\replaceall$ function in its general form (e.g., 
+when the replacement parameter is a variable) remains open.
+
+
+\paragraph{Contribution.} We investigate the decidability boundary of the theory
+$\strline[\replaceall]$ of strings involving %concatenation, 
+%regular constraints, and 
+the $\replaceall$ function and regular constraints, with the straight-line
+restriction introduced in \cite{LB16}. We provide a decidability result for a 
+large fragment of $\strline[\replaceall]$, which is sufficiently powerful to
+express the concatenation operator. We show that this decidability result is in a sense maximal
+by showing that several important natural extensions of the logic result in undecidability.
+We detail these results below:
+
+\OMIT{
+We first show that---as mentioned earlier---with the $\replaceall$ function in its general form, the concatenation operation is in fact \emph{redundant}, in the sense that it can be simulated by the $\replaceall$ function. This motivates us to consider a theory of strings where the $\replaceall$ function, instead of the concatenation operation, and the regular constraints, are the basic modalities. We focus on the straight-line fragment of this theory, denoted by $\strline[\replaceall]$.
+}
+
+%More precisely,
+%we obtain the following results for the satisfiability problem of
+%$\strline[\replaceall]$:
+\begin{itemize}
+\item If the pattern parameters of the $\replaceall$ function are allowed to be variables, then the satisfiability of $\strline[\replaceall]$ is undecidable (cf. Proposition~\ref{prop-und-pat-var}).
+%
+\item If the pattern parameters of the $\replaceall$ function are regular
+    expressions, then the satisfiability of $\strline[\replaceall]$ is decidable
+        and in EXPSPACE (cf. Theorem~\ref{thm-main}). In addition, we show that
+        the satisfiability problem is PSPACE-complete for several cases that are
+        meaningful in practice (cf. Corollary~\ref{cor-pspace}). This strictly
+        generalises the decidability result in \cite{LB16} of the straight-line 
+        fragment with concatenation, regular constraints, and the $\replaceall$ 
+        function where
+        patterns/replacement parameters are constant strings.
+%
+\item If $\strline[\replaceall]$, where the pattern parameter of the
+    $\replaceall$ function is a constant letter, is extended with the 
+        string-length constraint, then satisfiability becomes undecidable
+        again. In fact, this undecidability can be obtained with
+        either integer constraints, character constraints, or constraints 
+        involving the $\indexof$ function
+        %, then the satisfiability becomes undecidable again 
+        (cf. Theorem~\ref{thm-ext-int} and 
+        Proposition~\ref{prop-ext-ch-index}).
+\end{itemize}
+
+Our decision procedure for $\strline[\replaceall]$ where the pattern parameters
+of the $\replaceall$ function are regular expressions follows an 
+automata-theoretic approach. The key idea can be illustrated as follows. Let 
+us consider the simple formula $C \equiv x = \replaceall(y, a, z) \wedge x \in e_1 \wedge y \in e_2 \wedge z \in e_3$. 
+Suppose that $\cA_1,\cA_2,\cA_3$ are the nondeterministic finite state automata corresponding to $e_1,e_2,e_3$ respectively. 
+We effectively eliminate the use of $\replaceall$ by nondeterministically
+generating from $\cA_1$ a new regular constraint $\cA'_2$ for $y$ as well as a new regular constraint
+$\cA'_3$ for $z$.   These constraints incorporate the effect of the
+$\replaceall$ function (i.e.\ all regular constraints are on the ``source'' variables).
+Then, the satisfiability of $C$ is turned into testing the nonemptiness of the intersection of $\cA_2$ and $\cA'_2$, as well as the nonemptiness of the intersection of $\cA_3$ and $\cA'_3$. When there are multiple occurrences of the $\replaceall$ function, this process can be iterated. 
+Our decision procedure enjoys the following advantages:
+\begin{itemize}
+	\item It is automata-theoretic and built on clean automaton constructions, 
+        moreover, when the formula is satisfiable, a solution can be 
+        synthesised. For example, in the aforementioned XSS vulnerability detection example, one can synthesise the values of the variables $user$ and $bio$ for a potential attack. 
+	\item The decision procedure is modular in
+        that the $\replaceall$ terms are removed one by one to
+        generate more and more regular constraints (emptiness of the
+        intersection of regular constraints could be efficiently handled by
+        state-of-the-art solvers like \cite{fang-yu-circuits}).  
+    \item The decision procedure requires exponential space (thus double
+        exponential time), but under assumptions that are reasonable in practice, 
+        the decision procedure uses only polynomial space, which is not
+        worse than other string logics (which can encode the PSPACE-complete
+        problem of checking emptiness of the intersection of regular 
+        constraints). 
+\end{itemize}
+%Finally, a corollary our result is a simpler decision procedure for
+%the straight-line fragment of the theory of strings with concatenation,
+
+
+%EXPSPACE algorithm
+%
+%a table to summarise the results.
+
+
+\paragraph{Organisation.} 
+This paper is organised as follows: Preliminaries are given in
+Section~\ref{sec-prel}. The core string language is defined in
+Section~\ref{sec-core}. The main results of this paper are summarised in
+Section~\ref{sec-sat}. The decision procedure is presented in
+Section~\ref{sec:replaceallsl}-\ref{sec:replaceallre}, case by case. The
+extensions of the core string language are investigated in
+Section~\ref{sec-ext}. The related work can be found in Section~\ref{sec-rel}.
+The \shortlong{full version}{appendix} contains missing proofs and additional
+examples.

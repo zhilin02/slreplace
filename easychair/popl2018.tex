@@ -1,0 +1,163 @@
+\documentclass[a4paper]{easychair}
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{amsmath}
+\usepackage{leftidx}
+\usepackage{mathtools}
+\usepackage{paralist}
+\usepackage{color}
+\usepackage{mathrsfs}
+\usepackage{tikz}
+\usepackage{minted}
+\usetikzlibrary{shapes}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+%==========================================================
+\input{macros.tex}
+\input{comm-anthony}
+%==========================================================
+
+\newcommand\shortlong[2]{#2}
+%\newcommand\shortlong[2]{#1}
+
+%\newif\ifdraft\drafttrue
+\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {YA: #1 :AY} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\fi
+
+\newcommand{\concat} {\circ}
+\newcommand{\replace} {{\sf replace}}
+\newcommand{\str} {{\sf Str}}
+\newcommand{\intnum} {{\sf Int}}
+\newcommand{\regexp} {{\sf RegExp}}
+\newcommand{\strarr} {{\sf StringArray}}
+\newcommand{\dtypes} {{\sf DataTypes}}
+\newcommand{\anarr} {{\mathbb{A}}}
+
+\newtheorem{example}{Example}[section]
+\newtheorem{definition}[example]{Definition}
+\newtheorem{proposition}[example]{Proposition}
+\newtheorem{remark}[example]{Remark}
+\newtheorem{theorem}[example]{Theorem}
+\newtheorem{corollary}[example]{Corollary}
+
+%============================================================
+
+
+%% Bibliography style
+\bibliographystyle{plain}
+
+\begin{document}
+
+\title{What Is Decidable about String Constraints with the ReplaceAll Function}
+\titlerunning{String Constraints with the ReplaceAll Function}
+
+\author{
+    Taolue Chen\inst{1}
+    \and
+    Yan Chen\inst{2,3}
+    \and
+    Matthew Hague\inst{4}
+    \and
+    Anthony W. Lin\inst{5}
+    \and
+    Zhilin Wu\inst{2}
+}
+
+\institute{
+    Department of Computer Science and Information Systems,
+    Birkbeck,
+    University of London
+    \and
+    State Key Laboratory of Computer Science,
+    Institute of Software,
+    Chinese Academy of Sciences
+    \and
+    University of Chinese Academy of Sciences
+    \and
+    Royal Holloway,
+    University of London
+    \and
+    Department of Computer Science,
+    University of Oxford
+}
+
+\authorrunning{T. Chen, Y. Chen, M. Hague, A. W. Lin, and Z. Wu}
+
+\maketitle
+
+\input{abstract.tex}
+
+
+\input{intro.tex}
+
+\input{prel.tex}
+
+\input{dp-outline}
+
+\input{dp-sl-case.tex}
+
+\input{dp-cs-case.tex}
+
+\input{dp-re-case.tex}
+
+\input{extension.tex}
+
+\input{related}
+
+\input{conc}
+
+\paragraph{Acknowledgments}
+%
+T. Chen is supported by the Australian Research Council under Grant
+No.~DP160101652 and the Engineering and Physical Sciences Research Council
+under Grant No.~EP/P00430X/1.
+%
+M. Hague is supported by the Engineering and Physical Sciences Research Council
+under Grant No.~EP/K009907/1.
+%
+A.~Lin is supported by the European Research Council (ERC) under the European
+Union's Horizon 2020 research and innovation programme (grant agreement no
+759969).
+%
+Z. Wu is supported by the National Natural Science Foundation of China under
+Grant No.~61472474 and Grant No.~61572478, and the INRIA-CAS joint research
+project ``Verification, Interaction, and Proofs''.
+
+
+\newpage
+
+\bibliography{string}
+
+\shortlong{}{
+
+\newpage
+
+% Appendix
+\input{appendix}
+}
+
+
+
+\end{document}

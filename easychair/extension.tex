@@ -1,0 +1,122 @@
+%!TEX root = popl2018.tex
+
+\section{Undecidable extensions}\label{sec-ext}
+
+In this section, we consider the language $\strline[\replaceall]$ extended with either integer constraints, character constraints, or $\indexof$ constraints, and show that each of such extensions leads to undecidability. 
+%\mat{Should $\concat$ be removed?}\zhilin{agree, since the undecidability result is stronger if stated for $\strline[\replaceall]$}
+We will use variables of, in additional to the type $\str$, the Integer data type $\intnum$. The type $\str$ consists of the string variables as in the previous sections. A variable of type $\intnum$, usually referred to as an \emph{integer variable}, ranges over the set $\Nat$ of natural numbers. Recall that, in previous sections, we have used $x, y, z, \ldots$ to denote the variables of $\str$ type.  Hereafter we typically use $\mathfrak{l}, \mathfrak{m}, \mathfrak{n}, \ldots$ to denote the variables of $\intnum$. The
+choice of omitting negative integers is for simplicity. Our
+results can be easily extended to the case where $\intnum$ includes negative integers.
+
+We begin by defining the kinds of constraints we will use to extend $\strline[\replaceall]$.
+First, we describe integer constraints, which express constraints on the length or number of occurrences of symbols in words. 
+
+
+\begin{definition}[Integer constraints] \label{def:intconst} 
+	An atomic integer constraint over $\Sigma$ is an expression of the form
+	$a_1t_1+\cdots+a_nt_n\leq d$
+where $a_1, \cdots, a_n,d\in \mathbb{Z}$ are constant integers (represented in binary), and each \emph{term} $t_i$ is either 
+	\begin{enumerate}
+		\item an integer variable $\mathfrak{n}$;
+		\item $|x|$ where $x$ is a  string variable; or 
+		\item $|x|_a$ where $x$ is string variable and $a\in \Sigma$ is a constant letter.
+	\end{enumerate}
+Here, $|x|$ and $|x|_a$ denote the length of $x$ and the number of occurrences of $a$ in $x$, respectively. 
+
+An \emph{integer constraint} over $\Sigma$ is a Boolean combination of atomic integer constraints over $\Sigma$.
+\end{definition}
+
+Character constraints, on the other hand, allow to compare symbols from different strings. The formal definitions are given as follows. 
+
+\begin{definition}[Character constraints]
+	An \emph{atomic character constraint} over $\Sigma$ is an equation of the form $x[t_1]=y[t_2]$ where 
+	\begin{itemize}
+		\item $x$ and $y$ are either a string variable or a constant string in $\Sigma^*$, and 
+		\item $t_1$ and $t_2$ are either integer variables or constant positive integers.
+	\end{itemize} 
+Here, the interpretation of $x[t_1]$ is the $t_1$-th letter of $x$. In case that $x$ does not have the $t_1$-th letter \emph{or} $y$ does not have the $t_2$-th letter, the constraint $x[t_1] = y[t_2]$ is false by convention.  
+%Similarly for $y[t_2]$.
+%\mat{What if $x$ doesn't have a $t_1$th letter?}\zhilin{how about this ?}
+	
+A \emph{character constraint} over $\Sigma$ is a Boolean combination of atomic character constraints over $\Sigma$. 
+\end{definition}
+
+We also consider the constraints involving the $\indexof$ function.
+
+\begin{definition}[$\indexof$ Constraints]
+An atomic $\indexof$ constraint over $\Sigma$ is a formula of the form $t\ \mathfrak{o}\ \indexof(s_1, s_2)$, where 
+\begin{itemize}
+\item $t$ is an integer variable, or a positive integer (recall that here we assume that the first position of a string is $1$), or the value $0$ (denoting that there is no occurrence of $s_1$ in $s_2$), 
+\item $\mathfrak{o} \in \{\ge, \le\}$, and
+%
+\item  $s_1,s_2$ are either string variables or constant strings. 
+\end{itemize}
+We consider the \emph{first-occurrence} semantics of $\indexof$.  More specifically, $t \ge \indexof(s_1, s_2)$ holds if $t$ is no less than the first position in $s_2$ where $s_1$ occurs, similarly for $t \le \indexof(s_1, s_2)$.
+%\mat{What if $s_1$ does not appear in $s_2$?}\zhilin{if $s_1$ does not appear in $s_2$, then $\indexof(s_1, s_2)=0$, as defined above.}
+
+An $\indexof$ constraint over $\Sigma$ is a Boolean combination of atomic $\indexof$ constraints over $\Sigma$.
+\end{definition}
+
+%There are two natural semantics of $\indexof$, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics.  More specifically, $t \ge \indexof(s_1, s_2)$ holds 
+%\begin{itemize}
+%	\item under the \emph{first-occurrence} semantics, if $t$ is no less than the first position in $s_2$ where $s_1$ occurs;
+%	
+%	\item under the \emph{anywhere} semantics, if $t$ is no less than \emph{any} position in $s_2$ where $s_1$ occurs.
+%\end{itemize}  
+
+
+%One reason of introducing character constraints is, apart from the use of the JavaScript string method chatAt (which is used rather frequently in JavaScript according to the benchmark \cite{}), they can also be used to define $\indexof(w,x)$ for $w\in \Sigma^*$, which is the most standard usage of IndexOf method in practice. There are in general two natural semantics, viz., the \emph{first-occurrence} semantics and the \emph{anywhere} semantics. We write $u=\indexof(w,x)$ where $u$ is an integer variable, which holds
+%\begin{itemize}
+%	\item under  the \emph{first-occurrence} semantics, if $u$ is the first position in $x$ where $w$ occurs;
+%	
+%	\item the \emph{anywhere} semantics, if $u$ is \emph{any} position in $x$ where $w$ occurs;
+%\end{itemize}  
+ 
+ \medskip
+
+We will show that the extension of $\strline[\replaceall]$ with integer constraints entails undecidability, by a reduction from (a variant of) the Hilbert's 10th problem, which is well-known to be undecidable \cite{Mat93}. 
+For space reasons, all proofs appear in \shortlong{the full
+version}{Appendix~\ref{sec:ext-undec-proofs}}.
+Intuitively, we want to find a solution to $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ in the natural numbers, where $f$ and $g$ are polynomials with positive coefficients.
+We can use the length of string variables over a unary alphabet $\{a\}$ to represent integer variables, addition can be performed with concatenation, and multiplication of $x$ and $y$ with $\replaceall(x, a, y)$.
+The integer constraint $|x| = |y|$ asserts the equality of $f$ and $g$. Note that the use of concatenation can be further dispensed since, by Proposition~\ref{prop-concat},   concatenation is expressible by $\replaceall$ at the price of a slightly extended alphabet.  
+%\mat{Is this useful?}
+
+%: Given two polynomials (aka Diophantine equations) $f(x_1, \cdots, x_n)$ and $g(x_1,\cdots, x_n)$ with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, decide whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. It is well-known that Hilbert's 10th problem is undecidable \cite{Mat93}.
+
+%Recall the Hilbert 10th problem, which is, for any given Diophantine equation (a polynomial equation with integer coefficients and a finite number of unknowns), to decide whether the equation has a solution with all unknowns taking integer values. It is easy to observe that given two polynomials with positive integral coefficients over the same set of variables $x_1, \cdots, x_n$, it is \emph{undecidable} to check whether $f(x_1, \cdots, x_n)=g(x_1, \cdots, x_n)$ has a solution in natural numbers. 
+
+\begin{theorem}\label{thm-ext-int}
+	For the extension of $\strline[\replaceall]$ with \emph{integer constraints}, the satisfiability problem is undecidable, even if only a single integer constraint of the form $|x| = |y|$ or $|x|_a = |y|_a$ is used.
+  %  \mat{Changed this in reponse to reviewer 4}
+\end{theorem}
+
+
+%
+%Notice, in the above proof, besides the $\strline[\replaceall]$ formula, only a \emph{single simple} atomic integer constraint $|y_f| = |y_g|$ is used. Therefore, the proof  shows that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability.
+%On the other hand, by utilising a further result on Diophantine equations, we will show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple, in the sense that their dependency graphs are of depth at most one, the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
+
+Notice that the extension of $\strline[\replaceall]$ with only one integer constraint of the form $|x| = |y|$ entails undecidability. \zhilin{a remark for the Buchi and Senger's result about undecidability, please check} \tl{rephrased slightly}
+We remark that the undecidability result here does \emph{not} follow from the undecidability result for the extension of word equations with the letter-counting modalities in \cite{buchi}, % does \emph{not} apply to the setting here 
+since the formula by \cite{buchi} is not straight-line. 
+
+By utilising a further result on Diophantine equations, we show that for the extension of $\strline[\replaceall]$ with integer constraints, even if the $\strline[\replaceall]$ formulae are simple (in the sense that their dependency graphs are of depth at most one), the satisfiability problem is still undecidable (note that no restrictions are put on the integer constraints in this case).
+
+% The above proof essentially establishes a link between Diophantine equations and the extension of $\strline[\replaceall]$ with integer constraints over a unary alphabet. 
+%
+%With a further result from Hilbert 10'th problem, we can strengthen the undecidability results shown that satisfiability of even very simple string constraints (e.g., the $\replaceall$ function is unnested) will be undecidable in conjunction with length constraints. 
+ 
+
+
+%Therefore, we get the following undecidability result.
+
+\begin{theorem}\label{thm-ext-int-strong}
+	For the extension of $\strline[\replaceall]$ with integer constraints, even if $\strline[\replaceall]$ formulae are restricted to those whose dependency graphs are of depth at most one, the satisfiability problem is still undecidable.
+\end{theorem}
+
+By essentially encoding $|x|=|y|$ with \emph{character} or \emph{$\indexof$ constraints}, we show:
+
+\begin{proposition}\label{prop-ext-ch-index}
+	For the extension of $\strline[\replaceall]$ with either the character constraints or the $\indexof$ constraints, the satisfiability problem is undecidable. 
+\end{proposition}
+
