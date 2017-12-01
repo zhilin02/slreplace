@@ -78,6 +78,28 @@
 
 \section{Introduction}
 
+What we hope is two-fold :-
+\begin{itemize}
+	\item[(i)]  for a transducer $T$ encoding a string manipulating function $z=f(x;\vec{y})$, suppose that  the output $z$ is constrained by a regular language $\mathcal{A}$, we could compute the pre-image $f^{-1}(\mathcal{A)}$ \emph{as a recognisable relation}. 
+	
+	\item[(ii)] we have a ``generic" way to solve straight-line string constraints when the ``semantics" of the string operator (function) is a recognisable. 
+\end{itemize}
+
+In term of the replaceall function, both (i) and (ii) hold, and indeed the general algorithm framework therein can serve (ii). So the main job is to show that, for each transducer model, the pre-image can indeed give a recognisable relation. 
+
+\begin{tabular}{|c|c|c|}
+	\hline
+	
+	                					 &  regular constraints    &  regular and length constraints \\
+	\hline
+	\hline
+one-way transducer						 &  \cite{LB16}            &   \cite{LB16}                   \\
+two-way transducer						 &  $n$-EXPSPACE-complete  &   ??                            \\
+one-way transducer	with variables       &  EXPSPACE-complete (?)  &  undecidable \cite{CCHLW18}     \\
+two-way transducer  with variables       &       ??               & undecidable \cite{CCHLW18}     \\
+\hline
+\end{tabular}
+
 \section{Preliminaries}
 
 \begin{definition}[two-way finite state automata]
@@ -99,15 +121,9 @@ effectively equivalent to an NFA.
 	the output tape and the transducer goes to state $q'$. 
 \end{definition}
 
-\begin{definition}[multi-tape transducer, with k input tapes, and one output tape.] 
-\tl{Matt, please elaborate}
-The
-k input tapes follow a stack discipline: tape i can only move if the
-head position of all tapes $j > i$ is 0 
-\end{definition}
 
 
-\tl{Other relevant models such as SST, when appropriate, will be put here.}
+%\tl{Other relevant models such as SST, when appropriate, will be put here.}
 
 \begin{definition}
 	Given a finite alphabet $\Sigma$, a binary relation $R\subseteq \Sigma^*\times \Sigma^*$ is a recognisable relations if $R=\bigcup_{i=1}^n L_i\times L_i'$ where $L_i$ and $L_i'$ are both regular languages. 
@@ -115,27 +131,56 @@ head position of all tapes $j > i$ is 0
 	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
 
-What we hope is two-fold :-
-\begin{itemize}
-	\item[(i)]  for a transducer $T$ encoding a string manipulating function $z=f(x;\vec{y})$, suppose that  the output $z$ is constrained by a regular language $\mathcal{A}$, we could compute the pre-image $f^{-1}(\mathcal{A)}$ \emph{as a recognisable relation}. 
-	
-	\item[(ii)] we have a ``generic" way to solve straight-line string constraints when the ``semantics" of the string operator (function) is a recognisable. 
-\end{itemize}
-
-In term of the replaceall function, both (i) and (ii) hold, and indeed the general algorithm framework therein can serve (ii). So the main job is to show that, for each transducer model, the pre-image can indeed give a recognisable relation. 
 
 
-\section{Pre-image computation of 2-way transducers}  
+
+\section{Two-way transducers}
+
+In this section, we give both upper and low bounds. 
+
+\subsection{Upper-bound}
+
+\subsection{Lower-bound}
+
+Sketched in Matt's email. 
+
+%==========================================================================================
+
+\section{Two-way transducers with length constraints}
+
+This section is dynamic: we hope for the best of Anothy's result; in case it does not work, we have two possible backups: (1) reversal-bounded 2-way transducers; (2) using reversal-bounded counter machines to represent (both regular and length) constraints
+
+%===========================================================================================
+
+\section{One-way transducers with variables}
+
+Not quite sure whether we need this section, it might be just a simple generalisation of the popl'18 paper; we will see. 
+
+%========================================================================================
+
+\section{Two-way transducers with variables}
+
+\subsection{Pre-image computation of 2-way transducers}  
 
 Let $\vec{y}=\{y_1, \cdots, y_m\}$.
 
 The general idea is to encode a general string manipulating function $f(x, \vec{y})$ as a NFT $T$ over $\Sigma$ and $\Sigma\cup\{\vec{y}\}$. The question for the pre-image computation is formalised as follows:
 \begin{itemize}
-\item INPUT: A NFT $T$, a regular language $\mathcal{A}$. 
-\item OUTPUT: $(L^{(0)}_i, L^{(1)}_i, \cdots, L^{(m)}_i )_{i=1}^\ell$, such that 
-\[\exists z\in\mathcal{A} \wedge z=f(x, \vec{y})\mbox{ iff }\exists k. x\in L^{(0)}_k \wedge y_i\in L^{(i)}_k \]
+	\item INPUT: A NFT $T$, a regular language $\mathcal{A}$. 
+	\item OUTPUT: $(L^{(0)}_i, L^{(1)}_i, \cdots, L^{(m)}_i )_{i=1}^\ell$, such that 
+	\[\exists z\in\mathcal{A} \wedge z=f(x, \vec{y})\mbox{ iff }\exists k. x\in L^{(0)}_k \wedge y_i\in L^{(i)}_k \]
 \end{itemize}
 
+\section{Matt's pet :-), maybe another paper}
 
+\begin{definition}[multi-tape transducer, with k input tapes, and one output tape.] 
+	\tl{Matt, please elaborate}
+	The
+	k input tapes follow a stack discipline: tape i can only move if the
+	head position of all tapes $j > i$ is 0 
+\end{definition}
+
+
+\section{Conclusion}
 
 \end{document}
