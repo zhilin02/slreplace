@@ -102,6 +102,39 @@ two-way transducer  with variables       &       ??               & undecidable 
 
 \section{Preliminaries}
 
+Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers respectively. For $k \in \Nat$, let $[k] = \{1,\cdots, k\}$. For a vector $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$ (i.e., $n$) and  $\vec{x}[i]$ denote $x_i$ for each $i \in [n]$.
+
+\paragraph{Graph-Theoretical Notation}
+%In this paper, we use standard graph-theoretic concepts and notation (e.g.~see
+%\cite{Diestel05}).
+A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
+no directed cycles, where $V$ (resp.~$E \subseteq V \times V$) is a set of vertices (resp.~edges).
+%. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $\mathit{v}$ and follow a consistently-directed sequence of edges that eventually loops back to $\mathit{v}$ again. 
+Equivalently, a DAG is a directed graph that has a topological ordering, which
+is a sequence of the vertices such that every edge is directed from an earlier 
+vertex to a later vertex in the sequence. An edge $(\mathit{v},\mathit{v'})$ in
+$G$ is called an \emph{incoming} edge of $\mathit{v'}$ and an \emph{outgoing}
+edge of $\mathit{v}$. If $(\mathit{v},\mathit{v'}) \in E$, then $\mathit{v'}$ is
+called a \emph{successor} of $\mathit{v}$ and $\mathit{v}$ is called a
+\emph{predecessor} of $\mathit{v'}$. A \emph{path} $\pi$ in $G$ is a sequence
+$\mathit{v}_0 \mathit{e}_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} \mathit{e}_n
+\mathit{v}_n$ such that for each $i \in [n]$, we have $\mathit{e}_i =
+(\mathit{v}_{i-1},\mathit{v}_i) \in E$. The \emph{length} of the path $\pi$
+%$\mathit{v}_0 e_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} e_n \mathit{v}_n$ in $G$
+is the number $n$ of edges in $\pi$. If there is a path from
+$\mathit{v}$ to $\mathit{v'}$ (resp. from $\mathit{v'}$ to $\mathit{v}$) in $G$,
+then $\mathit{v'}$ is said to be \emph{reachable} (resp. \emph{co-reachable})
+from $\mathit{v}$ in $G$. If $\mathit{v}$ is reachable from $\mathit{v'}$ in
+$G$, then $\mathit{v'}$ is also called an \emph{ancestor} of $\mathit{v}$ in
+$G$. In addition, an edge $(\mathit{v'},\mathit{v''})$ is said to be reachable 
+(resp. co-reachable) from $\mathit{v}$ if $\mathit{v'}$ is reachable from $\mathit{v}$ (resp. $\mathit{v''}$ is co-reachable from $\mathit{v}$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $\mathit{v}$ is the number of incoming (resp. outgoing) edges of $\mathit{v}$. 
+%A vertex $\mathit{v}$ in $G$ is said to be a \emph{join} vertex if the in-degree of $\mathit{v}$ is at least two. 
+%A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.  
+A \emph{subgraph} $G'$ of $G=(V,E)$ is a directed graph $(V', E')$ with
+$V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$.  
+
+\subsection{A collection of automata models}
+
 \begin{definition}[two-way finite state automata]
 A non-deterministic two-way finite state automaton 
 (2NFA) over a finite alphabet $\Sigma$ is a tuple $A =
@@ -131,6 +164,118 @@ effectively equivalent to an NFA.
 	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
 
+\subsection{String constraints} \label{sec-core}
+
+In this section, we define a general string constraint language that supports 
+concatenation, the $\replaceall$ function, and regular constraints. Throughout this section, we fix an alphabet $\Sigma$.
+
+ 
+
+ 
+
+
+%====================================================
+
+
+%\subsection{Straight-Line String Constraints With the $\replaceall$ Function}
+
+
+We consider the String data type $\str$, and assume a countable set of variables
+$x, y, z, \cdots$ of $\str$.  
+
+
+\begin{definition}[Relational and regular constraints]
+	Relational constraints and regular constraints are defined by the following rules,
+	\[
+	\begin{array}{r c l cr}
+	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
+	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
+	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
+	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, p, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+	\psi & \eqdef & x \in e \mid \psi \wedge \psi %\mid \psi \vee \psi \mid \neg \psi   
+	& \ \ & \mbox{(regular constraints)} \\
+	\end{array}
+	\]
+	where $x$ is a string variable, $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$. 
+	
+\end{definition}
+
+
+For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)$) denote the set of variables occurring in $\varphi$ (resp. $\psi$). Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = \replaceall(-,-,-)$.
+
+We then notice that, with the $\replaceall$ function in its general form, the concatenation operation is in fact redundant.
+
+%\begin{proposition}\label{prop-concat}
+%	The concatenation  operation ($\concat$) can be simulated  by the $\replaceall$ function.
+%\end{proposition}
+%\begin{proof}
+%	It is sufficient to observe that %the concatenation operator $s_1 \concat s_2$ is redundant in the sense that 
+%	a relational constraint $x = s_1 \concat s_2$ can be rewritten as
+%	\[x' = \replaceall(ab, a, s_1) \wedge x = \replaceall(x', b, s_2),\] where $a,b$ are two fresh letters.
+%\end{proof}
+
+In light of Proposition~\ref{prop-concat}, in the sequel, we will \emph{dispense the concatenation operator} mostly and focus on \textbf{the string constraints that involve  the $\replaceall$ function only}.
+
+Another example to show the power of the $\replaceall$ function is that it can simulate the extension of regular expressions with string variables, which is  supported by the mainstream scripting languages like Python, Javascript, and PHP. For instance, $x \in y^*$ can be expressed by $x =\replaceall(x', a, y) \wedge x' \in a^*$, where $x'$ is a fresh variable and $a$ is a fresh letter. 
+
+
+\medskip
+
+The generality of the constraint language makes it undecidable,
+even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
+programs with the $\replaceall$ string operation.  
+
+\begin{definition}[Straight-line relational constraints]
+	A relational constraint $ \varphi$ with the $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
+	\begin{itemize}
+		\item $x_1,\dots, x_m$ are mutually distinct,
+		\item for each $i \in [m]$, all the variables in $P_i$ are either source variables, or variables from $\{x_1,\dots, x_{i-1}\}$,
+	\end{itemize}
+	%Occasionally we refer to $x_m$ as the output variable. 
+\end{definition}
+%Intuitively, in a straight-line relational constraint, the dependency graph (see Definition~\ref{def:dep-graph}) of the string variables is acyclic.
+%\mat{forward reference!}
+
+\begin{remark}
+	Checking whether a relational constraint $\varphi$ is straight-line can be done in linear time. 
+\end{remark}
+
+\begin{definition}[Straight-line string constraints]
+	A straight-line string constraint $C$ with the $\replaceall$ function (denoted by $\strline[\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
+	\begin{itemize}
+		\item $\varphi$ is a straight-line relational constraint with the $\replaceall$ function,  and
+		%
+		\item $\psi$ is a regular constraint.
+		%
+	\end{itemize}
+	%Let us use $\Cc$ to denote the set of straight-line string constraints with $\replaceall$ function.
+	%When the concatenation $\concat$ is excluded, we usually denote the constraints as  $\strline[\replaceall]$. 
+\end{definition}
+
+ 
+ 
+ We first introduce a graphical representation of $\strline[\replaceall]$ formulae as follows.    
+ 
+ \begin{definition}[Dependency graph]
+ 	\label{def:dep-graph}
+ 	Suppose $C= \varphi \wedge \psi$ is an $\strline[\replaceall]$ formula where the pattern parameters of the $\replaceall$ terms are regular expressions. %Let $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables. 
+ 	Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labelled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. The \emph{depth} of $G_C$ is the maximum length of the paths in $G_C$. In particular, if $\varphi$ is empty, then the depth of $G_C$ is zero. 
+ 	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
+ 	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
+ \end{definition}
+ Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero. 
+ 
+%\section{The satisfiability problem} \label{sec-sat}
+%In this paper, we focus on the satisfiability problem of $\strline[\replaceall]$, which is formalised as follows. 
+
+%\smallskip
+
+\begin{quote} \centering
+	\framebox{Given an $\strline[\replaceall]$ constraint $C$, decide whether $C$ is satisfiable.}
+\end{quote}
+\smallskip
+
+To approach this problem, we identify several fragments of  $\strline[\replaceall]$, depending on whether the pattern and the replacement parameters are constants or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\replaceall]$. % (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
 
 
 
@@ -148,7 +293,7 @@ Sketched in Matt's email.
 
 \section{Two-way transducers with length constraints}
 
-This section is dynamic: we hope for the best of Anothy's result; in case it does not work, we have two possible backups: (1) reversal-bounded 2-way transducers; (2) using reversal-bounded counter machines to represent (both regular and length) constraints
+This section is dynamical: we hope for the best of Anothy's result; in case it does not work, we have two possible backups: (1) reversal-bounded 2-way transducers; (2) using reversal-bounded counter machines to represent (both regular and length) constraints
 
 %===========================================================================================
 
@@ -182,5 +327,9 @@ The general idea is to encode a general string manipulating function $f(x, \vec{
 
 
 \section{Conclusion}
+
+% Bibliography
+\bibliographystyle{plain}
+\bibliography{string}
 
 \end{document}
