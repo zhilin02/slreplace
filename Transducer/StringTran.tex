@@ -1,4 +1,3 @@
-
 \documentclass{llncs}
  
 
@@ -22,7 +21,7 @@
 \usepackage{color}
 \usepackage{mathrsfs}
 \usepackage{tikz}
-\usepackage[draft]{minted}
+%\usepackage[draft]{minted}
 \usetikzlibrary{shapes}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 
@@ -58,20 +57,22 @@
 \newcommand{\anarr} {{\mathbb{A}}}
 
 %============================================================
+
+
 \begin{document} 
 
-\title{Constraint Solving with String Manipulating Functions Defined By Transducers}
+\title{String Constraint Solving with Transducers}
 
 \author{}
 \institute{}
-
-
-
 	
 \maketitle
 	
 \begin{abstract}
 	The purpose of the project is to generalise the replaceall function considered recently in the POPL'18 to transducers, along the line of the POPL'16 paper. 
+	
+	
+	CAV instruction: Regular Papers should not exceed 16 pages in LNCS format, not counting references and appendices. Authors can include a clearly marked appendix at the end of their submissions that is exempt from the page limit restrictions. 
 \end{abstract}
 
  
@@ -317,9 +318,11 @@ To approach this problem, we identify several fragments of  $\strline[\replaceal
 
 \section{Two-way transducers}
 
-In this section, we give both upper and low bounds. 
+In this section, we focus on the case where the transducer $T$ has only one parameter, i.e., the relational constraint is of form $x=T(y)$ for example. We will give both upper and low bounds. 
 
 \subsection{Upper-bound}
+We first show that, when the 2-way transducer $T$ and an NFA 
+
 
 \subsection{Lower-bound}
 
@@ -366,8 +369,13 @@ The general idea is to encode a general string manipulating function $f(x, \vec{
 
 \section{Conclusion}
 
+%==============================================================================================
+\newpage
+
 % Bibliography
 \bibliographystyle{plain}
 \bibliography{string}
+
+\appendix
 
 \end{document}
