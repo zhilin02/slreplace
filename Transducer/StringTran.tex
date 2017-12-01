@@ -167,19 +167,9 @@ effectively equivalent to an NFA.
 \subsection{String constraints} \label{sec-core}
 
 In this section, we define a general string constraint language that supports 
-concatenation, the $\replaceall$ function, and regular constraints. Throughout this section, we fix an alphabet $\Sigma$.
-
- 
-
- 
-
-
-%====================================================
-
-
-%\subsection{Straight-Line String Constraints With the $\replaceall$ Function}
-
-
+concatenation, transducers, and regular constraints. 
+\tl{for length constraints, let's decide later whether it should be put here}
+Throughout this section, we fix an alphabet $\Sigma$.
 We consider the String data type $\str$, and assume a countable set of variables
 $x, y, z, \cdots$ of $\str$.  
 
@@ -189,21 +179,20 @@ $x, y, z, \cdots$ of $\str$.
 	\[
 	\begin{array}{r c l cr}
 	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
-	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
+%	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
 	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
-	\varphi &\eqdef & x = s \concat s  \mid  x = \replaceall(s, p, s) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+	\varphi &\eqdef & x = s \concat s  \mid  x = T(\vec{s}) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
 	\psi & \eqdef & x \in e \mid \psi \wedge \psi %\mid \psi \vee \psi \mid \neg \psi   
 	& \ \ & \mbox{(regular constraints)} \\
 	\end{array}
 	\]
 	where $x$ is a string variable, $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$. 
-	
 \end{definition}
+\tl{this is not optimal. For $T$ with multiple parameters, the concatenation is redundant}
 
+For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)$) denote the set of variables occurring in $\varphi$ (resp. $\psi$). Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = T(\vec{s})$.
 
-For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)$) denote the set of variables occurring in $\varphi$ (resp. $\psi$). Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = \replaceall(-,-,-)$.
-
-We then notice that, with the $\replaceall$ function in its general form, the concatenation operation is in fact redundant.
+%We then notice that, with the $\replaceall$ function in its general form, the concatenation operation is in fact redundant.
 
 %\begin{proposition}\label{prop-concat}
 %	The concatenation  operation ($\concat$) can be simulated  by the $\replaceall$ function.
@@ -214,19 +203,18 @@ We then notice that, with the $\replaceall$ function in its general form, the co
 %	\[x' = \replaceall(ab, a, s_1) \wedge x = \replaceall(x', b, s_2),\] where $a,b$ are two fresh letters.
 %\end{proof}
 
-In light of Proposition~\ref{prop-concat}, in the sequel, we will \emph{dispense the concatenation operator} mostly and focus on \textbf{the string constraints that involve  the $\replaceall$ function only}.
+%In light of Proposition~\ref{prop-concat}, in the sequel, we will \emph{dispense the concatenation operator} mostly and focus on \textbf{the string constraints that involve  the $\replaceall$ function only}.
 
-Another example to show the power of the $\replaceall$ function is that it can simulate the extension of regular expressions with string variables, which is  supported by the mainstream scripting languages like Python, Javascript, and PHP. For instance, $x \in y^*$ can be expressed by $x =\replaceall(x', a, y) \wedge x' \in a^*$, where $x'$ is a fresh variable and $a$ is a fresh letter. 
+%Another example to show the power of the $\replaceall$ function is that it can simulate the extension of regular expressions with string variables, which is  supported by the mainstream scripting languages like Python, Javascript, and PHP. For instance, $x \in y^*$ can be expressed by $x =\replaceall(x', a, y) \wedge x' \in a^*$, where $x'$ is a fresh variable and $a$ is a fresh letter. 
 
-
-\medskip
+ 
 
 The generality of the constraint language makes it undecidable,
 even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
-programs with the $\replaceall$ string operation.  
+programs.  
 
 \begin{definition}[Straight-line relational constraints]
-	A relational constraint $ \varphi$ with the $\replaceall$ function is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
+	A relational constraint $ \varphi$ with transducers is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
 	\begin{itemize}
 		\item $x_1,\dots, x_m$ are mutually distinct,
 		\item for each $i \in [m]$, all the variables in $P_i$ are either source variables, or variables from $\{x_1,\dots, x_{i-1}\}$,
@@ -241,20 +229,18 @@ programs with the $\replaceall$ string operation.
 \end{remark}
 
 \begin{definition}[Straight-line string constraints]
-	A straight-line string constraint $C$ with the $\replaceall$ function (denoted by $\strline[\replaceall]$)  is defined as $ \varphi \wedge \psi$,  where 
+	A straight-line string constraint $C$ with transducers (denoted by $\strline[T]$)  is defined as $ \varphi \wedge \psi$,  where 
 	\begin{itemize}
-		\item $\varphi$ is a straight-line relational constraint with the $\replaceall$ function,  and
+		\item $\varphi$ is a straight-line relational constraint with transducers,  and
 		%
 		\item $\psi$ is a regular constraint.
 		%
-	\end{itemize}
-	%Let us use $\Cc$ to denote the set of straight-line string constraints with $\replaceall$ function.
-	%When the concatenation $\concat$ is excluded, we usually denote the constraints as  $\strline[\replaceall]$. 
+	\end{itemize} 
 \end{definition}
 
  
  
- We first introduce a graphical representation of $\strline[\replaceall]$ formulae as follows.    
+ We first introduce a graphical representation of $\strline[T]$ formulae as follows.    
  
  \begin{definition}[Dependency graph]
  	\label{def:dep-graph}
@@ -265,8 +251,8 @@ programs with the $\replaceall$ string operation.
  \end{definition}
  Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero. 
  
-%\section{The satisfiability problem} \label{sec-sat}
-%In this paper, we focus on the satisfiability problem of $\strline[\replaceall]$, which is formalised as follows. 
+\subsection{The satisfiability problem} \label{sec-sat}
+In this paper, we focus on the satisfiability problem of $\strline[T]$, which is formalised as follows. 
 
 %\smallskip
 
@@ -277,7 +263,7 @@ programs with the $\replaceall$ string operation.
 
 To approach this problem, we identify several fragments of  $\strline[\replaceall]$, depending on whether the pattern and the replacement parameters are constants or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\replaceall]$. % (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
 
-
+%=========================================================================================================
 
 \section{Two-way transducers}
 
