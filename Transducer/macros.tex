@@ -1,5 +1,7 @@
 %!TEX root = popl2018.tex
 
+\newcommand{\brac}[1]{\left( #1 \right)}
+\newcommand{\tup}[1]{\left( #1 \right)}
 \newcommand{\set}[1]{\{ #1 \}}
 \newcommand{\sequence}[2]{(#1, \ldots, #2)}
 \newcommand{\couple}[2]{(#1,#2)}
@@ -368,3 +370,53 @@
 \newcommand{\lftlen}{{\sf Len_{lft}}}
 
 %\newtheorem{remark}[theorem]{Remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macros for two-way lower bound proof.
+
+    \usepackage{unicode-math}
+
+    \newcommand\ap[2]{{#1}\mathord{\brac{#2}}}
+
+    % Tiling
+
+    \newcommand\tiles{\Theta}
+    \newcommand\hrel{H}
+    \newcommand\vrel{V}
+    \newcommand\tile{t}
+    \newcommand\inittile{t_I}
+    \newcommand\fintile{t_F}
+    \newcommand\tileheight{h}
+
+    % Large numbers
+
+    \newcommand\expheight{n}
+    \newcommand\linlen{m}
+    \newcommand\tilesnum[1]{\Theta_{#1}}
+    \newcommand\hrelnum[1]{H_{#1}}
+    \newcommand\vrelnum[1]{V_{#1}}
+    \newcommand\inittilenum[1]{\inittile^{#1}}
+    \newcommand\fintilenum[1]{\fintile^{#1}}
+
+    % \goodnums{n}{x} means x is good seqs of level-n nums
+    \newcommand\goodnums[2]{\ap{\varphi_{#1}}{#2}}
+
+    % \tenc{n}{val} = tile encoding of val in level-n
+    \newcommand\tenc[2]{[#2]_{#1}}
+    % \exptower{n}{m}  = tower of height n, to the m.
+    \newcommand\nexp[2]{2 \uparrow_{#1} \brac{#2}}
+    % \nmax{n} -- max number encodable at level n
+    \newcommand\nmax[1]{\text{MAX}_{#1}}
+
+    % nested alphabets, argument is level of nesting
+    \newcommand\bone[1]{1_{#1}}
+    \newcommand\bzero[1]{0_{#1}}
+    \newcommand\nestednum[1]{c^{#1}}
+    \newcommand\nestedalphabet[1]{\Sigma_{#1}}
+
+    \newcommand\numeq{\circledequal}
+    \newcommand\numplus{\oplus}
+    \newcommand\numsep{\#}
+
+    \newcommand\probfmla{\varphi}
+    \newcommand\tilerow{r}

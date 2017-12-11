@@ -1,0 +1,617 @@
+
+We give a lower bound for the satisfiability problem for $\strline[T]$ where the transducers are two-way transducers.
+In particular, we show the problem is non-elementary.
+More specifically, we show that with $(\expheight+1)$ transducers, the problem is $\expheight$-EXPSPACE-hard.
+For any $\expheight$, we proceed by reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.
+The reduction relies on the ability to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
+Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}).
+
+\subsubsection{Tiling Problems}
+
+\begin{definition}[Tiling Problem]
+    A \emph{tiling problem} is a tuple
+    $\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
+    where
+        $\tiles$ is a finite set of tiles,
+        $\hrel \subseteq \tiles \times \tiles$ is a horizontal matching relation,
+        $\vrel \subseteq \tiles \times \tiles$ is a vertical matching relation, and
+        $\inittile, \fintile \in \tiles$ are initial and final tiles respectively.
+\end{definition}
+
+A solution to a tiling problem over a $\linlen$-width corridor is a sequence
+\[
+    \begin{array}{c}
+        \tile^1_1 \ldots \tile^1_\linlen \\
+        \tile^2_1 \ldots \tile^2_\linlen \\
+        \ldots \\
+        \tile^\tileheight_1 \ldots \tile^\tileheight_\linlen
+    \end{array}
+\]
+where
+$\tile^1_1 = \inittile$,
+$\tile^\tileheight_\linlen = \fintile$,
+and for all
+$1 \leq i < \linlen$
+and
+$1 \leq j \leq \tileheight$
+we have
+$\tup{\tile^j_i, \tile^j_{i+1}} \in \hrel$
+and for all
+$1 \leq i \leq \linlen$
+and
+$1 \leq j < \tileheight$
+we have
+$\tup{\tile^j_i, \tile^{j+1}_i} \in \vrel$.
+Note, we will assume that $\inittile$ and $\fintile$ can only appear at the beginning and end of the tiling respectively.
+
+Tiling problems characterise many complexity classes~\cite{??}.
+In particular, we will use the following facts.
+\begin{itemize}
+\item
+    For any $\linlen$-space Turing machine, there exists a tiling problem of size polynomial in the size of the Turing machine, over a corridor of width $\linlen$, that has a solution iff the $\linlen$-space Turing machine has a terminating computation.
+
+\item
+    There is a fixed
+    $\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
+    such that for any width $\linlen$ there is a unique solution
+    \[
+        \begin{array}{c}
+            \tile^1_1 \ldots \tile^1_\linlen \\
+            \tile^2_1 \ldots \tile^2_\linlen \\
+            \ldots \\
+            \tile^\tileheight_1 \ldots \tile^\tileheight_\linlen
+        \end{array}
+    \]
+    and moreover $\tileheight$ is exponential in $\linlen$.
+    \mat{Not sure if this is folklore, but it can be seen by taking a $\linlen$ space Turing machine that deterministically increments from a tape with all 0 to all 1, then encoding this as a tiling problem.}
+\end{itemize}
+
+\subsubsection{Large Numbers}
+
+The crux of the proof is encoding large numbers that can take values between $1$ and $\expheight$-fold exponential.
+
+A linear-length binary number could be encoded simply as a sequence of bits
+\[
+    b_0 \ldots b_\linlen \in \set{0,1}^\linlen \ .
+\]
+To aid with later constructions we will take a more oblique approach.
+Let
+$\tup{\tilesnum{1}, \hrelnum{1}, \vrelnum{1}, \inittilenum{1}, \fintilenum{1}}$
+be a copy of the fixed tiling problem from the previous section for which there is a unique solution, whose length must be exponential in the width.
+In the future, we will need several copies of this problem, hence the indexing here.
+Fix a width $\linlen$ and let $\nmax{1}$ be the corresponding corridor length.
+A \emph{level-1} number can encode values from $1$ to $\nmax{1}$.
+In particular, for $1 \leq i \leq \nmax{1}$ we define
+\[
+    \tenc{1}{i} = \tile^i_1 \ldots \tile^i_\linlen
+\]
+where
+$\tile^i_1 \ldots \tile^i_\linlen$
+is the tiling of the $i$th row of the unique solution to the tiling problem.
+
+A \emph{level-2} number will be derived from tiling a corridor of width $\nmax{1}$, and thus the number of rows will be doubly-exponential.
+For this, we require another copy
+$\tup{\tilesnum{2}, \hrelnum{2}, \vrelnum{2}, \inittilenum{2}, \fintilenum{2}}$
+of the above tiling problem.
+Moreover, let $\nmax{2}$ be the length of the solution for a corridor of width $\nmax{1}$.
+Then for any
+$1 \leq i \leq \nmax{2}$
+we define
+\[
+    \tenc{2}{i} =
+        \tenc{1}{1} \tile^i_1
+        \tenc{1}{2} \tile^i_2
+        \ldots
+        \tenc{1}{\nmax{1}} \tile^i_{\nmax{1}}
+\]
+where
+$\tile^i_1 \ldots \tile^i_{\nmax{1}}$
+is the tiling of the $i$th row of the unique solution to the tiling problem.
+That is, the encoding indexes each tile with it's column number, where the column number is represented as a level-1 number.
+
+In general, a \emph{level-$\expheight$} number is of length $\expheight$-fold exponential and can encode numbers $(\expheight+1)$-fold exponential in size.
+We use a copy
+$\tup{\tilesnum{\expheight},
+      \hrelnum{\expheight},
+      \vrelnum{\expheight},
+      \inittilenum{\expheight},
+      \fintilenum{\expheight}}$
+of the above tiling problem and use a corridor of width
+$\nmax{\expheight-1}$.
+We define $\nmax{\expheight}$ as the length of the unique solution to this problem.
+Then, for any $1 \leq i \leq \nmax{\expheight}$ we have
+\[
+    \tenc{\expheight}{i} =
+        \tenc{(\expheight-1)}{1} \tile^i_1
+        \tenc{(\expheight-1)}{2} \tile^i_2
+        \ldots
+        \tenc{(\expheight-1)}{\nmax{(\expheight-1)}} \tile^i_{\nmax{(\expheight-1)}}
+\]
+where
+$\tile^i_1 \ldots \tile^i_{\nmax{\expheight-1}}$
+is the tiling of the $i$th row of the unique solution to the tiling problem.
+
+\subsubsection{Recognising Large Numbers}
+
+We first define a useful formula
+$\goodnums{\expheight}{x}$
+with a single free-variable $x$ which can only be satisfied if $x$ is of the following form, where
+$\numeq$, $\numplus$, and $\numsep$
+are auxiliary symbols.
+\[
+    \begin{array}{c}
+        \goodnums{\expheight}{x} \\
+        \iff \\
+        x \in \brac{
+            \brac{\tenc{\expheight}{1} \brac{\numeq \tenc{\expheight}{1}}^\ast}
+            \numplus
+            \brac{\tenc{\expheight}{2} \brac{\numeq \tenc{\expheight}{2}}^\ast}
+            \numplus
+            \ldots
+            \numplus
+            \brac{
+                \tenc{\expheight}{\nmax{\expheight}}
+                    \brac{\numeq \tenc{\expheight}{\nmax{\expheight}}}^\ast
+            }
+            \numsep
+        }^\ast
+    \end{array}
+\]
+That is, the string must contain sequences of strings that count from $1$ to $\nmax{\expheight}$.
+This counting may stutter and repeat a number several times before moving to the next.
+A separator $\numeq$ indicates a stutter, while $\numplus$ indicates that the next number must add one to the current number.
+Finally, a $\numsep$ ends a sequence and may start again from $\tenc{\expheight}{1}$.
+
+\paragraph{Base case $\expheight = 1$.}
+
+We define
+\[
+    \goodnums{1}{x} =
+        (y = \ap{T}{x} \land y \in \top)
+\]
+where $\top$ is a character output by $T$ when $x$ is correctly encoded.
+Otherwise $T$ outputs $\bot$.
+
+We describe informally how $T$ operates.
+\mat{We may or may not give the formal definition later.}
+Because $T$ is two-way, it may perform several passes of the input $x$.
+Recall that $T$ requires $x$ to contain a word of the form
+\[
+    \brac{
+        \brac{\tenc{1}{1} \brac{\numeq \tenc{1}{1}}^\ast}
+        \numplus
+        \brac{\tenc{1}{2} \brac{\numeq \tenc{1}{2}}^\ast}
+        \numplus
+        \ldots
+        \numplus
+        \brac{
+            \tenc{1}{\nmax{1}}
+                \brac{\numeq \tenc{1}{\nmax{1}}}^\ast
+        }
+        \numsep
+    }^\ast
+\]
+and each $\tenc{1}{i}$ is the $i$th row of the unique solution to the tiling problem of width $\linlen$.
+The passes proceed as follows.
+If a passes fails, the transducer outputs $\bot$ and terminates.
+If all passes succeed, the transducer outputs $\top$ and terminates.
+\begin{itemize}
+\item
+    During the first pass $T$ verifies that the input is of the form
+    \[
+        \brac{
+            \tilesnum{1}^\linlen
+            \brac{\set{\numeq,\numplus} \tilesnum{1}^\linlen}^\ast
+            \numsep
+        }^\ast \ .
+    \]
+
+\item
+    During the second pass the transducer verifies that the first block of
+    $\tilesnum{1}^\linlen$,
+    and all blocks of
+    $\tilesnum{1}^\linlen$
+    immediately following a $\numsep$ have $\inittilenum{1}$ as the first tile.
+    Simultaneously, it can verify that all blocks of
+    $\tilesnum{1}^\linlen$
+    immediately preceding a $\numsep$ finish with the tile $\fintilenum{1}$.
+    Moreover, it checks that $\inittilenum{1}$ and $\fintilenum{1}$ do not appear elsewhere.
+
+\item
+    During the third pass $T$ verifies the horizontal tiling relation.
+    That is, every contiguous pair of tiles $\tile, \tile'$ in $x$ must be such that
+    $(\tile, \tile') \in \hrelnum{1}$.
+    This can easily be done by storing the last character read into the states of $T$.
+
+\item
+    The vertical tiling relation and equality checks are verified using $\linlen$ more passes.
+    During the $j$th pass, the $j$th column is tested.
+    The transducer $T$ stores in its state the tile in the $j$th column of the first block of $\tilesnum{1}^\linlen$ or any block immediately following $\numsep$.
+    (The transducer can count to $\linlen$ in its state.)
+    It then moves to the $j$th column of the next block of $\tilesnum{1}^\linlen$, remembering whether the blocks were separated with $\numeq$, $\numplus$, or $\numsep$.
+    If the separator was $\numeq$ the transducer checks that the $j$th tile of the current block matches the tile stored in the state (i.e.~is equal to the preceding block).
+    If the separator was $\numplus$ the transducer checks that the $j$th tile of the current block is related by $\vrelnum{1}$ to the stored tile.
+    In this case the current $j$th tile is stored and the previously stored tile forgotten.
+    Finally, if the separator was $\numsep$ there is nothing to check.
+    If any check fails, the pass will also fail.
+\end{itemize}
+
+If all passes succeed, we know that $x$ contains a word where blocks separated by $\numeq$ are equal
+(since all positions are equal, as verified individually by the final $\linnum$ passes),
+blocks separated by $\numplus$ satisfy $\vrelnum{1}$ in all positions,
+the $\inittilenum{1}$ tile appears at the start of all sequences separated by $\numsep$ and each such sequence ends with $\fintilenum{1}$, and
+finally the horizontal tiling relation is satisfied at all times.
+Thus, $x$ must be of the form
+\[
+    \brac{
+        \brac{\tenc{1}{1} \brac{\numeq \tenc{1}{1}}^\ast}
+        \numplus
+        \brac{\tenc{1}{2} \brac{\numeq \tenc{1}{2}}^\ast}
+        \numplus
+        \ldots
+        \numplus
+        \brac{
+            \tenc{1}{\nmax{1}}
+                \brac{\numeq \tenc{1}{\nmax{1}}}^\ast
+        }
+        \numsep
+    }^\ast
+\]
+as required.
+
+
+\paragraph{Inductive case $\expheight$.}
+
+We define a formula
+$\goodnums{\expheight}{x}$
+such that
+\[
+    \begin{array}{c}
+        \goodnums{\expheight}{x} \\
+        \iff \\
+        x \in \brac{
+            \brac{\tenc{\expheight}{1} \brac{\numeq \tenc{\expheight}{1}}^\ast}
+            \numplus
+            \brac{\tenc{\expheight}{2} \brac{\numeq \tenc{\expheight}{2}}^\ast}
+            \numplus
+            \ldots
+            \numplus
+            \brac{
+                \tenc{\expheight}{\nmax{\expheight}}
+                    \brac{\numeq \tenc{\expheight}{\nmax{\expheight}}}^\ast
+            }
+            \numsep
+        }^\ast \ .
+    \end{array}
+\]
+Assume, by induction, we have a formula
+$\goodnums{\expheight-1}{x}$
+which already satisfies this property (for $\expheight-1$).
+We define
+\[
+    \goodnums{\expheight}{x} =
+    \brac{
+        y = \ap{T}{x}
+        \land
+        \goodnums{\expheight-1}{y}
+    }
+\]
+where $T$ is a transducer that behaves as described below.
+\mat{We may or may not define it formally later.}
+The transducer will perform several passes to make several checks.
+If a check fails it will halt and output a symbol $\bot$, which means that $y$ can no longer satisfy
+$\goodnums{\expheight-1}{y}$.
+During normal execution $T$ will make checks that rely on level-$(\expheight-1)$ numbers appearing in the correct sequence or being equal.
+To ensure these properties hold, $T$ will write these numbers to $y$ and rely on these properties then being verified by
+$\goodnums{\expheight-1}{y}$.
+The passes behave as follows.
+\begin{itemize}
+\item
+    During the first pass $T$ verifies that $x$ belongs to the regular language
+    \[
+        \brac{
+            \brac{
+                \brac{
+                    \brac{
+                        \brac{\tilesnum{1}^\linlen \tilesnum{2}}^\ast \tilesnum{3}
+                    }^\ast
+                    \cdots
+                }^\ast
+                \tilesnum{\expheight}
+            }^\ast
+            \brac{
+                \set{\numeq,\numplus}
+                \brac{
+                    \brac{
+                        \brac{
+                            \brac{\tilesnum{1}^\linlen \tilesnum{2}}^\ast \tilesnum{3}
+                        }^\ast
+                        \cdots
+                    }^\ast
+                    \tilesnum{\expheight}
+                }^\ast
+            }^\ast
+            \numsep
+         }^\ast
+         \ .
+    \]
+    This can be done with a polynomial number of states.
+
+\item
+    During the second pass $T$ will verify that the first instance of
+    $\tilesnum{\expheight}$
+    appearing in the word or after a $\numsep$ is $\inittilenum{\expheight}$.
+    Similarly, the final instance of any
+    $\tilesnum{\expheight}$
+    before any $\numsep$ is $\fintilenum{\expheight}$.
+    Moreover, it checks that
+    $\inittilenum{\expheight}$
+    and
+    $\fintilenum{\expheight}$
+    do not appear elsewhere.
+
+\item
+    During the third pass $T$ will verify the horizontal tiling relation
+    $\hrelnum{\expheight}$.
+    Each block (separated by $\numeq$, $\numplus$, or $\numsep$) is checked in turn.
+    There are two components to this.
+    \begin{itemize}
+    \item
+        The indexing of the tiles must be correct.
+        That is, the first tile of the block must be indexed
+        $\tenc{\expheight-1}{1}$,
+        the second
+        $\tenc{\expheight-1}{2}$,
+        through to
+        $\tenc{\expheight-1}{\nmax{\expheight-1}}$.
+        Thus, $T$ copies directly the instance of
+        $\brac{
+            \brac{
+                \brac{\tilesnum{1}^\linlen \tilesnum{2}}^\ast \tilesnum{3}
+            }^\ast
+            \cdots
+        }^\ast$
+        preceding each
+        $\tilesnum{\expheight}$
+        to the output tape, followed immediately by
+        $\numplus$
+        as long as the character after
+        $\tilesnum{\expheight}$
+        is not a separator from
+        $\set{\numeq,\numplus,\numsep}$.
+        Otherwise, it is the end of the block and $\numsep$ is written.
+
+        Hence,
+        $\goodnums{\expheight-1}{y}$
+        will verify that the output for each block is
+        $\tenc{\expheight-1}{1}
+         \numplus \cdots \numplus
+         \tenc{\expheight-1}{\nmax{\expheight-1}}$
+        which enforces that the indexing of the tiles is correct.
+
+    \item
+        Horizontally adjacent tiles must satisfy
+        $\hrelnum{\expheight}$.
+        This is done by simply storing the last read tile from
+        $\tilesnum{\expheight}$
+        in the state of $T$.
+        Then whenever a new tile from
+        $\tilesnum{\expheight}$
+        is seen without a separator $\numeq$, $\numplus$, or $\numsep$, then it can be checked against the previous tile and
+        $\hrelnum{\expheight}$.
+    \end{itemize}
+
+\item
+    The transducer $T$ then performs a non-deterministic number of passes to check the vertical tiling relation.
+    We will use
+    $\goodnums{\expheight-1}{y}$
+    to ensure that $T$ in fact performs
+    $\nmax{\expheight-1}$
+    passes, the first checking the first column of the tiling over
+    $\tilesnum{\expheight}$,
+    the second checking the second column, and so on up to the
+    $\nmax{\expheight-1}$th column.
+
+    Note, we know from the previous pass that each row of the tiling is indexed correctly.
+    In the sequence, let us use the term ``session'' to refer to the sequences of characters separated by $\numsep$.
+
+    Each pass of $T$ checks a single column (across all sessions).
+    At the start of each session, $T$ moves non-deterministically to the start of some block
+    $\brac{
+        \brac{
+            \brac{\tilesnum{1}^\linlen \tilesnum{2}}^\ast \tilesnum{3}
+        }^\ast
+        \cdots
+    }^\ast
+    \tilesnum{\expheight}$
+    (without passing $\numeq$, $\numplus$, or $\numsep$).
+    It then copies the tiles from
+    $\brac{
+        \brac{
+            \brac{\tilesnum{1}^\linlen \tilesnum{2}}^\ast \tilesnum{3}
+        }^\ast
+        \cdots
+    }^\ast$
+    to $y$ and saves the tile from
+    $\tilesnum{\expheight}$
+    in its state before moving to the next separator from
+    $\set{\numeq,\numplus,\numsep}$.
+    In the case of $\numsep$ nothing needs to be checked and $T$ continues to the next session or finishes the pass if there are no more sessions.
+    In the case of $\numeq$ or $\numplus$ the transducer remembers this separator and moves non-deterministically to the start of some block (without passing another $\numeq$, $\numplus$, or $\numsep$).
+    It then writes $\numeq$ to $y$ as it is intended that $T$ choose the same column as before.
+    This will be verified by
+    $\goodnums{\expheight-1}{y}$.
+    To aid with this $T$ copies the tiles from
+    $\brac{
+        \brac{
+            \brac{\tilesnum{1}^\linlen \tilesnum{2}}^\ast \tilesnum{3}
+        }^\ast
+        \cdots
+    }^\ast$
+    to $y$.
+    It can then check the tile from
+    $\tilesnum{\expheight}$.
+    If the remembered separator was $\numeq$ then this tile must match the saved one.
+    If it was $\numplus$ then this tile must be related by
+    $\vrelnum{\expheight}$
+    to the saved one.
+    If this succeeds , $T$ stores the new tile and forgets the old and continues to the next separator to continue checking
+    $\vrelnum{\expheight}$.
+
+    At the end of the pass (checking a single column from all sessions) then $T$ will either have failed and written $\bot$ or written a sequence of level-$(\expheight-1)$ numbers to $y$ separated by $\numeq$.
+    That is
+    \[
+        \tenc{\expheight-1}{i_1}
+        \numeq
+        \cdots
+        \numeq
+        \tenc{\expheight-1}{i_{\alpha}}
+    \]
+    for some $\alpha$.
+    Since, by induction,
+    $\goodnums{\expheight-1}{y}$
+    is correct, then the formula can only be satisfied if $T$ chose the same position in each row.
+    That is
+    $i_1 = \cdots = i_\alpha$.
+    Thus, the vertical relation for the $i_1$th column has been verified.
+
+    At this point $T$ can either write $\numsep$ and terminate or perform another pass (non-deterministically).
+    In the latter case, it outputs $\numplus$, moves back to the beginning of the tape, and starts again.
+    Thus, after a number of passes, $T$ will have written
+    \[
+        \brac{
+            \tenc{\expheight-1}{i^1_1}
+            \numeq
+            \cdots
+            \numeq
+            \tenc{\expheight-1}{i^1_{\alpha_1}}
+        }
+        \numplus
+        \cdots
+        \numplus
+        \brac{
+            \tenc{\expheight-1}{i^\beta_1}
+            \numeq
+            \cdots
+            \numeq
+            \tenc{\expheight-1}{i^\beta_{\alpha_\beta}}
+        }
+        \numsep
+    \]
+    for some $\beta$, $\alpha_1$, \ldots, $\alpha_\beta$.
+    Since
+    $\goodnums{\expheight-1}{y}$
+    will only accept such sequences of the form
+    \[
+        \brac{
+            \tenc{\expheight-1}{1}
+            \brac{
+                \numeq \tenc{\expheight-1}{1}
+            }^\ast
+        }
+        \numplus
+        \cdots
+        \numplus
+        \brac{
+            \tenc{\expheight-1}{\nmax{\expheight-1}}
+            \brac{
+                \numeq \tenc{\expheight-1}{\nmax{\expheight-1}}
+            }^\ast
+        }
+        \numsep
+    \]
+    we know that $T$ must check each vertical column in turn, from $1$ to
+    $\nmax{\expheight-1}$.
+\end{itemize}
+
+Thus, at the end of all passes, if $T$ has not output $\bot$ it has verified that $x$ is a correct encoding of a solution to
+$\tup{\tilesnum{\expheight},
+      \hrelnum{\expheight},
+      \vrelnum{\expheight},
+      \inittilenum{\expheight},
+      \fintilenum{\expheight}}$.
+That is, together with
+$\goodnums{\expheight-1}{y}$
+we know that
+    the word is of the correct format,
+    each row has a tile for each index and these indices appear in order,
+    the horizontal relation is respected, and
+    the vertical tiling relation is respected.
+If $x$ is not a correct encoding then $T$ will not be able to produce a $y$ that satisfies
+$\goodnums{\expheight-1}{y}$.
+
+
+\subsubsection{Reducing from a Tiling Problem}
+
+Now that we are able to encode large numbers, we can encode an $\expheight$-EXPSPACE-hard tiling problem as a satisfiability problem of $\strline[T]$ with two-way transducers.
+In fact, most of the technical work has been done.
+
+Thus, fix a tiling problem
+$\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
+that is $\expheight$-EXPSPACE-hard.
+In particular, we allow a corridor $\nmax{\expheight}$ tiles wide.
+We use the formula
+\[
+    \probfmla = \brac{y = \ap{T}{x} \land \goodnums{\expheight}{y}}
+\]
+where $T$ is defined exactly as in the inductive case of
+$\goodnums{\expheight}{y}$
+except the tiling problem used is
+$\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
+rather than
+$\tup{\tilesnum{\expheight},
+      \hrelnum{\expheight},
+      \vrelnum{\expheight},
+      \inittilenum{\expheight},
+      \fintilenum{\expheight}}$.
+
+A satisfying tiling
+\[
+    \begin{array}{c}
+        \tile^1_1 \ldots \tile^1_{\nmax{\expheight}} \\
+        \cdots \\
+        \tile^\tileheight_1 \ldots \tile^\tileheight_{\nmax{\expheight}}
+    \end{array}
+\]
+can be encoded
+\[
+    \tenc{\expheight}{1} \tile^1_1
+    \cdots
+    \tenc{\expheight}{\nmax{\expheight}} \tile^1_{\nmax{\expheight}}
+    \numplus
+    \cdots
+    \numplus
+    \tenc{\expheight}{1} \tile^\expheight_1
+    \cdots
+    \tenc{\expheight}{\nmax{\expheight}} \tile^\expheight_{\nmax{\expheight}}
+    \numsep
+\]
+which will satisfy $\probfmla$ in the same way as a correct input to
+$\goodnums{\expheight}{y}$.
+To see this, note that
+$\tenc{\expheight}{1} \tile^i_1
+ \cdots
+ \tenc{\expheight}{\nmax{\expheight}} \tile^i_{\nmax{\expheight}}$
+acts like some
+$\tenc{\expheight+1}{i}$.
+
+In the opposite direction, assume some input satisfying $\probfmla$.
+Arguing as in the encoding of large numbers, this input must be of the form
+\[
+    \brac{
+        \brac{\tilerow_1 \brac{\numeq \tilerow_1}^\ast}
+        \numplus
+        \brac{\tilerow_2 \brac{\numeq \tilerow_2}^\ast}
+        \numplus
+        \ldots
+        \numplus
+        \brac{
+            \tilerow_\tileheight
+            \brac{\numeq \tilerow_\tileheight}^\ast
+        }
+        \numsep
+    }^\ast
+\]
+where each $\tilerow_i$ is a row of a correct solution to the tiling problem.
+
+Thus, with $\expheight+1$ transducers, we can encode a $\expheight$-EXPSPACE-hard problem.
