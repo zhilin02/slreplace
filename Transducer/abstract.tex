@@ -1,0 +1,88 @@
+\begin{abstract}
+%Recent years have witnessed a lot of work in the development of 
+%logics for reasoning about symbolic executions of programs with strings. 
+    \OMIT{
+    A symbolic execution can be construed as a sequence of assignments and
+    conditionals in a program. 
+    We study the problem of deciding the feasibility of a given symbolic
+    execution (a.k.a. ``path feasibility'') of string-manipulating programs. 
+    Such a problem can be mapped to the satisfiability problem of an appropriate
+    string logic. Recent years saw a lot of work in the design of such a string
+    logic.
+    %a ``good'' 
+    %string logic for symbolic execution analysis of programs with strings. 
+    In addition to string concatenation, finite-state transductions have emerged
+    as an expressive formalism for modelling ``built-in'' string functions 
+    (e.g. sanitisers like htmlescape and implicit browser transductions like
+    innerhtml) that
+    are crucial for such an application as analysis of cross-site scripting
+    (XSS) vulnerabilities in HTML5 applications. Although naively combining
+    concatenation and transductions results in undecidability, the
+    \emph{straight-line fragment} --- obtained by restricting the conditionals
+    in symbolic executions (e.g. regular expression matching, length
+    constraints, but not string equality) --- emerged as a reasonable 
+    compromise between decidability and expressivity. 
+}
+
+    Finite-state transductions have emerged
+    as an expressive formalism for modelling many useful string functions.
+    These include string functions that are crucial for such an application as 
+    analysis of cross-site scripting (XSS) vulnerabilities in HTML5 
+    applications including sanitisation functions (e.g.~htmlescape) and 
+    implicit browser transductions (e.g.~innerhtml).  
+    Thanks to their good algorithmic properties, it was recently shown that 
+    finite-state transductions can be incorporated into decidable
+    theories over strings (with concatenation and regular expression pattern
+    matching) in a way that is applicable for %for analysing
+    symbolic execution analysis of string-manipulating programs. Despite this,
+    finite-state transductions lack the expressive power for modelling many
+    useful string functions; three notable examples being the replace-all 
+    function (replacing occurrence of replacing all occurrences of a ``pattern''
+    string constant/variable/regular expression by a ``replacement'' string 
+    constant/variable), the string reverse
+    function, and string concatenation. 
+    In this paper we introduce \emph{parameterised transducers}, an expressive
+    framework for modelling string functions that strictly 
+    generalise the standard finite-state transducer model and capture the three
+    aforementioned string functions, among others. We provide a decidable
+    string logic with parameterised transducers as the primitive operations,
+    and provide a precise computational complexity analysis. This gives us
+    a highly expressive theory over strings that subsumes existing string 
+    theories that are applicable for symbolic execution analysis for programs 
+    with strings.
+    %can capture string functions including
+    %that cannot be expressed by finite-state 
+    %transductions, e.g., the
+    %This paper starts with the observation that finite-state transductions 
+    %lack the power of modelling many useful string functions including the
+    %the replace-all function (replacing occurrence of replacing all 
+    %occurrences of a ``pattern'' string constant/variable/regular expression 
+    %by a ``replacement'' string constant/variable), the string reverse
+    %function, and concatenation, to name a few. Finite-state transduction
+    \OMIT{ 
+    Our main result is the decidability of 
+    path feasibility of string-manipulating programs whenever the string
+    functions in the assignments can be modelled by parameterised transducers
+    and the conditionals are regular expression matching. This strictly
+    generalises existing decidability results in the literature, and provi. 
+    }
+
+
+    \OMIT{
+The problem of reasoning about  
+%Various constraint languages have been developed in the literature based on
+%the primitive string operations adopted
+%
+One emerging theme is the need to incorporate string functions including 
+replace-all and finite-state transductions; the latter are useful for capturing
+sanitisation functions (e.g. htmlescape) and implicit browser transductions 
+(e.g. innerhtml), which are crucial for analysing XSS vulnerabilities in
+an HTML5 application. 
+
+
+    In this paper, we introduce an expressive logic for reasoning about symbolic
+execution of programs with strings. The logic unifies existing decidable logics 
+
+	The purpose of the project is to generalise the replaceall function considered recently in the POPL'18 to transducers, along the line of the POPL'16 paper.
+}
+\end{abstract}
