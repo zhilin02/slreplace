@@ -70,6 +70,8 @@ Execution Analysis of Programs with Strings)}
 
 \maketitle
 
+\zhilin{Parametric versus parameterised ?}
+
 \input{abstract}
 
 
@@ -222,6 +224,10 @@ $\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, the intersection $\Ll(\cA_1)
 \cap \Ll(\cA_2)$ is recognised by the \emph{product automaton} $\cA_1 \times
 \cA_2$ of $\cA_1$ and $\cA_2$ defined as $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.
 
+\section{Parametric transducers}
+
+In this section, we introduce parametric transducers.
+
 \section{String constraints} \label{sec-core}
 
 In this section, we define a general string constraint language that supports
@@ -323,7 +329,13 @@ In this paper, we focus on the satisfiability problem of $\strline[T]$, which is
 
 %=========================================================================================================
 
-\section{Two-way transducers}
+\begin{proposition}
+undecidable in general
+\end{proposition}
+
+\section{A generic decision procedure}
+
+\zhilin{results for two-way versus one-way, with parameters or without.}
 
 In this section, we focus on the case where the transducer $T$ has only one parameter, i.e., the relational constraint is of form $x=T(y)$ for example. We will give both upper and low bounds.
 
