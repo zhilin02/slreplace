@@ -1,0 +1,32 @@
+\section{The framework}
+\label{sec:framework}
+
+In this section we introduce the framework of ...
+
+\subsection{Standard transducer models}
+
+One-way and two-way transducers. Mention what kind of closure/algorithmic
+results.
+
+\OMIT{
+\begin{definition}[Recognisable relation]
+	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$ where $L^{(i)}_j$ a regular for each $j\in [k]$ .
+%
+%	[One can certainly generalise this to $n$-ary relations. ]
+\end{definition}
+}
+
+\begin{definition}[Two-way Finite transducers]
+  Nondeterministic two-way finite state \emph{transducers} (2NFTs) over $\Sigma$ and $\Gamma$ extend NFAs with a one-way left-to-right output tape. They are defined as 2NFAs except that the transition relation $\Delta$ is extended with outputs: $\Delta\subseteq Q \times \Sigma \times \Gamma \times \{-1, +1\} \times  Q $. If a transition $(q, a, b, q′, m)$ is enabled on a letter $a\in \Sigma$, the letter $b\in \Gamma$ is appended to the right of
+	the output tape and the transducer goes to state $q'$.
+\end{definition}
+
+\subsection{Parameterised transducers}
+
+Introduce one-way and two-way parameterised transducers. 
+
+Give examples: htmlescape, replace-all, and reverse.
+
+\subsection{The ``straight-line'' framework}
+
+Give example of computing reverse of DNA string.
