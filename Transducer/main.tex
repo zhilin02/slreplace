@@ -72,155 +72,18 @@ Execution Analysis of Programs with Strings)}
 
 \input{abstract}
 
+\input{intro}
 
+\input{prelim}
 
+\input{framework}
 
-\section{Introduction}
+\input{algorithms}
 
-What we hope is two-fold :-
-\begin{itemize}
-	\item[(i)]  for a transducer $T$ encoding a string manipulating function $z=f(x;\vec{y})$, suppose that  the output $z$ is constrained by a regular language $\mathcal{A}$, we could compute the pre-image $f^{-1}(\mathcal{A)}$ \emph{as a recognisable relation}.
+\input{extensions}
 
-	\item[(ii)] we have a ``generic" way to solve straight-line string constraints when the ``semantics" of the string operator (function) is a recognisable.
-\end{itemize}
+\input{conc}
 
-In term of the replaceall function, both (i) and (ii) hold, and indeed the general algorithm framework therein can serve (ii). So the main job is to show that, for each transducer model, the pre-image can indeed give a recognisable relation.
-
-\begin{tabular}{|c|c|c|}
-	\hline
-
-						 &  regular constraints    &  regular and length constraints \\
-	\hline
-	\hline
-one-way transducer						 &  \cite{LB16}            &   \cite{LB16}                   \\
-two-way transducer						 &  $n$-EXPSPACE-complete  &   ??                            \\
-one-way transducer	with variables       &  EXPSPACE-complete (?)  &  undecidable \cite{CCHLW18}     \\
-two-way transducer  with variables       &       ??               & undecidable \cite{CCHLW18}     \\
-\hline
-\end{tabular}
-
-%===========================================================================================================
-
-\section{Preliminaries}
-
-Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers respectively. For $k \in \Nat$, let $[k] = \{1,\cdots, k\}$. For a vector $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$ (i.e., $n$) and  $\vec{x}[i]$ denote $x_i$ for each $i \in [n]$.
-
-\paragraph{Graph-Theoretical Notation.} \tl{not sure whether it is really needed; will see}
-A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
-no directed cycles, where $V$ (resp.~$E \subseteq V \times V$) is a set of vertices (resp.~edges).
-%. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $\mathit{v}$ and follow a consistently-directed sequence of edges that eventually loops back to $\mathit{v}$ again.
-Equivalently, a DAG is a directed graph that has a topological ordering, which
-is a sequence of the vertices such that every edge is directed from an earlier
-vertex to a later vertex in the sequence. An edge $(\mathit{v},\mathit{v'})$ in
-$G$ is called an \emph{incoming} edge of $\mathit{v'}$ and an \emph{outgoing}
-edge of $\mathit{v}$. If $(\mathit{v},\mathit{v'}) \in E$, then $\mathit{v'}$ is
-called a \emph{successor} of $\mathit{v}$ and $\mathit{v}$ is called a
-\emph{predecessor} of $\mathit{v'}$. A \emph{path} $\pi$ in $G$ is a sequence
-$\mathit{v}_0 \mathit{e}_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} \mathit{e}_n
-\mathit{v}_n$ such that for each $i \in [n]$, we have $\mathit{e}_i =
-(\mathit{v}_{i-1},\mathit{v}_i) \in E$. The \emph{length} of the path $\pi$
-%$\mathit{v}_0 e_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} e_n \mathit{v}_n$ in $G$
-is the number $n$ of edges in $\pi$. If there is a path from
-$\mathit{v}$ to $\mathit{v'}$ (resp. from $\mathit{v'}$ to $\mathit{v}$) in $G$,
-then $\mathit{v'}$ is said to be \emph{reachable} (resp. \emph{co-reachable})
-from $\mathit{v}$ in $G$. If $\mathit{v}$ is reachable from $\mathit{v'}$ in
-$G$, then $\mathit{v'}$ is also called an \emph{ancestor} of $\mathit{v}$ in
-$G$. In addition, an edge $(\mathit{v'},\mathit{v''})$ is said to be reachable
-(resp. co-reachable) from $\mathit{v}$ if $\mathit{v'}$ is reachable from $\mathit{v}$ (resp. $\mathit{v''}$ is co-reachable from $\mathit{v}$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $\mathit{v}$ is the number of incoming (resp. outgoing) edges of $\mathit{v}$.
-%A vertex $\mathit{v}$ in $G$ is said to be a \emph{join} vertex if the in-degree of $\mathit{v}$ is at least two.
-%A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.
-A \emph{subgraph} $G'$ of $G=(V,E)$ is a directed graph $(V', E')$ with
-$V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$.
-
-\subsection{A collection of automata models}
-
-\begin{definition}[two-way finite state automata]
-A \emph{nondeterministic two-way finite state automaton}
-(2NFA) over a finite alphabet $\Sigma$ is a tuple $\cA =
-(Q, q_0, F, \Delta)$ where $Q$ is a finite set of states, $q_0\in Q$ is
-the initial state, $F\subseteq Q$ is a set of final states, and $\Delta$ is the
-transition relation  of type $\Delta\subseteq Q \times \Sigma\times \{+1, -1\}\times Q $.
-\tl{not sure you want to use $\leftarrow, \rightarrow$?}
-
-A nondeterministic (one-way) finite state automaton (NFA)
-is a 2NFA such that $\Delta\subseteq Q \times \Sigma\times \{+1\} \times Q $, therefore we
-will often write $\Delta\subseteq Q \times \Sigma \times Q$.
-\end{definition}
-
-
-%A \emph{nondeterministic finite automaton} (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of \emph{states}, $q_0 \in Q$ is the \emph{initial} state, $F \subseteq Q$ is the set of \emph{final} states, and $\delta \subseteq Q \times \Sigma \times Q$ is the \emph{transition relation}.
-
-For a string $w = a_1 \dots a_n$, a \emph{run} of $\cA$ on $w$ is a state sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, a_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is \emph{accepting} if $q_n \in F$. A string $w$ is \emph{accepted} by $\cA$ if there is an accepting run of $\cA$ on $w$. We use $\Ll(\cA)$ to denote the language defined by $\cA$, that is, the set of strings accepted by $\cA$. We will use $\cA, \cB, \cdots$ to denote NFAs.
-%An NFA $\cA$ is \emph{deterministic} if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is \emph{complete} if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete.  An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
-For a string $w= a_1 \dots a_n$, we also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, a_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA obtained from $\cA$ by changing the initial state to $q$ and the set of final states to $\{q'\}$. The \emph{size} of an NFA $\cA=(Q, \delta, q_0, F)$, denoted by $|\cA|$, is defined as $|Q|$, the number of states.
-
-For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
-
-
-\begin{proposition}
-	Any 2NFA is effectively equivalent to an NFA.
-\end{proposition}
-
-\begin{definition}[Two-way Finite transducers]
-  Nondeterministic two-way finite state \emph{transducers} (2NFTs) over $\Sigma$ and $\Gamma$ extend NFAs with a one-way left-to-right output tape. They are defined as 2NFAs except that the transition relation $\Delta$ is extended with outputs: $\Delta\subseteq Q \times \Sigma \times \Gamma \times \{-1, +1\} \times  Q $. If a transition $(q, a, b, q′, m)$ is enabled on a letter $a\in \Sigma$, the letter $b\in \Gamma$ is appended to the right of
-	the output tape and the transducer goes to state $q'$.
-\end{definition}
-
-
-
-%\tl{Other relevant models such as SST, when appropriate, will be put here.}
-
-\begin{definition}[Recognisable relation]
-	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$ where $L^{(i)}_j$ a regular for each $j\in [k]$ .
-%
-%	[One can certainly generalise this to $n$-ary relations. ]
-\end{definition}
-
-
-
-\paragraph{Regular Languages.}
-Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$). A \emph{position} of a nonempty string $u$ of length $n$ is a number $i \in [n]$ (Note that the first position is $1$, instead of  0). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$.
-For two strings $u_1, u_2$, we use $u_1 \cdot u_2$ to denote the \emph{concatenation} of $u_1$ and $u_2$, that is, the string $v$ such that $|v|= |u_1| + |u_2|$ and for each $i \in [|u_1|]$, $v[i]= u_1[i]$ and for each $i \in |u_2|$, $v[|u_1|+i]=u_2[i]$. Let $u, v$ be two strings. If $v = u \cdot v'$ for some string $v'$, then $u$ is said to be a \emph{prefix} of $v$. In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then
-we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
-
-A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$. We will use $L_1, L_2, \dots$ to denote languages. For two languages $L_1, L_2$, we use $L_1 \cup L_2$ to denote the union of $L_1$ and $L_2$, and $L_1 \cdot L_2$ to denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. For a language $L$ and $n \in \Nat$, we define $L^n$, the \emph{iteration} of $L$ for $n$ times, inductively as follows: $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote the iteration of $L$ for arbitrarily many times, that is, $L^* = \bigcup \limits_{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup \limits_{n \in \Nat \setminus \{0\}} L^n$.
-
-\begin{definition}[Regular expressions $\regexp$]
-	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid e + e \mid e \concat e \mid e^*, \mbox{ where } a \in \Sigma. \]
-	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. We use the abbreviation $e^+ \equiv e \concat e^*$. Moreover, for $\Gamma = \{a_1, \cdots, a_n\}\subseteq \Sigma$, we use the abbreviations $\Gamma \equiv a_1 + \cdots + a_n$ and $\Gamma^\ast \equiv (a_1 + \cdots + a_n)^\ast$.
-\end{definition}
-We define $\Ll(e)$ to be the language defined by $e$, that is, the set of strings that match $e$, inductively as follows: $\Ll(\emptyset) =\emptyset$,
-%\begin{itemize}
-%\item
-$\Ll(\varepsilon) =\{\varepsilon\}$,
-%
-%\item
-$\Ll(a)= \{a\}$,
-%
-%\item
-$\Ll(e_1 + e_2) = \Ll(e_1) \cup \Ll(e_2)$,
-%
-%\item
-$\Ll(e_1 \concat e_2) = \Ll(e_1) \cdot \Ll(e_2)$,
-%
-%\item
-$\Ll(e_1^*)=(\Ll(e_1))^*$.
-%\end{itemize}
-In addition, we use $|e|$ to denote the number of symbols occurring in $e$.
-
-%A \emph{nondeterministic finite automaton} (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of \emph{states}, $q_0 \in Q$ is the \emph{initial} state, $F \subseteq Q$ is the set of \emph{final} states, and $\delta \subseteq Q \times \Sigma \times Q$ is the \emph{transition relation}. For a string $w = a_1 \dots a_n$, a \emph{run} of $\cA$ on $w$ is a state sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, a_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is \emph{accepting} if $q_n \in F$. A string $w$ is \emph{accepted} by $\cA$ if there is an accepting run of $\cA$ on $w$. We use $\Ll(\cA)$ to denote the language defined by $\cA$, that is, the set of strings accepted by $\cA$. We will use $\cA, \cB, \cdots$ to denote NFAs.
-%%An NFA $\cA$ is \emph{deterministic} if for each $(q, \sigma) \in Q \times \Sigma$, there is at most one $q' \in Q$ such that $(q, a, q') \in \delta$. An NFA $\cA$ is \emph{complete} if for each $(q, \sigma) \in Q \times \Sigma$, there is at least one $q' \in Q$ such that $(q, a, q') \in \delta$. We assume that all NFA considered in this paper are complete.  An NFA $\cA$ is \emph{unambiguous} if for each word $w$, there is \emph{at most one accepting} run of $\cA$ on $w$.
-%For a string $w= a_1 \dots a_n$, we also use the notation $q_1 \xrightarrow[\cA]{w} q_{n+1}$ to denote the fact that there are $q_2,\dots, q_n \in Q$ such that for each $i \in [n]$, $(q_i, a_i, q_{i+1}) \in \delta$.  For an NFA $\cA=(Q, \delta, q_0, F)$ and $q, q' \in Q$, we use $\cA(q,q')$ to denote the NFA obtained from $\cA$ by changing the initial state to $q$ and the set of final states to $\{q'\}$. The \emph{size} of an NFA $\cA=(Q, \delta, q_0, F)$, denoted by $|\cA|$, is defined as $|Q|$, the number of states. For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
-
-It is well-known (e.g. see \cite{HU79}) that regular expressions and NFAs are
-expressively equivalent, and generate precisely all \emph{regular languages}.
-In particular, from a regular expression, an equivalent NFA can be constructed
-in linear time. Moreover, regular languages are closed under Boolean
-operations, i.e., union, intersection, and complementation.
-In particular, given two NFA $\cA_1=(Q_1, \delta_1, q_{0,1}, F_1)$ and
-$\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, the intersection $\Ll(\cA_1)
-\cap \Ll(\cA_2)$ is recognised by the \emph{product automaton} $\cA_1 \times
-\cA_2$ of $\cA_1$ and $\cA_2$ defined as $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.
 
 \section{String constraints} \label{sec-core}
 
