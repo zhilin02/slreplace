@@ -1,7 +1,18 @@
-\section{The framework}
+\section{The Framework: Transducers, Straight-Line Programs}
 \label{sec:framework}
 
-In this section we introduce the framework of ...
+In this section we first review the framework of straight-line programs from
+\cite{LB16} for analysing symbolic execution of programs with strings, which
+involves capturing ``built-in'' functions using finite-state transductions.
+We will then introduce the notion of parametric transducers, and show that
+they can capture many other interesting string functions that cannot be captured
+within the framework of \cite{LB16}. In particular, this allows us to capture
+a string function $f: (\Sigma^*)^k \to \Sigma^*$ with multiple input strings
+(e.g. the replaceall function), and the string reverse function. 
+The framework of straight-line programs from \cite{LB16} can be adapted
+to this new notion of transducers, whose path feasibility problem will be shown
+to be decidable in Section \ref{sec:algo}.
+
 
 \anthony{Some abbreviations: 
 \begin{itemize}
@@ -13,7 +24,13 @@ In this section we introduce the framework of ...
 \end{itemize}
 }
 
-\subsection{Standard transducer models}
+\subsection{The ``straight-line'' framework from \cite{LB16}}
+
+The basic straight-line framework from \cite{LB16} involves: (i) instantiating 
+the string functions in program assignments by either concatenation of string
+variables/constants or an application of a one-way finite-state transducer
+to a string variable/constant, and (ii) instantiating conditionals by regular
+constraints.
 
 One-way and two-way transducers. Mention what kind of closure/algorithmic
 results.
