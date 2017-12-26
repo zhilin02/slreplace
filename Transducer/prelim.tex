@@ -4,6 +4,7 @@
 \paragraph{Generation Notation.}
 Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers respectively. For $k \in \Nat$, let $[k] = \{1,\cdots, k\}$. For a vector $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$ (i.e., $n$) and  $\vec{x}[i]$ denote $x_i$ for each $i \in [n]$.
 
+\OMIT{
 \paragraph{Graph-Theoretical Notation.} \tl{not sure whether it is really needed; will see}
 A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
 no directed cycles, where $V$ (resp.~$E \subseteq V \times V$) is a set of vertices (resp.~edges).
@@ -30,20 +31,27 @@ $G$. In addition, an edge $(\mathit{v'},\mathit{v''})$ is said to be reachable
 %A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.
 A \emph{subgraph} $G'$ of $G=(V,E)$ is a directed graph $(V', E')$ with
 $V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$.
+}
 
-\subsection{Automata}
-
+\paragraph{Automata: } We review necessary background from automata theory;
+for more, see \cite{Kozen-automata}. 
 \begin{definition}[two-way finite state automata]
-A \emph{nondeterministic two-way finite state automaton}
+    A \emph{(nondeterministic) two-way finite state automaton}
 (2NFA) over a finite alphabet $\Sigma$ is a tuple $\cA =
-(Q, q_0, F, \Delta)$ where $Q$ is a finite set of states, $q_0\in Q$ is
-the initial state, $F\subseteq Q$ is a set of final states, and $\Delta$ is the
-transition relation  of type $\Delta\subseteq Q \times \Sigma\times \{+1, -1\}\times Q $.
+(\controls, q_0, \finals, \transrel)$ where $\controls$ is a finite set of 
+    states, $q_0\in \controls$ is
+the initial state, $\finals\subseteq \controls$ is a set of final states, and 
+    $\transrel$ is the
+transition relation  of type $\transrel\subseteq \controls \times 
+    \ialphabet\times \{\Left, \Stay, \Right\}\times \controls$.
 \tl{not sure you want to use $\leftarrow, \rightarrow$?}
+    \anthony{Just defined macros. Please use generic macros in the definitions
+    guys.}
 
 A nondeterministic (one-way) finite state automaton (NFA)
-is a 2NFA such that $\Delta\subseteq Q \times \Sigma\times \{+1\} \times Q $, therefore we
-will often write $\Delta\subseteq Q \times \Sigma \times Q$.
+is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
+    \{\Right,\Stay\} \times \controls $, therefore we
+will often write $\transrel\subseteq \controls \times \ialphabet \times \controls$.
 \end{definition}
 
 
