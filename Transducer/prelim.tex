@@ -104,16 +104,25 @@ For a string $w= a_1 \dots a_n$, we also use the notation $q_1 \xrightarrow[\cA]
 For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
 }
 
+2NFA and NFA recognise precisely the same class of languages, i.e., 
+\emph{regular languages}. 
 
 \begin{proposition}
-	Any 2NFA is effectively equivalent to an NFA.
+	Every 2NFA is equivalent to an NFA. Moreover, the equivalent
+    NFA can be computed in exponential time.
 \end{proposition}
 
+The proof is by now standard and can be found in textbooks on automata theory
+(e.g. see \cite{Kozen-automata}). 
+
+\anthony{I've removed the ``regular languages'' paragraph because it seems
+unnecessary. I recommend that operation on sets can be defined in General
+Notation above on general sets.}
 %\tl{Other relevant models such as SST, when appropriate, will be put here.}
 
 
 
-
+\OMIT{
 \paragraph{Regular Languages.}
 Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$). A \emph{position} of a nonempty string $u$ of length $n$ is a number $i \in [n]$ (Note that the first position is $1$, instead of  0). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$.
 For two strings $u_1, u_2$, we use $u_1 \cdot u_2$ to denote the \emph{concatenation} of $u_1$ and $u_2$, that is, the string $v$ such that $|v|= |u_1| + |u_2|$ and for each $i \in [|u_1|]$, $v[i]= u_1[i]$ and for each $i \in |u_2|$, $v[|u_1|+i]=u_2[i]$. Let $u, v$ be two strings. If $v = u \cdot v'$ for some string $v'$, then $u$ is said to be a \emph{prefix} of $v$. In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then
@@ -157,3 +166,4 @@ In particular, given two NFA $\cA_1=(Q_1, \delta_1, q_{0,1}, F_1)$ and
 $\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, the intersection $\Ll(\cA_1)
 \cap \Ll(\cA_2)$ is recognised by the \emph{product automaton} $\cA_1 \times
 \cA_2$ of $\cA_1$ and $\cA_2$ defined as $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.
+}
