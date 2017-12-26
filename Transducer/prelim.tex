@@ -37,8 +37,9 @@ $V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \s
 for more, see \cite{Kozen-automata}. 
 \begin{definition}[two-way finite state automata]
     A \emph{(nondeterministic) two-way finite state automaton}
-(2NFA) over a finite alphabet $\Sigma$ is a tuple $\cA =
-(\controls, q_0, \finals, \transrel)$ where $\controls$ is a finite set of 
+(2NFA) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
+(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
+    $\controls$ is a finite set of 
     states, $q_0\in \controls$ is
 the initial state, $\finals\subseteq \controls$ is a set of final states, and 
     $\transrel$ is the
@@ -48,12 +49,13 @@ transition relation  of type $\transrel\subseteq \controls \times
     \anthony{Just defined macros. Please use generic macros in the definitions
     guys.}
 
-A nondeterministic (one-way) finite state automaton (NFA)
+    A (nondeterministic one-way) finite state automaton (NFA)
 is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
     \{\Right,\Stay\} \times \controls $, therefore we
 will often write $\transrel\subseteq \controls \times \ialphabet \times \controls$.
 \end{definition}
-
+In the sequel, we will often only tacitly mention $\ialphabet$, $\EndLeft$,
+and $\EndRight$ in $\Aut$.
 
 %A \emph{nondeterministic finite automaton} (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of \emph{states}, $q_0 \in Q$ is the \emph{initial} state, $F \subseteq Q$ is the set of \emph{final} states, and $\delta \subseteq Q \times \Sigma \times Q$ is the \emph{transition relation}.
 
