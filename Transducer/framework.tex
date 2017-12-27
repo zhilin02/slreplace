@@ -24,8 +24,7 @@ to be decidable in Section \ref{sec:algo}.
 \end{itemize}
 }
 
-\subsection{The ``straight-line'' framework}
-
+\subsection{A symbolic execution analysis framework}
 As elegantly described in Bj\"{o}rner \emph{et al.} \cite{BTV09}, constraints 
 from symbolic 
 execution on string-manipulating programs can be viewed as the problem of \emph{path 
@@ -51,25 +50,41 @@ on the left hand side of each assignment). The authors initiated the exploration
 of what kind of string functions $f$ and $g$ for which the above path 
 feasibility problem can be algorithmically solved. 
 
-The question of incorporating some form of transducers into the definitions of 
-the string functions $f$ and $g$ were briefly explored in \cite{BTV09}. In
-summary, whenever all $f$ and $g$ in the program can be captured by synchronised
-$k$-track finite automata (a.k.a.~\defn{automatic structures} \cite{BG04}), then
+\subsection{The ``straight-line'' framework}
+One clean and powerful way to instantiate the string functions $f$ and $g$
+in the assignments/conditionals is to allow some form of finite-state
+transducers in their definitions.
+%question of incorporating some form of transducers into the definitions of 
+%
+%the string functions $f$ and $g$ were briefly explored in \cite{BTV09}. 
+This proposal was already explored in \cite{BTV09}, wherein the authors mention
+that
+%
+%In
+%summary, whenever all 
+if the string functions $f$ and $g$ in the program can be captured by 
+synchronised $k$-track finite automata (a.k.a.~\defn{automatic structures} 
+\cite{BG04}), then
 the path feasibility problem becomes decidable. The authors noted, however, that
 this is too narrow for applications since string concatenation cannot be
-captured in this framework. In a recent paper \cite{LB16}, Lin \& Barcelo 
+captured in this framework. 
+
+In a recent paper \cite{LB16}, Lin \& Barcelo 
 proposed to allow concatenation, regular constraints (i.e. regular expression 
-matching), and finite-state 
-transductions (not
+matching), and one-way finite-state 
+transducers (not
 synchronised as in \cite{BTV09}, but only permits one input string and one 
-output string) in straight-line programs. We will define finite-state
-transducers in the following subsection, but roughly speaking
-they are finite-state automata with an extra output (write-only) track, i.e.,
+output string) in straight-line programs. 
+%We will define finite-state
+%transducers in the following subsection, but 
+Roughly speaking, such a transducer is NFA with an extra output (write-only) 
+track, i.e.,
 upon reading an input symbol, it may decide to output (or not output) a symbol 
-on the output track. [In general, the input/output tracks of finite-state
+on the output track. We will define this in more detail below.
+In general, the input/output tracks of finite-state
 transducers may be asynchronous, which means that they cannot be captured by
-automatic structures of \cite{BG04}.] 
-    Finite-state transducers are powerful for modelling many
+automatic structures of \cite{BG04}. 
+Finite-state transducers are powerful for modelling many
 different string functions including sanitisation functions (e.g. htmlescape and
 backslash-escape) and implicit browser transductions in HTML5 applications (e.g.
 innerHTML). Although they noted that this is
@@ -86,6 +101,34 @@ interesting applications including analysis of cross-site scripting (XSS)
 vulnerabilities. Decidable extensions of the straight-line fragment (including
 length constraints and disequality checks) were given by the authors, which 
 we will discuss in Section \ref{sec:extensions}.
+
+The following is the precise definition
+of two-way and one-way finite-state transducers.
+\begin{definition}[Finite-State Transducers]
+    Let $\ialphabet$ an alphabet.
+    A nondeterministic two-way (finite) \emph{transducers} (2NFT) over 
+    $\ialphabet$ is a tuple $\Transducer =
+(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
+    $\controls$ is a finite set of 
+    states, $\EndLeft$ (resp.~$\EndRight$) a left (resp.~right) input tape end 
+    marker, $q_0\in \controls$ is
+the initial state, $\finals\subseteq \controls$ is a set of final states, and 
+    $\transrel$ is the
+transition relation  $\transrel\subseteq \controls \times 
+    \bar{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+    \controls \times \ialphabet$ with
+    $\bar{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
+    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
+    there are no transitions that take the head of the tape pass left/right
+    end marker. 
+
+    A (nondeterministic one-way finite) transducer (NFT) over
+    is a 2NFT whose transition relation contains only tuples of the form
+    $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
+\end{definition}
+
+\anthony{Define the semantics of 2NFT as function $f: \ialphabet^* \to
+\ialphabet^*$}.
 
 Chen \emph{et al.} \cite{CCHLW18} recently noted that some XSS vulnerability
 analysis involving web templating systems (e.g. \texttt{Mustache.js}
@@ -124,19 +167,54 @@ results.
 \end{definition}
 }
 
-\OMIT{
-\begin{definition}[Two-way Finite transducers]
-  Nondeterministic two-way finite state \emph{transducers} (2NFTs) over $\Sigma$ and $\Gamma$ extend NFAs with a one-way left-to-right output tape. They are defined as 2NFAs except that the transition relation $\Delta$ is extended with outputs: $\Delta\subseteq Q \times \Sigma \times \Gamma \times \{-1, +1\} \times  Q $. If a transition $(q, a, b, q′, m)$ is enabled on a letter $a\in \Sigma$, the letter $b\in \Gamma$ is appended to the right of
-	the output tape and the transducer goes to state $q'$.
-\end{definition}
-}
 
 \subsection{Parametric transducers}
 
-Introduce one-way and two-way parametric transducers. 
+We now introduce \emph{parametric transducers}, a new transducer model that can 
+capture all the
+aforementioned string operations (i.e. finite-state transducer from
+\cite{LB16} and the replace-all function \cite{CCHLW18}), as well as other 
+string functions including the string reverse function.
+
+\begin{definition}[Parametric Transducers]
+    Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
+    Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
+    \ialphabet \cup X$.
+    A nondeterministic two-way \emph{parametric transducers} (2NFPT) over 
+    $(\ialphabet,X)$ is a tuple $\Transducer =
+(\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
+    $\controls$ is a finite set of 
+    states, $\EndLeft$ (resp.~$\EndRight$) a left (resp.~right) input tape end 
+    marker, $q_0\in \controls$ is
+the initial state, $\finals\subseteq \controls$ is a set of final states, and 
+    $\transrel$ is the
+transition relation  $\transrel\subseteq \controls \times 
+    \bar{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+    \controls \times \oalphabet$ with
+    $\bar{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
+    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
+    there are no transitions that take the head of the tape pass left/right
+    end marker. 
+
+    A (nondeterministic one-way) parametric transducer (NFPT) over
+    is a 2NFPT whose transition relation contains only tuples of the form
+    $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
+is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
+    \{\Right,\Stay\} \times \controls $, therefore we
+will often write $\transrel\subseteq \controls \times \ialphabet \times 
+    \controls$. 
+\end{definition}
+
+Notice that parameters are only allowed in the output track.
+Intuitively, each instantiation of the parameters $x_1,\ldots,x_m$ with strings 
+$s_1,\ldots,s_m$ gives rise to a standard finite-state transducer which outputs
+the string $s_j$, whenever a transition of the form $(p,a,dir,x_j,q)$ is
+taken by the transducer. This instantiation of the parameters is only done 
+\emph{once} before the parametric transducer is run. [It is \emph{precisely}
+for this reason that parameteric transducers cannot in general be captured by 
+the standard finite-state transducer model that nondeterministically ``guesses''
+the parameters separately for each transition.]  
 
 Give examples: htmlescape, replace-all, and reverse.
-
-\subsection{The ``straight-line'' framework}
 
 Give example of computing reverse of DNA string.
