@@ -132,6 +132,30 @@ transition relation  $\transrel\subseteq \controls \times
 \anthony{Define the semantics of 2NFT as function $f: \ialphabet^* \to
 \ialphabet^*$}.
 
+The notion of runs of 2NFT on an input string can be seen as a generalization of 2NFA with outputs. More precisely, for a string 
+$w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
+%(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
+is
+sequence of pairs $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
+defined as follows. Let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$. The
+following conditions, then, have to be satisfied:
+\begin{itemize}
+    \item $i_0 = 0$, and
+    \item for every $j \in [m-1]$, we have $(q_j, a_{i_j}, dir, q_{j+1}, b_j) \in
+        \transrel$, and $i_{j+1} = i_j + dir$.
+\end{itemize}
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the run.
+A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
+$\Transducer$ on $w$, whose output is $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
+
+% The set of words accepted by $\Aut$ is denoted by $\Lang(\Aut)$,
+%a.k.a., the language \defn{recognised} by $\Aut$.
+%Since we deal with computational complexity in the sequel, we define
+%The \defn{size} $|\Aut|$ of $\Aut$ is defined to be $|\controls|$; this will
+%be needed when we talk about computational complexity.
+
+
+
 Chen \emph{et al.} \cite{CCHLW18} recently noted that some XSS vulnerability
 analysis involving web templating systems (e.g. \texttt{Mustache.js}
 \cite{Mustache}) requires the use of the replace-all function that cannot be
