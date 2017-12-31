@@ -130,7 +130,8 @@ transition relation  $\transrel\subseteq \controls \times
 \end{definition}
 
 \anthony{Define the semantics of 2NFT as function $f: \ialphabet^* \to
-\ialphabet^*$}.
+\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}
+
 
 The notion of runs of 2NFT on an input string can be seen as a generalization of 2NFA with outputs. More precisely, for a string 
 $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
@@ -147,6 +148,16 @@ following conditions, then, have to be satisfied:
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the run.
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$, whose output is $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
+
+    
+Let $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) $ be a run of $\Transducer$ on some word $w$. A \emph{reversal} of the run is a  maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ where the direction of the reading head is reversed, more precisely, a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ satisfying one of the following constraints:
+\begin{itemize}
+\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}+1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}-1$,
+\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}-1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}+1$. 
+\end{itemize}
+Let $k \in \Nat$. A run of $\Transducer$ is said to be \emph{$k$-reversal-bounded} if the run contains at most $k$ distinct reversals.
+A 2NFT $\Transducer$ is \emph{$k$-reversal-bounded} if all runs of  $\Transducer$ are $k$-reversal-bounded.
+
 
 % The set of words accepted by $\Aut$ is denoted by $\Lang(\Aut)$,
 %a.k.a., the language \defn{recognised} by $\Aut$.
