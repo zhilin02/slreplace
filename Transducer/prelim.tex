@@ -110,16 +110,24 @@ For convenience, we will also call an NFA without initial and final states, that
 
 \begin{proposition}
 	Every 2NFA is equivalent to an NFA. Moreover, the equivalent
-    NFA can be computed in exponential time.
+    NFA can be computed in exponential time. Moreover, every NFA can be transformed in polynomial time into an $\varepsilon$-free NFA, that is, an NFA where $\transrel\subseteq \controls \times \ialphabet\times   \{\Right\} \times \controls $.
 \end{proposition}
 
 The proof is standard and can be found in textbooks on automata theory
 (e.g. see \cite{Kozen-automata}). 
 
+In the rest of this paper, we always use NFAs to mean $\varepsilon$-free NFAs and we will omit the directions in transitions.
+
+For an NFA $\Aut=(Q, q_0, F, \delta)$, $q \in Q$ and $P \subseteq Q$, we use $\Aut(q, P)$ to denote the NFA $(Q, q, P, \delta)$, that is, the NFA obtained from $\Aut$ by changing the initial state and the set of final states to $q$ and $P$ respectively.
+
+Given two NFAs $\Aut_1 = (Q_1, q_{0,1}, F_{1}, \delta_1)$ and $\Aut_1 = (Q_2, q_{0,2}, F_2, \delta_2)$, the \emph{product} of $\Aut_1$ and $\Aut_2$, denoted by $\Aut_1 \times \Aut_2$, is defined as the NFA $(Q_1 \times Q_2, (q_{0,1}, q_{0,2}), F_1 \times F_2, \delta_1 \times \delta_2)$, where $\delta_1 \times \delta_2$ is the set of tuples $((q_1,q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$. Evidently, we have $\Lang(\Aut_1 \times \Aut_2) = \Lang(\Aut_1) \cap \Lang(\Aut_2)$.
+
+
 \anthony{I've removed the ``regular languages'' paragraph because it seems
 unnecessary. I recommend that operation on sets can be defined in General
 Notation above on general sets.}
 %\tl{Other relevant models such as SST, when appropriate, will be put here.}
+
 
 
 

@@ -264,13 +264,16 @@ Give examples: htmlescape, replace-all, and reverse.
 
 Give example of computing reverse of DNA string.
 
-Explicitly, we consider the constraint language $\straightline[\twpt]$ which comprises the formulae of the form $\varphi \wedge \psi$, where $\varphi,\psi$ are defined by the rules,
+Explicitly, for a class $\transet$ of transducers, we consider the constraint language $\straightline[\transet]$ which comprises the formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
 \[
 \begin{array}{l l l r}
 \varphi &::=& z = \Transducer(x, \vec{y}) \mid \varphi \wedge \varphi, &  \hfill  \mbox{(relational constraint) } \\ 
 \psi &::= & x \in \Aut \mid \psi \wedge \psi, & \hfill \mbox{(regular constraint)} 
 \end{array}
 \]
-where $\Transducer$ is a 2PT.
+where $\Transducer$ is a transducer from $\transet$ over the alphabet $\Sigma$ and $\Aut$ is an NFA over $\Sigma$. Moreover, we require that the dependency graph of $\varphi$ defined below is acyclic. We use $\vars(\varphi \wedge \psi)$ to denote the set of string variables occurring in $\varphi \wedge \psi$.
 
-Similarly, we can define $\straightline[\owpt]$.
+Let $\varphi$ be a relational constraint. Then the \emph{dependency graph} of $\varphi$, denoted by $\cG(\varphi)$, is the graph comprising the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ for each atomic formula $z = \Transducer(x, \vec{y})$ in $\varphi$. Note that $(\Transducer, 0)$ and $(\Transducer, i)$ are the labels of the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ respectively.
+ 
+We consider the situation that $\transet$ is 2PT or 1PT in this paper.
+%Similarly, we can define $\straightline[\owpt]$.
