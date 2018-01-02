@@ -1,3 +1,5 @@
+%!TEX root = main.tex
+
 \section{The Framework: Transducers, Straight-Line Programs}
 \label{sec:framework}
 
@@ -115,9 +117,9 @@ of two-way and one-way finite-state transducers.
 the initial state, $\finals\subseteq \controls$ is a set of final states, and 
     $\transrel$ is the
 transition relation  $\transrel\subseteq \controls \times 
-    \bar{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
     \controls \times \ialphabet$ with
-    $\bar{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
+    $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
     Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
     there are no transitions that take the head of the tape pass left/right
     end marker. 
@@ -128,7 +130,47 @@ transition relation  $\transrel\subseteq \controls \times
 \end{definition}
 
 \anthony{Define the semantics of 2NFT as function $f: \ialphabet^* \to
-\ialphabet^*$}.
+\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}
+
+
+The notion of runs of 2NFT on an input string can be seen as a generalization of 2NFA with outputs. More precisely, for a string 
+$w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
+%(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
+is
+sequence of pairs $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
+defined as follows. Let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$. The
+following conditions, then, have to be satisfied:
+\begin{itemize}
+    \item $i_0 = 0$, and
+    \item for every $j \in [m-1]$, we have $(q_j, a_{i_j}, dir, q_{j+1}, b_j) \in
+        \transrel$, and $i_{j+1} = i_j + dir$.
+\end{itemize}
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the run.
+A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
+$\Transducer$ on $w$, whose output is $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
+
+    
+Let $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) $ be a run of $\Transducer$ on some word $w$. A \emph{reversal} of the run is a  maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ where the direction of the reading head is reversed, more precisely, a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ satisfying one of the following constraints:
+\begin{itemize}
+\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}+1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}-1$,
+\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}-1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}+1$. 
+\end{itemize}
+Let $k \in \Nat$. A run of $\Transducer$ is said to be \emph{$k$-reversal-bounded} if the run contains at most $k$ distinct reversals.
+A 2NFT $\Transducer$ is \emph{$k$-reversal-bounded} if all runs of  $\Transducer$ are $k$-reversal-bounded.
+
+
+We use $\Transducer(x, y)$ to denote the relation such that there is an accepting run of $\Transducer$ on $x$, with the output $y$.
+Moreover, we also write $\Transducer(x, y)$ as $y = \Transducer(x)$.
+%, in order to facilitate the definition of straight-line fragments. 
+Nevertheless, the reader should remember that $y= \Transducer(x)$ does \emph{not} mean that $\Transducer$ defines a function.
+
+% The set of words accepted by $\Aut$ is denoted by $\Lang(\Aut)$,
+%a.k.a., the language \defn{recognised} by $\Aut$.
+%Since we deal with computational complexity in the sequel, we define
+%The \defn{size} $|\Aut|$ of $\Aut$ is defined to be $|\controls|$; this will
+%be needed when we talk about computational complexity.
+
+
 
 Chen \emph{et al.} \cite{CCHLW18} recently noted that some XSS vulnerability
 analysis involving web templating systems (e.g. \texttt{Mustache.js}
@@ -189,9 +231,9 @@ string functions including the string reverse function.
 the initial state, $\finals\subseteq \controls$ is a set of final states, and 
     $\transrel$ is the
 transition relation  $\transrel\subseteq \controls \times 
-    \bar{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
     \controls \times \oalphabet$ with
-    $\bar{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
+    $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
     Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
     there are no transitions that take the head of the tape pass left/right
     end marker. 
@@ -215,6 +257,20 @@ for this reason that parameteric transducers cannot in general be captured by
 the standard finite-state transducer model that nondeterministically ``guesses''
 the parameters separately for each transition.]  
 
+We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.
+
+
 Give examples: htmlescape, replace-all, and reverse.
 
 Give example of computing reverse of DNA string.
+
+Explicitly, we consider the constraint language $\straightline[\twpt]$ which comprises the formulae of the form $\varphi \wedge \psi$, where $\varphi,\psi$ are defined by the rules,
+\[
+\begin{array}{l l l r}
+\varphi &::=& z = \Transducer(x, \vec{y}) \mid \varphi \wedge \varphi, &  \hfill  \mbox{(relational constraint) } \\ 
+\psi &::= & x \in \Aut \mid \psi \wedge \psi, & \hfill \mbox{(regular constraint)} 
+\end{array}
+\]
+where $\Transducer$ is a 2PT.
+
+Similarly, we can define $\straightline[\owpt]$.
