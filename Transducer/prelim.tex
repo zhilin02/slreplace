@@ -12,6 +12,7 @@ $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$
 $S$, we use $S^*$ (resp.~$S^+$) to denote the set of all finite (resp.~finite
 and nonempty) sequences over $S$. We use $\epsilon$ for the empty sequence.
 
+%=======================================================================
 \OMIT{
 \paragraph{Graph-Theoretical Notation.} \tl{not sure whether it is really needed; will see}
 A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
@@ -40,6 +41,7 @@ $G$. In addition, an edge $(\mathit{v'},\mathit{v''})$ is said to be reachable
 A \emph{subgraph} $G'$ of $G=(V,E)$ is a directed graph $(V', E')$ with
 $V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$.
 }
+%=============================================================================
 
 \paragraph{Automata: } We review necessary background from automata theory;
 for more, see \cite{Kozen-automata}. Let $\ialphabet$ be a finite set (called
@@ -47,7 +49,7 @@ for more, see \cite{Kozen-automata}. Let $\ialphabet$ be a finite set (called
 (also, a \defn{string}). A \defn{language} is set of words over $\ialphabet$.
 We will review regular sets and necessary models of regular automata below.
 
-\begin{definition}[two-way finite state automata]
+\begin{definition}[two-way finite state automata] \label{def:2nfa}
     A \emph{(nondeterministic) two-way finite state automaton}
 (2NFA) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
 (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
@@ -63,7 +65,7 @@ transition relation  $\transrel\subseteq \controls \times
     there are no transitions that take the head of the tape pass left/right
     end marker (i.e.~$(p,\EndLeft,\Left,q), (p,\EndRight,\Right,q) \notin
     \transrel$ for every $p, q \in \controls$).
-\tl{not sure you want to use $\leftarrow, \rightarrow$?}
+%\tl{not sure you want to use $\leftarrow, \rightarrow$?}
     \anthony{Just defined macros. Please use generic macros in the definitions
     guys.}
 
@@ -122,7 +124,7 @@ Notation above on general sets.}
 %\tl{Other relevant models such as SST, when appropriate, will be put here.}
 
 
-
+%===================================================================
 \OMIT{
 \paragraph{Regular Languages.}
 Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\cdots$ to denote letters from $\Sigma$ and $u, v, w, \cdots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$). A \emph{position} of a nonempty string $u$ of length $n$ is a number $i \in [n]$ (Note that the first position is $1$, instead of  0). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$.
@@ -168,3 +170,4 @@ $\cA_2=(Q_2, \delta_2, q_{0,2}, F_2)$ on $\Sigma$, the intersection $\Ll(\cA_1)
 \cap \Ll(\cA_2)$ is recognised by the \emph{product automaton} $\cA_1 \times
 \cA_2$ of $\cA_1$ and $\cA_2$ defined as $(Q_1 \times Q_2, \delta, (q_{0,1}, q_{0,2}), F_1 \times F_2)$, where $\delta$ comprises the transitions $((q_1, q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$.
 }
+%==========================================================================================
