@@ -87,7 +87,9 @@ Execution Analysis of Programs with Strings)}
 
 \input{conc}
 
+%=========================================================================
 
+\OMIT{
 \section{String constraints} \label{sec-core}
 
 In this section, we define a general string constraint language that supports
@@ -97,24 +99,24 @@ Throughout this section, we fix an alphabet $\Sigma$.
 We consider the String data type $\str$, and assume a countable set of variables
 $x, y, z, \cdots$ of $\str$.
 
-
-\begin{definition}[Relational and regular constraints]
-	Relational constraints and regular constraints are defined by the following rules,
-	\[
-	\begin{array}{r c l cr}
-	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
-%	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
-	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
-	\varphi &\eqdef & x = s \concat s  \mid  x = T(\vec{s}) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
-	\psi & \eqdef & x \in e \mid \psi \wedge \psi %\mid \psi \vee \psi \mid \neg \psi
-	& \ \ & \mbox{(regular constraints)} \\
-	\end{array}
-	\]
-	where $x$ is a string variable, $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$.
-\end{definition}
-\tl{this is not optimal. For $T$ with multiple parameters, the concatenation is redundant}
-
-For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)$) denote the set of variables occurring in $\varphi$ (resp. $\psi$). Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = T(\vec{s})$.
+%
+%\begin{definition}[Relational and regular constraints]
+%	Relational constraints and regular constraints are defined by the following rules,
+%	\[
+%	\begin{array}{r c l cr}
+%	s &\eqdef & x \mid u & \ \ & \mbox{(string terms)}\\
+%%	p &\eqdef & x \mid e & \ \ & \mbox{(pattern terms)}\\
+%	%t &\eqdef & s \mid e & \ \ & \mbox{(terms)}\\
+%	\varphi &\eqdef & x = s \concat s  \mid  x = T(\vec{s}) \mid \varphi \wedge \varphi & \ \ & \mbox{(relational constraints)}\\
+%	\psi & \eqdef & x \in e \mid \psi \wedge \psi %\mid \psi \vee \psi \mid \neg \psi
+%	& \ \ & \mbox{(regular constraints)} \\
+%	\end{array}
+%	\]
+%	where $x$ is a string variable, $u \in \Sigma^\ast$ and $e$ is a regular expression over $\Sigma$.
+%\end{definition}
+%\tl{this is not optimal. For $T$ with multiple parameters, the concatenation is redundant}
+%
+%For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)$) denote the set of variables occurring in $\varphi$ (resp. $\psi$). Given a relational constraint $\varphi$, a variable $x$ is called a \emph{source variable} of $\varphi$ if $\varphi$ \emph{does not} contain a conjunct of the form $x = s_1 \concat s_2$ or $x = T(\vec{s})$.
 
 %We then notice that, with the $\replaceall$ function in its general form, the concatenation operation is in fact redundant.
 
@@ -132,58 +134,58 @@ For a formula $\varphi$ (resp. $\psi$), let $\vars(\varphi)$ (resp. $\vars(\psi)
 %Another example to show the power of the $\replaceall$ function is that it can simulate the extension of regular expressions with string variables, which is  supported by the mainstream scripting languages like Python, Javascript, and PHP. For instance, $x \in y^*$ can be expressed by $x =\replaceall(x', a, y) \wedge x' \in a^*$, where $x'$ is a fresh variable and $a$ is a fresh letter.
 
 
-
-The generality of the constraint language makes it undecidable,
-even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
-programs.
-
-\begin{definition}[Straight-line relational constraints]
-	A relational constraint $ \varphi$ with transducers is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
-	\begin{itemize}
-		\item $x_1,\dots, x_m$ are mutually distinct,
-		\item for each $i \in [m]$, all the variables in $P_i$ are either source variables, or variables from $\{x_1,\dots, x_{i-1}\}$,
-	\end{itemize}
-	%Occasionally we refer to $x_m$ as the output variable.
-\end{definition}
+%
+%The generality of the constraint language makes it undecidable,
+%even in very simple cases. To retain decidability, we follow \cite{LB16} and focus on the ``straight-line fragment" of the language. This straight-line fragment captures the structure of straight-line string-manipulating
+%programs.
+%
+%\begin{definition}[Straight-line relational constraints]
+%	A relational constraint $ \varphi$ with transducers is straight-line, if $\varphi \eqdef \bigwedge \limits_{1 \le i \le m} x_i = P_i$ such that
+%	\begin{itemize}
+%		\item $x_1,\dots, x_m$ are mutually distinct,
+%		\item for each $i \in [m]$, all the variables in $P_i$ are either source variables, or variables from $\{x_1,\dots, x_{i-1}\}$,
+%	\end{itemize}
+%	%Occasionally we refer to $x_m$ as the output variable.
+%\end{definition}
 %Intuitively, in a straight-line relational constraint, the dependency graph (see Definition~\ref{def:dep-graph}) of the string variables is acyclic.
 %\mat{forward reference!}
 
-\begin{remark}
-	Checking whether a relational constraint $\varphi$ is straight-line can be done in linear time.
-\end{remark}
+%\begin{remark}
+%	Checking whether a relational constraint $\varphi$ is straight-line can be done in linear time.
+%\end{remark}
 
-\begin{definition}[Straight-line string constraints]
-	A straight-line string constraint $C$ with transducers (denoted by $\strline[T]$)  is defined as $ \varphi \wedge \psi$,  where
-	\begin{itemize}
-		\item $\varphi$ is a straight-line relational constraint with transducers,  and
-		%
-		\item $\psi$ is a regular constraint.
-		%
-	\end{itemize}
-\end{definition}
+%\begin{definition}[Straight-line string constraints]
+%	A straight-line string constraint $C$ with transducers (denoted by $\strline[T]$)  is defined as $ \varphi \wedge \psi$,  where
+%	\begin{itemize}
+%		\item $\varphi$ is a straight-line relational constraint with transducers,  and
+%		%
+%		\item $\psi$ is a regular constraint.
+%		%
+%	\end{itemize}
+%\end{definition}
 
 
 
- We first introduce a graphical representation of $\strline[T]$ formulae as follows.
+% We first introduce a graphical representation of $\strline[T]$ formulae as follows.
+%
+% \begin{definition}[Dependency graph]
+%	\label{def:dep-graph}
+%	Suppose $C= \varphi \wedge \psi$ is an $\strline[\replaceall]$ formula where the pattern parameters of the $\replaceall$ terms are regular expressions. %Let $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables.
+%	Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labelled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. The \emph{depth} of $G_C$ is the maximum length of the paths in $G_C$. In particular, if $\varphi$ is empty, then the depth of $G_C$ is zero.
+%	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
+%	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
+% \end{definition}
+% Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero.
 
- \begin{definition}[Dependency graph]
-	\label{def:dep-graph}
-	Suppose $C= \varphi \wedge \psi$ is an $\strline[\replaceall]$ formula where the pattern parameters of the $\replaceall$ terms are regular expressions. %Let $\vars(\varphi) = \{x_1,\dots, x_m, y_1, \dots, y_n\}$, where $y_1,\dots, y_n$ are  source variables.
-	Define the \emph{dependency graph} of $C$ as $G_C= (\vars(\varphi), E_C)$, such that for each $i \in [m]$, if $x_i = \replaceall(z, e_i, z')$, then $(x_i, (\rpleft, e_i), z) \in E_C$ and $(x_i, (\rpright, e_i), z') \in E_C$. A final (resp. initial) vertex in $G_C$ is a vertex in $G_C$ without successors (resp. predecessors). The edges labelled by $(\rpleft, e_i)$ and $(\rpright, e_i)$ are called the $\rpleft$-edges and $\rpright$-edges respectively. The \emph{depth} of $G_C$ is the maximum length of the paths in $G_C$. In particular, if $\varphi$ is empty, then the depth of $G_C$ is zero.
-	%The $\rpleft$-length of a path $\pi$, denoted by $\rpleftlen(\pi)$, is the number of $\rpleft$-edges on $\pi$. A path of $G_C$ is a sequence $z_1 \ell_1 z_2 \dots \ell_{k-1} z_k$ such that for each $i \in [k-1]$, $(z_i, \ell_i, z_{i+1}) \in E_C$. A path is initial (resp. final) if the path starts from an initial vertex (resp. stops at a final vertex).
-	% e the $\src$-nesting-depth of $z$ in $G_C$, denoted by $\srcnd_{G_C}(z)$,  as the maximum number of $\src$-edges in paths from source variables to $z$.
- \end{definition}
- Note that $G_C$ is a DAG where the out-degree of each vertex is two or zero.
-
-\subsection{The satisfiability problem} \label{sec-sat}
-In this paper, we focus on the satisfiability problem of $\strline[T]$, which is formalised as follows.
-
+%\subsection{The satisfiability problem} \label{sec-sat}
+%In this paper, we focus on the satisfiability problem of $\strline[T]$, which is formalised as follows.
+%
+%%\smallskip
+%
+%\begin{quote} \centering
+%	\framebox{Given an $\strline[T]$ constraint $C$, decide whether $C$ is satisfiable.}
+%\end{quote}
 %\smallskip
-
-\begin{quote} \centering
-	\framebox{Given an $\strline[T]$ constraint $C$, decide whether $C$ is satisfiable.}
-\end{quote}
-\smallskip
 
 %To approach this problem, we identify several fragments of  $\strlineTT]$, depending on whether the pattern and the replacement parameters are constants or variables.  We shall investigate extensively the satisfiability problem of the fragments of $\strline[\replaceall]$. % (see Table~\ref{tab-sum}).  Note that for $x=\replaceall (y, p, z)$, $p$ is referred to as a \emph{pattern} and $z$ is referred to as a \emph{replacement}.
 
@@ -248,8 +250,8 @@ The general idea is to encode a general string manipulating function $f(x, \vec{
 %\end{definition}
 
 
-\section{Conclusion}
-
+%\section{Conclusion}
+}
 %==============================================================================================
 \newpage
 

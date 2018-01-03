@@ -6,8 +6,8 @@
 
 \subsection{A generic decision procedure based on recognisable relations}
 
-In this section, let us assume an $\straightline[\transet]$ formula $\varphi \wedge \psi$.
-We will present a generic decision procedure for $\straightline[\transet]$ based on recognisable relations.
+In this section, we assume an $\straightline[\transet]$ formula $\varphi \wedge \psi$ where $\varphi$ and $\psi$ are relational and  regular constraints respectively.
+We will present a generic decision procedure for $\straightline[\transet]$ based on the notion of recognisable relations.
 
 \begin{definition}[Recognisable relation]
 	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
@@ -15,30 +15,39 @@ We will present a generic decision procedure for $\straightline[\transet]$ based
 %	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
 
-For a recognisable relation $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$, we will use a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{1 \le i \le n}$ to represent $R$, where each $\Aut^{(i)}_j$ is an NFA.  
+For a recognisable relation $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$, its \emph{representation} is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{1 \le i \le n}$, where each $\Aut^{(i)}_j$ is an NFA.  
+We say that \emph{$R$ is bounded by size $\ell$} if each NFA  $\Aut^{(i)}_j$ in the representation of $R$ is bounded by $\ell$. 
 
-Let $\Transducer$ be a transducer from $\transet$, say with $k$ parameters (possibly $k=0$), and $\Aut$ be an NFA. Then the \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, which produces an output $w'$ belonging to $\Lang(\Aut)$.
+Let $\Transducer$ be a transducer from $\transet$ with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
+
+
+We define $f^{(n)}(j, k)$ for $n\geq 1$ as $f^{(1)}(j,k)= f(j, k)$ and $f^{(n+1)}(j, k) = f(j, f^{(n)}(j,k))$.
 
 \begin{theorem}\label{thm-generic-dec}
-Suppose that $\transet$ satisfies that for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of  $\Pre_\Transducer(\Aut)$ can be computed effectively where each NFA is of size at most $f(|\Transducer|, |\Aut|)$. Then for an $\straightline[\transet]$ formula $\varphi \wedge \psi$, its satisfiability can be decided in nondeterministic $O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space, where $K$ is the maximum number of parameters of $\Transducer \in \transet$, $D$ is the maximum length of the paths in $\cG(\varphi)$,  and $f^{(i)}(j, k)$ is defined as follows: $f^{(1)}(j,k)= f(j, k)$ and $f^{(i+1)}(j, k) = f(j, f^{(i)}(j,k))$.
+Suppose that %$\transet$ satisfies that 
+for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation a representation of which can be computed effectively and  is bounded by %each NFA in the representation is bounded by 
+$f(|\Transducer|, |\Aut|)$. Then the satisfiability of $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in nondeterministic \tl{why not remove  nondeterministic?} $O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space, where $K$ is the maximum number of parameters of $\Transducer \in \transet$, 
+\tl{should not it be transducers appearing in the contraints?}
+$D$ is the maximum length of the paths in $\cG(\varphi)$.
 \end{theorem}
 
 \begin{proof}
 Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
 
-We utilise the dependency graph $\cG(\varphi)$ and compute \emph{nondeterministically} a collection of atomic regular constraints $\cE(x)$ over the alphabet $\Sigma$ for each variable $x$, in a top-down manner.
+We utilise the dependency graph $\cG(\varphi)$ to compute \emph{nondeterministically} a collection of regular constraints $\cE(x)$ over the alphabet $\Sigma$ for each variable $x \in \vars(\varphi \wedge \psi)$, in a top-down manner.
 
 %Notice that $\cE(x)$ is represented succinctly as a set of pairs $(S, P)$, where $S=(Q, \delta)$ is a transition graph and $P \subseteq Q \times Q$. The intention of $(S, P)$ is to represent succinctly the collection of the atomic regular constraints containing $(\Sigma, Q, \delta, q, \{q'\})$ for each $(q,q') \in P$, where $q$ is the initial state and $\{q'\}$ is the set of final states.
 
-Initially, let $\cG_0:= \cG(\varphi)$. Moreover, for each variable $x$, we define $\cE_0(x)$ as follows: Let $x \in \Aut_1 \wedge \cdots \wedge x \in \Aut_n$ be the conjunction of all the atomic regular constraints related to $x$ in $\psi$. 
+Initially, let $\cG_0:= \cG(\varphi)$. Moreover, for each variable $x$, let $x \in \Aut_1 \wedge \cdots \wedge x \in \Aut_n$ be the conjunction of all the atomic regular constraints related to $x$ in $\psi$. 
 %For each $i \in [n]$, let $\Aut_i=(\Sigma, Q_i, \delta_i, q_{0,i}, F_i)$.
 % We nondeterministically choose $q_i \in F_i$ and set $\cE_0(x):=  \left\{((Q_i, \delta_i), \{(q_{0,i}, q_i)\}) \mid i \in [n] \right\}$.
- We set $\cE_0(x):=  \left\{\Aut_1,\cdots, \Aut_n \right\}$.
+ We define $\cE_0(x)$  to be $\cE_0(x):=  \left\{\Aut_1,\cdots, \Aut_n \right\}$.
 
-We begin with $i:= 0$ and repeat the following procedure until we reach some $i$ where $\cG_i$ is an empty graph, i.e. a graph without edges.
-Note that $\cG_0$ was defined above.
+We start from $\cG_0$  defined above, and repeat the following procedure until %we reach some $i$ where 
+$\cG_i$ becomes empty, i.e. a graph without edges.
+ 
 \begin{enumerate}
-\item Select a vertex $x$ of $\cG_i$ such that $x$ has no predecessors  and has $k+1$ successors (possibly $k=0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$.  Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, where for each $j \in [n]$, $\Aut_j = (\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$. Moreover, for each $j \in [n]$, let $\Pre_{\Transducer}(\Aut_j)$ be represented by $(\Aut^{(j')}_{j, 0}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$.
+\item Select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessor and has $k+1$ successors ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$.  Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, where for each $j \in [n]$, $\Aut_j = (\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$. Moreover, for each $j \in [n]$, let $\Pre_{\Transducer}(\Aut_j)$ be represented by $(\Aut^{(j')}_{j, 0}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$.
 Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\cdots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
 \item For each $j \in [n]$, nondeterministically choose a tuple $(\Aut^{(r_j)}_{j, 0}, \cdots, \Aut^{(r_j)}_{j, k})$ (where $r_j \in [m_j]$).
@@ -63,7 +72,7 @@ Therefore, we can decide the satisfiability of $\varphi \wedge \psi$ by first no
 \paragraph{Complexity analysis.} For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$ and $N_i$ be the maximum size of NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$. Then we have $M_{i+1} \le M_i + (K+1)M_i = (K+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies that $|T| \le |\varphi|$, we have $N_{i+1} \le f(|\varphi|, N_i)$. Therefore, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(K+2)^D$ elements and each NFA in $\cE(x)$ is of size at most $f^{(D)}(|\varphi|, |\psi|)$. Moreover, from the fact that guessing an accepting run of an NFA can be fulfilled in nondeterministic logarithmic space, we conclude that the aforementioned decision procedure is in nondeterministic $O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space.
 \end{proof}
 
-\subsection{Two-way}
+\subsection{Two-way transducers}
 
 %Let $\Transducer$ be a 2PT with $k$ parameters $y_1,\cdots, y_k$ and $\Aut$ be an NFA. Then the \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ producing an output $w' \in \Lang(\Aut)$, equipped with the parameters $w_1,\cdots, w_k$.
 
@@ -104,7 +113,7 @@ Given an $\straightline[\twpt]$ formula $\varphi \wedge \psi$, its satisfiabilit
 \end{corollary}
 
 
-\subsection{One-way}
+\subsection{One-way transducers}
 
 
 \begin{lemma}\label{lem-1pt}

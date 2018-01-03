@@ -128,10 +128,9 @@ transition relation  $\transrel\subseteq \controls \times
 %\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}
 
 
-The notion of runs of 2NFT on an input string can be seen as a generalization of 2NFA with outputs. More precisely, given a string 
-$w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
+The notion of runs of 2NFT on an input string can be seen as a generalisation of 2NFA with outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
-is
+is a
 sequence of pairs $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
 such that, let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
 \begin{itemize}
@@ -143,8 +142,9 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
-    
-Let $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) $ be a run of $\Transducer$ on some word $w$. A \emph{reversal} of the run is a  maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ where the direction of the reading head is reversed, more precisely, a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ satisfying one of the following constraints:
+\tl{I propose we unify the term: e.g., using string instead of word}
+\paragraph{Reversal-bounded transducers.}    
+Let $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) $ be a run of $\Transducer$ on some string $w$. A \emph{reversal} of the run is a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ where the direction of the reading head is reversed. More precisely, it is a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ satisfying one of the following constraints:
 \begin{itemize}
 \item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}+1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}-1$,
 \item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}-1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}+1$. 
@@ -170,7 +170,7 @@ Nevertheless, the reader should remember that $y= \Transducer(x)$ does \emph{not
 Recently, Chen \emph{et al.} \cite{CCHLW18}  noted that some XSS vulnerability
 analysis involving web templating systems (e.g. \texttt{Mustache.js}
 \cite{Mustache}) requires the use of the replace-all function that cannot be
-captured by finite-state transducers. Essentially, since the ``holes'' to be 
+captured by finite-state transducers in \cite{LB16}. Essentially, since the ``holes'' to be 
 filled in by data from a separate JSON file might be an arbitrary string, the
 replacement string in the replace-all function could in fact be a string
 variable. \anthony{Define the replace-all function later}. The authors
@@ -261,7 +261,8 @@ Give examples: htmlescape, replace-all, and reverse.
 
 Give example of computing reverse of DNA string.
 
-Explicitly, for a class $\transet$ of transducers, we consider the constraint language $\straightline[\transet]$ which comprises the formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
+\paragraph{The constraint language.}
+For a class $\transet$ of transducers, we consider the constraint language $\straightline[\transet]$ which comprises the formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
 \[
 \begin{array}{l l l r}
 \varphi &::=& z = \Transducer(x, \vec{y}) \mid \varphi \wedge \varphi, &  \hfill  \mbox{(relational constraint) } \\ 
@@ -270,7 +271,8 @@ Explicitly, for a class $\transet$ of transducers, we consider the constraint la
 \]
 where $\Transducer$ is a transducer from $\transet$ over the alphabet $\Sigma$ and $\Aut$ is an NFA over $\Sigma$. Moreover, we require that the dependency graph of $\varphi$ defined below is acyclic. We use $\vars(\varphi \wedge \psi)$ to denote the set of string variables occurring in $\varphi \wedge \psi$.
 
-Let $\varphi$ be a relational constraint. Then the \emph{dependency graph} of $\varphi$, denoted by $\cG(\varphi)$, is the graph comprising the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ for each atomic formula $z = \Transducer(x, \vec{y})$ in $\varphi$. Note that $(\Transducer, 0)$ and $(\Transducer, i)$ are the labels of the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ respectively.
+%Let $\varphi$ be a relational constraint. Then 
+The \emph{dependency graph} of a relational constraint $\varphi$, denoted by $\cG(\varphi)$, is the (directed) graph comprising the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ ($1\leq i\leq k$), for each atomic formula $z = \Transducer(x, \vec{y})$ in $\varphi$ and $\vec{y}=(y_1, \cdots, y_k)$. Note that $(\Transducer, 0)$ and $(\Transducer, i)$ are the labels of the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ respectively.
  
-We consider the situation that $\transet$ is 2PT or 1PT in this paper.
+We mainly consider that $\transet$ is 2PT or 1PT in this paper.
 %Similarly, we can define $\straightline[\owpt]$.
