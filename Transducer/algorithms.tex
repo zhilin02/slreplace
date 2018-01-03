@@ -82,20 +82,19 @@ guessing an accepting run of the product of NFAs in $\cE(x)$ for each $x \in \va
 from the fact that guessing an accepting run of an NFA can be fulfilled in nondeterministic logarithmic space, we conclude that the satisfiability can be checked by a nondeterministic Turing machine with %is in nondeterministic 
 $O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space.
 \end{proof}
-
+ 
 \subsection{Two-way transducers}
 
 %Let $\Transducer$ be a 2PT with $k$ parameters $y_1,\cdots, y_k$ and $\Aut$ be an NFA. Then the \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ producing an output $w' \in \Lang(\Aut)$, equipped with the parameters $w_1,\cdots, w_k$.
 
 
 \begin{lemma}\label{lem-2pt}
-Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$ can be constructed effectively from $\Transducer$ and $\Aut$ where each NFA is of size at most $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
+Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. $\Pre_\Transducer(\Aut)$ is a recognisable relation the representation of which can be constructed effectively from $\Transducer$ and $\Aut$ which is bounded by %where each NFA is of size at most 
+$2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
 \end{lemma}
 
 \begin{proof}
-Let $\Transducer=(X, Q, q_0, F, \delta)$ be a 2PT where $X = \{x_1,\cdots, x_k\}$ and $\Aut=(Q', q'_0, F', \delta')$ be an NFA.
-
-We first introduce some notations.
+Assume 2PT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and NFA $\Aut=(Q', q'_0, F', \delta')$. We first introduce some notations.
 
 For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$. 
 
@@ -123,6 +122,7 @@ From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, we deduce the follow
 Given an $\straightline[\twpt]$ formula $\varphi \wedge \psi$, its satisfiability can be decided in n-$\expspace$, where $n$ is the maximum length of paths in $\cG(\varphi)$. 
 \end{corollary}
 
+The complexity bound is tight ...
 
 \subsection{One-way transducers}
 
@@ -137,5 +137,10 @@ From Lemma~\ref{lem-1pt} and Theorem~\ref{thm-generic-dec}, we deduce the follow
 Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, its satisfiability can be decided in $\expspace$. 
 \end{corollary}
 
-reversal-bounded transducers ?
+\begin{remark}
+	instantiate the corollary by replace-all. 
+\end{remark}
+
+The complexity bound is tight since ...
+\subsection{reversal-bounded transducers ?}
 
