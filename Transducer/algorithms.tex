@@ -109,7 +109,7 @@ More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is computed 
 \item Construct a 2NFA $\Aut'' = (Q'', q''_{0}, F'', \delta'')$, where $Q'' = Q \times Q'$, $q''_0 = (q_0, q'_0)$, $F'' \subseteq F \times F'$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
 \item Transform $\Aut''$ into an equivalent NFA.
 \end{enumerate} 
-Note that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $(|T||\Aut|)=2^{O(|T||\Aut| \log(|T||\Aut|))}$. \tl{the second part a typo here?}
+Note that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $(|T||\Aut|)=2^{O(|T||\Aut| \log(|T||\Aut|))}$. \tl{a typo here?}
 
 \paragraph{Claim.} For each tuple of words $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
 
