@@ -130,7 +130,21 @@ From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, we deduce the follow
 Given an $\straightline[\twpt]$ formula $\varphi \wedge \psi$, its satisfiability can be decided in n-$\expspace$, where $n$ is the maximum length of paths in $\cG(\varphi)$. 
 \end{corollary}
 
-The complexity bound is tight ...
+%The complexity bound is tight ...
+
+\subsubsection{Lower-bound}
+
+We give a lower bound for the satisfiability problem for $\strline[2PT]$. 
+In particular, we show the problem is non-elementary.
+More specifically, we show that with $(\expheight+1)$ transducers, the problem is $\expheight$-EXPSPACE-hard.
+For any $\expheight$, we proceed by reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.
+The reduction relies on the ability to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
+Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}).
+
+
+%\input{two-way-lower.tex}
+
+%======================================================================================================
 
 \subsection{One-way transducers}
 
@@ -149,6 +163,20 @@ Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, its satisfiabilit
 	instantiate the corollary by replace-all. 
 \end{remark}
 
-The complexity bound is tight since ...
+The complexity bound is tight since we can show that $\strline[\replaceall]$ is EXPSPACE-hard. We reduce from EXPSPACE-hard tiling problems.  
+
+%\input{expspace-hardness.tex}
+
+%To show the above result, we will give a constraint that represents a straight-line program which ``transforms'' an automaton into exponentially many different automata.
+%These exponentially many automata will be used to check the vertical tiling relation for a tiling problem with an exponentially wide corridor.
+%Since such tiling problems are EXPSPACE-hard, the result follows.
+
+\begin{theorem}
+	Satisfiability of $\strline[1PT]$, even in the single-letter case, is EXPSPACE-hard.
+\end{theorem}
+
+
+
 \subsection{reversal-bounded transducers ?}
 
+\tl{include two-way non-parametric as well?}
