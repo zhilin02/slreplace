@@ -1,10 +1,10 @@
 %!TEX root = main.tex
 
-\section{Algorithmic results}
-\label{sec:algo}
+%\section{Algorithmic results}
 
 
-\subsection{A generic decision procedure based on recognisable relations}
+
+\section{A generic decision procedure with recognisable relations} \label{sec:algo}
 
 In this section, we assume an $\straightline[\transet]$ formula $\varphi \wedge \psi$ where $\varphi$ and $\psi$ are relational and  regular constraints respectively.
 We will present a generic decision procedure for $\straightline[\transet]$ based on the notion of recognisable relations.
@@ -26,8 +26,11 @@ We define $f^{(n)}(j, k)$ for $n\geq 1$ as $f^{(1)}(j,k)= f(j, k)$ and $f^{(n+1)
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
 for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation a representation of which can be computed effectively and  is bounded by %each NFA in the representation is bounded by 
-$f(|\Transducer|, |\Aut|)$. Then the satisfiability of $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in nondeterministic \tl{why not remove  nondeterministic?} $O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space, where $K$ is the maximum number of parameters of $\Transducer \in \transet$, 
-\tl{should not it be transducers appearing in the contraints?}
+$f(|\Transducer|, |\Aut|)$. Then the satisfiability of $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
+%\tl{why not remove  nondeterministic?} 
+$O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space, where $K$ is the maximum number of parameters of 
+%$\Transducer \in \transet$, 
+transducers appearing in the constraints, 
 $D$ is the maximum length of the paths in $\cG(\varphi)$.
 \end{theorem}
 
@@ -73,15 +76,18 @@ For each iteration, we update $i$ simply by  $i: = i+1$.
 When exiting the loop, for each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$.
 
 To decide the satisfiability of $\varphi \wedge \psi$, we have the following nondeterministic algorithm: first (nondeterministically) construct the sets $\cE(x)$ for $x \in \vars(\varphi \wedge \psi)$ as detailed above, then 
-guessing an accepting run of the product of NFAs in $\cE(x)$ for each $x \in \vars(\varphi \wedge \psi)$.
-\tl{is this just checking the emptiness of the product of NFAs?}
+%guessing an accepting run of the product of NFAs 
+checking the emptiness of the product of NFAs in $\cE(x)$ for each $x \in \vars(\varphi \wedge \psi)$.
 
 
 \paragraph{Complexity analysis.} For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$ and $N_i$ be the maximum size of NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$. Then we have $M_{i+1} \le M_i + (K+1)M_i = (K+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies that $|T| \le |\varphi|$, we have $N_{i+1} \le f(|\varphi|, N_i)$. Therefore, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(K+2)^D$ elements and each NFA in $\cE(x)$ is of size bounded by $f^{(D)}(|\varphi|, |\psi|)$. Moreover, 
-\tl{this can be adapted accordingly?}
-from the fact that guessing an accepting run of an NFA can be fulfilled in nondeterministic logarithmic space, we conclude that the satisfiability can be checked by a nondeterministic Turing machine with %is in nondeterministic 
+%\tl{this can be adapted accordingly?}
+%from the fact that guessing an accepting run of an NFA 
+emptiness checking can be done in nondeterministic logarithmic space in the size of the product automaton, we conclude that the satisfiability can be checked by a nondeterministic Turing machine with %is in nondeterministic 
 $O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space.
 \end{proof}
+
+\section{Instantiations of the generic decision procedure}
  
 \subsection{Two-way transducers}
 
@@ -96,12 +102,12 @@ $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
 \begin{proof}
 Assume 2PT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and NFA $\Aut=(Q', q'_0, F', \delta')$. %We first introduce some notations.
 
-Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q \times Q$. \tl{$Q$ should be $Q'$?}
+Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$. %\tl{$Q$ should be $Q'$?}
 %
  Then $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is the NFA constructed from $\Transducer$  by simulating a run of $\Aut$ on the output of $\Transducer$. In particular, when the output contains variable $x_i$, a pair of states $(q_1', q_2')$ will be nondeterministically selected from $S_{x_i}$, and the component of the state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ corresponding to $\Aut_1$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
 
-\tl{zhilin, I am not quite clear about the para, $y_1$ is a typo of $x_1$? I wrote a para above; please check}
-(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
+%\tl{zhilin, I am not quite clear about the para, $y_1$ is a typo of $x_1$? I wrote a para above; please check}
+%(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
 
 
 More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is computed in two steps:
@@ -109,7 +115,7 @@ More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is computed 
 \item Construct a 2NFA $\Aut'' = (Q'', q''_{0}, F'', \delta'')$, where $Q'' = Q \times Q'$, $q''_0 = (q_0, q'_0)$, $F'' \subseteq F \times F'$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
 \item Transform $\Aut''$ into an equivalent NFA.
 \end{enumerate} 
-Note that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $(|T||\Aut|)=2^{O(|T||\Aut| \log(|T||\Aut|))}$. \tl{a typo here?}
+Note that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
 
 \paragraph{Claim.} For each tuple of words $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
 
