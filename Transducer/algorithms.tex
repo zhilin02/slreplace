@@ -15,23 +15,26 @@ We will present a generic decision procedure for $\straightline[\transet]$ based
 %	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
 
-For a recognisable relation $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$, its \emph{representation} is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$, where each $\Aut^{(i)}_j$ is an NFA.  
-We say that \emph{$R$ is bounded by size $\ell$} if each NFA  $\Aut^{(i)}_j$ in the representation of $R$ is bounded by $\ell$. 
+
+For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$. where each $\Aut^{(i)}_j$ is an NFA, such that 
+$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$. The number $k, n$ are called the \emph{dimension} and \emph{width} respectively of the representation.
+Moreover, each NFA $\Aut^{(i)}_j$ is called an \emph{atom} NFA of the representation, and the maximum size of the atom NFAs is called the \emph{atom size} of the representation. 
+%We say that \emph{a representation of $R$ is bounded by size $\ell$} if the size of each atom NFA  in the representation is bounded by $\ell$. 
 
 Let $\Transducer$ be a transducer from $\transet$ with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
 
 
-We define $f^{(n)}(j, k)$ for $n\geq 1$ as $f^{(1)}(j,k)= f(j, k)$ and $f^{(n+1)}(j, k) = f(j, f^{(n)}(j,k))$.
+We define $f^{\langle n \rangle}(j, k)$ for $n\geq 1$ as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. For instance, if $f(j, k) = jk$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j \times f(j, k)= j^2k$.
 
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation a representation of which can be computed effectively and  is bounded by %each NFA in the representation is bounded by 
-$f(|\Transducer|, |\Aut|)$. Then the satisfiability of $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
+for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation, moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be computed effectively. %each NFA in the representation is bounded by 
+ Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
 %\tl{why not remove  nondeterministic?} 
-$O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space, where $K$ is the maximum number of parameters of 
-%$\Transducer \in \transet$, 
-transducers appearing in the constraints, 
-$D$ is the maximum length of the paths in $\cG(\varphi)$.
+$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
+%, where $K$ is the maximum number of parameters of 
+%transducers appearing in the constraints, 
+%$D$ is the maximum length of the paths in $\cG(\varphi)$.
 \end{theorem}
 
 \begin{proof}
@@ -40,24 +43,21 @@ Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula.
 We first show how to compute \emph{nondeterministically} a collection of regular constraints $\cE(x)$ over the alphabet $\Sigma$ for each variable $x \in \vars(\varphi \wedge \psi)$ utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
 
-%Notice that $\cE(x)$ is represented succinctly as a set of pairs $(S, P)$, where $S=(Q, \delta)$ is a transition graph and $P \subseteq Q \times Q$. The intention of $(S, P)$ is to represent succinctly the collection of the atomic regular constraints containing $(\Sigma, Q, \delta, q, \{q'\})$ for each $(q,q') \in P$, where $q$ is the initial state and $\{q'\}$ is the set of final states.
 
 Initially, let $\cG_0:= \cG(\varphi)$, and
-%let $x \in \Aut_1 \wedge \cdots \wedge x \in \Aut_n$ be the conjunction of all the atomic regular constraints related to $x$ in $\psi$. 
-%For each $i \in [n]$, let $\Aut_i=(\Sigma, Q_i, \delta_i, q_{0,i}, F_i)$.
-% We nondeterministically choose $q_i \in F_i$ and set $\cE_0(x):=  \left\{((Q_i, \delta_i), \{(q_{0,i}, q_i)\}) \mid i \in [n] \right\}$.
-% We define %$\cE_0(x)$  to be 
-$\cE_0(x):= \left\{\Aut_m\mid x\in \Aut_m\text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
- % \left\{\Aut_1,\cdots, \Aut_n \right\}$.
-%
+$\cE_0(x):= \left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
+
 Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
 $\cG_i$ becomes empty, i.e., a graph without edges.
  
-We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessor and has $k+1$ successors ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$. Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, where $\Aut_j = (\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ for each $j \in [n]$. %Moreover, for each $j \in [n]$, 
-By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and  we  represent it by $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$.
+We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
+Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$. 
+Note that two different outgoing edges of $x$ in $\cG_i$ may go to the same variable.
+Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, where $\Aut_j = (\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ for each $j \in [n]$. %Moreover, for each $j \in [n]$, 
+By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and a representation of it, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
 Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\cdots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
-\item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \cdots, \Aut^{(r_j)}_{j, k}\right)$ for $r_j \in [m_j]$.
+\item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \cdots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
 %
 \item For each $z \in \{y_0,\cdots, y_k\}$, let
 \[
@@ -80,11 +80,17 @@ To decide the satisfiability of $\varphi \wedge \psi$, we have the following non
 checking the emptiness of the product of NFAs in $\cE(x)$ for each $x \in \vars(\varphi \wedge \psi)$.
 
 
-\paragraph{Complexity analysis.} For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$ and $N_i$ be the maximum size of NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$. Then we have $M_{i+1} \le M_i + (K+1)M_i = (K+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies that $|T| \le |\varphi|$, we have $N_{i+1} \le f(|\varphi|, N_i)$. Therefore, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(K+2)^D$ elements and each NFA in $\cE(x)$ is of size bounded by $f^{(D)}(|\varphi|, |\psi|)$. Moreover, 
+\paragraph{Complexity analysis.} For each $i$, 
+\begin{itemize}
+\item let $M_i$ denote the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$,
+\item and $N_i$ denote the maximum size of NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
+\end{itemize}
+Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies that $|T| \le |\varphi|$, we have $N_{i+1} \le f(|\varphi|, N_i)$. Therefore, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)}$ elements and each NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. Moreover, 
 %\tl{this can be adapted accordingly?}
 %from the fact that guessing an accepting run of an NFA 
-emptiness checking can be done in nondeterministic logarithmic space in the size of the product automaton, we conclude that the satisfiability can be checked by a nondeterministic Turing machine with %is in nondeterministic 
-$O((K+2)^D f^{(D)}(|\varphi|, |\psi|))$ space.
+since the emptiness checking can be done in nondeterministic logarithmic space in the size of the product automaton, we conclude that the aforementioned nondeterministic algorithm takes   $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space. 
+%Therefore, the satisfiability can be checked by a nondeterministic Turing machine with 
+%$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
 \end{proof}
 
 \section{Instantiations of the generic decision procedure}
