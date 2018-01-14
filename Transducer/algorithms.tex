@@ -97,21 +97,23 @@ since the emptiness checking can be done in nondeterministic logarithmic space i
 
 \section{Instantiations of the generic decision procedure}
  
-\subsection{Two-way transducers}
+\subsection{Two-way transducers}\label{sec-2way}
 
 %Let $\Transducer$ be a 2PT with $k$ parameters $y_1,\cdots, y_k$ and $\Aut$ be an NFA. Then the \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ producing an output $w' \in \Lang(\Aut)$, equipped with the parameters $w_1,\cdots, w_k$.
 
 
 \begin{lemma}\label{lem-2pt}
-Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation, moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively.
+Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation, moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|^2\log (|\Transducer||\Aut|))}$, can be computed effectively.
 \end{lemma}
 
 \begin{proof}
 Assume a 2PT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and an NFA $\Aut=(Q', q'_0, F', \delta')$. %We first introduce some notations.
 
+To compute $\Pre_\Transducer(\Aut)$, we use two notations $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ and $\Aut[S]$ defined below.
+
 Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$. %\tl{$Q$ should be $Q'$?}
 %
- Then $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is the NFA constructed from $\Transducer$  by simulating a run of $\Aut$ on the output of $\Transducer$. In particular, when the output contains variable $x_i$, a pair of states $(q_1', q_2')$ will be nondeterministically selected from $S_{x_i}$, and the component of the state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ corresponding to $\Aut_1$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
+Then $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is the NFA constructed from $\Transducer$  by simulating a run of $\Aut$ on the output of $\Transducer$. In particular, when the a transition of $\Transducer$ outputs $x_i$ (instead of a single letter), a pair of states $(q_1', q_2')$ will be nondeterministically selected from $S_{x_i}$, and the component of the state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ corresponding to $\Aut_1$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
 
 %\tl{zhilin, I am not quite clear about the para, $y_1$ is a typo of $x_1$? I wrote a para above; please check}
 %(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
@@ -119,22 +121,25 @@ Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$. %\tl{$Q$ should be $Q
 
 More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is computed in two steps:
 \begin{enumerate} 
-\item Construct a 2NFA $\Aut'' = (Q'', q''_{0}, F'', \delta'')$, where $Q'' = Q \times Q'$, $q''_0 = (q_0, q'_0)$, $F'' \subseteq F \times F'$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
+\item Construct a 2NFA $\Aut'' = (Q'', q''_{0}, F'', \delta'')$, where $Q'' = Q \times Q'$, $q''_0 = (q_0, q'_0)$, $F'' = F \times F'$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
 \item Transform $\Aut''$ into an equivalent NFA.
 \end{enumerate} 
-Note that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
+From Proposition~\ref{prop-2nfa-nfa}, the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
 
-\paragraph{Claim.} For each tuple of words $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
+For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
+
+
+\paragraph{Claim.} For each tuple of strings $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
 
 \medskip
+
 
 Therefore, $\Pre_\Transducer(\Aut)$ is a union of
 \[\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}]), \]
 for $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$. 
 
-For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}).
 
-We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$ can be constructed effectively from $\Transducer$ and $\Aut$ where each NFA is of size at most $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
+We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(\max(|\Transducer||\Aut|\log (|\Transducer||\Aut|), |\Aut|^2 \log |\Aut|)} \le 2^{O(|\Transducer||\Aut|^2\log (|\Transducer||\Aut|))}$, can be constructed effectively.
 \end{proof}
 
 From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, we deduce the following result.

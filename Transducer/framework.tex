@@ -131,12 +131,12 @@ transition relation  $\transrel\subseteq \controls \times
 The notion of runs of 2NFT on an input string can be seen as a generalisation of 2NFA with outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a
-sequence of pairs $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
+sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
 such that, let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
     \item for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, b_j) \in
-        \transrel$, and $i_{j+1} = i_j + dir$.
+        \transrel$, and $i_{j+1} = i_j + dir$ for some $dir \in \{\Left, \Stay, \Right\}$.
 \end{itemize}
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the run.
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
@@ -244,13 +244,13 @@ will often write $\transrel\subseteq \controls \times \ialphabet \times
 
 Notice that parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_m$ with strings 
-$s_1,\ldots,s_m$ gives rise to a standard finite-state transducer which outputs
-the string $s_j$, whenever a transition of the form $(p,a,dir,x_j,q)$ is
+$w_1,\ldots, w_m$ gives rise to a standard finite-state transducer which outputs
+the string $w_j$, whenever a transition of the form $(p, a, dir, x_j, q)$ is
 taken by the transducer. This instantiation of the parameters is only done 
 \emph{once} before the parametric transducer is run. [It is \emph{precisely}
 for this reason that parameteric transducers cannot in general be captured by 
 the standard finite-state transducer model that nondeterministically ``guesses''
-the parameters separately for each transition.]  
+the parameters separately for each transition.]  We use $\Tran(\Transducer)$ to denote the set of string tuples $(w, w_1, \ldots, w_m, w')$ such that when $x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, $\Transducer$ produces the output $w'$ from the input $w$. 
 \tl{maybe emphasise that this is a  ``off-line" rather than on-line  instantiation?}
 
 We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.

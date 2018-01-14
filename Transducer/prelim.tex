@@ -88,8 +88,8 @@ defined as follows. Let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$. The
 following conditions, then, have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
-    \item for every $j \in [m-1]$, we have $(q_j,a_{i_j},dir,q_{j+1}) \in
-        \transrel$, and $i_{j+1} = i_j + dir$.
+    \item for every $j \in [m-1]$, we have $(q_j,a_{i_j}, dir, q_{j+1}) \in
+        \transrel$ and $i_{j+1} = i_j + dir$ for some $dir \in  \{\Left, \Stay, \Right\}$.
 \end{itemize}
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
 A word $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
@@ -111,9 +111,11 @@ For convenience, we will also call an NFA without initial and final states, that
 \emph{regular languages}. The following result is standard and can be found in textbooks on automata theory
 (e.g. see \cite{Kozen-automata}). 
 
-\begin{proposition}
-	Every 2NFA is equivalent to an NFA. Moreover, the equivalent
-    NFA can be computed in exponential time. Moreover, every NFA can be transformed in polynomial time into an $\varepsilon$-free NFA, that is, an NFA where $\transrel\subseteq \controls \times \ialphabet\times   \{\Right\} \times \controls $.
+\begin{proposition}[\cite{Kozen-automata}]\label{prop-2nfa-nfa}
+	Every 2NFA $\Aut$ is equivalent to an NFA of size $2^{O(|\Aut| \log |\Aut|)}$. 
+%	Moreover, the equivalent
+%    NFA can be computed in exponential time. 
+    Moreover, every NFA can be transformed in polynomial time into an $\varepsilon$-free NFA, that is, an NFA where $\transrel\subseteq \controls \times \ialphabet\times   \{\Right\} \times \controls $.
 \end{proposition}
 
 In the rest of this paper, we always use NFAs to mean $\varepsilon$-free NFAs and we will omit the directions in transitions.
