@@ -1,0 +1,39 @@
+%!TEX root = main.tex
+
+\section{Details in Section~\ref{sec-2way}}
+
+\paragraph{Claim.} For each tuple of strings $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
+
+\begin{proof}
+Recall $\Transducer = (X, Q, q_0, F, \delta)$ with $X= \{x_1,\cdots, x_k\}$ and $\Aut = (Q', q'_0, F', \delta')$. 
+Suppose $\Gamma = \Sigma \cup X$. 
+
+Let $w, w_1, \cdots, w_k$ be strings and $w = a_1 \cdots a_n$ with $a_i \in \Sigma$ for each $i \in [n]$.
+
+\smallskip
+
+\noindent ``Only if'' direction: 
+
+Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
+
+Because $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$, there is an accepting run of $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}$ on $w$. From the construction of  $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}$, we know that 
+there are an accepting run of $\Transducer$ on $w$, 
+say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, and a state sequence $q'_0, \ldots, q'_m \in Q'$, such that 
+\begin{itemize}
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$, $q'_m \in F'$,
+%
+\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
+        \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
+        %
+ \item for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $(q'_j, \gamma_j, q'_{j+1}) \in \delta'$, otherwise, $\gamma_j \in X$, we have $(q'_j, q'_{j+1}) \in S_{\gamma_j}$. 
+\end{itemize}
+Suppose $i \in [k]$. From the fact that $w_i \in \Lang(\Aut[S_{x_i}])$, we deduce that for each $j \in \{0\} \cup [m]$ such that $\gamma_j = x_i$, $w_i$ is accepted by $\Aut(q'_j, \{q'_{j+1}\})$.
+
+Let $w' = w'_0 \cdots w'_m$ such that for each $j \in \{0\} \cup [m]$, if  $\gamma_j \in \Sigma$, then $w'_j = \gamma_j$, otherwise, let $\gamma_j = x_i$, then $w'_j = w_i$. Then according to the semantics of $\Transducer$, we deduce that $(w, w_1, \cdots, w_k, w') \in \Tran(\Transducer)$.
+Moreover, for each $j \in \{0\} \cup [m]$, $w'_j$ is accepted by $\Aut(q'_j, \{q'_{j+1}\})$. Therefore, $w'$ is accepted by $\Aut(q'_0, \{q'_m\})$, thus accepted by $\Aut$. We conclude that $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$.
+
+\smallskip
+
+
+\noindent ``If'' direction: \zhilin{to be done}
+\end{proof}
