@@ -1,4 +1,4 @@
-
+%!TEX root = main.tex
 
 \section{Instantiations of the generic decision procedure}
  
@@ -85,17 +85,22 @@ Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,C
 
 
 \begin{lemma}\label{lem-1pt}
-Let $\Transducer$ be a 1PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $|\Transducer||\Aut|$, can be computed effectively.
+Let $\Transducer$ be a 1PT and $\Aut$ be a succinctly encoded NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $|\Transducer||\Aut|$, can be computed effectively.
 \end{lemma}
 
-Lemma~\ref{lem-1pt} can be proved in the same way as Lemma~\ref{lem-2pt}. The only difference is that the construction of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}}$ is simpler and its size is at most $|\Transducer| |\Aut|$, since it is unnecessary to transform 2NFA to NFA.
+Lemma~\ref{lem-1pt} can be proved in the same way as Lemma~\ref{lem-2pt}. The only difference is that the construction of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}, q}$ is simpler and its size is at most $|\Transducer| |\Aut|$, since the transformation from  2NFA to NFA is not needed.
 
 From Lemma~\ref{lem-1pt} and Theorem~\ref{thm-generic-dec}, we deduce the following result.
 %
-\begin{corollary}
-Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, its satisfiability can be decided in $\expspace$. 
-\end{corollary}
+\begin{theorem}
+%Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
+The satisfiability problem of $\straightline[\owpt]$ is $\expspace$-complete. 
+\end{theorem}
 
+The lower bound in Theorem~\ref{thm-1pt} is deduced from the result in \cite{LB16} that the satisfiability of straight-line string constraints with concatenation and one-way transducers, which are both captured by 1PT, is $\expspace$-complete.
+
+
+\zhilin{Should we include the lower bound  shown by Matt for concatenation and $\replaceall$ ?}
 \begin{remark}
 	instantiate the corollary by replace-all. 
 \end{remark}
@@ -108,7 +113,7 @@ The complexity bound is tight since we can show that $\strline[\replaceall]$ is 
 %These exponentially many automata will be used to check the vertical tiling relation for a tiling problem with an exponentially wide corridor.
 %Since such tiling problems are EXPSPACE-hard, the result follows.
 
-\begin{theorem}
+\begin{theorem}\label{thm-1pt}
 	Satisfiability of $\strline[1PT]$, even in the single-letter case, is EXPSPACE-hard.
 \end{theorem}
 
