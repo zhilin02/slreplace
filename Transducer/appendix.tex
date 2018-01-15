@@ -12,28 +12,75 @@ Let $w, w_1, \cdots, w_k$ be strings and $w = a_1 \cdots a_n$ with $a_i \in \Sig
 
 \smallskip
 
-\noindent ``Only if'' direction: 
+\noindent {\it ``Only if'' direction}: 
 
-Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
+\smallskip
 
-Because $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$, there is an accepting run of $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}$ on $w$. From the construction of  $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}$, we know that 
-there are an accepting run of $\Transducer$ on $w$, 
-say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, and a state sequence $q'_0, \ldots, q'_m \in Q'$, such that 
+Assume that $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$.
+
+
+From the definition of $\Pre_\Transducer(\Aut)$, we know that there are a string $w' $ and an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, such that 
+%
 \begin{itemize}
-\item $i_0=0$, $i_m = n+1$, $q_m \in F$, $q'_m \in F'$,
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$,
+%
+\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
+        \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
+        %
+ \item $w'$ is the output corresponding to the run, that is, $ w' = w'_0 \cdots w'_m$, where for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $w'_j = \gamma_j$, otherwise, let $\gamma_j = x_i$, we have $w'_j = w_i$,
+ %
+ \item  $w' \in \Lang(\Aut)$.
+\end{itemize}
+
+Since $ w' = w'_0 \cdots w'_m$, we know that $w' \in \Lang(\Aut)$ iff there is a state sequence $q'_0, \cdots, q'_{m+1} \in Q'$ such that $q'_j \xrightarrow[\Aut]{w'_j} q'_{j+1}$ for each $j \in [m]$, and $q'_{m+1} \in F'$.
+
+Thus, we deduce that 
+there are a string $w' $ and an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, such that 
+%
+\begin{itemize}
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$,
+%
+\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
+        \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
+        %
+ \item $w'$ is the output corresponding to the run, that is, $ w' = w'_0 \cdots w'_m$, where for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $w'_j = \gamma_j$, otherwise, let $\gamma_j = x_i$, we have $w'_j = w_i$,
+ %
+ \item  there is a state sequence $q'_0, \cdots, q'_{m+1} \in Q'$ such that $q'_j \xrightarrow[\Aut]{w'_j} q'_{j+1}$ for each $j \in [m]$, and $q'_{m+1} \in F'$.
+\end{itemize}
+
+For each $i \in [k]$, let $S_{x_i}$ denote the set of state pairs $(q'_j, q'_{j+1})$ such that $j \in [m]$ and $\gamma_j  = x_i$. Then for each $i \in [k]$, $w_i$ is accepted by $\Aut[S_{x_i}]$.  Thus, 
+there is an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, such that 
+%
+\begin{itemize}
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$,
+%
+\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
+        \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
+        %
+ \item  there is a state sequence $q'_0, \cdots, q'_{m+1} \in Q'$ such that $q'_{m+1} \in F'$, and for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $(q'_j, \gamma_j, q'_{j+1}) \in \delta'$, otherwise, let $\gamma_j =x_i$, then $(q'_j, q'_{j+1}) \in S_{x_i}$.
+\end{itemize}
+
+According to the definition of $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}$, we conclude that $w$ is accepted by $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}$ and for each $i \in [k]$, $w_i $ is accepted by $\Aut[S_{x_i}]$.
+
+\smallskip
+
+\noindent {\it ``If'' direction}: 
+
+\smallskip
+
+Suppose there are $S_{x_1},\cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$. 
+
+Then  there are an accepting run of $\Transducer$ on $w$, 
+say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, and a state sequence $q'_0, \ldots, q'_{m+1} \in Q'$, such that 
+\begin{itemize}
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$, $q'_{m+1} \in F'$,
 %
 \item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
         \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
         %
  \item for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $(q'_j, \gamma_j, q'_{j+1}) \in \delta'$, otherwise, $\gamma_j \in X$, we have $(q'_j, q'_{j+1}) \in S_{\gamma_j}$. 
 \end{itemize}
-Suppose $i \in [k]$. From the fact that $w_i \in \Lang(\Aut[S_{x_i}])$, we deduce that for each $j \in \{0\} \cup [m]$ such that $\gamma_j = x_i$, $w_i$ is accepted by $\Aut(q'_j, \{q'_{j+1}\})$.
-
-Let $w' = w'_0 \cdots w'_m$ such that for each $j \in \{0\} \cup [m]$, if  $\gamma_j \in \Sigma$, then $w'_j = \gamma_j$, otherwise, let $\gamma_j = x_i$, then $w'_j = w_i$. Then according to the semantics of $\Transducer$, we deduce that $(w, w_1, \cdots, w_k, w') \in \Tran(\Transducer)$.
-Moreover, for each $j \in \{0\} \cup [m]$, $w'_j$ is accepted by $\Aut(q'_j, \{q'_{j+1}\})$. Therefore, $w'$ is accepted by $\Aut(q'_0, \{q'_m\})$, thus accepted by $\Aut$. We conclude that $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$.
-
-\smallskip
-
-
-\noindent ``If'' direction: \zhilin{to be done}
+Let $w'$ be the output of the run on $w$, equipped with the parameters $w_1,\ldots, w_k$, more precisely, $w' = w'_0 \cdots w'_m$ such that for each $j \in \{0\} \cup [m]$, $w'_j = \gamma_j$ if $\gamma_j \in \Sigma$, and $w'_j = w_i$ if $\gamma_j = x_i$ for $i \in [k]$. From the fact that $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, we deduce that for each $j \in \{0\} \cup [m]$, $q'_j \xrightarrow[\Aut]{w'_j} q'_{j+1}$.
+Therefore, $w'$ is accepted by $\Aut$.
+We conclude that $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$.
 \end{proof}
