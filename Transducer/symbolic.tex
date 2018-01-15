@@ -3,7 +3,6 @@
 \section{Symbolic extension}
 \label{sec:symbolic}
 
-\zhilin{At present, I just put some definitions below. To be cleaned.}
 
 In this section, we consider an extension of parametric transducers to infinite alphabets, called \emph{symbolic parametric transducers}, where the input letters are replaced by formulae over an infinite data domain and the output letters are replaced by terms. 
 %
@@ -92,6 +91,7 @@ $f$ is a $s /s$-term,
 \item non-symbolic transitions $(q, \EndLeft, \Right, q', c)$ and $(q, \EndLeft, \Left, q', c)$, where $c$ is a constant of sort $s$. 
 \end{itemize}
 \end{itemize}
+A 2NST is an NST if for each $(q, \psi, dir, q', f)$, we have $dir \in \{\Stay, \Right\}$.
 \end{definition}
 
 \paragraph{Semantics of 2NST.}
@@ -112,6 +112,9 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
+\begin{proposition}
+Each 2NST can be turned into an equivalent NST. 
+\end{proposition}
 
 
 \begin{definition}[Symbolic parametric transducers]
@@ -141,3 +144,4 @@ the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, x_j)
 taken by the transducer. This instantiation of the parameters is only done 
 \emph{once} before the symbolic parametric transducer is run.
 
+\zhilin{extend the generic decision procedure to 2NSPT.} 
