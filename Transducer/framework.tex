@@ -143,15 +143,17 @@ A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accep
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
 \tl{I propose we unify the term: e.g., using string instead of word}
-\paragraph{Reversal-bounded transducers.}    
-Let $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) $ be a run of $\Transducer$ on some string $w$. A \emph{reversal} of the run is a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ where the direction of the reading head is reversed. More precisely, it is a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ satisfying one of the following constraints:
-\begin{itemize}
-\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}+1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}-1$,
-\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}-1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}+1$. 
-\end{itemize}
-Let $k \in \Nat$. A run of $\Transducer$ is said to be \emph{$k$-reversal-bounded} if the run contains at most $k$ distinct reversals.
-A 2NFT $\Transducer$ is \emph{$k$-reversal-bounded} if all runs of  $\Transducer$ are $k$-reversal-bounded.
 
+%============ removed, as agreed that rb will not be included. =========================
+%\paragraph{Reversal-bounded transducers.}    
+%Let $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) $ be a run of $\Transducer$ on some string $w$. A \emph{reversal} of the run is a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ where the direction of the reading head is reversed. More precisely, it is a maximal subsequence $(q_j, i_j , b_j), \cdots, (q_{j'}, i_{j'}, b_{j'})$ satisfying one of the following constraints:
+%\begin{itemize}
+%\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}+1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}-1$,
+%\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}-1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}+1$. 
+%\end{itemize}
+%Let $k \in \Nat$. A run of $\Transducer$ is said to be \emph{$k$-reversal-bounded} if the run contains at most $k$ distinct reversals.
+%A 2NFT $\Transducer$ is \emph{$k$-reversal-bounded} if all runs of  $\Transducer$ are $k$-reversal-bounded.
+%====================================================================================================
 
 Given a 2NFT $T$, We use $\Transducer(x, y)$ to denote the relation such that there is an accepting run of $\Transducer$ on $x$ with the output $y$.
 \tl{I feel this is slightly confusing, let's whether we can avoid that}
@@ -261,8 +263,8 @@ Give examples: htmlescape, replace-all, and reverse.
 
 Give example of computing reverse of DNA string.
 
-\paragraph{The constraint language.}
-For a class $\transet$ of transducers, we consider the constraint language $\straightline[\transet]$ which comprises the formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
+\subsection{The constraint language}
+For a class $\transet$ of parametric transducers, we consider the constraint language $\straightline[\transet]$ which comprises the formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
 \[
 \begin{array}{l l l r}
 \varphi &::=& z = \Transducer(x, \vec{y}) \mid \varphi \wedge \varphi, &  \hfill  \mbox{(relational constraint) } \\ 
@@ -272,10 +274,10 @@ For a class $\transet$ of transducers, we consider the constraint language $\str
 where $\Transducer$ is a transducer from $\transet$ over the alphabet $\Sigma$ and $\Aut$ is an NFA over $\Sigma$. Moreover, we require that the dependency graph of $\varphi$ defined below is acyclic. We use $\vars(\varphi \wedge \psi)$ to denote the set of string variables occurring in $\varphi \wedge \psi$.
 
 %Let $\varphi$ be a relational constraint. Then 
-The \emph{dependency graph} of a relational constraint $\varphi$, denoted by $\cG(\varphi)$, is the (directed) graph comprising the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ for $i\in [k]$ and  each atomic formula $z = \Transducer(x, \vec{y})$ in $\varphi$ with $\vec{y}=(y_1, \cdots, y_k)$. Note that $(\Transducer, 0)$ and $(\Transducer, i)$ are the labels of the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ respectively.
+The \emph{dependency graph} of a relational constraint $\varphi$, denoted by $\cG(\varphi)$, is the (directed acyclic) graph comprising the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ for $i\in [k]$ and  each atomic formula $z = \Transducer(x, \vec{y})$ in $\varphi$ with $\vec{y}=(y_1, \cdots, y_k)$. Note that $(\Transducer, 0)$ and $(\Transducer, i)$ are the labels of the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ respectively.
 
-Let $\varphi$ be a relational constraint. We use $\rcdim(\varphi)$ to denote the \emph{dimension} of $\varphi$, which is defined as the maximum number of parameters of the transducers occurring in $\varphi$. Moreover, we use $\rcdep(\varphi)$ to denote the \emph{depth} of $\varphi$, which is defined as the maximum length (i.e. number of edges) of the paths in $\cG(\varphi)$.
+Let $\varphi$ be a relational constraint. We use $\rcdim(\varphi)$ to denote the \emph{dimension} of $\varphi$, which is defined as the maximum number of parameters of the transducers occurring in $\varphi$. Moreover, we use $\rcdep(\varphi)$ to denote the \emph{depth} of $\varphi$, which is defined as the maximum length (i.e., number of edges) of the paths in $\cG(\varphi)$.
  
 We mainly consider that $\transet$ is 2PT or 1PT in this paper. 
-\tl{I am not sure about the plan, but here maybe it is worth mentioning that concatenation can be treated as 1PT. Moreover, do we consider 2T as well? in this case, concatenation cannot be encoded.} 
+%\tl{I am not sure about the plan, but here maybe it is worth mentioning that concatenation can be treated as 1PT. Moreover, do we consider 2T as well? in this case, concatenation cannot be encoded.} 
 %Similarly, we can define $\straightline[\owpt]$.
