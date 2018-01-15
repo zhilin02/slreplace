@@ -17,34 +17,50 @@ In this section,  we present a generic decision procedure for $\straightline[\tr
 
 For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
 $R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, and each NFA $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
-Furthermore, to obtain tight space complexity bounds (in some cases), we do the following transformation:
+Furthermore, to obtain tight space complexity bounds (in some cases), we notice that, 
+suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$, it holds that $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be decoupled as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$, 
 %
-%Each representation can be turned into one satisfying the requirement as follows: 
-Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have 
-\begin{align*}
-	R  & =   \bigcup_{i=1}^n \prod_{j=1}^k \Lang(\Aut^{(i)}_j) \\
-	   & =   \bigcup_{i=1}^n  \prod_{j=1}^k \bigcup \limits_{q_j \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q_j\}))\\
-	   &=	\bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \prod_{j=1}^k \Lang(\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})) 
-	   %\times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\})).
-\end{align*}
-%
-Notice that each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be written as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.
-
 %\footnote{Each representation can be turned into one satisfying the requirement as follows: Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have $R = \bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \Lang(\Aut^{(i)}_1(q^{(i)}_{0, 1}, \{q^{(i)}_1\})) \times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\}))$. Each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be encoded as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.} 
 %
-that each atom $\Aut^{(i)}_j$ is \emph{succinctly} encoded into a pair $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$, such that $\Lang(\Aut^{(i)}_j) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. The size of $((\controls, \transrel), S)$ is defined as $|\controls|$. The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
+%
+and thus each $\Aut^{(i)}_j$ can be \emph{succinctly} encoded in the form of $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is a set of ``initial-final" pair of states, such that $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ \tl{previously, it was $\bigcap$, but I guess it was a typo?} with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. 
+\tl{this is generally correct, but specifically, there is only one initial state for the automata, so $S$ could be made more precisely?}
+
+It follows that 
+%we do the following transformation:
+%
+%Each representation can be turned into one satisfying the requirement as follows: 
+%we have 
+\begin{align*}
+R  & =   \bigcup_{i=1}^n \prod_{j=1}^k \Lang(\Aut^{(i)}_j) \\
+& =   \bigcup_{i=1}^n  \prod_{j=1}^k \bigcup \limits_{q_j \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q_j\}))\\
+&=	\bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \prod_{j=1}^k \Lang(\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})) 
+%\times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\})).
+\end{align*}
+%
+%
+%that each atom $\Aut^{(i)}_j$ is \emph{succinctly} encoded into a pair $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$, such that $\Lang(\Aut^{(i)}_j) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. 
+%
+The size of an automaton of the form $((\controls, \transrel), S)$ is defined as $|\controls|$, and thus we define the 
+the \emph{atom size} of $T$, written $|T|$, \tl{check} to be $\max\{|Q_{j}^{(i)}|: i\in [n], j\in[k]\}$.
+
+%The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
 
 %it is the product of $\cB(q, \{q'\})$ for an NFA $\cB=(\controls, q_0, \transrel, \finals)$ and $(q, q') \in S$ with $S \subseteq Q \times Q$, then we encode $\Aut^{(i)}_j$ \emph{succinctly} as a pair $(\transrel, S)$. Note that the \emph{size} of this succinct encoding is $|\transrel|+|S|$, which is polynomial in $|\controls|$, while $|\Aut^{(i)}_j|$ is exponential in $|S|$.
 
+\medskip
 
-Let $\Transducer$ be a transducer from $\transet$ with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{preimage} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
+Let $\Transducer$ be a parametric transducer %from $\transet$ 
+with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{pre-image} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
 
 
-We define $f^{\langle n \rangle}(j, k)$ for $n\geq 1$ as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. For instance, if $f(j, k) = j*k$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j * f(j, k)= j^2k$.
+We define $f^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. 
+
+%For instance, if $f(j, k) = j*k$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j * f(j, k)= j^2k$.
 
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be computed effectively. %each NFA in the representation is bounded by 
+for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be determined effectively. %each NFA in the representation is bounded by 
  Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
 %\tl{why not remove  nondeterministic?} 
 $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
@@ -56,11 +72,11 @@ $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\
 \begin{proof}
 Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
 
-We first show how to compute \emph{nondeterministically} $\cE(x)$, a collection of succinctly encoded NFAs over the alphabet $\Sigma$, for each variable $x \in \vars(\varphi \wedge \psi)$, by utilising the dependency graph $\cG(\varphi)$. 
+We first \emph{nondeterministically} compute $\cE(x)$, a collection of succinctly encoded NFAs over the alphabet $\Sigma$, for each variable $x \in \vars(\varphi \wedge \psi)$, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
 
-Initially, let $\cG_0 := \cG(\varphi)$, moreover, 
-we construct $\cE_0(x)$ as follows: For each conjunct $x \in \Aut$ of $\psi$, let $\Aut = (\controls, q_0, \transrel, \finals)$, we nondeterministically select one state $q \in \finals$ and put $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
+Initially, let $\cG_0 := \cG(\varphi)$, and  
+we construct $\cE_0(x)$ as follows: For each conjunct $x \in \Aut$ of $\psi$, let $\Aut = (\controls, q_0, \transrel, \finals)$, \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
   
  %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
 
@@ -68,8 +84,8 @@ Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$
 $\cG_i$ becomes empty, i.e., a graph without edges.
  
 We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
-Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$. 
-Note that two different outgoing edges of $x$ in $\cG_i$ may go to the same variable.
+(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$.
+Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
 Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, 
 where $\Aut_j$ is a succinctly encoded NFA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
