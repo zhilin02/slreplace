@@ -133,16 +133,15 @@ Then $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is the NFA construct
 %(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
 
 
-More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is computed in three steps:
+More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is computed in two steps:
 \begin{enumerate} 
-\item Construct a 2NFA $\Aut'' = (Q'', q''_{0}, F'', \delta'')$, where $Q'' = Q \times Q'$, $q''_0 = (q_0, q')$ for some $q' \in Q'$, $F'' = \{q\} \times Q'$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying that $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying that $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
+\item Construct a succinctly encoded 2NFA $\Aut'' = ((Q'', \delta''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S\}$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying that $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying that $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
 %
-\item Transform $\Aut''$ into an equivalent NFA $\Aut''' = (Q''', q'''_{0}, F''', \delta''')$.
+\item Transform $\Aut''$ into an equivalent succinctly encoded NFA $((Q''',\delta'''), S''')$, where $Q'''$ are vectors of mutually distinct states of $\Aut''$ (cf. Proposition~\ref{prop-2nfa-nfa}),  and $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (p, p') \in S, \vec{\rho}_1[1] =(q_0, p), \vec{\rho}_2[|\vec{\rho}_2|] = (q, p') \}$.
 %
-\item Define $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ as $((Q''', \delta'''), S')$, where $S' = \{((q_0,q'_1), (q,q'_2)) \mid (q'_1,q'_2) \in S\}$.
+%\item Define $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ as $((Q''', \delta'''), S')$, where $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (q'_1,q'_2) \in S, \vec{\rho}_1[1] =(q_0,q'_1), \vec{\rho}_2[|\vec{\rho}_2|] = (q, q'_2) \}$.
 \end{enumerate} 
-From Proposition~\ref{prop-2nfa-nfa}, the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is at most 
-%$(|T||\Aut|)! \le 4 2^{4 |T||\Aut| \log(|T||\Aut|))}$.   
+It is easy to see that  the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is at most 
 $2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
 
 %For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
