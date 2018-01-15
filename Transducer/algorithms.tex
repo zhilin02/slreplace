@@ -16,9 +16,13 @@ In this section,  we present a generic decision procedure for $\straightline[\tr
 
 
 For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
-$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively.
-Moreover, each NFA $\Aut^{(i)}_j$ is called an \emph{atom} NFA of the representation, and the maximum size of the atom NFAs is called the \emph{atom size} of the representation. 
-%We say that \emph{a representation of $R$ is bounded by size $\ell$} if the size of each atom NFA  in the representation is bounded by $\ell$. 
+$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, and each NFA $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
+Furthermore, in order to get better space complexity upper bounds (in some cases), we require\footnote{Each representation can be turned into one satisfying the requirement as follows: Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have $R = \bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \Lang(\Aut^{(i)}_1(q^{(i)}_{0, 1}, \{q^{(i)}_1\})) \times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\}))$. Each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be encoded as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.} 
+%
+that each atom $\Aut^{(i)}_j$ is \emph{succinctly} encoded into a pair $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$, such that $\Lang(\Aut^{(i)}_j) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. The size of $((\controls, \transrel), S)$ is defined as $|\controls|$. The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
+
+%it is the product of $\cB(q, \{q'\})$ for an NFA $\cB=(\controls, q_0, \transrel, \finals)$ and $(q, q') \in S$ with $S \subseteq Q \times Q$, then we encode $\Aut^{(i)}_j$ \emph{succinctly} as a pair $(\transrel, S)$. Note that the \emph{size} of this succinct encoding is $|\transrel|+|S|$, which is polynomial in $|\controls|$, while $|\Aut^{(i)}_j|$ is exponential in $|S|$.
+
 
 Let $\Transducer$ be a transducer from $\transet$ with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{preimage} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
 
@@ -30,7 +34,7 @@ Suppose that %$\transet$ satisfies that
 for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be computed effectively. %each NFA in the representation is bounded by 
  Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
 %\tl{why not remove  nondeterministic?} 
-$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
+$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
 %, where $K$ is the maximum number of parameters of 
 %transducers appearing in the constraints, 
 %$D$ is the maximum length of the paths in $\cG(\varphi)$.
@@ -39,12 +43,13 @@ $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\v
 \begin{proof}
 Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
 
-We first show how to compute \emph{nondeterministically} a collection of regular constraints $\cE(x)$ over the alphabet $\Sigma$ for each variable $x \in \vars(\varphi \wedge \psi)$ utilising the dependency graph $\cG(\varphi)$. 
+We first show how to compute \emph{nondeterministically} $\cE(x)$, a collection of succinctly encoded NFAs over the alphabet $\Sigma$, for each variable $x \in \vars(\varphi \wedge \psi)$, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
 
-
-Initially, let $\cG_0:= \cG(\varphi)$, and
-$\cE_0(x):= \left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
+Initially, let $\cG_0 := \cG(\varphi)$, moreover, 
+we construct $\cE_0(x)$ as follows: For each conjunct $x \in \Aut$ of $\psi$, let $\Aut = (\controls, q_0, \transrel, \finals)$, we nondeterministically select one state $q \in \finals$ and put $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
+  
+ %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
 
 Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
 $\cG_i$ becomes empty, i.e., a graph without edges.
@@ -52,7 +57,9 @@ $\cG_i$ becomes empty, i.e., a graph without edges.
 We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
 Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$. 
 Note that two different outgoing edges of $x$ in $\cG_i$ may go to the same variable.
-Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, where $\Aut_j = (\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ for each $j \in [n]$. %Moreover, for each $j \in [n]$, 
+Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, 
+where $\Aut_j$ is a succinctly encoded NFA for each $j \in [n]$.
+%$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
 By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
 Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\cdots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
@@ -80,16 +87,23 @@ To decide the satisfiability of $\varphi \wedge \psi$, we have the following non
 %guessing an accepting run of the product of NFAs 
 checking the emptiness of the product of NFAs in $\cE(x)$ for each $x \in \vars(\varphi \wedge \psi)$.
 
-
 \paragraph{Complexity analysis.} For each $i$, 
-\begin{itemize}
-\item let $M_i$ denote the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$,
-\item and $N_i$ denote the maximum size of NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
-\end{itemize}
-Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies that $|T| \le |\varphi|$, we have $N_{i+1} \le f(|\varphi|, N_i)$. Therefore, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)}$ elements and each NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. Moreover, 
-%\tl{this can be adapted accordingly?}
-%from the fact that guessing an accepting run of an NFA 
-since the emptiness checking can be done in nondeterministic logarithmic space in the size of the product automaton, we conclude that the aforementioned nondeterministic algorithm takes   $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space. 
+%\begin{itemize}
+%\item 
+let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$,
+%\item 
+and $N_i$ be the maximum size of the succinctly encoded NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
+%\end{itemize}
+Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies that $|T| \le |\varphi|$, we have $N_{i+1} \le f(|\varphi|, N_i)$. Therefore, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)}$ elements and each succinctly encoded NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. 
+Since each element $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
+$$(\rcdim(\varphi)+2)^{\rcdep(\varphi)} 2^{O((f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|) )}.$$
+Since the nonemptiness of an NFA 
+can be decided in nondeterministic logarithmic space in the size of the NFA, we deduce that the nonemptiness checking for $\cE(x)$ can be done in nondeterministic 
+$$O(\rcdep(\varphi) (\log (\rcdim(\varphi)+2)) (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)) \mbox{ space.}$$
+%
+Therefore, in overall, the space used by the aforementioned nondeterministic algorithm is 
+$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)).$$ 
+\zhilin{Please check the complexity}
 %Therefore, the satisfiability can be checked by a nondeterministic Turing machine with 
 %$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
 \end{proof}
@@ -170,8 +184,10 @@ Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,C
 
 
 \begin{lemma}\label{lem-1pt}
-Let $\Transducer$ be a 1PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$ can be constructed effectively from $\Transducer$ and $\Aut$ where each NFA is of size at most $|\Transducer||\Aut|$.
+Let $\Transducer$ be a 1PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $|\Transducer||\Aut|$, can be computed effectively.
 \end{lemma}
+
+Lemma~\ref{lem-1pt} can be proved in the same way as Lemma~\ref{lem-2pt}. The only difference is that the construction of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}}$ is simpler and its size is at most $|\Transducer| |\Aut|$, since it is unnecessary to transform 2NFA to NFA.
 
 From Lemma~\ref{lem-1pt} and Theorem~\ref{thm-generic-dec}, we deduce the following result.
 %
