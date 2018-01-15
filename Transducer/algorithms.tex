@@ -6,8 +6,7 @@
 
 \section{A generic decision procedure with recognisable relations} \label{sec:algo}
 
-In this section, we assume an $\straightline[\transet]$ formula $\varphi \wedge \psi$ where $\varphi$ and $\psi$ are relational and  regular constraints respectively.
-We will present a generic decision procedure for $\straightline[\transet]$ based on the notion of recognisable relations.
+In this section,  we present a generic decision procedure for $\straightline[\transet]$ based on the notion of recognisable relations. We assume an $\straightline[\transet]$ formula $\varphi \wedge \psi$ where $\varphi$ and $\psi$ are relational and  regular constraints respectively.
 
 \begin{definition}[Recognisable relation]
 	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
@@ -16,19 +15,19 @@ We will present a generic decision procedure for $\straightline[\transet]$ based
 \end{definition}
 
 
-For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$. where each $\Aut^{(i)}_j$ is an NFA, such that 
-$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$. The number $k, n$ are called the \emph{dimension} and \emph{width} respectively of the representation.
+For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
+$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively.
 Moreover, each NFA $\Aut^{(i)}_j$ is called an \emph{atom} NFA of the representation, and the maximum size of the atom NFAs is called the \emph{atom size} of the representation. 
 %We say that \emph{a representation of $R$ is bounded by size $\ell$} if the size of each atom NFA  in the representation is bounded by $\ell$. 
 
-Let $\Transducer$ be a transducer from $\transet$ with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
+Let $\Transducer$ be a transducer from $\transet$ with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{preimage} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
 
 
-We define $f^{\langle n \rangle}(j, k)$ for $n\geq 1$ as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. For instance, if $f(j, k) = jk$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j \times f(j, k)= j^2k$.
+We define $f^{\langle n \rangle}(j, k)$ for $n\geq 1$ as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. For instance, if $f(j, k) = j*k$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j * f(j, k)= j^2k$.
 
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation, moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be computed effectively. %each NFA in the representation is bounded by 
+for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be computed effectively. %each NFA in the representation is bounded by 
  Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
 %\tl{why not remove  nondeterministic?} 
 $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
@@ -103,7 +102,7 @@ since the emptiness checking can be done in nondeterministic logarithmic space i
 
 
 \begin{lemma}\label{lem-2pt}
-Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation, moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|^2\log (|\Transducer||\Aut|))}$, can be computed effectively.
+Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|^2\log (|\Transducer||\Aut|))}$, can be computed effectively.
 \end{lemma}
 
 \begin{proof}
@@ -150,12 +149,12 @@ Given an $\straightline[\twpt]$ formula $\varphi \wedge \psi$, its satisfiabilit
 
 %The complexity bound is tight ...
 
-\subsubsection{Lower-bound}
+\paragraph{Lower-bound.}
 
-We give a lower bound for the satisfiability problem for $\strline[2PT]$. 
+We give a matching lower bound for the satisfiability problem for $\strline[2PT]$. 
 In particular, we show the problem is non-elementary.
-More specifically, we show that with $(\expheight+1)$ transducers, the problem is $\expheight$-EXPSPACE-hard.
-For any $\expheight$, we proceed by reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.
+More specifically, we show that, for any $\expheight$, the problem is $\expheight$-EXPSPACE-hard with $(\expheight+1)$ transducers. More precisely,
+we provide a  reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.
 The reduction relies on the ability to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
 Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}).
 
@@ -194,7 +193,7 @@ The complexity bound is tight since we can show that $\strline[\replaceall]$ is 
 \end{theorem}
 
 
-
-\subsection{reversal-bounded transducers ?}
-
-\tl{include two-way non-parametric as well?}
+%
+%\subsection{reversal-bounded transducers ?}
+%
+%\tl{include two-way non-parametric as well?}
