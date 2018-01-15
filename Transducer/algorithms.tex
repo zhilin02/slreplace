@@ -45,6 +45,11 @@ The size of an automaton of the form $((\controls, \transrel), S)$ is defined as
 the \emph{atom size} of $T$, written $|T|$, \tl{check} to be $\max\{|Q_{j}^{(i)}|: i\in [n], j\in[k]\}$.
 
 %The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
+%=======
+%Furthermore, in order to get better space complexity upper bounds (in some cases), we require\footnote{Each representation can be turned into one satisfying the requirement as follows: Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \finals^{(i)}_j, \transrel^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have $R = \bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \Lang(\Aut^{(i)}_1(q^{(i)}_{0, 1}, \{q^{(i)}_1\})) \times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\}))$. Each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be encoded as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.} 
+%%
+%that each atom $\Aut^{(i)}_j$ is \emph{succinctly} encoded into a pair $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$, such that $\Lang(\Aut^{(i)}_j) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ with $\cB_{q,q'} = (\controls, q, \{q'\}, \transrel)$. The size of $((\controls, \transrel), S)$ is defined as $|\controls|$. The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
+%>>>>>>> 104e69ae6204529f3ecd049a9405556039c70921
 
 %it is the product of $\cB(q, \{q'\})$ for an NFA $\cB=(\controls, q_0, \transrel, \finals)$ and $(q, q') \in S$ with $S \subseteq Q \times Q$, then we encode $\Aut^{(i)}_j$ \emph{succinctly} as a pair $(\transrel, S)$. Note that the \emph{size} of this succinct encoding is $|\transrel|+|S|$, which is polynomial in $|\controls|$, while $|\Aut^{(i)}_j|$ is exponential in $|S|$.
 
@@ -60,8 +65,7 @@ We define $f^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $f^{\langle 1 \rangle}(j,
 
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be determined effectively. %each NFA in the representation is bounded by 
- Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
+for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be determined effectively. Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
 %\tl{why not remove  nondeterministic?} 
 $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
 %, where $K$ is the maximum number of parameters of 
@@ -145,46 +149,55 @@ $$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|
 
 
 \begin{lemma}\label{lem-2pt}
-Let $\Transducer$ be a 2PT and $\Aut$ be an NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|^2\log (|\Transducer||\Aut|))}$, can be computed effectively.
+Let $\Transducer$ be a 2PT and $\Aut$ be a succinctly encoded NFA $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively.
 \end{lemma}
 
 \begin{proof}
-Assume a 2PT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and an NFA $\Aut=(Q', q'_0, F', \delta')$. %We first introduce some notations.
+Assume a 2PT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and a succinctly encoded NFA $\Aut = ((Q', \delta'), S)$ with $S \subseteq Q' \times Q'$. %We first introduce some notations.
 
-To compute $\Pre_\Transducer(\Aut)$, we use two notations $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ and $\Aut[S]$ defined below.
+To compute $\Pre_\Transducer(\Aut)$, we use a notation $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$. 
+%and $\Aut[S]$ defined below.
 
-Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$. %\tl{$Q$ should be $Q'$?}
+Suppose $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$. %\tl{$Q$ should be $Q'$?}
 %
-Then $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is the NFA constructed from $\Transducer$  by simulating a run of $\Aut$ on the output of $\Transducer$. In particular, when the a transition of $\Transducer$ outputs $x_i$ (instead of a single letter), a pair of states $(q_1', q_2')$ will be nondeterministically selected from $S_{x_i}$, and the component of the state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ corresponding to $\Aut_1$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
+Then $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is the NFA constructed from $\Transducer$  by checking that there is an accepting run of $T$ on $w$, ending in the state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. In particular, when the a transition of $\Transducer$ outputs $x_i$ (instead of a single letter), a pair of states $(q_1', q_2')$ will be nondeterministically selected from $S_{x_i}$, and the component of the state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ corresponding to $\Aut_1$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
 
 %\tl{zhilin, I am not quite clear about the para, $y_1$ is a typo of $x_1$? I wrote a para above; please check}
 %(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
 
 
-More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is computed in two steps:
+More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is computed in two steps:
 \begin{enumerate} 
-\item Construct a 2NFA $\Aut'' = (Q'', q''_{0}, F'', \delta'')$, where $Q'' = Q \times Q'$, $q''_0 = (q_0, q'_0)$, $F'' = F \times F'$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
-\item Transform $\Aut''$ into an equivalent NFA.
+\item Construct a succinctly encoded 2NFA $\Aut'' = ((Q'', \delta''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S\}$, and $\delta''$ comprises the tuples $((q_1, q'_1), a, dir, (q_2, q'_2))$ such that either there is $b \in \Sigma$ satisfying that $(q_1, a, dir, q_2, b) \in \delta$ and $(q'_1, b, q'_2) \in \delta'$, or there is $x_i \in X$ satisfying that $(q_1, a, dir, q_2, x_i) \in \delta$  and $(q'_1, q'_2) \in S_{x_i}$.
+%
+\item Transform $\Aut''$ into an equivalent succinctly encoded NFA $((Q''',\delta'''), S''')$, where $Q'''$ are vectors of mutually distinct states of $\Aut''$ (cf. Proposition~\ref{prop-2nfa-nfa}),  and $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (p, p') \in S, \vec{\rho}_1[1] =(q_0, p), \vec{\rho}_2[|\vec{\rho}_2|] = (q, p') \}$.
+%
+%\item Define $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ as $((Q''', \delta'''), S')$, where $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (q'_1,q'_2) \in S, \vec{\rho}_1[1] =(q_0,q'_1), \vec{\rho}_2[|\vec{\rho}_2|] = (q, q'_2) \}$.
 \end{enumerate} 
-From Proposition~\ref{prop-2nfa-nfa}, the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}}$ is at most $2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
+It is easy to see that  the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is at most 
+$2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
 
-For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
+%For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
 
 
-\paragraph{Claim.} For each tuple of strings $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$.
+\paragraph{Claim.} For each tuple of strings $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}, q})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, where $\Aut[S_{x_i}]=((Q', \delta'), S_{x_i})$.
 
 \medskip
 
 
 Therefore, $\Pre_\Transducer(\Aut)$ is a union of
-\[\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}]), \]
-for $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$. 
+\[\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}]), \]
+for $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$. 
 
 
-We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(\max(|\Transducer||\Aut|\log (|\Transducer||\Aut|), |\Aut|^2 \log |\Aut|)} \le 2^{O(|\Transducer||\Aut|^2\log (|\Transducer||\Aut|))}$, can be constructed effectively.
+We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be constructed effectively.
 \end{proof}
 
-From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, we deduce that the satisfiability of an $\straightline[\twpt]$ formula $\varphi \wedge \psi$ can be decided in nondeterministic $f^{\langle \rcdep(\varphi)\rangle}(|\varphi|, |\psi|)$ space, where $f(j, k) = 2^{jk^2 \log (j k)}$. Therefore, the satisfiability of an $\straightline[\twpt]$ formula $\varphi \wedge \psi$ can be decided in nondeterministic $\tower(\rcdep(\varphi), O(p(|\varphi| + |\psi|)))$ space for some polynomial $p$, thus in (deterministic) $\tower(\rcdep(\varphi), O(p(|\varphi| + |\psi|)))$ space, according to Savitch's theorem \cite{Savitch70}. Here $\tower(j, k)$ is a tower of $2$s of height $j$ with $k$ on top, formally, $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. We conclude that the satisfiability of $\straightline[\twpt]$ formula $\varphi \wedge \psi$ can be decided in $\rcdep(\varphi)$-exponential space.
+From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, by some simple calculation, we deduce that the satisfiability of an $\straightline[\twpt]$ formula $\varphi \wedge \psi$ can be decided in 
+%nondeterministic 
+%$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$$ 
+%space, where $f(j, k) = 2^{jk \log (j k)}$. 
+nondeterministic $\tower(\rcdep(\varphi), O(|\varphi| |\psi| \log(|\varphi| |\psi|) ))$ space, thus in (deterministic) $\tower(\rcdep(\varphi), O(|\varphi| |\psi| \log(|\varphi| |\psi|) ))$ space, according to Savitch's theorem \cite{Savitch70}. Here $\tower(j, k)$ is a tower of $2$s of height $j$ with $k$ on top, formally, $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. We conclude that the satisfiability of $\straightline[\twpt]$ formula $\varphi \wedge \psi$ can be decided in $\rcdep(\varphi)$-exponential space.
 Moreover, we have a matching lower bound for the satisfiability of $\straightline[\twpt]$.
 %
 \begin{theorem}
