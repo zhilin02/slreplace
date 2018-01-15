@@ -23,10 +23,11 @@ suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \fin
 %\footnote{Each representation can be turned into one satisfying the requirement as follows: Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have $R = \bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \Lang(\Aut^{(i)}_1(q^{(i)}_{0, 1}, \{q^{(i)}_1\})) \times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\}))$. Each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be encoded as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.} 
 %
 %
-and thus each $\Aut^{(i)}_j$ can be \emph{succinctly} encoded in the form of $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is a set of ``initial-final" pair of states, such that $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ \tl{previously, it was $\bigcap$, but I guess it was a typo?} with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. 
+and thus each $\Aut^{(i)}_j$ can be \emph{succinctly} encoded in the form of $((\controls, \transrel), S)$,
+\tl{why it is succinctly per se? the size does not change here} where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is a set of ``initial-final" pair of states, such that $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ \tl{previously, it was $\bigcap$, but I guess it was a typo?} with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. 
 \tl{this is generally correct, but specifically, there is only one initial state for the automata, so $S$ could be made more precisely?}
 
-It follows that 
+It follows that one can reconstruct $R$ by using the alternative representation of automata by  
 %we do the following transformation:
 %
 %Each representation can be turned into one satisfying the requirement as follows: 
@@ -130,11 +131,11 @@ let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\var
 and $N_i$ be the maximum size of the succinctly encoded NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
 %\end{itemize}
 Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies   $|T| \le |\varphi|$, we have that $N_{i+1} \le f(|T|, N_i) \le f(|\varphi|, N_i)$ (note that we have assumed that $f$ is monotonic). It follows  that, for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)}$ elements, and each succinctly encoded NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. 
-Since each element $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
+Since each element $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, \tl{I do not quite understand here} it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
 $$(\rcdim(\varphi)+2)^{\rcdep(\varphi)} \cdot 2^{O((f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|) )}.$$
 Since the nonemptiness of an NFA 
 can be decided in nondeterministic logarithmic space in the size of the NFA, we deduce that the nonemptiness checking for $\cE(x)$ can be done in nondeterministic 
-$$O(\rcdep(\varphi) (\log (\rcdim(\varphi)+2)) (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)) \mbox{ space.}$$
+$$O(\rcdep(\varphi) (\log (\rcdim(\varphi)+2)) \cdot (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)) \mbox{ space.}$$
 %
 Therefore, overall, the space used by the aforementioned nondeterministic algorithm is 
 $$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} \cdot  (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)).$$ 
