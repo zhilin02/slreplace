@@ -18,19 +18,26 @@ In this section,  we present a generic decision procedure for $\straightline[\tr
 For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
 $R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, and each NFA $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
 %
-Furthermore, to obtain tight space complexity bounds (in some cases), we encode atoms of the representation \emph{conjunctively}, 
-namely, encode them as pairs $((\controls, \transrel), S)$ such that $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is an \emph{acceptance condition} requiring that for \emph{every} $(q, q') \in S$, there is a run of $(\controls, \transrel)$ on the input string, where $q$ and $q'$ are the first and last state respectively. 
+Furthermore, to obtain tight space complexity bounds (in some cases), we use an alternative  \emph{conjunctive} representation NFAs, %iof each atoms of the representation, 
+More precisely, we encode each atom automaton as $((\controls, \transrel), S)$ such that $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is the \emph{acceptance condition} such that a string is accepted by the NFA if for \emph{every} $(q, q') \in S$ there is a run of $(\controls, \transrel)$ on the the string, where $q$ and $q'$ are the first and last state of the run respectively. 
 %
-Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'} = (\controls, q, \{q'\}, \transrel)$. \tl{previously, it was $\bigcap$, but I guess it was a typo?} \zhilin{no, indeed, it is intersection, instead of union.}
-The conjunctive encoding of an atom is more \emph{succinct} than normal NFAs in the sense that to recognise $\Lang((\controls, \transrel), S))$ with a normal NFA, the product automaton of  the NFAs $\cB_{q,q'}$ for $(q,q') \in S$, which is of size $|Q|^{|S|}$, is needed. 
+Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'} = (\controls, q, \{q'\}, \transrel)$. 
+%\tl{previously, it was $\bigcap$, but I guess it was a typo?} \zhilin{no, indeed, it is intersection, instead of union.}
+We remark that the membership checking  can be done in NLOGSPACE for the standard representation of NFAs, but requires polynomial space for the conjunctive representation (one needs to build up the product automaton which is of size $|Q|^{|S|}$). 
+%The advantage of the conjunctive encoding is %more \emph{succinct} than normal NFAs in the sense 
+%that to recognise $\Lang((\controls, \transrel), S))$ with a normal NFA, the product automaton of  the NFAs $\cB_{q,q'}$ for $(q,q') \in S$, which is of size $|Q|^{|S|}$, is needed. 
+
 % the atom is the product automaton of multiple NFAs whose transition graphs are \emph{the same} (isomorphic). 
- \tl{why it is succinctly per se? the size does not change here} \zhilin{explained before, please check.}
+ %\tl{why it is succinctly per se? the size does not change here} \zhilin{explained before, please check.}
 %
-A representation of $R$ is called a \emph{conjunctive representation} if every atom in the representation are encoded conjunctively.
-The reader may notice that every representation of $R$ can be turned into a conjunctive one as follows: 
+Accordingly, a representation of $R$ is called a \emph{conjunctive representation} if every atom in the representation are encoded conjunctively.
+Every (standard) representation of $R$  can be made conjunctively as follows: 
 Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Then $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q\})$ can be decoupled as a pair $\cC^{(i)}_{j, (q^{(i)}_{0, j}, q)} = \left(\left(\controls^{(i)}_j,  \transrel^{(i)}_j \right), \{(q^{(i)}_{0,j}, q)\} \right)$. Therefore, $R$ is conjunctively represented by 
 %
-$$\left(\cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}, \ldots, \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} \right)_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }.$$
+%$$\left(\cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}, \ldots, \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} \right)_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }.$$
+
+$$\bigcup_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }  \cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}\times \cdots \times \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} .$$
+
 %
 %
 %\footnote{Each representation can be turned into one satisfying the requirement as follows: Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have $R = \bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \Lang(\Aut^{(i)}_1(q^{(i)}_{0, 1}, \{q^{(i)}_1\})) \times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\}))$. Each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be encoded as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.} 
@@ -57,8 +64,7 @@ R  & =   \bigcup_{i=1}^n \prod_{j=1}^k \Lang(\Aut^{(i)}_j) \\
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The size of the conjunctive encoding of an atom, say $((\controls, \transrel), S)$, is defined as $|\controls|$. Moreover, we define the 
- \emph{atom size} of a conjunctive representation of $R$, to be the maximum size of the conjunctive encodings of the atoms therein.
+The size of the conjunctive encoding of an atom $((\controls, \transrel), S)$ is defined as $|\controls|$. Moreover, we define the  \emph{atom size} of a conjunctive representation of $R$ to be the maximum size of the conjunctive encodings of the atoms therein.
 
 %The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
 %=======
@@ -147,7 +153,9 @@ let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\var
 and $N_i$ be the maximum size of the conjunctive NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
 %\end{itemize}
 Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies   $|T| \le |\varphi|$, we have that $N_{i+1} \le f(|T|, N_i) \le f(|\varphi|, N_i)$ (note that we have assumed that $f$ is monotonic). Because for each $x \in \vars(\varphi \wedge \psi)$, $\cE_0(x)$ contains at most $|\psi|$ elements, and each conjunctive NFA in $\cE_0(x)$ is of size bounded by $|\psi|$, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi|$ elements, and each conjunctive NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. 
-Since each conjunctive NFA $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, \tl{I do not quite understand here} \zhilin{explained in the definition of conjunctive encodings of atoms} it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
+Since each conjunctive NFA $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, 
+%\tl{I do not quite understand here} \zhilin{explained in the definition of conjunctive encodings of atoms} 
+it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
 %
 $$(\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi| \cdot 2^{O((f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|) )}.$$
 %
