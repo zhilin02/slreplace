@@ -17,16 +17,27 @@ In this section,  we present a generic decision procedure for $\straightline[\tr
 
 For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
 $R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, and each NFA $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
-Furthermore, to obtain tight space complexity bounds (in some cases), we notice that, 
-suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$, it holds that $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be decoupled as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$, 
+%
+Furthermore, to obtain tight space complexity bounds (in some cases), we encode atoms of the representation \emph{conjunctively}, 
+namely, encode them as pairs $((\controls, \transrel), S)$ such that $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is an \emph{acceptance condition} requiring that for \emph{every} $(q, q') \in S$, there is a run of $(\controls, \transrel)$ on the input string, where $q$ and $q'$ are the first and last state respectively. 
+%
+Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'} = (\controls, q, \{q'\}, \transrel)$. \tl{previously, it was $\bigcap$, but I guess it was a typo?} \zhilin{no, indeed, it is intersection, instead of union.}
+The conjunctive encoding of an atom is more \emph{succinct} than normal NFAs in the sense that to recognise $\Lang((\controls, \transrel), S))$ with a normal NFA, the product automaton of  the NFAs $\cB_{q,q'}$ for $(q,q') \in S$, which is of size $|Q|^{|S|}$, is needed. 
+% the atom is the product automaton of multiple NFAs whose transition graphs are \emph{the same} (isomorphic). 
+ \tl{why it is succinctly per se? the size does not change here} \zhilin{explained before, please check.}
+%
+A representation of $R$ is called a \emph{conjunctive representation} if every atom in the representation are encoded conjunctively.
+The reader may notice that every representation of $R$ can be turned into a conjunctive one as follows: 
+Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Then $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q\})$ can be decoupled as a pair $\cC^{(i)}_{j, (q^{(i)}_{0, j}, q)} = \left(\left(\controls^{(i)}_j,  \transrel^{(i)}_j \right), \{(q^{(i)}_{0,j}, q)\} \right)$. Therefore, $R$ is conjunctively represented by 
+%
+$$\left(\cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}, \ldots, \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} \right)_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }.$$
+%
 %
 %\footnote{Each representation can be turned into one satisfying the requirement as follows: Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Since $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$, we have $R = \bigcup \limits_{i=1}^n \bigcup \limits_{\forall j \in [k]. q^{(i)}_j \in \finals^{(i)}_j } \Lang(\Aut^{(i)}_1(q^{(i)}_{0, 1}, \{q^{(i)}_1\})) \times \ldots \times \Lang(\Aut^{(i)}_k(q^{(i)}_{0, k}, \{q^{(i)}_k\}))$. Each NFA $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q^{(i)}_j\})$ can be encoded as a pair $((\controls^{(i)}_j,  \transrel^{(i)}_j), \{(q^{(i)}_{0,j}, q^{(i)}_j)\})$.} 
 %
 %
-and thus each $\Aut^{(i)}_j$ can be \emph{succinctly} encoded in the form of $((\controls, \transrel), S)$,
-\tl{why it is succinctly per se? the size does not change here} where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is a set of ``initial-final" pair of states, such that $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ \tl{previously, it was $\bigcap$, but I guess it was a typo?} with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. 
-\tl{this is generally correct, but specifically, there is only one initial state for the automata, so $S$ could be made more precisely?}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 It follows that one can reconstruct $R$ by using the alternative representation of automata by  
 %we do the following transformation:
 %
@@ -43,8 +54,11 @@ R  & =   \bigcup_{i=1}^n \prod_{j=1}^k \Lang(\Aut^{(i)}_j) \\
 %that each atom $\Aut^{(i)}_j$ is \emph{succinctly} encoded into a pair $((\controls, \transrel), S)$, where $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$, such that $\Lang(\Aut^{(i)}_j) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$ with $\cB_{q,q'} = (\controls, q, \transrel, \{q'\})$. 
 %
 \tl{shall we call it something like compact size, so later we can avoid "the size of the succinctly encoded NFA"? }
-The size of an automaton of the form $((\controls, \transrel), S)$ is defined as $|\controls|$, and thus we define the 
-the \emph{atom size} of $T$, written $|T|$, \tl{check} to be $\max\{|Q_{j}^{(i)}|: i\in [n], j\in[k]\}$.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The size of the conjunctive encoding of an atom, say $((\controls, \transrel), S)$, is defined as $|\controls|$. Moreover, we define the 
+ \emph{atom size} of a conjunctive representation of $R$, to be the maximum size of the conjunctive encodings of the atoms therein.
 
 %The maximum size of (the succinct encodings of) the atoms of a representation is called the \emph{atom size} of the representation. 
 %=======
@@ -55,21 +69,23 @@ the \emph{atom size} of $T$, written $|T|$, \tl{check} to be $\max\{|Q_{j}^{(i)}
 
 %it is the product of $\cB(q, \{q'\})$ for an NFA $\cB=(\controls, q_0, \transrel, \finals)$ and $(q, q') \in S$ with $S \subseteq Q \times Q$, then we encode $\Aut^{(i)}_j$ \emph{succinctly} as a pair $(\transrel, S)$. Note that the \emph{size} of this succinct encoding is $|\transrel|+|S|$, which is polynomial in $|\controls|$, while $|\Aut^{(i)}_j|$ is exponential in $|S|$.
 
+From now on, when we say a representation of $R$, we always mean a conjunctive representation of $R$. Moreover, we use a conjunctive NFA to mean a pair $((\controls, \transrel), S)$, and an NFA to mean an NFA in the original form, i.e. $(\controls, q_0, \finals, \transrel)$.
+
 \medskip
 
 Let $\Transducer$ be a parametric transducer %from $\transet$ 
 with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{pre-image} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
 
 
-We define $f^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. 
+For a binary function $f$ on $\Nat$, we define $f^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. 
 
 %For instance, if $f(j, k) = j*k$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j * f(j, k)= j^2k$.
 
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be determined effectively. Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
+for each $\Transducer \in \transet$ and conjunctive NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be determined effectively. Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
 %\tl{why not remove  nondeterministic?} 
-$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
+$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)}|\psi| \cdot (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
 %, where $K$ is the maximum number of parameters of 
 %transducers appearing in the constraints, 
 %$D$ is the maximum length of the paths in $\cG(\varphi)$.
@@ -78,11 +94,11 @@ $O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\
 \begin{proof}
 Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
 
-We first \emph{nondeterministically} compute $\cE(x)$, a collection of succinctly encoded NFAs over the alphabet $\Sigma$, for each variable $x \in \vars(\varphi \wedge \psi)$, by utilising the dependency graph $\cG(\varphi)$. 
+We first \emph{nondeterministically} compute $\cE(x)$, a collection of conjunctive NFAs over the alphabet $\Sigma$, for each variable $x \in \vars(\varphi \wedge \psi)$, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
 
 Initially, let $\cG_0 := \cG(\varphi)$, and  
-we construct $\cE_0(x)$ as follows: For each conjunct $x \in \Aut$ of $\psi$, let $\Aut = (\controls, q_0, \transrel, \finals)$, \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
+we construct $\cE_0(x)$ as follows: For each conjunct $x \in \Aut$ of $\psi$, where $\Aut$ is an NFA, let $\Aut = (\controls, q_0, \transrel, \finals)$, \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
   
  %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
 
@@ -93,7 +109,7 @@ We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no pr
 (Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$.
 Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
 Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, 
-where $\Aut_j$ is a succinctly encoded NFA for each $j \in [n]$.
+where $\Aut_j$ is a conjunctive NFA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
 By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
 Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\cdots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
@@ -115,7 +131,7 @@ For each iteration, $i$ is updated by  $i: = i+1$.
 When exiting the loop, for each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$.
 
 %\begin{example}
-\tl{tbh, I think the algo is clear enough and the example does not add too much.}
+\tl{tbh, I think the algo is clear enough and the example does not add too much.}\zhilin{maybe, but the example is at least more concrete. Moreover, the description of the algorithm is short and dry, maybe just use the example to let the reader spend a bit more time on the algorithm and digest, although with some redundancy. We may remove it if we run out of space. May decide this later.}
 Let us use an example to help the reader understand the computation of $\cE_{i+1}$ from $\cE_i$.  Suppose that in $\cG_i$, to compute $\cE_{i+1}$, we select a variable $x$, which has no predecessors and three outgoing edges, say $(x, (\Transducer, 0), y)$, $(x, (\Transducer, 1), z)$, and $(x, (\Transducer, 2), y)$, where $y$ and $z$ are two distinct variables, moreover, $\cE_i(x) = \{\Aut_1, \Aut_2\}$. Let us also assume that  $\Pre_{\Transducer}(\Aut_1)$ (resp. $\Pre_{\Transducer}(\Aut_2)$) is represented by $(\Aut^{(j')}_{1, 0}, \Aut^{(j')}_{1, 1}, \Aut^{(j')}_{1, 2})_{ j'  \in [2]}$ (resp. $(\Aut^{(j')}_{2, 0}, \Aut^{(j')}_{2, 1}, \Aut^{(j')}_{2, 2})_{ j'  \in [3]}$). If for $j = 1$ (resp. $j=2$), $(\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 1}, \Aut^{(1)}_{1, 2})$  (resp. $\left(\Aut^{(3)}_{2, 0}, \Aut^{(3)}_{2, 1}, \Aut^{(3)}_{2, 2}\right)$)  is selected, then $\cE_{i+1}(y) = \cE_i(y) \cup \{\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 2}, \Aut^{(3)}_{2, 0} \cup \Aut^{(3)}_{2, 2}\}$ and $\cE_{i+1}(z) = \cE_{i}(z) \cup \{\Aut^{(1)}_{1, 1}, \Aut^{(3)}_{2, 1}\}$. 
 %\end{example}
 
@@ -128,17 +144,19 @@ checking the emptiness of the product of NFAs in $\cE(x)$ for each $x \in \vars(
 %\item 
 let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$,
 %\item 
-and $N_i$ be the maximum size of the succinctly encoded NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
+and $N_i$ be the maximum size of the conjunctive NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
 %\end{itemize}
-Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies   $|T| \le |\varphi|$, we have that $N_{i+1} \le f(|T|, N_i) \le f(|\varphi|, N_i)$ (note that we have assumed that $f$ is monotonic). It follows  that, for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)}$ elements, and each succinctly encoded NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. 
-Since each element $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, \tl{I do not quite understand here} it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
-$$(\rcdim(\varphi)+2)^{\rcdep(\varphi)} \cdot 2^{O((f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|) )}.$$
-Since the nonemptiness of an NFA 
-can be decided in nondeterministic logarithmic space in the size of the NFA, we deduce that the nonemptiness checking for $\cE(x)$ can be done in nondeterministic 
-$$O(\rcdep(\varphi) (\log (\rcdim(\varphi)+2)) \cdot (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)) \mbox{ space.}$$
+Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies   $|T| \le |\varphi|$, we have that $N_{i+1} \le f(|T|, N_i) \le f(|\varphi|, N_i)$ (note that we have assumed that $f$ is monotonic). Because for each $x \in \vars(\varphi \wedge \psi)$, $\cE_0(x)$ contains at most $|\psi|$ elements, and each conjunctive NFA in $\cE_0(x)$ is of size bounded by $|\psi|$, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi|$ elements, and each conjunctive NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. 
+Since each conjunctive NFA $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, \tl{I do not quite understand here} \zhilin{explained in the definition of conjunctive encodings of atoms} it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
+%
+$$(\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi| \cdot 2^{O((f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|) )}.$$
+%
+Because the nonemptiness of an NFA 
+can be decided in nondeterministic logarithmic space, we deduce that the nonemptiness checking for $\cE(x)$ can be done in nondeterministic 
+$$O(\rcdep(\varphi) (\log ((\rcdim(\varphi)+2)|\psi|)) \cdot (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)) \mbox{ space.}$$
 %
 Therefore, overall, the space used by the aforementioned nondeterministic algorithm is 
-$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} \cdot  (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)).$$ 
+$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi| \cdot  (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)).$$ 
 \zhilin{Please check the complexity}
 %Therefore, the satisfiability can be checked by a nondeterministic Turing machine with 
 %$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
