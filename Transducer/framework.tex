@@ -41,14 +41,18 @@ where $f: (\Sigma^*)^n \to \Sigma^*$ and $g: (\Sigma^*)^n \to \{0,1\}$ are
 some string functions. 
 That is, each symbolic execution $S$ is simply a 
 straight-line
-program with additional assertions on the way. The problem of path feasibility 
+program with additional assertions on the way. 
+\mat{Should the ``straight-line'' restriction be explicitly defined?}
+The problem of path feasibility 
 asks whether, for a given program $S$, there exist input strings that take
 $S$ to the end of the program while satisfying all the assertions.
 %Straight-line programs with assertions 
 Notice that such straight-line programs can be viewed as constraints over the 
 domain of strings by turning such programs 
 into a Static Single Assignment (SSA) form (i.e. introduce a new variable 
-on the left hand side of each assignment). The authors initiated the exploration
+on the left hand side of each assignment). The authors 
+\mat{Bj\"{o}rner or us?}
+initiated the exploration
 of what kind of string functions $f$ and $g$ for which the above path 
 feasibility problem can be algorithmically solved. 
 
@@ -102,7 +106,7 @@ The following is the precise definition
 of two-way and one-way finite-state transducers.
 \begin{definition}[Finite-State Transducers]
     Let $\ialphabet$ an alphabet.
-    A \emph{nondeterministic two-way (finite) \emph{transducers}} (2NFT) over 
+    A \emph{nondeterministic two-way (finite) \emph{transducer}} (2NFT) over 
     $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$ are precisely the same as those of Definition~\ref{def:2nfa}
 %    $\controls$ is a finite set of 
 %    states, $\EndLeft$ (resp.~$\EndRight$) a left (resp.~right) input tape end 
@@ -120,6 +124,7 @@ transition relation  $\transrel\subseteq \controls \times
     end marker. 
 
     A (nondeterministic one-way finite) transducer (NFT) over
+    $\ialphabet$
     is a 2NFT whose transition relation contains only tuples of the form
     $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 \end{definition}
@@ -128,7 +133,7 @@ transition relation  $\transrel\subseteq \controls \times
 %\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}
 
 
-The notion of runs of 2NFT on an input string can be seen as a generalisation of 2NFA with outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
+The notion of runs of 2NFTs on an input string can be seen as a generalisation of 2NFA with outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a
 sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
@@ -143,6 +148,7 @@ A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accep
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
 \tl{I propose we unify the term: e.g., using string instead of word}
+\mat{I.e. we use string instead of word throughout?}
 
 %============ removed, as agreed that rb will not be included. =========================
 %\paragraph{Reversal-bounded transducers.}    
@@ -157,6 +163,13 @@ $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 
 Given a 2NFT $T$, We use $\Transducer(x, y)$ to denote the relation such that there is an accepting run of $\Transducer$ on $x$ with the output $y$.
 \tl{I feel this is slightly confusing, let's whether we can avoid that}
+\mat{
+    I don't understand it (the sentence above).
+    Do you mean we write
+    $\Transducer(x, y)$
+    whenever 
+    $(x, y) \in \Tran(\Transducer)$?
+}
 Moreover, we also write $\Transducer(x, y)$ as $y = \Transducer(x)$.
 %, in order to facilitate the definition of straight-line fragments. 
 Nevertheless, the reader should remember that $y= \Transducer(x)$ does \emph{not} mean that $\Transducer$ defines a function.
@@ -171,7 +184,9 @@ Nevertheless, the reader should remember that $y= \Transducer(x)$ does \emph{not
 
 Recently, Chen \emph{et al.} \cite{CCHLW18}  noted that some XSS vulnerability
 analysis involving web templating systems (e.g. \texttt{Mustache.js}
-\cite{Mustache}) requires the use of the replace-all function that cannot be
+\cite{Mustache}) requires the use of the replace-all 
+\mat{replaceall or replace-all? -- i think both are used}
+function that cannot be
 captured by finite-state transducers in \cite{LB16}. Essentially, since the ``holes'' to be 
 filled in by data from a separate JSON file might be an arbitrary string, the
 replacement string in the replace-all function could in fact be a string
@@ -219,7 +234,7 @@ string functions including the string reverse function.
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
     Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
     \ialphabet \cup X$.
-    A nondeterministic two-way \emph{parametric transducers} (2NFPT) over 
+    A nondeterministic two-way \emph{parametric transducer} (2NFPT) over 
     $(\ialphabet,X)$ is a tuple $\Transducer =
 (\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
     $\controls$ is a finite set of 
@@ -234,8 +249,9 @@ transition relation  $\transrel\subseteq \controls \times
     Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
     there are no transitions that take the head of the tape past the left/right
     end marker. 
-
+    \mat{could we say ``precisely the same as those of Definition~\ref{def:2nfa}'' as we did before?}
     A (nondeterministic one-way) parametric transducer (NFPT) over
+    $\ialphabet$
     is a 2NFPT whose transition relation contains only tuples of the form
     $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
@@ -264,7 +280,17 @@ Give examples: htmlescape, replace-all, and reverse.
 Give example of computing reverse of DNA string.
 
 \subsection{The constraint language}
-For a class $\transet$ of parametric transducers, we consider the constraint language $\straightline[\transet]$ which comprises the formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
+
+\mat{
+    Can i propose we replace the constraint language with straight-line programs?
+    Then we can get rid of the dependency graph and edges.
+    Instead we just say that variables are assigned at most once (input variables are not assigned), and any variable appearing in the $i$th statement is an input or was assigned in the $j$th statement for some $j < i$.
+    The generic algorithm then always picks the last assignment to eliminate, instead of some variable with no predecessors in the dependency graph.
+    The former is easy to picture and recall, the latter requires absorbing the definition of dependency graph, remembering which direction the edges go, and realising that a variable with no predecessors is a statement with no functions/transductions that use it.
+    We can note the connection to the constraint language defined below if we want to.
+}
+
+For a class $\transet$ of parametric transducers, we consider the constraint language $\straightline[\transet]$ which comprises a formulae of the form $\varphi \wedge \psi$ such that $\varphi,\psi$ are defined by the rules,
 \[
 \begin{array}{l l l r}
 \varphi &::=& z = \Transducer(x, \vec{y}) \mid \varphi \wedge \varphi, &  \hfill  \mbox{(relational constraint) } \\ 

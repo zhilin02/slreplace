@@ -22,11 +22,12 @@ Furthermore, to obtain tight space complexity bounds (in some cases), we encode 
 namely, encode them as pairs $((\controls, \transrel), S)$ such that $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is an \emph{acceptance condition} requiring that for \emph{every} $(q, q') \in S$, there is a run of $(\controls, \transrel)$ on the input string, where $q$ and $q'$ are the first and last state respectively. 
 %
 Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'} = (\controls, q, \{q'\}, \transrel)$. \tl{previously, it was $\bigcap$, but I guess it was a typo?} \zhilin{no, indeed, it is intersection, instead of union.}
+\mat{Could we use the $\cB(q, \{q'\})$ notation introduced just before Section 3?}
 The conjunctive encoding of an atom is more \emph{succinct} than normal NFAs in the sense that to recognise $\Lang((\controls, \transrel), S))$ with a normal NFA, the product automaton of  the NFAs $\cB_{q,q'}$ for $(q,q') \in S$, which is of size $|Q|^{|S|}$, is needed. 
 % the atom is the product automaton of multiple NFAs whose transition graphs are \emph{the same} (isomorphic). 
  \tl{why it is succinctly per se? the size does not change here} \zhilin{explained before, please check.}
 %
-A representation of $R$ is called a \emph{conjunctive representation} if every atom in the representation are encoded conjunctively.
+A representation of $R$ is called a \emph{conjunctive representation} if every atom in the representation is encoded conjunctively.
 The reader may notice that every representation of $R$ can be turned into a conjunctive one as follows: 
 Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Then $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q\})$ can be decoupled as a pair $\cC^{(i)}_{j, (q^{(i)}_{0, j}, q)} = \left(\left(\controls^{(i)}_j,  \transrel^{(i)}_j \right), \{(q^{(i)}_{0,j}, q)\} \right)$. Therefore, $R$ is conjunctively represented by 
 %
@@ -81,6 +82,19 @@ For a binary function $f$ on $\Nat$, we define $f^{\langle n \rangle}(j, k)$ ($n
 
 %For instance, if $f(j, k) = j*k$, then $f^{\langle 2 \rangle}(j, k)= f(j, f^{\langle 1 \rangle}(j, k)) = j * f(j, k)= j^2k$.
 
+\mat{
+    Do we need to talk about transducers in this section?
+    Could we just get away with any relation $R$ such that $Pre_R(A)$ can be constructed effectively?
+    It's a bit sad to introduce a generic framework, then tie it unnecessarily to parametric transducers.
+    The complexity would need adjusting i guess, though i think it has issues already:
+    \begin{itemize}
+    \item
+        $|\varphi|$ is not defined
+    \item
+        there is no given space bound on effectively constructing a representation of Pre -- only the size of the output is considered.
+        Presumably the complexity given below assumes that the amount of space required to compute the representation is no more than the size of the representation.
+    \end{itemize}
+}
 \begin{theorem}\label{thm-generic-dec}
 Suppose that %$\transet$ satisfies that 
 for each $\Transducer \in \transet$ and conjunctive NFA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation.  Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $f(|\Transducer|, |\Aut|)$ for some monotone function $f$, can be determined effectively. Then the satisfiability of a given $\straightline[\transet]$ formula $\varphi \wedge \psi$ can be decided in \emph{nondeterministic} 
@@ -98,7 +112,9 @@ We first \emph{nondeterministically} compute $\cE(x)$, a collection of conjuncti
 % , in a top-down manner.
 
 Initially, let $\cG_0 := \cG(\varphi)$, and  
-we construct $\cE_0(x)$ as follows: For each conjunct $x \in \Aut$ of $\psi$, where $\Aut$ is an NFA, let $\Aut = (\controls, q_0, \transrel, \finals)$, \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
+we construct $\cE_0(x)$ as follows: For each conjunct 
+\mat{Can we use different terminology: we now have conjunctive NFA and conjuncts, which risks confusion}
+$x \in \Aut$ of $\psi$, where $\Aut$ is an NFA, let $\Aut = (\controls, q_0, \transrel, \finals)$, \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
   
  %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
 
