@@ -1,0 +1,86 @@
+%!TEX root = main.tex
+
+\section{Details in Section~\ref{sec:symbolic}}\label{app-sym}
+
+\subsection{Proof of the first result in Proposition~\ref{prop-2nsa}}
+
+Let $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a 2SA. We show how to construct an equivalent SA $\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$.
+
+The proof is an adaptation of the  construction of nondeterministic one-way automata from two-way nondeterministic finite state automata based on the idea of crossing sequences (cf. e.g. \cite{HU79}). Since 2SAs replace the letters in 2FAs with unary predicates, the main technical challenge is to deal with these guards in a proper way.
+
+Let $S_\transrel$ denote the set of sequences of transitions from $\transrel$ of odd lengths where the source states of the transitions in the even (resp. odd) positions are mutually distinct. 
+
+\zhilin{to be finished}
+
+For $\rho, \rho' \in S_\transrel$, we introduce two concepts that $\rho$  \emph{left matches} $\rho'$ and $\rho$  \emph{right matches} $\rho'$  inductively as follows: Let $\rho = [\tau_1, \ldots, \tau_{2m+1}]$ and $\rho' = [\tau'_1, \ldots, \tau'_{2n+1}]$. 
+\begin{itemize}
+\item $\rho$ left-matches $\rho'$, if 
+\begin{itemize}
+\item $\tau_1$ is a right transition, $[\tau_2,\ldots, \tau_{2m+1}]$ left-matches $[\tau'_2, \ldots, \tau'_{2n+1}]$, 
+%
+\item $\tau'_1$ is a left transition, $[\tau_2, \ldots, \tau_{2m+1}]$ left-matches $[\tau'_2, \ldots, ]$, 
+\end{itemize} 
+\item $\rho$ 
+\end{itemize}
+%Moreover, let $\vec{\controls}_i$ (resp. $\vec{\controls}_f$) denote the set of sequences of mutually distinct states from $\controls$ such that $q_0$ is the first state of the sequence (resp. some state from $F$ is the last state of the sequence).
+
+$\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$
+\begin{itemize}
+\item $\controls' = S_\transrel \cup \{q'_0\}$, where $q'_0$ is a fresh state not in $S_\transrel$,
+%
+\item $\finals'$ comprises the set of elements $[\tau_1, \ldots, \tau_{2n+1}] \in S_\transrel$ such that the target state of $\tau_{2n+1}$ is from $F$, 
+%
+\item $\transrel'$ comprises the following transitions: 
+%
+\begin{itemize}
+\item $(\rho, \psi, \rho') \in S_\transrel \times S_\transrel$ such that $\rho = [\tau_1, \ldots, \tau_{2n+1}]$, $\rho' = [\tau'_1, \ldots, \tau_{2n+1}]$, and $\psi = $,
+%
+\item for each transition $(\rho, \psi, \rho')$ such that $\rho \in I'$, we have $(q'_0, \psi, \rho') \in \transrel'$, where $I' \subseteq \controls'$ comprise $[\tau_1, \ldots, \tau_{2n+1}] \in S_\transrel$ satisfying the following constraints: there are $p_1, \ldots, p_n \in \controls$ such that $p_1 = q_0$, and for each $i \in [n]$, $(p_i, \EndLeft, \Right, q_{2i-1}) \in \transrel$, where $q_{2i-1}$ is the source state of $\tau_{2i-1}$, 
+\end{itemize}
+%
+\end{itemize}
+
+%The proof is an adaptation of Vardi's construction of deterministic one-way automata from two-way nondeterministic finite state automata (\cite{Var89}).
+
+\hide{
+Let $\cA=(Q,\vdash,\dashv,\delta,I,F)$ be a 2NFAR over $\Sigma^\pm$.  We construct a DFAR $\cA'=(Q',\delta',q'_0,F')$ as follows.
+
+\begin{itemize}
+\item $Q'=Q'_d \cup Q'_w$, where 
+\begin{itemize}
+\item $Q'_d$ is the set of all tuples $\langle a, R, S \rangle \in (\Sigma^\pm \cup \{\vdash\}) \times 2^{Q_w \times Q_w} \times 2^{Q_d}$, 
+\item $Q'_w$ is the set of all tuples  $\langle C, R, S\rangle \in 2^{\Cc_\cA} \times 2^{Q_d \times Q_d} \times 2^{Q_w}$ such that $\wedge_{c \in C} c$ is satisfiable.
+\end{itemize}
+Intuitively, the states $\langle a,R,S\rangle$ and $\langle C,R,S \rangle$ summarize the behavior of $\cA$ over the prefix of $\vdash \alpha \dashv$ to the left of the current position. More specifically, let the index of the current position be $i$ (starting from $0$, with the letter $\vdash$), then $a,C,R,S$ have the following intuitive meaning.
+\begin{itemize}
+\item If $i$ is odd (the current position has a data value), then $a$ is the letter from $\Sigma^\pm \cup \{\vdash\}$ in the position $i-1$, otherwise, $C$ is the set of rigid constraints from $\Cc_\cA$ that are satisfied by $(\alpha,i-1)$. 
+\item $S$ is the set of reachable states in the position $i$, starting from the set of initial states $I$ in the position $0$.
+\item $R \subseteq Q \times Q$ includes all the state pairs $(q,q')$ satisfying the following conditions: Starting from the position $i-1$ with the state $q$, after always moving within the prefix of the data path to the left of $i-1$ (with $i-1$ included), $\cA$  stops at the position $i-1$ with the state $q'$.  
+\end{itemize} 
+%
+\item $q'_0=(\vdash,R_0,S_0)$ such that $R_0=\{(q,q) \mid q \in Q_w\}$ and $S_0=\delta_w(I,\vdash)$.
+%
+\item $\delta'$ are defined as follows. 
+%
+\begin{itemize}
+\item Let $\langle a,R,S\rangle \in Q'_d$ and $\langle C,R',S'\rangle \in Q'_w$. Then $(\langle a,R,S \rangle, c',\langle C, R',S'\rangle) \in \delta'_d$ iff the following condition hold, 
+\begin{itemize}
+\item $c'=\bigwedge \limits_{c \in C} c \wedge \bigwedge \limits_{c \in \Cc_\cA \setminus C} \overline{c}$, 
+\item $R'$ is the reflexive and transitive closure of $R'_0$, where $R'_0$ consists of all the pairs $(q,q') \in Q_d \times Q_d$ such that there are $q_1,q_2 \in Q_w$ satisfying that $(q,c,q_1,-1) \in \delta_d$ for some $c \in C$, $(q_1,q_2) \in R$, and $(q_2,a,q',+1) \in \delta_w$, 
+\item $S'=\{q' \in Q_w \mid \exists q \in S, q_1 \in Q_d.\ (q,q_1) \in R', (q_1,c,q',+1) \in \delta_d \mbox{ for some } c \in C\}$.
+\end{itemize}
+%
+\item Let $\langle C,R,S\rangle \in Q'_w$ and $\langle a,R',S'\rangle \in Q'_d$. Then $\delta'_w(\langle C,R,S \rangle, a)=\langle a, R',S'\rangle$ iff the following conditions hold, 
+\begin{itemize}
+\item $R'$ is the reflexive and transitive closure of $R'_0$, where $R'_0$ consists of all the pairs $(q,q') \in Q_w \times Q_w$ such that there are $q_1,q_2 \in Q_d$ satisfying that $(q,a,q_1,-1) \in \delta_w$, $(q_1,q_2) \in R$, and $(q_2,c,q',+1) \in \delta_d$ for some $c \in C$, 
+\item $S'=\{q' \in Q_d \mid \exists q \in S, q_1 \in Q_w.\ (q,q_1) \in R', (q_1,a,q',+1) \in \delta_w\}$.
+\end{itemize}
+%
+\end{itemize}
+%
+\item $F' \subseteq Q'_w$ consists of the tuples $\langle C, R, S\rangle$ such that there is a partial run of $\cA$ starting from the position immediately before $\dashv$ with some $q \in S$, and stops at the same position with some $q' \in F$. More precisely, $F'$ is the set of tuples $\langle C, R, S\rangle$ such that there are $q \in S$ and $q' \in F$ satisfying that $(q,q') \in R'$, where $R'$ is the reflexive and transitive closure of $R'_0$, and $R'_0$ consists of all the pairs $(q,q') \in Q_w \times Q_w$ such that there are $q_1,q_2 \in Q_d$ satisfying that $(q,\dashv,q_1,-1) \in \delta_w$, $(q_1,q_2) \in R$, and $(q_2,c,q',+1) \in \delta_d$ for some $c \in C$.
+\end{itemize}
+It is not hard to observe that the size of $\cA'$ is exponential over that of $\cA$.
+}
+
+\subsection{Proof of Lemma~\ref{lem-spt}}
