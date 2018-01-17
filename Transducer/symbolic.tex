@@ -67,10 +67,10 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 \begin{itemize}
 \item   transitions $(q, \psi(x), dir, q', t(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
 $t(x)$ is an $\signature$-term, 
-\item   transitions $(q, \EndLeft, \Right, q', c)$ and $(q, \EndLeft, \Left, q', c)$, where $c$ is an $\signature$-constant. 
+\item   transitions $(q, \EndLeft, \Right, q', c)$ and $(q, \EndRight, \Left, q', c)$, where $c$ is an $\signature$-constant. 
 \end{itemize}
 \end{itemize}
-A 2NST is an NST if for each $(q, \psi(x), dir, q', t(x))$, we have $dir \in \{\Stay, \Right\}$.
+A 2NST is an NST if for each $(q, \psi(x), dir, q', t(x))$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q', c)$ are removed.
 \end{definition}
 
 \paragraph{Semantics of 2NST.}
@@ -95,7 +95,7 @@ such that
 	\item $i_j = n+1$, $(q_j, \EndRight, \Left, q_{j+1}, c) \in \transrel$, $d'_j = \interpretation(c)$.
   \end{itemize}
 \end{itemize}
-The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $d'_0 \cdots d'_m$ is said to be the \emph{output} of the run.
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $d'_0 \ldots d'_m$ is said to be the \emph{output} of the run.
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
@@ -112,7 +112,7 @@ $\Transducer=(\Upsilon, \EndLeft, \EndRight, X, \controls, q_0, \finals, \transr
 %
 \item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2NST, 
 %
-\item $Y=\{y_1,\cdots, y_m\}$ is a finite set of parameters (variables), 
+\item $Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters (variables), 
 %
 \item $\transrel$ is a finite set of transitions of one of the following forms: 
 \begin{itemize}
@@ -131,9 +131,38 @@ the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)
 taken by the transducer. This instantiation of the parameters is only done 
 \emph{once} before the symbolic parametric transducer is run.
 
+In addition, to extend the string constraint language $\straightline[\transet]$ to infinite data domains, a counterpart for NFA, called \emph{symbolic automata}, is also needed. 
 
+A \emph{Boolean algebra} is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by \emph{dropping} the requirement that $\Psi$ is closed under substitutions.
 
+\begin{definition}[Symbolic automata]
+    A \emph{nondeterministic two-way  symbolic \emph{automata}} (2NSA) is a tuple $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
+\begin{itemize}
+\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
+%
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2NFA, 
+%
+\item $\transrel$ is a finite set of  transitions of one of the following forms,
+\begin{itemize}
+\item   transitions $(q, \psi(x), dir, q')$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, and $\psi(x) \in \Psi$, 
+%
+\item   transitions $(q, \EndLeft, \Right, q')$ and $(q, \EndRight, \Left, q')$. 
+\end{itemize}
+\end{itemize}
+A 2NSA is an NSA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
+\end{definition}
 
+The semantics of 2NSA is defined similarly to 2NST, with the output data values removed.
+
+For a class $\transet$ of symbolic parametric transducers, we use SLS[$\transet$] to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
+
+For solving the satisfiability problem of SLS[$\transet$], the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
+
+\begin{definition}[Symbolically recognisable relations]
+	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is \emph{symbolically recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some NSA for each $j\in [k]$.
+\end{definition}
+
+results for 2NSPT, NSPT.
 
 
 
@@ -155,7 +184,7 @@ An $\signature$-term is built from the function symbols in $\functions$ and vari
 We assume the standard notions of $\signature$-atoms, $\signature$-literals, and $\signature$-formulae, whose definitions can be found in some textbooks on mathematical logic (see e.g. \cite{Gal85}). The set of free variables of a $\signature$-formula $\psi$ is denoted by $\free(\psi)$. When writing $\psi(\vec{x})$, we assume that the free variables of $\psi$ are from $\vec{x}$. For a formula  $\psi(\vec{x})$ such that $\vec{x} = (x_1, \dots, x_n)$ and each $x_i$ for $i \in [n]$ is of sort $s_i \in \sorts$, the formula $\psi$ is said to be \emph{of arity} $s_1 \times \dots \times s_n$.
 A formula $\psi$ that contains exactly one free variable (resp. two, $n \ge 3$ free variables) is called a \emph{unary} (resp. \emph{binary}, $n$-ary) $\signature$-formula. A formula $\psi$ contains no free variables is called a $0$-ary formula, aka a sentence. For $i, j \in \Nat \backslash \{0\}$, a formula $\psi(\vec{x})$ of arity $s^j$ (where $\vec{x}=(x_1, \dots, x_j)$), and an $s^i/s^j$-term $\vec{f}=(f_1,\dots, f_j)$, we use $\psi[\vec{f}/\vec{x}]$ to denote the formula obtained from $\psi$ by simultaneously replacing $x_1$ with $f_1$, $\dots$, and $x_j$ with $f_j$.
 
-An $\signature$-interpretation $I$ maps: (i) each sort $s \in \sorts$  to a set $s^{I}$, (ii) each function symbol $f \in \functions$ of arity $s_1 \times \cdots \times s_n \rightarrow s$ to a total function $f^I: s_1^I \times \cdots \times s^I_n \rightarrow s^I$ if $n>0$, and to an element of $s^I$ if $n = 0$, and (iii) each predicate symbol $p \in \predicates$ of sort $s_1 \times \cdots \times s_n$ to a  subset of $p^I \subseteq s^I_1 \times \cdots s^I_n$.
+An $\signature$-interpretation $I$ maps: (i) each sort $s \in \sorts$  to a set $s^{I}$, (ii) each function symbol $f \in \functions$ of arity $s_1 \times \ldots \times s_n \rightarrow s$ to a total function $f^I: s_1^I \times \ldots \times s^I_n \rightarrow s^I$ if $n>0$, and to an element of $s^I$ if $n = 0$, and (iii) each predicate symbol $p \in \predicates$ of sort $s_1 \times \ldots \times s_n$ to a  subset of $p^I \subseteq s^I_1 \times \ldots s^I_n$.
 An $\signature$-assignment $\eta$ maps each variable $x \in \mathcal{X}$ of sort $s \in \sorts$ to an element of $s^I$.
 \begin{itemize}
 \item For a term $t$, the interpretation of $t$ under $(I, \eta)$ for an $\signature$-interpretation $I$ and $\signature$-assignment $\eta$, denoted by $t^{(I,\eta)}$, can be defined inductively on the syntax of terms.

@@ -9,14 +9,14 @@
 In this section,  we present a generic decision procedure for $\straightline[\transet]$ based on the notion of recognisable relations. We assume an $\straightline[\transet]$ formula $\varphi \wedge \psi$ where $\varphi$ and $\psi$ are relational and  regular constraints respectively.
 
 \begin{definition}[Recognisable relation]
-	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
+	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
 %
 %	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
 
 
-For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \cdots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
-$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \cdots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, and each NFA $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
+For a recognisable relation $R$,  a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
+$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \ldots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an NFA. The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, and each NFA $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
 %
 Furthermore, to obtain tight space complexity bounds (in some cases), we use an alternative  \emph{conjunctive} representation NFAs, %iof each atoms of the representation, 
 More precisely, we encode each atom automaton as $((\controls, \transrel), S)$ such that $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is the \emph{acceptance condition} such that a string is accepted by the NFA if for \emph{every} $(q, q') \in S$ there is a run of $(\controls, \transrel)$ on the the string, where $q$ and $q'$ are the first and last state of the run respectively. 
@@ -36,7 +36,7 @@ Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \fin
 %
 %$$\left(\cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}, \ldots, \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} \right)_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }.$$
 
-$$\bigcup_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }  \cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}\times \cdots \times \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} .$$
+$$\bigcup_{i \in [n], (q^{(i)}_1, \ldots, q^{(i)}_k) \in \finals^{(i)}_1 \times \ldots \times   \finals^{(i)}_k }  \cC^{(i)}_{1, (q^{(i)}_{0, 1}, q^{(i)}_1)}\times \ldots \times \cC^{(i)}_{k, (q^{(i)}_{0, k}, q^{(i)}_k)} .$$
 
 %
 %
@@ -80,7 +80,7 @@ From now on, when we say a representation of $R$, we always mean a conjunctive r
 \medskip
 
 Let $\Transducer$ be a parametric transducer %from $\transet$ 
-with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{pre-image} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\cdots, w_k$. 
+with $k$ parameters ($k\geq 0$), and $\Aut$ be an NFA. The \emph{pre-image} of $\Aut$ with respect to $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\ldots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\ldots, w_k$. 
 
 
 For a binary function $f$ on $\Nat$, we define $f^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $f^{\langle 1 \rangle}(j,k)= f(j, k)$ and $f^{\langle n+1 \rangle }(j, k) = f(j, f^{\langle n \rangle}(j,k))$. 
@@ -112,21 +112,21 @@ Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$
 $\cG_i$ becomes empty, i.e., a graph without edges.
  
 We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
-(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \cdots, y_k)$.
+(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \ldots, y_k)$.
 Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
-Suppose $\cE_i(x)=\{\Aut_1, \cdots, \Aut_n\}$, 
+Suppose $\cE_i(x)=\{\Aut_1, \ldots, \Aut_n\}$, 
 where $\Aut_j$ is a conjunctive NFA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
-By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \cdots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
-Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\cdots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
+By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \ldots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
+Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\ldots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
-\item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \cdots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
+\item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \ldots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
 %
-\item For each $z \in \{y_0,\cdots, y_k\}$, let
+\item For each $z \in \{y_0,\ldots, y_k\}$, let
 \[
     \cE_{i+1}(z):= \cE_{i}(z) \cup \left\{\Aut^{(r_j)}_{j, \ell} \mid  j \in [n], \ell \in \{0\} \cup [k], z = y_{\ell} \right\}.
 \]
-[For each vertex $z'  {\notin} \{y_0,\cdots, y_k\}$, let $\cE_{i+1}(z') := \cE_i(z')$.]
+[For each vertex $z'  {\notin} \{y_0,\ldots, y_k\}$, let $\cE_{i+1}(z') := \cE_i(z')$.]
 %We set $\cE_{i+1}(x) = \emptyset$.
 %
 \item Let $\cG_{i+1}:= \cG_i \backslash \{(x, (\Transducer, j), y_j) \mid j \in \{0\} \cup [k]\}$.
