@@ -94,8 +94,9 @@ a simplification, we may assume that $g$ contains only regular constraints.
 %In
 %particular, an application of finite-state transducer and string equality checks
 %are prohibited in $g$. 
-The dubbed the
-resulting class of string constraints \emph{the straight-line fragment}.
+The 
+resulting class of string constraints is dubbed \emph{the straight-line 
+fragment}.
 They showed that the straight-line fragment is sufficiently powerful in
 interesting applications including analysis of cross-site scripting (XSS)
 vulnerabilities. Decidable extensions of the straight-line fragment (including
@@ -136,8 +137,8 @@ transition relation  $\transrel\subseteq \controls \times
 The notion of runs of 2NFTs on an input string can be seen as a generalisation of 2NFA with outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a
-sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times [n+1] \times \Sigma$ 
-such that, let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
+sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times (\{0\} \cup [n+1]) \times \Sigma$ 
+such that, let $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, %. The following conditions, then, have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
     \item for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, b_j) \in
@@ -148,7 +149,8 @@ A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accep
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
 \tl{I propose we unify the term: e.g., using string instead of word}
-\mat{I.e. we use string instead of word throughout?}
+\anthony{I think it doesn't matter too much if we use both word/string. My
+suggestion is to try to use one \emph{more often}}
 
 %============ removed, as agreed that rb will not be included. =========================
 %\paragraph{Reversal-bounded transducers.}    
@@ -252,7 +254,7 @@ transition relation  $\transrel\subseteq \controls \times
     \mat{could we say ``precisely the same as those of Definition~\ref{def:2nfa}'' as we did before?}
     A (nondeterministic one-way) parametric transducer (NFPT) over
     $\ialphabet$
-    is a 2NFPT whose transition relation contains only tuples of the form
+    is a 2NPT whose transition relation contains only tuples of the form
     $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
     \{\Right,\Stay\} \times \controls $, therefore we

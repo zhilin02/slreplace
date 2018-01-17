@@ -25,17 +25,18 @@
 }
 
     Finite-state transductions have emerged
-    as an expressive formalism for modelling many useful string functions.
-    These include string functions that are crucial for such an application as 
+    as an expressive formalism for modelling string functions including
+    those functions that are crucial for such an application as 
     analysis of cross-site scripting (XSS) vulnerabilities in HTML5 
-    applications including sanitisation functions (e.g.~htmlescape) and 
-    implicit browser transductions (e.g.~innerhtml).  
-    Thanks to their good algorithmic properties, it was recently shown that 
-    finite-state transductions can be incorporated into decidable
+    applications.
+    %including sanitisation functions (e.g.~htmlescape) and 
+    %implicit browser transductions (e.g.~innerhtml).  
+    Thanks to their good algorithmic properties, %it was recently shown that 
+    finite-state transductions have been incorporated into decidable
     theories over strings (with concatenation and regular expression pattern
     matching) in a way that is applicable for %for analysing
     symbolic execution analysis of string-manipulating programs. Despite this,
-    finite-state transductions lack the expressive power for modelling many
+    such a formalism lacks the expressive power for modelling many
     useful string functions; three notable examples being the replace-all 
     function (replacing occurrence of replacing all occurrences of a ``pattern''
     string constant/variable/regular expression by a ``replacement'' string 
@@ -43,13 +44,19 @@
     function, and string concatenation. 
     In this paper we introduce \emph{parametric transducers}, an expressive
     framework for modelling string functions that strictly 
-    generalise the standard finite-state transducer model and capture the three
+    generalises the standard finite-state transducer model and capture the three
     aforementioned string functions, among others. We provide a decidable
-    string logic with parametric transducers as the primitive operations,
-    and provide a precise computational complexity analysis. This gives us
-    a highly expressive theory over strings that subsumes existing string 
+    string logic with parametric transducers as primitive operations,
+    and provide a precise computational complexity analysis. The logic is
+    highly expressive and
+    %a highly expressive theory over strings that 
+    subsumes existing string 
     theories that are applicable for symbolic execution analysis for programs 
-    with strings. 
+    with strings. We show that, using our framework, string functions required
+    for context-sensitive auto-sanitisation web templating can for the first
+    time modelled as string constraints. Finally, we lift our results
+    to the world of symbolic finite automata/transducers, which is required for
+    practical applications (e.g. owing to large alphabets like UTF16).
     %can capture string functions including
     %that cannot be expressed by finite-state 
     %transductions, e.g., the
