@@ -4,15 +4,15 @@
  
 \subsection{Two-way transducers}\label{sec-2way}
 
-%Let $\Transducer$ be a 2PT with $k$ parameters $y_1,\cdots, y_k$ and $\Aut$ be an NFA. Then the \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ producing an output $w' \in \Lang(\Aut)$, equipped with the parameters $w_1,\cdots, w_k$.
+%Let $\Transducer$ be a 2NPT with $k$ parameters $y_1,\cdots, y_k$ and $\Aut$ be an NFA. Then the \emph{preimage} of $\Aut$ w.r.t. $\Transducer$, denoted by $\Pre_\Transducer(\Aut)$, is the set of tuples $(w, w_1,\cdots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ producing an output $w' \in \Lang(\Aut)$, equipped with the parameters $w_1,\cdots, w_k$.
 
 
 \begin{lemma}\label{lem-2pt}
-Let $\Transducer$ be a 2PT and $\Aut$ be a succinctly encoded NFA $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively.
+Let $\Transducer$ be a 2NPT and $\Aut$ be a succinctly encoded NFA $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively.
 \end{lemma}
 
 \begin{proof}
-Assume a 2PT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and a succinctly encoded NFA $\Aut = ((Q', \delta'), S)$ with $S \subseteq Q' \times Q'$. %We first introduce some notations.
+Assume a 2NPT $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and a succinctly encoded NFA $\Aut = ((Q', \delta'), S)$ with $S \subseteq Q' \times Q'$. %We first introduce some notations.
 
 To compute $\Pre_\Transducer(\Aut)$, we introduce an NFA $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$, %defined as follows. 
 %and $\Aut[S]$ defined below.
@@ -72,7 +72,7 @@ The lower bound is proved as follows. \zhilin{@Matt, could you help put your low
 
 \paragraph{Lower-bound.}
 
-We give a matching lower bound for the satisfiability problem for $\strline[2PT]$. 
+We give a matching lower bound for the satisfiability problem for $\strline[2NPT]$. 
 In particular, we show the problem is non-elementary.
 More specifically, we show that, for any $\expheight$, the problem is $\expheight$-EXPSPACE-hard with $(\expheight+1)$ transducers. More precisely,
 we provide a  reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.

@@ -154,16 +154,28 @@ A 2NSA is an NSA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, 
 
 The semantics of 2NSA is defined similarly to 2NST, with the output data values removed.
 
-For a class $\transet$ of symbolic parametric transducers, we use SLS[$\transet$] to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
+For a class $\transet$ of symbolic parametric transducers, we use $\straightlinesym[\transet]$ to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
 
-For solving the satisfiability problem of SLS[$\transet$], the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
+For solving the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
 
 \begin{definition}[Symbolically recognisable relations]
 	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is \emph{symbolically recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some NSA for each $j\in [k]$.
 \end{definition}
 
-results for 2NSPT, NSPT.
 
+\begin{theorem}\label{thm-generic-dec-symbolic}
+Let $\transet$ be a class of symbolic parametric transducers. Suppose that %$\transet$ satisfies that 
+for each $\Transducer \in \transet$ and NSA $\Aut$, $\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of which can be computed effectively. Then the satisfiability of $\straightlinesym[\transet]$ is decidable.
+\end{theorem}
+
+\begin{lemma}\label{lem-st}
+Given a 2NSPT (resp. NSPT) $\Transducer$ and a NSA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively.
+\end{lemma}
+
+From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-st}, we have the following result.
+\begin{theorem}
+Satisfiability of $\straightlinesym[\twspt]$ and $\straightlinesym[\owspt]$ is decidable.
+\end{theorem}
 
 
 
