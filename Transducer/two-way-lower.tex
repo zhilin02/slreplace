@@ -1,6 +1,8 @@
 
+\section{Lower Bound For String Constraints with Two-Way Transducers}
+\label{sec:two-way-lower}
 
-\subsubsection{Tiling Problems}
+\subsection{Tiling Problems}
 
 \begin{definition}[Tiling Problem]
     A \emph{tiling problem} is a tuple
@@ -60,7 +62,7 @@ In particular, we will use the following facts.
     \mat{Not sure if this is folklore, but it can be seen by taking a $\linlen$ space Turing machine that deterministically increments from a tape with all 0 to all 1, then encoding this as a tiling problem.}
 \end{itemize}
 
-\subsubsection{Large Numbers}
+\subsection{Large Numbers}
 
 The crux of the proof is encoding large numbers that can take values between $1$ and $\expheight$-fold exponential.
 
@@ -125,7 +127,7 @@ where
 $\tile^i_1 \ldots \tile^i_{\nmax{\expheight-1}}$
 is the tiling of the $i$th row of the unique solution to the tiling problem.
 
-\subsubsection{Recognising Large Numbers}
+\subsection{Recognising Large Numbers}
 
 We first define a useful formula
 $\goodnums{\expheight}{x}$
@@ -535,7 +537,7 @@ If $x$ is not a correct encoding then $T$ will not be able to produce a $y$ that
 $\goodnums{\expheight-1}{y}$.
 
 
-\subsubsection{Reducing from a Tiling Problem}
+\subsection{Reducing from a Tiling Problem}
 
 Now that we are able to encode large numbers, we can encode an $\expheight$-EXPSPACE-hard tiling problem as a satisfiability problem of $\strline[T]$ with two-way transducers.
 In fact, most of the technical work has been done.
