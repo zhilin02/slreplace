@@ -79,7 +79,7 @@ More precisely, we provide a  reduction from a tiling problem that is hard for $
 The reduction relies on the ability to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
 Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
 
-The full encoding is given in 
+The complete encoding is given in 
 \shortlong{the full version of this article}
           {Appendix~\ref{sec:two-way-lower}}.
 We give an overview of the intuition here.
@@ -115,7 +115,7 @@ where each row
 $t_{i,1} t_{i,2} \cdots t_{i,n}$
 is separated from the next row by $\numsep$.
 The 2NFA performs $n+1$ passes.
-During first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
+During the first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
 $\tup{t_{i,j}, t_{i,j+1}} \in \hrel$
 for all
 $1 \leq j < n$.
@@ -129,9 +129,8 @@ We begin with a single 2T and a tiling problem of exponential width.
 A single 2NFA will no longer suffice since, while checking the columns, it cannot count an exponential number of positions to find the next tile in the column without an exponential number of states.
 We use a 2T in conjunction with a 2NFA and a more involved encoding to address this issue.
 
-A row of the solution to a tiling problem will now be encoded as follows, with a sequence of $n$ binary bits preceding each tile.
-These bits appear in order and count from $0\ldots00$ to $1\ldots11$.
-This gives an exponential width.
+Intuitively, a row of the solution to a tiling problem could now be encoded as follows, with a sequence of $n$ binary bits preceding each tile.
+These bits appear in order and count from $0\ldots00$ to $1\ldots11$ and give an exponential width.
 That is
 \[
     0\ldots00\ \tile_{1,1}\ %
@@ -147,8 +146,12 @@ That is
     1\ldots11\ \tile_{m,2^n} \ .
 \]
 Note, we do not need to enforce the height of the corridor, since this is not a requirement of the tiling problem.
+However, just as it is possible to define a Turing machine that counts in its tape from $0\ldots00$ to $1\ldots11$ for any arbitrary length bit sequence, it is possible to define tiling problems whose only solutions have height exponential in the width of the corridor.
+In fact, in the formal encoding, we will not use binary numbers, but instead use tiling problems whose solutions must have exponential height.
+This is more convenient than a binary number encoding because vertical and horizontal tiling relations are easier to encode than the logic required to increment binary numbers.
+For the purposes of the intuitive exposition, we will use binary numbers as the intention is clearer.
 
-The 2T checks the solution to the tiling problem in a manner similar to the 2NFA when a corridor of width $n$ was needed.
+Given such an encoding, the 2T checks the solution to the tiling problem in a manner similar to the 2NFA when a corridor of width $n$ was needed.
 That is, on the first pass, the horizontal relation is checked (as well as the initial and final tiles), and on subsequence passes each column is checked against $\vrel$.
 
 To cope with the large corridor width, the 2T will output ``queries'' to the 2NFA.
@@ -167,10 +170,10 @@ encodes the successor ($+1$) of
 $b_1 \ldots b_n$.
 A 2NFA can check these properties in $n$ passes: one for each bit position.
 
-Thus, during the first pass of the 2T, it checks, in addition to $\hrel$, that the tile positions are correctly numbered from $0\ldots00$ to $1\ldots11$.
+Thus, during the first pass of the 2T, it checks, in addition to $\hrel$, that the tile positions are always correctly numbered from $0\ldots00$ to $1\ldots11$.
 It does this by outputting each sequence of bits it reads, separated by $\numplus$.
-When it reaches the end of a row it outputs $\numsep$.
-The 2NFA can then check that the numbers increment from $0\ldots00$ to $1\ldots11$.
+When it reaches the end of a row it outputs $\numsep$ to indicate the end of the sequence.
+The 2NFA can then check that each series of numbers increment from $0\ldots00$ to $1\ldots11$.
 
 Subsequent passes of the 2T check each column of the output.
 Since it is not possible without an exponential number of states to check each column in turn in a controlled way, the 2T again relies on the 2NFA to perform some checks.
@@ -185,10 +188,28 @@ Using the 2NFA we ensure that the 2T (non-deterministically) passes over each co
 If the 2T manages to produce a word that is accepted by the 2NFA, we know that there is a solution to the tiling problem over an exponentially wide corridor.
 
 To increase the corridor width by another exponential, we need another 2T.
-To reach doubly exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
-To ensure that the bit sequences are exponentially long, we need to precede each bit with another binary sequence, this time of length $n$. 
+To reach doubly-exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
+To ensure that the bit sequences are exponentially long, we need to precede each bit with another binary sequence, this time of length $n$.
+Thus, we have two sets of binary digits $0,1$ and $0', 1'$, and, if $n = 2$ a row would take the following form
+\[
+    \begin{array}{c}
+        (0'0') 0 (0'1') 0 (1'0') 0 (1'1') 0\ \tile_1 \\
+        (0'0') 0 (0'1') 0 (1'0') 0 (1'1') 1\ \tile_2 \\
+        \cdots \\
+        (0'0') 1 (0'1') 1 (1'0') 1 (1'1') 1\ \tile_{16} \\
+    \end{array}
+\]
+where parenthesis are shown for clarity only.
+We can check that a solution to a tiling problem with doubly-exponential width corridor encoded in such a way is indeed a solution using two 2Ts and a 2NFA.
+The first 2T checks the horizontal and vertical tilings as before, outputting the bit sequences preceding the tiles.
+To perform the required equality ($\numeq$) and plus one ($\numplus$) checks on this output, the second 2T is essentially checking horizontal and vertical constraints of another tiling problem over a width $n$ corridor
+(recall, in the formal reduction we use tiling problems in place of binary numbers).
+For this, it checks the required constraints and outputs in the process another series of bit sequences (this time of width $n$) separated by $\numeq$ and $\numplus$ (and $\numsep$).
+Finally, the 2NFA checks that these sequences are indeed correct.
 
-\mat{TODO: finish explanation, cut down to one page}
+This process can be iterated.
+That is, using $m$ 2Ts and a 2NFA, we can search for a solution of a tiling problem over an $m$-fold exponentially wide corridor.
+
 
 
 %======================================================================================================
