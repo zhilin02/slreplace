@@ -74,13 +74,122 @@ The lower bound is proved as follows. \zhilin{@Matt, could you help put your low
 
 We give a matching lower bound for the satisfiability problem for $\strline[2NPT]$. 
 In particular, we show the problem is non-elementary.
-More specifically, we show that, for any $\expheight$, the problem is $\expheight$-EXPSPACE-hard with $(\expheight+1)$ transducers. More precisely,
-we provide a  reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.
+More specifically, we show that, for any $\expheight$, the problem is $\expheight$-EXPSPACE-hard with $(\expheight+1)$ transducers. 
+More precisely, we provide a  reduction from a tiling problem that is hard for $\expheight$-EXPSPACE.
 The reduction relies on the ability to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
-Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}).
+Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
 
+The full encoding is given in 
+\shortlong{the full version of this article}
+          {Appendix~\ref{sec:two-way-lower}}.
+We give an overview of the intuition here.
 
-%\input{two-way-lower.tex}
+A \emph{tiling problem} consists of a finite set of tiles \tiles as well as horizontal and vertical tiling relations 
+$\hrel, \vrel \subseteq \tiles \times \tiles$.
+Furthermore, given a tiling \emph{corridor} of a certain width, as well as initial and final tiles
+$\inittile, \fintile \in \tiles$
+the task is to find a tiling where 
+\begin{itemize}
+\item
+    the first tile of the first row of the corridor is $\inittile$, 
+\item
+    if $\tile_1$ appears directly to the left of $\tile_2$ in a row, we must have
+    $\tup{\tile_1, \tile_2} \in \hrel$,
+\item
+    if $\tile_1$ appears in the row above $\tile_2$ in the same column, we must have
+    $\tup{\tile_1, \tile_2} \in \vrel$,
+\item
+    each row must have a tile in each column position (up to the column width),
+\item
+    the last position of the last row must contain $\fintile$.
+\end{itemize}
+Tiling problems are intimately connected to computations of Turing machines 
+(each row can be considered to be the tape contents in one configuration of a run).
+Thus, tiling problems where the corridor is of a given width are equivalent to Turing machines with space equal to the width.
+
+The existence of a solution to a tiling problem of width $n$ can be reduced to emptiness of a 2NFA of size 
+$\ap{\bigoh}{n}$.
+A solution to a tiling problem will be encoded as a word 
+$t_{1,1} t_{1,2} \cdots t_{1,n} \numsep \cdots \numsep t_{m,1} t_{m,2} \cdots t_{m,n}$
+where each row
+$t_{i,1} t_{i,2} \cdots t_{i,n}$
+is separated from the next row by $\numsep$.
+The 2NFA performs $n+1$ passes.
+During first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
+$\tup{t_{i,j}, t_{i,j+1}} \in \hrel$
+for all
+$1 \leq j < n$.
+If the encoding passes this check, we need to verify that the vertical tiling relation $\vrel$ is met.
+This is done in $n$ more passes, the $j$th of which verifies the $j$th column of the encoding.
+The $j$th tile of a row is stored into the state of the 2NFA, it counts $n+1$ characters to reach the $j$th tile of the next row, then compares the two tiles with respect to $\vrel$.
+The previous tile is then forgotten, the new stored in the state, and the check moves to the next row until the end of the word is reached.
+
+We want to show that a tiling problem of $n$-fold exponential width can be reduced to a constraint problem with $n$ 2T and a single 2NFA.
+We begin with a single 2T and a tiling problem of exponential width.
+A single 2NFA will no longer suffice since, while checking the columns, it cannot count an exponential number of positions to find the next tile in the column without an exponential number of states.
+We use a 2T in conjunction with a 2NFA and a more involved encoding to address this issue.
+
+A row of the solution to a tiling problem will now be encoded as follows, with a sequence of $n$ binary bits preceding each tile.
+These bits appear in order and count from $0\ldots00$ to $1\ldots11$.
+This gives an exponential width.
+That is
+\[
+    0\ldots00\ \tile_{1,1}\ %
+    0\ldots01\ \tile_{1,2}\ %
+    \cdots
+    1\ldots11\ \tile_{1,2^n}\ %
+    \numsep
+    \cdots
+    \numsep
+    0\ldots00\ \tile_{m,1}\ %
+    0\ldots01\ \tile_{m,2}\ %
+    \cdots
+    1\ldots11\ \tile_{m,2^n} \ .
+\]
+Note, we do not need to enforce the height of the corridor, since this is not a requirement of the tiling problem.
+
+The 2T checks the solution to the tiling problem in a manner similar to the 2NFA when a corridor of width $n$ was needed.
+That is, on the first pass, the horizontal relation is checked (as well as the initial and final tiles), and on subsequence passes each column is checked against $\vrel$.
+
+To cope with the large corridor width, the 2T will output ``queries'' to the 2NFA.
+To be more precise the 2T will output a sequence of n-bit sequences separated by either
+$\numeq$ or $\numplus$.
+The 2NFA will accept
+$b_1 \ldots b_n \numeq b'_1 \ldots b'_n$
+if
+$b_1 \ldots b_n = b'_1 \ldots b'_n$
+(i.e.~the sequences are the same).
+Similarly
+$b_1 \ldots b_n \numplus b'_1 \ldots b'_n$
+will be accepted if 
+$b'_1 \ldots b'_n$
+encodes the successor ($+1$) of
+$b_1 \ldots b_n$.
+A 2NFA can check these properties in $n$ passes: one for each bit position.
+
+Thus, during the first pass of the 2T, it checks, in addition to $\hrel$, that the tile positions are correctly numbered from $0\ldots00$ to $1\ldots11$.
+It does this by outputting each sequence of bits it reads, separated by $\numplus$.
+When it reaches the end of a row it outputs $\numsep$.
+The 2NFA can then check that the numbers increment from $0\ldots00$ to $1\ldots11$.
+
+Subsequent passes of the 2T check each column of the output.
+Since it is not possible without an exponential number of states to check each column in turn in a controlled way, the 2T again relies on the 2NFA to perform some checks.
+The 2T non-deterministically selects a tile in the current row, outputs the bit sequence marking its position and then non-deterministically selects a tile in the next row, again outputting the preceding bit sequence.
+Between these bit sequences it outputs a $\numeq$ symbol.
+It continues in this way until the end of the pass, simultaneously checking that the guessed tiles satisfy $\vrel$.
+The 2NFA will check that each sequence of bits is the same, which will enforce that the 2T checked the same column in every row.
+The 2NFA will then start another pass to check the next column in the encoding.
+It will output $\numplus$ before outputting the bit sequences associated with the pass over the next column.
+Using the 2NFA we ensure that the 2T (non-deterministically) passes over each column in turn, starting from the $0\ldots00$th column and finishing in the $1\ldots11$th.
+
+If the 2T manages to produce a word that is accepted by the 2NFA, we know that there is a solution to the tiling problem over an exponentially wide corridor.
+
+To increase the corridor width by another exponential, we need another 2T.
+To reach doubly exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
+To ensure that the bit sequences are exponentially long, we need to precede each bit with another binary sequence, this time of length $n$. 
+
+\mat{TODO: finish explanation, cut down to one page}
+
 
 %======================================================================================================
 
