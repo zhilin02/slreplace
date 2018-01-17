@@ -57,7 +57,7 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 %let $\|\vec{f}\|(\vec{d})$ denote the sequence $\|f_1\|(\vec{d})...\|f_n\|(\vec{d})$, that is, a data string of sort $s$.
 
 \begin{definition}[Symbolic finite-state transducers]
-    A \emph{nondeterministic two-way  symbolic \emph{transducer}} (2NST) is a tuple $\Transducer = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
+    A \emph{nondeterministic two-way  symbolic \emph{transducer}} (2ST) is a tuple $\Transducer = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
 \begin{itemize}
 \item $\Upsilon=(\signature, \structure, \Psi, \Psi')$ is a decidable label theory, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
@@ -70,11 +70,11 @@ $t(x)$ is an $\signature$-term,
 \item   transitions $(q, \EndLeft, \Right, q', c)$ and $(q, \EndRight, \Left, q', c)$, where $c$ is an $\signature$-constant. 
 \end{itemize}
 \end{itemize}
-A 2NST is an NST if for each $(q, \psi(x), dir, q', t(x))$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q', c)$ are removed.
+A 2ST is an ST if for each $(q, \psi(x), dir, q', t(x))$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q', c)$ are removed.
 \end{definition}
 
-\paragraph{Semantics of 2NST.}
-A transition $\tau=(q_1,\psi(x), dir, q_2, t(x)) \in \transrel$ in the 2NST $\Transducer$ can be concretised
+\paragraph{Semantics of 2ST.}
+A transition $\tau=(q_1,\psi(x), dir, q_2, t(x)) \in \transrel$ in the 2ST $\Transducer$ can be concretised
 into a potentially infinite set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q \times \data$, where $(q_1, d, dir, q_2, d')  \in \|\tau\|$ iff $d \in \|\psi\|$ and $d' = \interpretation(t)(d)$.
 Intuitively, suppose $\Transducer$ is at the state $q_1$ and reading the input data value $d \in \data$,
 if there is a transition $(q_1, \psi(x), dir, q_2, t(x) )\in \transrel$ such that $d \in \|\psi\|$, then $\Transducer$ can move its reading head according to $dir$, and moves from the state
@@ -100,17 +100,17 @@ A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is a
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
 %\begin{proposition}\label{prop-2nst-nst}
-%Each 2NST can be turned into an equivalent NST. 
+%Each 2ST can be turned into an equivalent ST. 
 %\end{proposition}
 
 
 \begin{definition}[Symbolic parametric transducers]
-A \emph{nondeterministic two-way symbolic parametric transducer} (2NSPT) is a tuple
+A \emph{nondeterministic two-way symbolic parametric transducer} (2SPT) is a tuple
 $\Transducer=(\Upsilon, \EndLeft, \EndRight, X, \controls, q_0, \finals, \transrel)$, where:
 \begin{itemize}
 \item $\Upsilon=(\signature,\structure, \Psi, \Psi')$ is a decidable label theory with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
-\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2NST, 
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2ST, 
 %
 \item $Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters (variables), 
 %
@@ -136,7 +136,7 @@ In addition, to extend the string constraint language $\straightline[\transet]$ 
 A \emph{Boolean algebra} is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by \emph{dropping} the requirement that $\Psi$ is closed under substitutions.
 
 \begin{definition}[Symbolic automata]
-    A \emph{nondeterministic two-way  symbolic \emph{automata}} (2NSA) is a tuple $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
+    A \emph{nondeterministic two-way  symbolic \emph{automata}} (2SA) is a tuple $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
 \begin{itemize}
 \item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
@@ -149,19 +149,19 @@ A \emph{Boolean algebra} is adapted from a background theory $\Upsilon=(\signatu
 \item   transitions $(q, \EndLeft, \Right, q')$ and $(q, \EndRight, \Left, q')$. 
 \end{itemize}
 \end{itemize}
-A 2NSA is an NSA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
+A 2SA is an SA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
 
-The semantics of 2NSA is defined similarly to 2NST, with the output data values removed.
+The semantics of 2SA is defined similarly to 2ST, with the output data values removed.
 
 \begin{proposition}\label{prop-2nsa}
 The following results hold.
 \begin{itemize}
-\item Every 2NSA can be transformed effectively into an NSA.
+\item Every 2SA can be transformed effectively into an SA.
 %
-\item NSAs can be determinized and are closed under all Boolean operations.
+\item SAs can be determinized and are closed under all Boolean operations.
 %
-\item The nonemptiness of NSA is decidable.
+\item The nonemptiness of SA is decidable.
 \end{itemize}
 \end{proposition}
 The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the later two were shown in \cite{NG01,DV14}.
@@ -171,17 +171,17 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 For solving the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
 
 \begin{definition}[Symbolically recognisable relations]
-	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is \emph{symbolically recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some NSA for each $j\in [k]$.
+	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is \emph{symbolically recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some SA for each $j\in [k]$.
 \end{definition}
 
 
 \begin{theorem}\label{thm-generic-dec-symbolic}
 Let $\transet$ be a class of symbolic parametric transducers. Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and NSA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively. Then the satisfiability of $\straightlinesym[\transet]$ is decidable.\zhilin{complexity ?}
+for each $\Transducer \in \transet$ and SA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively. Then the satisfiability of $\straightlinesym[\transet]$ is decidable.\zhilin{complexity ?}
 \end{theorem}
 
 \begin{lemma}\label{lem-spt}
-Given a 2NSPT (resp. NSPT) $\Transducer$ and an NSA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively.\zhilin{complexity ?}
+Given a 2SPT (resp. SPT) $\Transducer$ and an SA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively.\zhilin{complexity ?}
 \end{lemma}
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
