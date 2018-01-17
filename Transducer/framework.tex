@@ -71,15 +71,25 @@ example.
     (left)
     \label{fig:SSA}}
 \end{figure}
-Bj\"{o}rner \emph{et al.}
-initiated the exploration
-of what kind of string functions $f$ and $g$ for which the above path 
-feasibility problem can be algorithmically solved. 
+
+\emph{To avoid notational clutter, in the sequel we will follow \cite{BTV09}
+and treat string 
+constraints simply as symbolic executions in SSA form}, i.e., instead of 
+conjunctions of atomic formulas from some logical theories. 
+This simplifies 
+the presentation of our decidable string logics and others in the literature 
+(e.g. \cite{LB16,CCHLW18}) without obfuscating the connection to logic.
+
 
 \subsection{The ``straight-line'' framework}
-One clean and powerful way to instantiate the string functions $f$ and $g$
-in the assignments/conditionals is to allow some form of finite-state
-transducers in their definitions.
+Bj\"{o}rner \emph{et al.} \cite{BTV09} initiated the exploration
+of what kind of string functions $f$ and $g$ for which the above path 
+feasibility problem can be algorithmically solved. 
+One clean and powerful way to achieve decidability is to 
+%functions $f$ and $g$
+%in the assignments/conditionals is to 
+allow some form of finite-state transducers in the definitions of $f$
+and $g$.
 %question of incorporating some form of transducers into the definitions of 
 %
 %the string functions $f$ and $g$ were briefly explored in \cite{BTV09}. 
@@ -91,16 +101,18 @@ that
 if the string functions $f$ and $g$ in the program can be captured by 
 synchronised $k$-track finite automata (a.k.a.~\defn{automatic structures} 
 \cite{BG04}), then
-the path feasibility problem becomes decidable. The authors noted, however, that
+the path feasibility problem becomes decidable. The noted, however, that
 this is too narrow for applications since string concatenation cannot be
 captured in this framework. 
 
 In a recent paper \cite{LB16}, Lin \& Barcelo 
-proposed to allow concatenation, regular constraints (i.e. regular expression 
-matching), and \emph{one-way} finite-state transducers (not synchronised as in \cite{BTV09}, but only permits one input string and one output string) in straight-line programs. 
+proposed allowing concatenation, regular constraints (i.e. regular expression 
+matching), and \emph{one-way} finite-state transducers (not synchronised as in \cite{BTV09}, but only permits one input string and one output string) in 
+straight-line programs. Finite transducers are a classic concept from
+the theory of formal languages (e.g. see \cite{Berstel}).
 %We will define finite-state
 %transducers in the following subsection, but 
-Roughly speaking, such a transducer is an NFA with an extra output (write-only) 
+Roughly speaking, a finite transducer an NFA with an extra output (write-only) 
 track, i.e., upon reading an input symbol, it may decide to output (or not output) a symbol 
 on the output track. We will define this in more detail below.
 In general, the input/output tracks of finite-state transducers may be asynchronous, which means that they cannot be captured by automatic structures of \cite{BG04}. 
