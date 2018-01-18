@@ -4,82 +4,107 @@
 \subsection{Proof of the first result in Proposition~\ref{prop-2nsa}}
 
 Let $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a 2SA. We show how to construct an equivalent SA $\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$.
+W.l.o.g., we assume that for each transition $(q, \psi, dir, q') \in \transrel$, we have $dir \in \{\Left,\Right\}$. 
 
 The proof is an adaptation of the  construction of nondeterministic one-way automata from two-way nondeterministic finite state automata based on the idea of crossing sequences (cf. e.g. \cite{HU79}). Since 2SAs replace the letters in 2FAs with unary predicates, the main technical challenge is to deal with these guards in a proper way.
 
-Let $S_\transrel$ denote the set of sequences of transitions from $\transrel$ of odd lengths where the source states of the transitions in the even (resp. odd) positions are mutually distinct. 
+We first use an example to illustrate the idea of crossing sequences: Suppose $w = \EndLeft d_1 d_2 d_3 d_4 d_5\EndRight$, and an accepting run of $\Aut$ on $w$ uses the following sequence of transitions 
+\[
+\begin{array}{l}
+(q_0, \EndLeft, \Right, q_1), (q_1, \psi_1, \Right, q_1), (q_1, \psi_2, \Left, q_2), (q_2, \psi_3, \Right, q_0), (q_0, \psi_4, \Right, q_1), \\
+(q_1, \psi_1, \Right, q_1), (q_1, \psi_1, \Right, q_1), (q_1, \psi_2, \Left, q_2), (q_2, \psi_3, \Right, q_0), (q_0, \psi_4, \Right, q_1),
+\end{array}
+\] 
+with $q_1 \in \finals$.
+The run is illustrated in Figure~\ref{fig-2sa-sa}. A \emph{crossing sequence} of the run is a sequence of states in the boundary of two tape cells, e.g. the sequence $q_1, q_2, q_0$ in the boundary of $d_1$ and $d_2$. Note that for technical convenience, the states of the run are put in a \emph{special} manner that whenever a left-transition $(q, \psi, \Left, q')$ is taken, $q'$ is put just below $q$, thus in the \emph{same} crossing sequence as $q$, instead of putting $q'$ in the crossing sequence on-position to the left. Therefore, 
+\emph{the target state of each left-transition is put in the position right-adjacent to the actual position of the reading head}.
+For instance, in Figure~\ref{fig-2sa-sa}, when the transition $(q_1, \psi_2, \Left, q_2)$ is taken, $q_2$ is put just below $q_1$. Compared to the crossing sequences for 2FAs, in Figure~\ref{fig-2sa-sa}, we also include the guards of transitions. 
 
-\zhilin{to be finished}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics{2sa-sa-exmp.pdf}
+\end{center}
+\caption{Accepting runs of $\Aut$: An example}\label{fig-2sa-sa}
+\end{figure}
 
-For $\rho, \rho' \in S_\transrel$, we introduce two concepts that $\rho$  \emph{left matches} $\rho'$ and $\rho$  \emph{right matches} $\rho'$  inductively as follows: Let $\rho = [\tau_1, \ldots, \tau_{2m+1}]$ and $\rho' = [\tau'_1, \ldots, \tau'_{2n+1}]$. 
+In order to deal with the guards in transitions, we adapt the crossing sequences of the 2SA $\Aut$  as follows: a crossing sequence of $\Aut$ is a sequence of transitions of odd lengths, such that  the source states of the transitions in the even (resp. odd) positions are mutually distinct. Let $S_\transrel$ denote the set of such sequences of transitions.
+
+
+\newcommand\lmatch{\mathsf{LeftMatch}}
+\newcommand\rmatch{\mathsf{RightMatch}}
+
+In order to construct the set of transitions of $\Aut'$, we shall define two \emph{partial} functions $\lmatch(\rho_1, \rho_2)$ and $\rmatch(\rho_1, \rho_2)$ for $\rho_1, \rho_2 \in S_\transrel$. 
+The intention of $\lmatch(\rho_1, \rho_2)$ and $\lmatch(\rho_1, \rho_2)$ is explained as follows.
 \begin{itemize}
-\item $\rho$ left-matches $\rho'$, if 
-\begin{itemize}
-\item $\tau_1$ is a right transition, $[\tau_2,\ldots, \tau_{2m+1}]$ left-matches $[\tau'_2, \ldots, \tau'_{2n+1}]$, 
+\item The intention of $\lmatch(\rho_1, \rho_2)$: $\rho_1$ and $\rho_2$ are the crossing sequences to the left resp. right of some position $i$ holding a data value $d$, and initially, we reach the source state of the first transition of $\rho_2$ by a \emph{left-transition} (thus after this transition, the reading head is in the position $i$\footnote{Recall that the target state of each left-transition is put in the position right-adjacent to the actual position of the reading head.}).
 %
-\item $\tau'_1$ is a left transition, $[\tau_2, \ldots, \tau_{2m+1}]$ left-matches $[\tau'_2, \ldots, ]$, 
-\end{itemize} 
-\item $\rho$ 
+\item The intention of $\rmatch(\rho_1, \rho_2)$:  $\rho_1$ and $\rho_2$ are the crossing sequences to the left resp. right of some position $i$ holding a data value $d$, and initially, we reach the source state of the first transition of $\rho_1$, say $p_1$, by a \emph{right-transition} (thus after this transition, the reading head is in the position $i$).
 \end{itemize}
-%Moreover, let $\vec{\controls}_i$ (resp. $\vec{\controls}_f$) denote the set of sequences of mutually distinct states from $\controls$ such that $q_0$ is the first state of the sequence (resp. some state from $F$ is the last state of the sequence).
+%
+Formally, the domain of $\lmatch$ (resp. $\rmatch$) is defined inductively as follows, where in each case below, the return value is also specified.  \\
+Let $\rho_1, \rho_2 \in S_\transrel$. Then $\lmatch(\rho_1, \rho_2)$ is defined iff one of the following constraints holds.
+\begin{itemize}
+\item Case $\rho_1 = \varepsilon$, $\rho_2 = \varepsilon$: $\lmatch(\rho_1, \rho_2) = \ltrue$.
+%
+\item Case $\rho_1 =  \tau_{1,1}, \ldots, \tau_{1,k}$ with $k \ge 1$, $\rho_2 = \tau_{2,1}, \ldots, \tau_{2,l}$ with $l \ge 1$, $\tau_{2,1} = (q_1, \psi_{2,1}, \Left, p_1)$, $p_1$ is the source state of $\tau_{1,1}$, and $\rmatch(\rho'_1, \rho'_2)$ is defined:  
+$$\lmatch(\rho_1, \rho_2) = \psi_{2,1} \wedge \rmatch(\rho'_1, \rho'_2),$$ 
+where $\rho'_1 = \tau_{1,2}, \ldots, \tau_{1,k}$ and $\rho'_2 = \tau_{2,2}, \ldots, \tau_{2,l}$.
+%
+\item Case $\rho_1 =  \tau_{1,1}, \ldots, \tau_{1,k}$ with $k \ge 1$, $\rho_2 = \tau_{2,1}, \ldots, \tau_{2,l}$ with $l \ge 1$, $\tau_{2,1} = (q_1, \psi_{2,1}, \Right, q_2)$, $q_2$ is the source state of $\tau_{2,2}$, and $\lmatch(\rho_1, \rho'_2)$ is defined:  
+$$\lmatch(\rho_1, \rho_2) = \psi_{2,1} \wedge \lmatch(\rho_1, \rho'_2),$$ 
+where $\rho'_2 = \tau_{2,3}, \ldots, \tau_{2,l}$.
+%
+\end{itemize} 
+%
+Symmetrically, $\rmatch(\rho_1, \rho_2)$ is defined iff one of the following constraints holds.
+\begin{itemize}
+\item Case $\rho_1 = \varepsilon$, $\rho_2 = \varepsilon$: $\rmatch(\rho_1, \rho_2) = \ltrue$.
 
-$\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$
+\item Case $\rho_1 =  \tau_{1,1}, \ldots, \tau_{1,k}$ with $k \ge 1$, $\rho_2 = \tau_{2,1}, \ldots, \tau_{2,l}$ with $l \ge 1$, $\tau_{1,1} = (p_1, \psi_{1,1}, \Right, q_1)$, $q_1$ is the source state of $\tau_{2,1}$, and $\lmatch(\rho'_{1}, \rho'_2)$ is defined:  
+$$\rmatch(\rho_1, \rho_2) =\psi_{1,1} \wedge \lmatch(\rho'_{1}, \rho'_2),$$ 
+where $\rho'_1 = \tau_{1, 2},\ldots, \tau_{1,k}$, and $\rho'_2 = \tau_{2,2}, \ldots, \tau_{2,l}$.
+%
+\item Case $\rho_1 =  \tau_{1,1}, \ldots, \tau_{1,k}$ with $k \ge 1$, $\rho_2 = \tau_{2,1}, \ldots, \tau_{2,l}$ with $l \ge 1$, $\tau_{1,1} = (p_1, \psi_{1,1}, \Left, p_2)$, $p_2$ is the source state of $\tau_{1,2}$, and $\rmatch(\rho'_1, \rho_2)$ is defined:  
+$$\rmatch(\rho_1, \rho_2) = \psi_{1,1} \wedge \rmatch(\rho'_1, \rho_2),$$ 
+where $\rho'_1 = \tau_{1,3}, \ldots, \tau_{1,k}$.
+%
+\end{itemize}
+
+We are ready to construct the SA $\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$, where
 \begin{itemize}
 \item $\controls' = S_\transrel \cup \{q'_0\}$, where $q'_0$ is a fresh state not in $S_\transrel$,
 %
-\item $\finals'$ comprises the set of elements $[\tau_1, \ldots, \tau_{2n+1}] \in S_\transrel$ such that the target state of $\tau_{2n+1}$ is from $F$, 
+\item $\finals'$ comprises the set of elements $\rho \in S_\transrel$ satisfying that: suppose $\rho = \tau_1, \ldots, \tau_{2n+1}$, for each $i \in [n+1]$, $\tau_{2i-1} = (p_{2i-1}, \EndRight, \Left, q_{2i-1})$, and for each $i \in [n]$, $\tau_{2i} = (p_{2i}, \psi_{2i}, dir_{2i}, q_{2i})$, then $q_{2n+1} \in F$, moreover, for each $i \in [n]$, $q_{2i-1} = p_{2i}$,  
 %
 \item $\transrel'$ comprises the following transitions: 
 %
 \begin{itemize}
-\item $(\rho, \psi, \rho') \in S_\transrel \times S_\transrel$ such that $\rho = [\tau_1, \ldots, \tau_{2n+1}]$, $\rho' = [\tau'_1, \ldots, \tau_{2n+1}]$, and $\psi = $,
 %
-\item for each transition $(\rho, \psi, \rho')$ such that $\rho \in I'$, we have $(q'_0, \psi, \rho') \in \transrel'$, where $I' \subseteq \controls'$ comprise $[\tau_1, \ldots, \tau_{2n+1}] \in S_\transrel$ satisfying the following constraints: there are $p_1, \ldots, p_n \in \controls$ such that $p_1 = q_0$, and for each $i \in [n]$, $(p_i, \EndLeft, \Right, q_{2i-1}) \in \transrel$, where $q_{2i-1}$ is the source state of $\tau_{2i-1}$, 
+\item for each $\rho, \rho' \in S_\transrel$ such that $\rmatch(\rho, \rho')$ is defined, we have $(\rho, \rmatch(\rho, \rho'), \rho') \in \transrel'$,
+%
+\item  
+%the transitions out of $q'_0$ are defined as follows:
+%
+for each $\rho \in I'$ and $\rho' \in S_\transrel$ such that $\rmatch(\rho, \rho')$ is defined, we have $(q'_0, \rmatch(\rho, \rho'), \rho') \in \transrel'$, where 
+$I'$ comprises $\rho'' \in S_\transrel$ satisfying that: suppose $\rho'' = \tau_1, \ldots, \tau_{2n+1}$,  for each $i \in [n+1]$, $\tau_{2i-1} = (p_{2i-1}, \psi_{2i-1}, dir_{2i-1}, q_{2i-1})$, and for each $i \in [n]$, $\tau_{2i} = (p_{2i}, \EndLeft, \Right, q_{2i})$, then $(q_0, \EndLeft, \Right, p_1) \in \transrel$, moreover, for each $i \in [n]$, $q_{2i} = p_{2i+1}$. 
 \end{itemize}
 %
 \end{itemize}
 
-%The proof is an adaptation of Vardi's construction of deterministic one-way automata from two-way nondeterministic finite state automata (\cite{Var89}).
+Since $S_\transrel$ contains at most $(\numtrans(\Aut))^{2|\controls|-1} \le (\numtrans(\Aut))^{2\numtrans(\Aut)}$ elements, we conclude that 
+$$
+\begin{array}{l c l}
+\numtrans(\Aut') \le ((\numtrans(\Aut))^{2\numtrans(\Aut)})^2  & = & (\numtrans(\Aut))^{4\numtrans(\Aut)} \\
+& \approx &   2^{O\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}
+\end{array}
+$$ 
+and 
+$$
+\begin{array}{l c l}
+\sizetrans(\Aut') \le 2(2|\controls|-1)\sizetrans(\Aut)  & \le & 4 \numtrans(\Aut) \sizetrans(\Aut) \\
+& \approx &  O( \numtrans(\Aut) \sizetrans(\Aut)).
+\end{array}
+$$
 
-\hide{
-Let $\cA=(Q,\vdash,\dashv,\delta,I,F)$ be a 2NFAR over $\Sigma^\pm$.  We construct a DFAR $\cA'=(Q',\delta',q'_0,F')$ as follows.
-
-\begin{itemize}
-\item $Q'=Q'_d \cup Q'_w$, where 
-\begin{itemize}
-\item $Q'_d$ is the set of all tuples $\langle a, R, S \rangle \in (\Sigma^\pm \cup \{\vdash\}) \times 2^{Q_w \times Q_w} \times 2^{Q_d}$, 
-\item $Q'_w$ is the set of all tuples  $\langle C, R, S\rangle \in 2^{\Cc_\cA} \times 2^{Q_d \times Q_d} \times 2^{Q_w}$ such that $\wedge_{c \in C} c$ is satisfiable.
-\end{itemize}
-Intuitively, the states $\langle a,R,S\rangle$ and $\langle C,R,S \rangle$ summarize the behavior of $\cA$ over the prefix of $\vdash \alpha \dashv$ to the left of the current position. More specifically, let the index of the current position be $i$ (starting from $0$, with the letter $\vdash$), then $a,C,R,S$ have the following intuitive meaning.
-\begin{itemize}
-\item If $i$ is odd (the current position has a data value), then $a$ is the letter from $\Sigma^\pm \cup \{\vdash\}$ in the position $i-1$, otherwise, $C$ is the set of rigid constraints from $\Cc_\cA$ that are satisfied by $(\alpha,i-1)$. 
-\item $S$ is the set of reachable states in the position $i$, starting from the set of initial states $I$ in the position $0$.
-\item $R \subseteq Q \times Q$ includes all the state pairs $(q,q')$ satisfying the following conditions: Starting from the position $i-1$ with the state $q$, after always moving within the prefix of the data path to the left of $i-1$ (with $i-1$ included), $\cA$  stops at the position $i-1$ with the state $q'$.  
-\end{itemize} 
-%
-\item $q'_0=(\vdash,R_0,S_0)$ such that $R_0=\{(q,q) \mid q \in Q_w\}$ and $S_0=\delta_w(I,\vdash)$.
-%
-\item $\delta'$ are defined as follows. 
-%
-\begin{itemize}
-\item Let $\langle a,R,S\rangle \in Q'_d$ and $\langle C,R',S'\rangle \in Q'_w$. Then $(\langle a,R,S \rangle, c',\langle C, R',S'\rangle) \in \delta'_d$ iff the following condition hold, 
-\begin{itemize}
-\item $c'=\bigwedge \limits_{c \in C} c \wedge \bigwedge \limits_{c \in \Cc_\cA \setminus C} \overline{c}$, 
-\item $R'$ is the reflexive and transitive closure of $R'_0$, where $R'_0$ consists of all the pairs $(q,q') \in Q_d \times Q_d$ such that there are $q_1,q_2 \in Q_w$ satisfying that $(q,c,q_1,-1) \in \delta_d$ for some $c \in C$, $(q_1,q_2) \in R$, and $(q_2,a,q',+1) \in \delta_w$, 
-\item $S'=\{q' \in Q_w \mid \exists q \in S, q_1 \in Q_d.\ (q,q_1) \in R', (q_1,c,q',+1) \in \delta_d \mbox{ for some } c \in C\}$.
-\end{itemize}
-%
-\item Let $\langle C,R,S\rangle \in Q'_w$ and $\langle a,R',S'\rangle \in Q'_d$. Then $\delta'_w(\langle C,R,S \rangle, a)=\langle a, R',S'\rangle$ iff the following conditions hold, 
-\begin{itemize}
-\item $R'$ is the reflexive and transitive closure of $R'_0$, where $R'_0$ consists of all the pairs $(q,q') \in Q_w \times Q_w$ such that there are $q_1,q_2 \in Q_d$ satisfying that $(q,a,q_1,-1) \in \delta_w$, $(q_1,q_2) \in R$, and $(q_2,c,q',+1) \in \delta_d$ for some $c \in C$, 
-\item $S'=\{q' \in Q_d \mid \exists q \in S, q_1 \in Q_w.\ (q,q_1) \in R', (q_1,a,q',+1) \in \delta_w\}$.
-\end{itemize}
-%
-\end{itemize}
-%
-\item $F' \subseteq Q'_w$ consists of the tuples $\langle C, R, S\rangle$ such that there is a partial run of $\cA$ starting from the position immediately before $\dashv$ with some $q \in S$, and stops at the same position with some $q' \in F$. More precisely, $F'$ is the set of tuples $\langle C, R, S\rangle$ such that there are $q \in S$ and $q' \in F$ satisfying that $(q,q') \in R'$, where $R'$ is the reflexive and transitive closure of $R'_0$, and $R'_0$ consists of all the pairs $(q,q') \in Q_w \times Q_w$ such that there are $q_1,q_2 \in Q_d$ satisfying that $(q,\dashv,q_1,-1) \in \delta_w$, $(q_1,q_2) \in R$, and $(q_2,c,q',+1) \in \delta_d$ for some $c \in C$.
-\end{itemize}
-It is not hard to observe that the size of $\cA'$ is exponential over that of $\cA$.
-}
 
 \subsection{Proof of Lemma~\ref{lem-spt}}

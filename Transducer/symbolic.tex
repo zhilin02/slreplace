@@ -99,6 +99,10 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
+To measure the size of a 2ST $\Transducer$, we need take into the consideration the fact that each transition of $\Transducer$ may contain a guard and a term, which are from the label theory $\Upsilon$.
+Thus, we use two numbers to measure the size of $\Transducer$: The number of transitions of $\Transducer$, denoted by $\numtrans(\Transducer)$, and the maximum size of transitions of $\Transducer$, denoted by $\sizetrans(\Transducer)$.
+
+
 %\begin{proposition}\label{prop-2nst-nst}
 %Each 2ST can be turned into an equivalent ST. 
 %\end{proposition}
@@ -131,6 +135,8 @@ the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)
 taken by the transducer. This instantiation of the parameters is only done 
 \emph{once} before the symbolic parametric transducer is run.
 
+The two size parameters of 2SPT can be defined similarly to 2ST.
+
 In addition, to extend the string constraint language $\straightline[\transet]$ to infinite data domains, a counterpart for NFA, called \emph{symbolic automata}, is also needed. 
 
 A \emph{Boolean algebra} is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by \emph{dropping} the requirement that $\Psi$ is closed under substitutions.
@@ -151,17 +157,21 @@ A \emph{Boolean algebra} is adapted from a background theory $\Upsilon=(\signatu
 \end{itemize}
 A 2SA is an SA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
+The semantics of 2SA  is defined similarly to 2ST, with the output data values removed. Moreover, the two size parameters can also be defined similarly to 2ST.
 
-The semantics of 2SA is defined similarly to 2ST, with the output data values removed.
 
 \begin{proposition}\label{prop-2nsa}
 The following results hold.
 \begin{itemize}
-\item Every 2SA can be transformed effectively into an SA.
+\item Every 2SA $\Aut$ can be transformed effectively into an equivalent SA $\Aut'$, in time $O(\numtrans(\Aut') \sizetrans(\Aut'))$, where  
+$\numtrans(\Aut') = 2^{O\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = O( \numtrans(\Aut) \sizetrans(\Aut))$.
 %
-\item SAs can be determinized and are closed under all Boolean operations.
+%in time $$2^{O\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}O( \numtrans(\Aut) \sizetrans(\Aut)),$$
+
 %
-\item The nonemptiness of SA is decidable.
+\item SAs can be determinized and are closed under all Boolean operations. \zhilin{complexity}
+%
+\item The nonemptiness of SA is decidable. \zhilin{complexity}
 \end{itemize}
 \end{proposition}
 The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the later two were shown in \cite{NG01,DV14}.
