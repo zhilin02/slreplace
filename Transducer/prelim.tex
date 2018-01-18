@@ -43,14 +43,14 @@ $V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \s
 }
 %=============================================================================
 
-\paragraph{Automata: } We review necessary background from automata theory;
+\paragraph{Automata.} We review necessary background from automata theory;
 for more, see \cite{Kozen-automata}. Let $\ialphabet$ be a finite set (called
 \defn{alphabet}). A sequence over $\ialphabet$ is called a \defn{string}. A \defn{language} is set of strings over $\ialphabet$.
 We will review regular sets and necessary models of regular automata below.
 
-\begin{definition}[two-way finite state automata] \label{def:2nfa}
-    A \emph{(nondeterministic) two-way finite state automaton}
-(2NFA) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
+\begin{definition}[Two-way finite-state automata] \label{def:2nfa}
+    A \emph{(nondeterministic) two-way finite-state automaton}
+(2FA) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
 (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
     $\controls$ is a finite set of 
     states, $\EndLeft$ (resp.~$\EndRight$) a left (resp.~right) input tape end 
@@ -65,11 +65,11 @@ transition relation  $\transrel\subseteq \controls \times
     end marker (i.e.~$(p,\EndLeft,\Left,q), (p,\EndRight,\Right,q) \notin
     \transrel$ for every $p, q \in \controls$).
 %\tl{not sure you want to use $\leftarrow, \rightarrow$?}
-    \anthony{Just defined macros. Please use generic macros in the definitions
-    guys.}
+%    \anthony{Just defined macros. Please use generic macros in the definitions
+%    guys.}
 
-    A (nondeterministic one-way) finite state automaton (NFA)
-is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
+A (nondeterministic one-way) finite-state automaton (FA)
+is a 2FA such that $\transrel\subseteq \controls \times \ialphabet\times
     \{\Right,\Stay\} \times \controls $.
 \end{definition}
 In the sequel, whenever understood we will only tacitly mention $\ialphabet$, 
@@ -77,14 +77,13 @@ $\EndLeft$, and $\EndRight$ in $\Aut$.
 
 %A \emph{nondeterministic finite automaton} (NFA) $\cA$ on $\Sigma$ is a tuple $(Q, \delta, q_0, F)$, where $Q$ is a finite set of \emph{states}, $q_0 \in Q$ is the \emph{initial} state, $F \subseteq Q$ is the set of \emph{final} states, and $\delta \subseteq Q \times \Sigma \times Q$ is the \emph{transition relation}.
 
-The notion of runs of 2NFA on an input string is exactly the same as that of
+The notion of runs of 2FA on an input string is exactly the same as that of
 Turing machines on a read-only input tape. More precisely, for a string 
 $w = a_1 \dots a_n$, a \emph{run} of $\Aut$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
-is
-sequence of pairs $(q_0,i_0),\ldots, (q_m,i_m) \in \controls \times (\{0\} \cup [n+1])$ 
+is a sequence of pairs $(q_0,i_0),\ldots, (q_m,i_m) \in \controls \times (\{0\} \cup [n+1])$ 
 defined as follows. Let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$. The
-following conditions, then, have to be satisfied:
+following conditions then have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
     \item for every $j \in [m-1]$, we have $(q_j,a_{i_j}, dir, q_{j+1}) \in
@@ -98,7 +97,7 @@ a.k.a., the language \defn{recognised} by $\Aut$.
 The \defn{size} $|\Aut|$ of $\Aut$ is defined to be $|\controls|$; this will
 be needed when we talk about computational complexity.
 
-For convenience, we will also refer to an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
+For convenience, we will also refer to an FA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
 
 \OMIT{
 state sequence $q_0 \dots q_n$ such that for each $i \in [n]$, $(q_{i-1}, a_i, q_i) \in \delta$. A run $q_0 \dots q_n$ is \emph{accepting} if $q_n \in F$. A string $w$ is \emph{accepted} by $\cA$ if there is an accepting run of $\cA$ on $w$. We use $\Ll(\cA)$ to denote the language defined by $\cA$, that is, the set of strings accepted by $\cA$. We will use $\cA, \cB, \cdots$ to denote NFAs.
@@ -108,23 +107,23 @@ For a string $w= a_1 \dots a_n$, we also use the notation $q_1 \xrightarrow[\cA]
 For convenience, we will also call an NFA without initial and final states, that is, a pair $(Q, \delta)$, as a \emph{transition graph}.
 }
 
-2NFA and NFA recognise precisely the same class of languages, i.e., 
+2FA and FA recognise precisely the same class of languages, i.e., 
 \emph{regular languages}. The following result is standard and can be found in textbooks on automata theory
-(e.g. see \cite{Kozen-automata}). 
+(e.g. \cite{Kozen-automata}). 
 
 \begin{proposition}[\cite{Kozen-automata}]\label{prop-2nfa-nfa}
-	Every 2NFA $\Aut$ is equivalent to an NFA of size $2^{O(|\Aut| \log |\Aut|)}$. 
+	Every 2FA $\Aut$ is equivalent to an FA of size $2^{O(|\Aut| \log |\Aut|)}$. 
 %	Moreover, the equivalent
 %    NFA can be computed in exponential time. 
     Moreover, every NFA can be transformed in polynomial time into an $\varepsilon$-free NFA, that is, an NFA where $\transrel\subseteq \controls \times \ialphabet\times   \{\Right\} \times \controls $.
 \end{proposition}
 
-In the rest of this paper, we always use NFAs to mean $\varepsilon$-free NFAs and we will omit the directions in transitions.
+In the rest of this paper, FAs refer to $\varepsilon$-free FAs where directions in transitions are omitted.
 
-\paragraph{Operations of NFAs.} For an NFA $\Aut=(Q, q_0, F, \delta)$, $q \in Q$ and $P \subseteq Q$, we use $\Aut(q, P)$ to denote the NFA $(Q, q, P, \delta)$, that is, the NFA obtained from $\Aut$ by changing the initial state and the set of final states to $q$ and $P$ respectively. We use $q \xrightarrow[\Aut]{w} q'$ to denote the fact that a string $w$ is accepted by $\Aut(q, \{q'\})$. 
+\paragraph{Operations of FAs.} For an FA $\Aut=(Q, q_0, F, \delta)$, $q \in Q$ and $P \subseteq Q$, we use $\Aut(q, P)$ to denote the FA $(Q, q, P, \delta)$, that is, the FA obtained from $\Aut$ by changing the initial state and the set of final states to $q$ and $P$ respectively. We use $q \xrightarrow[\Aut]{w} q'$ to denote the fact that a string $w$ is accepted by $\Aut(q, \{q'\})$. 
 
 
-Given two NFAs $\Aut_1 = (Q_1, q_{0,1}, F_{1}, \delta_1)$ and $\Aut_1 = (Q_2, q_{0,2}, F_2, \delta_2)$, the \emph{product} of $\Aut_1$ and $\Aut_2$, denoted by $\Aut_1 \times \Aut_2$, is defined as the NFA $(Q_1 \times Q_2, (q_{0,1}, q_{0,2}), F_1 \times F_2, \delta_1 \times \delta_2)$, where $\delta_1 \times \delta_2$ is the set of tuples $((q_1,q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$. Evidently, we have $\Lang(\Aut_1 \times \Aut_2) = \Lang(\Aut_1) \cap \Lang(\Aut_2)$.
+Given two FAs $\Aut_1 = (Q_1, q_{0,1}, F_{1}, \delta_1)$ and $\Aut_1 = (Q_2, q_{0,2}, F_2, \delta_2)$, the \emph{product} of $\Aut_1$ and $\Aut_2$, denoted by $\Aut_1 \times \Aut_2$, is defined as the FA $(Q_1 \times Q_2, (q_{0,1}, q_{0,2}), F_1 \times F_2, \delta_1 \times \delta_2)$, where $\delta_1 \times \delta_2$ is the set of tuples $((q_1,q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$. Evidently, we have $\Lang(\Aut_1 \times \Aut_2) = \Lang(\Aut_1) \cap \Lang(\Aut_2)$.
 
 
 \anthony{I've removed the ``regular languages'' paragraph because it seems
