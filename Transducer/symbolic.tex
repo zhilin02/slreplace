@@ -4,13 +4,13 @@
 \label{sec:symbolic}
 
 
-In this section, we consider an extension of parametric transducers to infinite data domains, called \emph{symbolic parametric transducers}, where the input letters are replaced by formulae over an infinite data domain and the output letters are replaced by terms. 
+In this section, we consider an extension of parametric transducers to infinite data domains \tl{maybe not emphasise infinite domain}, called \emph{symbolic parametric transducers}, where the input letters are replaced by formulae over an infinite data domain and the output letters are replaced by terms. 
 %
-Symbolic parametric transducers can be seen as an extension of both parametric transducers introduced in this paper and symbolic transducers introduced in \cite{VHLMB12}.
+Symbolic parametric transducers can be seen as an extension of both the parametric transducers introduced in this paper and the symbolic transducers introduced in \cite{VHLMB12}.
 
 %Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
-We assume the reader's familiarity with the first-order logic (cf. some textbook e.g. \cite{EFT94}).
-For the definition of symbolic transducers, we introduce the concept of background theories and label theories. Intuitively, background theories are a set of unary first-order logic formulae closed under Boolean connectives and substitutions. Label theories extend background theories further by adding inequalities of terms into the set of formulae.
+We assume readers are familiar with the (many-sorted) first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
+For the definition of the symbolic transducers, we introduce the concept of background theories and label theories. Intuitively, background theories are a set of unary first-order logic formulae closed under Boolean connectives and substitutions. Label theories extend background theories further by adding inequalities of terms into the set of formulae.
 
 \begin{definition}[Background theories]
 A background theory  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisfying the following constraints:
@@ -63,14 +63,14 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 %
 \item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2NFT, 
 %
-\item $\transrel$ is a finite set of  transitions of one of the following forms,
+\item $\transrel$ is a finite set of  transitions which are in one of the following forms,
 \begin{itemize}
 \item   transitions $(q, \psi(x), dir, q', t(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
 $t(x)$ is an $\signature$-term, 
 \item   transitions $(q, \EndLeft, \Right, q', c)$ and $(q, \EndRight, \Left, q', c)$, where $c$ is an $\signature$-constant. 
 \end{itemize}
 \end{itemize}
-A 2ST is an ST if for each $(q, \psi(x), dir, q', t(x))$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q', c)$ are removed.
+A 2ST is an ST if for each $(q, \psi(x), dir, q', t(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
 \end{definition}
 
 \paragraph{Semantics of 2ST.}

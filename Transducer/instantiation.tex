@@ -234,11 +234,11 @@ The lower bound in Theorem~\ref{thm-1pt} is deduced from the result in \cite{LB1
 
 \subsection{Reversal-bounded two-way transducers}
 
-Let $k \in \Nat$. A 2PT $\Transducer$ is said  to be reversal $k$-bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  RB2PT$_k$ to denote the class of reversal $k$-bounded 2PTs. The reverse function can be captured by a reversal $1$-bounded 2PT.
-Note that the class of $0$-bounded 2PTs is exactly the class of 1PTs.
+Let $k \in \Nat$. A 2PT $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  RB2PT$_k$ to denote the class of $k$-reversal bounded 2PTs. The reverse function can be captured by a reversal $1$-bounded 2PT.
+Note that the class of $0$-reversal bounded 2PTs is precisely the class of 1PTs.
 
 \begin{lemma}\label{lem-rb-2pt}
-Let $k \in \Nat$, $\Transducer$ be a RB2PT$_k$, and $\Aut$ be a conjunctive NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $(|\Transducer||\Aut|)^k$, can be computed effectively.
+Let $k \in \Nat$, $\Transducer$ be a RB2PT$_k$, and $\Aut$ be a conjunctive NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $(|\Transducer||\Aut|)^k$ \tl{k+1?}, can be computed effectively.
 \end{lemma}
 
 The proof of Lemma~\ref{lem-rb-2pt} is the same as Lemma~\ref{lem-2pt}. The only difference is that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}, q}$ is at most $(|\Transducer| |\Aut|)^k$, since $\Transducer$ is reversal $k$-bounded.
@@ -247,8 +247,9 @@ From Lemma~\ref{lem-rb-2pt} and Theorem~\ref{thm-generic-dec}, we deduce the fol
 %
 \begin{theorem} \label{thm-rb-2pt}
 %Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
-For each $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
+For each constant $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
 \end{theorem}
+\tl{I add constant as this is a parameterised complexity result}
 
 The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.
 
