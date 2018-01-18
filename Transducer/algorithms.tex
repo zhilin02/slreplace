@@ -89,7 +89,7 @@ the representation of $R$ simply refers to a \emph{conjunctive} representation o
 \medskip
 
 %Let $\Transducer$ be a parametric transducer %from $\transet$ with $k$ parameters ($k\geq 0$), and 
-As we have discussed in Section~\ref{subsec:symexe}, a string function $f(x_1, \cdots, x_k)$ with $k$ parameters ($k\geq 1$) gives a relation $R_f\subseteq (\Sigma^*)^k\times \Sigma^*$. Let $\Aut$ be an FA. The \emph{pre-image} of $\Aut$ under $f$, denoted by $\Pre_{R_f}(\Aut)$, is 
+As we have discussed in Section~\ref{subsec:symexe}, a string function $f(x_1, \cdots, x_k)$ with $k$ parameters ($k\geq 1$) gives rise to a relation $R_f\subseteq (\Sigma^*)^k\times \Sigma^*$. Let $\Aut$ be an FA. The \emph{pre-image} of $\Aut$ under $f$, denoted by $\Pre_{R_f}(\Aut)$, is 
 \[\left\{(w_1,\ldots, w_k) \mid \exists w. w\in f(w_1, \cdots, w_k)\text{ and } w\in\Lang(\Aut) \right\}\]
 %w is (one of) the output(s) of the string function $f$.  
 
@@ -103,7 +103,7 @@ The main result of this section is a generic decision procedure for the path fea
 \item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
 \end{description} 
 
-Given a string manipulating program $S$, we define $\rcdim(S)$ to be the maximum number of parameters of string functions in $S$, $\rcphi{S}$ to be the maximum size of the representation of string functions in $S$, $\rcpsi(S)$ to be the maximum size of the FA representing the assertions,  and $\rcdep(S)$  to be the number assignments appearing in $S$. 
+Given a string manipulating program $S$, without loss of generality, we assume that each variable only appears once in the assertions of $S$\footnote{If, for instance $x\in \Aut_1$ and $x\in Aut_2$ are both present, we can lump them using $x\in \Aut$ where $\Aut$ is the product of $\Aut_1$ and $\Aut_2$.} Furthermore, we define $\rcdim(S)$ to be the maximum number of parameters of string functions in $S$, $\rcphi(S)$ to be the maximum size of the representation of string functions in $S$, $\rcpsi(S)$ to be the maximum size of the FA representing the assertions,  and $\rcdep(S)$  to be the number assignments appearing in $S$. 
 
 
 
@@ -124,12 +124,8 @@ For $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 }
 
 \begin{theorem}\label{thm-generic-dec}
-	Given a string manipulating program $S$ such that both assumptions A1 and A2 are satisfied. Then the path feasibility problem of $S$ can be decided in \emph{nondeterministic} 
-	%\tl{why not remove  nondeterministic?} 
-	$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)}|\psi| \cdot (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
-	%, where $K$ is the maximum number of parameters of 
-	%transducers appearing in the constraints, 
-	%$D$ is the maximum length of the paths in $\cG(\varphi)$.
+	Given a string manipulating program $S$ such that both assumptions \textbf{A1} and \textbf{A2} are satisfied. Then the path feasibility problem of $S$ can be decided in \emph{nondeterministic} 
+	$\mathcal{O}((\rcdim(S)+1)^{\rcdep(S)} \cdot (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space.
 \end{theorem}
 
 %\begin{theorem}\label{thm-generic-dec}
@@ -143,76 +139,83 @@ For $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 %\end{theorem}
 
 \begin{proof}
-Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
+%Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
 
-We first \emph{nondeterministically} compute $\cE(x)$, a collection of conjunctive NFAs over the alphabet $\Sigma$, for each variable $x \in \vars(\varphi \wedge \psi)$, by utilising the dependency graph $\cG(\varphi)$. 
+We first \emph{nondeterministically} compute $\cE(x)$, a collection of conjunctive FAs over the alphabet $\Sigma$, for each variable $x \in \vars(S)$. %, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
 
-Initially, let $\cG_0 := \cG(\varphi)$, and  
-we construct $\cE_0(x)$ as follows: For each conjunct 
-\mat{Can we use different terminology: we now have conjunctive NFA and conjuncts, which risks confusion}
-$x \in \Aut$ of $\psi$, where $\Aut$ is an NFA, let $\Aut = (\controls, q_0, \transrel, \finals)$, \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
+Initially, %let $\cG_0 := \cG(\varphi)$, and  
+we construct $\cE_0(x)$ as follows: For each %conjunct 
+%\mat{Can we use different terminology: we now have conjunctive NFA and conjuncts, which risks confusion}
+$x \in \Aut$ appearing in the assertion of $S$, where $\Aut$ is an FA, let $\Aut = (\controls, q_0, \transrel, \finals)$, we \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_0(x)$.
   
  %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
 
-Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
-$\cG_i$ becomes empty, i.e., a graph without edges.
- 
-We select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
-(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \ldots, y_k)$.
-Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
-Suppose $\cE_i(x)=\{\Aut_1, \ldots, \Aut_n\}$, 
-where $\Aut_j$ is a conjunctive NFA for each $j \in [n]$.
+%Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
+%$\cG_i$ becomes empty, i.e., a graph without edges.
+
+Notice that $S$ has $\rcdep(S)$ assignments. we start from the last assignment of $S$, and set $i:=1$. Sequentially for each assignment of $S$ we compute  $\cE_{i}$ until $i=\rcdep(S)$.  
+%
+%select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
+%(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \ldots, y_k)$.
+%Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
+
+For the $(i+1)$-st iteration, suppose the assignment to be $y:= f(x_1, \cdots, x_k)$ with $k\geq 1$, and  $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
+where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
-By the premise of the theorem, $\Pre_{\Transducer}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \ldots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
-Then $\cE_{i+1}(z)$ for $z \in  \{y_0,\ldots, y_k\}$ and $\cG_{i+1}$ are computed as follows:
+By the premise of the theorem, $\Pre_{R_f}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \ldots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
+Then $\cE_{i+1}(x)$ for $x \in  \{x_1,\cdots, x_k\}$ is updated as follows: %and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
 \item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \ldots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
 %
-\item For each $z \in \{y_0,\ldots, y_k\}$, let
+\item For each $x \in \{x_1,\ldots, x_k\}$, let
 \[
-    \cE_{i+1}(z):= \cE_{i}(z) \cup \left\{\Aut^{(r_j)}_{j, \ell} \mid  j \in [n], \ell \in \{0\} \cup [k], z = y_{\ell} \right\}.
+    \cE_{i+1}(x):= \cE_{i}(x) \cup \left\{\Aut^{(r_j)}_{j, h} \mid  j \in [n], h \in [k], x = x_h \right\}.
 \]
 [For each vertex $z'  {\notin} \{y_0,\ldots, y_k\}$, let $\cE_{i+1}(z') := \cE_i(z')$.]
 %We set $\cE_{i+1}(x) = \emptyset$.
 %
-\item Let $\cG_{i+1}:= \cG_i \backslash \{(x, (\Transducer, j), y_j) \mid j \in \{0\} \cup [k]\}$.
+%\item Let $\cG_{i+1}:= \cG_i \backslash \{(x, (\Transducer, j), y_j) \mid j \in \{0\} \cup [k]\}$.
 \end{enumerate}
-For each iteration, $i$ is updated by  $i: = i+1$.
+%For each iteration, $i$ is updated by  $i: = i+1$.
 %\end{enumerate}
 %
-When exiting the loop, for each variable $x$, let $\cE(x)$ denote the set $\cE_i(x)$.
+After all assignments of $S$ are scanned,  let $\cE(x):=\cE_{\rcdep(S)}(x)$ for each variable $x$.
 
 %\begin{example}
 \tl{tbh, I think the algo is clear enough and the example does not add too much.}\zhilin{maybe, but the example is at least more concrete. Moreover, the description of the algorithm is short and dry, maybe just use the example to let the reader spend a bit more time on the algorithm and digest, although with some redundancy. We may remove it if we run out of space. May decide this later.}
 Let us use an example to help the reader understand the computation of $\cE_{i+1}$ from $\cE_i$.  Suppose that in $\cG_i$, to compute $\cE_{i+1}$, we select a variable $x$, which has no predecessors and three outgoing edges, say $(x, (\Transducer, 0), y)$, $(x, (\Transducer, 1), z)$, and $(x, (\Transducer, 2), y)$, where $y$ and $z$ are two distinct variables, moreover, $\cE_i(x) = \{\Aut_1, \Aut_2\}$. Let us also assume that  $\Pre_{\Transducer}(\Aut_1)$ (resp. $\Pre_{\Transducer}(\Aut_2)$) is represented by $(\Aut^{(j')}_{1, 0}, \Aut^{(j')}_{1, 1}, \Aut^{(j')}_{1, 2})_{ j'  \in [2]}$ (resp. $(\Aut^{(j')}_{2, 0}, \Aut^{(j')}_{2, 1}, \Aut^{(j')}_{2, 2})_{ j'  \in [3]}$). If for $j = 1$ (resp. $j=2$), $(\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 1}, \Aut^{(1)}_{1, 2})$  (resp. $\left(\Aut^{(3)}_{2, 0}, \Aut^{(3)}_{2, 1}, \Aut^{(3)}_{2, 2}\right)$)  is selected, then $\cE_{i+1}(y) = \cE_i(y) \cup \{\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 2}, \Aut^{(3)}_{2, 0} \cup \Aut^{(3)}_{2, 2}\}$ and $\cE_{i+1}(z) = \cE_{i}(z) \cup \{\Aut^{(1)}_{1, 1}, \Aut^{(3)}_{2, 1}\}$. 
 %\end{example}
 
-To decide the satisfiability of $\varphi \wedge \psi$, we have the following nondeterministic algorithm: first (nondeterministically) construct the sets $\cE(x)$ for $x \in \vars(\varphi \wedge \psi)$, which has been detailed above, then 
+To decide the path feasibility of $S$, we have the following nondeterministic algorithm: first (nondeterministically) construct the sets $\cE(x)$ for $x \in \vars(S)$ as detailed above, then 
 %guessing an accepting run of the product of NFAs 
-checking the emptiness of the product of NFAs in $\cE(x)$ for each $x \in \vars(\varphi \wedge \psi)$.
+checking the emptiness of the product of FAs in $\cE(x)$ for each $x \in \vars(S)$.
 
 \paragraph{Complexity analysis.} For each $i$, 
 %\begin{itemize}
 %\item 
-let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(\varphi \wedge \psi)$,
+let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
 %\item 
-and $N_i$ be the maximum size of the conjunctive NFAs in $\bigcup \limits_{x \in \vars(\varphi \wedge \psi)} \cE_i(x)$.
+and $N_i$ be the maximum size of the conjunctive FAs in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
 %\end{itemize}
-Then we have $M_{i+1} \le M_i + (\rcdim(\varphi)+1)M_i = (\rcdim(\varphi)+2) M_i$. Moreover,  because each $T \in \transet$ occurring in $\varphi$ satisfies   $|T| \le |\varphi|$, we have that $N_{i+1} \le f(|T|, N_i) \le f(|\varphi|, N_i)$ (note that we have assumed that $f$ is monotonic). Because for each $x \in \vars(\varphi \wedge \psi)$, $\cE_0(x)$ contains at most $|\psi|$ elements, and each conjunctive NFA in $\cE_0(x)$ is of size bounded by $|\psi|$, we conclude that for each $x \in \vars(\varphi \wedge \psi)$, $\cE(x)$ contains at most $(\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi|$ elements, and each conjunctive NFA in $\cE(x)$ is of size bounded by $f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)$. 
-Since each conjunctive NFA $((Q, \delta), S)$ in $\cE(x)$ encodes an NFA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, 
+Then we have $M_{i+1} \le (\rcdim(\varphi)+1)M_i $. Moreover, since each assignment $f$ satisfies   $|f| \le |\rcphi(S)|$, we have that $N_{i+1} \le \ell(|f|, N_i) \le \ell(|\rcphi(S)|, N_i)$ (note that we have assumed that $f$ is monotonic). Because for each $x \in \vars(S)$, %$\cE_0(x)$ contains at most $|\psi|$ elements, and 
+the conjunctive FA in $\cE_0(x)$ is of size bounded by $|\rcpsi(S)|$, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}$ elements, and each conjunctive FA in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
+We emphasise that, according to the assumption \textbf{A1}, the construction of these FAs can be done in $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
+
+%
+Since each conjunctive FA $((Q, \delta), S)$ in $\cE(x)$ encodes an FA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, 
 %\tl{I do not quite understand here} \zhilin{explained in the definition of conjunctive encodings of atoms} 
-it holds that the product automaton of NFAs in $\cE(x)$ is of size bounded by 
+it holds that the product automaton of FAs in $\cE(x)$ is of size bounded by 
 %
-$$(\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi| \cdot 2^{O((f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|) )}.$$
+$$(\rcdim(S)+1)^{\rcdep(S)} \cdot 2^{\mathcal{O}((\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) )}.$$
 %
-Because the nonemptiness of an NFA 
-can be decided in nondeterministic logarithmic space, we deduce that the nonemptiness checking for $\cE(x)$ can be done in nondeterministic 
-$$O(\rcdep(\varphi) (\log ((\rcdim(\varphi)+2)|\psi|)) \cdot (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)) \mbox{ space.}$$
+Because the nonemptiness of an FA 
+can be decided in nondeterministic logarithmic space, we deduce that the nonemptiness checking for $\cE(x)$ can be done in nondeterministic space bounded by 
+$$\mathcal{O}(\rcdep(S) (\log ((\rcdim(S)+1))) \cdot (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))).$$
 %
 Therefore, overall, the space used by the aforementioned nondeterministic algorithm is 
-$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} |\psi| \cdot  (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|)).$$ 
-\zhilin{Please check the complexity}
+$$\mathcal{O}((\rcdim(S)+1)^{\rcdep(S)} \cdot  (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log f^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))).$$ 
+%\zhilin{Please check the complexity}
 %Therefore, the satisfiability can be checked by a nondeterministic Turing machine with 
 %$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
 \end{proof}
