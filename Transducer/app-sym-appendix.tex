@@ -86,7 +86,7 @@ We are ready to construct the SA $\Aut' =  (\Upsilon, \controls', q'_0, \finals'
 %the transitions out of $q'_0$ are defined as follows:
 %
 for each $\rho \in I'$ and $\rho' \in S_\transrel$ such that $\rmatch(\rho, \rho')$ is defined, we have $(q'_0, \rmatch(\rho, \rho'), \rho') \in \transrel'$, where 
-$I'$ comprises $\rho'' \in S_\transrel$ satisfying that: suppose $\rho'' = \tau_1, \ldots, \tau_{2n+1}$,  for each $i \in [n+1]$, $\tau_{2i-1} = (p_{2i-1}, \psi_{2i-1}, dir_{2i-1}, q_{2i-1})$, and for each $i \in [n]$, $\tau_{2i} = (p_{2i}, \EndLeft, \Right, q_{2i})$, then $(q_0, \EndLeft, \Right, p_1) \in \transrel$, moreover, for each $i \in [n]$, $q_{2i} = p_{2i+1}$. 
+$I'$ comprises $\rho'' \in S_\transrel$ satisfying the following constraints: $\rho'' = \tau_1, \ldots, \tau_{2n+1}$,  for each $i \in [n+1]$, $\tau_{2i-1} = (p_{2i-1}, \psi_{2i-1}, dir_{2i-1}, q_{2i-1})$, for each $i \in [n]$, $\tau_{2i} = (p_{2i}, \EndLeft, \Right, q_{2i})$, moreover, $(q_0, \EndLeft, \Right, p_1) \in \transrel$, and for each $i \in [n]$, $q_{2i} = p_{2i+1}$. 
 \end{itemize}
 %
 \end{itemize}
@@ -94,15 +94,15 @@ $I'$ comprises $\rho'' \in S_\transrel$ satisfying that: suppose $\rho'' = \tau_
 Since $S_\transrel$ contains at most $(\numtrans(\Aut))^{2|\controls|-1} \le (\numtrans(\Aut))^{2\numtrans(\Aut)}$ elements, we conclude that 
 $$
 \begin{array}{l c l}
-\numtrans(\Aut') \le ((\numtrans(\Aut))^{2\numtrans(\Aut)})^2  & = & (\numtrans(\Aut))^{4\numtrans(\Aut)} \\
-& \approx &   2^{O\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}
+\numtrans(\Aut') \le ((\numtrans(\Aut))^{2\numtrans(\Aut)})^2  & = & (\numtrans(\Aut))^{4\numtrans(\Aut)} 
+ \approx    2^{O\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}
 \end{array}
 $$ 
 and 
 $$
 \begin{array}{l c l}
-\sizetrans(\Aut') \le 2(2|\controls|-1)\sizetrans(\Aut)  & \le & 4 \numtrans(\Aut) \sizetrans(\Aut) \\
-& \approx &  O( \numtrans(\Aut) \sizetrans(\Aut)).
+\sizetrans(\Aut') \le 2(2|\controls|-1)\sizetrans(\Aut)  & \le & 4 \numtrans(\Aut) \sizetrans(\Aut) 
+\approx   O( \numtrans(\Aut) \sizetrans(\Aut)).
 \end{array}
 $$
 
