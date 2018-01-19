@@ -220,13 +220,13 @@ Then the satisfiability of a $\straightlinesym[\transet]$ formula $\varphi \wedg
 $$
 O\left(
 \begin{array}{l}
-(\rcdim(\varphi)+2)^{\rcdep(\varphi)}|\psi| \cdot (\numtrans')^2 \log \numtrans' + \\
-f((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (\numtrans')^2 \sizetrans')  
+(\rcdim(\varphi)+2)^{\rcdep(\varphi)}|\psi| \cdot (\numtrans'')^2 \log \numtrans'' + \\
+f((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (\numtrans'')^2 \sizetrans'')  
 \end{array}
 \right),
 $$ 
-where $\numtrans' = g^{\langle \rcdep(\varphi) \rangle}(\numtrans(\varphi), \numtrans(\psi))$ and 
-$$\sizetrans' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \sizetrans(\Transducer), \numtrans(\Aut), \sizetrans(\Aut)).$$
+where $\numtrans'' = g^{\langle \rcdep(\varphi) \rangle}(\numtrans(\varphi), \numtrans(\psi))$ and 
+$$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \sizetrans(\Transducer), \numtrans(\Aut), \sizetrans(\Aut)).$$
 \end{theorem}
 
 
@@ -235,12 +235,12 @@ Given a 2SPT $\Transducer$ and an SA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbo
 $$\numtrans(\Aut') = 2^{O(\numtrans(\Transducer)\numtrans(\Aut) \log (\numtrans(\Transducer)\numtrans(\Aut)))},$$ 
 and 
 $$\sizetrans(\Aut') = \numtrans(\Transducer) \numtrans(\Aut)\sizetrans(\Transducer) \sizetrans(\Aut).$$
-On the other hand, if $\Transducer$ is an SPT, then $\numtrans(\Aut')$ and $\sizetrans(\Aut')$ are dropped to $O(\numtrans(\Transducer)\numtrans(\Aut))$ and $O(\sizetrans(\Transducer) \sizetrans(\Aut))$ repsectively.
+On the other hand, if $\Transducer$ is an SPT, then $\numtrans(\Aut')$ and $\sizetrans(\Aut')$ are reduced to $O(\numtrans(\Transducer)\numtrans(\Aut))$ and $O(\sizetrans(\Transducer) \sizetrans(\Aut))$ repsectively.
 \end{lemma}
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}
-Satisfiability of $\straightlinesym[\twspt]$ and $\straightlinesym[\owspt]$ is decidable.\zhilin{complexity ?}
+Satisfiability of $\straightlinesym[\twspt]$ can be decided in $M + f(M)$ space, where $M = 2^{\left. 2^{\ldots ^{2^{O(p(|\varphi| |\psi|))}} }\right\}\rcdep(\varphi)}$ for some polynomial $p$. On the other hand,  satisfiability of $\straightlinesym[\owspt]$ can be decided in $N+ f(N)$ space, where $N = |\psi| 2^{O(|\varphi|\log |\varphi|)}$.
 \end{theorem}
 
 
