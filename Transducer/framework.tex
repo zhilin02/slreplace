@@ -160,7 +160,8 @@ vulnerabilities.
 The following is the precise definition
 of two-way and one-way finite-state transducers.
 \begin{definition}[Finite-State Transducers]
-    Let $\ialphabet$ an alphabet.
+    Let $\ialphabet$ an alphabet and $\ialphabet_\epsilon = \ialphabet
+    \cup \{\epsilon\}$.
     A \emph{nondeterministic two-way (finite) \emph{transducer}} (2NFT) over 
     $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$ are precisely the same as those of Definition~\ref{def:2nfa}
 %    $\controls$ is a finite set of 
@@ -172,12 +173,11 @@ and
     $\transrel$ is the
 transition relation  $\transrel\subseteq \controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \ialphabet$ with
+    \controls \times \ialphabet_\epsilon$ with
     $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
     Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
     there are no transitions that take the head of the tape past the left/right
     end marker. 
-
     A (nondeterministic one-way finite) transducer (NFT) over
     $\ialphabet$
     is a 2NFT whose transition relation contains only tuples of the form
@@ -192,16 +192,55 @@ The notion of runs of 2NFTs on an input string can be seen as a generalisation
 of 2NFA by adding outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a
-sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times (\{0\} \cup [n+1]) \times \Sigma$ 
-such that, let $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, %. The following conditions, then, have to be satisfied:
+sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times
+[n+1] \times \Sigma$ 
+such that, letting $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, 
+we have %. The following conditions, then, have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
     \item for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, b_j) \in
         \transrel$, and $i_{j+1} = i_j + dir$ for some $dir \in \{\Left, \Stay, \Right\}$.
 \end{itemize}
-The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the run.
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
+When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the
+run. Note that some of these $b_i$'s could be empty strings by definition, i.e.,
+$b_i \in \ialphabet_\epsilon$.
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
-$\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
+$\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
+\emph{transduction} defined by $\Transducer$, that is, the relation comprising
+the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. 
+
+\begin{example}
+    We give three examples of finite transducers: (1) erasing \texttt{a} from
+    a string, (2) the function escapeString, and (3) the reverse function.
+%Figure
+%\ref{fig:escapeString} contains an example of the function escapeString,
+
+    The first transducer is easy, but justifies that we need to allow $\epsilon$
+    in the output. This can be one by a \FT{} with states $q_0$, $q_1$,
+    $q_2$, and transitions $(q_0,\EndLeft,1,q_1,\epsilon)$,
+    $(q_1,\ell,1,q_1,\ell)$ (for $\ell \neq \texttt{a}$), 
+    $(q_1,\texttt{a},1,q_1,\epsilon)$, and
+    $(q_1,\EndRight,1,q_2,\epsilon)$. The final state is $q_2$.
+
+    The second transducer backslash-escapes every occurrence of \texttt{'} and 
+    \texttt{"}. This can also be done by a \FT{} in a similar way. Instead of
+    providing the formal definition, we depict this informally as a 
+    state-diagram in Figure
+    \ref{fig:escapeString} bearing in mind that the transitions for the
+    left/right end markers are omitted, and that the transition label
+    $a/b$ means \emph{read $a$, and at the same time output $b$}.
+%$a/w$ denotes 
+
+\input{escapeString}
+
+    The final transducer requires us to use a \FFT{}. We will only describe
+    this informally. The transducer will firstly go to the end of the input tape
+    without outputting any symbol. The transducer then scans the input from
+    right to left, while simultaneously outputting the symbol that is read.
+    When the transducer hits $\EndLeft$, it moves its input head to the right
+    end (without outputting any further symbol), and accept.
+\end{example}
 
 %\tl{I propose we unify the term: e.g., using string instead of word}
 %\anthony{I think it doesn't matter too much if we use both word/string. My
@@ -238,7 +277,7 @@ $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 %be needed when we talk about computational complexity.
 
 
-
+\OMIT{
 Recently, Chen \emph{et al.} \cite{CCHLW18}  noted that some XSS vulnerability
 analysis involving web templating systems (e.g. \texttt{Mustache.js}
 \cite{Mustache}) requires the use of the replace-all 
@@ -256,6 +295,8 @@ regular expression (i.e. \emph{not} a variable). Interestingly, such a usage of
 the replace-all function can even capture the concatenation operator, thereby
 providing another decidable subclass of the path feasibility problem involving
 the replace-all function, the concatenation operator, and regular constraints.
+}
+
 
 %involves: (i) instantiating 
  
@@ -291,7 +332,7 @@ string functions including the string reverse function.
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
     Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
     \ialphabet \cup X$.
-    A nondeterministic two-way \emph{parametric transducer} (\PPT) over 
+    A (nondeterministic) two-way \emph{parametric transducer} (\PPT) over 
     $(\ialphabet,X)$ is a tuple $\Transducer =
 (\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
     $\controls$ is a finite set of 
@@ -311,16 +352,37 @@ transition relation  $\transrel\subseteq \controls \times
     is a \PPT{} whose transition relation contains only tuples of the form
     $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 \end{definition}
+\OMIT{
+    The usual notion of finite transducers can now be defined as parametric 
+    transducers that do not output parameters.
+\begin{definition}
+    A (nondeterministic) two-way \defn{finite transducer} (\FFT) is a \PPT{} 
+    over
+    $(\ialphabet,X)$, where $X = \emptyset$. Similarly, a (nondeterministic
+    one-way finite) transducer (\FT) is defined in the similar way but with
+    a \PT{} instead of \PPT{}.
+\end{definition}
+}
 
 Notice that parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_m$ with strings 
-$w_1,\ldots, w_m$ gives rise to a standard finite-state transducer which outputs
+$w_1,\ldots, w_m \in \ialphabet^*$ gives rise to a standard finite-state transducer which outputs
 the string $w_j$, whenever a transition of the form $(p, a, dir, x_j, q)$ is
-taken by the transducer. This instantiation of the parameters is only done 
-\emph{once} before the parametric transducer is run. [It is \emph{precisely}
+taken by the transducer. More formally, let 
+$\Transducer[w_1/x_1,\ldots,w_m/x_m]$ denote the (non-parametric) finite
+transducer obtained from $\Transducer$ by replacing every occurrence of each
+parameter $x_i$ in $\Transducer$ by the string $w_i$.
+[Note that this instantiation of the parameters is only done 
+\emph{once} before the parametric transducer is run. It is \emph{precisely}
 for this reason that parameteric transducers cannot in general be captured by 
 the standard finite-state transducer model that nondeterministically ``guesses''
-the parameters separately for each transition.]  We use $\Tran(\Transducer)$ to denote the set of string tuples $(w, w_1, \ldots, w_m, w')$ such that when $x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, $\Transducer$ produces the output $w'$ from the input $w$. 
+the parameters separately for each transition.]  
+We use $\Tran(\Transducer)$ to denote the set of string tuples 
+$(w, w_1, \ldots, w_m, w')$ such that 
+$(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_m/x_m])$, i.e., when
+$x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, 
+$\Transducer$ produces the output $w'$ from the input $w$. 
+
 %\tl{maybe emphasise that this is a  ``off-line" rather than on-line  instantiation?}
 
 %We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.
