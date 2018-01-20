@@ -2,8 +2,6 @@
 \section{Lower Bound For String Constraints with Two-Way Transducers}
 \label{sec:two-way-lower}
 
-\mat{TODO: update to new notation, add note about turing machines as main text, argue that we really need n 2T and one 2NFA to tally with main body text}
-
 \subsection{Tiling Problems}
 
 \begin{definition}[Tiling Problem]
@@ -61,7 +59,9 @@ In particular, we will use the following facts.
         \end{array}
     \]
     and moreover $\tileheight$ is exponential in $\linlen$.
-    \mat{Not sure if this is folklore, but it can be seen by taking a $\linlen$ space Turing machine that deterministically increments from a tape with all 0 to all 1, then encoding this as a tiling problem.}
+    One such example is a Turing machine where the tape contents represent a binary number.
+    The Turing machine starts from a tape containing only $0$s and finishes with a tape containing only $1$s by repeatedly incrementing the binary encoding on the tape.
+    This Turing machine can be encoded as the required tiling problem.
 \end{itemize}
 
 \subsection{Large Numbers}
@@ -131,14 +131,14 @@ is the tiling of the $i$th row of the unique solution to the tiling problem.
 
 \subsection{Recognising Large Numbers}
 
-We first define a useful formula
+We first define a useful program
 $\goodnums{\expheight}{x}$
-with a single free-variable $x$ which can only be satisfied if $x$ is of the following form, where
+with a single input string $x$ which can only be satisfied if $x$ is of the following form, where
 $\numeq$, $\numplus$, and $\numsep$
 are auxiliary symbols.
 \[
     \begin{array}{c}
-        \goodnums{\expheight}{x} \\
+        \goodnums{\expheight}{x} \text{ is satisfiable} \\
         \iff \\
         x \in \brac{
             \brac{\tenc{\expheight}{1} \brac{\numeq \tenc{\expheight}{1}}^\ast}
@@ -164,14 +164,17 @@ Finally, a $\numsep$ ends a sequence and may start again from $\tenc{\expheight}
 
 We define
 \[
-    \goodnums{1}{x} =
-        (y = \ap{T}{x} \land y \in \top)
+    \goodnums{1}{x} = \left\{
+        \begin{array}{l}
+            y := \ap{T}{x}; \\
+            \ASSERT{y \in \top}
+        \end{array}
+    \right.
 \]
 where $\top$ is a character output by $T$ when $x$ is correctly encoded.
 Otherwise $T$ outputs $\bot$.
 
-We describe informally how $T$ operates.
-\mat{We may or may not give the formal definition later.}
+We describe how $T$ operates.
 Because $T$ is two-way, it may perform several passes of the input $x$.
 Recall that $T$ requires $x$ to contain a word of the form
 \[
@@ -260,12 +263,12 @@ as required.
 
 \paragraph{Inductive case $\expheight$.}
 
-We define a formula
+We define a program
 $\goodnums{\expheight}{x}$
 such that
 \[
     \begin{array}{c}
-        \goodnums{\expheight}{x} \\
+        \goodnums{\expheight}{x} \text{ is satisfiable} \\
         \iff \\
         x \in \brac{
             \brac{\tenc{\expheight}{1} \brac{\numeq \tenc{\expheight}{1}}^\ast}
@@ -282,20 +285,25 @@ such that
         }^\ast \ .
     \end{array}
 \]
-Assume, by induction, we have a formula
+Assume, by induction, we have a program
 $\goodnums{\expheight-1}{x}$
 which already satisfies this property (for $\expheight-1$).
 We define
 \[
     \goodnums{\expheight}{x} =
-    \brac{
-        y = \ap{T}{x}
-        \land
-        \goodnums{\expheight-1}{y}
-    }
+    \left\{
+        \begin{array}{l}
+            y = \ap{T}{x}; \\
+            \goodnums{\expheight-1}{y}
+        \end{array}
+    \right.
 \]
 where $T$ is a transducer that behaves as described below.
-\mat{We may or may not define it formally later.}
+Note, the reference to
+$\goodnums{\expheight-1}{y}$
+is not a procedure call, since these are not supported by our language.
+Instead, the procedure is inlined, with its input variable $x$ replaced by $y$ and other variables renamed to avoid clashes.
+
 The transducer will perform several passes to make several checks.
 If a check fails it will halt and output a symbol $\bot$, which means that $y$ can no longer satisfy
 $\goodnums{\expheight-1}{y}$.
@@ -468,7 +476,7 @@ The passes behave as follows.
     for some $\alpha$.
     Since, by induction,
     $\goodnums{\expheight-1}{y}$
-    is correct, then the formula can only be satisfied if $T$ chose the same position in each row.
+    is correct, then the program can only be satisfied if $T$ chose the same position in each row.
     That is
     $i_1 = \cdots = i_\alpha$.
     Thus, the vertical relation for the $i_1$th column has been verified.
@@ -541,16 +549,21 @@ $\goodnums{\expheight-1}{y}$.
 
 \subsection{Reducing from a Tiling Problem}
 
-Now that we are able to encode large numbers, we can encode an $\expheight$-EXPSPACE-hard tiling problem as a satisfiability problem of $\strline[T]$ with two-way transducers.
+Now that we are able to encode large numbers, we can encode an $\expheight$-$\expspace$-hard tiling problem as a satisfiability problem of $\strline[T]$ with two-way transducers.
 In fact, most of the technical work has been done.
 
 Thus, fix a tiling problem
 $\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
-that is $\expheight$-EXPSPACE-hard.
+that is $\expheight$-$\expspace$-hard.
 In particular, we allow a corridor $\nmax{\expheight}$ tiles wide.
-We use the formula
+We use the program
 \[
-    \probfmla = \brac{y = \ap{T}{x} \land \goodnums{\expheight}{y}}
+    S = \left\{
+        \begin{array}{l}
+            y = \ap{T}{x}; \\
+            \goodnums{\expheight}{y}
+        \end{array}
+    \right.
 \]
 where $T$ is defined exactly as in the inductive case of
 $\goodnums{\expheight}{y}$
@@ -584,7 +597,7 @@ can be encoded
     \tenc{\expheight}{\nmax{\expheight}} \tile^\expheight_{\nmax{\expheight}}
     \numsep
 \]
-which will satisfy $\probfmla$ in the same way as a correct input to
+which will satisfy $S$ in the same way as a correct input to
 $\goodnums{\expheight}{y}$.
 To see this, note that
 $\tenc{\expheight}{1} \tile^i_1
@@ -593,7 +606,7 @@ $\tenc{\expheight}{1} \tile^i_1
 acts like some
 $\tenc{\expheight+1}{i}$.
 
-In the opposite direction, assume some input satisfying $\probfmla$.
+In the opposite direction, assume some input satisfying $S$.
 Arguing as in the encoding of large numbers, this input must be of the form
 \[
     \brac{
@@ -612,4 +625,4 @@ Arguing as in the encoding of large numbers, this input must be of the form
 \]
 where each $\tilerow_i$ is a row of a correct solution to the tiling problem.
 
-Thus, with $\expheight+1$ transducers, we can encode a $\expheight$-EXPSPACE-hard problem.
+Thus, with $\expheight+1$ transducers, we can encode a $\expheight$-$\expspace$-hard problem.
