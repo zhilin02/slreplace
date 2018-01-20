@@ -291,7 +291,7 @@ string functions including the string reverse function.
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
     Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
     \ialphabet \cup X$.
-    A nondeterministic two-way \emph{parametric transducer} (2NFPT) over 
+    A nondeterministic two-way \emph{parametric transducer} (\PPT) over 
     $(\ialphabet,X)$ is a tuple $\Transducer =
 (\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
     $\controls$ is a finite set of 
@@ -306,15 +306,10 @@ transition relation  $\transrel\subseteq \controls \times
     Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
     there are no transitions that take the head of the tape past the left/right
     end marker. 
-    \mat{could we say ``precisely the same as those of Definition~\ref{def:2nfa}'' as we did before?}
-    A (nondeterministic one-way) parametric transducer (NFPT) over
+    A (nondeterministic one-way) parametric transducer (\PT) over
     $\ialphabet$
-    is a 2NPT whose transition relation contains only tuples of the form
+    is a \PPT{} whose transition relation contains only tuples of the form
     $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
-is a 2NFA such that $\transrel\subseteq \controls \times \ialphabet\times
-    \{\Right,\Stay\} \times \controls $, therefore we
-will often write $\transrel\subseteq \controls \times \ialphabet \times 
-    \controls$. 
 \end{definition}
 
 Notice that parameters are only allowed in the output track.
