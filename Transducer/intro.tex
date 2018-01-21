@@ -14,7 +14,7 @@ generation with a good coverage) is based on \emph{symbolic executions}
 called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
 See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
 which runs only \emph{concrete} (i.e. actual) program executions on different 
-inputs, the technique of symbolic executions analyses \emph{static} paths
+inputs, the techniques of symbolic executions analyse \emph{static} paths
 (also called symbolic executions) through the software system under test.
 Since such a path is simply a sequence of assignments and
 conditionals/assertions, it can be viewed as a constraint $\varphi$ (over 
@@ -24,10 +24,8 @@ of the static path, which can be used for generating inputs that lead to
 an undesirable program behaviour or an exploration of a new part of the
 system under test.
 
-Symbolic executions over strings ...
+Symbolic executions rely on constraint solvers at their core. When the system
+under test is a program that manipulates strings, the techiques crucially need
+constraint solvers over the string domain (a.k.a. \emph{string solvers}).
 
 %Talk about symbolic execution. Dynamic symbolic execution.
-
-Talk about string-manipulating programs. Applications.
-
-Talk about string solving.
