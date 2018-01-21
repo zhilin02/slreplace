@@ -221,7 +221,7 @@ the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
     $q_2$, and transitions $(q_0,\EndLeft,1,q_1,\epsilon)$,
     $(q_1,\ell,1,q_1,\ell)$ (for $\ell \neq \texttt{a}$), 
     $(q_1,\texttt{a},1,q_1,\epsilon)$, and
-    $(q_1,\EndRight,1,q_2,\epsilon)$. The final state is $q_2$.
+    $(q_1,\EndRight,0,q_2,\epsilon)$. The final state is $q_2$.
 
     The second transducer backslash-escapes every occurrence of \texttt{'} and 
     \texttt{"}. This can also be done by a \FT{} in a similar way. Instead of
@@ -240,6 +240,7 @@ the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
     right to left, while simultaneously outputting the symbol that is read.
     When the transducer hits $\EndLeft$, it moves its input head back to the 
     right end (without outputting any further symbol), and accept.
+    \qed
 \end{example}
 
 %\tl{I propose we unify the term: e.g., using string instead of word}
@@ -389,10 +390,51 @@ $\Transducer$ produces the output $w'$ from the input $w$.
 %We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.
 %\tl{again, this is a relation, not a function.}
 
+\begin{example}
+    The function $\replaceall$ takes three inputs:
+    (1) a string $sub$, called the \emph{subject}, (2) a string
+    $pat$, called the \emph{pattern}, and (3) a string $rep$, called
+    the \emph{replacement string}. The output of the function is
+    the string obtained from $sub$ by replacing every occurrence of $pat$ 
+    by $rep$. To resolve ambiguity, we use the semantics of \emph{leftmost
+    matching} that is used by languages such as Python and sed (with the
+    \texttt{--posix} flag): if we parse $sub$ from left to right, as soon as 
+    $pat$ is detected it will be replaced by $rep$. For example, the
+    output of $\replaceall(\texttt{aaaa},\texttt{aa},\texttt{b})$ is
+    \texttt{bb}, not \texttt{aba}.
 
-Give examples: htmlescape, replace-all, and reverse.
+    Let $\replaceall_{p}$ be $\replaceall$ function with the fixed pattern $p$,
+    i.e., it only has two inputs: $sub$ and $rep$. We can express
+    $\replaceall_{p}$ by a \PT{} with $sub$ on the input
+    tape and $rep$ as a parameter. We will show this for the case when $p$ is 
+    a single letter \texttt{a}; this can be easily extended to the general case 
+    (see the proof of Proposition \ref{prop:replaceAll} in the 
+    \shortlong{full version}{appendix}). The transducer has states
+    $q_0$, $q_1$, $q_F$, and transitions $(q_0,\EndLeft,1,q_1,\epsilon)$,
+    $(q_1,\ell,1,q_1,\ell)$ (for all $\ell \in \ialphabet \setminus
+    \{\EndLeft,\EndRight,\texttt{a}\}$), 
+    $(q_1,\texttt{a},1,q_1,rep)$, and
+    $(q_1,\EndRight,0,q_F,\epsilon)$. 
 
-Give example of computing reverse of DNA string.
+    The above transducer uses the parameter $rep$. Whenever the pattern
+    is a constant string, a non-parametric transducer is sufficient to
+    capture the function. \qed
+\end{example}
+
+The general $\replaceall$ function (see \cite{CCHLW18}) actually admits 
+a regular expression pattern $p$. In this case, we can use the leftmost
+and \emph{longest} matching semantics, which is also used by languages such as
+Python and sed. Such a function can also be captured by parametric transducers,
+as the following proposition claims.
+\begin{proposition}
+    Given a regular expression pattern $p$, we can compute a 
+    \PT{} such that $\Tran(\PT)$ expresses the function $\replaceall_p$.
+    \label{prop:replaceAll}
+\end{proposition}
+
+%Give examples: htmlescape, replace-all, and reverse.
+
+%Give example of computing reverse of DNA string.
 
 \OMIT{
 \subsection{The constraint language}
