@@ -1,10 +1,33 @@
 \section{Introduction}
 \label{sec:intro}
 
-Talk about symbolic execution. Dynamic symbolic execution.
+Strings are a fundamental data type in virtually all programming languages.
+Their generic nature can, however, lead to many subtle programming 
+bugs, some with serious security consequences, e.g., cross-site scripting
+(XSS) and code injections, both of which are ranked top 10 by Open Web
+Application Security Projects (OWASP) in 2017 \cite{owasp17}. 
+
+One effective
+method for software testing (and, in particular, automatic test-case 
+generation with a good coverage) is based on \emph{symbolic executions} 
+\cite{king76} and combinations with dynamic analysis
+called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
+See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
+which runs only \emph{concrete} (i.e. actual) program executions on different 
+inputs, the technique of symbolic executions analyses \emph{static} paths
+(also called symbolic executions) through the software system under test.
+Since such a path is simply a sequence of assignments and
+conditionals/assertions, it can be viewed as a constraint $\varphi$ (over 
+appropriate domains corresponding to the data types used in the path) and a 
+constraint solver could be invoked on $\varphi$ to check the \emph{feasibility}
+of the static path, which can be used for generating inputs that lead to 
+an undesirable program behaviour or an exploration of a new part of the
+system under test.
+
+Symbolic executions over strings ...
+
+%Talk about symbolic execution. Dynamic symbolic execution.
 
 Talk about string-manipulating programs. Applications.
 
 Talk about string solving.
-
-Talk about 
