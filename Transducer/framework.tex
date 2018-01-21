@@ -238,8 +238,8 @@ the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
     this informally. The transducer will firstly go to the end of the input tape
     without outputting any symbol. The transducer then scans the input from
     right to left, while simultaneously outputting the symbol that is read.
-    When the transducer hits $\EndLeft$, it moves its input head to the right
-    end (without outputting any further symbol), and accept.
+    When the transducer hits $\EndLeft$, it moves its input head back to the 
+    right end (without outputting any further symbol), and accept.
 \end{example}
 
 %\tl{I propose we unify the term: e.g., using string instead of word}
@@ -331,7 +331,8 @@ string functions including the string reverse function.
 \begin{definition}[Parametric Transducers]
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
     Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
-    \ialphabet \cup X$.
+    \ialphabet \cup X$. Define $\oalphabet_\epsilon = \oalphabet \cup
+    \{\epsilon\}$.
     A (nondeterministic) two-way \emph{parametric transducer} (\PPT) over 
     $(\ialphabet,X)$ is a tuple $\Transducer =
 (\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where 
@@ -342,7 +343,7 @@ the initial state, $\finals\subseteq \controls$ is a set of final states, and
     $\transrel$ is the
 transition relation  $\transrel\subseteq \controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \oalphabet$ with
+    \controls \times \oalphabet_\epsilon$ with
     $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
     Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
     there are no transitions that take the head of the tape past the left/right
