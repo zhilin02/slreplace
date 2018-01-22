@@ -104,16 +104,16 @@ Tiling problems are intimately connected to computations of Turing machines as
 each row can hold the tape contents in one configuration of a run.
 Thus, the corridor width is equivalent to the space of a Turing machine.
 
-The existence of a solution to a tiling problem of width $n$ can be reduced to checking whether a 2T  of size 
+The existence of a solution to a tiling problem of width $n$ can be reduced to checking whether a \FFT\ of size 
 $\ap{\bigoh}{n}$ 
 can output a specified symbol $\top$.
-Equivalently, we could use a 2NFA.
+Equivalently, we could use a \FFA.
 A solution to a tiling problem will be encoded as a word 
 $t_{1,1} t_{1,2} \cdots t_{1,n} \numsep \cdots \numsep t_{m,1} t_{m,2} \cdots t_{m,n}$
 where each row
 $t_{i,1} t_{i,2} \cdots t_{i,n}$
 is separated from the next row by $\numsep$.
-The 2T performs $n+1$ passes.
+The \FFT\ performs $n+1$ passes.
 During the first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
 $\tup{t_{i,j}, t_{i,j+1}} \in \hrel$
 for all
@@ -121,8 +121,8 @@ $1 \leq j < n$.
 If the encoding passes this check, we need to verify that the vertical tiling relation $\vrel$ is met.
 This is done in $n$ more passes, the $j$th of which verifies the $j$th column of the encoding.
 
-To encode tiling problems of $n$-fold exponential width we chain $(n+1)$ 2T.
-We begin with two 2Ts and a tiling problem of exponential width.
+To encode tiling problems of $n$-fold exponential width we chain $(n+1)$ \FFT.
+We begin with two \FFT\ and a tiling problem of exponential width.
 Intuitively, a row of the solution to a tiling problem could now be encoded with a sequence of $n$ binary bits preceding each tile.
 That is
 \[
@@ -141,13 +141,13 @@ That is
 In fact, in the formal encoding, we will not use binary numbers, but instead use tiling problems whose solutions must have exponential length.
 For the purposes of the intuitive exposition, we will use binary numbers as the intention is clearer.
 
-Given such an encoding, the first 2T checks the solution in a similar manner to the width $n$ problem.
-To cope with the large corridor width, it will output ``queries'' to the second 2T.
+Given such an encoding, the first \FFT\ checks the solution in a similar manner to the width $n$ problem.
+To cope with the large corridor width, it will output ``queries'' to the second \FFT.
 These queries check whether one binary number is equal to the next, or is the increment.
-Now, the first 2T can, for example, non-deterministically guess that one tile is in the same column as another and use queries to verify this guess.
+Now, the first \FFT\ can, for example, non-deterministically guess that one tile is in the same column as another and use queries to verify this guess.
 In this way it becomes able to verify a tiling over an exponentially wide corridor.
 
-To increase the corridor width by another exponential, we need another 2T.
+To increase the corridor width by another exponential, we need another \FFT.
 To reach doubly-exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
 For this we precede each bit with another binary sequence, this time of length $n$.
 Thus, we have two sets of binary digits $0,1$ and $0', 1'$, and, if $n = 2$ a row would take the following form
@@ -157,9 +157,9 @@ Thus, we have two sets of binary digits $0,1$ and $0', 1'$, and, if $n = 2$ a ro
     \ldots 
 \]
 where parenthesis are shown for clarity only.
-To check a given tiling, the first 2T outputs queries to the second.
-To be able to check exponentially long binary numbers, the second 2T outputs queries to the third 2T.
-This process can be iterated so that using $(n+1)$ 2Ts, we can search for a solution of a tiling problem over an $n$-fold exponentially wide corridor.
+To check a given tiling, the first \FFT\ outputs queries to the second.
+To be able to check exponentially long binary numbers, the second \FFT\ outputs queries to the third \FFT.
+This process can be iterated so that using $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-fold exponentially wide corridor.
 
 
 
