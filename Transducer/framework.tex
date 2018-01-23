@@ -132,7 +132,7 @@ the theory of formal languages (e.g. see \cite{Berstel}).
 %We will define finite-state
 %transducers in the following subsection, but 
 Roughly speaking, a finite transducer is an \FA{} with an extra output (write-only) 
-track, i.e., upon reading an input symbol, it may decide to output (or not output) a symbol 
+track, i.e., upon reading an input symbol, it may decide to output a string 
 on the output track. We will define this in more details below.
 In general, the input/output tracks of finite-state transducers may be 
 \emph{asynchronous}, which means that they cannot be captured by automatic structures of \cite{BG04}. 
@@ -160,12 +160,12 @@ vulnerabilities.
 The following is the precise definition
 of two-way and one-way finite-state transducers.
 \begin{definition}[Finite-State Transducers]
-    Let $\ialphabet$ be an alphabet and $\ialphabet_\epsilon = \ialphabet
-    \cup \{\epsilon\}$.
-    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) $\Transducer$  over 
-    $\ialphabet$ is a \FFA{} extended with outputs, more precisely, $\Transducer$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ with $\transrel \subseteq \controls \times 
+    Let $\ialphabet$ be an alphabet.
+    % and $\ialphabet_\epsilon = \ialphabet \cup \{\epsilon\}$.
+    A \emph{nondeterministic two-way finite  transducer} (\FFT{}) $\Transducer$  over 
+    $\ialphabet$ is a \FFA{} extended with outputs, more precisely, $\Transducer$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where $\transrel$ is  a finite subset of $\controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \ialphabet_\epsilon$, satisfying the same syntactical constraints as \FFA{}s. 
+    \controls \times \ialphabet^*$, satisfying the syntactical constraints of \FFA{}s, and the additional constraint that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, more precisely, for each transition $(q, \EndLeft, dir, q', b)$ or $(q, \EndRight, dir, q', b)$ in $\delta$, we have $b=\epsilon$.
 %
 %    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) over 
 %    $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$, and $\finals$ are precisely the same as those of Definition~\ref{def:2nfa}
@@ -179,15 +179,17 @@ of two-way and one-way finite-state transducers.
 %    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
 %    there are no transitions that take the head of the tape past the left/right
 %    end marker. 
-    A (nondeterministic one-way finite) transducer (\FT{}) over
+    A (nondeterministic one-way) finite transducer (\FT{}) over
     $\ialphabet$
     is a \FFT{} such that 
      $\transrel \subseteq \controls \times \overline{\ialphabet} \times
-    \{\Right,\Stay\} \times \controls \times \ialphabet_\epsilon$.
+    \{\Right,\Stay\} \times \controls \times \ialphabet^*$.
 %    whose transition relation contains only tuples of the form
 %    $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 \end{definition}
-\zhilin{I simplified the above definition slightly, please check. I would like to extend the 2FTs to allow multiple output symbols in one transition, but have not done yet. Wait for the agreement. Moreover, can we assume that for each transition $(q, \EndLeft, \Right/\Stay, q', b)$, we have $b=\epsilon$ ? Similarly for $\EndRight$. With this assumption, we may say that in FTs, $\EndLeft$ and $\EndRight$ are omitted, similarly to FAs.}
+
+
+\zhilin{I simplified the above definition slightly, please check. I also extend the 2FTs to allow multiple output symbols in one transition. Moreover, I assume that for each transition $(q, \EndLeft, \Right/\Stay, q', b)$, we have $b=\epsilon$. Similarly for $\EndRight$.}
 
 %\anthony{Define the semantics of \FFT{} as function $f: \ialphabet^* \to
 %\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}
@@ -197,23 +199,27 @@ The notion of runs of \FFT{}s on an input string can be seen as a generalisation
 of \FFA{}s by adding outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a
-sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times
-[0, n+1] \times \Sigma_\epsilon$ 
+sequence of tuples $(q_0, i_0, w'_0),\ldots, (q_m, i_m, w'_m) \in \controls \times
+[0, n+1] \times \Sigma^*$ 
 such that, letting $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, 
 we have %. The following conditions, then, have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
-    \item for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, b_j) \in
+    \item for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, w'_j) \in
         \transrel$, and $i_{j+1} = i_j + dir$ for some $dir \in \{\Left, \Stay, \Right\}$.
 \end{itemize}
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
-When a run is accepting, $b_0 \cdots b_m$ is said to be the \emph{output} of the
-run. Note that some of these $b_i$'s could be empty strings by definition, i.e.,
-$b_i \in \ialphabet_\epsilon$.
+When a run is accepting, $w'_0 \cdots w'_m$ is said to be the \emph{output} of the
+run. Note that some of these $w'_i$'s could be empty strings.
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 \emph{transduction} defined by $\Transducer$, that is, the relation comprising
 the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. 
+
+With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, for simplicity, we omit the two end markers $\EndLeft$ and $\EndRight$ in \FT{}s, that is, $\transrel \subseteq \controls \times \ialphabet \times
+    \{\Right,\Stay\} \times \controls \times \ialphabet^*$.
+        \zhilin{In FTs, $\EndLeft$ and $\EndRight$ are omitted, similarly to FAs.}
+
 
 
 \begin{example}
@@ -223,30 +229,34 @@ the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 %\ref{fig:escapeString} contains an example of the function escapeString,
 
     The first transducer is easy, but justifies that we need to allow $\epsilon$
-    in the output. This can be one by a \FT{} with states $q_0$, $q_1$,
-    $q_2$, and transitions $(q_0,\EndLeft,1,q_1,\epsilon)$,
-    $(q_1,\ell,1,q_1,\ell)$ (for $\ell \neq \texttt{a}$), 
-    $(q_1,\texttt{a},1,q_1,\epsilon)$, and
-    $(q_1,\EndRight,0,q_2,\epsilon)$. The final state is $q_2$.
-\zhilin{seems annoying to have $\EndLeft$ and $\EndRight$ transitions here for 1FT. Can we assume that in 1FTs, $\EndLeft$ and $\EndRight$ are removed ? }
+    in the output. 
+    This can be one by a \FT{} with a single state $q_0$,
+    transitions 
+    %$(q_0, \EndLeft, 1, q_1,\epsilon)$,
+    $(q_0, \ell, 1, q_0, \ell)$ for each $\ell \neq \texttt{a}$, 
+    $(q_0,\texttt{a}, 1, q_0, \epsilon)$, 
+    %and
+    %$(q_1,\EndRight,0,q_2,\epsilon)$. 
+    and the final state $q_0$.
+\zhilin{I removed the two end markers.}
 
     The second transducer backslash-escapes every occurrence of \texttt{'} and 
     \texttt{"}. This can also be done by a \FT{} in a similar way. Instead of
     providing the formal definition, we depict this informally as a 
     state-diagram in Figure
-    \ref{fig:escapeString} bearing in mind that the transitions for the
-    left/right end markers are omitted, and that the transition label
-    $a/b$ means \emph{read $a$, and at the same time output $b$}.
+    \ref{fig:escapeString}, bearing in mind that 
+    %the transitions for the left/right end markers are omitted, and that
+     the transition label
+    $a/w$ means \emph{read $a$, and meanwhile output $w$}.
 %$a/w$ denotes 
 
 \input{escapeString}
 
     The final transducer requires us to use a \FFT{}. We will only describe
-    this informally. The transducer will firstly go to the end of the input tape
+    this informally. The transducer will firstly go to $\EndRight$, the right end marker, of the input tape
     without outputting any symbol. The transducer then scans the input from
     right to left, while simultaneously outputting the symbol that is read.
-    When the transducer hits $\EndLeft$, it moves its input head back to the 
-    right end (without outputting any further symbol), and accept.
+    When the transducer hits $\EndLeft$, it moves its input head right to $\EndRight$ (without outputting any further symbol), and accept.
     \qed
 \end{example}
 
@@ -337,22 +347,21 @@ aforementioned string operations,  i.e. finite-state transducer from
 
 \begin{definition}[Parametric Transducers]
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
-    Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
-    \ialphabet \cup X$. Define $\oalphabet_\epsilon = \oalphabet \cup
-    \{\epsilon\}$.
+    Assume that $\ialphabet \cap X = \emptyset$.
+    % and let $\oalphabet = \ialphabet^* \cup X$. 
+    %Define $\oalphabet_\epsilon = \oalphabet \cup \{\epsilon\}$.
     A (nondeterministic) two-way \emph{parametric transducer} (\PPT)  $\Transducer$ over 
     $(\ialphabet,X)$ is a  \FFT{}  extended with  parameter outputs, more precisely, $\Transducer$ is a tuple 
-    $(\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ with
- $\transrel\subseteq \controls \times 
+    $(\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where
+ $\transrel$ is a finite subset of $\controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \oalphabet_\epsilon$.    
+    \controls \times (\ialphabet^* \cup X)$, satisfying the same syntactical constraints as \FFT{}s.   
     A (nondeterministic one-way) parametric transducer (\PT) over
-    $\ialphabet$ is a \PPT{} such that
+    $(\ialphabet,X)$ is a \PPT{} such that
  $\transrel\subseteq \controls \times 
     \overline{\ialphabet}\times \{\Stay, \Right\}\times 
-    \controls \times \oalphabet_\epsilon$.    
+    \controls \times (\ialphabet^* \cup X)$.    
 \end{definition}
-
 
 \OMIT{
 \begin{definition}[Parametric Transducers]
@@ -395,12 +404,10 @@ transition relation  $\transrel\subseteq \controls \times
 
 Notice that parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_m$ with strings 
-$w_1,\ldots, w_m \in \ialphabet^*$ gives rise to a standard finite-state transducer which outputs
-the string $w_j$, whenever a transition of the form $(p, a, dir, x_j, q)$ is
-taken by the transducer. More formally, let 
-$\Transducer[w_1/x_1,\ldots,w_m/x_m]$ denote the (non-parametric) finite
-transducer obtained from $\Transducer$ by replacing every occurrence of each
-parameter $x_i$ in $\Transducer$ by the string $w_i$.
+$w_1,\ldots, w_m \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. We will use $\Transducer[w_1/x_1,\ldots,w_m/x_m]$ to denote the \FFT{} resulting from the instantiation.
+%More formally, let 
+%$\Transducer[w_1/x_1,\ldots,w_m/x_m]$ denote the (non-parametric) \FFT{} obtained from $\Transducer$ by replacing every occurrence of each
+%parameter $x_i$ in $\Transducer$ by the string $w_i$.
 [Note that this instantiation of the parameters is only done 
 \emph{once} before the parametric transducer is run. It is \emph{precisely}
 for this reason that parameteric transducers cannot in general be captured by 
@@ -412,48 +419,56 @@ $(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_m/x_m])$, i.e., when
 $x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, 
 $\Transducer$ produces the output $w'$ from the input $w$. 
 
+Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\transrel \subseteq \controls \times 
+    \ialphabet \times \{\Stay, \Right\} \times 
+    \controls \times (\ialphabet^* \cup X)$.
+
+
 %\tl{maybe emphasise that this is a  ``off-line" rather than on-line  instantiation?}
 
 %We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.
 %\tl{again, this is a relation, not a function.}
 
-\begin{example}\zhilin{this example should be polished}
-    The function $\replaceall$ takes three inputs:
-    (1) a string $sub$, called the \emph{subject}, (2) a string
+\begin{example}
+    The function $\replaceall$ considered in \cite{CCHLW18} takes three inputs:
+    (1) a string $sub$, called the \emph{subject}, (2) a regular expression
     $pat$, called the \emph{pattern}, and (3) a string $rep$, called
     the \emph{replacement string}. The output of the function is
     the string obtained from $sub$ by replacing every occurrence of $pat$ 
     by $rep$. To resolve ambiguity, we use the semantics of \emph{leftmost
-    matching} that is used by languages such as Python and sed (with the
+    and longest matching} that is used by languages such as Python and sed (with the
     \texttt{--posix} flag): if we parse $sub$ from left to right, as soon as 
-    $pat$ is detected it will be replaced by $rep$. For example, the
-    output of $\replaceall(\texttt{aaaa},\texttt{aa},\texttt{b})$ is
-    \texttt{bb}, not \texttt{aba}.
+    $pat$ is detected as the leftmost and longest matching after the previous matching, it will be replaced by $rep$. For example, the
+    output of $\replaceall(\texttt{aabaa},\texttt{a}^+,\texttt{b})$ is
+    \texttt{bbb}.
+    %, not \texttt{aba}.
 
-    Let $\replaceall_{p}$ be $\replaceall$ function with the fixed pattern $p$,
+    For a regular expression $p$, let $\replaceall_{p}$ be the $\replaceall$ function with the fixed pattern $p$,
     i.e., it only has two inputs: $sub$ and $rep$. We can express
     $\replaceall_{p}$ by a \PT{} with $sub$ on the input
-    tape and $rep$ as a parameter. We will show this for the case when $p$ is 
+    tape and $rep$ as a parameter. We will show this for the case when $w$ is 
     a single letter \texttt{a}; this can be easily extended to the general case 
     (see the proof of Proposition \ref{prop:replaceAll} in the 
-    \shortlong{full version}{appendix}). The transducer has states
-    $q_0$, $q_1$, $q_F$, and transitions $(q_0,\EndLeft,1,q_1,\epsilon)$,
-    $(q_1,\ell,1,q_1,\ell)$ (for all $\ell \in \ialphabet \setminus
-    \{\EndLeft,\EndRight,\texttt{a}\}$), 
-    $(q_1,\texttt{a},1,q_1,rep)$, and
-    $(q_1,\EndRight,0,q_F,\epsilon)$. 
+    \shortlong{full version}{appendix}). The transducer has one state $q_0$ as both the initial and the final state,
+    %$q_0$, $q_1$, $q_F$, 
+    and transitions 
+    %$(q_0,\EndLeft,1,q_1,\epsilon)$,
+    $(q_0,\ell, 1, q_0, \ell)$ for each $\ell \in \ialphabet \backslash
+    \{\texttt{a}\}$, 
+    and $(q_0, \texttt{a}, 1, q_0, rep)$.
+    %, and $(q_1, \EndRight,0,q_F,\epsilon)$. 
 
     The above transducer uses the parameter $rep$. Whenever the replacement
-    is a constant string, a non-parametric transducer is sufficient to
+    is a constant string, an (non-parametric) \FT{} is sufficient to
     capture the function. \qed
 \end{example}
 
-The general $\replaceall$ function (see \cite{CCHLW18}) actually admits 
-a regular expression pattern $p$. In this case, we can use the leftmost
-and \emph{longest} matching semantics, which is also used by languages such as
-Python and sed. Such a function can also be captured by parametric transducers,
-as the following proposition claims.
-\begin{proposition}
+%The general $\replaceall$ function (see \cite{CCHLW18}) actually admits 
+%a regular expression pattern $p$. In this case, we can use the leftmost
+%and \emph{longest} matching semantics, which is also used by languages such as
+%Python and sed. Such a function can also be captured by parametric transducers,
+%as the following proposition claims.
+\begin{proposition}\label{prop-replace-pt}
     Given a regular expression pattern $p$, we can compute a 
     \PT{} $\Transducer$ such that $\Tran(\Transducer)$ expresses the function $\replaceall_p$.
     \label{prop:replaceAll}

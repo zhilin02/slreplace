@@ -1,15 +1,16 @@
 \begin{figure}
     \begin{center}
 \begin{tikzpicture}[shorten >=1pt,node distance=2.3cm,on grid,auto, initial text={}] 
-    \node[state,initial,accepting] (q_0) {}; 
-    \node[state] (q_1) [above right=of q_0] {}; 
-    \node[state] (q_2) [below right=of q_0] {}; 
+    \node[state,initial,accepting] (q_0) {$q_0$}; 
+%    \node[state] (q_1) [above right=of q_0] {$q_1$}; 
+%    \node[state] (q_2) [below right=of q_0] {$q_2$}; 
     \path[->]
     (q_0) edge  [loop above] node {$\ell$/$\ell$} (q_0)
-          edge  [bend left] node [right] {\texttt{'}/\texttt{\textbackslash}} (q_1)
-          edge  [bend left] node [right] {\texttt{"}/\texttt{\textbackslash}} (q_2)
-    (q_1) edge  [bend left] node  {$\epsilon$/\texttt{'}} (q_0)
-    (q_2) edge  [bend left] node  {$\epsilon$/\texttt{"}} (q_0);
+  	    edge  [loop right] node {\texttt{'}/\texttt{\textbackslash'}} (q_0)
+          edge  [loop below] node {\texttt{"}/\texttt{\textbackslash"}} (q_0);
+%          edge  [bend left] node [right] {\texttt{"}/\texttt{\textbackslash}} (q_2)
+%    (q_1) edge  [bend left] node  {$\epsilon$/\texttt{'}} (q_0)
+%    (q_2) edge  [bend left] node  {$\epsilon$/\texttt{"}} (q_0);
 \end{tikzpicture}
     \end{center}
     \caption{
