@@ -201,12 +201,12 @@ The proof of the first result in Proposition~\ref{prop-2nsa} can be found in App
 \tl{as we donot have $\straightlinesym[\transet]$ anymore? to be updated}
 For a class $\transet$ of symbolic parametric transducers, we use $\straightlinesym[\transet]$ to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
 
-For solving the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
+\paragraph{Symbolic extension of the generic procedure.} To solve the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
 
 \begin{definition}[Symbolic recognisable relations]
 	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some SA for each $j\in [k]$.
 \end{definition}
-Similarly to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of SA, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive SA to mean a conjunctive representation of the SA. For conjunctive SA $\cC= ((\controls, \transrel), S)$, $\numtrans(\cC)$ and $\sizetrans(\cC)$ can be defined similarly to SA.
+Similar to the recognisable relation, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of SA, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive SA to mean a conjunctive representation of the SA. For conjunctive SA $\cC= ((\controls, \transrel), S)$, $\numtrans(\cC)$ and $\sizetrans(\cC)$ can be defined similarly to SA.
 
 For a $\straightlinesym[\transet]$ formula $\varphi \wedge \psi$, we use $\numtrans(\varphi)$ (resp. $\sizetrans(\varphi)$) to denote the maximum of $\numtrans(\Transducer)$ (resp. $\sizetrans(\varphi)$) for $\Transducer$ occurring in $\varphi$. Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
 
@@ -233,6 +233,7 @@ where $\numtrans'' = g^{\langle \rcdep(\varphi) \rangle}(\numtrans(\varphi), \nu
 $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \sizetrans(\Transducer), \numtrans(\Aut), \sizetrans(\Aut)).$$
 \end{theorem}
 
+\paragraph{Symbolic extension of pre-image computation.}
 
 \begin{lemma}\label{lem-spt}
 Given a 2SPT $\Transducer$ and an SA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
