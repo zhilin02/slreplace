@@ -5,9 +5,7 @@ Strings are a fundamental data type in virtually all programming languages.
 Their generic nature can, however, lead to many subtle programming 
 bugs, some with security consequences, e.g., cross-site scripting
 (XSS) and code injections, both of which are ranked top 10 by Open Web
-Application Security Projects (OWASP) in 2017 \cite{owasp17}. 
-
-One effective
+Application Security Projects (OWASP) in 2017 \cite{owasp17}. One effective
 method for software testing (and, in particular, automatic test-case 
 generation with a good coverage) is based on \emph{symbolic executions} 
 \cite{king76} and combinations with dynamic analysis
@@ -33,21 +31,20 @@ the theory, implementation, and symbolic execution applications of string constr
 solving in the past decade, e.g., see 
 \cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,Vijay-length,YABI14,Abdulla14,LB16,fang-yu-circuits,Abdulla17,CCHLW18,HJLRV18,S3,TCJ16,Z3-str,cvc4,BCFJKKV08,RVG12,jalangi,expose},
 to name a few. \anthony{This list of citations is still incomplete}
-
 Following the framework of Satisfiability Modulo Theories (SMT)
-\cite{SMT-CACM,SMT-chapter,KS08}, our string constraints are quantifier-free
-first-order formulas. 
+\cite{SMT-CACM,SMT-chapter,KS08}, string constraints are typically 
+quantifier-free first-order formulas. 
 %it is not a priori clear %what an ``ideal'' logical theory over the string 
 %domain should look like since
-There are many possible string operations we could incorporate to our string 
+There are many possible string operations we could incorporate to a string 
 theory.
 Concatenation is typically present in a string theory since it is perhaps
 the most basic string operation. However, there are many other useful string 
-operations including the length function, regular expression matching, the 
+operations including length function, regular expression matching, 
 replaceall
 function (replacing every occurrence of a string matching a pattern with another
-string), the string reverse function, and the casting function (e.g. conversions
-between integers and strings), to name a few. 
+string), string reverse function, and casting functions (e.g. conversions
+between integers and strings), to name a few.
 
 . Even in this case, the (quantifier-free)
 theory of concatenations was not known to be decidable until the seminal
