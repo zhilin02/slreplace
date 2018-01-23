@@ -157,15 +157,15 @@ vulnerabilities.
 %length constraints and disequality checks) were given by the authors, which 
 %we will discuss in Section \ref{sec:extensions}.
 
-The following is the precise definition
-of two-way and one-way finite-state transducers.
+The following is the precise definition of two-way and one-way finite-state transducers, which 
+are respectively two-way and one-way finite-state automata extended with outputs.  
 \begin{definition}[Finite-State Transducers]
     Let $\ialphabet$ be an alphabet.
     % and $\ialphabet_\epsilon = \ialphabet \cup \{\epsilon\}$.
     A \emph{nondeterministic two-way finite  transducer} (\FFT{}) $\Transducer$  over 
-    $\ialphabet$ is a \FFA{} extended with outputs, more precisely, $\Transducer$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where $\transrel$ is  a finite subset of $\controls \times 
+    $\ialphabet$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where $\transrel$ is  a finite subset of $\controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \ialphabet^*$, satisfying the syntactical constraints of \FFA{}s, and the additional constraint that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, more precisely, for each transition $(q, \EndLeft, dir, q', b)$ or $(q, \EndRight, dir, q', b)$ in $\delta$, we have $b=\epsilon$.
+    \controls \times \ialphabet^*$, satisfying the syntactical constraints of \FFA{}s, and the additional constraint that the output must be $\epsilon$ when reading $\EndLeft$ or $\EndRight$. Formally, for each transition $(q, \EndLeft, dir, q', b)$ or $(q, \EndRight, dir, q', b)$ in $\delta$, we have $b=\epsilon$.
 %
 %    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) over 
 %    $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$, and $\finals$ are precisely the same as those of Definition~\ref{def:2nfa}
@@ -189,7 +189,7 @@ of two-way and one-way finite-state transducers.
 \end{definition}
 
 
-\zhilin{I simplified the above definition slightly, please check. I also extend the 2FTs to allow multiple output symbols in one transition. Moreover, I assume that for each transition $(q, \EndLeft, \Right/\Stay, q', b)$, we have $b=\epsilon$. Similarly for $\EndRight$.}
+\zhilin{I simplified the above definition slightly, please check. I also extend the 2FTs to allow multiple output symbols in one transition. Moreover, I assume that for each transition $(q, \EndLeft, \Right/\Stay, q', b)$, we have $b=\epsilon$. Similarly for $\EndRight$.} \tl{polish slightly, hopefully ok.}
 
 %\anthony{Define the semantics of \FFT{} as function $f: \ialphabet^* \to
 %\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}

@@ -34,7 +34,7 @@ For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set $\{d \in \data 
 A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. In addition, $\Upsilon$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
 \end{definition}
 
-In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $O(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
+In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\mathcal{O}(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
 %
 %The notion $\issat(\psi)$ for $\psi \in \Psi$ and the decidability of $\Upsilon$ can be defined similarly as effective Boolean algebra.
 %
@@ -114,11 +114,14 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
-To measure the size of a 2ST $\Transducer$, we need take into the consideration the fact that each transition of $\Transducer$ may contain a guard and a term, which are from the label theory $\Upsilon$.
+To measure the size of a 2ST $\Transducer$, we need take the guards and terms of the transitions (from the background theory $\Upsilon$) into  consideration. 
+%the fact that each transition of $\Transducer$ may contain a guard and a term, which are .
 %Thus, we use two numbers for this purpose: The number of transitions of $\Transducer$, denoted by $\numtrans(\Transducer)$, and the maximum size of transitions of $\Transducer$, denoted by $\sizetrans(\Transducer)$.
 %
 %Thus, we define the size of $\Transducer$, denoted by $|\Transducer|$, as the sum of the sizes of (the binary encodings of) transitions of $\Transducer$.
-Therefore, for a refined complexity analysis, we use the following two numbers to capture the size of $\Transducer$:  Define $\numtrans(\Transducer)$ as the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$ as the maximum size of transitions of $\Transducer$.
+For a refined complexity analysis, we use the following two measures: %numbers to capture the size of $\Transducer$:  Define 
+$\numtrans(\Transducer)$, the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
+\tl{but they are sill not defined?}
 
 
 %\begin{proposition}\label{prop-2nst-nst}
@@ -128,7 +131,8 @@ Therefore, for a refined complexity analysis, we use the following two numbers t
 
 \begin{definition}[Symbolic parametric transducers]
 A \emph{nondeterministic two-way symbolic parametric transducer} (2SPT) is a tuple
-$\Transducer=(\EndLeft, \EndRight, X, \controls, q_0, \finals, \transrel)$, where:
+$\Transducer=(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
+\tl{warning: there was a typo: Y was X}
 \begin{itemize}
 %\item $\Upsilon=(\signature,\structure, \Psi, \Psi')$ is a decidable background theory with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
@@ -136,63 +140,65 @@ $\Transducer=(\EndLeft, \EndRight, X, \controls, q_0, \finals, \transrel)$, wher
 %
 \item $Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters (variables), 
 %
-\item $\transrel$ is a finite set of transitions of one of the following forms: 
+\item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
-\item transitions $(q, \psi(x), q', t(x))$ or $(q, \psi(x), q', y)$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
-$t(x)$ is a $\signature$-term, and $y \in Y$,
+\item $(q, \psi(x), q', t(x))$ or $(q, \psi(x), q', y)$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
+$t(x)$ is an $\signature$-term, and $y \in Y$,
 %
-\item transitions $(q, \EndLeft, \Right, q', c)$, $(q, \EndLeft, \Right, q', y)$, $(q, \EndRight, \Left, q', c)$,  or $(q, \EndRight, \Left, q', y)$, where $c$ is an $\signature$-constant, and $y \in Y$. 
+\item $(q, \EndLeft, \Right, q', c)$, $(q, \EndLeft, \Right, q', y)$, $(q, \EndRight, \Left, q', c)$,  or $(q, \EndRight, \Left, q', y)$, where $c$ is an $\signature$-constant and $y \in Y$. 
 \end{itemize}
 \end{itemize}
 \end{definition}
 
-Notice that parameters are only allowed in the output track.
+Notice that, as in parametric transducers, parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $y_1,\ldots, y_m$ with data strings 
 $w_1,\ldots, w_m$ gives rise to a nondeterministic two-way symbolic transducer which outputs
 the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)$ is
 taken by the transducer. This instantiation of the parameters is only done 
 \emph{once} before the symbolic parametric transducer is run.
 
-The size of 2SPTs can be defined similarly to 2STs. 
+The size of 2SPTs can be defined in a similar way as 2STs. 
 
-To extend the string constraint language $\straightline[\transet]$ to the symbolic setting, a counterpart for FA, called \emph{symbolic automata}, is also needed. 
-
-A \emph{Boolean algebra} is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by \emph{dropping} the requirement that $\Psi$ is closed under substitutions.
+%To extend the string constraint language $\straightline[\transet]$ to the symbolic setting, 
+To lift the result to the symbolic setting, we only need  \emph{symbolic automata}, the counterpart of \FA. We start with \emph{Boolean algebra}, 
+\tl{I am not an expert, but technically say $\Psi$ is a boolean algebra? More precisely, SA works not on a background theory, but some more relaxed thing.}
+which is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by dropping out the requirement that $\Psi$ is closed under substitutions.
 
 \begin{definition}[Symbolic automata]
-    A \emph{nondeterministic two-way  symbolic \emph{automata}} (2SA) is a tuple $\Aut = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
+    A \emph{nondeterministic two-way  symbolic \emph{automata}} (2\SA) is a tuple $\Aut = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
 \begin{itemize}
 %\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
-\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2NFA, 
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2\FA, 
 %
 \item $\transrel$ is a finite set of  transitions of one of the following forms,
 \begin{itemize}
-\item   transitions $(q, \psi(x), dir, q')$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, and $\psi(x) \in \Psi$, 
+\item     $(q, \psi(x), dir, q')$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, and $\psi(x) \in \Psi$, 
 %
-\item   transitions $(q, \EndLeft, \Right, q')$ and $(q, \EndRight, \Left, q')$. 
+\item     $(q, \EndLeft, \Right, q')$ and $(q, \EndRight, \Left, q')$. 
 \end{itemize}
 \end{itemize}
 A 2SA is an SA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
 The semantics of 2SA  is defined similarly to 2ST, with the output data values removed. Moreover, the size of 2SAs can also be defined similarly to 2ST.
 
-Similarly to 2FAs or 2FTs, for convenience, we usually omit $\EndLeft$ and $\EndRight$ for the definitions of 2SAs, 2STs, or 2SPTs.
+Similar to 2FAs or 2FTs, for convenience, we usually omit $\EndLeft$ and $\EndRight$ for the definitions of 2SAs, 2STs, or 2SPTs.
 
 \begin{proposition}\label{prop-2nsa}
-The following results hold.
+Assume a 2\SA  $\Aut$.
 \begin{itemize}
-\item Every 2SA $\Aut$ can be transformed effectively into an equivalent SA $\Aut'$, in time $\numtrans(\Aut') \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{O\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = O( \numtrans(\Aut) \sizetrans(\Aut))$.
+\item $\Aut$ can be transformed effectively into an equivalent SA $\Aut'$, in time $\numtrans(\Aut')\cdot \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{\mathcal{O}\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = \mathcal{O}( \numtrans(\Aut) \sizetrans(\Aut))$.
 %$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
 %
 %
 %\item SAs are under the intersection operator\footnote{As a matter of fact, SAs are closed under all Boolean operations. Since we only use the intersection in this paper, we restrict our attention to the intersection.}. \zhilin{complexity}
 %
-\item The nonemptiness problem of an SA $\Aut$ can be decided in nondeterministic $O( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
+\item The nonemptiness problem of $\Aut$ can be decided in nondeterministic $\mathcal{O}( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
 \end{itemize}
 \end{proposition}
-The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result is easy and was shown in \cite{NG01,DV14}.
+The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result was shown in \cite{NG01,DV14}.
 
+\tl{as we donot have $\straightlinesym[\transet]$ anymore? to be updated}
 For a class $\transet$ of symbolic parametric transducers, we use $\straightlinesym[\transet]$ to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
 
 For solving the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.

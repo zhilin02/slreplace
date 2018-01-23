@@ -45,7 +45,8 @@ $V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \s
 
 \paragraph{Automata.} We review some necessary background from automata theory;
 for more, see \cite{Kozen-automata,HU79}. Let $\ialphabet$ be a finite set (called
-\defn{alphabet}). A sequence over $\ialphabet$ is called a \defn{string}. A \defn{language} is set of strings over $\ialphabet$.
+\defn{alphabet}). We usually define  $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$, where $\EndLeft,\EndRight\notin \Sigma$ are tape end markers for 2-way automata/transducer models. \tl{I made  $\overline{\ialphabet}$ here as it used in multiple places}
+ A sequence over $\ialphabet$ is called a \defn{string}. A \defn{language} is set of strings over $\ialphabet$.
 We will review regular languages and necessary models of finite-state automata below.
 
 \begin{definition}[Two-way finite-state automata] \label{def:2nfa}
@@ -58,9 +59,10 @@ We will review regular languages and necessary models of finite-state automata b
 the initial state, $\finals\subseteq \controls$ is a set of final states, and 
     $\transrel$ is the
 transition relation  $\transrel\subseteq \controls \times 
-    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times \controls$ with
-    $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
-    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
+    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times \controls$. 
+    %with $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
+    Here, we assume %$\EndLeft, \EndRight \notin \ialphabet$, and 
+    that
     there are no transitions that take the head of the tape past the left/right
     end marker (i.e.~$(p,\EndLeft,\Left,q), (p,\EndRight,\Right,q) \notin
     \transrel$ for every $p, q \in \controls$).
