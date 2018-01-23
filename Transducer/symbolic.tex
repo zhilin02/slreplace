@@ -9,7 +9,7 @@ In this section, we consider an extension of parametric transducers to infinite 
 Symbolic parametric transducers can be seen as an extension of both the parametric transducers introduced in this paper and the symbolic transducers introduced in \cite{VHLMB12}.
 
 %Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
-We assume readers are familiar with the (many-sorted) first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
+We assume familiarity with the (many-sorted) first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
 For the definition of the symbolic transducers, we introduce the concept of background theories.
 %and label theories. 
  Intuitively, background theories are a set of unary first-order logic formulae closed under Boolean connectives and substitutions. 
@@ -25,17 +25,16 @@ A background theory  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ sati
 %\item for each $\vec{s} = s_1 \times \dots \times s_n$ and $i \in [n]$, there is a function $\pi_{\vec{s}, i}$ of arity $s_1 \times \dots \times s_n \rightarrow s_i$ in $\functions$ such that $\pi_{\vec{s},i}(\vec{t}) = t_i$ for each term $\vec{t} = (t_1,\dots, t_n)$ of sort $s_1 \times \dots \times s_n$.
 %\end{itemize}
 
-\item $\structure$ is a $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countable infinite set, called the data domain, 
-and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
+\item $\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countably infinite set (the data domain), and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
 %
 \item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$. In addition, $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$.
 %In addition, it is assumed that each formula $\psi \in \Psi$ of arity $s^\ell$ (where $\ell > 0$) has the same set of free variables $\{x_1,\dots, x_\ell\}$.
 For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set $\{d \in \data \mid  \structure \models \psi(d)\}$. Elements of $\| \psi\|$ are called the \emph{witnesses} of $\psi$.
 \end{itemize}
-A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. In addition, $\Upsilon$ is \emph{decidable} iff it is decidable to check $\issat(\psi)$, given $\psi \in\Psi$.
+A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. In addition, $\Upsilon$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
 \end{definition}
 
-In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $O(f(m))$ space for some monotone function $f$ such that $f(m) \ge \log m$.
+In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $O(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
 %
 %The notion $\issat(\psi)$ for $\psi \in \Psi$ and the decidability of $\Upsilon$ can be defined similarly as effective Boolean algebra.
 %
@@ -74,7 +73,7 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 
 
 \begin{definition}[Symbolic finite-state transducers]
-    A \emph{nondeterministic two-way  symbolic \emph{transducer}} (2ST) is a tuple $\Transducer = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
+    A \emph{nondeterministic two-way symbolic \emph{transducer}} (2ST) is a tuple $\Transducer = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
 \begin{itemize}
 %\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable background theory, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
@@ -82,9 +81,9 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 %
 \item $\transrel$ is a finite set of  transitions which are in one of the following forms,
 \begin{itemize}
-\item   transitions $(q, \psi(x), dir, q', t(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
+\item   $(q, \psi(x), dir, q', t(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
 $t(x)$ is an $\signature$-term, 
-\item   transitions $(q, \EndLeft, \Right, q', c)$ and $(q, \EndRight, \Left, q', c)$, where $c$ is an $\signature$-constant. 
+\item   $(q, \EndLeft, \Right, q', c)$ and $(q, \EndRight, \Left, q', c)$, where $c$ is an $\signature$-constant. 
 \end{itemize}
 \end{itemize}
 A 2ST is an ST if for each $(q, \psi(x), dir, q', t(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
@@ -93,11 +92,10 @@ A 2ST is an ST if for each $(q, \psi(x), dir, q', t(x))$ we have $dir \in \{\Sta
 \paragraph{Semantics of 2ST.}
 A transition $\tau=(q_1,\psi(x), dir, q_2, t(x)) \in \transrel$ in the 2ST $\Transducer$ can be concretised
 into a potentially infinite set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q \times \data$, where $(q_1, d, dir, q_2, d')  \in \|\tau\|$ iff $d \in \|\psi\|$ and $d' = \interpretation(t)(d)$.
-Intuitively, suppose $\Transducer$ is at the state $q_1$ and reading the input data value $d \in \data$,
-if there is a transition $(q_1, \psi(x), dir, q_2, t(x) )\in \transrel$ such that $d \in \|\psi\|$, then $\Transducer$ can move its reading head according to $dir$, and moves from the state
-$q_1$ to the state $q_2$, moreover, it produces a data value $d' \in \data$.
+Intuitively, suppose $\Transducer$ is at the state $q_1$ and reading the input data value $d \in \data$.
+If there is a transition $(q_1, \psi(x), dir, q_2, t(x) )\in \transrel$ and $d \in \|\psi\|$, $\Transducer$ can move its reading head according to $dir$, update the current state $q_1$ to $q_2$,  and produce the data value $d' \in \data$.
 
-Given a data string $w = d_1 \dots d_n$, a \emph{run} of $\Transducer$ on $w$
+Given a data string $w = d_1, \dots, d_n$, a \emph{run} of $\Transducer$ on $w$
 is a sequence of tuples $(q_0, i_0, d'_0), \ldots, (q_m, i_m, d'_m) \in \controls \times (\{0\} \cup [n+1]) \times \data$ 
 such that
 %let $d_0 = \EndLeft$ and $d_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
@@ -112,7 +110,7 @@ such that
 	\item $i_j = n+1$, $(q_j, \EndRight, \Left, q_{j+1}, c) \in \transrel$, $d'_j = \interpretation(c)$.
   \end{itemize}
 \end{itemize}
-The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $d'_0 \ldots d'_m$ is said to be the \emph{output} of the run.
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $d'_0, \ldots, d'_m$ is the \emph{output} of the run.
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
