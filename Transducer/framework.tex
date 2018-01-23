@@ -3,14 +3,14 @@
 \section{The Framework: Transducers, Straight-Line Programs}
 \label{sec:framework}
 
-In this section we first review the framework of straight-line programs from
+In this section, we first review the framework of straight-line programs from
 \cite{LB16} for analysing symbolic execution of programs with strings, which
 involves capturing ``built-in'' functions using finite-state transductions.
 We will then introduce the notion of parametric transducers, and show that
 they can capture many other interesting string functions that cannot be captured
 within the framework of \cite{LB16}. In particular, this allows us to capture
 string functions $f: (\Sigma^*)^k \to \Sigma^*$ with multiple input strings
-(e.g. the replaceall function), and the string reverse function. 
+(e.g. the concatenation and replaceall function), and the string reverse function. 
 The framework of straight-line programs from \cite{LB16} can be adapted
 to this new notion of transducers, whose path feasibility problem, defined below, will be shown
 to be decidable in Section \ref{sec:algo}.
@@ -48,7 +48,7 @@ left undefined, but will be instantiated as one explores algorithmic issues.
 %\mat{Should the ``straight-line'' restriction be explicitly defined?}
 The problem of \defn{path feasibility}
 asks whether, for a given program $S$, there exist \emph{input} strings (i.e. 
-instantiations of variables that do not appear on left-hand side of an 
+instantiations of variables that do not appear in the left-hand side of an 
 assignment) that take
 $S$ to the end of the program while satisfying all the assertions. 
 In general, it is useful to allow $f$ to be %\emph{partial} functions or, more
@@ -62,7 +62,7 @@ behaviour could be needed due to unknown inputs from a human user or other
 sources (e.g. databases). In this case, path feasibility of a
 symbolic execution $S$
 is defined in an \emph{angelic} way: each function in $S$
-should be to produce \emph{some} output strings that take $S$ to the end of the
+should be able to produce \emph{some} output string that takes $S$ to the end of the
 program.
 %while satisfying all the assertions.
 %Straight-line programs with assertions 
@@ -131,9 +131,9 @@ straight-line programs. Finite transducers are a classic concept from
 the theory of formal languages (e.g. see \cite{Berstel}).
 %We will define finite-state
 %transducers in the following subsection, but 
-Roughly speaking, a finite transducer is an NFA with an extra output (write-only) 
+Roughly speaking, a finite transducer is an \FA{} with an extra output (write-only) 
 track, i.e., upon reading an input symbol, it may decide to output (or not output) a symbol 
-on the output track. We will define this in more detail below.
+on the output track. We will define this in more details below.
 In general, the input/output tracks of finite-state transducers may be 
 \emph{asynchronous}, which means that they cannot be captured by automatic structures of \cite{BG04}. 
 Finite-state transducers are powerful for modelling many
@@ -141,8 +141,8 @@ different string functions including sanitisation functions (e.g. htmlescape and
 backslash-escape) and implicit browser transductions in HTML5 applications (e.g.
 innerHTML). Although they noted that this is
 undecidable by the result of \cite{BFL13}, decidability can be obtained 
-by disallowing \emph{string equality checks in the assertions $g$}, i.e., after
-a simplification, we may assume that $g$ contains only regular constraints.
+by {\bf disallowing string equality checks in the assertions $g$}, i.e., after
+a simplification, we may assume that {\bf $g$ contains only regular constraints}.
 %In
 %particular, an application of finite-state transducer and string equality checks
 %are prohibited in $g$. 
@@ -160,40 +160,45 @@ vulnerabilities.
 The following is the precise definition
 of two-way and one-way finite-state transducers.
 \begin{definition}[Finite-State Transducers]
-    Let $\ialphabet$ an alphabet and $\ialphabet_\epsilon = \ialphabet
+    Let $\ialphabet$ be an alphabet and $\ialphabet_\epsilon = \ialphabet
     \cup \{\epsilon\}$.
-    A \emph{nondeterministic two-way (finite) \emph{transducer}} (2NFT) over 
-    $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$ are precisely the same as those of Definition~\ref{def:2nfa}
-%    $\controls$ is a finite set of 
-%    states, $\EndLeft$ (resp.~$\EndRight$) a left (resp.~right) input tape end 
-%    marker, $q_0\in \controls$ is
-%the initial state, $\finals\subseteq \controls$ is a set of final states, 
-%
-and 
-    $\transrel$ is the
-transition relation  $\transrel\subseteq \controls \times 
+    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) $\Transducer$  over 
+    $\ialphabet$ is a \FFA{} extended with outputs, more precisely, $\Transducer$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ with $\transrel \subseteq \controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \ialphabet_\epsilon$ with
-    $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
-    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
-    there are no transitions that take the head of the tape past the left/right
-    end marker. 
-    A (nondeterministic one-way finite) transducer (NFT) over
+    \controls \times \ialphabet_\epsilon$, satisfying the same syntactical constraints as \FFA{}s. 
+%
+%    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) over 
+%    $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$, and $\finals$ are precisely the same as those of Definition~\ref{def:2nfa}
+%
+%and 
+%    $\transrel$ is the
+%transition relation  $\transrel\subseteq \controls \times 
+%    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+%    \controls \times \ialphabet_\epsilon$ with
+%    $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$.
+%    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
+%    there are no transitions that take the head of the tape past the left/right
+%    end marker. 
+    A (nondeterministic one-way finite) transducer (\FT{}) over
     $\ialphabet$
-    is a 2NFT whose transition relation contains only tuples of the form
-    $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
+    is a \FFT{} such that 
+     $\transrel \subseteq \controls \times \overline{\ialphabet} \times
+    \{\Right,\Stay\} \times \controls \times \ialphabet_\epsilon$.
+%    whose transition relation contains only tuples of the form
+%    $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 \end{definition}
+\zhilin{I simplified the above definition slightly, please check. I would like to extend the 2FTs to allow multiple output symbols in one transition, but have not done yet. Wait for the agreement. Moreover, can we assume that for each transition $(q, \EndLeft, \Right/\Stay, q', b)$, we have $b=\epsilon$ ? Similarly for $\EndRight$. With this assumption, we may say that in FTs, $\EndLeft$ and $\EndRight$ are omitted, similarly to FAs.}
 
-%\anthony{Define the semantics of 2NFT as function $f: \ialphabet^* \to
+%\anthony{Define the semantics of \FFT{} as function $f: \ialphabet^* \to
 %\ialphabet^*$}.\zhilin{Semantics defined below. Please check.}
 
 
-The notion of runs of 2NFTs on an input string can be seen as a generalisation 
-of 2NFA by adding outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
+The notion of runs of \FFT{}s on an input string can be seen as a generalisation 
+of \FFA{}s by adding outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a
 sequence of tuples $(q_0, i_0, b_0),\ldots, (q_m, i_m, b_m) \in \controls \times
-[n+1] \times \Sigma$ 
+[0, n+1] \times \Sigma_\epsilon$ 
 such that, letting $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, 
 we have %. The following conditions, then, have to be satisfied:
 \begin{itemize}
@@ -210,6 +215,7 @@ $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 \emph{transduction} defined by $\Transducer$, that is, the relation comprising
 the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. 
 
+
 \begin{example}
     We give three examples of finite transducers: (1) erasing \texttt{a} from
     a string, (2) the function escapeString, and (3) the reverse function.
@@ -222,6 +228,7 @@ the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
     $(q_1,\ell,1,q_1,\ell)$ (for $\ell \neq \texttt{a}$), 
     $(q_1,\texttt{a},1,q_1,\epsilon)$, and
     $(q_1,\EndRight,0,q_2,\epsilon)$. The final state is $q_2$.
+\zhilin{seems annoying to have $\EndLeft$ and $\EndRight$ transitions here for 1FT. Can we assume that in 1FTs, $\EndLeft$ and $\EndRight$ are removed ? }
 
     The second transducer backslash-escapes every occurrence of \texttt{'} and 
     \texttt{"}. This can also be done by a \FT{} in a similar way. Instead of
@@ -255,10 +262,10 @@ the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 %\item for each $j'': j  < j'' < j'$, $i_{j''} = i_{j''-1}$ or $i_{j''} = i_{j''-1}-1$, moreover, the latter situation occurs at least once, finally $i_{j'} = i_{j'-1}+1$. 
 %\end{itemize}
 %Let $k \in \Nat$. A run of $\Transducer$ is said to be \emph{$k$-reversal-bounded} if the run contains at most $k$ distinct reversals.
-%A 2NFT $\Transducer$ is \emph{$k$-reversal-bounded} if all runs of  $\Transducer$ are $k$-reversal-bounded.
+%A \FFT{} $\Transducer$ is \emph{$k$-reversal-bounded} if all runs of  $\Transducer$ are $k$-reversal-bounded.
 %====================================================================================================
 
-%Given a 2NFT $T$, We use $\Transducer(x, y)$ to denote the relation such that there is an accepting run of $\Transducer$ on $x$ with the output $y$.
+%Given a \FFT{} $T$, We use $\Transducer(x, y)$ to denote the relation such that there is an accepting run of $\Transducer$ on $x$ with the output $y$.
 %\tl{I feel this is slightly confusing, let's whether we can avoid that}
 %\mat{
 %    I don't understand it (the sentence above).
@@ -325,10 +332,29 @@ results.
 
 We now introduce \emph{parametric transducers}, a new transducer model that can 
 capture all the
-aforementioned string operations (i.e. finite-state transducer from
-\cite{LB16} and the replace-all function \cite{CCHLW18}), as well as other 
-string functions including the string reverse function.
+aforementioned string operations,  i.e. finite-state transducer from
+\cite{LB16}, the concatenation function, the replace-all function \cite{CCHLW18}, and the string reverse function.
 
+\begin{definition}[Parametric Transducers]
+    Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
+    Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
+    \ialphabet \cup X$. Define $\oalphabet_\epsilon = \oalphabet \cup
+    \{\epsilon\}$.
+    A (nondeterministic) two-way \emph{parametric transducer} (\PPT)  $\Transducer$ over 
+    $(\ialphabet,X)$ is a  \FFT{}  extended with  parameter outputs, more precisely, $\Transducer$ is a tuple 
+    $(\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ with
+ $\transrel\subseteq \controls \times 
+    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+    \controls \times \oalphabet_\epsilon$.    
+    A (nondeterministic one-way) parametric transducer (\PT) over
+    $\ialphabet$ is a \PPT{} such that
+ $\transrel\subseteq \controls \times 
+    \overline{\ialphabet}\times \{\Stay, \Right\}\times 
+    \controls \times \oalphabet_\epsilon$.    
+\end{definition}
+
+
+\OMIT{
 \begin{definition}[Parametric Transducers]
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
     Assume that $\ialphabet \cap X = \emptyset$ and let $\oalphabet = 
@@ -354,6 +380,7 @@ transition relation  $\transrel\subseteq \controls \times
     is a \PPT{} whose transition relation contains only tuples of the form
     $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
 \end{definition}
+}
 \OMIT{
     The usual notion of finite transducers can now be defined as parametric 
     transducers that do not output parameters.
@@ -390,7 +417,7 @@ $\Transducer$ produces the output $w'$ from the input $w$.
 %We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.
 %\tl{again, this is a relation, not a function.}
 
-\begin{example}
+\begin{example}\zhilin{this example should be polished}
     The function $\replaceall$ takes three inputs:
     (1) a string $sub$, called the \emph{subject}, (2) a string
     $pat$, called the \emph{pattern}, and (3) a string $rep$, called
@@ -416,7 +443,7 @@ $\Transducer$ produces the output $w'$ from the input $w$.
     $(q_1,\texttt{a},1,q_1,rep)$, and
     $(q_1,\EndRight,0,q_F,\epsilon)$. 
 
-    The above transducer uses the parameter $rep$. Whenever the pattern
+    The above transducer uses the parameter $rep$. Whenever the replacement
     is a constant string, a non-parametric transducer is sufficient to
     capture the function. \qed
 \end{example}
@@ -428,7 +455,7 @@ Python and sed. Such a function can also be captured by parametric transducers,
 as the following proposition claims.
 \begin{proposition}
     Given a regular expression pattern $p$, we can compute a 
-    \PT{} such that $\Tran(\PT)$ expresses the function $\replaceall_p$.
+    \PT{} $\Transducer$ such that $\Tran(\Transducer)$ expresses the function $\replaceall_p$.
     \label{prop:replaceAll}
 \end{proposition}
 
@@ -455,7 +482,7 @@ For a class $\transet$ of parametric transducers, we consider the constraint lan
 \psi &::= & x \in \Aut \mid \psi \wedge \psi, & \hfill \mbox{(regular constraint)} 
 \end{array}
 \]
-where $\Transducer$ is a transducer from $\transet$ over the alphabet $\Sigma$ and $\Aut$ is an NFA over $\Sigma$. Moreover, we require that the dependency graph of $\varphi$ defined below is acyclic. We use $\vars(\varphi \wedge \psi)$ to denote the set of string variables occurring in $\varphi \wedge \psi$.
+where $\Transducer$ is a transducer from $\transet$ over the alphabet $\Sigma$ and $\Aut$ is an \FA{} over $\Sigma$. Moreover, we require that the dependency graph of $\varphi$ defined below is acyclic. We use $\vars(\varphi \wedge \psi)$ to denote the set of string variables occurring in $\varphi \wedge \psi$.
 
 %Let $\varphi$ be a relational constraint. Then 
 The \emph{dependency graph} of a relational constraint $\varphi$, denoted by $\cG(\varphi)$, is the (directed acyclic) graph comprising the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ for $i\in [k]$ and  each atomic formula $z = \Transducer(x, \vec{y})$ in $\varphi$ with $\vec{y}=(y_1, \cdots, y_k)$. Note that $(\Transducer, 0)$ and $(\Transducer, i)$ are the labels of the edges $(z, (\Transducer, 0), x)$ and $(z, (\Transducer, i), y_i)$ respectively.
