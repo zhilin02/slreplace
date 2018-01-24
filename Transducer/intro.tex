@@ -6,8 +6,10 @@ Their generic nature can, however, lead to many subtle programming
 bugs, some with security consequences, e.g., cross-site scripting
 (XSS) and code injections, both of which are ranked top 10 by Open Web
 Application Security Projects (OWASP) in 2017 \cite{owasp17}. One effective
-method for software testing (and, in particular, automatic test-case 
-generation with a good coverage) is based on \emph{symbolic executions} 
+automatic software testing method for identifying subtle programming errors
+%automatically generating test cases 
+%generation with a good coverage 
+is based on \emph{symbolic executions} 
 \cite{king76} and combinations with dynamic analysis
 called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
 See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
@@ -22,7 +24,8 @@ of the static path, which can be used for generating inputs that lead to
 an undesirable program behaviour or an exploration of a new part of the
 system under test.
 
-Symbolic executions rely on constraint solvers at their core. When the system
+A symbolic executions analysis relies on constraint solvers at its core. When 
+the system
 under test is a program that uses string data type (including most programs 
 written in scripting languages like JavaScript and PHP), these techiques 
 crucially need constraint solvers over the string domain (a.k.a. \emph{string 
@@ -31,20 +34,50 @@ the theory, implementation, and symbolic execution applications of string constr
 solving in the past decade, e.g., see 
 \cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,Vijay-length,YABI14,Abdulla14,LB16,fang-yu-circuits,Abdulla17,CCHLW18,HJLRV18,S3,TCJ16,Z3-str,cvc4,BCFJKKV08,RVG12,jalangi,expose},
 to name a few. \anthony{This list of citations is still incomplete}
+
 Following the framework of Satisfiability Modulo Theories (SMT)
 \cite{SMT-CACM,SMT-chapter,KS08}, string constraints are typically 
-quantifier-free first-order formulas. 
+quantifier-free first-order formulas. The following is a fundamental question
+in constraint solving over strings, to which hitherto only partial answers are 
+available: \emph{which string operations can we
+incorporate into a decidable theory over strings?}
+Concatenation (+) and string equality (=) are typically present in a string 
+theory since they are the most basic string operations. For example, the
+expression $\varphi(x,y) \equiv\ x + \texttt{ba} + y = y + 
+\text{ab} 
++ x$ is a constraint in the 
+theory, where $x$ and $y$ are string variables and the alphabet is
+$\{\texttt{a},\texttt{b}\}$.
+It can be satisfied by the assignment $y$ (resp.~$x$) is mapped to $\texttt{b}$
+(resp.~the empty string). Even in this case, the theory of concatenation was 
+not known to be decidable until the seminal
+paper by Makanin \cite{Makanin} on \emph{word equations}, followed by the
+extension by B\"{u}chi and Senger \cite{buchi} to all quantifier-free formulas.
+Regular expression matching (e.g. $y \in (\texttt{ab})^*$) is another useful
+string operation (in fact, crucial to specify the set of ``bad'' strings) which
+can be incorporated to the theory of concatenation without sacrificing
+decidability \cite{Schulz}. 
+%It seems difficult, however, to extend this
+%theory with other useful string operations while preserving decidability.
+%For example, it is a long-standing open problem whether 
+%A couple of decades after Makanin's result
+%it was finally shown \cite{P04,J17} that the complexity of the theory of 
+%concatenation with regular expression matching is PSPACE-complete.
+However, there are many other useful string 
+operations including string length function, replaceall
+function (replacing every occurrence of a string matching a pattern with another
+string), and casting functions (e.g. conversions
+between integers and strings). Adding them to the theory of concatenation
+either results in an undecidable string theory \cite{LB16,BFL13,GB16}
+or one whose decidability is a long-standing open problem \cite{Vijay-length}.
+
+\subsubsection*{A family of string constraint languages for symbolic executions.}
 %it is not a priori clear %what an ``ideal'' logical theory over the string 
 %domain should look like since
 There are many possible string operations we could incorporate to a string 
 theory.
 Concatenation is typically present in a string theory since it is perhaps
-the most basic string operation. However, there are many other useful string 
-operations including length function, regular expression matching, 
-replaceall
-function (replacing every occurrence of a string matching a pattern with another
-string), string reverse function, and casting functions (e.g. conversions
-between integers and strings), to name a few.
+the most basic string operation. Another useful string operation is 
 
 . Even in this case, the (quantifier-free)
 theory of concatenations was not known to be decidable until the seminal
