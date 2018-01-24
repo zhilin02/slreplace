@@ -100,15 +100,17 @@ As we have discussed in Section~\ref{subsec:symexe}, a string function $f(x_1, \
 %
 %the set of tuples $(w, w_1,\ldots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\ldots, w_k$. 
 
-The main result of this section is a generic decision procedure for the path feasibility problem of string manipulating program $S$ in the SSA form, under the following \prerec{} assumption:
+The main result of this section is a generic decision procedure for the path feasibility problem of string manipulating program $S$ in the SSA form, under the \prerec{} assumption defined below:
 \begin{quote}
 %\item
-\prerec{} {\bf assumption}. For each string function $f$ in $S$ and a conjunctive \FA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a recognisable relation. Furthermore, the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$. Here $|f|$ is the size of a representation of $f$; the concrete definition depends on the form of $f$, which will be given when the generic decision procedure is instantiated in Section~\ref{sec-instan}.  
+{\bf The \prerec{} assumption}. For each string function $f$ in $S$ and each conjunctive \FA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a recognisable relation. Furthermore, the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
 %
 %\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
 \end{quote} 
 
-Given a string manipulating program $S$, w.l.o.g., we assume that each variable appears at most once\footnote{If, for instance, $x\in \Aut_1$ and $x\in \Aut_2$ both appear in the assertions of $S$, then we can lump them using $x\in \Aut_1 \times \Aut_2$.} in the assertions of $S$. Furthermore, we define $\rcdep(S)$ to be the number of assignments appearing in $S$, $\rcdim(S)$ to be the maximum number of arguments of string functions in the assignments of $S$, $\rcphi(S)$ to be the maximum size of the representations of string functions  in the assignments of $S$, and $\rcpsi(S)$ to be the maximum size of the \FA{}s appearing in the assertions of $S$. 
+Here $|f|$ is the size of a representation of $f$; the concrete definition depends on the form of $f$, which will be given when the generic decision procedure is instantiated in Section~\ref{sec-instan}. 
+
+Given a string manipulating program $S$, w.l.o.g., we assume that each variable appears at most once\footnote{If, for instance, $x\in \Aut_1$ and $x\in \Aut_2$ both appear in the assertions of $S$, then we can lump them using $x\in \Aut_1 \times \Aut_2$.} in the assertions of $S$. Furthermore, we define $\rcdep(S)$ to be the number of assignments in $S$, $\rcdim(S)$ to be the maximum number of arguments of string functions in the assignments of $S$, $\rcphi(S)$ to be the maximum size of the representations of these string functions, and $\rcpsi(S)$ to be the maximum size of the \FA{}s appearing in the assertions of $S$. 
 
 
 For $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $\ell^{\langle 1 \rangle}(j,k)= \ell(j, k)$ and $\ell^{\langle n+1 \rangle }(j, k) = \ell(j, \ell^{\langle n \rangle}(j,k))$. 
@@ -127,9 +129,11 @@ For $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 }
 \tl{I have tried to accommodate this, though need to proof read carefully.}
 
+
+%==== theorem ==============================
 \begin{theorem}\label{thm-generic-dec}
 	Given a string manipulating program $S$ satisfying the \prerec{} assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} 
-	$\mathcal{O}((\rcdim(S)+1)^{\rcdep(S)} \cdot (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space.
+	$|\vars(S)|(\rcdim(S)+1)^{c \rcdep(S)} \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$ space for some $c > 0$.
 \end{theorem}
 
 %\begin{theorem}\label{thm-generic-dec}
@@ -142,9 +146,11 @@ For $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 %%$D$ is the maximum length of the paths in $\cG(\varphi)$.
 %\end{theorem}
 
-\zhilin{stopped here}
-\begin{proof}
+%\begin{proof}
 %Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
+
+Let $S$ be a string manipulating problem satisfying the \prerec{} assumption. 
+We shall present a nondeterministic algorithm to decide the path feasibility problem of $S$.
 
 We first \emph{nondeterministically} compute $\cE(x)$, a collection of conjunctive FAs over the alphabet $\Sigma$, for each variable $x \in \vars(S)$. %, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
@@ -159,13 +165,13 @@ $x \in \Aut$ appearing in the assertion of $S$, where $\Aut$ is an FA, let $\Aut
 %Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
 %$\cG_i$ becomes empty, i.e., a graph without edges.
 
-Notice that $S$ has $\rcdep(S)$ assignments. we start from the last assignment of $S$, and set $i:=1$. Sequentially for each assignment of $S$ we compute  $\cE_{i}$ until $i=\rcdep(S)$.  
+Notice that $S$ has $\rcdep(S)$ assignments. we start from the last assignment of $S$, and set $i:=1$. Sequentially for each assignment of $S$ we compute  $\cE_{i}$ until $i=\rcdep(S)+1$.  
 %
 %select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
 %(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \ldots, y_k)$.
 %Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
 
-For the $(i+1)$-st iteration, suppose the assignment to be $y:= f(x_1, \cdots, x_k)$ with $k\geq 1$, and  $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
+For the $i$-th iteration, suppose the assignment to be $y:= f(x_1, \cdots, x_k)$ with $k\geq 1$, and  $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
 where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
 By the premise of the theorem, $\Pre_{R_f}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \ldots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
@@ -187,27 +193,48 @@ Then $\cE_{i+1}(x)$ for $x \in  \{x_1,\cdots, x_k\}$ is updated as follows: %and
 %
 After all assignments of $S$ are scanned,  let $\cE(x):=\cE_{\rcdep(S)}(x)$ for each variable $x$.
 
+
+%%=================================================================
+%%=================================================================
+\hide{
 %\begin{example}
 \tl{tbh, I think the algo is clear enough and the example does not add too much.}\zhilin{maybe, but the example is at least more concrete. Moreover, the description of the algorithm is short and dry, maybe just use the example to let the reader spend a bit more time on the algorithm and digest, although with some redundancy. We may remove it if we run out of space. May decide this later.}
 Let us use an example to help the reader understand the computation of $\cE_{i+1}$ from $\cE_i$.  Suppose that in $\cG_i$, to compute $\cE_{i+1}$, we select a variable $x$, which has no predecessors and three outgoing edges, say $(x, (\Transducer, 0), y)$, $(x, (\Transducer, 1), z)$, and $(x, (\Transducer, 2), y)$, where $y$ and $z$ are two distinct variables, moreover, $\cE_i(x) = \{\Aut_1, \Aut_2\}$. Let us also assume that  $\Pre_{\Transducer}(\Aut_1)$ (resp. $\Pre_{\Transducer}(\Aut_2)$) is represented by $(\Aut^{(j')}_{1, 0}, \Aut^{(j')}_{1, 1}, \Aut^{(j')}_{1, 2})_{ j'  \in [2]}$ (resp. $(\Aut^{(j')}_{2, 0}, \Aut^{(j')}_{2, 1}, \Aut^{(j')}_{2, 2})_{ j'  \in [3]}$). If for $j = 1$ (resp. $j=2$), $(\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 1}, \Aut^{(1)}_{1, 2})$  (resp. $\left(\Aut^{(3)}_{2, 0}, \Aut^{(3)}_{2, 1}, \Aut^{(3)}_{2, 2}\right)$)  is selected, then $\cE_{i+1}(y) = \cE_i(y) \cup \{\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 2}, \Aut^{(3)}_{2, 0} \cup \Aut^{(3)}_{2, 2}\}$ and $\cE_{i+1}(z) = \cE_{i}(z) \cup \{\Aut^{(1)}_{1, 1}, \Aut^{(3)}_{2, 1}\}$. 
 \tl{I have not updated this part as likely the proof will go to appendix}
-%\end{example}
+}
+%%=================================================================
+%%=================================================================
+
 
 To decide the path feasibility of $S$, we have the following nondeterministic algorithm: first (nondeterministically) construct the sets $\cE(x)$ for $x \in \vars(S)$ as detailed above, then 
 %guessing an accepting run of the product of NFAs 
-checking the emptiness of the product of FAs in $\cE(x)$ for each $x \in \vars(S)$.
+checking the emptiness of the product of conjunctive \FA{}s in $\cE(x)$ for each $x \in \vars(S)$.
 
-\paragraph{Complexity analysis.} For each $i$, 
+\begin{example}
+An example here to illustrate the generic decision procedure.
+\end{example}
+
+\zhilin{I simplified the complexity analysis. It is up to discussion whether it should be put in the appendix.}
+\paragraph{Complexity analysis.}
+For each $i$, 
 %\begin{itemize}
 %\item 
 let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
 %\item 
 and $N_i$ be the maximum size of the conjunctive FAs in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
 %\end{itemize}
-Then we have $M_{i+1} \le (\rcdim(\varphi)+1)M_i $. Moreover, since each assignment $f$ satisfies   $|f| \le |\rcphi(S)|$, we have that $N_{i+1} \le \ell(|f|, N_i) \le \ell(|\rcphi(S)|, N_i)$ (note that we have assumed that $f$ is monotonic). Because for each $x \in \vars(S)$, %$\cE_0(x)$ contains at most $|\psi|$ elements, and 
-the conjunctive FA in $\cE_0(x)$ is of size bounded by $|\rcpsi(S)|$, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}$ elements, and each conjunctive FA in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
-We emphasise that, according to the assumption \textbf{A1}, the construction of these FAs can be done in $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
+Then we have $M_{i+1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies   $|f| \le \rcphi(S)$, we have that $N_{i+1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotonic). Because for each $x \in \vars(S)$, %$\cE_0(x)$ contains at most $|\psi|$ elements, and 
+the conjunctive \FA{} in $\cE_0(x)$ is of size bounded by $\rcpsi(S)$, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}$ elements, and each conjunctive \FA{} in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
+We emphasise that, according to the \prerec{} assumption, the construction of these \FA{}s can be done in $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
+Therefore, for each $x \in \vars(S)$, the product of these conjunctive \FA{}s  in $\cE(x)$ is of size $(\rcdim(S)+1)^{\rcdep(S)} \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. Since the nonemptiness of a conjunctive \FA{} can be solved in polynomial space, we conclude that the aforementioned nondeterministic algorithm takes 
+$$|\vars(S)|(\rcdim(S)+1)^{c \rcdep(S)} \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$$
+ space for some constant $c > 0$.
 
+
+
+%%%%===========================original complexity analysis removed ====================================
+%%%%===========================original complexity analysis removed ==================================
+\hide{
 %
 Since each conjunctive FA $((Q, \delta), S)$ in $\cE(x)$ encodes an FA of size $|Q|^{|S|} \le |Q|^{|Q|^2} \approx 2^{O(|Q|^2 \log |Q|)}$, 
 %\tl{I do not quite understand here} \zhilin{explained in the definition of conjunctive encodings of atoms} 
@@ -231,4 +258,5 @@ $$\mathcal{O}((\rcdim(S)+1)^{\rcdep(S)} \cdot  (\ell^{\langle \rcdep(S) \rangle}
 %\zhilin{Please check the complexity}
 %Therefore, the satisfiability can be checked by a nondeterministic Turing machine with 
 %$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$ space.
-\end{proof}
+%\end{proof}
+}
