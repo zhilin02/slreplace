@@ -230,6 +230,26 @@ Therefore, for each $x \in \vars(S)$, the product of these conjunctive \FA{}s  i
 $$|\vars(S)|(\rcdim(S)+1)^{c \rcdep(S)} \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$$
  space for some constant $c > 0$.
 
+\begin{example}
+	We slightly extend the $\text{replaceAll}$ example given in Figure \ref{fig:SSA} to illustrate the generic decision procedure. Suppose that the String manipulating program $S$ is 
+		$\ASSERT{x_0\in L_0}$, $x_1 = \text{replaceAll}(x_0,\texttt{a},y)$, $\ASSERT{x_1\in L_1}$; $x_2= \text{replaceAll}(x_1, \texttt{b}, y)$, $\ASSERT{x_2\in L_2}$. The variables are $x, x_1, x_2, y$, and clearly $\rcdep(S)=2$ and $\rcdim(S)=2$ (as the replaceAll function here has two arguments). 
+		
+		To run the algorithm, initially we have $ \cE_0(x_i)= \{\Aut_i\}$ for $i=0,1,2$, and $ \cE_0(y)= \emptyset$. 
+		
+		Then we start with the last assignment $x_2=\text{replaceAll}(x_1,\texttt{b},y)$. By the PreRec assumption, the pre-image of $\Aut_2$ under $\text{replaceAll}_b$ is a recognisable relation. In other
+		words, we obtain the resulting regular constraints for $x_1$ and $y$. By nondeterministic selection, we update $\cE_0$ to $\cE_1$ with $\cE_1(x_0)=\{\Aut_0\}$, $\cE_1(x_1)=\{\Aut_1,\Aut_1'\}$, $\cE_1(x_2)=\{\Aut_2\}$ (remains unchanged), and $\cE_1(y)=\{\Aut^1_y\}$. 
+		
+		We continue with the assignment $x_1 = \text{replaceAll}(x_0,\texttt{a},y)$. Again by the PreRec assumption, the pre-image of both $\Aut_1,\Aut_1'$ from $\cE_1(x_1)$ under  $\text{replaceAll}_a$ is a recognisable relation. In other
+		words, we obtain the resulting regular constraints for $x_0$ and $y$. By nondeterministic selection, we update $\cE_1$ to $\cE_2$ with $\cE_2(x_0)=\{\Aut_0, \Aut_0'\}$, $\cE_2(x_1)=\{\Aut_1,\Aut_1'\}$, $\cE_2(x_2)=\{\Aut_2\}$ (these two remain unchanged), and $\cE_2(y)=\{\Aut^1_y, \Aut^2_y\}$.
+		
+		The iteration now is done. We then only need to check nonemptiness of the product automata from $\cE_2(x_i)$ ($i=0,1,2$) and $\cE_2(y)$. \qed
+		
+		\end{example}
+
+%
+%Given a string manipulating program $S$, w.l.o.g., we assume that each variable appears at most once\footnote{If, for instance, $x\in \Aut_1$ and $x\in \Aut_2$ both appear in the assertions of $S$, then we can lump them using $x\in \Aut_1 \times \Aut_2$.} in the assertions of $S$. Furthermore, we define $\rcdep(S)$ to be the number of assignments in $S$, $\rcdim(S)$ to be the maximum number of arguments of string functions in the assignments of $S$, $\rcphi(S)$ to be the maximum size of the representations of these string functions, and $\rcpsi(S)$ to be the maximum size of the \FA{}s appearing in the assertions of $S$. 
+
+
 
 
 %%%%===========================original complexity analysis removed ====================================
