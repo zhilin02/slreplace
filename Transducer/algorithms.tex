@@ -178,7 +178,7 @@ $x \in \Aut$ appearing in the assertion of $S$, where $\Aut$ is an FA, let $\Aut
 For the $i$-th iteration, suppose the $i$-th assignment of $S$ to be $y:= f(x_1, \cdots, x_k)$ with $k\geq 1$, and  $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
 where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
-By the premise of the theorem, $\Pre_{R_f}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(j')}_{j, 0}, \Aut^{(j')}_{j, 1}, \ldots, \Aut^{(j')}_{j, k})_{ j'  \in [m_j]}$, can be computed effectively.
+By the premise of the theorem, $\Pre_{R_f}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(\iota)}_{j, 0}, \Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, k})_{\iota \in [m_j]}$, \tl{zhilin: why the index starts from 0? it is a $k$-ary relation, isn't it?} can be computed effectively.
 Then $\cE_{i-1}(x)$ for $x \in  \{x_1,\cdots, x_k\}$ is constructed as follows: %and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
 \item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \ldots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
@@ -187,7 +187,7 @@ Then $\cE_{i-1}(x)$ for $x \in  \{x_1,\cdots, x_k\}$ is constructed as follows: 
 \[
     \cE_{i-1}(x):= \cE_{i}(x) \cup \left\{\Aut^{(r_j)}_{j, h} \mid  j \in [n], h \in [k], x = x_h \right\}.
 \]
-[For each vertex $x'  {\notin} \{x_1,\ldots, x_k\}$, let $\cE_{i-1}(x') := \cE_i(x')$.]
+[For each $x{\notin} \{x_1,\ldots, x_k\}$, let $\cE_{i-1}(x) := \cE_i(x)$.]
 %We set $\cE_{i+1}(x) = \emptyset$.
 %
 %\item Let $\cG_{i+1}:= \cG_i \backslash \{(x, (\Transducer, j), y_j) \mid j \in \{0\} \cup [k]\}$.
@@ -223,10 +223,10 @@ checking the nonemptiness of the product of conjunctive \FA{}s in $\cE(x)$ for e
 	We slightly extend the $\text{replaceAll}$ example given in Figure \ref{fig:SSA} to illustrate the generic decision procedure. Suppose that the String manipulating program $S$ is 
 		$\ASSERT{x_0\in L_0}$, $x_1 = \text{replaceAll}(x_0,\texttt{a},y)$, $\ASSERT{x_1\in L_1}$; $x_2= \text{replaceAll}(x_1, \texttt{b}, y)$, $\ASSERT{x_2\in L_2}$. The variables are $x, x_1, x_2, y$, and clearly $\rcdep(S)=2$ and $\rcdim(S)=2$ (as the replaceAll function here has two arguments). 
 		
-		To run the algorithm, initially we have $ \cE_0(x_i)= \{\Aut_i\}$ for $i=0,1,2$, and $ \cE_0(y)= \emptyset$. 
+		To run the algorithm, initially we have $ \cE_2(x_i)= \{\Aut_i\}$ for $i=0,1,2$, and $ \cE_2(y)= \emptyset$. 
 		
 		Then we start with the last assignment $x_2=\text{replaceAll}(x_1,\texttt{b},y)$. By the PreRec assumption, the pre-image of $\Aut_2$ under $\text{replaceAll}_b$ is a recognisable relation, which is 
-		represented by  $(\Aut^{(k)}_{2, 1}, \Aut^{(k)}_{2, 2})_{ k=1,2,3}$. By nondeterministic selection (the machine happens to pick $k=1$), we update $\cE_0$ to $\cE_1$ with $\cE_1(x_0)=\{\Aut_0\}$ (remains unchanged), $\cE_1(x_1)=\{\Aut_1,\Aut^{(1)}_{2,1}\}$, $\cE_1(x_2)=\{\Aut_2\}$ (remains unchanged), and $\cE_1(y)=\{\Aut^{(1)}_{2,2}\}$. 
+		represented by  $(\Aut^{(k)}_{2, 1}, \Aut^{(k)}_{2, 2})_{ k=1,2,3}$. By nondeterministic selection (the machine happens to pick $k=1$), we update $\cE_2$ to $\cE_1$ with $\cE_1(x_0)=\{\Aut_0\}$ (remains unchanged), $\cE_1(x_1)=\{\Aut_1,\Aut^{(1)}_{2,1}\}$, $\cE_1(x_2)=\{\Aut_2\}$ (remains unchanged), and $\cE_1(y)=\{\Aut^{(1)}_{2,2}\}$. 
 		
 			%		In other
 		%		words, we obtain the resulting regular constraints for $x_1$ and $y$. Assume that  $\Pre_{\Transducer}(\Aut_1)$ (resp. $\Pre_{\Transducer}(\Aut_2)$) is represented by $(\Aut^{(j')}_{1, 0}, \Aut^{(j')}_{1, 1}, \Aut^{(j')}_{1, 2})_{ j'  \in [2]}$  
@@ -236,9 +236,9 @@ checking the nonemptiness of the product of conjunctive \FA{}s in $\cE(x)$ for e
 		
 		%In other words, we obtain the resulting regular constraints for $x_0$ and $y$. 
 		
-		By nondeterministic selection (the machine happens to pick $k=2$ and $\ell=3$), we update $\cE_1$ to $\cE_2$ with $\cE_2(x_0)=\{\Aut_0, \mathcal{B}^{(2)}_{1,1}, \mathcal{C}^{(3)}_{1,1}\}$, $\cE_2(x_1)=\{\Aut_1,\Aut^{(1)}_{2,1}\}$, $\cE_2(x_2)=\{\Aut_2\}$ (these two remain unchanged), and $\cE_2(y)=\{\Aut^{(1)}_{2,2}, \mathcal{B}^{(2)}_{1,2},  \mathcal{C}^{(3)}_{1,2}\}$.
+		By nondeterministic selection (the machine happens to pick $k=2$ and $\ell=3$), we update $\cE_1$ to $\cE_0$ with $\cE_2(x_0)=\{\Aut_0, \mathcal{B}^{(2)}_{1,1}, \mathcal{C}^{(3)}_{1,1}\}$, $\cE_0(x_1)=\{\Aut_1,\Aut^{(1)}_{2,1}\}$, $\cE_0(x_2)=\{\Aut_2\}$ (these two remain unchanged), and $\cE_0(y)=\{\Aut^{(1)}_{2,2}, \mathcal{B}^{(2)}_{1,2},  \mathcal{C}^{(3)}_{1,2}\}$.
 		
-		The iteration now is done. We then only need to check nonemptiness of the product automata from $\cE_2(x_i)$ ($i=0,1,2$) and $\cE_2(y)$. \qed
+		The iteration now is done. We then only need to check nonemptiness of the product automata from $\cE_0(x_i)$ ($i=0,1,2$) and $\cE_0(y)$. \qed
 \end{example}
 
 %\zhilin{I simplified the complexity analysis. More details are put in the appendix.}
