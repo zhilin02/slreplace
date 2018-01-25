@@ -217,7 +217,7 @@ $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. 
 
 With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, for simplicity, we omit the two end markers $\EndLeft$ and $\EndRight$ in \FT{}s, that is, $\transrel \subseteq \controls \times \ialphabet \times
-    \{\Right,\Stay\} \times \controls \times \ialphabet^*$.
+    \{\Right,\Stay\} \times \controls \times \ialphabet^*$. Note that each accepting run of an \FT{} has to read through the input string and stop in the right end.
         \zhilin{In FTs, $\EndLeft$ and $\EndRight$ are omitted, similarly to FAs.}
 
 
@@ -347,20 +347,19 @@ aforementioned string operations,  i.e. finite-state transducer from
 
 \begin{definition}[Parametric Transducers]
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
-    Assume that $\ialphabet \cap X = \emptyset$.
-    % and let $\oalphabet = \ialphabet^* \cup X$. 
+    Assume that $\ialphabet \cap X = \emptyset$  and let $\oalphabet = \ialphabet \cup X$. 
     %Define $\oalphabet_\epsilon = \oalphabet \cup \{\epsilon\}$.
     A (nondeterministic) two-way \emph{parametric transducer} (\PPT)  $\Transducer$ over 
     $(\ialphabet,X)$ is a  \FFT{}  extended with  parameter outputs, more precisely, $\Transducer$ is a tuple 
     $(\ialphabet, X, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where
  $\transrel$ is a finite subset of $\controls \times 
     \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times (\ialphabet^* \cup X)$, satisfying the syntactical constraints of \FFT{}s.   
+    \controls \times \oalphabet^*$, satisfying the syntactical constraints of \FFT{}s.   
     A (nondeterministic one-way) parametric transducer (\PT) over
     $(\ialphabet,X)$ is a \PPT{} such that
  $\transrel\subseteq \controls \times 
     \overline{\ialphabet}\times \{\Stay, \Right\}\times 
-    \controls \times (\ialphabet^* \cup X)$.    
+    \controls \times \oalphabet^*$.   \zhilin{The output of 2PT is very general now, can be a string from $(\ialphabet \cup X)^*$}
 \end{definition}
 
 \OMIT{
@@ -404,7 +403,9 @@ transition relation  $\transrel\subseteq \controls \times
 
 Notice that parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_m$ with strings 
-$w_1,\ldots, w_m \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. We will use $\Transducer[w_1/x_1,\ldots,w_m/x_m]$ to denote the \FFT{} resulting from the instantiation.
+$w_1,\ldots, w_m \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each occurrence of $x_j$ in transitions with $w_j$.
+% transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. 
+We will use $\Transducer[w_1/x_1,\ldots,w_m/x_m]$ to denote the \FFT{} resulting from the instantiation.
 %More formally, let 
 %$\Transducer[w_1/x_1,\ldots,w_m/x_m]$ denote the (non-parametric) \FFT{} obtained from $\Transducer$ by replacing every occurrence of each
 %parameter $x_i$ in $\Transducer$ by the string $w_i$.
@@ -430,7 +431,11 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %\tl{again, this is a relation, not a function.}
 
 \begin{example}
-    The function $\replaceall$ considered in \cite{CCHLW18} takes three inputs:
+ We first show that the concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and the set of final states $\{q_1\}$. 
+ 
+  We then demonstrate how the  $\replaceall$ function considered in \cite{CCHLW18} can be simulated by \PT{}s. 
+  Intuitively,  
+    the function $\replaceall$ takes three inputs:
     (1) a string $sub$, called the \emph{subject}, (2) a regular expression
     $pat$, called the \emph{pattern}, and (3) a string $rep$, called
     the \emph{replacement string}. The output of the function is
