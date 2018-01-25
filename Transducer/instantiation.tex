@@ -214,20 +214,20 @@ Evidently, the class of $0$-reversal bounded \PPT{}s is precisely the class of \
 %To handle $k$-reversal bounded transducers, 
 We observe that any string manipulating program (in SSA forms) with string functions modelled by general $k$-reversal bounded transducers can be translated to the one with only one-way transducers and a special transducer $\Transducer_{\sf reverse}$ for the reverse function.  
 
-\begin{proposition}
-	Given string manipulating program $S$ where each string function is given by a $k$-reversal bounded transducer, one can construct $S'$ where each string function is given by a one-way transducer or  $\Transducer_{\sf reverse}$ and $ \rcdep(S')\in \mathcal{O}(k\cdot \rcdep(S))$. 
+\begin{proposition} \label{prop:trans}
+	Given a string manipulating program $S$ where  string functions are modelled by a $k$-reversal bounded transducer, one can construct $S'$ using only one-way transducers or  $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(k\cdot \rcdep(S))$. 
 \end{proposition}
 
 %Our goal is to show the following result.
 %
-To instantiate the generic procedure as before, one only needs to verify the  \prerec{} assumption for $\Transducer_{\sf reverse}$. Indeed, although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring exponential blowup as general two-way transducers would have (cf. Lemma~\ref{lem-2pt}), but rather it is akin to one-way transducers. 
+To instantiate the generic procedure as in the preceding sections, one only needs to verify the  \prerec{} assumption for $\Transducer_{\sf reverse}$. Indeed, although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general two-way transducers would have (cf. Lemma~\ref{lem-2pt}), but rather it is akin to one-way transducers (cf. Lemma~\ref{lem-1pt}). 
 
 \begin{lemma}\label{lem-reverse}
 	The \prerec{} assumption holds for  $\Transducer_{\sf reverse}$, with $\ell(| \Transducer_{\sf reverse}|, |\Aut|) = \bigO(|\Transducer_{\sf reverse}||\Aut|)$.
 	%Let $\Transducer$ be a \PPT{} and $\Aut$ be a conjunctive \FA{} $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively. Moreover, each disjunct of the representation can be nondeterministically computed in $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$ space.
 \end{lemma}
 
-Combing these results together, we have 
+Combing Theorem~\ref{thm-generic-dec}, Proposition~\ref{prop:trans}, Lemma~\ref{lem-1pt} and Lemma~\ref{lem-reverse} together, we have:
 
 \begin{theorem} \label{thm-rb-2pt}
 %Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
