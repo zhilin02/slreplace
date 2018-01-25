@@ -205,24 +205,38 @@ The lower bound in Theorem~\ref{thm-1pt} is deduced from the result in \cite{LB1
 
 \subsection{Reversal-bounded two-way transducers}
 
-Let $k \in \Nat$. A 2PT $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  RB2PT$_k$ to denote the class of $k$-reversal bounded 2PTs. The reverse function can be captured by a reversal $1$-bounded 2PT.
-Note that the class of $0$-reversal bounded 2PTs is precisely the class of 1PTs.
+Let $k \in \Nat$. A \PPT{} $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  $k$-\RBPPT{} to denote the class of $k$-reversal bounded \PPT{}s. 
+Evidently, the class of $0$-reversal bounded \PPT{}s is precisely the class of \PT{}s. Note that the number of reversals in accepting runs of \PPT{}s must be even, since they should stop in the right end of input strings.  As demonstrated in Example~\ref{exmp-ft}, string reverse function can be captured by a $2$-reversal bounded \PPT.
 
+
+%Our goal is to show the following result.
+%
+\begin{theorem} \label{thm-rb-2pt}
+%Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
+%For each constant $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
+For each $k \in \Nat$, the satisfiability problem of string manipulating programs in SSA form where string functions are modelled by $k$-\RBPPT{}s is $\expspace$-complete. 
+\end{theorem}
+
+The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.
+The upper bound of Theorem~\ref{thm-rb-2pt} will not proved by directly instantiating Theorem~\ref{thm-generic-dec}, since  by doing this, we are only able to get a 2-$\expspace$ upper bound: Based on the construction in Section~\ref{sec-2way}, we can derive that the \prerec{} assumptions holds for string functions definable in $k$-\RBPPT, with $\ell(|\Transducer|, |\Aut|) = (|\Transducer||\Aut|)^{k+1}$. Nevertheless, $\ell^{\langle \rcdep(S)\rangle}(|\Transducer|, |\Aut|) = |\Transducer|^{(k+1) + \ldots + (k+1)^{\rcdep(S)}} |\Aut|^{(k+1)^{\rcdep(S)}}$, which is doubly exponential if $k > 0$.
+
+We prove the upper bound in Theorem~\ref{thm-rb-2pt} as follows: We first show that the $\expspace$ upper bound holds for the extension of \PT{}s with the reverse function. We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to that for \PT{}s plus reverse function. The details can be found in Appendix~\ref{app-rb-2pt}. \zhilin{Matt, could you write a proof in the appendix ?}
+
+
+%===========================================================
+\hide{
 \begin{lemma}\label{lem-rb-2pt}
-Let $k \in \Nat$, $\Transducer$ be a RB2PT$_k$, and $\Aut$ be a conjunctive NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $(|\Transducer||\Aut|)^k$ \tl{k+1?}, can be computed effectively.
+The \prerec{} assumptions holds for string functions definable in $k$-\RBPPT, with $\ell(|\Transducer|, |\Aut|) = (|\Transducer||\Aut|)^{k+1}$.
+%Let $k \in \Nat$, $\Transducer$ be a RB2PT$_k$, and $\Aut$ be a conjunctive NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $(|\Transducer||\Aut|)^k$ \tl{k+1?}, can be computed effectively.
 \end{lemma}
 
 The proof of Lemma~\ref{lem-rb-2pt} is the same as Lemma~\ref{lem-2pt}. The only difference is that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}, q}$ is at most $(|\Transducer| |\Aut|)^k$, since $\Transducer$ is reversal $k$-bounded.
 
 From Lemma~\ref{lem-rb-2pt} and Theorem~\ref{thm-generic-dec}, we deduce the following result.
 %
-\begin{theorem} \label{thm-rb-2pt}
-%Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
-For each constant $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
-\end{theorem}
-\tl{I add constant as this is a parameterised complexity result}
 
 The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.
+}
 
 %\input{expspace-hardness.tex}
 
