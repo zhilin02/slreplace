@@ -139,16 +139,16 @@ since most decidable string logics can be more naturally phrased in this
 way.
 }
 }
-\smallskip
 
+\smallskip
 \noindent
 \textbf{A brief survey of decidable string constraint languages:}
 Concatenation (+) is typically present in a string theory since it is perhaps
 the most basic string operation. The \emph{theory of concatenation} can be
 obtained from symbolic executions (see (\ref{eq:symbex}))
 by allowing concatenation of string constants/variables in the
-assignment (i.e. $f$ in (\ref{eq:symbex})) and equality checks in the
-assertions/conditionals (i.e. $g$ in (\ref{eq:symbex})).
+assignment (i.e. $f$ in (\ref{eq:symbex})) and equality/disequality checks in 
+the assertions (i.e. $g$ in (\ref{eq:symbex})).
 %Concatenation (+) and string equality (=) are typically present in a string 
 %theory since they are the most basic string operations. 
 An example of a constraint in this theory can be found in the above remark, 
@@ -162,11 +162,12 @@ assigning $y$ (resp.~$x$) to $\texttt{b}$ (resp.~the empty string).
 %$\{\texttt{a},\texttt{b}\}$.
 %It can be satisfied by the assignment $y$ (resp.~$x$) is mapped to $\texttt{b}$
 %(resp.~the empty string). 
-Even in this case, the theory of concatenation was 
+The theory of concatenation was 
 not known to be decidable until the seminal
 paper by Makanin \cite{Makanin} on \emph{word equations}, followed by the
 extension by B\"{u}chi and Senger \cite{buchi} to all quantifier-free formulas.
-Regular expression matching (e.g. $y \in (\texttt{ab})^*$) is another useful
+\emph{Regular constraints} (i.e. regular expression matching, e.g., 
+$y \in (\texttt{ab})^*$) is another useful
 string operation (in fact, crucial to specify the set of ``bad'' strings) which
 can be incorporated to the theory of concatenation (as an assertion) without 
 sacrificing decidability \cite{Schulz}. 
@@ -187,13 +188,6 @@ between integers and strings) \cite{GB16}. Adding them to the theory of
 concatenation
 either results in an undecidable string theory \cite{LB16,BFL13,GB16}
 or one whose decidability is a long-standing open problem \cite{Vijay-length}.
-
-
-\OMIT{
-Following the framework of Satisfiability Modulo Theories (SMT)
-\cite{SMT-CACM,SMT-chapter,KS08}, string constraints are typically 
-quantifier-free first-order formulas. 
-}
 
 
 %
