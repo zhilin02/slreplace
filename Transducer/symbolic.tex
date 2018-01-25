@@ -3,7 +3,6 @@
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
-
 In this section, we consider an extension of parametric transducers, called \emph{symbolic parametric transducers}, where the input and output letters are specified symbolically,
 %infinite data domains \tl{maybe not emphasise infinite domain}, , 
 more precisely, the input letters are implicitly described by unary predicates  in some logical theory and the output letters are given by terms, where the parameters may occur. 
@@ -90,7 +89,7 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $
 A \SSA{} is an \SA{} if there are no transitions with the direction $\{\Left\}$. 
 %for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
-We would like to remark that in literature, an \SA{} is defined on a Boolean algebra, which is a background theory, with the constraint that $\Psi$ is closed under substitutions dropped. We choose to define \SSA{}s and \SA{}s on background theories, instead of Boolean algebras, in Definition~\ref{def-2sa}, since symbolic parametric transducers, the focus of this section, will be defined on background theories.
+We remark that, in literature, an \SA{} is defined on a Boolean algebra, which is a background theory without requiring $\Psi$ to be closed under substitutions dropped. We choose to define \SSA{}s and \SA{}s on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.
 
 \paragraph{Semantics of \SSA{} $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$.}
 A transition $\tau=(q_1,\psi(x), dir, q_2) \in \transrel$ in the \SSA $\Transducer$ can be concretised
