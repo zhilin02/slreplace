@@ -206,8 +206,10 @@ The lower bound in Theorem~\ref{thm-1pt} is deduced from the result in \cite{LB1
 %====================================
 
 \subsection{Reversal-bounded two-way transducers}
+ 
 From Section \ref{sec-2way}  and Section \ref{sec-one-way}, we see that one-way transducers enjoy much lower complexity, but their expressiveness is limited. (For instance, the reverse function is inexpressible.) On the other hand, two-way transducers suffer from very higher complexity. We observe that, in practice, many string functions, when encoded by transducers, need only a small number of reversals for the reading head, rather than the full power of two-way transducers. We shall consider reversal bounded transducers, which remain the complexity advantages of one-way transducers, but which can capture a larger class of string functions than one-way transducers. 
 
+ 
 Let $k \in \Nat$. A \PPT{} $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  $k$-\RBPPT{} to denote the class of $k$-reversal bounded \PPT{}s. 
 Evidently, the class of $0$-reversal bounded \PPT{}s is precisely the class of \PT{}s. Note that the number of reversals in accepting runs of \PPT{}s must be even, since they must stop on the right end of input strings.  As demonstrated in Example~\ref{exmp-ft} (in Section~\ref{sec:framework}), string reverse function can be captured by a $2$-reversal bounded \PPT.
 
@@ -240,8 +242,12 @@ For each $k \in \Nat$, the satisfiability problem of string manipulating program
 
 %We prove the upper bound in Theorem~\ref{thm-rb-2pt} as follows: We first show that the $\expspace$ upper bound holds for the extension of \PT{}s with the reverse function. We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to that for \PT{}s plus reverse function. The details can be found in Appendix~\ref{app-rb-2pt}. \zhilin{Matt, I wrote a very rough sketch of the reduction in appendix. Could you please help finish it ? This is a minor difference in the reduction. I do not use truncate transducer, instead, I add additional  indices to indicate the number of reversals that have been used. }
 
+ 
+%We prove the upper bound in Theorem~\ref{thm-rb-2pt} as follows: We first show that the $\expspace$ upper bound holds for the extension of \PT{}s with the reverse function. We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to that for \PT{}s plus reverse function. The details can be found in Appendix~\ref{app-rb-2pt}. 
 
-
+\zhilin{Matt, could you write a proof in the appendix ?}
+ 
+ 
 
 
 %===========================================================

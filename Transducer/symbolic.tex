@@ -3,7 +3,6 @@
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
-
 In this section, we consider an extension of parametric transducers, called \emph{symbolic parametric transducers}, where the input and output letters are specified symbolically,
 %infinite data domains \tl{maybe not emphasise infinite domain}, , 
 more precisely, the input letters are implicitly described by unary predicates  in some logical theory and the output letters are given by terms, where the parameters may occur. 
@@ -22,8 +21,8 @@ Intuitively, a Boolean algebra is a set of unary first-order logic formulae clos
  %Label theories extend background theories further by adding inequalities of terms into the set of formulae.
  
  
- \begin{definition}[Boolean algebra and background theories]
-A Boolean algebra  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisfying the following constraints:
+ \begin{definition}[Background theories]
+A background theory $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisfying the following constraints:
 \begin{itemize}
 \item $\signature=(\functions, \predicates)$ is a signature, where $\functions$ (resp. $\predicates$) is a recursively enumerable set of function symbols (resp. relation symbols), 
 %\begin{itemize}
@@ -34,14 +33,19 @@ A Boolean algebra  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisf
 
 \item $\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countably infinite set (the data domain), and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
 %
-\item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$. 
+\item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$ and closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. 
 %In addition, it is assumed that each formula $\psi \in \Psi$ of arity $s^\ell$ (where $\ell > 0$) has the same set of free variables $\{x_1,\dots, x_\ell\}$.
 \end{itemize}
-A background theory is a Boolean algebra $(\signature, \structure, \Psi)$ such that $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. \\
+%A background theory is a Boolean algebra $(\signature, \structure, \Psi)$ such that $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. \\
 %
 For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set $\{d \in \data \mid  \structure \models \psi(d)\}$. Elements of $\| \psi\|$ are called the \emph{witnesses} of $\psi$.
-A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. A Boolean algebra or background theory $\Upsilon = (\signature, \structure, \Psi)$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
+A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. A background theory $\Upsilon = (\signature, \structure, \Psi)$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
 \end{definition}
+
+
+In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\bigO(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
+A \emph{data string} is an element of $\data^*$. A \emph{data language} is a set of data strings.
+
 
 
 %%%%===========================================================
@@ -68,51 +72,76 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $
 %%%%===========================================================
 
 
-\begin{definition}[Symbolic automata]
-    A (nondeterministic two-way)  symbolic automata (\SSA) is a tuple $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
+\begin{definition}[Symbolic automata]\label{def-2sa}
+    A (nondeterministic two-way)  symbolic automata (\SSA) is a tuple $\Aut = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
 \begin{itemize}
-\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
+%\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
 \item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \FFA{}s, 
 %
-\item $\transrel$ is a finite set of  transitions of one of the following forms,
+\item $\transrel$ is a finite set of transitions of one of the following forms,
 \begin{itemize}
-\item     $(q, \psi(x), dir, q')$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, and $\psi(x) \in \Psi$, 
+\item     symbolic transitions $(q, \psi(x), dir, q') \in \controls \times \Psi \times \{\Left, \Stay, \Right\} \times \controls$, where $q, q'$ are the source and target state, $dir$ is the direction, and $\psi(x)$ is the guard of the transition, 
 %
-\item     $(q, \EndLeft, dir, q')$ with $dir \in \{\Right, \Stay\}$, or $(q, \EndRight, dir', q')$ with $dir' \in \{\Left,\Stay\}$. 
+\item     non-symbolic transitions $(q, \EndLeft, dir, q')$ with $dir \in \{\Right, \Stay\}$, or $(q, \EndRight, dir', q')$ with $dir' \in \{\Left,\Stay\}$. 
 \end{itemize}
 \end{itemize}
-A 2SA is an SA if there are no transitions with the direction $\{\Left\}$. 
+A \SSA{} is an \SA{} if there are no transitions with the direction $\{\Left\}$. 
 %for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
+We remark that, in literature, an \SA{} is defined on a Boolean algebra, which is a background theory without requiring $\Psi$ to be closed under substitutions dropped. We choose to define \SSA{}s and \SA{}s on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.
 
-\zhilin{stopped here}
+\paragraph{Semantics of \SSA{} $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$.}
+A transition $\tau=(q_1,\psi(x), dir, q_2) \in \transrel$ in the \SSA $\Transducer$ can be concretised
+into a potentially infinite set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q$, where $(q_1, d, dir, q_2)  \in \|\tau\|$ iff $d \in \|\psi\|$.
+Intuitively, suppose $\Aut$ is at the state $q_1$ and reading the input data value $d \in \data$.
+If there is a transition $(q_1, \psi(x), dir, q_2) \in \transrel$ such that $d \in \|\psi\|$, then $\Aut$ can move its reading head according to $dir$, and change the state from $q_1$ to $q_2$.
 
-The semantics of 2SA  is defined similarly to 2ST, with the output data values removed. Moreover, the size of 2SAs can also be defined similarly to 2ST.
+%$\Aut$ is interpreted on \emph{data strings}, namely, elements of $\data^*$.
+Given a data string $w = d_1, \dots, d_n$, a \emph{run} of $\Aut$ on $w$
+is a sequence of tuples $(q_0, i_0), \ldots, (q_m, i_m) \in \controls \times [0, n+1]$ 
+such that
+%let $d_0 = \EndLeft$ and $d_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
+\begin{itemize}
+    \item $i_0 = 0$, and
+    \item for every $j \in [m-1]$, one of the following holds,
+    \begin{itemize}
+  	\item $0 < i_j < n+1$,  and $\tau=(q_j, \psi(x), dir, q_{j+1}) \in \transrel$ for some $\psi(x) \in \Psi$ and $dir \in \{\Left, \Stay, \Right\}$, such that $(q_j, d_{i_j}, dir, q_{j+1}) \in \|\tau\|$, and $i_{j+1} = i_j + dir$,
+	%
+	\item $i_j = 0$, $(q_j, \EndLeft, dir, q_{j+1}) \in \transrel$, and $i_{j+1} = i_j + dir$,
+	%
+	\item $i_j = n+1$, $(q_j, \EndRight, dir, q_{j+1}) \in \transrel$, and $i_{j+1} = i_j + dir$.
+  \end{itemize}
+\end{itemize}
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
+A data string $w$ is said to be accepted by $\Aut$ if there is an accepting run of
+$\Aut$ on $w$. We use $\Lang(\Aut)$ to denote the data language recognised by $\Aut$, that is,  the set of data strings accepted by $\Aut$.
 
-Similar to 2FAs or 2FTs, for convenience, we usually omit $\EndLeft$ and $\EndRight$ for the definitions of 2SAs, 2STs, or 2SPTs.
+For briefness, we usually omit $\EndLeft$, and $\EndRight$ from the definition of \SSA{}s. 
+
+To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way, e.g. encoded in binary. For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
+For a refined complexity analysis, we use the following two measures of $\Aut$: %numbers to capture the size of $\Transducer$:  Define 
+$\numtrans(\Aut)$, the number of transitions of $\Aut$, and $\sizetrans(\Aut)$, the maximum size of symbolic transitions of $\Aut$.
+
 
 \begin{proposition}\label{prop-2nsa}
-Assume a 2\SA  $\Aut$.
+Assume a \SSA  $\Aut$. Then
 \begin{itemize}
-\item $\Aut$ can be transformed effectively into an equivalent SA $\Aut'$, in time $\numtrans(\Aut')\cdot \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{\mathcal{O}\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = \mathcal{O}( \numtrans(\Aut) \sizetrans(\Aut))$.
+\item $\Aut$ can be transformed effectively into an equivalent \SA{} $\Aut'$, in time $\numtrans(\Aut')\cdot \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{\mathcal{O}\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = \mathcal{O}( \numtrans(\Aut) \sizetrans(\Aut))$;
 %$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
 %
 %
 %\item SAs are under the intersection operator\footnote{As a matter of fact, SAs are closed under all Boolean operations. Since we only use the intersection in this paper, we restrict our attention to the intersection.}. \zhilin{complexity}
 %
-\item The nonemptiness problem of $\Aut$ can be decided in nondeterministic $\mathcal{O}( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
+\item the nonemptiness of $\Aut$ can be decided in nondeterministic $\mathcal{O}( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
 \end{itemize}
 \end{proposition}
 The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result was shown in \cite{NG01,DV14}.
 
+\smallskip
 
-In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\mathcal{O}(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
-%
-%The notion $\issat(\psi)$ for $\psi \in \Psi$ and the decidability of $\Upsilon$ can be defined similarly as effective Boolean algebra.
-%
-%For a background theory $\Upsilon=(\signature, \structure, \Psi)$ with $\structure = (\data, \interpretation)$, 
-A \emph{data string} is an element of $\bigcup \limits_{i \in \Nat} \data^i$.
+Next, we introduce symbolic transducers.
+
 
 %we derive a new sort $s^*$ such that $\|s^* \| = \bigcup \limits_{i \in \Nat}\data_s^i$, where $\data^i_s = \{\varepsilon\}$. An element of $\|s^* \|$ is called a \emph{data string} of sort $s$.
 
@@ -146,107 +175,112 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 
 
 \begin{definition}[Symbolic finite-state transducers]
-    A \emph{nondeterministic two-way symbolic \emph{transducer}} (2ST) is a tuple $\Transducer = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
+    A nondeterministic two-way symbolic transducer (\SST) is an extension of an \SSA{} with outputs. More precisely, a \SST{} $\Transducer$ is a tuple $(\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
 \begin{itemize}
 %\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable background theory, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
-\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2NFT, 
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \SSA{}s, 
 %
 \item $\transrel$ is a finite set of  transitions which are in one of the following forms,
 \begin{itemize}
-\item   $(q, \psi(x), dir, q', t(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
-$t(x)$ is an $\signature$-term, 
-\item   $(q, \EndLeft, \Right, q', c)$ and $(q, \EndRight, \Left, q', c)$, where $c$ is an $\signature$-constant. 
+\item  symbolic transitions $(q, \psi(x), dir, q', \vec{t}(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
+$\vec{t}(x) = t_1(x) \ldots t_r(x)$ is a (possibly empty) sequence of $\signature$-terms, 
+\item   $(q, \EndLeft, dir, q', \epsilon)$ or $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$,
 \end{itemize}
 \end{itemize}
-A 2ST is an ST if for each $(q, \psi(x), dir, q', t(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
+A \SST{} is an \ST{} if there are no transitions with the direction $\Left$. 
+%$(q, \psi(x), dir, q', \vec{t}(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
 \end{definition}
 
-\paragraph{Semantics of 2ST.}
-A transition $\tau=(q_1,\psi(x), dir, q_2, t(x)) \in \transrel$ in the 2ST $\Transducer$ can be concretised
-into a potentially infinite set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q \times \data$, where $(q_1, d, dir, q_2, d')  \in \|\tau\|$ iff $d \in \|\psi\|$ and $d' = \interpretation(t)(d)$.
-Intuitively, suppose $\Transducer$ is at the state $q_1$ and reading the input data value $d \in \data$.
-If there is a transition $(q_1, \psi(x), dir, q_2, t(x) )\in \transrel$ and $d \in \|\psi\|$, $\Transducer$ can move its reading head according to $dir$, update the current state $q_1$ to $q_2$,  and produce the data value $d' \in \data$.
+\paragraph{Semantics of \SST{}.}
+The semantics of \SST{}s is defined similarly to that of \SSA{}s. 
+A transition $\tau=(q_1,\psi(x), dir, q_2, \vec{t}(x)) \in \transrel$ with $\vec{t}(x) = t_1(x) \ldots t_r(x)$ in the \SST{} $\Transducer$ can be concretised
+into a potentially infinite set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q \times \data^r$, where $(q_1, d, dir, q_2, d'_1\ldots d'_r)  \in \|\tau\|$ iff $d \in \|\psi\|$ and $d'_j = \interpretation(t_j)(d)$ for each $j \in [r]$.
+%Intuitively, suppose $\Transducer$ is at the state $q_1$ and reading the input data value $d \in \data$.
+%If there is a transition $(q_1, \psi(x), dir, q_2, t(x) )\in \transrel$ and $d \in \|\psi\|$, $\Transducer$ can move its reading head according to $dir$, update the current state $q_1$ to $q_2$,  and produce the data value $d' \in \data$.
 
 Given a data string $w = d_1, \dots, d_n$, a \emph{run} of $\Transducer$ on $w$
-is a sequence of tuples $(q_0, i_0, d'_0), \ldots, (q_m, i_m, d'_m) \in \controls \times (\{0\} \cup [n+1]) \times \data$ 
+is a sequence of tuples $(q_0, i_0, \vec{d}'_0), \ldots, (q_m, i_m, \vec{d}'_m) \in \controls \times [0, n+1] \times \data^*$ 
 such that
 %let $d_0 = \EndLeft$ and $d_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
 \begin{itemize}
     \item $i_0 = 0$, and
     \item for every $j \in [m-1]$, one of the following holds,
     \begin{itemize}
-  	\item  $\tau=(q_j, \psi(x), dir, q_{j+1}, t(x)) \in \transrel$ for some $\psi(x) \in \Psi$, $dir \in \{\Left, \Stay, \Right\}$, and $\signature$-term $t(x)$, such that $(q_j, d_{i_j}, dir, q_{j+1}, d'_j) \in \|\tau\|$, and $i_{j+1} = i_j + dir$,
+  	\item  $0< i_j < n+1$, $\tau=(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x)) \in \transrel$ for some $\psi(x) \in \Psi$, $dir \in \{\Left, \Stay, \Right\}$, and a sequence of  $\signature$-terms $\vec{t}(x)$, such that $(q_j, d_{i_j}, dir, q_{j+1}, \vec{d}'_j) \in \|\tau\|$, and $i_{j+1} = i_j + dir$,
 	%
-	\item $i_j = 0$, $(q_j, \EndLeft, \Right, q_{j+1}, c) \in \transrel$, $d'_j = \interpretation(c)$,
+	\item $i_j = 0$, $(q_j, \EndLeft, \Right, q_{j+1}, \epsilon) \in \transrel$, and $\vec{d}'_j  = \epsilon$,
 	%
-	\item $i_j = n+1$, $(q_j, \EndRight, \Left, q_{j+1}, c) \in \transrel$, $d'_j = \interpretation(c)$.
+	\item $i_j = n+1$, $(q_j, \EndRight, \Left, q_{j+1}, \epsilon) \in \transrel$, and $\vec{d}'_j  = \epsilon$.
   \end{itemize}
 \end{itemize}
-The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $d'_0, \ldots, d'_m$ is the \emph{output} of the run.
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $\vec{d}'_0, \ldots, \vec{d}'_m$ is the \emph{output} of the run.
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 
-To measure the size of a 2ST $\Transducer$, we need take the guards and terms of the transitions (from the background theory $\Upsilon$) into  consideration. 
-%the fact that each transition of $\Transducer$ may contain a guard and a term, which are .
-%Thus, we use two numbers for this purpose: The number of transitions of $\Transducer$, denoted by $\numtrans(\Transducer)$, and the maximum size of transitions of $\Transducer$, denoted by $\sizetrans(\Transducer)$.
-%
-%Thus, we define the size of $\Transducer$, denoted by $|\Transducer|$, as the sum of the sizes of (the binary encodings of) transitions of $\Transducer$.
-For a refined complexity analysis, we use the following two measures: %numbers to capture the size of $\Transducer$:  Define 
+Similarly to \SSA{}s, we define two measures of a \SST{} $\Transducer$: %numbers to capture the size of $\Transducer$:  Define 
 $\numtrans(\Transducer)$, the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
-\tl{but they are sill not defined?}
 
 
 %\begin{proposition}\label{prop-2nst-nst}
 %Each 2ST can be turned into an equivalent ST. 
 %\end{proposition}
 
+We are ready to introduce symbolic parametric transducers.
 
 \begin{definition}[Symbolic parametric transducers]
-A \emph{nondeterministic two-way symbolic parametric transducer} (2SPT) is a tuple
-$\Transducer=(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
-\tl{warning: there was a typo: Y was X}
+A nondeterministic two-way symbolic parametric transducer (\SSPT) is an extension of a \SST{} with parameters. More precisely,  a \SSPT{} $\Transducer$ is a tuple
+$(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
 \begin{itemize}
 %\item $\Upsilon=(\signature,\structure, \Psi, \Psi')$ is a decidable background theory with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
-\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2ST, 
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \SST{}s, 
 %
 \item $Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters (variables), 
 %
 \item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
-\item $(q, \psi(x), q', t(x))$ or $(q, \psi(x), q', y)$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
-$t(x)$ is an $\signature$-term, and $y \in Y$,
+\item symbolic transitions $(q, \psi(x), q', \vec{t})$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
+$\vec{t}$ is a sequence of $\signature$-terms whose variables are from $\{x, y_1,\ldots, y_m\}$,
 %
-\item $(q, \EndLeft, \Right, q', c)$, $(q, \EndLeft, \Right, q', y)$, $(q, \EndRight, \Left, q', c)$,  or $(q, \EndRight, \Left, q', y)$, where $c$ is an $\signature$-constant and $y \in Y$. 
+\item non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir, q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
 \end{itemize}
 \end{itemize}
 \end{definition}
 
-Notice that, as in parametric transducers, parameters are only allowed in the output track.
+Notice that, as in \PPT{}s, parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $y_1,\ldots, y_m$ with data strings 
-$w_1,\ldots, w_m$ gives rise to a nondeterministic two-way symbolic transducer which outputs
-the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)$ is
-taken by the transducer. This instantiation of the parameters is only done 
-\emph{once} before the symbolic parametric transducer is run.
+$w_1,\ldots, w_m$ gives rise to a \SST{} by replacing each occurrence of $y_i$ in transitions with $w_i$. 
+%outputs the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)$ is
+%taken by the transducer. 
+%This instantiation of the parameters is only done 
+%\emph{once} before the symbolic parametric transducer is run.
+%
+The size of \SSPT{}s can be defined in a similar way as \SST{}s. 
 
-The size of 2SPTs can be defined in a similar way as 2STs. 
 
+%%%============================================
+%%%============================================
+\hide{
 %To extend the string constraint language $\straightline[\transet]$ to the symbolic setting, 
 To lift the result to the symbolic setting, we only need  \emph{symbolic automata}, the counterpart of \FA. We start with \emph{Boolean algebra}, 
-\tl{I am not an expert, but technically say $\Psi$ is a boolean algebra? More precisely, SA works not on a background theory, but some more relaxed thing.}
+\tl{I am not an expert, but technically say $\Psi$ is a boolean algebra? More precisely, \SA{} works not on a background theory, but some more relaxed thing.}
 which is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by dropping out the requirement that $\Psi$ is closed under substitutions.
-
 
 \tl{as we donot have $\straightlinesym[\transet]$ anymore? to be updated}
 For a class $\transet$ of symbolic parametric transducers, we use $\straightlinesym[\transet]$ to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
+}
+%%%============================================
+%%%============================================
+
+\zhilin{stopped here}
 
 \paragraph{Symbolic extension of the generic procedure.} To solve the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
 
 \begin{definition}[Symbolic recognisable relations]
-	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some SA for each $j\in [k]$.
+	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [k]$.
 \end{definition}
-Similar to the recognisable relation, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of SA, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive SA to mean a conjunctive representation of the SA. For conjunctive SA $\cC= ((\controls, \transrel), S)$, $\numtrans(\cC)$ and $\sizetrans(\cC)$ can be defined similarly to SA.
+Similar to the recognisable relation, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, $\numtrans(\cC)$ and $\sizetrans(\cC)$ can be defined similarly to \SA{}.
 
 For a $\straightlinesym[\transet]$ formula $\varphi \wedge \psi$, we use $\numtrans(\varphi)$ (resp. $\sizetrans(\varphi)$) to denote the maximum of $\numtrans(\Transducer)$ (resp. $\sizetrans(\varphi)$) for $\Transducer$ occurring in $\varphi$. Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
 
@@ -256,7 +290,7 @@ For a binary function $g(k, l)$, $h(i, j, k, l)$, and $n \in \Nat \backslash \{0
 $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\langle n+1 \rangle}_g (i, j, k, l) = h(i, j, g^{\langle n \rangle}(k, l), h^{\langle n \rangle}(i, j, k, l)).$$
 \begin{theorem}\label{thm-generic-dec-symbolic}
 Let $\transet$ be a class of symbolic parametric transducers. Suppose that %$\transet$ satisfies that 
-for each $\Transducer \in \transet$ and conjunctive SA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, 
+for each $\Transducer \in \transet$ and conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, 
 such that for every atom $\Aut'$ therein, 
 $\numtrans(\Aut') = O(g(\numtrans(\Transducer),  \numtrans(\Aut)))$ and 
 $\sizetrans(\Aut') = O(h(\numtrans(\Transducer), \sizetrans(\Transducer), \numtrans(\Aut), \sizetrans(\Aut)))$, for two monotone functions $g$ and $h$.
@@ -276,7 +310,7 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 \paragraph{Symbolic extension of pre-image computation.}
 
 \begin{lemma}\label{lem-spt}
-Given a 2SPT $\Transducer$ and an SA $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
+Given a 2SPT $\Transducer$ and an \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 $$\numtrans(\Aut') = 2^{O(\numtrans(\Transducer)\numtrans(\Aut) \log (\numtrans(\Transducer)\numtrans(\Aut)))},$$ 
 and 
 $$\sizetrans(\Aut') = \numtrans(\Transducer) \numtrans(\Aut)\sizetrans(\Transducer) \sizetrans(\Aut).$$
