@@ -4,17 +4,48 @@
 \label{sec:symbolic}
 
 
-In this section, we consider an extension of parametric transducers to infinite data domains \tl{maybe not emphasise infinite domain}, called \emph{symbolic parametric transducers}, where the input letters are replaced by formulae over an infinite data domain and the output letters are replaced by terms. 
+In this section, we consider an extension of parametric transducers, called \emph{symbolic parametric transducers}, where the input and output letters are specified symbolically,
+%infinite data domains \tl{maybe not emphasise infinite domain}, , 
+more precisely, the input letters are implicitly described by unary predicates  in some logical theory and the output letters are given by terms, where the parameters may occur. 
 %
 Symbolic parametric transducers can be seen as an extension of both the parametric transducers introduced in this paper and the symbolic transducers introduced in \cite{VHLMB12}.
+In sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers and show how to extend the results in preceding sections to the symbolic setting.
+
 
 %Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
-We assume familiarity with the (many-sorted) first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
-For the definition of the symbolic transducers, we introduce the concept of background theories.
+We assume familiarity with the 
+%(many-sorted) 
+first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
+Concepts of Boolean algebra and background theories are used in the definition of symbolic automata and transducers.
 %and label theories. 
- Intuitively, background theories are a set of unary first-order logic formulae closed under Boolean connectives and substitutions. 
+Intuitively, a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, and a  background theory is a Boolean algebra  closed under substitutions. 
  %Label theories extend background theories further by adding inequalities of terms into the set of formulae.
+ 
+ 
+ \begin{definition}[Boolean algebra and background theories]
+A Boolean algebra  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisfying the following constraints:
+\begin{itemize}
+\item $\signature=(\functions, \predicates)$ is a signature, where $\functions$ (resp. $\predicates$) is a recursively enumerable set of function symbols (resp. relation symbols), 
+%\begin{itemize}
+%\item
+%
+%\item for each $\vec{s} = s_1 \times \dots \times s_n$ and $i \in [n]$, there is a function $\pi_{\vec{s}, i}$ of arity $s_1 \times \dots \times s_n \rightarrow s_i$ in $\functions$ such that $\pi_{\vec{s},i}(\vec{t}) = t_i$ for each term $\vec{t} = (t_1,\dots, t_n)$ of sort $s_1 \times \dots \times s_n$.
+%\end{itemize}
 
+\item $\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countably infinite set (the data domain), and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
+%
+\item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$. 
+%In addition, it is assumed that each formula $\psi \in \Psi$ of arity $s^\ell$ (where $\ell > 0$) has the same set of free variables $\{x_1,\dots, x_\ell\}$.
+\end{itemize}
+A background theory is a Boolean algebra $(\signature, \structure, \Psi)$ such that $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. \\
+%
+For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set $\{d \in \data \mid  \structure \models \psi(d)\}$. Elements of $\| \psi\|$ are called the \emph{witnesses} of $\psi$.
+A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. A Boolean algebra or background theory $\Upsilon = (\signature, \structure, \Psi)$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
+\end{definition}
+
+
+%%%%===========================================================
+\hide{
 \begin{definition}[Background theories]
 A background theory  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisfying the following constraints:
 \begin{itemize}
@@ -33,6 +64,48 @@ For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set $\{d \in \data 
 \end{itemize}
 A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. In addition, $\Upsilon$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
 \end{definition}
+}
+%%%%===========================================================
+
+
+\begin{definition}[Symbolic automata]
+    A (nondeterministic two-way)  symbolic automata (\SSA) is a tuple $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
+\begin{itemize}
+\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
+%
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \FFA{}s, 
+%
+\item $\transrel$ is a finite set of  transitions of one of the following forms,
+\begin{itemize}
+\item     $(q, \psi(x), dir, q')$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, and $\psi(x) \in \Psi$, 
+%
+\item     $(q, \EndLeft, dir, q')$ with $dir \in \{\Right, \Stay\}$, or $(q, \EndRight, dir', q')$ with $dir' \in \{\Left,\Stay\}$. 
+\end{itemize}
+\end{itemize}
+A 2SA is an SA if there are no transitions with the direction $\{\Left\}$. 
+%for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
+\end{definition}
+
+\zhilin{stopped here}
+
+The semantics of 2SA  is defined similarly to 2ST, with the output data values removed. Moreover, the size of 2SAs can also be defined similarly to 2ST.
+
+Similar to 2FAs or 2FTs, for convenience, we usually omit $\EndLeft$ and $\EndRight$ for the definitions of 2SAs, 2STs, or 2SPTs.
+
+\begin{proposition}\label{prop-2nsa}
+Assume a 2\SA  $\Aut$.
+\begin{itemize}
+\item $\Aut$ can be transformed effectively into an equivalent SA $\Aut'$, in time $\numtrans(\Aut')\cdot \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{\mathcal{O}\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = \mathcal{O}( \numtrans(\Aut) \sizetrans(\Aut))$.
+%$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
+%
+%
+%\item SAs are under the intersection operator\footnote{As a matter of fact, SAs are closed under all Boolean operations. Since we only use the intersection in this paper, we restrict our attention to the intersection.}. \zhilin{complexity}
+%
+\item The nonemptiness problem of $\Aut$ can be decided in nondeterministic $\mathcal{O}( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
+\end{itemize}
+\end{proposition}
+The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result was shown in \cite{NG01,DV14}.
+
 
 In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\mathcal{O}(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
 %
@@ -164,39 +237,6 @@ To lift the result to the symbolic setting, we only need  \emph{symbolic automat
 \tl{I am not an expert, but technically say $\Psi$ is a boolean algebra? More precisely, SA works not on a background theory, but some more relaxed thing.}
 which is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by dropping out the requirement that $\Psi$ is closed under substitutions.
 
-\begin{definition}[Symbolic automata]
-    A \emph{nondeterministic two-way  symbolic \emph{automata}} (2\SA) is a tuple $\Aut = (\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where  
-\begin{itemize}
-%\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable Boolean algebra, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
-%
-\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in 2\FA, 
-%
-\item $\transrel$ is a finite set of  transitions of one of the following forms,
-\begin{itemize}
-\item     $(q, \psi(x), dir, q')$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, and $\psi(x) \in \Psi$, 
-%
-\item     $(q, \EndLeft, \Right, q')$ and $(q, \EndRight, \Left, q')$. 
-\end{itemize}
-\end{itemize}
-A 2SA is an SA if for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
-\end{definition}
-The semantics of 2SA  is defined similarly to 2ST, with the output data values removed. Moreover, the size of 2SAs can also be defined similarly to 2ST.
-
-Similar to 2FAs or 2FTs, for convenience, we usually omit $\EndLeft$ and $\EndRight$ for the definitions of 2SAs, 2STs, or 2SPTs.
-
-\begin{proposition}\label{prop-2nsa}
-Assume a 2\SA  $\Aut$.
-\begin{itemize}
-\item $\Aut$ can be transformed effectively into an equivalent SA $\Aut'$, in time $\numtrans(\Aut')\cdot \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{\mathcal{O}\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = \mathcal{O}( \numtrans(\Aut) \sizetrans(\Aut))$.
-%$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
-%
-%
-%\item SAs are under the intersection operator\footnote{As a matter of fact, SAs are closed under all Boolean operations. Since we only use the intersection in this paper, we restrict our attention to the intersection.}. \zhilin{complexity}
-%
-\item The nonemptiness problem of $\Aut$ can be decided in nondeterministic $\mathcal{O}( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
-\end{itemize}
-\end{proposition}
-The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result was shown in \cite{NG01,DV14}.
 
 \tl{as we donot have $\straightlinesym[\transet]$ anymore? to be updated}
 For a class $\transet$ of symbolic parametric transducers, we use $\straightlinesym[\transet]$ to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
