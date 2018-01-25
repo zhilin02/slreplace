@@ -140,8 +140,8 @@ $1 \leq j < n$.
 If the encoding passes this check, we need to verify that the vertical tiling relation $\vrel$ is met.
 This is done in $n$ more passes, the $j$th of which verifies the $j$th column of the encoding.
 
-To encode tiling problems of $n$-fold exponential width we chain $(n+1)$ \FFT.
-We begin with two \FFT\ and a tiling problem of exponential width.
+To encode tiling problems of $n$-fold exponential width we chain $(n+1)$ \FFT{}s.
+We begin with two \FFT{}s and a tiling problem of exponential width.
 Intuitively, a row of the solution to a tiling problem could now be encoded with a sequence of $n$ binary bits preceding each tile.
 That is
 \[
@@ -160,11 +160,11 @@ That is
 In fact, in the formal encoding, we will not use binary numbers, but instead use tiling problems whose solutions must have exponential length.
 For the purposes of the intuitive exposition, we will use binary numbers as the intention is clearer.
 
-Given such an encoding, the first \FFT\ checks the solution in a similar manner to the width $n$ problem.
+Given such an encoding, the first \FFT{} checks the solution in a similar manner to the width $n$ problem.
 To cope with the large corridor width, it will output ``queries'' to the second \FFT.
 These queries check whether one binary number is equal to the next, or is the increment.
-Now, the first \FFT\ can, for example, non-deterministically guess that one tile is in the same column as another and use queries to verify this guess.
-In this way it becomes able to verify a tiling over an exponentially wide corridor.
+Now, the first \FFT{} can, for example, non-deterministically guess that one tile is in the same column as another and use queries to verify this guess.
+In this way it becomes able to verify a tiling over an exponentially wide corridor. \zhilin{Maybe say more explicitly as follows: when verifying the vertical tiling relation, for each column, the first \FFT{}  nondeterministically collects and outputs all the tiles and their addresses in this column, and ask the second \FFT{} to check the addresses of these tiles are equal and the vertical tiling relation holds in this column. The first \FFT{} goes through $2^n$ passes on the input, since there are $2^n$ columns. The second \FFT{} is also responsible for checking that after the tiles of the $i$-th column are outputted  by the first \FFT{}, then the tiles of the $(i+1)$-th column should be outputted. @Matt, is this description helpful here ?}
 
 To increase the corridor width by another exponential, we need another \FFT.
 To reach doubly-exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
