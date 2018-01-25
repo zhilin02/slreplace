@@ -90,10 +90,9 @@ into a \emph{Static Single Assignment} (SSA) form (i.e. introduce a new
 variable 
 on the left hand side of each assignment) and treat assignments as equality. 
 Below is an example of the conversion from a symbolic execution (left)
-to a string constraint (right). They contain variables $x$'s and $y$'s and 
-string constants (including letters \texttt{a}, \texttt{b}, and \texttt{c}),
-as well as the concatenation operator (+) and regular expression matching in
-the assertion.
+to a string constraint (right). They contain variables ($x$, $y$, and $z$'s)
+and string constants (letters \texttt{a} and \texttt{b}),
+as well as the concatenation operator (+).
 %See Figure \ref{fig:SSA} for an
 %example.
 \smallskip
@@ -102,15 +101,15 @@ the assertion.
     {
     \qquad
     \begin{minipage}{.49\linewidth}
-        $x := x + \text{\texttt{aba}} + y$;\\
-        $y := \text{replaceAll}(x,\texttt{a},\texttt{c})$;\\
-        \ASSERT{$y \in \texttt{b}^*$}
+        $z_1 := x + \text{\texttt{ba}} + y$;\\
+        $z_2 := y + \text{\texttt{ab}} + x$;\\
+        \ASSERT{$z_1 == z_2$};
     \end{minipage}
     \quad
     \begin{minipage}{.49\linewidth}
-        $x_1 = x + \texttt{aba} + y\ \wedge$ \\
-        $y_1 = \text{replaceAll}(x_1,\texttt{a},\texttt{c})\ \wedge$ \\
-        $y_1 \in \texttt{b}^*$
+        $z_1 = x + \text{\texttt{ba}} + y\ \wedge$\\
+        $z_2 = y + \text{\texttt{ab}} + x\ \wedge$\\
+        $z_1 = z_2$
     \end{minipage}
     }
     %\caption{String constraint (right) corresponding to a symbolic execution
