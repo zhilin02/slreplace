@@ -4,25 +4,27 @@
 Strings are a fundamental data type in virtually all programming languages.
 Their generic nature can, however, lead to many subtle programming 
 bugs, some with security consequences, e.g., cross-site scripting
-(XSS) and code injections, both of which are ranked top 10 by Open Web
-Application Security Projects (OWASP) in 2017 \cite{owasp17}. One effective
-automatic software testing method for identifying subtle programming errors
+(XSS), which is among OWASP Top 10 Application Security Risks
+\cite{owasp17}. One effective
+automatic testing method for identifying subtle programming errors
 %automatically generating test cases 
 %generation with a good coverage 
 is based on \emph{symbolic executions} 
 \cite{king76} and combinations with dynamic analysis
 called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
 See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
-which runs only \emph{concrete} (i.e. actual) program executions on different 
+which runs only \emph{concrete} program executions on different 
 inputs, the techniques of symbolic executions analyse \emph{static} paths
 (also called symbolic executions) through the software system under test.
 Since such a path is simply a sequence of assignments and
 conditionals/assertions, it can be viewed as a constraint $\varphi$ (over 
-appropriate domains corresponding to the data types used in the path) and a 
-constraint solver could be invoked on $\varphi$ to check the \emph{feasibility}
+appropriate data domains) and a 
+solver could be invoked on $\varphi$ to check the \emph{feasibility}
 of the static path, which can be used for generating inputs that lead to 
-an undesirable program behaviour or an exploration of a new part of the
-system. 
+certain parts of the program or an erroneous behaviour.
+%a undesirable program behaviour.
+%or an exploration of a new part of the
+%system. 
 
 A symbolic executions analysis relies on constraint solvers at its core. When 
 the system
@@ -80,16 +82,6 @@ should be able to produce \emph{some} output string that takes $S$ to the end of
 program.
 }
 
-A central research theme in the past decade or so is to design an
-expressive string constraint language for symbolic executions of 
-string-manipulating
-programs that admits \emph{decidability}. As pointed out in \cite{BTV09}, this 
-is rather tricky since it does not take much to obtain undecidability. 
-However, recent advances have been made by imposing 
-\emph{syntactic restrictions} on the shape of the formulas
-(e.g. solved form, acyclicity, and straight-line 
-\cite{LB16,Abdulla14,Vijay-length}) that are still satisfied by string 
-constraints that arise in practice. 
 
 \smallskip
 \noindent
@@ -143,12 +135,26 @@ way.
 \smallskip
 \noindent
 \textbf{A brief survey of decidable string constraint languages:}
-Concatenation (+) is typically present in a string theory since it is perhaps
-the most basic string operation. The \emph{theory of concatenation} can be
-obtained from symbolic executions (see (\ref{eq:symbex}))
-by allowing concatenation of string constants/variables in the
-assignment (i.e. $f$ in (\ref{eq:symbex})) and equality/disequality checks in 
-the assertions (i.e. $g$ in (\ref{eq:symbex})).
+A central research theme in the past decade or so is to design an
+expressive string constraint language for symbolic executions of 
+string-manipulating
+programs that admits \emph{decidability}. This 
+is tricky since it does not take much to obtain undecidability
+\cite{BTV09}. 
+\OMIT{
+However, recent advances have been made by imposing 
+\emph{syntactic restrictions} on the shape of the formulas
+(e.g. solved form, acyclicity, and straight-line 
+\cite{LB16,Abdulla14,Vijay-length}) that are still satisfied by string 
+constraints that arise in practice. 
+}
+Being a basic string operation,
+concatenation (+) is typically present in a string theory.
+Constraints in the \emph{theory of concatenation} 
+are symbolic executions (see (\ref{eq:symbex}))
+with concatenation of string constants/variables in the
+assignment ($f$ in (\ref{eq:symbex})) and equality/disequality checks of
+variables in the assertions ($g$ in (\ref{eq:symbex})).
 %Concatenation (+) and string equality (=) are typically present in a string 
 %theory since they are the most basic string operations. 
 An example of a constraint in this theory can be found in the above remark, 
@@ -166,11 +172,13 @@ The theory of concatenation was
 not known to be decidable until the seminal
 paper by Makanin \cite{Makanin} on \emph{word equations}, followed by the
 extension by B\"{u}chi and Senger \cite{buchi} to all quantifier-free formulas.
-\emph{Regular constraints} (i.e. regular expression matching, e.g., 
-$y \in (\texttt{ab})^*$) is another useful
-string operation (in fact, crucial to specify the set of ``bad'' strings) which
-can be incorporated to the theory of concatenation (as an assertion) without 
-sacrificing decidability \cite{Schulz}. 
+This decidability still holds even when
+\emph{regular constraints} (i.e. regular expression matching, e.g., 
+$y \in (\texttt{ab})^*$) --- useful to specify the set of ``bad'' strings ---
+are allowed as an assertion \cite{Schulz}. 
+%string operation (e.g. to specify the set of ``bad'' strings) which
+%can be incorporated to the theory of concatenation (as an assertion) without 
+%sacrificing decidability 
 %It seems difficult, however, to extend this
 %theory with other useful string operations while preserving decidability.
 %For example, it is a long-standing open problem whether 
@@ -193,8 +201,10 @@ More recently, some decidable string logics with these additional string
 operations have been obtained by imposing syntactic restrictions (solved forms
 \cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
 \cite{LB16}) on the shape of string constraints. All these 
-restrictions limit the way string equalities relate string variables in the
-constraints. 
+restrictions limit the way the equality operator relates string variables in 
+the constraints. For example, we obtain the decidable \emph{straight-line logic}
+\cite{LB16} if we remove string equality from an assertion, but we allow
+
 
 %
 %
