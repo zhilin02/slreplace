@@ -113,12 +113,13 @@ For convenience, we will also call an NFA without initial and final states, that
 \emph{regular languages}. The following result is standard and can be found in textbooks on automata theory
 (e.g. \cite{Kozen-automata}). 
 
-\begin{proposition}[\cite{Kozen-automata}]\label{prop-2nfa-nfa}
+\begin{proposition}[\cite{HU79}]\label{prop-2nfa-nfa}
 	Every \FFA{} $\Aut$ is equivalent to an \FA{} of size $2^{\bigO(|\Aut| \log |\Aut|)}$. 
 %	Moreover, the equivalent
 %    NFA can be computed in exponential time. 
     Moreover, every \FA{} can be transformed in polynomial time into an $\varepsilon$-free \FA{}, that is, an \FA{} where $\transrel\subseteq \controls \times \overline{\ialphabet} \times   \{\Right\} \times \controls $.
 \end{proposition}
+For latter reference, here we briefly mention the construction of \FA{}s from \FFA{}s in \cite{HU79}: For each  \FFA{} $\Aut=(\controls, q_0, \finals, \transrel)$, each state of the equivalent \FA{} is a vector of states from $\controls$ of \emph{odd} length, say $(q_1, \ldots, q_{2n+1})$, such that all the states of even (resp. odd) indices are mutually distinct.
 
 In the rest of this paper, \FA{}s refer to $\varepsilon$-free \FA{}s where directions in transitions are omitted. Moreover, for simplicity of notations, in \FA{}s, we omit the two end markers $\EndLeft, \EndRight$ and assume that $\transrel \subseteq \controls \times \ialphabet \times    \{\Right,\Stay\} \times \controls$. \zhilin{I assume that the two end markers are removed in FAs.}
 
