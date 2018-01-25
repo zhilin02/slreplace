@@ -6,18 +6,17 @@
 
 In this section,  we present a generic decision procedure for the path feasibility problem %$\straightline[\transet]$ 
 of string manipulating programs in the SSA form (defined in Section~\ref{subsec:symexe}), 
-based on the notion of recognisable relations. We assume that each assertion \ASSERT{$g(x_1,\ldots,x_n)$} satisfies that $g(x_1,\ldots,x_n)$ is a conjunction of regular constraints
+based on the notion of recognisable relations. We assume tha, for each assertion \ASSERT{$g(x_1,\ldots,x_n)$}, it is satisfied that $g(x_1,\ldots,x_n)$ is a conjunction of regular constraints
  %each variable $x_i$ is constrained regularly, i.e., it is of the form 
- $x_i \in \Aut$ where $\Aut$ is an \FA{}.   \zhilin{I put the assumption that $g$ is a conjunction of regular constraints here.}
-
-%
+ $x_i \in \Aut$ where $\Aut$ is an \FA{}.   
+ %\zhilin{I put the assumption that $g$ is a conjunction of regular constraints here.}
 %
 %an $\straightline[\transet]$ formula $\varphi \wedge \psi$ where $\varphi$ and $\psi$ are relational and  regular constraints respectively.
-
+%
 For each string function $f(x_1,\ldots,x_n)$, we assume that its pre-image of a regular language is a recognisable relation defined below.  
 
 \begin{definition}[Recognisable relations]
-	Given a finite alphabet $\Sigma$, a $k$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
+	Assume a finite alphabet $\Sigma$. A $k$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
 %
 %	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
@@ -26,7 +25,7 @@ For each string function $f(x_1,\ldots,x_n)$, we assume that its pre-image of a 
 For a recognisable relation $R$, a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
 $R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \ldots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an \FA. 
 %The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, 
-Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_k)$ is called a \emph{disjunct} of the representation, moreover, each \FA{} $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
+Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_k)$ is called a \emph{disjunct} of the representation, and  each \FA{} $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
 %
 Furthermore, to obtain tight space complexity bounds (in some cases), we use an alternative  \emph{conjunctive} representation of \FA{}s, %iof each atoms of the representation, 
 More precisely, we encode each atom automaton as $((\controls, \transrel), S)$ such that $(\controls, \transrel)$ is a transition graph and $S \subseteq \controls \times \controls$ is the \emph{conjunctive} acceptance condition satisfying that a string is accepted by $((\controls, \transrel), S)$ if for \emph{every} $(q, q') \in S$, there is a run of $(\controls, \transrel)$ on the string where $q$ and $q'$ are the first and last state of the run respectively. 
@@ -34,7 +33,7 @@ More precisely, we encode each atom automaton as $((\controls, \transrel), S)$ s
 Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$.
 %
 %We remark that the nonemptiness checking  can be done in nondeterministic logarithmic space for the standard representation of \FA{}s, but requires polynomial space for the conjunctive representation. (One needs to build up the product automaton which is of size $|Q|^{|S|}$.) 
-
+%
 Accordingly, a representation of $R$ is called a \emph{conjunctive representation} if every atom in the representation is a conjunctive representation.
 Every (standard) representation of $R$  can be transformed into a conjunctive one easily. For instance, let $(\Aut_1, \Aut_2)$ be a representation of $R$ with $\Aut_i = (\controls_i, q_{i,0}, \finals_i, \transrel_i)$ for $i=1,2$, then $R$ is conjunctively represented by 
 %
@@ -98,16 +97,15 @@ As we have discussed in Section~\ref{subsec:symexe}, a string function $f(x_1, \
 %
 %the set of tuples $(w, w_1,\ldots, w_k)$ such that there is an accepting run of $\Transducer$ on $w$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_1,\ldots, w_k$. 
 
-The main result of this section is a generic decision procedure for the path feasibility problem of string manipulating program $S$ in the SSA form, under the \prerec{} assumption defined below:
+The main result of this section is a generic decision procedure for the path feasibility problem of string manipulating program $S$ in the SSA form, under the \prerec{} assumption defined as follows.
 \begin{quote}
-%\item
 {\bf The \prerec{} assumption}. For each string function $f$ in $S$ and each conjunctive \FA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a recognisable relation. Furthermore, 
 a representation of $\Pre_{R_f}(\Aut)$, whose atom size is bounded by  $\ell(|f|, |\Aut|)$ for some monotone function $\ell$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell(|f|, |\Aut|)$ space.
 %the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
 %
 %\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
 \end{quote} 
-
+%
 Here $|f|$ is the size of a representation of $f$; the concrete definition depends on the form of $f$, which will be given when the generic decision procedure is instantiated in Section~\ref{sec-instan}. 
 
 Given a string manipulating program $S$, 
