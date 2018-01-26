@@ -1,65 +1,221 @@
 %!TEX root = main.tex
 
-\section{Proof of Theorem~\ref{thm-rb-2pt}}\label{app-rb-2pt}
+\section{Proof of Theorem~\ref{thm-rb-2pt}: $k$-\RBPPT{} are EXPSPACE-Complete}\label{app-rb-2pt}
 
-We first show that the $\expspace$ upper bound holds for the extension of \PT{}s with the reverse function. 
+We first show that the $\expspace$ upper bound holds for the extension of
+\PT{}s with the reverse function.
+%
+\mat{TODO: show this}
+%
+We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s
+to that for \PT{}s plus reverse function.
 
-We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to that for \PT{}s plus reverse function.
+Let
+$y := \Transducer(x)$
+be an assignment statement in $S$ such that
+$\Transducer = (\controls, q_0, \finals, \transrel)$
+is $(2k)$-reversal bounded for some $k > 0$.
+%
+We replace $y := \Transducer(x)$ by a program $S'$ as follows.
 
-Let $y := \Transducer(x)$ be an assignment statement in $S$ such that $\Transducer = (\controls, q_0, \finals, \transrel)$ is $(2k)$-reversal bounded for some $k > 0$. We replace $y := \Transducer(x)$ by a program $S'$ as follows.
+Each accepting run of $\Transducer$ on an input string can be split into $2k+1$
+maximal subruns without reversals (i.e.\ split the run at the turning points).
+%
+Intuitively, we shall split $y$ into $2k+1$ substrings, corresponding to the
+$2k+1$ maximal subruns, and for each substring of $y$, use one \PT{} and the
+reverse function to produce it.
 
-Each accepting run of $\Transducer$ on an input string can be split into $2k+1$ maximal subruns without reversals.
-Intuitively, we shall split $y$ into $2k+1$ substrings, corresponding to the $2k+1$ maximal subruns, and for each substring of $y$, use one \PT{} and the reverse function to produce it.
-
+\newcommand\init{\mathsf{init}}
 \newcommand\prefix{\mathsf{prefix}}
 \newcommand\suffix{\mathsf{suffix}}
 \newcommand\finalpass{\mathsf{finalpass}}
 \newcommand\reverse{\mathsf{reverse}}
 \newcommand\concatpt{\mathsf{concat}}
 
-For preparation, we introduce the following \FT{}s $\prefix_1, \prefix_3, \ldots, \prefix_{2k-1}$, and $\suffix_2, \ldots, \suffix_{2k}$, $\finalpass_{2k+1}$, as well as a \PT{}  $\concatpt$ that concatenates $2k+1$ strings, where there are one input string and $2k$ parameters. Let $w = a_1 \ldots a_n$ denote the input string.
+For preparation, we introduce the following \FT{}s:
+    $\init$,
+    $\prefix$,
+    $\suffix$,
+    $\finalpass$,
+    $\reverse$,
+    $\concatpt$.
+These \FT{}s behave as follows.
 \begin{itemize}
-\item for $j \in [k]$, $\prefix_{2j-1}$  has the input alphabet $\ialphabet \cup \ialphabet \times [2j-2]$ and the output alphabet $\ialphabet \cup \ialphabet \times [2j-1]$, $\prefix_{2j-1}$ moves to the first occurrence of the letters from $\ialphabet \times \{2j-2\}$, say position $i$, and nondeterministically chooses a prefix of $w[i, n]$, and outputs $(b, 2j-1)$ for each letter $b \in \ialphabet$ or $(b, j')$ with $j' < 2j-1$ in the prefix,
-%
-\item for $j \in [k]$, $\suffix_{2j}$ has the input alphabet $\ialphabet \cup \ialphabet \times [2j-1]$ and the output alphabet $\ialphabet \cup \ialphabet \times [2j]$, $\suffix_{2j}$ nondeterministically chooses  a suffix of $w[1, i]$, where $i$ is the position corresponding to the last occurrence of the letters from $\ialphabet \times \{2j-1\}$, and outputs $(b, 2j)$ for each letter $b \in \ialphabet$ or $(b, j')$ with $j' < 2j$ in the suffix,
-%
-\item $\finalpass_{2k+1}$ has the input alphabet $\ialphabet \cup \ialphabet \times [2k]$ and the output alphabet $\ialphabet \cup \ialphabet \times [2k+1]$, it outputs $(b, 2k+1)$ for each letter $b$ or $(b, j')$ with $j' \le 2k$ in the suffix of $w$ starting from the first occurrence of the letters from $\ialphabet \cup \ialphabet \times \{2k\}$,
-%
-\item $\Transducer_{f, 2j-1}$ and $\Transducer_{b, 2j}$.
+\item
+    $\init$ begins by outputting $q_0$ and then directly copying its input to
+    the output tape.
+
+\item
+    $\prefix$ marks the beginning and end of a forwards run of $\Transducer$,
+    assuming that an initial or backwards marking has already taken place (that
+    is, either one or two states from $\controls$ appear in the input).
+    %
+    It directly copies its input to the output tape until it the first instance
+    of some
+    $q \in \controls$.
+    %
+    This $q$ is also output.
+    %
+    After this, it will copy the rest of the input tape to the output tape with
+    the exception that any occurrence of a state from $\controls$ is not copied
+    (erased).
+    %
+    At some point during this second phase it will non-deterministically output
+    a single
+    $q' \in \controls$
+    between the copies of two input characters and then continue to copy its
+    input to the output until the end of the tape (ignoring any $\controls$).
+
+\item
+    $\suffix$ marks the end and beginning of a backwards run assuming $\prefix$
+    has previously marked the beginning and end of the preceding forwards run.
+    %
+    It will do this by copying the input tape directly to the output tape,
+    omitting the first instance of $\controls$.
+    %
+    Additionally, before the second occurrence of some $\controls$ it will
+    non-deterministically output some single $q \in \controls$ between the
+    copies of two input characters.
+    %
+    On encountering the second instance of $\controls$ it will copy this and
+    continue to copy the remainder of the tape.
+
+\item
+    $\finalpass$ behaves as prefix, but instead of non-deterministically
+    choosing a position to output some
+    $q \in \controls$
+    it will output some accepting $q$ after all input has been copied.
+    %
+    Note, it will still copy the first instance of some $\controls$ to the
+    output tape.
+
+\item
+    $\reverse$ reverses its input string.
+
+\item
+    $\concatpt$ concatenates its arguments.
 \end{itemize}
 
+We illustrate the use of these \FT{}s with an example.  Let the input word be
+$a b c a b c$
+and consider the program below.
 %
-The program $S'$ is constructed as follows: 
+To the left of the program we give the output of an example run with the intput
+$x = a b c a b c$.
+%
 \[
-\begin{array}{l}
-x_1 := \prefix_1(x), \\
-%
-x_2 := \suffix_{2} (x_1), \\
-%
-\ldots \\
-%
-x_{2k-1} := \prefix_{2k-1}(x_{2k-2}), \\
-%
-x_{2k} := \suffix_{2k} (x_{2k-1}), \\
-% 
-x_{2k+1} := \finalpass_{2k+1}(x_{2k}),\\
-%
-y_1 := \Transducer_{f,1}(x_1),\\
-%
-y'_2 := \Transducer_{b,2}(x_2),\\
-%
-y_2 := \reverse(y'_2),\\
-%
-\ldots\\
-%
-y_{2k-1} := \Transducer_{f, 2k-1}(x_{2k-1}),\\
-%
-y'_{2k} := \Transducer_{b, 2k}(x_{2k}),\\
-%
-y_{2k} := \reverse(y'_{2k}),\\
-%
-y_{2k+1} :=\Transducer_{f, 2k+1}(x_{2k+1}),\\
-%
-y := \concatpt(y_1, \ldots, y_{2k+1}).
-\end{array}
+    \begin{array}{rcll}
+        x_0 &:=& \init(x);
+            & \qquad (x_0 = q_0\ a\ b\ c\ a\ b\ c) \\
+        x_1 &:=& \prefix(x_0);
+            & \qquad (x_1 = q_0\ a\ b\ c\ a\ q_1\ b\ c) \\
+        x_2 &:=& \suffix(x_1);
+            & \qquad (x_2 = a\ b\ q_2\ c\ a\ q_1\ b\ c) \\
+        x_3 &:=& \prefix(x_2);
+            & \qquad (x_3 = a\ b\ q_2\ c\ a\ b\ q_3\ c) \\
+        x_4 &:=& \suffix(x_3);
+            & \qquad (x_4 = a\ b\ c\ a\ q_4\ b\ q_3\ c) \\
+        x_5 &:=& \finalpass(x_4);
+            & \qquad (x_5 = a\ b\ c\ a\ q_4\ b\ c\ q_5) \\
+    \end{array}
 \]
+%
+The values of
+$x_0, \ldots, x_5$
+correspond to a $4$-reversal run of $\Transducer$.
+%
+Beginning at $q_0$ we first read $abca$ and reach $q_1$; here we reverse
+direction and read $ac$ to reach $q_2$; next we reverse direction again and
+read $c a b$ to reach $q_3$; after another reversal $b$ is read and the state
+$q_4$ is reached; finally, $bc$ is read and $q_5$ is reached at the end of the
+tape.
+
+We now define $\Transducer_f$ and $\Transducer_b$ which simulate a
+single-direction run of $\Transducer$ between the two instances of $\controls$
+in the forwards or backwards direction.
+%
+That is
+\begin{itemize}
+\item
+    $\Transducer_f$ (from the beginning of the input tape) skips over all
+    characters until the first instance of $\controls$ is found.
+    %
+    Let this first instance be $q$.
+    %
+    It then starts simulating $\Transducer$ in the left-to-right direction
+    starting from $q$.
+    %
+    That is, it can only simulate moves of the form
+    $(q, a, d, q', b)$
+    where
+    $d \in \{\Stay, \Right\}$.
+    %
+    Any output is written to the output tape.
+    %
+    This simulation continues until $\Transducer_f$ reads some
+    $q' \in \controls$.
+    %
+    It accepts only if the simulation has also reached $q'$.
+
+\item
+    $\Transducer_b$ (from the beginning of the input tape) skips over all
+    characters until the first instance of $\controls$ is found.
+    %
+    Let this first instance be $q$.
+    %
+    It then starts simulating a right-to-left run of $\Transducer$ for a run
+    that would end at $q$.
+    %
+    To do this it has to perform moves \emph{in reverse};
+    that is, for moves of $\Transducer$ of the form
+    $(q, a, d, q', b)$
+    where
+    $d \in \{\Left, \Stay\}$
+    the transducer $\Transducer_b$ can simulate
+    $(q', a, d^{-1}, q, b)$
+    where
+        $(\Left)^{-1} = \Right$
+        and
+        $(\Stay)^{-1} = \Stay$.
+    %
+    Any output is written to the output tape.
+    %
+    This simulation continues until $\Transducer_b$ reads some
+    $q' \in \controls$
+    and accepts only if the simulation has also reached $q'$.
+\end{itemize}
+
+We can now apply $\Transducer_f$ to the output of each use of $\prefix$ or
+$\finalpass$ and $\Transducer_b$ to the output of each use of $\suffix$.
+%
+Since $\Transducer_b$ performs its simulation in reverse, we need to apply
+$\reverse$ to its output.
+%
+Then, we concatenate all outputs to obtain $y$.
+%
+Thus, the output $y$ of the following program on an input $x$ is the same as
+$y := \Transducer(x)$
+when $\Transducer$ performs $2k$ reversals.
+\[
+    \begin{array}{rcl}
+        x_0 &:=& \init(x); \\
+        x_1 &:=& \prefix(x_0); \\
+        x_2 &:=& \suffix(x_1); \\
+        &\vdots& \\
+        x_{2k-1} &:=& \prefix(x_{2k-2}); \\
+        x_{2k} &:=& \suffix(x_{2k-1}); \\
+        x_{2k+1} &:=& \finalpass(x_{2k}) \\
+        \\
+        y_1 &:=& \Transducer_f(x_1); \\
+        y'_2 &:=& \Transducer_b(x_2); \\
+        y_2 &:=& \reverse(y'_2) \\
+        &\vdots& \\
+        y_{2k-1} &:=& \Transducer_f(x_{2k-1}); \\
+        y'_{2k} &:=& \Transducer_b(x_{2k}); \\
+        y_{2k} &:=& \reverse(y'_{2k}) \\
+        y_{2k+1} &:=& \Transducer_f(x_{2k+1}); \\
+        \\
+        y &:=& \concatpt(y_1, \ldots, y_{2k+1})
+    \end{array}
+\]
+
