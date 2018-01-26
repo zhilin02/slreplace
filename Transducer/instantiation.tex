@@ -79,16 +79,16 @@ the \prerec{} assumption holds for string functions definable in \PPT{}s with $\
 %$\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be constructed effectively.
 \end{proof}
 
-From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, by some simple calculation, we deduce that given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, its satisfiability can be decided in 
+From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, by some simple calculation, we deduce that given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, its path feasibility can be decided in 
 %nondeterministic 
 %$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$$ 
 %space, where $f(j, k) = 2^{jk \log (j k)}$. 
 nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space, thus in (deterministic) $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space, according to Savitch's theorem \cite{Savitch70}. Here the function $\tower(j, k)$ is %a tower of $2$s of height $j$ with $k$ on top, formally, 
-defined as: $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. We conclude that the satisfiability of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
+defined as: $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. We conclude that the path feasibility of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
 Moreover, we have a matching lower bound whose proof is sketched below.
 %
 \begin{theorem}
-Given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, the satisfiability of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, the satisfiability of such string manipulating programs is  %$\straightline[\twpt]$ 
+Given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, the path feasibility of such string manipulating programs is  %$\straightline[\twpt]$ 
  $\expheight$-$\expspace$-hard.
 \end{theorem}
 
@@ -198,10 +198,10 @@ From Lemma~\ref{lem-1pt} and Theorem~\ref{thm-generic-dec}, we deduce the follow
 %
 \begin{theorem} \label{thm-1pt}
 %Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
-The satisfiability problem of string manipulating programs in SSA form where string functions are modelled by \PT{}s is $\expspace$-complete. 
+The path feasibility problem of string manipulating programs in SSA form where string functions are modelled by \PT{}s is $\expspace$-complete. 
 \end{theorem}
 
-The lower bound in Theorem~\ref{thm-1pt} is deduced from the result in \cite{LB16} that the satisfiability of straight-line string constraints with concatenation and one-way transducers, which are both special cases of \PT{}s, is $\expspace$-complete.
+The lower bound in Theorem~\ref{thm-1pt} is deduced from the result in \cite{LB16} that the path feasibility of straight-line string constraints with concatenation and one-way transducers, which are both special cases of \PT{}s, is $\expspace$-complete.
 
 %====================================
 
@@ -234,7 +234,7 @@ Combing Theorem~\ref{thm-generic-dec}, Proposition~\ref{prop:trans}, Lemma~\ref{
 \begin{theorem} \label{thm-rb-2pt}
 %Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
 %For each constant $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
-For each $k \in \Nat$, the satisfiability problem of string manipulating programs in SSA form where string functions are modelled by $k$-\RBPPT{}s is $\expspace$-complete. 
+For each $k \in \Nat$, the path feasibility of string manipulating programs in SSA form where string functions are modelled by $k$-\RBPPT{}s is $\expspace$-complete. 
 \end{theorem}
 
 %The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.

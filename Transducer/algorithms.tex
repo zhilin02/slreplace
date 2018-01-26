@@ -156,7 +156,7 @@ For $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 %Let $\varphi \wedge \psi$ be an $\straightline[\transet]$ formula. 
 
 Let $S$ be a string manipulating program satisfying the \prerec{} assumption. 
-We shall present a nondeterministic algorithm to decide the path feasibility problem of $S$. \tl{we need to unify the name, path feasibility or satisfiability?}
+We shall present a nondeterministic algorithm to decide the path feasibility problem of $S$. \tl{we need to unify the name, path feasibility or satisfiability?}\zhilin{path feasibility}
 
 We first \emph{nondeterministically} compute $\cE(x)$, a collection of conjunctive FAs over the alphabet $\Sigma$, for each variable $x \in \vars(S)$. %, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
@@ -178,10 +178,10 @@ $x \in \Aut$ appearing in the assertion of $S$, where $\Aut$ is an FA, let $\Aut
 For the $i$-th iteration, suppose the $i$-th assignment of $S$ to be $y:= f(x_1, \cdots, x_k)$ with $k\geq 1$, and  $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
 where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
-By the premise of the theorem, $\Pre_{R_f}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(\iota)}_{j, 0}, \Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, k})_{\iota \in [m_j]}$, \tl{zhilin: why the index starts from 0? it is a $k$-ary relation, isn't it?} can be computed effectively.
+By the premise of the theorem, $\Pre_{R_f}(\Aut_j)$ is a recognisable relation and a representation of which, say $(\Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, k})_{\iota \in [m_j]}$, \tl{zhilin: why the index starts from 0? it is a $k$-ary relation, isn't it?} can be computed effectively.
 Then $\cE_{i-1}(x)$ for $x \in  \{x_1,\cdots, x_k\}$ is constructed as follows: %and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
-\item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 0}, \ldots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
+\item For each $j \in [n]$, nondeterministically select a tuple $\left(\Aut^{(r_j)}_{j, 1}, \ldots, \Aut^{(r_j)}_{j, k}\right)$ for some $r_j \in [m_j]$.
 %
 \item For each $x \in \{x_1,\ldots, x_k\}$, let
 \[

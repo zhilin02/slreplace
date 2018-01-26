@@ -107,4 +107,88 @@ $$
 $$
 
 
+
+\subsection{Complexity analysis for Theorem~\ref{thm-generic-dec-symbolic}}
+
+For each $i$, 
+%\begin{itemize}
+%\item 
+let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
+%\item 
+and $N_{i,c}$ (resp. $N_{i, d}$) be the maximum control size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
+%\end{itemize}
+Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies  $|f|_c \le \rcphi_c(S)$, we have 
+%
+$$N_{i-1, c} \le \ell_c(|f|_c, N_{i, c}) \le \ell_c(\rcphi_c(S), N_{i,c})$$ 
+%
+Moreover, since $|f|_c \le \rcphi_c(S)$ and $|f|_d \le \rcphi_d(S)$, we have
+%
+$$N_{i-1, d} \le \ell_d(|f|_c, |f|_d, N_{i, c}, N_{i,d}) \le \ell_d(\rcphi_c(S), \rcphi_d(S), N_{i, c}, N_{i,d}).$$ 
+
+Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcsreg(S)$ elements, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcsreg(S)$ elements. 
+Moreover, because each conjunctive \SA{} in $\cE_{\rcdep(S)}(x)$ satisfies that its control and data size are bounded by $\rcpsi_c(S)$ and $\rcpsi_d(S)$ respectively, 
+we have that each conjunctive \SA{} in $\cE(x)$ satisfies that its control and data size are bounded by $\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S))$ and 
+%
+\[ (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S), \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S)).\]
+% h(i, j, g^{\langle n \rangle}(k, l), h^{\langle n \rangle}(i, j, k, l))
+% 
+We emphasise that, according to the \prerec{}' assumption, the construction of these \SA{}s can be done in nondeterministic 
+%
+{
+\small
+$$\ell_c^{\langle  \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),  \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S))$$
+}
+
+\noindent space. 
+Therefore, for each $x \in \vars(S)$, the conjunctive product \SA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \SA{}s  in $\cE(x)$ has a control size bounded by 
+%
+$$(\ell^{\langle \rcdep(S) \rangle}_c(\rcphi_c(S), \rcpsi_c(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)},$$
+%
+and data size bounded by
+%
+\[ (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S)).\]
+%
+and $|S_x| \le (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2$. 
+Therefore, the control and data size of the (standard) \SA{} corresponding to $\Aut_x$ are  bounded by 
+%
+$$(\ell^{\langle \rcdep(S) \rangle}_c(\rcphi_c(S), \rcpsi_c(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2}$$
+%
+and
+$$
+\begin{array}{l}
+(\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
+\hspace{1cm}(\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+\end{array}
+$$
+respectively.
+
+Since the nonemptiness of an \SA{} $\Aut$ can be solved in nondeterministic $(\log |\Aut|_c) + \beta(|\Aut|_d)$ space, we conclude that the nonemptiness of $\Aut_x$ can be solved in nondeterministic 
+{\small
+$$
+\begin{array}{l}
+(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2 \log (\ell^{\langle \rcdep(S) \rangle}_c(\rcphi_c(S), \rcpsi_c(S)))+ \\
+\hfill \beta
+\left(
+\begin{array}{l}
+(\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
+\hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+\end{array}
+\right)
+\end{array}
+$$
+}
+space.
+
+In summary, the aforementioned nondeterministic algorithm takes  $M + \beta(M)$ space, where 
+%
+$$
+\begin{array}{l c l}
+M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^{r}\ \cdot \\
+& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+\end{array}
+$$
+%
+for some constant $r > 0$.
+
+
 \subsection{Proof of Lemma~\ref{lem-spt}}

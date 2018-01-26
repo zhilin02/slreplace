@@ -3,21 +3,23 @@
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
-In this section, we consider an extension of parametric transducers, called \emph{symbolic parametric transducers}, where the input and output letters are specified symbolically,
-%infinite data domains \tl{maybe not emphasise infinite domain}, , 
-more precisely, the input letters are implicitly described by unary predicates  in some logical theory and the output letters are given by terms, where the parameters may occur. 
+In this section, we consider an extension of string manipulating programs in SSA form in preceding sections to symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} respectively.
 %
+Intuitively, symbolic automata are an extension of finite-state automata in which the input letters are symbolically described by unary predicates  in some logical theory. On the other hand, symbolic parametric transducers are an extension of parametric transducers in which the output letters are given by terms in some logic theory (where the parameters may occur), besides the symbolic description of input letters.
 Symbolic parametric transducers can be seen as an extension of both the parametric transducers introduced in this paper and the symbolic transducers introduced in \cite{VHLMB12}.
-In sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers and show how to extend the results in preceding sections to the symbolic setting.
+In the sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers.
+% and show how to extend the results in preceding sections to the symbolic setting.
 
 
 %Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
 We assume familiarity with the 
 %(many-sorted) 
 first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
-Concepts of Boolean algebra and background theories are used in the definition of symbolic automata and transducers.
+A concept of background theories is used in the definition of symbolic automata and transducers\footnote{In literature, a symbolic automata is defined on a Boolean algebra, which is a background theory without requiring the set of formulae closed under substitutions. We choose to define symbolic automata on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.}.
 %and label theories. 
-Intuitively, a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, and a  background theory is a Boolean algebra  closed under substitutions. 
+Intuitively, 
+%a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
+a  background theory is a set of unary first-order logic formulae closed under Boolean connectives and substitutions. 
  %Label theories extend background theories further by adding inequalities of terms into the set of formulae.
  
  
@@ -43,7 +45,7 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $
 \end{definition}
 
 
-In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\bigO(f(m))$ space for some monotonic function $f$ such that $f(m) \ge \log m$.
+In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\bigO(\beta(m))$ space for some monotone function $\beta$ such that $\beta(m) \ge \log m$.
 A \emph{data string} is an element of $\data^*$. A \emph{data language} is a set of data strings.
 
 
@@ -89,7 +91,6 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $
 A \SSA{} is an \SA{} if there are no transitions with the direction $\{\Left\}$. 
 %for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
-We remark that, in literature, an \SA{} is defined on a Boolean algebra, which is a background theory without requiring $\Psi$ to be closed under substitutions dropped. We choose to define \SSA{}s and \SA{}s on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.
 
 \paragraph{Semantics of \SSA{} $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$.}
 A transition $\tau=(q_1,\psi(x), dir, q_2) \in \transrel$ in the \SSA $\Transducer$ can be concretised
@@ -121,22 +122,22 @@ For briefness, we usually omit $\EndLeft$, and $\EndRight$ from the definition o
 
 To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way, e.g. encoded in binary. For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
 For a refined complexity analysis, we use the following two measures of $\Aut$: %numbers to capture the size of $\Transducer$:  Define 
-$\numtrans(\Aut)$, the number of transitions of $\Aut$, and $\sizetrans(\Aut)$, the maximum size of symbolic transitions of $\Aut$.
+the \emph{control size} and the \emph{data size} of $\Aut$, denoted by $|\Aut|_c$ and $|\Aut|_d$ respectively, where $|\Aut|_c$ is defined as the number of transitions of $\Aut$, and $|\Aut|_d$ is defined as the maximum size of symbolic transitions of $\Aut$.
 
 
 \begin{proposition}\label{prop-2nsa}
 Assume a \SSA  $\Aut$. Then
 \begin{itemize}
-\item $\Aut$ can be transformed effectively into an equivalent \SA{} $\Aut'$, in time $\numtrans(\Aut')\cdot \sizetrans(\Aut')$, where $\numtrans(\Aut') = 2^{\mathcal{O}\left(\numtrans(\Aut) \log \numtrans(\Aut)\right)}$ and $\sizetrans(\Aut') = \mathcal{O}( \numtrans(\Aut) \sizetrans(\Aut))$;
+\item $\Aut$ can be effectively transformed into an equivalent \SA{} $\Aut'$, in time $|\Aut'|_c \cdot |\Aut'|_d$, where $|\Aut'|_c = 2^{\bigO\left(|\Aut|_c \log |\Aut|_c\right)}$ and $|\Aut'|_d = \bigO(|\Aut|_c |\Aut|_d)$;
 %$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
 %
 %
 %\item SAs are under the intersection operator\footnote{As a matter of fact, SAs are closed under all Boolean operations. Since we only use the intersection in this paper, we restrict our attention to the intersection.}. \zhilin{complexity}
 %
-\item the nonemptiness of $\Aut$ can be decided in nondeterministic $\mathcal{O}( (\log \numtrans(\Aut)) + f(\sizetrans(\Aut)))$ space.
+\item the nonemptiness of $\Aut$ can be decided in nondeterministic $\bigO( (\log |\Aut|_c) + \beta(|\Aut|_d))$ space.
 \end{itemize}
 \end{proposition}
-The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result was shown in \cite{NG01,DV14}.
+The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result is obtained by guessing a path in $\Aut$ and was shown in \cite{NG01,DV14}.
 
 \smallskip
 
@@ -217,9 +218,10 @@ such that
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $\vec{d}'_0, \ldots, \vec{d}'_m$ is the \emph{output} of the run.
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
-
-Similarly to \SSA{}s, we define two measures of a \SST{} $\Transducer$: %numbers to capture the size of $\Transducer$:  Define 
-$\numtrans(\Transducer)$, the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
+%
+The size of a symbolic transition $(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x))$ in a \SSA{} with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
+The control size $|\Transducer|_c$ and the data size $|\Transducer|_d$ of \SST{}s are defined similarly to those of \SSA{}s. 
+%the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
 
 %\begin{proposition}\label{prop-2nst-nst}
@@ -236,7 +238,7 @@ $(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
 %
 \item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \SST{}s, 
 %
-\item $Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters (variables), 
+\item $Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters, 
 %
 \item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
@@ -250,13 +252,14 @@ $\vec{t}$ is a sequence of $\signature$-terms whose variables are from $\{x, y_1
 
 Notice that, as in \PPT{}s, parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $y_1,\ldots, y_m$ with data strings 
-$w_1,\ldots, w_m$ gives rise to a \SST{} by replacing each occurrence of $y_i$ in transitions with $w_i$. 
+$w_1,\ldots, w_m$ gives rise to a \SST{} $\Transducer[w_1/y_1,\ldots, w_m/y_m]$ by replacing each occurrence of $y_i$ in transitions with $w_i$. 
 %outputs the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)$ is
 %taken by the transducer. 
 %This instantiation of the parameters is only done 
 %\emph{once} before the symbolic parametric transducer is run.
 %
-The size of \SSPT{}s can be defined in a similar way as \SST{}s. 
+We use $\transet(\Transducer)$ to denote the set of tuples $(w, w_1, \ldots, w_m, w')$ such that $(w, w') \in \transet(\Transducer[w_1/y_1,\ldots, w_m/y_m])$.
+The two size measures of \SSPT{}s can be defined in a similar way as \SST{}s. 
 
 
 %%%============================================
@@ -273,28 +276,59 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 %%%============================================
 %%%============================================
 
-\zhilin{stopped here}
 
-\paragraph{Symbolic extension of the generic procedure.} To solve the satisfiability problem of $\straightlinesym[\transet]$, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations with symbolically recognisable relations defined below.
+\paragraph{Symbolic extension of the generic decision procedure.} To solve the path feasibility problem of string manipulating programs in SSA form, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and \prerec{}' assumption presented below.
 
 \begin{definition}[Symbolic recognisable relations]
-	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, a $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [k]$.
+%	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
+	A $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [k]$.
 \end{definition}
-Similar to the recognisable relation, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, $\numtrans(\cC)$ and $\sizetrans(\cC)$ can be defined similarly to \SA{}.
+Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_c$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the control (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum control (resp. data) size of the atoms.
 
-For a $\straightlinesym[\transet]$ formula $\varphi \wedge \psi$, we use $\numtrans(\varphi)$ (resp. $\sizetrans(\varphi)$) to denote the maximum of $\numtrans(\Transducer)$ (resp. $\sizetrans(\varphi)$) for $\Transducer$ occurring in $\varphi$. Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
+\begin{quote}
+{\bf The \prerec{}' assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
+a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is bounded by  $\ell_c(|f|_c, |\Aut|_c)$ (resp. $\ell_d(|f|_c,  |f|_d, |\Aut|_c, |\Aut|_d)$) for some monotone functions $\ell_c$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_c(|f|_c, |\Aut|_c) \cdot \ell_d(|f|_c,  |f|_d, |\Aut|_c,  |\Aut|_d)$ space.
+%the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
+%
+%\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
+\end{quote} 
+%
+Here $|f|_c$ and $|f|_d$ are the control and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later.
+
+Let $S$ be a data string manipulating program in SSA form.  Then $\rcdep(S)$ and $\rcdim(S)$ are defined similarly to the string setting. Moreover, we use $\rcphi_c(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_c$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, moreover, we use $\rcpsi_c(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_c$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
+
+
+%Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
+
 
 %We can adapt the definition of $\numtrans$ and $\sizetrans$ to the conjunctive representations of SA easily. We will use conjunctive SA to mean a conjunctive representation of the SA.
 
 For a binary function $g(k, l)$, $h(i, j, k, l)$, and $n \in \Nat \backslash \{0\}$, we define $g^{\langle n \rangle}(k, l)$ and $h^{\langle n \rangle}_g(i, j, k, l)$ as follows: $g^{\langle 1 \rangle}( k, l) = g(k, l)$, $h^{\langle 1 \rangle}_g(i, j, k, l) = h(i, j, k, l)$, and 
 $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\langle n+1 \rangle}_g (i, j, k, l) = h(i, j, g^{\langle n \rangle}(k, l), h^{\langle n \rangle}(i, j, k, l)).$$
+
+
+\begin{theorem}\label{thm-generic-dec-symbolic}
+	Given a data string manipulating program $S$ satisfying the \prerec{}' assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
+	\[
+	\begin{array}{l c l}
+		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^{r}\ \cdot \\
+		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+\end{array}
+	\]
+for some constant $r > 0$. 
+\end{theorem}
+
+
+
+%%%=============================================================
+\hide{
 \begin{theorem}\label{thm-generic-dec-symbolic}
 Let $\transet$ be a class of symbolic parametric transducers. Suppose that %$\transet$ satisfies that 
 for each $\Transducer \in \transet$ and conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, 
 such that for every atom $\Aut'$ therein, 
 $\numtrans(\Aut') = O(g(\numtrans(\Transducer),  \numtrans(\Aut)))$ and 
 $\sizetrans(\Aut') = O(h(\numtrans(\Transducer), \sizetrans(\Transducer), \numtrans(\Aut), \sizetrans(\Aut)))$, for two monotone functions $g$ and $h$.
-Then the satisfiability of a $\straightlinesym[\transet]$ formula $\varphi \wedge \psi$ can be decided in nondeterministic space
+Then the path feasibility of a $\straightlinesym[\transet]$ formula $\varphi \wedge \psi$ can be decided in nondeterministic space
 $$
 O\left(
 \begin{array}{l}
@@ -306,6 +340,8 @@ $$
 where $\numtrans'' = g^{\langle \rcdep(\varphi) \rangle}(\numtrans(\varphi), \numtrans(\psi))$ and 
 $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \sizetrans(\Transducer), \numtrans(\Aut), \sizetrans(\Aut)).$$
 \end{theorem}
+}
+%%%=============================================================
 
 \paragraph{Symbolic extension of pre-image computation.}
 
@@ -317,9 +353,10 @@ $$\sizetrans(\Aut') = \numtrans(\Transducer) \numtrans(\Aut)\sizetrans(\Transduc
 On the other hand, if $\Transducer$ is an SPT, then $\numtrans(\Aut')$ and $\sizetrans(\Aut')$ are reduced to $O(\numtrans(\Transducer)\numtrans(\Aut))$ and $O(\sizetrans(\Transducer) \sizetrans(\Aut))$ repsectively.
 \end{lemma}
 
+
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}
-Satisfiability of $\straightlinesym[\twspt]$ can be decided in $M + f(M)$ space, where $M = 2^{\left. 2^{\ldots ^{2^{O(p(|\varphi| |\psi|))}} }\right\}\rcdep(\varphi)}$ for some polynomial $p$. On the other hand,  satisfiability of $\straightlinesym[\owspt]$ can be decided in $N+ f(N)$ space, where $N = |\psi| 2^{O(|\varphi|\log |\varphi|)}$.
+path feasibility of $\straightlinesym[\twspt]$ can be decided in $M + f(M)$ space, where $M = 2^{\left. 2^{\ldots ^{2^{O(p(|\varphi| |\psi|))}} }\right\}\rcdep(\varphi)}$ for some polynomial $p$. On the other hand,  path feasibility of $\straightlinesym[\owspt]$ can be decided in $N+ f(N)$ space, where $N = |\psi| 2^{O(|\varphi|\log |\varphi|)}$.
 \end{theorem}
 
 
