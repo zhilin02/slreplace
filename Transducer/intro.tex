@@ -319,13 +319,28 @@ The second example is string reverse.
 as follows. We introduce \emph{parametric 
 transducers}, an expressive formalism for modelling string functions 
 $f: (\ialphabet^*)^k \to \ialphabet^*$ with multiple inputs and
-strictly generalises finite-state transducers (which can only capture the
-case when $k=1$). In addition, not only can parametric
+strictly generalises finite-state transducers ($k=1$). In addition, not only can parametric
 transducers model the $\replaceall_p(sub,rep)$ function, string reverse, and
 string concatenation,
 they can also model string functions required in \emph{context-sensitive
 auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Closure 
-\cite{Closure} and Handlebars \cite{Handlebars}.  We show that path feasibility
-with symbolic executions that use parametric transducers 
+\cite{Closure} and Handlebars \cite{Handlebars}.  We show decidability of path 
+feasibility of symbolic executions that use parametric transducers in an 
+assignment and regular constraints in an assertion. This strictly generalises 
+the decidability results of the subcase of basic finite transducers \cite{LB16}
+and replaceall \cite{CCHLW18}. We also provide a detailed complexity 
+analysis\footnote{
+Note that
+these \emph{worst-case complexity} results do not exhibit fast solvers 
+\emph{in practice}, e.g., a fast solver for the straight-line constraint
+language with finite-state transducers (EXPSPACE-complete) has been
+implemented \cite{HJLRV18}, and the same with MONA for Weak Second-Order
+Theory of One or Two Successors (nonelementary). Rather, these results
+\emph{inform} implementation techniques, e.g., symbolic techniques, etc.},
+which ranges between EXPSPACE (the same as in \cite{LB16,CCHLW18}) and
+non-elementary (i.e. cannot be bounded by towers of exponentials). 
+Finally, we extend our results to the world of symbolic automata/transducers
+\cite{BEK,symbolic-transducer,DV13,symbolic-transducer-power}, which are crucial for practical 
+applications requiring large alphabets (e.g.~UTF16).
 
 \input{auto-sanitisation}
