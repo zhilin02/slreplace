@@ -66,6 +66,15 @@ asks whether, for a given program $S$, there exist \emph{input} strings (i.e.
 instantiations of variables that do not appear in the left-hand side of an 
 assignment) that can successfully take
 $S$ to the end of the program while satisfying all the assertions. 
+The following is a simple example of a symbolic execution $S$
+\[
+        z_1 := x \concat \text{\texttt{ba}} \concat y;\ 
+        z_2 := y \concat \text{\texttt{ab}} \concat x;\
+        \ASSERT{z_1 == z_2};
+    \]
+which use string variables ($x$, $y$, and $z$'s) and string constants
+(letters \texttt{a} and \texttt{b}), and the concatenation operator ($\concat$).
+
 \OMIT{
 In general, it is useful to allow $f$ to be %\emph{partial} functions or, more
 %generally, 
