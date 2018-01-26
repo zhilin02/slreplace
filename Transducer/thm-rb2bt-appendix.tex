@@ -110,7 +110,7 @@ $x = a b c a b c$.
             & \qquad (x_3 = a\ b\ q_2\ c\ a\ b\ q_3\ c) \\
         x_4 &:=& \suffix(x_3);
             & \qquad (x_4 = a\ b\ c\ a\ q_4\ b\ q_3\ c) \\
-        x_5 &:=& \finalpass(x_4);
+        x_5 &:=& \finalpass(x_4)
             & \qquad (x_5 = a\ b\ c\ a\ q_4\ b\ c\ q_5) \\
     \end{array}
 \]
@@ -199,15 +199,15 @@ when $\Transducer$ performs $2k$ reversals.
         &\vdots& \\
         x_{2k-1} &:=& \prefix(x_{2k-2}); \\
         x_{2k} &:=& \suffix(x_{2k-1}); \\
-        x_{2k+1} &:=& \finalpass(x_{2k}) \\
+        x_{2k+1} &:=& \finalpass(x_{2k}); \\
         \\
         y_1 &:=& \Transducer_f(x_1); \\
         y'_2 &:=& \Transducer_b(x_2); \\
-        y_2 &:=& \reverse(y'_2) \\
+        y_2 &:=& \reverse(y'_2); \\
         &\vdots& \\
         y_{2k-1} &:=& \Transducer_f(x_{2k-1}); \\
         y'_{2k} &:=& \Transducer_b(x_{2k}); \\
-        y_{2k} &:=& \reverse(y'_{2k}) \\
+        y_{2k} &:=& \reverse(y'_{2k}); \\
         y_{2k+1} &:=& \Transducer_f(x_{2k+1}); \\
         \\
         y &:=& \concatpt(y_1, \ldots, y_{2k+1})
