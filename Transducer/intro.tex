@@ -34,7 +34,7 @@ crucially need constraint solvers over the string domain (a.k.a. \emph{string
 solvers}). This in fact has been one main reason behind the development of
 the theory, implementation, and symbolic execution applications of string constraint 
 solving in the past decade, e.g., see 
-\cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,Vijay-length,YABI14,Abdulla14,LB16,fang-yu-circuits,Abdulla17,CCHLW18,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,BCFJKKV08,RVG12,jalangi,expose}.
+\cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,Vijay-length,YABI14,Abdulla14,LB16,fang-yu-circuits,Abdulla17,CCHLW18,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12,jalangi,expose}.
 
 %\subsubsection*{
 \smallskip
@@ -62,14 +62,15 @@ left undefined, but will be instantiated as one explores algorithmic issues.
 The following is a simple example of a symbolic execution $S$
 which uses string variables ($x$, $y$, and $z$'s) and string constants
 (letters \texttt{a} and \texttt{b}), and the concatenation operator ($\concat$):
-\[
+\begin{equation}
         z_1 := x \concat \text{\texttt{ba}} \concat y;\quad 
         z_2 := y \concat \text{\texttt{ab}} \concat x;\quad
-        \ASSERT{z_1 == z_2};
-    \]
+        \ASSERT{z_1 == z_2}
+        \label{eq:intro_ex}
+\end{equation}
 %with additional assertions on the way. 
 %\mat{Should the ``straight-line'' restriction be explicitly defined?}
-The problem of \defn{path feasibility}\footnote{
+The problem of \defn{path feasibility/satisfiability}\footnote{
 %of a symbolic execution with string data type 
     This problem is equivalent to 
 satisfiability of string constraints in the framework of Satisfiability Modulo
@@ -87,10 +88,14 @@ e.g., the corresponding formula for the above example is
 We use the framework of Bjorner \emph{et al.} \cite{BTV09} 
 since many decidable string logics can be more naturally phrased in this
 way.}
-asks whether, for a given program $S$, there exist \emph{input} strings (i.e. 
-instantiations of variables that do not appear in the left-hand side of an 
-assignment) that can successfully take
+asks whether, for a given program $S$, there exist \emph{input} strings (e.g.
+%instantiations of variables that do not appear in the left-hand side of an 
+%assignment) 
+$x$ and $y$ in Example in (\ref{eq:intro_ex}))
+that can successfully take
 $S$ to the end of the program while satisfying all the assertions. 
+Example in (\ref{eq:intro_ex}) can be satisfied by
+assigning $y$ (resp.~$x$) to $\texttt{b}$ (resp.~the empty string). 
 
 
 \OMIT{
@@ -156,12 +161,15 @@ way.
 \smallskip
 \noindent
 \textbf{Decidable string constraint languages:}
-A central research theme in the past decade or so is to design an
+A central theme in string solving is to design an
 expressive string constraint language for symbolic executions of 
 string-manipulating
-programs that admits \emph{decidability}. This 
+programs that admits \emph{decidability}. 
+\OMIT{
+This 
 is tricky since it does not take much to obtain undecidability
 \cite{BTV09}. 
+}
 \OMIT{
 However, recent advances have been made by imposing 
 \emph{syntactic restrictions} on the shape of the formulas
@@ -169,8 +177,8 @@ However, recent advances have been made by imposing
 \cite{LB16,Abdulla14,Vijay-length}) that are still satisfied by string 
 constraints that arise in practice. 
 }
-Being a basic string operation,
-concatenation (+) is typically present in a string theory.
+Being the most basic string operation,
+concatenation is typically present in a string theory.
 Constraints in the \emph{theory of concatenation} 
 are symbolic executions (see (\ref{eq:symbex}))
 with concatenation of string constants/variables in the
@@ -178,9 +186,7 @@ assignment ($f$ in (\ref{eq:symbex})) and equality/disequality checks of
 variables in the assertions ($g$ in (\ref{eq:symbex})).
 %Concatenation (+) and string equality (=) are typically present in a string 
 %theory since they are the most basic string operations. 
-An example of a constraint in this theory can be found in the above remark, 
-which can be satisfied by
-assigning $y$ (resp.~$x$) to $\texttt{b}$ (resp.~the empty string). 
+Example in (\ref{eq:intro_ex}) is an instance of a constraint in this theory.
 %For example, the
 %expression $\varphi(x,y) \equiv\ x + \texttt{ba} + y = y + 
 %\texttt{ab} 
@@ -192,11 +198,12 @@ assigning $y$ (resp.~$x$) to $\texttt{b}$ (resp.~the empty string).
 The theory of concatenation was 
 not known to be decidable until the seminal
 paper by Makanin \cite{Makanin} on \emph{word equations}, followed by the
-extension by B\"{u}chi and Senger \cite{buchi} to all quantifier-free formulas.
+extension by B\"{u}chi and Senger \cite{buchi}.
 This decidability still holds even when
 \emph{regular constraints} (i.e. regular expression matching, e.g., 
 $y \in (\texttt{ab})^*$) --- useful to specify the set of ``bad'' strings ---
 are allowed as an assertion \cite{Schulz}. 
+Decidability becomes slightly problematic beyond this.
 %string operation (e.g. to specify the set of ``bad'' strings) which
 %can be incorporated to the theory of concatenation (as an assertion) without 
 %sacrificing decidability 
@@ -206,25 +213,59 @@ are allowed as an assertion \cite{Schulz}.
 %A couple of decades after Makanin's result
 %it was finally shown \cite{P04,J17} that the complexity of the theory of 
 %concatenation with regular expression matching is PSPACE-complete.
+
+%or the \emph{replaceall} function
+%(replacing every occurrence of a string matching a pattern with another
+%string) \cite{CCHLW18,fang-yu-circuits,YABI14,Stranger,S3,TCJ16} 
+
+Sanitisers (e.g. htmlescape and backslash-escape)
+and implicit browser transductions (e.g. innerHTML)
+are two types of string functions that are frequently used in client-side
+web applications. Many XSS vulnerabilities are caused by
+a subtle interactions between these functions and other parts of the
+applications, e.g., see \cite{web-model,Kern14,DV13,LB16,mXSS}. Two formal 
+models of such string functions have been proposed, each satisfying some
+good closure and algorithmic properties. The first model is 
+\emph{finite-state transductions}
+\cite{BEK,web-model,DV13,symbolic-transducer,LB16}, i.e.,
+finite-state automata that transform an input string to an output string. 
+The second model is the \emph{replaceall} function
+\cite{fang-yu-circuits,YABI14,Stranger,S3,TCJ16,Saner}, i.e.,
+replacing every occurrence of an input string matching a pattern with a constant
+string. The second model is less expressive than the first.
+Unfortunately, adding the replaceall function to
+the theory of concatenation (in the assignment of (\ref{eq:symbex})) results in 
+undecidability \cite{LB16}.
+
+
+\OMIT{
 However, there are many other useful string 
 operations including string length function
 \cite{Vijay-length,Berkeley-JavaScript}, replaceall
 function (replacing every occurrence of a string matching a pattern with another
 string) \cite{CCHLW18,fang-yu-circuits,YABI14,Stranger,S3,TCJ16}, 
-finite-state transductions \cite{LB16,BEK,web-model,DV13}, and casting 
-functions (e.g. conversions
-between integers and strings) \cite{GB16}. Adding them to the theory of 
-concatenation
+finite-state transductions \cite{LB16,BEK,web-model,DV13}.
+Adding them to the theory of concatenation
 either results in an undecidable string theory \cite{LB16,BFL13,GB16}
 or one whose decidability is a long-standing open problem \cite{Vijay-length}.
+}
 
-More recently, some decidable string logics with these additional string 
-operations have been obtained by imposing syntactic restrictions (solved forms
-\cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
-\cite{LB16}) on the shape of string constraints. All these 
-restrictions limit the way the equality operator relates string variables in 
-the constraints. For example, we obtain the decidable \emph{straight-line logic}
-\cite{LB16} if we remove string equality from an assertion, but we allow
+More recently, a decidable logic with these additional string 
+operations \cite{LB16} have been obtained by imposing 
+the \emph{straight-line restriction}, which is
+%syntactic restrictions (solved forms
+%\cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
+%\cite{LB16}) on the shape of string constraints. 
+a syntactic restriction on the shape of input constraints. This is done 
+by \emph{disallowing string equality checks in the assertions} $g$ in 
+(\ref{eq:symbex}). In other words, concatenation and finite-state transductions
+can be used in an assignment, while regular constraints can be used in
+assertions. Even with this restriction, the logic is still 
+sufficiently expressive
+to many examples that arise in practice \cite{LB16,HJLRV18}.
+%restrictions limit the way the equality operator relates string variables in 
+%the constraints. For example, we obtain the decidable \emph{straight-line logic}
+%\cite{LB16} if we remove string equality from an assertion, but we allow
 
 
 %
