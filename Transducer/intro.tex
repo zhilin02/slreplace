@@ -223,17 +223,19 @@ and implicit browser transductions (e.g. innerHTML)
 are two types of string functions that are frequently used in client-side
 web applications. Many XSS vulnerabilities are caused by
 a subtle interactions between these functions and other parts of the
-applications, e.g., see \cite{web-model,Kern14,DV13,LB16,mXSS}. Two formal 
-models of such string functions have been proposed, each satisfying some
-good closure and algorithmic properties. The first model is 
+applications, e.g., see \cite{web-model,Kern14,DV13,LB16,mXSS}. A formal 
+model of such string functions has been proposed which satisfies some
+good closure and algorithmic properties. This model is the class of
 \emph{finite-state transductions}
 \cite{BEK,web-model,DV13,symbolic-transducer,LB16}, i.e.,
 finite-state automata that transform an input string to an output string. 
+\OMIT{
 The second model is the \emph{replaceall} function
 \cite{fang-yu-circuits,YABI14,Stranger,S3,TCJ16,Saner}, i.e.,
 replacing every occurrence of an input string matching a pattern with a constant
 string. The second model is less expressive than the first.
-Unfortunately, adding the replaceall function to
+}
+Unfortunately, adding finite-state transductions to
 the theory of concatenation (in the assignment of (\ref{eq:symbex})) results in 
 undecidability \cite{LB16}.
 
@@ -263,6 +265,30 @@ can be used in an assignment, while regular constraints can be used in
 assertions. Even with this restriction, the logic is still 
 sufficiently expressive
 for many examples that arise in practice \cite{LB16,HJLRV18}.
+\OMIT{
+Even though the complexity of the logic is EXPSPACE-complete 
+\cite{LB16} (i.e. requires double exponential time in the worst case), 
+a fast solver \cite{HJLRV18} --- exploiting alternating
+automata and hardware verification --- has recently been developed.
+}
+
+Despite the expressive power of finite-state transducers, there are important
+string functions that they cannot model. We mention two examples. The first 
+example is 
+the 
+replaceall functions $\replaceall_p(sub,rep)$ where the replacement string 
+$rep$ is a \emph{variable}, i.e., replacing every occurrence of a string $s$ in
+subject $sub$ matching the pattern $p$ by $rep$. As argued in \cite{CCHLW18},
+such replaceall
+functions are important for modelling string functions used in web 
+templating like Mustache.js \cite{Mustache}. The more restricted replaceall
+functions where $rep$ is a string constant can be modelled by finite 
+transducers \cite{LB16}.
+%It was shown in \cite{CCHLW18} that
+%theory of concatenation with regular constraints and this general replaceall
+%function is decidable whenever the straight-line restriction is imposed.
+The second example is string reverse.
+
 %restrictions limit the way the equality operator relates string variables in 
 %the constraints. For example, we obtain the decidable \emph{straight-line logic}
 %\cite{LB16} if we remove string equality from an assertion, but we allow
@@ -281,5 +307,9 @@ for many examples that arise in practice \cite{LB16,HJLRV18}.
 %incorporate into a decidable theory over strings?}
 
 %Talk about symbolic execution. Dynamic symbolic execution.
+
+\smallskip
+\noindent
+\textbf{Contributions.} We
 
 \input{auto-sanitisation}
