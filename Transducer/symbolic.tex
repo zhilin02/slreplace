@@ -243,7 +243,7 @@ $(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
 \item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
 \item symbolic transitions $(q, \psi(x), q', \vec{t})$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
-$\vec{t}$ is a sequence of $\signature$-terms whose variables are from $\{x, y_1,\ldots, y_m\}$,
+$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ can occur, or $t_i = y_j$ for some $y_j \in Y$,
 %
 \item non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir, q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
 \end{itemize}
@@ -277,7 +277,9 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 %%%============================================
 
 
-\paragraph{Symbolic extension of the generic decision procedure.} To solve the path feasibility problem of string manipulating programs in SSA form, the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and \prerec{}' assumption presented below.
+\paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of data string manipulating programs in SSA form where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
+To solve the path feasibility problem of such data string manipulating programs,
+the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and \prerec{}' assumption presented below.
 
 \begin{definition}[Symbolic recognisable relations]
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
@@ -343,20 +345,24 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 }
 %%%=============================================================
 
-\paragraph{Symbolic extension of pre-image computation.}
+\paragraph{Instantiation of the generic decision procedure to \SSPT{}s.}
+
+%\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-Given a 2SPT $\Transducer$ and an \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolically recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
-$$\numtrans(\Aut') = 2^{O(\numtrans(\Transducer)\numtrans(\Aut) \log (\numtrans(\Transducer)\numtrans(\Aut)))},$$ 
-and 
-$$\sizetrans(\Aut') = \numtrans(\Transducer) \numtrans(\Aut)\sizetrans(\Transducer) \sizetrans(\Aut).$$
-On the other hand, if $\Transducer$ is an SPT, then $\numtrans(\Aut')$ and $\sizetrans(\Aut')$ are reduced to $O(\numtrans(\Transducer)\numtrans(\Aut))$ and $O(\sizetrans(\Transducer) \sizetrans(\Aut))$ repsectively.
+The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c |\Aut|_c |\Transducer|_d |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = \bigO(|\Transducer|_c |\Aut|_c)$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d)$.
+%
+%Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
+%$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
+%and 
+%$|\Aut'|_d = |\Transducer|_c |\Aut|_c |\Transducer|_d |\Aut|_d.$
+%On the other hand, if $\Transducer$ is an \SPT, then $|\Aut'|_c$ and $|\Aut'|_d$ are reduced to $\bigO(|\Transducer|_c |\Aut|_c)$ and $\bigO(|\Transducer|_d |\Aut|_d)$ respectively.
 \end{lemma}
 
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}
-path feasibility of $\straightlinesym[\twspt]$ can be decided in $M + f(M)$ space, where $M = 2^{\left. 2^{\ldots ^{2^{O(p(|\varphi| |\psi|))}} }\right\}\rcdep(\varphi)}$ for some polynomial $p$. On the other hand,  path feasibility of $\straightlinesym[\owspt]$ can be decided in $N+ f(N)$ space, where $N = |\psi| 2^{O(|\varphi|\log |\varphi|)}$.
+The path feasibility of data string manipulating programs, where the string functions $f$ are given by \SSPT{}s, can be decided in $M + f(M)$ space, where $M = 2^{\left. 2^{\ldots ^{2^{O(p(|\varphi| |\psi|))}} }\right\}\rcdep(\varphi)}$ for some polynomial $p$. On the other hand,  the path feasibility for \SPT{}s can be decided in $N+ f(N)$ space, where $N = |\psi| 2^{O(|\varphi|\log |\varphi|)}$.
 \end{theorem}
 
 
