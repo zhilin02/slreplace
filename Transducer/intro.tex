@@ -59,13 +59,40 @@ where $f: (\Sigma^*)^n \to \Sigma^*$ and $g: (\Sigma^*)^n \to \{0,1\}$ are
 some partial string functions. 
 The syntaxes for the functions $f$ and $g$ are now
 left undefined, but will be instantiated as one explores algorithmic issues.
+The following is a simple example of a symbolic execution $S$
+which uses string variables ($x$, $y$, and $z$'s) and string constants
+(letters \texttt{a} and \texttt{b}), and the concatenation operator ($\concat$):
+\[
+        z_1 := x \concat \text{\texttt{ba}} \concat y;\quad 
+        z_2 := y \concat \text{\texttt{ab}} \concat x;\quad
+        \ASSERT{z_1 == z_2};
+    \]
 %with additional assertions on the way. 
 %\mat{Should the ``straight-line'' restriction be explicitly defined?}
-The problem of \defn{path feasibility}
+The problem of \defn{path feasibility}\footnote{
+%of a symbolic execution with string data type 
+    This problem is equivalent to 
+satisfiability of string constraints in the framework of Satisfiability Modulo
+Theories (SMT) \cite{SMT-CACM,SMT-chapter,KS08}.
+%can be viewed as constraints over the 
+%string domain 
+To see this, simply convert a symbolic execution $S$ 
+into a \emph{Static Single Assignment} (SSA) form (i.e. introduce a new 
+variable 
+on the left hand side of each assignment) and treat assignments as equality,
+e.g., the corresponding formula for the above example is
+        $z_1 = x + \text{\texttt{ba}} + y \wedge
+        z_2 = y + \text{\texttt{ab}} + x\ \wedge
+        z_1 = z_2$.
+We use the framework of Bjorner \emph{et al.} \cite{BTV09} 
+since many decidable string logics can be more naturally phrased in this
+way.}
 asks whether, for a given program $S$, there exist \emph{input} strings (i.e. 
 instantiations of variables that do not appear in the left-hand side of an 
 assignment) that can successfully take
 $S$ to the end of the program while satisfying all the assertions. 
+
+
 \OMIT{
 In general, it is useful to allow $f$ to be %\emph{partial} functions or, more
 %generally, 
@@ -83,19 +110,12 @@ program.
 }
 
 
+\OMIT{
 \smallskip
 \noindent
 \fbox{\parbox{0.96\textwidth}{
     \textbf{Remark.}
-Path feasibility of a symbolic execution with string data type is equivalent to 
-satisfiability of string constraints in the framework of Satisfiability Modulo
-Theories (SMT) \cite{SMT-CACM,SMT-chapter,KS08}.
-%can be viewed as constraints over the 
-%string domain 
-To see this, simply convert a symbolic execution $S$ 
-into a \emph{Static Single Assignment} (SSA) form (i.e. introduce a new 
-variable 
-on the left hand side of each assignment) and treat assignments as equality. 
+
 Below is an example of the conversion from a symbolic execution (left)
 to a string constraint (right). They contain variables ($x$, $y$, and $z$'s)
 and string constants (letters \texttt{a} and \texttt{b}),
@@ -129,6 +149,7 @@ as well as the concatenation operator (+).
 In the sequel, we will use framework of Bjorner \emph{et al.} \cite{BTV09} 
 since most decidable string logics can be more naturally phrased in this
 way.
+}
 }
 }
 
