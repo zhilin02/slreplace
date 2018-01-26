@@ -72,12 +72,12 @@ which uses string variables ($x$, $y$, and $z$'s) and string constants
 %\mat{Should the ``straight-line'' restriction be explicitly defined?}
 The problem of \defn{path feasibility/satisfiability}\footnote{
 %of a symbolic execution with string data type 
-    This problem is equivalent to 
-satisfiability of string constraints in the framework of Satisfiability Modulo
-Theories (SMT) \cite{SMT-CACM,SMT-chapter,KS08}.
+    This is equivalent to 
+satisfiability of string constraints in the framework of SMT
+\cite{SMT-CACM,SMT-chapter,KS08}.
 %can be viewed as constraints over the 
 %string domain 
-To see this, simply convert a symbolic execution $S$ 
+Simply convert a symbolic execution $S$ 
 into a \emph{Static Single Assignment} (SSA) form (i.e. introduce a new 
 variable 
 on the left hand side of each assignment) and treat assignments as equality,
@@ -85,9 +85,8 @@ e.g., the corresponding formula for the above example is
         $z_1 = x + \text{\texttt{ba}} + y \wedge
         z_2 = y + \text{\texttt{ab}} + x\ \wedge
         z_1 = z_2$.
-We use the framework of Bjorner \emph{et al.} \cite{BTV09} 
-since many decidable string logics can be more naturally phrased in this
-way.}
+Many decidable string logics can be more naturally phrased in terms of
+path feasibility.}
 asks whether, for a given program $S$, there exist \emph{input} strings (e.g.
 %instantiations of variables that do not appear in the left-hand side of an 
 %assignment) 
@@ -196,14 +195,14 @@ Example in (\ref{eq:intro_ex}) is an instance of a constraint in this theory.
 %It can be satisfied by the assignment $y$ (resp.~$x$) is mapped to $\texttt{b}$
 %(resp.~the empty string). 
 The theory of concatenation was 
-not known to be decidable until the seminal
+proven to be decidable in the seminal
 paper by Makanin \cite{Makanin} on \emph{word equations}, followed by the
 extension by B\"{u}chi and Senger \cite{buchi}.
-This decidability still holds even when
+This decidability holds even when
 \emph{regular constraints} (i.e. regular expression matching, e.g., 
 $y \in (\texttt{ab})^*$) --- useful to specify the set of ``bad'' strings ---
 are allowed as an assertion \cite{Schulz}. 
-Decidability becomes slightly problematic beyond this.
+%Decidability becomes slightly problematic beyond this.
 %string operation (e.g. to specify the set of ``bad'' strings) which
 %can be incorporated to the theory of concatenation (as an assertion) without 
 %sacrificing decidability 
@@ -318,16 +317,20 @@ The second example is string reverse.
 \textbf{Contributions.} The main results in this paper can be summarised
 as follows. We introduce \emph{parametric 
 transducers}, an expressive formalism for modelling string functions 
-$f: (\ialphabet^*)^k \to \ialphabet^*$ with multiple inputs and
-strictly generalises finite-state transducers ($k=1$). In addition, not only can parametric
+$f: (\ialphabet^*)^k \to \ialphabet^*$ with multiple inputs. Parametric
+transducers strictly generalise the standard finite transducers (which take only
+one input) by allowing: (1) parameters $x_2,\ldots,x_k$ in the output
+(the first argument of $f$ is placed on the input tape), 
+and (2) transducers head pointing to the input tape to move in two directions
+(left/right). In addition, not only can parametric
 transducers model the $\replaceall_p(sub,rep)$ function, string reverse, and
-string concatenation,
+concatenation,
 they can also model string functions required in \emph{context-sensitive
 auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Closure 
 \cite{Closure} and Handlebars \cite{Handlebars}.  We show decidability of path 
 feasibility of symbolic executions that use parametric transducers in an 
 assignment and regular constraints in an assertion. This strictly generalises 
-the decidability results of the subcase of basic finite transducers \cite{LB16}
+the decidability of the subcases of basic finite transducers \cite{LB16}
 and replaceall \cite{CCHLW18}. We also provide a detailed complexity 
 analysis\footnote{
 Note that
@@ -337,8 +340,8 @@ language with finite-state transducers (EXPSPACE-complete) has been
 implemented \cite{HJLRV18}, and the same with MONA for Weak Second-Order
 Theory of One or Two Successors (nonelementary). Rather, these results
 \emph{inform} implementation techniques, e.g., symbolic techniques, etc.},
-which ranges between EXPSPACE (the same as in \cite{LB16,CCHLW18}) and
-non-elementary (i.e. cannot be bounded by towers of exponentials). 
+which ranges between EXPSPACE (same as in \cite{LB16,CCHLW18}) and
+nonelementary (i.e. cannot be bounded by towers of exponentials). 
 Finally, we extend our results to the world of symbolic automata/transducers
 \cite{BEK,symbolic-transducer,DV13,symbolic-transducer-power}, which are crucial for practical 
 applications requiring large alphabets (e.g.~UTF16).
