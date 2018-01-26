@@ -238,6 +238,20 @@ string. The second model is less expressive than the first.
 Unfortunately, adding finite-state transductions to
 the theory of concatenation (in the assignment of (\ref{eq:symbex})) results in 
 undecidability \cite{LB16}.
+More recently, a decidable logic with these additional string 
+operations \cite{LB16} has been obtained by imposing 
+the \emph{straight-line restriction}. %, which is
+%syntactic restrictions (solved forms
+%\cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
+%\cite{LB16}) on the shape of string constraints. 
+%a syntactic restriction on the shape of input constraints. 
+This is done 
+by \emph{disallowing string equality checks in the assertions} $g$ in 
+(\ref{eq:symbex}). In other words, concatenation and finite-state transductions
+can be used in an assignment, while regular constraints can be used in
+assertions. Even with this restriction, the logic is still 
+sufficiently expressive
+for many examples that arise in practice \cite{LB16,HJLRV18}.
 
 
 \OMIT{
@@ -252,19 +266,7 @@ either results in an undecidable string theory \cite{LB16,BFL13,GB16}
 or one whose decidability is a long-standing open problem \cite{Vijay-length}.
 }
 
-More recently, a decidable logic with these additional string 
-operations \cite{LB16} have been obtained by imposing 
-the \emph{straight-line restriction}, which is
-%syntactic restrictions (solved forms
-%\cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
-%\cite{LB16}) on the shape of string constraints. 
-a syntactic restriction on the shape of input constraints. This is done 
-by \emph{disallowing string equality checks in the assertions} $g$ in 
-(\ref{eq:symbex}). In other words, concatenation and finite-state transductions
-can be used in an assignment, while regular constraints can be used in
-assertions. Even with this restriction, the logic is still 
-sufficiently expressive
-for many examples that arise in practice \cite{LB16,HJLRV18}.
+
 \OMIT{
 Even though the complexity of the logic is EXPSPACE-complete 
 \cite{LB16} (i.e. requires double exponential time in the worst case), 
