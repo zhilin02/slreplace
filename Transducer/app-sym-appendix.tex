@@ -1,7 +1,7 @@
 %!TEX root = main.tex
 \section{Details in Section~\ref{sec:symbolic}}\label{app-sym}
 
-\subsection{Proof of the first result in Proposition~\ref{prop-2nsa}}
+\subsection{The construction of an equivalent \SA{} from a \SSA{}(the first result of Proposition~\ref{prop-2nsa})}
 
 Let $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a \SSA. We show how to construct an equivalent \SA{} $\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$.
 W.l.o.g., we assume that for each transition $(q, \psi, dir, q') \in \transrel$, we have $dir \in \{\Left,\Right\}$. Every \SSA{} can be turned into one satisfying the assumption as follows: Replace each transition $(q, \psi, \Stay, q') \in \transrel$ with the following three transitions $(q, \psi, \Right, q'')$, $(q'', \ltrue, \Left, q')$, and $(q'', \EndRight, \Left, q')$, where $q''$ is a fresh state.
@@ -112,7 +112,7 @@ $$
 %%%====================================================================
 %%%====================================================================
 
-\subsection{Complexity analysis for Theorem~\ref{thm-generic-dec-symbolic}}
+\subsection{Complexity of the generic decision procedure (Theorem~\ref{thm-generic-dec-symbolic})}
 
 For each $i$, 
 %\begin{itemize}
@@ -198,9 +198,98 @@ for some constant $r > 0$.
 %%%========================================
 %%%========================================
 
-\subsection{Proof of Lemma~\ref{lem-spt}}
+\subsection{Proof of Lemma~\ref{lem-spt}: \prerec' assumption for \SSPT{}s and \SPT{}s}
+
+We first consider \SSPT{}s. 
+
+Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_k\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), S')$ with $S' \subseteq Q' \times Q'$. 
+
+Similarly to \FFA{}s, for $q \in F$ and  $S_{y_1}, \cdots, S_{y_k} \subseteq Q' \times Q'$, we  introduce a conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q} = ((\controls'', \transrel''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S'\}$, and the transition relation $\transrel''$ comprises the tuples 
+$((q_1, q'_1), \psi(x), dir, (q_2, q'_2))$ such that there are $\psi_0(x) \in \Psi$ and $\vec{t}$ satisfying that $(q_1, \psi_0(x), dir, q_2, \vec{t}) \in \transrel$, and one of the following constraints holds, 
+\begin{itemize}
+\item $\vec{t} = t_1(x) \ldots t_r(x)$ is a sequence of $\signature$-terms, there are transitions 
+$$(p_{0}, \psi_1(x), p_{1}), \ldots, (p_{r-1}, \psi_r(x), p_r) \in \transrel'$$ 
+such that $p_0 = q'_1$, $p_r = q'_2$, and $\psi = \psi_0 \wedge \psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_r(x)/x]$,
+%
+\item $\vec{t} = \vec{t}_1 y_{i_1} \ldots \vec{t}_{r} y_{i_{r}} \vec{t}_{r+1}$ such that $r \ge 1$, $\vec{t}_j = t_{j, 1} \ldots t_{j, s_j}$ is a sequence of $\signature$-terms for each $j \in [r+1]$,  and $i_j \in [k]$ for each $j \in [r]$, let $N = (\sum \limits_{j \in [r]} (s_j+ 1)) +s_{r+1}$, then there are states $p_0, \ldots, p_{N} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{N} = q'_2$,  
+%
+$$
+\begin{array}{l}
+p_0 \xrightarrow[\Aut]{\psi_{1,1}} p_1\ \ldots\ p_{|\vec{t}_1|-1} \xrightarrow[\Aut]{\psi_{1, s_1}} p_{|\vec{t}_1|} \xrightarrow{S_{y_{i_1}}} p_{|\vec{t}_1|+1}\ \ldots\\
+p_{N - s_{r+1} - s_r -1} \xrightarrow[\Aut]{\psi_{r, 1}} p_{N - s_{r+1} - s_r } \ \ldots\ p_{N - |\vec{t}_{r+1}| - 2} \xrightarrow[\Aut]{\psi_{r, s_r}} p_{N-s_{r+1}-1}\\
+ \xrightarrow{S_{y_{i_r}}} p_{N- s_{r+1}} \xrightarrow[\Aut]{\psi_{r+1, 1}} p_{N -s_{r+1}+1}\ \ldots\ p_{N - 1} \xrightarrow[\Aut]{\psi_{r+1,  s_{r+1}} } p_{N},
+\end{array}
+ $$ 
+ and $\psi = \psi_0 \wedge \bigwedge \limits_{j \in [r+1], j' \in [s_j]} \psi_{j, j'} [\vec{t}_{j, j'}(x)/x].$
+\end{itemize}
+%
+%
+%\item Define $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ as $((Q''', \delta'''), S')$, where $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (q'_1,q'_2) \in S, \vec{\rho}_1[1] =(q_0,q'_1), \vec{\rho}_2[|\vec{\rho}_2|] = (q, q'_2) \}$.
+%\end{enumerate} 
+Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\signature$-terms in transitions of $\Transducer$. Then 
+\begin{itemize}
+\item the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c^{L} \le |\Transducer|_c |\Aut|_c^{|\Transducer|_c}$,
+\item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_r(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_d + L |\Transducer|_d |\Aut|_d \le |\Transducer|^2_d |\Aut|_d$.
+\end{itemize}
+%It is easy to see that  the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c $ and $|S''| = |S'|$.   
+
+%For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
+
+Therefore, $\Pre_\Transducer(\Aut)$ is equal to 
+\[
+\bigcup_{S_{y_1}, \cdots, S_{y_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k},q}) \times \Lang(\Aut[S_{y_1}]) \times \cdots  \times \Lang(\Aut[S_{y_k}])\]
+
+We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation. 
+
+In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}$ to a union of conjunctive \SA{}s as follows: Transform $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ into a one-way transition graph $(\controls''',\delta''')$. From Proposition~\ref{prop-2nsa}, $\controls'''$ are vectors of transitions of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ of lengths at most $2|\controls''|-1$. Then $\Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] = ((q_0, p), -, -)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (-, -, (q, p'))$.
+%that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
+
+From Proposition~\ref{prop-2nsa}, 
+the control size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
+$ 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$, 
+and the data size of  each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
+$ \bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} |\Transducer|^2_d |\Aut|_d )$. 
+We conclude that 
+the \prerec{}' assumption holds for string functions definable in \SSPT{}s with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c} |\Transducer|^2_d |\Aut|_d)$.
+On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = \bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 
 
 %%%========================================
 %%%========================================
-\subsection{Complexity analysis for Theorem~\ref{thm-spt}}
+\subsection{Complexity analysis for Theorem~\ref{thm-spt}: Path feasibility for \SSPT{}s and \SPT{}s}
+
+Let us first consider \SSPT{}s.
+
+From Lemma~\ref{lem-spt}, we deduce that 
+$$
+\begin{array}{l c l}
+\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)) &=& \tower(\rcdep(S), \bigO((\rcphi_c(S))^2 (\rcpsi_c(S))^{\rcphi_c})) \\
+& \le &  \tower(\rcdep(S)+1, \bigO(|S|^2)).
+\end{array}
+$$
+and
+$$
+\begin{array}{l l}
+& (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S), \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S)) \\
+%=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
+\le &  \tower(\rcdep(S), \bigO(|S|^2)).
+\end{array}
+$$
+Therefore, according to Theorem~\ref{thm-generic-dec-symbolic},  the path feasibility problem for \SSPT{}s can be solved in nondeterministic 
+$$\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$$
+ space.
+ 
+ For \SPT{}s, 
+ $$
+\begin{array}{l c l}
+\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)) &=& |S|^{|S|^{\bigO(\rcdep(S))}},
+\end{array}
+$$
+and
+$$
+(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S), \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S)) = |S|^{\bigO(\rcdep(S))}.
+%=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
+$$
+From according to Theorem~\ref{thm-generic-dec-symbolic}, the path feasibility problem for \SPT{}s can be solved in nondeterministic 
+$|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$
+space.

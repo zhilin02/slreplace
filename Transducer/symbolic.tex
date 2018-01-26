@@ -219,8 +219,8 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 %
-The size of a symbolic transition $(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x))$ in a \SSA{} with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
-The control size $|\Transducer|_c$ and the data size $|\Transducer|_d$ of \SST{}s are defined similarly to those of \SSA{}s. 
+We define $|\Transducer|_c$ and $|\Transducer|_d$, the control and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_c$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$. 
+On the other hand, $|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
 
@@ -346,12 +346,14 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 }
 %%%=============================================================
 
-\paragraph{Instantiation of the generic decision procedure to \SSPT{}s.}
+\paragraph{Instantiation of the generic decision procedure to \SSPT{}s and \SPT{}s.}
+
+Note that for illustration purpose, we choose not to instantiate the decision procedure to $k$-RB2SPTs here.
 
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c |\Transducer|_d |\Aut|_c  |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = \bigO(|\Transducer|_c |\Aut|_c)$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d)$.
+The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c  |\Transducer|^2_d |\Aut|_c^{|\Transducer|_c} |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) =\bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
@@ -363,7 +365,7 @@ The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}\label{thm-spt}
-The path feasibility of data string manipulating programs, where the data string functions are given by \SSPT{}s, can be decided in nondeterministic $\tower(\rcdep(S), \bigO(|S|^r)) + \beta(\tower(\rcdep(S), \bigO(|S|^r)) )$  space for some constant $r > 0$. On the other hand,  the path feasibility for \SPT{}s can be decided in nondeterministic $|S|^{\bigO(\rcdep(S))}+ \beta(|S|^{\bigO(\rcdep(S))})$ space.
+The path feasibility of data string manipulating programs, where the data string functions are given by \SSPT{}s, can be decided in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space. On the other hand,  the path feasibility for \SPT{}s can be decided in nondeterministic $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$ space.
 \end{theorem}
 
 
