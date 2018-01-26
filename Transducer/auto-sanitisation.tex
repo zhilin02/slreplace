@@ -1,57 +1,51 @@
 
-\paragraph{Google Closure Example}
+\paragraph{Context-Aware Transductions}
 
 Web pages are often constructed using templating systems such as Mustache.js or Google Closure.
-In these systems, a template HTML file contains identifiers that are instantiated with values before the page is served.
-A simple Google Closure template is give in Figure~\ref{fig:closure}.
-In this example, the template will be instantiated by providing the values of the \linkvar\ and \linktextvar\ variables.
-It is straightforward to see how this may be naively handled by a parametric transducer:
-the input variables will be \linkvar\ and \linktextvar, and the input string will be the template.
-Then, whenever the transducer reads the text \mintinline{html}|{$link}|, it outputs the value of the variable \linkvar, and similarly for \linktextvar.
+Template HTML contains variables that are instantiated before the page is served.
+A simple template is given in Figure~\ref{fig:closure}\ref{fig:closure-eg} with variables \linkvar\ and \linktextvar.
+A parametric transducer can instantiate the variables with provided values easily enough, but, templating systems may also provide an ``auto-escape'' feature.
+That is, the contents of the replaced variable will be ``escaped'' so that special characters (or sequences) which may allow code injection are replaced with safe alternatives to avoid attack.
+
+For example, if \linkvar\ had the value \mintinline{js}{javascript: alert(1337)}, clicking the link in the instantiated template would run the JavaScript code \mintinline{js}{alert(1337)}.
+To avoid this, Closure wraps URLs beginning with \mintinline{html}{javascript:} in single quotes.
+Providing the value \mintinline{html}{<script>alert(1337)</script>} to \linktextvar\ would have a similar effect, but this time Closure replaces \texttt{<} with \texttt{\&lt;} and \texttt{>} with \texttt{\&gt;}.
 
 \begin{figure}
-    \begin{minted}{html}
-            {template .closure-example}
-                <a href="{$link}">{$linkText}</a>
-            {/template}
-    \end{minted}
-    \caption{\label{fig:closure}A simple Google Closure template.}
+\begin{center}
+\begin{minipage}{.75\linewidth}
+\begin{enumerate}[(a)]
+\item \label{fig:closure-eg}
+\begin{minted}{html}
+<a href="{$li}"> {$txt} </a>
+\end{minted}
+\item \label{fig:closure-tagged}
+\begin{minted}{html}
+<a href="[URL]javascript: alert(1337)[LRU]">
+    [HTML]<script>alert(1337)</script>[HTML] </a>
+\end{minted}
+\item \label{fig:closure-safe}
+\begin{minted}{html}
+<a href="'javascript: alert(1337)'">
+    &lt;script&gt;alert(1337)&lt;/script&gt; </a>
+\end{minted}
+\end{enumerate}
+\end{minipage}
+\end{center}
+\vspace{-3ex}
+\caption{\label{fig:closure}A simple template (\ref{fig:closure-eg}) with two transduction steps (\ref{fig:closure-tagged}, \ref{fig:closure-safe}).}
 \end{figure}
 
-However, Closure is not quite so naive and provides an ``auto-escaping'' feature.
-That is, the contents of the replaced variable will be ``escaped'', which means that special characters or character sequences which may allow code injection are replaced with safe alternatives to avoid attack.
-One such example attack would be if \linkvar\ had the value \mintinline{js}{javascript: alert(1337)}.
-In this case, the link in the instantiated template would run the JavaScript code \mintinline{js}{alert(1337)} when the user clicks on the link.
-To prevent this, Closure would make the code safe by wrapping any URL beginning with \mintinline{html}{javascript:} in single quotes.
-Providing the value \mintinline{html}{<script>alert(1337)</script>} to \linktextvar\ would have a similar effect.
-Closure would make the instantiation safe by replacing \texttt{<} with \texttt{\&lt;} and \texttt{>} with \texttt{\&gt;}.
-
-A key point is that the transduction Closure applies to an input variable depends on the context in which the variable occurs.
-In this example, \linkvar\ appears in a URL context, while \linktextvar\ appears in an HTML context.
-To be able to model the behaviour of Closure in our constraint language, we need to handle these context-aware transductions.
-
-This can be done in two steps using two transducers.
-In the first, the transducer replaces the variables with their supplied values, but surrounds them with special markers that indicate that the text inside needs to be subject to another transduction.
-For our example, let these be \urlstarttag, \urlendtag, \htmlstarttag, and \htmlendtag.
-The result of the first transduction is shown in Figure~\ref{fig:closure-step-one}.
+A key point is that the safe transduction depends on the context of the variable:
+the escaping in a URL context is different to that in an HTML context.
+We can model this using two transducers.
+The first transducer instantiates the variables, but surrounds them with markers to indicate that the text inside needs to be escaped
+(Figure~\ref{fig:closure}\ref{fig:closure-tagged});
+we use \urlstarttag, \urlendtag, \htmlstarttag, and \htmlendtag.
 Since transducers are a generalisation of finite automata, they are able to identify contexts using regular languages.
-\mat{
-    I check -- the implementation of closure uses the parsed syntax tree, so is at least context free.
-    Do we leave this as is, or make an effort to say we can over-approximate with regular languages?
-}
-
-\begin{figure}
-    \begin{minted}{html}
-            <a href="[URL]javascript: alert(1337)[LRU]">
-                [HTML]<script>alert(1337)</script>[HTML]
-            </a>
-    \end{minted}
-    \caption{\label{fig:closure-step-one}The template after step 1 of the transductions.}
-\end{figure}
-
-The second step of the modelling applies a transducer which applies the appropriate safe transductions to the text inside the \urlstarttag, \urlendtag, \htmlstarttag, and \htmlendtag markers.
-For the URL context, any text starting with \texttt{javascript:} will be surrounded by quotes, while in the HTML context, instances of \texttt{<} and \texttt{>} will be replaced by \texttt{\&lt;} and \texttt{\&gt;} respectively.
-The result is shown in Figure~\ref{fig:closure-safe}.
+The second transducer then applies the appropriate safe transductions inside the markers.
+For the URL context, values starting with \texttt{javascript:} will be quoted, while in HTML, instances of \texttt{<} and \texttt{>} are replaced by \texttt{\&lt;} and \texttt{\&gt;} respectively.
+The result is shown in Figure~\ref{fig:closure}\ref{fig:closure-safe}.
 
 \mat{
     One might worry that identifying text starting with \texttt{javascript:} means the transudcer needs to keep a buffer of the input string, leading to large transducers.
@@ -60,14 +54,5 @@ The result is shown in Figure~\ref{fig:closure-safe}.
     It would also apply to contexts that need to see the text after the variable to confirm the (guessed) context is the right one.
 }
 
-\begin{figure}
-    \begin{minted}{html}
-            <a href="'javascript: alert(1337)'">
-                &lt;script&gt;alert(1337)&lt;/script&gt;
-            </a>
-    \end{minted}
-    \caption{\label{fig:closure-safe}A safely instantiated template.}
-\end{figure}
 
-\mat{Should i give a formula in our constraint language?}
 
