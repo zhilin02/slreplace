@@ -329,20 +329,23 @@ they can also model string functions required in \emph{context-sensitive
 auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Closure 
 \cite{Closure} and Handlebars \cite{Handlebars}.  We show decidability of path 
 feasibility of symbolic executions that use parametric transducers in an 
-assignment and regular constraints in an assertion. This strictly generalises 
+assignment and regular constraints in an assertion. Our constraint language
+is one of the most expressive decidable string languages for symbolic executions
+of programs with strings, and strictly generalises 
 the decidability of the subcases of basic finite transducers \cite{LB16}
 and replaceall \cite{CCHLW18}. We also provide a detailed complexity 
 analysis\footnote{
-Note that
-these \emph{worst-case complexity} results do not prohibit fast solvers 
-\emph{in practice}, e.g., a fast solver for the straight-line constraint
-language with finite-state transducers (EXPSPACE-complete) has been
-implemented \cite{HJLRV18}, and the same with MONA for Weak Second-Order
-Theory of One or Two Successors (nonelementary). Rather, these results
-\emph{inform} implementation techniques, e.g., symbolic techniques, etc.},
+\emph{Worst-case complexity} results of course do not prohibit fast solvers 
+\emph{in practice}, e.g., SLOTH for the straight-line 
+logic with finite transducers (EXPSPACE) 
+\cite{HJLRV18}, and MONA for Weak Second-Order
+Theory of Successors (nonelementary). Rather, they
+\emph{inform} algorithmic techniques that could work in practice, e.g., 
+symbolic techniques.},
 which ranges between EXPSPACE (same as in \cite{LB16,CCHLW18}) and
-nonelementary (i.e. cannot be bounded by towers of exponentials). 
-Finally, we extend our results to the world of symbolic automata/transducers
+nonelementary (i.e. time complexity cannot be bounded by towers of 
+exponentials). 
+Finally, we extend our results to symbolic automata/transducers
 \cite{BEK,symbolic-transducer,DV13,symbolic-transducer-power}, which are crucial for practical 
 applications requiring large alphabets (e.g.~UTF16).
 
