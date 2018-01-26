@@ -295,9 +295,10 @@ a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is 
 %\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
 \end{quote} 
 %
-Here $|f|_c$ and $|f|_d$ are the control and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later.
+Here $|f|_c$ and $|f|_d$ are the control and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_c |f|_d$ (resp. $|\Aut|_c |\Aut|_d$).
 
-Let $S$ be a data string manipulating program in SSA form.  Then $\rcdep(S)$ and $\rcdim(S)$ are defined similarly to the string setting. Moreover, we use $\rcphi_c(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_c$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, moreover, we use $\rcpsi_c(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_c$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
+Let $S$ be a data string manipulating program in SSA form.  We use $|S|$ to denote the sum of $|f|$ and $|\Aut|$ for data string functions $f$ and \SA{}s $\Aut$ occurring in $S$.  
+For refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_c(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_c$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, and $\rcpsi_c(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_c$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
 
 
 %Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
@@ -350,7 +351,7 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c |\Aut|_c |\Transducer|_d |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = \bigO(|\Transducer|_c |\Aut|_c)$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d)$.
+The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c |\Transducer|_d |\Aut|_c  |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = \bigO(|\Transducer|_c |\Aut|_c)$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d)$.
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
@@ -361,8 +362,8 @@ The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|
 
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
-\begin{theorem}
-The path feasibility of data string manipulating programs, where the string functions $f$ are given by \SSPT{}s, can be decided in $M + f(M)$ space, where $M = 2^{\left. 2^{\ldots ^{2^{O(p(|\varphi| |\psi|))}} }\right\}\rcdep(\varphi)}$ for some polynomial $p$. On the other hand,  the path feasibility for \SPT{}s can be decided in $N+ f(N)$ space, where $N = |\psi| 2^{O(|\varphi|\log |\varphi|)}$.
+\begin{theorem}\label{thm-spt}
+The path feasibility of data string manipulating programs, where the data string functions are given by \SSPT{}s, can be decided in nondeterministic $\tower(\rcdep(S), \bigO(|S|^r)) + \beta(\tower(\rcdep(S), \bigO(|S|^r)) )$  space for some constant $r > 0$. On the other hand,  the path feasibility for \SPT{}s can be decided in nondeterministic $|S|^{\bigO(\rcdep(S))}+ \beta(|S|^{\bigO(\rcdep(S))})$ space.
 \end{theorem}
 
 
