@@ -284,8 +284,8 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 \paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of \emph{data} string manipulating programs in SSA form 
 \tl{do we need to introduce formally?}
  where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
-To solve the path feasibility problem of such data string manipulating programs,
-the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and the $\mathbb{S}$\prerec{} assumption presented below.
+To solve the path feasibility problem for data string manipulating programs,
+we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations and the $\mathbb{S}$\prerec{} assumption presented below.
 
 \begin{definition}[Symbolic recognisable relations]
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
@@ -295,7 +295,7 @@ Similar to recognisable relations, we also represent a  $k$-ary symbolic recogni
 
 \begin{quote}
 {\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
-a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_c)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
+a representation of $\Pre_{R_f}(\Aut)$, whose structural size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_c)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
 %the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
 %
 %\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
@@ -304,7 +304,7 @@ a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is 
 Here $|f|_s$ and $|f|_d$ are the structural and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_s \cdot |f|_d$ (resp. $|\Aut|_s \cdot |\Aut|_d$).
 
 Let $S$ be a data string manipulating program in SSA form.  We use $|S|$ to denote the sum of $|f|$ and $|\Aut|$ for data string functions $f$ and \SA{}s $\Aut$ occurring in $S$.  
-For refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_s(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_s$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, and $\rcpsi_s(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_s$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
+For a refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_s(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_s$ (resp. $|f|_d$) for data string functions $f$ occurring in the assignments of $S$, and $\rcpsi_s(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_s$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
 
 
 %Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
@@ -359,7 +359,7 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|^2_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
+The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|^2_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
 
 The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 %
@@ -373,10 +373,21 @@ The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transduce
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}\label{thm-spt}
-The path feasibility of data string manipulating programs, where the data string functions are given by \SSPT{}s, can be decided in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space. On the other hand,  the path feasibility for \SPT{}s can be decided in nondeterministic $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$ space.
+The path feasibility of data string manipulating programs can be decided 
+
+\begin{itemize}
+	\item in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space if the data string functions are given by \SSPT{}s;
+	
+	\item  in nondeterministic $|S|^{|S|^{\bigO(k\cdot \rcdep(S))}} + \beta(|S|^{|S|^{\bigO(k\cdot \rcdep(S))}})$ space if the data string functions are given by $k$-RB2SPTs. %\SPT{}s;
+	
+\end{itemize}
+%
+%where 
+%
+%The path feasibility for \SPT{}s can be decided
 \end{theorem}
 %Note that for illustration purpose, we choose not to instantiate the decision procedure to  here.
-Similar instantiations can be done for $k$-RB2SPTs along the same line as in Section~\ref{subsec:krb}, which we omit for simplicity. 
+%Similar instantiations can be done for $k$-RB2SPTs along the same line as in Section~\ref{subsec:krb}, which we omit for simplicity. 
 
 
 %==========================================================================

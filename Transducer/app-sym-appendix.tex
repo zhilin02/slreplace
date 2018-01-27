@@ -272,14 +272,30 @@ $$\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$$
  For \SPT{}s, 
  $$
 \begin{array}{l c l}
-\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)) &=& |S|^{|S|^{\bigO(\rcdep(S))}},
+\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& |S|^{|S|^{\bigO(\rcdep(S))}},
 \end{array}
 $$
 and
 $$
-(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S), \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S)) = |S|^{\bigO(\rcdep(S))}.
+(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) = |S|^{\bigO(\rcdep(S))}.
 %=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
 $$
 From according to Theorem~\ref{thm-generic-dec-symbolic}, the path feasibility problem for \SPT{}s can be solved in nondeterministic 
 $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$
+space.
+
+ For $k$-RB2SPTs, one can follow the approach of Section~\ref{subsec:krb}, in particular, the reduction given in Proposition~\ref{prop:trans} to reduce to the case of  \SPT{}s together with the transducer for the ${\sf reverse}$ function (which is a non-symbolic transducer), with only linear blowup in size over the original data string manipulating program. As a result  
+$$
+\begin{array}{l c l}
+\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& |S|^{|S|^{\bigO(k\cdot \rcdep(S))}},
+\end{array}
+$$
+and
+$$
+(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) = |S|^{\bigO(k\cdot \rcdep(S))}.
+%=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
+$$
+%From according to Theorem~\ref{thm-generic-dec-symbolic}, 
+and the path feasibility problem for  $k$-RB2SPTs can be solved in nondeterministic 
+$|S|^{|S|^{\bigO(k\cdot \rcdep(S))}} + \beta(|S|^{|S|^{\bigO(k\cdot \rcdep(S))}})$
 space.
