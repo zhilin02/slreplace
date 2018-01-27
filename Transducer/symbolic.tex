@@ -3,11 +3,14 @@
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
-In this section, we consider an extension of string manipulating programs in SSA form in preceding sections to symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} respectively.
+In this section, we consider an extension of string manipulating programs to the symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} (to be introduced) respectively.
 %
-Intuitively, symbolic automata are an extension of finite-state automata in which the input letters are symbolically described by unary predicates  in some logical theory. On the other hand, symbolic parametric transducers are an extension of parametric transducers in which the output letters are given by terms in some logic theory (where the parameters may occur), besides the symbolic description of input letters.
-Symbolic parametric transducers can be seen as an extension of both the parametric transducers introduced in this paper and the symbolic transducers introduced in \cite{VHLMB12}.
-In the sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers.
+Intuitively, in symbolic automata %are an extension of finite-state automata in which 
+the input letters are symbolically described by unary predicates from a  logical theory. %On the other hand, 
+%
+Likewise, in symbolic parametric transducers %are an extension of parametric transducers in which 
+the output letters are given by terms in the logic theory (where the parameters may occur),  apart from the symbolic input letters. Symbolic parametric transducers can be seen as an extension of both the parametric transducer introduced in this paper and the symbolic transducer introduced in \cite{VHLMB12}.
+%In the sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers.
 % and show how to extend the results in preceding sections to the symbolic setting.
 
 
@@ -15,7 +18,7 @@ In the sequel, we first define symbolic automata and transducers, then introduce
 We assume familiarity with the 
 %(many-sorted) 
 first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
-A concept of background theories is used in the definition of symbolic automata and transducers\footnote{In literature, a symbolic automata is defined on a Boolean algebra, which is a background theory without requiring the set of formulae closed under substitutions. We choose to define symbolic automata on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.}.
+A concept of background theories is used in the definition of symbolic automata and transducers\footnote{In literature, a symbolic automata is defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. We define symbolic automata on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.}.
 %and label theories. 
 Intuitively, 
 %a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
@@ -35,7 +38,7 @@ A background theory $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satis
 
 \item $\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countably infinite set (the data domain), and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
 %
-\item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$ and closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. 
+\item $\Psi$ is a recursively enumerable set of \emph{unary} $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$ and substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. 
 %In addition, it is assumed that each formula $\psi \in \Psi$ of arity $s^\ell$ (where $\ell > 0$) has the same set of free variables $\{x_1,\dots, x_\ell\}$.
 \end{itemize}
 %A background theory is a Boolean algebra $(\signature, \structure, \Psi)$ such that $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. \\
@@ -88,7 +91,7 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $
 \item     non-symbolic transitions $(q, \EndLeft, dir, q')$ with $dir \in \{\Right, \Stay\}$, or $(q, \EndRight, dir', q')$ with $dir' \in \{\Left,\Stay\}$. 
 \end{itemize}
 \end{itemize}
-A \SSA{} is an \SA{} if there are no transitions with the direction $\{\Left\}$. 
+A \SSA{} is an \SA{} if there are no transitions with the direction ``$\Left$". 
 %for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
 
@@ -117,18 +120,19 @@ such that
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
 A data string $w$ is said to be accepted by $\Aut$ if there is an accepting run of
 $\Aut$ on $w$. We use $\Lang(\Aut)$ to denote the data language recognised by $\Aut$, that is,  the set of data strings accepted by $\Aut$.
+%
+For simplicity, we usually omit $\EndLeft$, and $\EndRight$ from the definition of \SSA{}s. 
 
-For briefness, we usually omit $\EndLeft$, and $\EndRight$ from the definition of \SSA{}s. 
-
-To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way, e.g. encoded in binary. For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
+To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way. %e.g. encoded in binary. 
+For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
 For a refined complexity analysis, we use the following two measures of $\Aut$: %numbers to capture the size of $\Transducer$:  Define 
-the \emph{control size} and the \emph{data size} of $\Aut$, denoted by $|\Aut|_c$ and $|\Aut|_d$ respectively, where $|\Aut|_c$ is defined as the number of transitions of $\Aut$, and $|\Aut|_d$ is defined as the maximum size of symbolic transitions of $\Aut$.
+the \emph{structural size} and the \emph{data size} of $\Aut$, denoted by $|\Aut|_s$ and $|\Aut|_d$ respectively, where $|\Aut|_s$ is defined as the number of transitions of $\Aut$, and $|\Aut|_d$ is defined as the maximum size of symbolic transitions of $\Aut$.
 
 
 \begin{proposition}\label{prop-2nsa}
 Assume a \SSA  $\Aut$. Then
 \begin{itemize}
-\item $\Aut$ can be effectively transformed into an equivalent \SA{} $\Aut'$, in time $|\Aut'|_c \cdot |\Aut'|_d$, where $|\Aut'|_c = 2^{\bigO\left(|\Aut|_c \log |\Aut|_c\right)}$ and $|\Aut'|_d = \bigO(|\Aut|_c |\Aut|_d)$;
+\item $\Aut$ can be  transformed into an equivalent \SA{} $\Aut'$ in time $|\Aut'|_s \cdot |\Aut'|_d$, where $|\Aut'|_s = 2^{\bigO\left(|\Aut|_s \log |\Aut|_s\right)}$ and $|\Aut'|_d = \bigO(|\Aut|_s |\Aut|_d)$;
 %$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
 %
 %
@@ -189,7 +193,7 @@ $\vec{t}(x) = t_1(x) \ldots t_r(x)$ is a (possibly empty) sequence of $\signatur
 \item   $(q, \EndLeft, dir, q', \epsilon)$ or $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$,
 \end{itemize}
 \end{itemize}
-A \SST{} is an \ST{} if there are no transitions with the direction $\Left$. 
+A \SST{} is an \ST{} if there are no transitions with the direction ``$\Left$". 
 %$(q, \psi(x), dir, q', \vec{t}(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
 \end{definition}
 
@@ -219,7 +223,7 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 %
-We define $|\Transducer|_c$ and $|\Transducer|_d$, the control and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_c$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$. 
+We define $|\Transducer|_s$ and $|\Transducer|_d$, the structural and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$. 
 On the other hand, $|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
@@ -243,7 +247,7 @@ $(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
 \item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
 \item symbolic transitions $(q, \psi(x), q', \vec{t})$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
-$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ can occur, or $t_i = y_j$ for some $y_j \in Y$,
+$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ occurs, or $t_i = y_j$ for some $y_j \in Y$,
 %
 \item non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir, q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
 \end{itemize}
@@ -277,28 +281,30 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 %%%============================================
 
 
-\paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of data string manipulating programs in SSA form where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
-To solve the path feasibility problem of such data string manipulating programs,
-the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and \prerec{}' assumption presented below.
+\paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of \emph{data} string manipulating programs in SSA form 
+\tl{do we need to introduce formally?}
+ where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
+To solve the path feasibility problem for data string manipulating programs,
+we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations and the $\mathbb{S}$\prerec{} assumption presented below.
 
 \begin{definition}[Symbolic recognisable relations]
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
 	A $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [k]$.
 \end{definition}
-Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_c$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the control (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum control (resp. data) size of the atoms.
+Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum structural (resp. data) size of the atoms.
 
 \begin{quote}
-{\bf The \prerec{}' assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
-a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is bounded by  $\ell_c(|f|_c, |\Aut|_c)$ (resp. $\ell_d(|f|_c,  |f|_d, |\Aut|_c, |\Aut|_d)$) for some monotone functions $\ell_c$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_c(|f|_c, |\Aut|_c) \cdot \ell_d(|f|_c,  |f|_d, |\Aut|_c,  |\Aut|_d)$ space.
+{\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
+a representation of $\Pre_{R_f}(\Aut)$, whose structural size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_c)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
 %the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
 %
 %\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
 \end{quote} 
 %
-Here $|f|_c$ and $|f|_d$ are the control and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_c |f|_d$ (resp. $|\Aut|_c |\Aut|_d$).
+Here $|f|_s$ and $|f|_d$ are the structural and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_s \cdot |f|_d$ (resp. $|\Aut|_s \cdot |\Aut|_d$).
 
 Let $S$ be a data string manipulating program in SSA form.  We use $|S|$ to denote the sum of $|f|$ and $|\Aut|$ for data string functions $f$ and \SA{}s $\Aut$ occurring in $S$.  
-For refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_c(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_c$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, and $\rcpsi_c(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_c$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
+For a refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_s(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_s$ (resp. $|f|_d$) for data string functions $f$ occurring in the assignments of $S$, and $\rcpsi_s(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_s$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
 
 
 %Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
@@ -311,11 +317,11 @@ $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\lan
 
 
 \begin{theorem}\label{thm-generic-dec-symbolic}
-	Given a data string manipulating program $S$ satisfying the \prerec{}' assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
+	Given a data string manipulating program $S$ satisfying the $\mathbb{S}$\prerec{} assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
 	\[
 	\begin{array}{l c l}
-		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^{r}\ \cdot \\
-		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
+		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 	\]
 for some constant $r > 0$. 
@@ -348,12 +354,14 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 
 \paragraph{Instantiation of the generic decision procedure to \SSPT{}s and \SPT{}s.}
 
-Note that for illustration purpose, we choose not to instantiate the decision procedure to $k$-RB2SPTs here.
+
 
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c  |\Transducer|^2_d |\Aut|_c^{|\Transducer|_c} |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) =\bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
+The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|^2_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
+
+The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
@@ -365,9 +373,21 @@ The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}\label{thm-spt}
-The path feasibility of data string manipulating programs, where the data string functions are given by \SSPT{}s, can be decided in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space. On the other hand,  the path feasibility for \SPT{}s can be decided in nondeterministic $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$ space.
-\end{theorem}
+The path feasibility of data string manipulating programs can be decided 
 
+\begin{itemize}
+	\item in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space if the data string functions are given by \SSPT{}s;
+	
+	\item  in nondeterministic $|S|^{|S|^{\bigO(k\cdot \rcdep(S))}} + \beta(|S|^{|S|^{\bigO(k\cdot \rcdep(S))}})$ space if the data string functions are given by $k$-RB2SPTs. %\SPT{}s;
+	
+\end{itemize}
+%
+%where 
+%
+%The path feasibility for \SPT{}s can be decided
+\end{theorem}
+%Note that for illustration purpose, we choose not to instantiate the decision procedure to  here.
+%Similar instantiations can be done for $k$-RB2SPTs along the same line as in Section~\ref{subsec:krb}, which we omit for simplicity. 
 
 
 %==========================================================================
