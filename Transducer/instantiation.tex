@@ -60,18 +60,18 @@ It is easy to see that  the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_
 
 
 \paragraph{Claim.} %For each tuple of strings $(w, w_1,\cdots, w_k)$, 
-$(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k}, q})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, where $\Aut[S_{x_i}]=((Q', \delta'), S_{x_i})$.
+$(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, where $\Aut[S_{x_i}]=((Q', \delta'), S_{x_i})$.
 
 \medskip
 
 
 Therefore, $\Pre_\Transducer(\Aut)$ is equal to 
 \[
-\bigcup_{S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}])\]
+\bigcup_{S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}])\]
 
 We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation. 
 
-In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \FFA{} $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ to a union of conjunctive \FA{}s as follows: Transform $\Aut''$ into a one-way transition graph $(\controls''',\delta''')$, where $\controls'''$ are vectors of states of $\Aut''$ of lengths at most $2|\controls''|-1$ (cf. Proposition~\ref{prop-2nfa-nfa}). Then $\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$.
+In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}$ to a union of conjunctive \FA{}s as follows: Transform $\Aut''$ into a one-way transition graph $(\controls''',\delta''')$, where $\controls'''$ are vectors of states of $\Aut''$ of lengths at most $2|\controls''|-1$ (cf. Proposition~\ref{prop-2nfa-nfa}). Then $\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$.
 %that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
 
 Since the size of each conjunctive \FA{} $((\controls''',\delta'''), S'')$ is $ 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, we conclude that 
