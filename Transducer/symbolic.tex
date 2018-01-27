@@ -242,7 +242,7 @@ $(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
 \item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
 \item symbolic transitions $(q, \psi(x), q', \vec{t})$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
-$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ occurs, or $t_i = y_j$ for some $y_j \in Y$,
+$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ occurs, or $t_i \in Y$,
 %
 \item non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir, q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
 \end{itemize}
@@ -251,14 +251,14 @@ $\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\
 
 Notice that, as in \PPT{}s, parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $y_1,\ldots, y_m$ with data strings 
-$w_1,\ldots, w_m$ gives rise to a \SST{} $\Transducer[w_1/y_1,\ldots, w_m/y_m]$ by replacing each occurrence of $y_i$ in transitions with $w_i$. 
+$w_1,\ldots, w_m$ gives rise to a \SST{} $\Transducer[w_1/y_1,\ldots, w_m/y_m]$ by replacing each occurrence of $y_i$ with $w_i$. 
 %outputs the data string $w_j$, whenever a transition of the form $(p, \psi, dir, q, y_j)$ is
 %taken by the transducer. 
 %This instantiation of the parameters is only done 
 %\emph{once} before the symbolic parametric transducer is run.
 %
 We use $\transet(\Transducer)$ to denote the set of tuples $(w, w_1, \ldots, w_m, w')$ such that $(w, w') \in \transet(\Transducer[w_1/y_1,\ldots, w_m/y_m])$.
-The two size measures of \SSPT{}s can be defined in a similar way as \SST{}s. 
+The two size measures of \SSPT{}s can be defined in a similar way as in \SST{}s. 
 
 
 %%%============================================
@@ -277,16 +277,16 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 
 
 \paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of \emph{data} string manipulating programs in SSA form 
-\tl{do we need to introduce formally?}
- where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
+%\tl{do we need to introduce formally?}
+ where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ being an \SA. 
 To solve the path feasibility problem for data string manipulating programs,
-we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations and the $\mathbb{S}$\prerec{} assumption presented below.
+we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing recognisable relations and the \prerec{} assumption with \emph{symbolic recognisable relations} and the \emph{$\mathbb{S}$\prerec{} assumption}.
 
 \begin{definition}[Symbolic recognisable relations]
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
 	A $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [k]$.
 \end{definition}
-Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum structural (resp. data) size of the atoms.
+Similar to the recognisable relation, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ with $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
 
 \begin{quote}
 {\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
