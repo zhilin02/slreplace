@@ -3,11 +3,14 @@
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
-In this section, we consider an extension of string manipulating programs in SSA form in preceding sections to symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} respectively.
+In this section, we consider an extension of string manipulating programs to the symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} (to be introduced) respectively.
 %
-Intuitively, symbolic automata are an extension of finite-state automata in which the input letters are symbolically described by unary predicates  in some logical theory. On the other hand, symbolic parametric transducers are an extension of parametric transducers in which the output letters are given by terms in some logic theory (where the parameters may occur), besides the symbolic description of input letters.
-Symbolic parametric transducers can be seen as an extension of both the parametric transducers introduced in this paper and the symbolic transducers introduced in \cite{VHLMB12}.
-In the sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers.
+Intuitively, in symbolic automata %are an extension of finite-state automata in which 
+the input letters are symbolically described by unary predicates from a  logical theory. %On the other hand, 
+%
+Likewise, in symbolic parametric transducers %are an extension of parametric transducers in which 
+the output letters are given by terms in the logic theory (where the parameters may occur),  apart from the symbolic input letters. Symbolic parametric transducers can be seen as an extension of both the parametric transducer introduced in this paper and the symbolic transducer introduced in \cite{VHLMB12}.
+%In the sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers.
 % and show how to extend the results in preceding sections to the symbolic setting.
 
 
@@ -15,7 +18,7 @@ In the sequel, we first define symbolic automata and transducers, then introduce
 We assume familiarity with the 
 %(many-sorted) 
 first-order logic (cf.\ some textbook e.g. \cite{EFT94}).
-A concept of background theories is used in the definition of symbolic automata and transducers\footnote{In literature, a symbolic automata is defined on a Boolean algebra, which is a background theory without requiring the set of formulae closed under substitutions. We choose to define symbolic automata on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.}.
+A concept of background theories is used in the definition of symbolic automata and transducers\footnote{In literature, a symbolic automata is defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. We define symbolic automata on background theories (rather than Boolean algebras) in Definition~\ref{def-2sa} to align to the symbolic parametric transducers defined later.}.
 %and label theories. 
 Intuitively, 
 %a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
@@ -35,7 +38,7 @@ A background theory $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satis
 
 \item $\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countably infinite set (the data domain), and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
 %
-\item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$ and closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. 
+\item $\Psi$ is a recursively enumerable set of \emph{unary} $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$ and substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. 
 %In addition, it is assumed that each formula $\psi \in \Psi$ of arity $s^\ell$ (where $\ell > 0$) has the same set of free variables $\{x_1,\dots, x_\ell\}$.
 \end{itemize}
 %A background theory is a Boolean algebra $(\signature, \structure, \Psi)$ such that $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. \\
@@ -88,7 +91,7 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $
 \item     non-symbolic transitions $(q, \EndLeft, dir, q')$ with $dir \in \{\Right, \Stay\}$, or $(q, \EndRight, dir', q')$ with $dir' \in \{\Left,\Stay\}$. 
 \end{itemize}
 \end{itemize}
-A \SSA{} is an \SA{} if there are no transitions with the direction $\{\Left\}$. 
+A \SSA{} is an \SA{} if there are no transitions with the direction ``$\Left$". 
 %for each $(q, \psi(x), dir, q')$, we have $dir \in \{\Stay, \Right\}$, moreover, the transitions of the form $(q, \EndRight, \Left, q')$ are removed.
 \end{definition}
 
@@ -243,7 +246,7 @@ $(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where:
 \item $\transrel$ is a finite set of transitions in one of the following forms: 
 \begin{itemize}
 \item symbolic transitions $(q, \psi(x), q', \vec{t})$ such that $q,q' \in Q$, $\psi(x) \in \Psi$,
-$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ can occur, or $t_i = y_j$ for some $y_j \in Y$,
+$\vec{t} = t_1 \ldots t_r$ such that for each $i \in [r]$, either $t_i$ is an $\signature$-term where only the variable $x$ occurs, or $t_i = y_j$ for some $y_j \in Y$,
 %
 \item non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir, q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
 \end{itemize}
@@ -279,7 +282,7 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 
 \paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of data string manipulating programs in SSA form where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
 To solve the path feasibility problem of such data string manipulating programs,
-the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and \prerec{}' assumption presented below.
+the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and the $\mathbb{S}$\prerec{} assumption presented below.
 
 \begin{definition}[Symbolic recognisable relations]
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
@@ -288,7 +291,7 @@ the generic decision procedure in Section~\ref{sec:algo} can be smoothly extende
 Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_c$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the control (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum control (resp. data) size of the atoms.
 
 \begin{quote}
-{\bf The \prerec{}' assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
+{\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
 a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is bounded by  $\ell_c(|f|_c, |\Aut|_c)$ (resp. $\ell_d(|f|_c,  |f|_d, |\Aut|_c, |\Aut|_d)$) for some monotone functions $\ell_c$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_c(|f|_c, |\Aut|_c) \cdot \ell_d(|f|_c,  |f|_d, |\Aut|_c,  |\Aut|_d)$ space.
 %the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
 %
@@ -311,7 +314,7 @@ $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\lan
 
 
 \begin{theorem}\label{thm-generic-dec-symbolic}
-	Given a data string manipulating program $S$ satisfying the \prerec{}' assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
+	Given a data string manipulating program $S$ satisfying the $\mathbb{S}$\prerec{} assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
 	\[
 	\begin{array}{l c l}
 		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^{r}\ \cdot \\
@@ -353,7 +356,7 @@ Note that for illustration purpose, we choose not to instantiate the decision pr
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The \prerec' assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c  |\Transducer|^2_d |\Aut|_c^{|\Transducer|_c} |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) =\bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
+The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c  |\Transducer|^2_d |\Aut|_c^{|\Transducer|_c} |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) =\bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 

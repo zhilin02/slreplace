@@ -4,7 +4,7 @@
 \subsection{The construction of an equivalent \SA{} from a \SSA{}(the first result of Proposition~\ref{prop-2nsa})}
 
 Let $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a \SSA. We show how to construct an equivalent \SA{} $\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$.
-W.l.o.g., we assume that for each transition $(q, \psi, dir, q') \in \transrel$, we have $dir \in \{\Left,\Right\}$. Every \SSA{} can be turned into one satisfying the assumption as follows: Replace each transition $(q, \psi, \Stay, q') \in \transrel$ with the following three transitions $(q, \psi, \Right, q'')$, $(q'', \ltrue, \Left, q')$, and $(q'', \EndRight, \Left, q')$, where $q''$ is a fresh state.
+W.l.o.g., we assume that for each transition $(q, \psi, dir, q') \in \transrel$, we have $dir \in \{\Left,\Right\}$. Every \SSA{} can be turned into one \SSA{} satisfying the assumption as follows: Replace each transition $(q, \psi, \Stay, q') \in \transrel$ with three transitions $(q, \psi, \Right, q'')$, $(q'', \ltrue, \Left, q')$, and $(q'', \EndRight, \Left, q')$, where $q''$ is a fresh state.
 
 The proof is an adaptation of the  construction of nondeterministic one-way automata from two-way nondeterministic finite state automata based on the idea of crossing sequences (cf. e.g. \cite{HU79}). Since \SSA{}s replace the letters in \FFA{}s with unary predicates, the main technical challenge is to deal with these guards in a proper way.
 
