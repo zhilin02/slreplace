@@ -22,7 +22,7 @@ first-order logic (cf.\ some textbook e.g. \cite{EFT94}). A concept of backgroun
 %and label theories. 
 Intuitively, 
 %a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
-a  background theory is a set of unary first-order logic formulae closed under Boolean connectives and substitutions. 
+a background theory is a set of unary first-order logic formulae closed under Boolean connectives and substitutions. 
  %Label theories extend background theories further by adding inequalities of terms into the set of formulae.
  
  
@@ -96,7 +96,7 @@ A \SSA{} is an \SA{} if there are no transitions with the direction ``$\Left$".
 \end{definition}
 
 \paragraph{Semantics of \SSA{} $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$.}
-A transition $\tau=(q_1,\psi(x), dir, q_2) \in \transrel$ in the \SSA $\Transducer$ can be concretised
+A transition $\tau=(q_1,\psi(x), dir, q_2) \in \transrel$ in the \SSA{}  can be concretised
 into a potentially infinite set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q$, where $(q_1, d, dir, q_2)  \in \|\tau\|$ iff $d \in \|\psi\|$.
 Intuitively, suppose $\Aut$ is at the state $q_1$ and reading the input data value $d \in \data$.
 If there is a transition $(q_1, \psi(x), dir, q_2) \in \transrel$ such that $d \in \|\psi\|$, then $\Aut$ can move its reading head according to $dir$, and change the state from $q_1$ to $q_2$.
@@ -118,19 +118,19 @@ such that
   \end{itemize}
 \end{itemize}
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
-A data string $w$ is said to be accepted by $\Aut$ if there is an accepting run of
+A data string $w$ is accepted by $\Aut$ if there is an accepting run of
 $\Aut$ on $w$. We use $\Lang(\Aut)$ to denote the data language recognised by $\Aut$, that is,  the set of data strings accepted by $\Aut$.
 %
 For simplicity, we usually omit $\EndLeft$, and $\EndRight$ from the definition of \SSA{}s. 
 
-To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way. %e.g. encoded in binary. 
+To measure the size of a \SSA{} $\Aut$, we need to take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way. %e.g. encoded in binary. 
 For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
 For a refined complexity analysis, we use the following two measures of $\Aut$: %numbers to capture the size of $\Transducer$:  Define 
 the \emph{structural size} and the \emph{data size} of $\Aut$, denoted by $|\Aut|_s$ and $|\Aut|_d$ respectively, where $|\Aut|_s$ is defined as the number of transitions of $\Aut$, and $|\Aut|_d$ is defined as the maximum size of symbolic transitions of $\Aut$.
 
 
 \begin{proposition}\label{prop-2nsa}
-Assume a \SSA  $\Aut$. Then
+Assume a \SSA{}  $\Aut$. Then
 \begin{itemize}
 \item $\Aut$ can be  transformed into an equivalent \SA{} $\Aut'$ in time $|\Aut'|_s \cdot |\Aut'|_d$, where $|\Aut'|_s = 2^{\bigO\left(|\Aut|_s \log |\Aut|_s\right)}$ and $|\Aut'|_d = \bigO(|\Aut|_s |\Aut|_d)$;
 %$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
@@ -143,9 +143,9 @@ Assume a \SSA  $\Aut$. Then
 \end{proposition}
 The proof of the first result in Proposition~\ref{prop-2nsa} can be found in Appendix~\ref{app-sym}, while the second result is obtained by guessing a path in $\Aut$ and was shown in \cite{NG01,DV14}.
 
-\smallskip
+%\smallskip
 
-Next, we introduce symbolic transducers.
+%Next, we introduce symbolic transducers.
 
 
 %we derive a new sort $s^*$ such that $\|s^* \| = \bigcup \limits_{i \in \Nat}\data_s^i$, where $\data^i_s = \{\varepsilon\}$. An element of $\|s^* \|$ is called a \emph{data string} of sort $s$.
@@ -180,7 +180,7 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 
 
 \begin{definition}[Symbolic finite-state transducers]
-    A nondeterministic two-way symbolic transducer (\SST) is an extension of an \SSA{} with outputs. More precisely, a \SST{} $\Transducer$ is a tuple $(\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
+    A (nondeterministic two-way) symbolic transducer (\SST) is an extension of an \SSA{} with outputs. More precisely, a \SST{} $\Transducer$ is a tuple $(\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
 \begin{itemize}
 %\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable background theory, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
 %
@@ -188,7 +188,7 @@ $t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi 
 %
 \item $\transrel$ is a finite set of  transitions which are in one of the following forms,
 \begin{itemize}
-\item  symbolic transitions $(q, \psi(x), dir, q', \vec{t}(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$ and
+\item  symbolic transitions $(q, \psi(x), dir, q', \vec{t}(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$, and
 $\vec{t}(x) = t_1(x) \ldots t_r(x)$ is a (possibly empty) sequence of $\signature$-terms, 
 \item   $(q, \EndLeft, dir, q', \epsilon)$ or $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$,
 \end{itemize}
@@ -223,14 +223,9 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 %
-We define $|\Transducer|_s$ and $|\Transducer|_d$, the structural and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$. 
-On the other hand, $|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
+We define $|\Transducer|_s$ and $|\Transducer|_d$, the structural and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$; 
+$|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q, \psi(x), dir, q', \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
-
-
-%\begin{proposition}\label{prop-2nst-nst}
-%Each 2ST can be turned into an equivalent ST. 
-%\end{proposition}
 
 We are ready to introduce symbolic parametric transducers.
 
