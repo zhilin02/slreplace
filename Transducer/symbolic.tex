@@ -281,7 +281,9 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 %%%============================================
 
 
-\paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of data string manipulating programs in SSA form where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
+\paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of \emph{data} string manipulating programs in SSA form 
+\tl{do we need to introduce formally?}
+ where each assertion is a conjunction of atomic constraints of the form $x \in \Aut$ with $\Aut$ an \SA. 
 To solve the path feasibility problem of such data string manipulating programs,
 the generic decision procedure in Section~\ref{sec:algo} can be smoothly extended, by replacing recognisable relations and the \prerec{} assumption with symbolically recognisable relations  and the $\mathbb{S}$\prerec{} assumption presented below.
 
@@ -352,7 +354,7 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 
 \paragraph{Instantiation of the generic decision procedure to \SSPT{}s and \SPT{}s.}
 
-Note that for illustration purpose, we choose not to instantiate the decision procedure to $k$-RB2SPTs here.
+
 
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
@@ -373,7 +375,8 @@ From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the
 \begin{theorem}\label{thm-spt}
 The path feasibility of data string manipulating programs, where the data string functions are given by \SSPT{}s, can be decided in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space. On the other hand,  the path feasibility for \SPT{}s can be decided in nondeterministic $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$ space.
 \end{theorem}
-
+%Note that for illustration purpose, we choose not to instantiate the decision procedure to  here.
+Similar instantiations can be done for $k$-RB2SPTs along the same line as in Section~\ref{subsec:krb}, which we omit for simplicity. 
 
 
 %==========================================================================

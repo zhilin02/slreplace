@@ -190,13 +190,12 @@ for some constant $r > 0$.
 
 
 %%%========================================
+%F.3
 %%%========================================
 
 \subsection{Proof of Lemma~\ref{lem-spt}: $\mathbb{S}$\prerec{} assumption for \SSPT{}s and \SPT{}s}
 
-We first consider \SSPT{}s. 
-
-Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_k\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), S')$ with $S' \subseteq Q' \times Q'$. 
+We first consider \SSPT{}s. Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_k\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), S')$ with $S' \subseteq Q' \times Q'$. 
 
 Similarly to \FFA{}s, for $q \in F$ and  $S_{y_1}, \cdots, S_{y_k} \subseteq Q' \times Q'$, we  introduce a conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q} = ((\controls'', \transrel''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S'\}$, and the transition relation $\transrel''$ comprises the tuples 
 $((q_1, q'_1), \psi(x), dir, (q_2, q'_2))$ such that there are $\psi_0(x) \in \Psi$ and $\vec{t}$ satisfying that $(q_1, \psi_0(x), dir, q_2, \vec{t}) \in \transrel$, and one of the following constraints holds, 
@@ -222,7 +221,7 @@ p_{N - s_{r+1} - s_r -1} \xrightarrow[\Aut]{\psi_{r, 1}} p_{N - s_{r+1} - s_r } 
 %\end{enumerate} 
 Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\signature$-terms in transitions of $\Transducer$. Then 
 \begin{itemize}
-\item the structural size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c^{L} \le |\Transducer|_c |\Aut|_c^{|\Transducer|_c}$,
+\item the structural size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_s |\Aut|_s^{L} \le |\Transducer|_s |\Aut|_s^{|\Transducer|_s}$,
 \item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_r(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_d + L |\Transducer|_d |\Aut|_d \le |\Transducer|^2_d |\Aut|_d$.
 \end{itemize}
 %It is easy to see that  the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c $ and $|S''| = |S'|$.   
@@ -240,15 +239,16 @@ In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform t
 
 From Proposition~\ref{prop-2nsa}, 
 the structural size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
-$ 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$, 
+$ 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$, 
 and the data size of  each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
-$ \bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} |\Transducer|^2_d |\Aut|_d )$. 
+$ \bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|^2_d |\Aut|_d )$. 
 We conclude that 
-the \prerec{}' assumption holds for string functions definable in \SSPT{}s with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c} |\Transducer|^2_d |\Aut|_d)$.
-On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = \bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
+the $\mathbb{S}$\prerec{} assumption holds for string functions definable in \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|^2_d |\Aut|_d)$.
+On the other hand, the $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 
 
 %%%========================================
+%F.4
 %%%========================================
 \subsection{Complexity analysis for Theorem~\ref{thm-spt}: Path feasibility for \SSPT{}s and \SPT{}s}
 
