@@ -1,12 +1,12 @@
 %!TEX root = main.tex
 \section{Details in Section~\ref{sec:symbolic}}\label{app-sym}
 
-\subsection{The construction of an equivalent \SA{} from a \SSA{}(the first result of Proposition~\ref{prop-2nsa})}
+\subsection{The construction of an equivalent \SA{} from a \SSA{}(the first claim of Proposition~\ref{prop-2nsa})}
 
 Let $\Aut = (\Upsilon, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a \SSA. We show how to construct an equivalent \SA{} $\Aut' =  (\Upsilon, \controls', q'_0, \finals', \transrel')$.
-W.l.o.g., we assume that for each transition $(q, \psi, dir, q') \in \transrel$, we have $dir \in \{\Left,\Right\}$. Every \SSA{} can be turned into one \SSA{} satisfying the assumption as follows: Replace each transition $(q, \psi, \Stay, q') \in \transrel$ with three transitions $(q, \psi, \Right, q'')$, $(q'', \ltrue, \Left, q')$, and $(q'', \EndRight, \Left, q')$, where $q''$ is a fresh state.
+W.l.o.g., we assume that for each transition $(q, \psi, dir, q') \in \transrel$, we have $dir \in \{\Left,\Right\}$. Every \SSA{} can be turned into one \SSA{} satisfying the assumption as follows: Replace each transition $(q, \psi, \Stay, q') \in \transrel$ with three new transitions $(q, \psi, \Right, q'')$, $(q'', \ltrue, \Left, q')$, and $(q'', \EndRight, \Left, q')$, where $q''$ is a fresh state.
 
-The proof is an adaptation of the construction of \FA{} from \FFA{} based on the idea of crossing sequences (cf., e.g., \cite{HU79}). Since \SSA{}s replace the letters in \FFA{}s with unary predicates, the main technical challenge here is to deal with these predicates (i.e., guards) in a proper way.
+The proof is an adaptation of the construction of \FA{} from \FFA{} based on the notion of crossing sequences (cf., e.g., \cite{HU79}). Since \SSA{}s replace the letters in \FFA{}s with unary predicates, the main technical challenge here is to deal with these predicates (i.e., guards).
 
 We first use an example to illustrate the idea of crossing sequences: Suppose $w = \EndLeft d_1 d_2 d_3 d_4 d_5\EndRight$, and an accepting run of $\Aut$ on $w$ uses the following sequence of transitions 
 \[
@@ -16,9 +16,9 @@ We first use an example to illustrate the idea of crossing sequences: Suppose $w
 \end{array}
 \] 
 with $q_1 \in \finals$.
-(The run is illustrated in Figure~\ref{fig-2sa-sa}.) A \emph{crossing sequence} of the run is a sequence of states on the boundary of two tape cells, e.g. the sequence $q_1, q_2, q_0$ on the boundary of $d_1$ and $d_2$. Note that for technical convenience, the states of the run are put in a way that, whenever a left-transition $(q, \psi, \Left, q')$ is taken, $q'$ is put just below $q$, thus in the \emph{same} crossing sequence as $q$ rather than a position on the left. Therefore, 
+(The run is illustrated in Figure~\ref{fig-2sa-sa}.) A \emph{crossing sequence} of the run is a sequence of states on the boundary of two tape cells, e.g. the sequence $q_1, q_2, q_0$ on the boundary of $d_1$ and $d_2$. Note that for technical convenience, the states of the run are put in a way that, whenever a left-transition $(q, \psi, \Left, q')$ is taken, $q'$ is put just below $q$, thus in the \emph{same} crossing sequence as $q$ rather than the cross sequence of th position on the left. Therefore, 
 \emph{the target state of each left-transition is put in the position right-adjacent to the actual position of the reading head}.
-For instance, in Figure~\ref{fig-2sa-sa}, when the transition $(q_1, \psi_2, \Left, q_2)$ is taken, $q_2$ is put just below $q_1$. Compared to the crossing sequences for 2FAs, in Figure~\ref{fig-2sa-sa}, we also include the guards of transitions. 
+For instance, in Figure~\ref{fig-2sa-sa}, when the transition $(q_1, \psi_2, \Left, q_2)$ is taken, $q_2$ is put just below $q_1$. Different from the crossing sequences for 2FAs, in Figure~\ref{fig-2sa-sa}, naturally we also include the guards of the transitions. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -27,7 +27,7 @@ For instance, in Figure~\ref{fig-2sa-sa}, when the transition $(q_1, \psi_2, \Le
 \caption{Accepting runs of $\Aut$: An example}\label{fig-2sa-sa}
 \end{figure}
 
-In order to deal with the guards in transitions, we adapt the crossing sequences of the \SSA{} $\Aut$  as follows: a crossing sequence of $\Aut$ is a sequence of \emph{transitions} of odd lengths such that  the source states of the transitions in the even and odd  positions respectively are mutually distinct. Let $S_\transrel$ denote the set of such sequences of transitions. 
+In order to deal with the guards in the transitions, we adapt the crossing sequences of the \SSA{} $\Aut$  as follows: a crossing sequence of $\Aut$ is a sequence of \emph{transitions} of odd lengths such that  the source states of the transitions in the even and odd  positions respectively are mutually distinct. Let $S_\transrel$ denote the set of such sequences of transitions. 
 %Notice that, in general, any $\rho\in S_\transrel$  is of the form that $\rho = \tau_1, \ldots, \tau_{2n+1}$ for some $n$ such that for each $i \in [n+1]$, $\tau_{2i-1} = (p_{2i-1}, \EndRight, \Left, q_{2i-1})$, and for each $i \in [n]$, $\tau_{2i} = (p_{2i}, \psi_{2i}, dir_{2i}, q_{2i})$.
 
 
@@ -115,81 +115,74 @@ $$
 
 \subsection{Complexity of the generic decision procedure (Theorem~\ref{thm-generic-dec-symbolic})}
 
-For each $i$, 
-%\begin{itemize}
-%\item 
-let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
-%\item 
-and $N_{i,c}$ (resp. $N_{i, d}$) be the maximum control size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
-%\end{itemize}
-Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies  $|f|_c \le \rcphi_c(S)$, we have 
+For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
+and $N_{i,s}$ (resp. $N_{i, d}$) be the maximum structural size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$. Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies  $|f|_s \le \rcphi_s(S)$, we have 
 %
-$$N_{i-1, c} \le \ell_c(|f|_c, N_{i, c}) \le \ell_c(\rcphi_c(S), N_{i,c})$$ 
+$$N_{i-1, s} \le \ell_s(|f|_s, N_{i, s}) \le \ell_s(\rcphi_s(S), N_{i,s})$$ 
 %
-Moreover, since $|f|_c \le \rcphi_c(S)$ and $|f|_d \le \rcphi_d(S)$, we have
+Moreover, since $|f|_s \le \rcphi_s(S)$ and $|f|_d \le \rcphi_d(S)$, we have
 %
-$$N_{i-1, d} \le \ell_d(|f|_c, |f|_d, N_{i, c}, N_{i,d}) \le \ell_d(\rcphi_c(S), \rcphi_d(S), N_{i, c}, N_{i,d}).$$ 
+$$N_{i-1, d} \le \ell_d(|f|_s, |f|_d, N_{i, c}, N_{i,d}) \le \ell_d(\rcphi_s(S), \rcphi_d(S), N_{i, s}, N_{i,d}).$$ 
 
 Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcsreg(S)$ elements, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcsreg(S)$ elements. 
 Moreover, because each conjunctive \SA{} in $\cE_{\rcdep(S)}(x)$ satisfies that its control and data size are bounded by $\rcpsi_c(S)$ and $\rcpsi_d(S)$ respectively, 
-we have that each conjunctive \SA{} in $\cE(x)$ satisfies that its control and data size are bounded by $\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S))$ and 
+we have that each conjunctive \SA{} in $\cE(x)$ satisfies that its control and data size are bounded by $\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S))$ and 
 %
-\[ (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S), \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S)).\]
+\[ (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)).\]
 % h(i, j, g^{\langle n \rangle}(k, l), h^{\langle n \rangle}(i, j, k, l))
 % 
-We emphasise that, according to the \prerec{}' assumption, the construction of these \SA{}s can be done in nondeterministic 
+We emphasise that, according to the $\mathbb{S}$\prerec{} assumption, the construction of these \SA{}s can be done in nondeterministic space bounded by
 %
 {
 \small
-$$\ell_c^{\langle  \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),  \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S))$$
+$$\ell_c^{\langle  \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_s(S),  \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S))$$
 }
-
-\noindent space. 
-Therefore, for each $x \in \vars(S)$, the conjunctive product \SA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \SA{}s  in $\cE(x)$ has a control size bounded by 
 %
-$$(\ell^{\langle \rcdep(S) \rangle}_c(\rcphi_c(S), \rcpsi_c(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)},$$
+Therefore, for each $x \in \vars(S)$, the conjunctive product \SA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \SA{}s  in $\cE(x)$ has a structural size bounded by 
+%
+$$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)},$$
 %
 and data size bounded by
 %
-\[ (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S)).\]
+\[ (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S)).\]
 %
-and $|S_x| \le (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2$. 
-Therefore, the control and data size of the (standard) \SA{} corresponding to $\Aut_x$ are  bounded by 
+and $|S_x| \le (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2$. 
+Therefore, the structural and data size of the (standard) \SA{} corresponding to $\Aut_x$ are  bounded by 
 %
-$$(\ell^{\langle \rcdep(S) \rangle}_c(\rcphi_c(S), \rcpsi_c(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2}$$
+$$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2}$$
 %
 and
 $$
 \begin{array}{l}
-(\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
-\hspace{1cm}(\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
+\hspace{1cm}(\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 $$
 respectively.
 
-Since the nonemptiness of an \SA{} $\Aut$ can be solved in nondeterministic $(\log |\Aut|_c) + \beta(|\Aut|_d)$ space, we conclude that the nonemptiness of $\Aut_x$ can be solved in nondeterministic 
+Since the nonemptiness of an \SA{} $\Aut$ can be solved in nondeterministic $(\log |\Aut|_s) + \beta(|\Aut|_d)$ space, we conclude that the nonemptiness of $\Aut_x$ can be solved in nondeterministic space bounded by 
 {\small
 $$
 \begin{array}{l}
-(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2 \log (\ell^{\langle \rcdep(S) \rangle}_c(\rcphi_c(S), \rcpsi_c(S)))+ \\
-\hfill \beta
+(\rcdim(S)+1)^{\rcdep(S)} \cdot \rcsreg(S) \cdot (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 \log (\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S))) \\
+\hfill +\beta
 \left(
 \begin{array}{l}
-(\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
-\hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
+\hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 \right)
 \end{array}
 $$
 }
-space.
+
 
 In summary, the aforementioned nondeterministic algorithm takes  $M + \beta(M)$ space, where 
 %
 $$
 \begin{array}{l c l}
-M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^{r}\ \cdot \\
-& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
+& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 $$
 %
@@ -229,7 +222,7 @@ p_{N - s_{r+1} - s_r -1} \xrightarrow[\Aut]{\psi_{r, 1}} p_{N - s_{r+1} - s_r } 
 %\end{enumerate} 
 Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\signature$-terms in transitions of $\Transducer$. Then 
 \begin{itemize}
-\item the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c^{L} \le |\Transducer|_c |\Aut|_c^{|\Transducer|_c}$,
+\item the structural size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c^{L} \le |\Transducer|_c |\Aut|_c^{|\Transducer|_c}$,
 \item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_r(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_d + L |\Transducer|_d |\Aut|_d \le |\Transducer|^2_d |\Aut|_d$.
 \end{itemize}
 %It is easy to see that  the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c $ and $|S''| = |S'|$.   
@@ -246,7 +239,7 @@ In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform t
 %that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
 
 From Proposition~\ref{prop-2nsa}, 
-the control size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
+the structural size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
 $ 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$, 
 and the data size of  each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
 $ \bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} |\Transducer|^2_d |\Aut|_d )$. 
@@ -259,22 +252,18 @@ On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Tra
 %%%========================================
 \subsection{Complexity analysis for Theorem~\ref{thm-spt}: Path feasibility for \SSPT{}s and \SPT{}s}
 
-Let us first consider \SSPT{}s.
-
-From Lemma~\ref{lem-spt}, we deduce that 
+Let us first consider \SSPT{}s. From Lemma~\ref{lem-spt}, we deduce that 
 $$
 \begin{array}{l c l}
-\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)) &=& \tower(\rcdep(S), \bigO((\rcphi_c(S))^2 (\rcpsi_c(S))^{\rcphi_c})) \\
+\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& \tower(\rcdep(S), \bigO((\rcphi_s(S))^2 (\rcpsi_s(S))^{\rcphi_s})) \\
 & \le &  \tower(\rcdep(S)+1, \bigO(|S|^2)).
 \end{array}
 $$
 and
 $$
-\begin{array}{l l}
-& (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S), \rcphi_d(S), \rcpsi_c(S), \rcpsi_d(S)) \\
+(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_c(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) \\
 %=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
-\le &  \tower(\rcdep(S), \bigO(|S|^2)).
-\end{array}
+\le  \tower(\rcdep(S), \bigO(|S|^2)).
 $$
 Therefore, according to Theorem~\ref{thm-generic-dec-symbolic},  the path feasibility problem for \SSPT{}s can be solved in nondeterministic 
 $$\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$$

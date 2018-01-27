@@ -120,18 +120,19 @@ such that
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
 A data string $w$ is said to be accepted by $\Aut$ if there is an accepting run of
 $\Aut$ on $w$. We use $\Lang(\Aut)$ to denote the data language recognised by $\Aut$, that is,  the set of data strings accepted by $\Aut$.
+%
+For simplicity, we usually omit $\EndLeft$, and $\EndRight$ from the definition of \SSA{}s. 
 
-For briefness, we usually omit $\EndLeft$, and $\EndRight$ from the definition of \SSA{}s. 
-
-To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way, e.g. encoded in binary. For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
+To measure the size of a \SSA{} $\Aut$, we need take the guards of the transitions (from the background theory $\Upsilon$) into  consideration. Therefore, we assume that the formulae in $\Psi$ are encoded in a proper way. %e.g. encoded in binary. 
+For $\psi \in \Psi$, we use $|\psi|$ to denote the number of symbols in the encoding of $\psi$. Moreover, we define the size of a symbolic transition $\tau = (q_j, \psi(x), dir, q_{j+1})$ to be $|\psi|$.
 For a refined complexity analysis, we use the following two measures of $\Aut$: %numbers to capture the size of $\Transducer$:  Define 
-the \emph{control size} and the \emph{data size} of $\Aut$, denoted by $|\Aut|_c$ and $|\Aut|_d$ respectively, where $|\Aut|_c$ is defined as the number of transitions of $\Aut$, and $|\Aut|_d$ is defined as the maximum size of symbolic transitions of $\Aut$.
+the \emph{structural size} and the \emph{data size} of $\Aut$, denoted by $|\Aut|_s$ and $|\Aut|_d$ respectively, where $|\Aut|_s$ is defined as the number of transitions of $\Aut$, and $|\Aut|_d$ is defined as the maximum size of symbolic transitions of $\Aut$.
 
 
 \begin{proposition}\label{prop-2nsa}
 Assume a \SSA  $\Aut$. Then
 \begin{itemize}
-\item $\Aut$ can be effectively transformed into an equivalent \SA{} $\Aut'$, in time $|\Aut'|_c \cdot |\Aut'|_d$, where $|\Aut'|_c = 2^{\bigO\left(|\Aut|_c \log |\Aut|_c\right)}$ and $|\Aut'|_d = \bigO(|\Aut|_c |\Aut|_d)$;
+\item $\Aut$ can be  transformed into an equivalent \SA{} $\Aut'$ in time $|\Aut'|_s \cdot |\Aut'|_d$, where $|\Aut'|_s = 2^{\bigO\left(|\Aut|_s \log |\Aut|_s\right)}$ and $|\Aut'|_d = \bigO(|\Aut|_s |\Aut|_d)$;
 %$|\Aut'| = 2^{O (|\Aut| \log |\Aut| )}$.
 %
 %
@@ -192,7 +193,7 @@ $\vec{t}(x) = t_1(x) \ldots t_r(x)$ is a (possibly empty) sequence of $\signatur
 \item   $(q, \EndLeft, dir, q', \epsilon)$ or $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$,
 \end{itemize}
 \end{itemize}
-A \SST{} is an \ST{} if there are no transitions with the direction $\Left$. 
+A \SST{} is an \ST{} if there are no transitions with the direction ``$\Left$". 
 %$(q, \psi(x), dir, q', \vec{t}(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
 \end{definition}
 
@@ -222,7 +223,7 @@ The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. Whe
 A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
 %
-We define $|\Transducer|_c$ and $|\Transducer|_d$, the control and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_c$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$. 
+We define $|\Transducer|_s$ and $|\Transducer|_d$, the structural and data size of $\Transducer$, by taking the outputs of transitions into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$. 
 On the other hand, $|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
@@ -288,20 +289,20 @@ the generic decision procedure in Section~\ref{sec:algo} can be smoothly extende
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
 	A $k$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_k$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [k]$.
 \end{definition}
-Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_c$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the control (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum control (resp. data) size of the atoms.
+Similar to recognisable relations, we also represent a  $k$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ such that $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, the two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation $R$  is defined as the maximum structural (resp. data) size of the atoms.
 
 \begin{quote}
 {\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
-a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is bounded by  $\ell_c(|f|_c, |\Aut|_c)$ (resp. $\ell_d(|f|_c,  |f|_d, |\Aut|_c, |\Aut|_d)$) for some monotone functions $\ell_c$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_c(|f|_c, |\Aut|_c) \cdot \ell_d(|f|_c,  |f|_d, |\Aut|_c,  |\Aut|_d)$ space.
+a representation of $\Pre_{R_f}(\Aut)$, whose control size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_c)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation can be nondeterministically computed in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
 %the space to compute a representation of $\Pre_{R_f}(\Aut)$ and the atom size of such a representation\footnote{Usually the amount of space is at least as large as the size of the representation; here for simplicity we assume that they are asymptotically the same.} are both bounded by $\ell(|f|, |\Aut|)$ for some monotone function $\ell$.  
 %
 %\item[A2] Each assertion $g$ in $S$ is given as a conjunction of atomic regular constraint $x\in \Aut$. 
 \end{quote} 
 %
-Here $|f|_c$ and $|f|_d$ are the control and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_c |f|_d$ (resp. $|\Aut|_c |\Aut|_d$).
+Here $|f|_s$ and $|f|_d$ are the structural and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_s \cdot |f|_d$ (resp. $|\Aut|_s \cdot |\Aut|_d$).
 
 Let $S$ be a data string manipulating program in SSA form.  We use $|S|$ to denote the sum of $|f|$ and $|\Aut|$ for data string functions $f$ and \SA{}s $\Aut$ occurring in $S$.  
-For refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_c(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_c$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, and $\rcpsi_c(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_c$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
+For refined complexity analysis, we also define $\rcdep(S)$ and $\rcdim(S)$ similarly to the string setting. Moreover, we use $\rcphi_s(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_s$ (resp. $|f|_d$) for string functions $f$ occurring in the assignments of $S$, and $\rcpsi_s(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_s$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$. Finally, we define $\rcsreg(S)$ to be the maximum number of atomic \SA{} constraints for one variable in $S$.
 
 
 %Similarly, we can define $\numtrans(\psi)$ and $\sizetrans(\psi)$.
@@ -317,8 +318,8 @@ $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\lan
 	Given a data string manipulating program $S$ satisfying the $\mathbb{S}$\prerec{} assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
 	\[
 	\begin{array}{l c l}
-		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_c^{\langle \rcdep(S) \rangle}(\rcphi_c(S), \rcpsi_c(S)))^{r}\ \cdot \\
-		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_c(S),\rcphi_d(S),  \rcpsi_c(S), \rcpsi_d(S))
+		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
+		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 	\]
 for some constant $r > 0$. 
@@ -356,7 +357,9 @@ Note that for illustration purpose, we choose not to instantiate the decision pr
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) = 2^{\bigO( |\Transducer|_c |\Aut|_c^{|\Transducer|_c} \log (|\Transducer|_c |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|_c  |\Transducer|^2_d |\Aut|_c^{|\Transducer|_c} |\Aut|_d)$. On the other hand, the \prerec' assumption holds for \SPT{}s, with $\ell_c(|\Transducer|_c, |\Aut|_c) =\bigO(|\Transducer|_c |\Aut|_c^{|\Transducer|_c})$ and  $\ell_d(|\Transducer|_c, |\Transducer|_d, |\Aut|_c, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
+The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_c^{|\Transducer|_c}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|^2_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
+
+The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
