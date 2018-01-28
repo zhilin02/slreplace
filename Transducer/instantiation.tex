@@ -100,55 +100,40 @@ Given a string manipulating program $S$ in SSA form where string functions are m
 
 \paragraph{Lower-bound.}
 
-We show that, for any $\expheight$, the problem is $\expheight$-$\expspace$-hard with $(\expheight+1)$ transducers, via a reduction from a tiling problem that is hard for $\expheight$-$\expspace$.
-For this we need to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
-Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
-The complete encoding is given in 
+For each $\expheight$ we reduce from a tiling problem that is hard for $\expheight$-$\expspace$.
+For this we need to use large numbers that act as indices.
+Similar encodings of large numbers appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
+The complete reduction is given in 
 \shortlong{the full version of this article}
           {Appendix~\ref{sec:two-way-lower}}.
-We give an overview of the intuition here.
+with an overview of the intuition here.
 
-A \emph{tiling problem} consists of a finite set of tiles \tiles as well as horizontal and vertical tiling relations 
+A \emph{tiling problem} consists of a finite set of tiles $\tiles$ as well as horizontal and vertical tiling relations 
 $\hrel, \vrel \subseteq \tiles \times \tiles$.
 Given a tiling \emph{corridor} of a certain width, as well as initial and final tiles
 $\inittile, \fintile \in \tiles$
-the task is to find a tiling where 
-\begin{itemize}
-\item
-    the first tile of the first row of the corridor is $\inittile$, 
-\item
-    the tile $\tile$ directly to the left of $\tile'$ in a row must have
-    $\tup{\tile, \tile'} \in \hrel$,
-\item
-    the tile $\tile$ in the row above $\tile'$ in the same column must have
-    $\tup{\tile, \tile'} \in \vrel$,
-\item
-    the last position of the last row must contain $\fintile$.
-\end{itemize}
-Tiling problems are intimately connected to computations of Turing machines as
-each row can hold the tape contents in one configuration of a run.
-Thus, the corridor width is equivalent to the space of a Turing machine.
+the task is to find a tiling where the first (resp. last) tile of the first (resp. last) row is $\inittile$ (resp. $\fintile$), and horizontally (resp. vertically) adjacent tiles $\tile, \tile'$ have
+$\tup{\tile, \tile'} \in \hrel$
+(resp. $\vrel$).
+Each row can hold the tape contents of a Turing machine configuration, and thus, the corridor width is equivalent to the space of a Turing machine.
 
-The existence of a solution to a tiling problem of width $n$ can be reduced to checking whether a \FFT\ of size 
+Solving a tiling problem of width $n$ can be reduced to checking whether a \FFT\ of size 
 $\ap{\bigoh}{n}$ 
 can output a specified symbol $\top$.
 Equivalently, we could use a \FFA.
-A solution to a tiling problem will be encoded as a word 
+Solutions will be encoded as a words
 $t_{1,1} t_{1,2} \cdots t_{1,n} \numsep \cdots \numsep t_{m,1} t_{m,2} \cdots t_{m,n}$
-where each row
-$t_{i,1} t_{i,2} \cdots t_{i,n}$
-is separated from the next row by $\numsep$.
+where rows are separated by $\numsep$.
 The \FFT\ performs $n+1$ passes.
 During the first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
 $\tup{t_{i,j}, t_{i,j+1}} \in \hrel$
 for all
 $1 \leq j < n$.
-If the encoding passes this check, we need to verify that the vertical tiling relation $\vrel$ is met.
-This is done in $n$ more passes, the $j$th of which verifies the $j$th column of the encoding.
+In $n$ more passes we verify that the vertical tiling relation $\vrel$ is met; the $j$th pass verifies the $j$th column.
 
-To encode tiling problems of $n$-fold exponential width we chain $(n+1)$ \FFT{}s.
+When the width is $n$-fold exponential we chain $(n+1)$ \FFT{}s.
 We begin with two \FFT{}s and a tiling problem of exponential width.
-Intuitively, a row of the solution to a tiling problem could now be encoded with a sequence of $n$ binary bits preceding each tile.
+Intuitively, we precede each tile with its column number in $n$ binary bits.
 That is
 \[
     0\ldots00\ \tile_{1,1}\ %
@@ -163,28 +148,20 @@ That is
     \cdots
     1\ldots11\ \tile_{m,2^n} \ .
 \]
-In fact, in the formal encoding, we will not use binary numbers, but instead use tiling problems whose solutions must have exponential length.
-For the purposes of the intuitive exposition, we will use binary numbers as the intention is clearer.
-
-Given such an encoding, the first \FFT{} checks the solution in a similar manner to the width $n$ problem.
-To cope with the large corridor width, it will output ``queries'' to the second \FFT.
-These queries check whether one binary number is equal to the next, or is the increment.
-Now, the first \FFT{} can, for example, non-deterministically guess that one tile is in the same column as another and use queries to verify this guess.
-In this way it becomes able to verify a tiling over an exponentially wide corridor. \zhilin{Maybe say more explicitly as follows: when verifying the vertical tiling relation, for each column, the first \FFT{}  nondeterministically collects and outputs all the tiles and their addresses in this column, and ask the second \FFT{} to check the addresses of these tiles are equal and the vertical tiling relation holds in this column. The first \FFT{} goes through $2^n$ passes on the input, since there are $2^n$ columns. The second \FFT{} is also responsible for checking that after the tiles of the $i$-th column are outputted  by the first \FFT{}, then the tiles of the $(i+1)$-th column should be outputted. @Matt, is this description helpful here ?}
+Given such an encoding, the first \FFT{} checks the solution in a similar manner to the width $n$ problem, but needs to cope with the large corridor width when checking $\vrel$.
+For this it will use a second \FFT.
+For each column, the first \FFT{} nondeterministically selects all the tiles in this column 
+(verifying $\vrel$ on-the-fly).
+The addresses of the selected tiles are output to the second \FFT{} which checks that they are equal.
+The first \FFT{} goes through a non-deterministic number of such passes and it is enforced by the second \FFT{} that there are $2^n$ of them.
+To do this, the second \FFT{} checks that after the addresses of the $i$-th column are output by the first \FFT{}, then the addresses of the $(i+1)$-th column are output next.
+\mat{@Zhilin: is the above better?}
 
 To increase the corridor width by another exponential, we need another \FFT.
 To reach doubly-exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
 For this we precede each bit with another binary sequence, this time of length $n$.
-Thus, we have two sets of binary digits $0,1$ and $0', 1'$, and, if $n = 2$ a row would take the following form
-\[
-    (0'0') 0 (0'1') 0 (1'0') 0 (1'1') 0\ \tile_1\ %
-    (0'0') 0 (0'1') 0 (1'0') 0 (1'1') 1\ \tile_2\ % 
-    \ldots 
-\]
-where parenthesis are shown for clarity only.
-To check a given tiling, the first \FFT\ outputs queries to the second.
-To be able to check exponentially long binary numbers, the second \FFT\ outputs queries to the third \FFT.
-This process can be iterated so that using $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-fold exponentially wide corridor.
+The first \FFT\ then outputs queries to the second, which outputs queries to the third \FFT, each time removing one exponential.
+With $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-fold exponentially wide corridor.
 
 
 
