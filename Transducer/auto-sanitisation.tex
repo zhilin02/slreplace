@@ -22,7 +22,7 @@ Providing the value \mintinline{html}{<script>alert(1337)</script>} to \linktext
 \item \label{fig:closure-tagged}
 \begin{minted}{html}
 <a href="[URL]javascript: alert(1337)[LRU]">
-    [HTML]<script>alert(1337)</script>[HTML] </a>
+    [HTML]<script>alert(1337)</script>[LMTH] </a>
 \end{minted}
 \item \label{fig:closure-safe}
 \begin{minted}{html}
@@ -46,6 +46,12 @@ Since transducers are a generalisation of finite automata, they are able to iden
 The second transducer then applies the appropriate safe transductions inside the markers.
 For the URL context, values starting with \texttt{javascript:} will be quoted, while in HTML, instances of \texttt{<} and \texttt{>} are replaced by \texttt{\&lt;} and \texttt{\&gt;} respectively.
 The result is shown in Figure~\ref{fig:closure}\ref{fig:closure-safe}.
+
+\zhilin{Can I understand the example in the following way? The first transducer is in fact the composition of the following two assignments 
+ $$x' := \replaceall(x, "\{\$li\}", [URL] y_{li} [LRL])$$ 
+ and 
+ $$x'' := \replaceall(x', "\{\$txt\}", [HTML]y_{txt}[LTMH]),$$ 
+ where $x$ represents the input string, and $y_{li}, y_{txt}$ are parameters. The second transducer is in fat a non-parametric transducer to do the sanitisation. Strictly speaking, this demonstrates the necessity to have both $\replaceall$ function and finite-state transducers, but not exactly the necessity of parametric transducers. But of course, it is nice to have a single formalism where both $\replaceall$ and finite-state transducers can be captured.}
 
 \mat{
     One might worry that identifying text starting with \texttt{javascript:} means the transudcer needs to keep a buffer of the input string, leading to large transducers.
