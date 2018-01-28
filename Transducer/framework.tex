@@ -7,7 +7,7 @@
 %constraint language. 
 We have introduced the framework of Bj\"{o}rner \emph{et al.} \cite{BTV09} of
 constraints from symbolic executions in the Introduction, in particular, Eq.~\eqref{eq:symbex}. We remark that this agrees to 
-the \emph{straight-line restriction} \cite{LB16} imposed to the constraint. 
+the commonly adopted \emph{straight-line restriction} \cite{LB16} on the constraint. 
 
 
 
@@ -23,22 +23,27 @@ the \emph{straight-line restriction} \cite{LB16} imposed to the constraint.
 %where $f: (\Sigma^*)^n \to \Sigma^*$ is a partial function, and $L$ is a 
 %regular language. 
 
-In this paper, for assertions ($g$ in (\ref{eq:symbex})) we focus on \emph{regular constraints} exclusively. Namely, $g$ is instantiated by  $\text{\ASSERT{$x \in L$}}$ for a regular language $L$.
-For assignment ($f$ in (\ref{eq:symbex})), in general, it is useful to allow $f$ to be %\emph{partial} functions or, more
+In this paper, for \emph{assertions} of the constraint language ($g$ in (\ref{eq:symbex})) we focus on \emph{regular constraints} exclusively. Namely, $g$ is instantiated by  $\text{\ASSERT{$x \in L$}}$ for a regular language $L$.
+For \emph{assignment} ($f$ in (\ref{eq:symbex})), %in general, it is useful to #
+we allow $f$ to be %\emph{partial} functions or, more
 %generally, 
 binary relations viewed as functions (as in programming, not mathematics) that 
-nondeterministically choose an output string corresponding to an input string. 
-For example, the 
-notation $x := ?$ is common in the program verification to 
-denote a nondeterministic assignment to $x$. More generally, nondeterministic
-behaviour could be needed due to unknown inputs from a human user or other 
-sources (e.g. databases). In this case, path feasibility of a
+\emph{nondeterministically} choose an output string corresponding to an input string. 
+%
+%For example, the 
+%notation $x := ?$ is common in the program verification to 
+%denote a nondeterministic assignment to $x$. More generally, nondeterministic
+%behaviour could be needed due to unknown inputs from a human user or other 
+%sources (e.g. databases). 
+%
+In this case, path feasibility of a
 symbolic execution $S$
 is defined in an \emph{angelic} way: each function in $S$
 should be able to produce \emph{some} output string that takes $S$ to the end of the
 program.
-
-Our constraint language is obtained by instantiating $f$ with a \emph{parametric
+%
+%Our constraint language is obtained by instantiating 
+Technically we shall instantiate $f$ with a \emph{parametric
 transducer}, a notion which we will define in this section. 
 
 \OMIT{
@@ -263,10 +268,10 @@ With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft
 
 \begin{example}\label{exmp-ft}
     We give two examples of finite transducers: %(1) erasing \texttt{a} from  a string, (2) 
-    (1) the function escapeString, and (2) the reverse function.
+    (1) the function escapeString, and (2) the \textbf{reverse} function.
 %Figure
 %\ref{fig:escapeString} contains an example of the function escapeString,
-
+%
 %\begin{wrapfigure}{R}{5cm}
 %	\begin{center}
 %		\begin{tikzpicture}[shorten >=1pt,node distance=2.3cm,on grid,auto, initial text={}] 
@@ -290,7 +295,7 @@ With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft
 %		\texttt{'} nor \texttt{"}. \label{fig:escapeString}}
 %	%\input{escapeString}
 %\end{wrapfigure}
-
+%
 %    The first transducer is easy, but justifies that we need to allow $\epsilon$
 %    in the output. 
 %    This can be one by a \FT{} with a single state $q_0$,
@@ -302,9 +307,9 @@ With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft
 %    %$(q_1,\EndRight,0,q_2,\epsilon)$. 
 %    and the final state $q_0$.
 %%\zhilin{I removed the two end markers.}
-
+%
 The first transducer backslash-escapes every occurrence of \texttt{'} and 
-\texttt{"}. This can be one by a \FT{} with a single state $q_0$,
+\texttt{"}. This can be done by a \FT{} with a single state $q_0$,
 transitions 
 %$(q_0, \EndLeft, 1, q_1,\epsilon)$,
 $(q_0, \ell, 1, q_0, \ell)$ for each $\ell \neq  \texttt{'}$  or $\texttt{"} $, 
@@ -325,12 +330,11 @@ and the final state $q_0$.
 %    $a/w$ means \emph{read $a$, and meanwhile output $w$}.
 %%$a/w$ denotes 
 
-
-    The second transducer requires us to use a \FFT{}. We will only describe
-    this informally. The transducer will firstly go to $\EndRight$, the right end marker, of the input tape
-    without outputting any symbol. The transducer then scans the input from
+The second transducer requires us to use a \FFT{}. We will only describe
+    this informally. The transducer will firstly move to $\EndRight$ of the input tape
+    without outputting any symbol. It then scans the input from
     right to left, while simultaneously outputting the symbol that is read.
-    When the transducer hits $\EndLeft$, it moves its input head right to $\EndRight$ (without outputting any further symbol), and accept.
+    When hitting $\EndLeft$, it moves its input head right to $\EndRight$ (without outputting any further symbol), and accept.
     \qed
 \end{example}
 
@@ -415,8 +419,9 @@ results.
 \subsection{Parametric transducers}
 
 We introduce \emph{parametric transducers}, a \emph{novel} transducer model that can 
-capture all the
-aforementioned string operations, i.e. finite-state transducer \cite{LB16}, the concatenation function, the replace-all function \cite{CCHLW18}, and the string reverse function.
+capture a wide range of string functions (all of what have discussed so far). 
+
+%all the aforementioned string operations, i.e. finite-state transducer \cite{LB16}, the concatenation function, the replace-all function \cite{CCHLW18}, and the string reverse function.
 
 \begin{definition}[Parametric Transducers]
     Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
@@ -479,20 +484,18 @@ Notice that parameters are only allowed in the output track.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_\arity$ with strings 
 $w_1,\ldots, w_\arity \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each occurrence of $x_j$ in transitions with $w_j$.
 % transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. 
-We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation.
+We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation.\footnote{The instantiation of the parameters is only done 
+	\emph{once} before the parametric transducer is run. Because of this, parameteric transducers cannot in general be captured by the non-parametric transducers that nondeterministically ``guess''
+	the parameters separately for each transition.}  
 %More formally, let 
 %$\Transducer[w_1/x_1,\ldots,w_m/x_m]$ denote the (non-parametric) \FFT{} obtained from $\Transducer$ by replacing every occurrence of each
 %parameter $x_i$ in $\Transducer$ by the string $w_i$.
-\footnote{Note that this instantiation of the parameters is only done 
-\emph{once} before the parametric transducer is run. It is precisely
-for this reason that parameteric transducers cannot in general be captured by 
-the standard finite-state transducer model that nondeterministically ``guesses''
-the parameters separately for each transition.}  
+%
 We use $\Tran(\Transducer)$ to denote the set of string tuples 
 $(w, w_1, \ldots, w_\arity, w')$ such that 
-$(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_m/x_m])$, i.e., when
-$x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, 
-$\Transducer$ produces the output $w'$ from the input $w$. 
+$(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_m/x_m])$. 
+%
+%i.e., when $x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, $\Transducer$ produces the output $w'$ from the input $w$. 
 %
 Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\transrel \subseteq \controls \times 
     \ialphabet \times \{\Stay, \Right\} \times 
@@ -504,8 +507,8 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %We use $z = \Transducer(x, \vec{y})$ to denote the fact that there is an accepting run of $\Transducer$ on $x$, equipped with the parameters $\vec{y}$, producing an output $z$.
 %\tl{again, this is a relation, not a function.}
 
-\begin{example}
- We first show that the concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and the set of final states $\{q_1\}$. 
+\begin{example} \label{example:2pt}
+ The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. 
  
   We then demonstrate how the  $\replaceall$ function considered in \cite{CCHLW18} can be simulated by \PT{}s. 
   Intuitively,  
@@ -514,8 +517,7 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
     $pat$, called the \emph{pattern}, and (3) a string $rep$, called
     the \emph{replacement string}. The output of the function is
     the string obtained from $sub$ by replacing every occurrence of $pat$ 
-    by $rep$. We refer to \cite{CCHLW18} for the details of the  $\replaceall$ function, especially the semantics of \emph{leftmost
-    	and longest matching} for the pattern matching. 
+    by $rep$. We refer to \cite{CCHLW18} for the details of the  $\replaceall$ function, especially the semantics of \emph{leftmost and longest matching} of the pattern. 
     
 %    To resolve ambiguity, we use the semantics of \emph{leftmost
 %    and longest matching} that is used by languages such as Python and sed (with the
@@ -524,25 +526,34 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %    output of $\replaceall(\texttt{aabaa},\texttt{a}^+,\texttt{b})$ is
 %    \texttt{bbb}.
 %    %, not \texttt{aba}.
-
+%
     For a regular expression $p$, let $\replaceall_{p}$ be the $\replaceall$ function with the fixed pattern $p$,
-    i.e., it only has two inputs: $sub$ and $rep$. We can express
-    $\replaceall_{p}$ by a \PT{} with $sub$ on the input
-    tape and $rep$ as a parameter. We will show this for the case when $w$ is 
-    a single letter \texttt{a}; this can be easily extended to the general case 
-    (see the proof of Proposition \ref{prop:replaceAll} in the 
-    \shortlong{full version}{appendix}). The transducer has one state $q_0$ as both the initial and the final state,
+    i.e., it only has two inputs: $sub$ and $rep$. In case that $pat$ is  a single letter \texttt{a}, the transducer for $\replaceall_{p}$ has one state $q_0$ as both the initial and the final state,
     %$q_0$, $q_1$, $q_F$, 
     and transitions 
     %$(q_0,\EndLeft,1,q_1,\epsilon)$,
     $(q_0,\ell, 1, q_0, \ell)$ for each $\ell \in \ialphabet \backslash
     \{\texttt{a}\}$, 
-    and $(q_0, \texttt{a}, 1, q_0, rep)$.
-    %, and $(q_1, \EndRight,0,q_F,\epsilon)$. 
-
-    The above transducer uses the parameter $rep$. Whenever the replacement
-    is a constant string, an (non-parametric) \FT{} is sufficient to
-    capture the function. \qed
+    and $(q_0, \texttt{a}, 1, q_0, rep)$. For the more general case, see a proof in Appendix~\ref{appendix:replace2pt}.
+%    
+%    
+%    We can express
+%    $\replaceall_{p}$ by a \PT{} with $sub$ on the input
+%    tape and $rep$ as a parameter. We will show this for the case when $w$ is 
+%    a single letter \texttt{a}; this can be easily extended to the general case 
+%    (see the proof of Proposition \ref{prop:replaceAll} in the 
+%    \shortlong{full version}{appendix}). The transducer has one state $q_0$ as both the initial and the final state,
+%    %$q_0$, $q_1$, $q_F$, 
+%    and transitions 
+%    %$(q_0,\EndLeft,1,q_1,\epsilon)$,
+%    $(q_0,\ell, 1, q_0, \ell)$ for each $\ell \in \ialphabet \backslash
+%    \{\texttt{a}\}$, 
+%    and $(q_0, \texttt{a}, 1, q_0, rep)$.
+%    %, and $(q_1, \EndRight,0,q_F,\epsilon)$. 
+%
+    The transducer uses the parameter $rep$. Whenever the replacement
+    is a constant string, a (non-parametric) \FT{} is sufficient to
+    capture the function; cf. \cite{LB16}. \qed
 \end{example}
 
 %The general $\replaceall$ function (see \cite{CCHLW18}) actually admits 
@@ -550,11 +561,12 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %and \emph{longest} matching semantics, which is also used by languages such as
 %Python and sed. Such a function can also be captured by parametric transducers,
 %as the following proposition claims.
-\begin{proposition}\label{prop-replace-pt}
-    Given a regular expression pattern $p$, we can compute a 
-    \PT{} $\Transducer$ such that $\Tran(\Transducer)$ expresses the function $\replaceall_p$.
-    \label{prop:replaceAll}
-\end{proposition}
+%
+%\begin{proposition}\label{prop-replace-pt}
+%    Given a regular expression pattern $p$, we can compute a 
+%    \PT{} $\Transducer$ such that $\Tran(\Transducer)$ expresses the function $\replaceall_p$.
+%    \label{prop:replaceAll}
+%\end{proposition}
 
 %Give examples: htmlescape, replace-all, and reverse.
 
