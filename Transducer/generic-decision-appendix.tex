@@ -1,12 +1,105 @@
 %!TEX root = main.tex
 
-\section{Details in Section~\ref{sec:algo}}
+\section{Proof of Theorem \ref{thm-generic-dec} in Section~\ref{sec:algo}}
 
-\paragraph{Proof of Proposition~\ref{prop-conj-fa-prod}.}
+In this proof, we will use the following proposition.
+\begin{proposition}\label{prop-conj-fa-prod}
+For a pair of conjunctive \FA{}s $\Aut_1 = ((\controls_1, \transrel_1), S_1)$ and $\Aut_2 = ((\controls_2, \transrel_2), S_2)$, a conjunctive \FA{} $\Aut = (\controls_1 \times \controls_2, \transrel_1 \times \transrel_2, S)$ such that $|S| = \max(|S_1|, |S_2|)$ can be constructed to recognise $\Lang(\Aut_1) \cap \Lang(\Aut_2)$. 
+\end{proposition}
+\begin{proof}
+%\paragraph{Proof of Proposition~\ref{prop-conj-fa-prod}.}
 Let $\Aut_1 = ((\controls_1, \transrel_1), S_1)$ and $\Aut_2 = ((\controls_2, \transrel_2), S_2)$ be two conjunctive \FA{}s such that $S_1 = \{(p_1, p'_1),\ldots, (p_m, p'_m)\}$ and $S_2 = \{(q_1, q'_1), \ldots, (q_n, q'_n)\}$ with $m \le n$. Then we construct a conjunctive \FA{} $\Aut = (\controls_1 \times \controls_2, \transrel_1 \times \transrel_2, S)$, where 
 $$S= \{((p_i, q_i), (p'_i, q'_i)) \mid i \in [m]\} \cup \{((p_m, q_{m+i}), (p'_m, q_{m+i})) \mid i \in [n-m]\}.$$ 
 Note $|S|  = \max(|S_1|, |S_2|)$. Evidently $\Lang(\Aut) = \Lang(\Aut_1) \cap \Lang(\Aut_2)$. 
+\end{proof}
 
+\paragraph{Spelling out the algorithm in full.}
+To facilitate the complexity analysis, we will spell out the modified algorithm 
+in detail. Let $S$ be a symbolic execution satisfying \prerec{} . 
+We give a nondeterministic algorithm to decide the path feasibility of
+$S$. 
+%\tl{we need to unify the name, path feasibility or satisfiability?}\zhilin{path feasibility}
+By definition, $S$ has $\rcdep(S)$ assignments.
+%let $\cE_{\rcdep(S)}(x) = \cE(x)$.
+First, for each variable $x \in \vars(S)$,
+we compute a collection $\cE_{\rcdep(S)}(x)$ of conjunctive \FA{}
+$\Aut$ appearing in a regular constraint $x \in \Aut$ as an assertion of $S$.
+%conjunctive FAs over the alphabet $\Sigma$, 
+%, by utilising the dependency graph $\cG(\varphi)$. 
+% , in a top-down manner.
+Note that at this stage each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ is 
+actually just a normal \FA{}. 
+ %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
+
+%Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
+%$\cG_i$ becomes empty, i.e., a graph without edges.
+
+\OMIT{
+We start from the last assignment of $S$,  set $i:=\rcdep(S)$, and construct $\cE_{\rcdep(S)}(x)$ as follows: For each %conjunct 
+%\mat{Can we use different terminology: we now have conjunctive NFA and conjuncts, which risks confusion}
+$x \in \Aut$ appearing in an assertion of $S$, where $\Aut$ is an FA, 
+%let $\Aut = (\controls, q_0, \transrel, q_F)$, 
+we \emph{nondeterministically} select one state $q \in \finals$ and include $((\controls, \transrel), \{(q_0, q)\})$ into $\cE_{\rcdep(S)}(x)$. Then we iterate the following procedure to compute $\cE_{i}$ until $i=0$.  
+}
+%
+%select (nondeterministically) a vertex $x$ of $\cG_i$ such that $x$ has no predecessors and has $k+1$ outgoing edges ($k\geq 0$) via edges $(x, (\Transducer, 0), y_0)$ and $(x, (\Transducer, j), y_j)$ with $j \in [k]$ in $\cG_i$. 
+%(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \ldots, y_k)$.
+%Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
+
+For the $i$-th iteration, suppose the $i$-th assignment of $S$ is $y:= f(x_1,
+\cdots, x_\arity)$ with $\arity\geq 1$, and 
+$\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
+where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
+%$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
+By \prerec{}, we can enumerate a conjunctive representation
+$(\Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, \arity})$ of
+each disjunct of
+$f^{-1}(\Aut_j)$ in $\ell(|f|,|\Aut_j|)$ space.
+%enumerate a representation of which, say 
+%\tl{zhilin: why the index starts from 0? it is a $k$-ary relation, isn't it?} 
+%can be computed effectively. 
+Then $\cE_{i-1}(x)$ for $x \in  \{x_1,\cdots, x_\arity\}$ is constructed as follows: %and $\cG_{i+1}$ are computed as follows:
+\begin{enumerate}
+\item For each $j \in [n]$, nondeterministically select a disjunct 
+    conjunctively represented by the tuple
+    $\left(\Aut_{j, 1}, \ldots, \Aut_{j, \arity}\right)$.
+%
+\item For each $i \in \{1,\ldots, \arity\}$, let
+\[
+    \cE_{i-1}(x_i):= \cE_{i}(x_i) \cup \left\{\Aut_{j, i} \mid  j \in [n]
+        \right\}.
+\]
+[For each $x{\notin} \{x_1,\ldots, x_\arity\}$, let $\cE_{i-1}(x) := 
+        \cE_i(x)$.]
+%We set $\cE_{i+1}(x) = \emptyset$.
+%
+%\item Let $\cG_{i+1}:= \cG_i \backslash \{(x, (\Transducer, j), y_j) \mid j \in \{0\} \cup [k]\}$.
+\end{enumerate}
+%For each iteration, $i$ is updated by  $i: = i+1$.
+%\end{enumerate}
+%
+After all assignments of $S$ are scanned,  let $\cE(x):=\cE_{0}(x)$ for each variable $x$.
+To decide the path feasibility of $S$, we simply show that each collection
+$\cE(x)$ (for each $x \in \vars(S)$) of conjunctive \FA{} has a nonempty 
+language intersection.
+
+
+%%=================================================================
+%%=================================================================
+\hide{
+%\begin{example}
+\tl{tbh, I think the algo is clear enough and the example does not add too much.}\zhilin{maybe, but the example is at least more concrete. Moreover, the description of the algorithm is short and dry, maybe just use the example to let the reader spend a bit more time on the algorithm and digest, although with some redundancy. We may remove it if we run out of space. May decide this later.}
+Let us use an example to help the reader understand the computation of $\cE_{i+1}$ from $\cE_i$.  Suppose that in $\cG_i$, to compute $\cE_{i+1}$, we select a variable $x$, which has no predecessors and three outgoing edges, say $(x, (\Transducer, 0), y)$, $(x, (\Transducer, 1), z)$, and $(x, (\Transducer, 2), y)$, where $y$ and $z$ are two distinct variables, moreover, $\cE_i(x) = \{\Aut_1, \Aut_2\}$. Let us also assume that  $\Pre_{\Transducer}(\Aut_1)$ (resp. $\Pre_{\Transducer}(\Aut_2)$) is represented by $(\Aut^{(j')}_{1, 0}, \Aut^{(j')}_{1, 1}, \Aut^{(j')}_{1, 2})_{ j'  \in [2]}$ (resp. $(\Aut^{(j')}_{2, 0}, \Aut^{(j')}_{2, 1}, \Aut^{(j')}_{2, 2})_{ j'  \in [3]}$). If for $j = 1$ (resp. $j=2$), $(\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 1}, \Aut^{(1)}_{1, 2})$  (resp. $\left(\Aut^{(3)}_{2, 0}, \Aut^{(3)}_{2, 1}, \Aut^{(3)}_{2, 2}\right)$)  is selected, then $\cE_{i+1}(y) = \cE_i(y) \cup \{\Aut^{(1)}_{1, 0}, \Aut^{(1)}_{1, 2}, \Aut^{(3)}_{2, 0} \cup \Aut^{(3)}_{2, 2}\}$ and $\cE_{i+1}(z) = \cE_{i}(z) \cup \{\Aut^{(1)}_{1, 1}, \Aut^{(3)}_{2, 1}\}$. 
+\tl{I have not updated this part as likely the proof will go to appendix}
+}
+%%=================================================================
+%%=================================================================
+
+    \OMIT{
+To decide the path feasibility of $S$, we have the following nondeterministic algorithm: first (nondeterministically) construct the sets $\cE(x)$ for $x \in \vars(S)$ as detailed above, then 
+%guessing an accepting run of the product of NFAs 
+checking the nonemptiness of the product of conjunctive \FA{}s in $\cE(x)$ for each $x \in \vars(S)$.
+}
 
 
 \paragraph{Detailed complexity analysis.}
