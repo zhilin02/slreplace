@@ -2,10 +2,12 @@
 
 \section{Instantiations of the generic decision procedure}\label{sec-instan}
 
-In this section, we instantiate the generic decision procedure presented in the preceding section. In particular, the string functions of the assignments are modelled as parametric transducers. More precisely, each string function $f(x_1, \cdots, x_k)$ ($k\geq 1$) can be modelled by a parametric transducer $\Transducer$  
-with $k-1$ parameters, and the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). For the pre-image of an FA $\Aut$,  $\Pre_{R_f}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, namely, the set of tuples $(w_1,\ldots, w_k)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when equipped with the parameters $w_2,\ldots, w_k$. To apply Theorem~\ref{thm-generic-dec}, one only needs to verify the \prerec{} assumption. 
+In this section, we instantiate the generic decision procedure presented in the preceding section. 
+As we have set up in Section~\ref{sec:framework}, in our framework %the string functions of the assignments are modelled as parametric transducers. More precisely, 
+each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$) is modelled by a parametric transducer $\Transducer$  
+with $\arity-1$ parameters, in which case the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). We shall usually refer to them as \emph{string constraints with transducers}. For the pre-image of an FA $\Aut$,  $\Pre_{R_f}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one needs to verify the \prerec{} assumption respectively for different classes of parametric transducers under consideration. 
 %While the latter trivially holds as we only consider assertions being regular constraints, the former is not trivial. 
-For the rest of this section, we consider three classes of parametric transducers, viz. two-way transducers, one-way transducers, and reversal-bounded two-way transducers. We shall show that in each case, the pre-image is a recognisable relation with various size bounds $\ell(|\Transducer|, |\Aut|)$. This would yield tight complexity bounds on the path feasibility problem for string manipulating programs $S$ when the string functions therein are given in parametric transducers.  
+%For the rest of this section, we consider three classes of parametric transducers, viz. two-way transducers, one-way transducers, and reversal-bounded two-way transducers. We shall show that in each case, the pre-image is a recognisable relation with various size bounds $\ell(|\Transducer|, |\Aut|)$. This would yield tight complexity bounds on the path feasibility problem for string manipulating programs $S$ when the string functions therein are given in parametric transducers.  
 
 
 
@@ -22,14 +24,16 @@ The \prerec{} assumption holds for string functions definable in \PPT{}s, with $
 \end{lemma}
 
 \begin{proof}
-Assume a \PPT{} $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_k\}$ and a conjunctive \FA{} $\Aut = ((Q', \delta'), S')$ with $S' \subseteq Q' \times Q'$. %We first introduce some notations. 
+Assume a \PPT{} $\Transducer=(X, Q, q_0, F, \delta)$ with $X = \{x_1,\cdots, x_\arity\}$ and a conjunctive \FA{} $\Aut = ((Q', \delta'), S')$ with $S' \subseteq Q' \times Q'$. %We first introduce some notations. 
 Let $\oalphabet = \ialphabet \cup X$.
 
-To compute $\Pre_\Transducer(\Aut)$, we introduce a conjunctive \FFA{}\footnote{Conjunctive \FFA{}s are defined similarly to conjunctive \FA{}s.} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$, %defined as follows. 
+To compute $\Pre_\Transducer(\Aut)$, we construct a conjunctive \FFA{} %\footnote{Conjunctive \FFA{}s are defined similarly to conjunctive \FA{}s.} 
+$\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_\arity}, q}$, %defined as follows. 
 %and $\Aut[S]$ defined below.
 %
-where  $q \in F$, and  $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$.   
-The conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is constructed from $\Transducer$  by checking that there is an accepting run of $T$ on $w$, ending at the state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. Therefore, each state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is of the form $(q,q') \in Q \times Q'$. 
+where  $q \in F$ and  $S_{x_1}, \cdots, S_{x_\arity} \subseteq Q' \times Q'$.   
+%The conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is constructed 
+Intuitively this is done from $\Transducer$  by checking that there is an accepting run of $T$ on $w$ ending at the state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. Therefore, each state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is of the form $(q,q') \in Q \times Q'$. 
 %In particular, 
 When a transition of $\Transducer$ outputs a string $w'$ from $\oalphabet^*$ where some parameter $x_i$ appears (instead of a constant string), for each occurrence of $x_i$ in $w'$, a pair of states $(q_1', q_2')$ will be nondeterministically selected from $S_{x_i}$, and the second component of the state of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
 
@@ -37,7 +41,7 @@ When a transition of $\Transducer$ outputs a string $w'$ from $\oalphabet^*$ whe
 %(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
 
 
-More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is computed as
+More precisely, $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is defined as
 %\begin{enumerate} 
 %\item 
 %the conjunctive \FFA{} 
@@ -57,15 +61,13 @@ It is easy to see that  the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_
 %$2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
 
 %For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
+\smallskip
+\noindent
+\emph{Claim.} %For each tuple of strings $(w, w_1,\cdots, w_k)$, 
+$(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, where $\Aut[S_{x_i}]=((Q', \delta'), S_{x_i})$. [The proof the claim is given in Appendix~\ref{appendix:sec-2way}.]
+\smallskip
 
-
-\paragraph{Claim.} %For each tuple of strings $(w, w_1,\cdots, w_k)$, 
-$(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, where $\Aut[S_{x_i}]=((Q', \delta'), S_{x_i})$.
-
-\medskip
-
-
-Therefore, $\Pre_\Transducer(\Aut)$ is equal to 
+It follows that $\Pre_\Transducer(\Aut)$ is equal to 
 \[
 \bigcup_{S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}]).\]
 %
@@ -79,13 +81,17 @@ the \prerec{} assumption holds for string functions definable in \PPT{}s with $\
 %$\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be constructed effectively.
 \end{proof}
 
-From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, by some simple calculation, we deduce that given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, its path feasibility can be decided in 
+From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, %by some simple calculation, we deduce that 
+we have that, when instantiated by \PPT{}s, %given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, 
+the path feasibility of string constraint $S$ can be decided in 
 %nondeterministic 
 %$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$$ 
 %space, where $f(j, k) = 2^{jk \log (j k)}$. 
-nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space, thus in (deterministic) $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space, according to Savitch's theorem \cite{Savitch70}. Here the function $\tower(j, k)$ is %a tower of $2$s of height $j$ with $k$ on top, formally, 
-defined as: $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. We conclude that the path feasibility of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
-Moreover, we have a matching lower bound whose proof is sketched below.
+nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space.\footnote{indeed in deterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space by Savitch's theorem \cite{Savitch70} the the big-O notation.} Here the function $\tower(j, k)$ is %a tower of $2$s of height $j$ with $k$ on top, formally, 
+defined as: $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
+The result is summarised in the following theorem, and a matching lower bound proof is also sketched.
+%We conclude that the path feasibility of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
+%Moreover, we have a matching lower bound whose proof is sketched below.
 %
 \begin{theorem} \label{thm:two-way}
 Given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, the path feasibility of such string manipulating programs is  %$\straightline[\twpt]$ 
@@ -94,55 +100,40 @@ Given a string manipulating program $S$ in SSA form where string functions are m
 
 \paragraph{Lower-bound.}
 
-We show that, for any $\expheight$, the problem is $\expheight$-$\expspace$-hard with $(\expheight+1)$ transducers, via a reduction from a tiling problem that is hard for $\expheight$-$\expspace$.
-For this we need to manipulate large numbers that will be used to index the tiles in a solution to the tiling problem.
-Similar encodings appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
-The complete encoding is given in 
+For each $\expheight$ we reduce from a tiling problem that is hard for $\expheight$-$\expspace$.
+For this we need to use large numbers that act as indices.
+Similar encodings of large numbers appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
+The complete reduction is given in 
 \shortlong{the full version of this article}
           {Appendix~\ref{sec:two-way-lower}}.
-We give an overview of the intuition here.
+with an overview of the intuition here.
 
-A \emph{tiling problem} consists of a finite set of tiles \tiles as well as horizontal and vertical tiling relations 
+A \emph{tiling problem} consists of a finite set of tiles $\tiles$ as well as horizontal and vertical tiling relations 
 $\hrel, \vrel \subseteq \tiles \times \tiles$.
 Given a tiling \emph{corridor} of a certain width, as well as initial and final tiles
 $\inittile, \fintile \in \tiles$
-the task is to find a tiling where 
-\begin{itemize}
-\item
-    the first tile of the first row of the corridor is $\inittile$, 
-\item
-    the tile $\tile$ directly to the left of $\tile'$ in a row must have
-    $\tup{\tile, \tile'} \in \hrel$,
-\item
-    the tile $\tile$ in the row above $\tile'$ in the same column must have
-    $\tup{\tile, \tile'} \in \vrel$,
-\item
-    the last position of the last row must contain $\fintile$.
-\end{itemize}
-Tiling problems are intimately connected to computations of Turing machines as
-each row can hold the tape contents in one configuration of a run.
-Thus, the corridor width is equivalent to the space of a Turing machine.
+the task is to find a tiling where the first (resp. last) tile of the first (resp. last) row is $\inittile$ (resp. $\fintile$), and horizontally (resp. vertically) adjacent tiles $\tile, \tile'$ have
+$\tup{\tile, \tile'} \in \hrel$
+(resp. $\vrel$).
+Each row can hold the tape contents of a Turing machine configuration, and thus, the corridor width is equivalent to the space of a Turing machine.
 
-The existence of a solution to a tiling problem of width $n$ can be reduced to checking whether a \FFT\ of size 
+Solving a tiling problem of width $n$ can be reduced to checking whether a \FFT\ of size 
 $\ap{\bigoh}{n}$ 
 can output a specified symbol $\top$.
 Equivalently, we could use a \FFA.
-A solution to a tiling problem will be encoded as a word 
+Solutions will be encoded as a words
 $t_{1,1} t_{1,2} \cdots t_{1,n} \numsep \cdots \numsep t_{m,1} t_{m,2} \cdots t_{m,n}$
-where each row
-$t_{i,1} t_{i,2} \cdots t_{i,n}$
-is separated from the next row by $\numsep$.
+where rows are separated by $\numsep$.
 The \FFT\ performs $n+1$ passes.
 During the first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
 $\tup{t_{i,j}, t_{i,j+1}} \in \hrel$
 for all
 $1 \leq j < n$.
-If the encoding passes this check, we need to verify that the vertical tiling relation $\vrel$ is met.
-This is done in $n$ more passes, the $j$th of which verifies the $j$th column of the encoding.
+In $n$ more passes we verify that the vertical tiling relation $\vrel$ is met; the $j$th pass verifies the $j$th column.
 
-To encode tiling problems of $n$-fold exponential width we chain $(n+1)$ \FFT{}s.
+When the width is $n$-fold exponential we chain $(n+1)$ \FFT{}s.
 We begin with two \FFT{}s and a tiling problem of exponential width.
-Intuitively, a row of the solution to a tiling problem could now be encoded with a sequence of $n$ binary bits preceding each tile.
+Intuitively, we precede each tile with its column number in $n$ binary bits.
 That is
 \[
     0\ldots00\ \tile_{1,1}\ %
@@ -157,28 +148,20 @@ That is
     \cdots
     1\ldots11\ \tile_{m,2^n} \ .
 \]
-In fact, in the formal encoding, we will not use binary numbers, but instead use tiling problems whose solutions must have exponential length.
-For the purposes of the intuitive exposition, we will use binary numbers as the intention is clearer.
-
-Given such an encoding, the first \FFT{} checks the solution in a similar manner to the width $n$ problem.
-To cope with the large corridor width, it will output ``queries'' to the second \FFT.
-These queries check whether one binary number is equal to the next, or is the increment.
-Now, the first \FFT{} can, for example, non-deterministically guess that one tile is in the same column as another and use queries to verify this guess.
-In this way it becomes able to verify a tiling over an exponentially wide corridor. \zhilin{Maybe say more explicitly as follows: when verifying the vertical tiling relation, for each column, the first \FFT{}  nondeterministically collects and outputs all the tiles and their addresses in this column, and ask the second \FFT{} to check the addresses of these tiles are equal and the vertical tiling relation holds in this column. The first \FFT{} goes through $2^n$ passes on the input, since there are $2^n$ columns. The second \FFT{} is also responsible for checking that after the tiles of the $i$-th column are outputted  by the first \FFT{}, then the tiles of the $(i+1)$-th column should be outputted. @Matt, is this description helpful here ?}
+Given such an encoding, the first \FFT{} checks the solution in a similar manner to the width $n$ problem, but needs to cope with the large corridor width when checking $\vrel$.
+For this it will use a second \FFT.
+For each column, the first \FFT{} nondeterministically selects all the tiles in this column 
+(verifying $\vrel$ on-the-fly).
+The addresses of the selected tiles are output to the second \FFT{} which checks that they are equal.
+The first \FFT{} goes through a non-deterministic number of such passes and it is enforced by the second \FFT{} that there are $2^n$ of them.
+To do this, the second \FFT{} checks that after the addresses of the $i$-th column are output by the first \FFT{}, then the addresses of the $(i+1)$-th column are output next.
+\mat{@Zhilin: is the above better?}
 
 To increase the corridor width by another exponential, we need another \FFT.
 To reach doubly-exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
 For this we precede each bit with another binary sequence, this time of length $n$.
-Thus, we have two sets of binary digits $0,1$ and $0', 1'$, and, if $n = 2$ a row would take the following form
-\[
-    (0'0') 0 (0'1') 0 (1'0') 0 (1'1') 0\ \tile_1\ %
-    (0'0') 0 (0'1') 0 (1'0') 0 (1'1') 1\ \tile_2\ % 
-    \ldots 
-\]
-where parenthesis are shown for clarity only.
-To check a given tiling, the first \FFT\ outputs queries to the second.
-To be able to check exponentially long binary numbers, the second \FFT\ outputs queries to the third \FFT.
-This process can be iterated so that using $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-fold exponentially wide corridor.
+The first \FFT\ then outputs queries to the second, which outputs queries to the third \FFT, each time removing one exponential.
+With $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-fold exponentially wide corridor.
 
 
 
@@ -209,28 +192,28 @@ This process can be iterated so that using $(n+1)$ \FFT, we can search for a sol
  
 %From Section \ref{sec-2way}  and Section \ref{sec-one-way}, we see that one-way transducers enjoy much lower complexity, but their expressiveness is limited. (For instance, the reverse function is inexpressible.) On the other hand, 
 
-Theorem~\ref{thm:two-way} reveals two-way transducers may suffer from very higher complexity. We observe that, in practice, many string functions, when encoded by transducers, need only a small number of reversals for the reading head, rather than the full power of two-way transducers. An extreme case is one-way transducers in which the reading head does not change the direction. 
+%Theorem~\ref{thm:two-way} reveals two-way transducers may suffer from very higher complexity. We observe that,
+In practice, many string functions, when encoded by transducers, need only a small number of reversals for the reading head, rather than the full power of two-way transducers. An extreme case is one-way transducers in which the reading head does not change the direction. 
 
 %
 %We shall consider reversal bounded transducers, which remain the complexity advantages of one-way transducers, but which can capture a larger class of string functions than one-way transducers. 
 
  
-Let $k \in \Nat$. A \PPT{} $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  $k$-\RBPPT{} to denote the class of $k$-reversal bounded \PPT{}s. Note that the number of reversals in accepting runs of \PPT{}s must be even, since they must stop on the right end of input strings.
-Evidently, the class of $0$-reversal bounded \PPT{}s is precisely the class of one-way \PT{}s.   
+Let $k \in \Nat$. A \PPT{} $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  $k$-\RBPPT{} to denote the class of $k$-reversal bounded \PPT{}s. Notice that the number of reversals in accepting runs of \PPT{}s must be even, since they must stop on the right end of input strings. Evidently, $0$-reversal bounded \PPT{}s are precisely one-way \PT{}s.   
 %
 %As demonstrated in Example~\ref{exmp-ft} (in Section~\ref{sec:framework}), 
-As another example, the string \textbf{reverse} function (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}) can be captured by a $2$-reversal bounded \PPT.
-
+%As another example, the string \textbf{reverse} function (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}) can be captured by a $2$-reversal bounded \PPT.
+%
 %To handle $k$-reversal bounded transducers, 
-An important observation is  any string manipulating program (in SSA forms) with string functions modelled by  $k$-\RBPPT{} can be translated to the one with only \PT{} and a special transducer $\Transducer_{\sf reverse}$ for the reverse function.  
+An important observation is string constraints with $k$-\RBPPT{} can be translated to string constraints with only \PT{} and a special transducer $\Transducer_{\sf reverse}$ for the reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
 
 \begin{proposition} \label{prop:trans}
-	Given a string manipulating program $S$ where  string functions are modelled by a $k$-reversal bounded transducer, one can construct $S'$ using only one-way transducers or  $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(k\cdot \rcdep(S))$. 
+	Any string constraint $S$ with $k$-\RBPPT{} can be transformed to $S'$ with only \PT{}s and $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(k\cdot \rcdep(S))$. 
 \end{proposition}
 
 %Our goal is to show the following result.
 %
-To instantiate the generic procedure as in the preceding sections, one only needs to verify the  \prerec{} assumption for one-way transducers and $\Transducer_{\sf reverse}$. Indeed, although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general two-way transducers would have (cf. Lemma~\ref{lem-2pt}), but rather it is akin to one-way transducers (cf. Lemma~\ref{lem-1pt}). 
+To instantiate the generic procedure, one only needs to verify the  \prerec{} assumption for \PT{}s and $\Transducer_{\sf reverse}$. Indeed, although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general \PPT{}s would have. % (cf. Lemma~\ref{lem-2pt}). %but rather it is akin to one-way transducers (cf. Lemma~\ref{lem-1pt}). 
 
 \begin{lemma}\label{lem-1pt}
 	The \prerec{} assumption holds for string functions definable in \PT{}s or $\Transducer_{\sf reverse}$, with $\ell(|\Transducer|, |\Aut|) = |\Transducer||\Aut|$.
@@ -249,10 +232,11 @@ Combing Theorem~\ref{thm-generic-dec}, Proposition~\ref{prop:trans}, and Lemma~\
 \begin{theorem} \label{thm-rb-2pt}
 %Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
 %For each constant $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
-For each $k \in \Nat$, the path feasibility of string manipulating programs in SSA form where string functions are modelled by $k$-\RBPPT{}s is $\expspace$-complete. 
+Let  $k \in \Nat$. The path feasibility of string constraints with $k$-\RBPPT{}s is $\expspace$-complete. 
 \end{theorem}
 
-The lower bound in Theorem~\ref{thm-rb-2pt} is deduced from the result in \cite{LB16} that the path feasibility of straight-line string constraints with concatenation and one-way (non-parametric) transducers, which are both special cases of \PT{}s, is already $\expspace$-hard.
+The lower bound %in Theorem~\ref{thm-rb-2pt} is deduced from the result in 
+follows from that the path feasibility of straight-line string constraints with concatenation and one-way (non-parametric) transducers,  both of which are special cases of \PT{}s, is already $\expspace$-hard \cite{LB16}.
 
 %The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.
 %The upper bound of Theorem~\ref{thm-rb-2pt} will not proved by directly instantiating Theorem~\ref{thm-generic-dec}, since  by doing this, we are only able to get a 2-$\expspace$ upper bound: Based on the construction in Section~\ref{sec-2way}, we can derive that the \prerec{} assumptions holds for string functions definable in $k$-\RBPPT, with $\ell(|\Transducer|, |\Aut|) = (|\Transducer||\Aut|)^{k+1}$. Nevertheless, $\ell^{\langle \rcdep(S)\rangle}(|\Transducer|, |\Aut|) = |\Transducer|^{(k+1) + \ldots + (k+1)^{\rcdep(S)}} |\Aut|^{(k+1)^{\rcdep(S)}}$, which is doubly exponential if $k > 0$.
