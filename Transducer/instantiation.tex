@@ -2,10 +2,10 @@
 
 \section{Instantiations of the generic decision procedure}\label{sec-instan}
 
-In this section, we instantiate the generic decision procedure presented in the preceding section. 
-As we have set up in Section~\ref{sec:framework}, in our framework %the string functions of the assignments are modelled as parametric transducers. More precisely, 
+We instantiate the generic decision procedure presented previously. 
+As in Section~\ref{sec:framework}, in our framework
 each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$) is modelled by a parametric transducer $\Transducer$  
-with $\arity-1$ parameters, in which case the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). We shall usually refer to them as \emph{string constraints with transducers}. For the pre-image of an FA $\Aut$,  $\Pre_{R_f}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one needs to verify the \prerec{} assumption respectively for different classes of parametric transducers under consideration. 
+with $\arity-1$ parameters, and the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). We shall usually refer to them as \emph{string constraints with transducers}. For the pre-image of an FA $\Aut$,  $\Pre_{R_f}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one needs to verify the \prerec{} assumption respectively for different classes of parametric transducers under consideration. 
 %While the latter trivially holds as we only consider assertions being regular constraints, the former is not trivial. 
 %For the rest of this section, we consider three classes of parametric transducers, viz. two-way transducers, one-way transducers, and reversal-bounded two-way transducers. We shall show that in each case, the pre-image is a recognisable relation with various size bounds $\ell(|\Transducer|, |\Aut|)$. This would yield tight complexity bounds on the path feasibility problem for string manipulating programs $S$ when the string functions therein are given in parametric transducers.  
 
@@ -67,13 +67,12 @@ It is easy to see that  the size of $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_
 $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q})$ and $w_i \in \Lang(\Aut[S_{x_i}])$ for each $i \in [k]$, where $\Aut[S_{x_i}]=((Q', \delta'), S_{x_i})$. [The proof the claim is given in Appendix~\ref{appendix:sec-2way}.]
 \smallskip
 
-It follows that $\Pre_\Transducer(\Aut)$ is equal to 
+Thus, $\Pre_\Transducer(\Aut)$ is a recognisable relation equal to
 \[
 \bigcup_{S_{x_1}, \cdots, S_{x_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}) \times \Lang(\Aut[S_{x_1}]) \times \cdots  \times \Lang(\Aut[S_{x_k}]).\]
 %
-We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation. 
 
-In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}$ to a union of conjunctive \FA{}s as follows: Transform $\Aut''$ into a one-way transition graph $(\controls''',\delta''')$, where $\controls'''$ are vectors of states of $\Aut''$ of lengths at most $2|\controls''|-1$ (cf. Proposition~\ref{prop-2nfa-nfa}). Then $\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$.
+To represent $\Pre_\Transducer(\Aut)$, we transform the conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}$ to a union of conjunctive \FA{}s as follows: Transform $\Aut''$ into a one-way transition graph $(\controls''',\delta''')$, where $\controls'''$ are vectors of states of $\Aut''$ of lengths at most $2|\controls''|-1$ (cf. Proposition~\ref{prop-2nfa-nfa}). Then $\Lang(\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$.
 %that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
 
 Since the size of each conjunctive \FA{} $((\controls''',\delta'''), S'')$ is $ 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, we conclude that 
@@ -83,18 +82,17 @@ the \prerec{} assumption holds for string functions definable in \PPT{}s with $\
 
 From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, %by some simple calculation, we deduce that 
 we have that, when instantiated by \PPT{}s, %given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, 
-the path feasibility of string constraint $S$ can be decided in 
+the path feasibility of a string constraint $S$ can be decided in 
 %nondeterministic 
 %$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$$ 
 %space, where $f(j, k) = 2^{jk \log (j k)}$. 
-nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space.\footnote{indeed in deterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space by Savitch's theorem \cite{Savitch70} the the big-O notation.} Here the function $\tower(j, k)$ is %a tower of $2$s of height $j$ with $k$ on top, formally, 
-defined as: $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
-The result is summarised in the following theorem, and a matching lower bound proof is also sketched.
+nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space (which can be made deterministic space by Savitch's theorem \cite{Savitch70}). Here $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
+After the result we sketch the lower bound.
 %We conclude that the path feasibility of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
 %Moreover, we have a matching lower bound whose proof is sketched below.
 %
 \begin{theorem} \label{thm:two-way}
-Given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, the path feasibility of such string manipulating programs is  %$\straightline[\twpt]$ 
+Given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, path feasibility is
  $\expheight$-$\expspace$-hard.
 \end{theorem}
 
@@ -106,7 +104,7 @@ Similar encodings of large numbers appear in the study of higher-order programs 
 The complete reduction is given in 
 \shortlong{the full version of this article}
           {Appendix~\ref{sec:two-way-lower}}.
-with an overview of the intuition here.
+with some intuition given here.
 
 A \emph{tiling problem} consists of a finite set of tiles $\tiles$ as well as horizontal and vertical tiling relations 
 $\hrel, \vrel \subseteq \tiles \times \tiles$.
@@ -115,24 +113,23 @@ $\inittile, \fintile \in \tiles$
 the task is to find a tiling where the first (resp. last) tile of the first (resp. last) row is $\inittile$ (resp. $\fintile$), and horizontally (resp. vertically) adjacent tiles $\tile, \tile'$ have
 $\tup{\tile, \tile'} \in \hrel$
 (resp. $\vrel$).
-Each row can hold the tape contents of a Turing machine configuration, and thus, the corridor width is equivalent to the space of a Turing machine.
+Corridor width can be considered equivalent to the space of a Turing machine.
 
 Solving a tiling problem of width $n$ can be reduced to checking whether a \FFT\ of size 
 $\ap{\bigoh}{n}$ 
 can output a specified symbol $\top$.
 Equivalently, we could use a \FFA.
-Solutions will be encoded as a words
+A solutions is a word
 $t_{1,1} t_{1,2} \cdots t_{1,n} \numsep \cdots \numsep t_{m,1} t_{m,2} \cdots t_{m,n}$
-where rows are separated by $\numsep$.
+where $\numsep$ separates rows.
 The \FFT\ performs $n+1$ passes.
-During the first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$ and we have 
+During the first pass it checks that the tiling begins with $\inittile$, ends with $\fintile$, and
 $\tup{t_{i,j}, t_{i,j+1}} \in \hrel$
 for all
 $1 \leq j < n$.
-In $n$ more passes we verify that the vertical tiling relation $\vrel$ is met; the $j$th pass verifies the $j$th column.
+In $n$ more passes we verify that $\vrel$ is obeyed; the $j$th pass verifies the $j$th column.
 
-When the width is $n$-fold exponential we chain $(n+1)$ \FFT{}s.
-We begin with two \FFT{}s and a tiling problem of exponential width.
+Now consider two \FFT{}s and a tiling problem of exponential width.
 Intuitively, we precede each tile with its column number in $n$ binary bits.
 That is
 \[
@@ -148,14 +145,14 @@ That is
     \cdots
     1\ldots11\ \tile_{m,2^n} \ .
 \]
-Given such an encoding, the first \FFT{} checks the solution in a similar manner to the width $n$ problem, but needs to cope with the large corridor width when checking $\vrel$.
+The first \FFT{} checks the solution similarly to the width $n$ problem, but needs to handle the large width when checking $\vrel$.
 For this it will use a second \FFT.
 For each column, the first \FFT{} nondeterministically selects all the tiles in this column 
 (verifying $\vrel$ on-the-fly).
 The addresses of the selected tiles are output to the second \FFT{} which checks that they are equal.
-The first \FFT{} goes through a non-deterministic number of such passes and it is enforced by the second \FFT{} that there are $2^n$ of them.
+The first \FFT{} goes through a non-deterministic number of such passes and the second \FFT{} enforces that there are $2^n$ of them (in column order).
 To do this, the second \FFT{} checks that after the addresses of the $i$-th column are output by the first \FFT{}, then the addresses of the $(i+1)$-th column are output next.
-\mat{@Zhilin: is the above better?}
+\mat{@Zhilin: is above better?}
 
 To increase the corridor width by another exponential, we need another \FFT.
 To reach doubly-exponentially large numbers, we need to precede each tile with a binary sequence of exponential length.
@@ -190,94 +187,37 @@ With $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-
 
 \subsection{$k$-Reversal-bounded two-way transducers} \label{subsec:krb}
  
-%From Section \ref{sec-2way}  and Section \ref{sec-one-way}, we see that one-way transducers enjoy much lower complexity, but their expressiveness is limited. (For instance, the reverse function is inexpressible.) On the other hand, 
+In practice, many string functions need only a small number of reversals for the reading head, rather than full two-way transducers. 
+E.g., the reading head for one-way \PT{} (resp. the string reverse function) needs $0$ (resp. $1$) reversal(s).
 
-%Theorem~\ref{thm:two-way} reveals two-way transducers may suffer from very higher complexity. We observe that,
-In practice, many string functions, when encoded by transducers, need only a small number of reversals for the reading head, rather than the full power of two-way transducers. An extreme case is one-way transducers in which the reading head does not change the direction. 
-
-%
-%We shall consider reversal bounded transducers, which remain the complexity advantages of one-way transducers, but which can capture a larger class of string functions than one-way transducers. 
-
- 
-Let $k \in \Nat$. A \PPT{} $\Transducer$ is said  to be $k$-reversal bounded if in every run of $\Transducer$ on input strings, the reading head is reversed for at most $k$ times. We use  $k$-\RBPPT{} to denote the class of $k$-reversal bounded \PPT{}s. Notice that the number of reversals in accepting runs of \PPT{}s must be even, since they must stop on the right end of input strings. Evidently, $0$-reversal bounded \PPT{}s are precisely one-way \PT{}s.   
-%
-%As demonstrated in Example~\ref{exmp-ft} (in Section~\ref{sec:framework}), 
-%As another example, the string \textbf{reverse} function (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}) can be captured by a $2$-reversal bounded \PPT.
-%
-%To handle $k$-reversal bounded transducers, 
-An important observation is string constraints with $k$-\RBPPT{} can be translated to string constraints with only \PT{} and a special transducer $\Transducer_{\sf reverse}$ for the reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
+Let $k \in \Nat$ a $k$-reversal bounded \PPT{} $\Transducer$ ($k$-\RBPPT{}) is such that in every run of $\Transducer$, the reading direction is reversed at most $k$ times. 
+Notice that $k$ must be even since accepting runs must stop on the right end of input strings. 
+Evidently, $0$-reversal bounded \PPT{}s are precisely one-way \PT{}s.   
+Crucially, string constraints with $k$-\RBPPT{} can be translated to string constraints with only \PT{} and a special transducer $\Transducer_{\sf reverse}$ for the reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
 
 \begin{proposition} \label{prop:trans}
 	Any string constraint $S$ with $k$-\RBPPT{} can be transformed to $S'$ with only \PT{}s and $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(k\cdot \rcdep(S))$. 
 \end{proposition}
 
-%Our goal is to show the following result.
-%
-To instantiate the generic procedure, one only needs to verify the  \prerec{} assumption for \PT{}s and $\Transducer_{\sf reverse}$. Indeed, although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general \PPT{}s would have. % (cf. Lemma~\ref{lem-2pt}). %but rather it is akin to one-way transducers (cf. Lemma~\ref{lem-1pt}). 
+Proposition~\ref{prop:trans} is shown in
+\shortlong{the full version}{Appendix~\ref{app-rb-2pt}}.
+Intuitively, a run of a $k$-\RBPPT{} can be split into $k$ runs, each travelling in a single direction.
+We can simulate each run with $k$ one-way \PT{}s whose outputs are then concatenated.
+Right-to-left runs need to be simulated backwards (left-to-right), and thus the output needs to be reversed before concatenation.
+
+
+To instantiate the generic procedure, one only needs to verify the  \prerec{} assumption for \PT{}s and $\Transducer_{\sf reverse}$. Indeed, although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general \PPT{}s would have. 
 
 \begin{lemma}\label{lem-1pt}
 	The \prerec{} assumption holds for string functions definable in \PT{}s or $\Transducer_{\sf reverse}$, with $\ell(|\Transducer|, |\Aut|) = |\Transducer||\Aut|$.
-	%Let $\Transducer$ be a 1PT and $\Aut$ be a conjunctive NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $|\Transducer||\Aut|$, can be computed effectively.
 \end{lemma}
-
-%\begin{lemma}\label{lem-reverse}
-%	The \prerec{} assumption holds for  $\Transducer_{\sf reverse}$, with $\ell(| \Transducer_{\sf reverse}|, |\Aut|) = \bigO(|\Transducer_{\sf reverse}||\Aut|)$.
-%	%Let $\Transducer$ be a \PPT{} and $\Aut$ be a conjunctive \FA{} $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively. Moreover, each disjunct of the representation can be nondeterministically computed in $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$ space.
-%\end{lemma}
 
 Lemma~\ref{lem-1pt} can be proved in the same way as Lemma~\ref{lem-2pt}. The only difference is that the construction of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}, q}$ is simpler and its size is at most $|\Transducer| |\Aut|$, since the transformation from  conjunctive \FFA{} to conjunctive \FA{} is not needed. For $\Transducer_{\sf reverse}$, to compute the pre-image one only needs to reverse the direction of each transition of $\Aut$ and swap the initial and final states.   
 
 Combing Theorem~\ref{thm-generic-dec}, Proposition~\ref{prop:trans}, and Lemma~\ref{lem-1pt} together, we have:
 
 \begin{theorem} \label{thm-rb-2pt}
-%Given an $\straightline[\owpt]$ formula $\varphi \wedge \psi$, 
-%For each constant $k \in \Nat$, the satisfiability problem of $\straightline[\rbtwpt_k]$ is $\expspace$-complete. 
 Let  $k \in \Nat$. The path feasibility of string constraints with $k$-\RBPPT{}s is $\expspace$-complete. 
 \end{theorem}
 
-The lower bound %in Theorem~\ref{thm-rb-2pt} is deduced from the result in 
-follows from that the path feasibility of straight-line string constraints with concatenation and one-way (non-parametric) transducers,  both of which are special cases of \PT{}s, is already $\expspace$-hard \cite{LB16}.
-
-%The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.
-%The upper bound of Theorem~\ref{thm-rb-2pt} will not proved by directly instantiating Theorem~\ref{thm-generic-dec}, since  by doing this, we are only able to get a 2-$\expspace$ upper bound: Based on the construction in Section~\ref{sec-2way}, we can derive that the \prerec{} assumptions holds for string functions definable in $k$-\RBPPT, with $\ell(|\Transducer|, |\Aut|) = (|\Transducer||\Aut|)^{k+1}$. Nevertheless, $\ell^{\langle \rcdep(S)\rangle}(|\Transducer|, |\Aut|) = |\Transducer|^{(k+1) + \ldots + (k+1)^{\rcdep(S)}} |\Aut|^{(k+1)^{\rcdep(S)}}$, which is doubly exponential if $k > 0$.
-
-%We prove the upper bound in Theorem~\ref{thm-rb-2pt} as follows: We first show that the $\expspace$ upper bound holds for the extension of \PT{}s with the reverse function. We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to that for \PT{}s plus reverse function. The details can be found in Appendix~\ref{app-rb-2pt}. \zhilin{Matt, I wrote a very rough sketch of the reduction in appendix. Could you please help finish it ? This is a minor difference in the reduction. I do not use truncate transducer, instead, I add additional  indices to indicate the number of reversals that have been used. }
-
- 
-%We prove the upper bound in Theorem~\ref{thm-rb-2pt} as follows: We first show that the $\expspace$ upper bound holds for the extension of \PT{}s with the reverse function. We then reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to that for \PT{}s plus reverse function. The details can be found in Appendix~\ref{app-rb-2pt}. 
-
-%\zhilin{Matt, could you write a proof in the appendix ?}
- 
- 
-
-
-%===========================================================
-\hide{
-\begin{lemma}\label{lem-rb-2pt}
-The \prerec{} assumptions holds for string functions definable in $k$-\RBPPT, with $\ell(|\Transducer|, |\Aut|) = (|\Transducer||\Aut|)^{k+1}$.
-%Let $k \in \Nat$, $\Transducer$ be a RB2PT$_k$, and $\Aut$ be a conjunctive NFA. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $(|\Transducer||\Aut|)^k$ \tl{k+1?}, can be computed effectively.
-\end{lemma}
-
-The proof of Lemma~\ref{lem-rb-2pt} is the same as Lemma~\ref{lem-2pt}. The only difference is that the size of $\cB_{\Transducer, \Aut, S_{x_1}, \ldots, S_{x_k}, q}$ is at most $(|\Transducer| |\Aut|)^k$, since $\Transducer$ is reversal $k$-bounded.
-
-From Lemma~\ref{lem-rb-2pt} and Theorem~\ref{thm-generic-dec}, we deduce the following result.
-%
-
-The $\expspace$-hardness in Theorem~\ref{thm-rb-2pt} follows from Theorem~\ref{thm-1pt}.
-}
-
-%\input{expspace-hardness.tex}
-
-%To show the above result, we will give a constraint that represents a straight-line program which ``transforms'' an automaton into exponentially many different automata.
-%These exponentially many automata will be used to check the vertical tiling relation for a tiling problem with an exponentially wide corridor.
-%Since such tiling problems are $\expspace$-hard, the result follows.
-
-%\begin{theorem}\label{thm-1pt}
-%	Satisfiability of $\strline[1PT]$, even in the single-letter case, is $\expspace$-hard.
-%\end{theorem}
-
-
-%
-%\subsection{reversal-bounded transducers ?}
-%
-%\tl{include two-way non-parametric as well?}
+The lower bound is from the $\expspace$-hardness of path feasibility of straight-line string constraints with concatenation and one-way (non-parametric) transducers,  both of which are special cases of \PT{}s~\cite{LB16}.
