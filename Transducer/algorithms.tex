@@ -143,14 +143,14 @@ parametric transducers as we will see in Section \ref{sec-instan}.
 \noindent
 \textbf{Complexity consideration: }
 Although the algorithm in the proof of Theorem \ref{th:gen} is conceptually 
-clean, to obtain tight complexity bounds in this paper, it is crucial to 
+clear, to obtain tight complexity bounds in this paper, it is crucial to 
 avoid applying the product construction before each pre-image computation.
 To this end, we make two modifications and state a theorem with complexity. 
 
 Firstly,
 since we assume that each $f: (\ialphabet^*)^\arity \to \ialphabet^*$
 in $S$ is a partial function, it follows that $f^{-1}(L_1 \cap L_2) = 
-f^{-1}(L_1) \cap f^{-1}(L_2)$. This is \emph{false} in general if $f$ is a relation.
+f^{-1}(L_1) \cap f^{-1}(L_2)$. This is \emph{false} in general if $f$ is a \emph{relation}.
 This means that, for each $y := f(\bar x)$, we can \emph{separately} compute 
 the preimage $f^{-1}(L)$ for each regular constraint $y \in L$ in an assertion
 of $S$, i.e., no product construction is performed.
@@ -169,7 +169,7 @@ condition}, i.e., a string $w$ is accepted by $\Aut$ if
 for \emph{every} $(q, q') \in S$, there is a run of $(\controls, \transrel)$ on
 $w$ from $q$ to $q'$. 
 %
-Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$.
+Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$. Evidently, a  conjunctive \FA{} $\Aut=((\controls, \transrel), S)$ is a \emph{succint} representation of the product of \FA{}s $\cB_{q,q'}$, which has a size exponentially large than that of $\Aut$ in the worst case.
 %
 %We remark that the nonemptiness checking  can be done in nondeterministic logarithmic space for the standard representation of \FA{}s, but requires polynomial space for the conjunctive representation. (One needs to build up the product automaton which is of size $|Q|^{|S|}$.) 
 %
@@ -248,7 +248,7 @@ The main result of this section is a generic decision procedure for the path fea
 We now provide a refined version of Theorem \ref{th:gen} that accounts for
 complexity (full proof in the \shortlong{full version}{appendix}). First,
 our regularity condition (called \prerec{}) now incorporates conjunctive
-\FA{} as representations of atoms and accounts for complexity:
+\FA{}s as representations of atoms and accounts for complexity:
 for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,
 there is an algorithm that runs in $\ell(|f|,|\Aut|)$ space which enumerates 
 each disjunct of $f^{-1}(\Aut)$ in conjunctive representation.
@@ -267,15 +267,16 @@ when we
 %
 %; the concrete definition depends on the form of $f$, which will be given when the generic decision procedure is instantiated in Section~\ref{sec-instan}. 
 instantiate the generic decision procedure in Section~\ref{sec-instan}.
-We also define more generic parameters.
+We also define some size parameters of $S$.
 %w.l.o.g., we assume that each variable appears at most once\footnote{If, for instance, $x\in \Aut_1$ and $x\in \Aut_2$ both appear in the assertions of $S$, then we can lump them using $x\in \Aut_1 \times \Aut_2$.} in the assertions of $S$. 
 %Furthermore, 
-Let $\rcdep(S)$ be the number of assignments in $S$, $\rcdim(S)$ be the maximum 
-number of arguments of string functions in the assignments of $S$, $\rcphi(S)$ 
-be the maximum size of the representations of these string functions, 
-$\rcpsi(S)$ be the maximum size of the \FA{}s appearing in the assertions of 
-$S$, and $\rcreg(S)$ to be the maximum number of atomic regular constraints for 
-any one variable in $S$. Moreover,
+Let $\rcdep(S)$ be the number of assignments in $S$, $\rcdim(S)$ be the maximum arity of string functions in the assignments of $S$, $\rcphi(S)$ 
+be the maximum size of the representations of these string functions,  $\rcasrt(S)$ be the number of assertions in $S$,
+and $\rcpsi(S)$ be the maximum size of the \FA{}s appearing in the assertions of 
+$S$.
+%, and $\rcreg(S)$ to be the maximum number of atomic regular constraints for 
+%any one variable in $S$. 
+Moreover,
 for $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($n\geq 1$) as $\ell^{\langle 1 \rangle}(j,k)= \ell(j, k)$ and $\ell^{\langle n+1 \rangle }(j, k) = \ell(j, \ell^{\langle n \rangle}(j,k))$. 
 
 %%%=========================================
@@ -302,9 +303,14 @@ for $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 \begin{theorem}\label{thm-generic-dec}
 	Given a symbolic execution $S$ satisfying \prerec{}, the 
     path feasibility problem of $S$ can be decided in \emph{nondeterministic} 
-	$|\vars(S)|(\rcdim(S)+1)^{\rcdep(S)}  \rcreg(S) \left(\ell^{\langle
-    \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$ space for some constant
-    $c > 0$.
+        %
+	$$(\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$$
+	%
+	space for some constant $c > 0$.
+%
+%	$|\vars(S)|(\rcdim(S)+1)^{\rcdep(S)}  \rcreg(S) \left(\ell^{\langle
+%    \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$ space for some constant
+%    $c > 0$.
 \end{theorem}
 
 
