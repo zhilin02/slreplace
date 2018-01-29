@@ -2,10 +2,14 @@
 
 \section{Instantiations of the generic decision procedure}\label{sec-instan}
 
-We instantiate the generic decision procedure presented previously. 
-As in Section~\ref{sec:framework}, in our framework
-each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$) is modelled by a parametric transducer $\Transducer$  
-with $\arity-1$ parameters, and the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). We shall usually refer to them as \emph{string constraints with transducers}. For the pre-image of an FA $\Aut$,  $\Pre_{R_f}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one needs to verify the \prerec{} assumption respectively for different classes of parametric transducers under consideration. 
+%We instantiate the generic decision procedure presented previously. 
+%As in Section~\ref{sec:framework}, 
+In our framework
+each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$) from the symbolic execution $S$ is modelled by a parametric transducer $\Transducer$  
+with $\arity-1$ parameters, and the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). 
+%We shall usually refer to them as \emph{string constraints with transducers}. 
+For the pre-image of an FA $\Aut$,  %$\Pre_{R_f}(\Aut)$ 
+$f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one needs to verify the \prerec{} assumption respectively for different classes of parametric transducers under consideration. 
 %While the latter trivially holds as we only consider assertions being regular constraints, the former is not trivial. 
 %For the rest of this section, we consider three classes of parametric transducers, viz. two-way transducers, one-way transducers, and reversal-bounded two-way transducers. We shall show that in each case, the pre-image is a recognisable relation with various size bounds $\ell(|\Transducer|, |\Aut|)$. This would yield tight complexity bounds on the path feasibility problem for string manipulating programs $S$ when the string functions therein are given in parametric transducers.  
 
@@ -19,7 +23,7 @@ with $\arity-1$ parameters, and the size of $f$, $|f|$, is naturally defined by 
 
 
 \begin{lemma}\label{lem-2pt}
-The \prerec{} assumption holds for string functions definable in \PPT{}s, with $\ell(|\Transducer|, |\Aut|) = 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
+The \prerec{} assumption holds for symbolic executions with \PPT{}s, with $\ell(|\Transducer|, |\Aut|) = 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
 %Let $\Transducer$ be a \PPT{} and $\Aut$ be a conjunctive \FA{} $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively. Moreover, each disjunct of the representation can be nondeterministically computed in $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$ space.
 \end{lemma}
 
@@ -92,18 +96,17 @@ After the result we sketch the lower bound.
 %Moreover, we have a matching lower bound whose proof is sketched below.
 %
 \begin{theorem} \label{thm:two-way}
-Given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, path feasibility is
+Given a symbolic execution $S$ with \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, path feasibility is
  $\expheight$-$\expspace$-hard.
 \end{theorem}
 
 \paragraph{Lower-bound.}
-
 For each $\expheight$ we reduce from a tiling problem that is hard for $\expheight$-$\expspace$.
 For this we need to use large numbers that act as indices.
-Similar encodings of large numbers appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except the machinery needed to enforce the encoding is quite different.
+Similar encodings of large numbers appear in the study of higher-order programs (e.g.~\cite{J01,CW07}) except quite different machinery is needed to enforce the encoding.
 The complete reduction is given in 
 \shortlong{the full version of this article}
-          {Appendix~\ref{sec:two-way-lower}}.
+          {Appendix~\ref{sec:two-way-lower}},
 with some intuition given here.
 
 A \emph{tiling problem} consists of a finite set of tiles $\tiles$ as well as horizontal and vertical tiling relations 
@@ -188,7 +191,7 @@ With $(n+1)$ \FFT, we can search for a solution of a tiling problem over an $n$-
 \subsection{$k$-Reversal-bounded two-way transducers} \label{subsec:krb}
  
 In practice, many string functions need only a small number of reversals for the reading head, rather than full two-way transducers. 
-E.g., the reading head for one-way \PT{} (resp. the string reverse function) needs $0$ (resp. $1$) reversal(s).
+E.g., the reading head for one-way \PT{} (resp. the string reverse function) needs $0$ (resp. $2$) reversal(s).
 
 Let $k \in \Nat$ a $k$-reversal bounded \PPT{} $\Transducer$ ($k$-\RBPPT{}) is such that in every run of $\Transducer$, the reading direction is reversed at most $k$ times. 
 Notice that $k$ must be even since accepting runs must stop on the right end of input strings. 
