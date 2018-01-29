@@ -4,8 +4,11 @@
 Web pages are often constructed using templating systems such as Mustache.js or Google Closure.
 Template HTML contains variables that are instantiated before the page is served.
 A simple template is given in Figure~\ref{fig:closure}\ref{fig:closure-eg} with variables \linkvar\ and \linktextvar.
-A parametric transducer can instantiate the variables with provided values easily enough, but, templating systems may also provide an ``auto-escape'' feature.
+A parametric transducer can instantiate the variables with runtime values using the variable parameters.
+However templating systems may also provide a context-aware ``auto-escape'' feature.
 That is, the contents of the replaced variable will be ``escaped'' so that special characters (or sequences) which may allow code injection are replaced with safe alternatives to avoid attack.
+The escaping applied depends on the text surrounding the variable use.
+\mat{Changed above text to try and emphasize variables and context}
 
 For example, if \linkvar\ had the value \mintinline{js}{javascript: alert(1337)}, clicking the link in the instantiated template would run the JavaScript code \mintinline{js}{alert(1337)}.
 To avoid this, Closure wraps URLs beginning with \mintinline{html}{javascript:} in single quotes.
@@ -52,6 +55,12 @@ The result is shown in Figure~\ref{fig:closure}\ref{fig:closure-safe}.
  and 
  $$x'' := \replaceall(x', "\{\$txt\}", [HTML]y_{txt}[LTMH]),$$ 
  where $x$ represents the input string, and $y_{li}, y_{txt}$ are parameters. The second transducer is in fat a non-parametric transducer to do the sanitisation. Strictly speaking, this demonstrates the necessity to have both $\replaceall$ function and finite-state transducers, but not exactly the necessity of parametric transducers. But of course, it is nice to have a single formalism where both $\replaceall$ and finite-state transducers can be captured.}
+
+\mat{
+    @Zhilin
+    The first replaceall needs to be a transducer because it is context-aware.
+    I.e. it uses the fact that \linkvar\ appears in a value of an href attribute to know that it needs to be sanitised like a URL rather than HTML.
+}
 
 \mat{
     One might worry that identifying text starting with \texttt{javascript:} means the transudcer needs to keep a buffer of the input string, leading to large transducers.
