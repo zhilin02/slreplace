@@ -19,11 +19,12 @@ in detail. Let $S$ be a symbolic execution satisfying \prerec{} .
 We give a nondeterministic algorithm to decide the path feasibility of
 $S$. 
 %\tl{we need to unify the name, path feasibility or satisfiability?}\zhilin{path feasibility}
+
 By definition, $S$ has $\rcdep(S)$ assignments.
-%let $\cE_{\rcdep(S)}(x) = \cE(x)$.
 First, for each variable $x \in \vars(S)$,
-we compute a collection $\cE_{\rcdep(S)}(x)$ of conjunctive \FA{}
-$\Aut$ appearing in a regular constraint $x \in \Aut$ as an assertion of $S$.
+define $\cE_{\rcdep(S)}(x)$  as the set of conjunctive \FA{}s $((\controls, \transrel), \{(q_0, q_F)\})$ such that $\ASSERT{x \in \Aut}$ occurs in $S$, where $\Aut= (\controls, q_0, \{q_F\}, \transrel)$. 
+%of conjunctive \FA{}
+%$\Aut$ appearing in a regular constraint $x \in \Aut$ as an assertion of $S$.
 %conjunctive FAs over the alphabet $\Sigma$, 
 %, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
@@ -51,22 +52,20 @@ For the $i$-th iteration, suppose the $i$-th assignment of $S$ is $y:= f(x_1,
 $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
 where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
-By \prerec{}, we can enumerate a conjunctive representation
-$(\Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, \arity})$ of
-each disjunct of
+By \prerec{}, we can enumerate each disjunct $(\Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, \arity})$ of a conjunctive representation of 
 $f^{-1}(\Aut_j)$ in $\ell(|f|,|\Aut_j|)$ space.
 %enumerate a representation of which, say 
 %\tl{zhilin: why the index starts from 0? it is a $k$-ary relation, isn't it?} 
 %can be computed effectively. 
 Then $\cE_{i-1}(x)$ for $x \in  \{x_1,\cdots, x_\arity\}$ is constructed as follows: %and $\cG_{i+1}$ are computed as follows:
 \begin{enumerate}
-\item For each $j \in [n]$, nondeterministically select a disjunct 
-    conjunctively represented by the tuple
-    $\left(\Aut_{j, 1}, \ldots, \Aut_{j, \arity}\right)$.
+\item For each $j \in [n]$, nondeterministically select a disjunct $\left(\Aut_{j, 1}, \ldots, \Aut_{j, \arity}\right)$ of the conjunctive representation of $f^{-1}(\Aut_j)$.
 %
-\item For each $i \in \{1,\ldots, \arity\}$, let
+\item 
+%For each $i \in \{1,\ldots, \arity\}$, 
+Let
 \[
-    \cE_{i-1}(x_i):= \cE_{i}(x_i) \cup \left\{\Aut_{j, i} \mid  j \in [n]
+    \cE_{i-1}(x):= \cE_{i}(x) \cup \left\{\Aut_{j, j'} \mid  j \in [n], j' \in [\arity], x_{j'} = x
         \right\}.
 \]
 [For each $x{\notin} \{x_1,\ldots, x_\arity\}$, let $\cE_{i-1}(x) := 
@@ -80,7 +79,7 @@ Then $\cE_{i-1}(x)$ for $x \in  \{x_1,\cdots, x_\arity\}$ is constructed as foll
 %
 After all assignments of $S$ are scanned,  let $\cE(x):=\cE_{0}(x)$ for each variable $x$.
 To decide the path feasibility of $S$, we simply show that each collection
-$\cE(x)$ (for each $x \in \vars(S)$) of conjunctive \FA{} has a nonempty 
+$\cE(x)$ (for each $x \in \vars(S)$) of conjunctive \FA{}s has a nonempty 
 language intersection.
 
 
@@ -106,24 +105,46 @@ checking the nonemptiness of the product of conjunctive \FA{}s in $\cE(x)$ for e
 For each $i$, 
 %\begin{itemize}
 %\item 
-let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
-%\item 
-and $N_i$ be the maximum size of the conjunctive \FA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
+let $N_i$ be the maximum size of the conjunctive \FA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
 %\end{itemize}
-Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies   $|f| \le \rcphi(S)$, we have that $N_{i-1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotonic). Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcreg(S)$ elements, and 
-each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ is of size bounded by $\rcpsi(S)$, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcreg(S)$ elements, and each conjunctive \FA{} in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
-We emphasise that, according to the \prerec{} assumption, the construction of these \FA{}s can be done in nondeterministic $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
-Therefore, according to Proposition~\ref{prop-conj-fa-prod}, for each $x \in \vars(S)$, the conjunctive product \FA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \FA{}s  in $\cE(x)$ is of size 
-$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S)},$$
-and $|S_x| \le (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2$. Therefore, the size of the (standard) \FA{} corresponding to $\Aut_x$ is 
-$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S) (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
+Since each string function $f$ satisfies $|f| \le \rcphi(S)$, we have that $N_{i-1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotone). Furthermore, because each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ for each $x \in \vars(S)$ is of size bounded by $\rcpsi(S)$, we have that for each $x \in \vars(S)$, each conjunctive \FA{} in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
+%
+We emphasise that, according to the \prerec{} assumption, the construction of these conjunctive \FA{}s can be done in nondeterministic $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
 
-Since the nonemptiness of an \FA{} can be solved in nondeterministic logarithmic space, we conclude that the nonemptiness of $\Aut_x$ can be solved in 
+According to Proposition~\ref{prop-conj-fa-prod}, for each $x \in \vars(S)$, the conjunctive product \FA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \FA{}s  in $\cE(x)$ is of size 
+$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)|},$$
+%$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S)},$$
+and $|S_x| \le (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2$. Therefore, the size of the (standard) \FA{} corresponding to $\Aut_x$ is 
+$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
+%$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S) (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
+
+Since the nonemptiness of an \FA{} can be solved in nondeterministic logarithmic space, we conclude that the nonemptiness of $\Aut_x$ can be solved in nondeterministic
 {\small
-$$(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S) (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
+$$|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
 }
 space.
 
+We now analyse $|\cE(x)|$, the size of $\cE(x)$.
+For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$.
+Then we have $M_{i-1} \le (r+1)M_i \le (\rcdim(S)+1)M_i $. Since $\cE_{\rcdep(S)}(x)$ contains at most $\rcasrt(S)$ elements, we deduce that $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)$ elements. 
+
+Therefore, for each $x \in \vars(S)$, 
+the nonemptiness of $\Aut_x$ can be solved in nondeterministic 
+{\small
+$$(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
+}
+space.
+
+Moreover, from the aforementioned analysis, we know that each \FA{} $\Aut$ occurring in $S$ gives rise to at most $(\rcdim(S)+1)^{\rcdep(S)}$ conjunctive \FA{}s in $\bigcup \limits_{x \in \vars(S)} \cE(x)$. Therefore, 
+$$\sum \limits_{x \in \vars(S)} |\cE(x)| \le (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S).$$
+We then deduce that the sum of the sizes of all the conjunctive \FA{}s in $\cE(x)$ for $x \in \vars(S)$ is bounded by 
+$$
+\begin{array}{l l}
+& \sum \limits_{x \in \vars(S)} (|\cE(x)| \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))  \\
+\le & (\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S) \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) .
+\end{array}
+$$
+
 In summary, the aforementioned nondeterministic algorithm takes 
-$$|\vars(S)|(\rcdim(S)+1)^{\rcdep(S)}  \rcreg(S) \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$$
+$$(\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$$
  space for some constant $c > 0$.
