@@ -280,17 +280,18 @@ a fast solver \cite{HJLRV18} --- exploiting alternating
 automata and hardware verification --- has recently been developed.
 }
 
-Despite the expressive power of finite-state transducers, there are important
-string functions that they cannot model. We mention two examples. The first 
+Despite the expressive power of finite-state transducers, 
+they cannot model some important string functions. We mention two examples. The first 
 example is 
 the 
 replaceall functions $\replaceall_p(sub,rep)$ where the subject $sub$ and the replacement 
 $rep$ are string \emph{variables}, i.e., 
 replacing every matching of the pattern $p$ in the subject $sub$ by $rep$.
 %replacing every occurrence of a string $s$ in subject $sub$ matching the pattern $p$ by $rep$. 
-As argued in \cite{CCHLW18},
-such replaceall
-functions are important for modelling string functions used in web 
+%As argued in \cite{CCHLW18},
+Such replaceall
+functions are important \cite{CCHLW18} for modelling string functions used in 
+web 
 templating like Mustache.js \cite{Mustache}. The more restricted replaceall
 functions where $rep$ is a string constant can be modelled by finite-state  
 transducers \cite{LB16}.
