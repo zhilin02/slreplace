@@ -4,56 +4,67 @@
 
 \section{A generic decision procedure} \label{sec:algo}
 
+\zhilin{shall we use symbolic representation $S$ in order to not confuse the readers as well as ourselves ? }
+
 In this section, we present a generic decision procedure for any
-straight-line \emph{constraint language} that satisfies one further condition:
+%straight-line \emph{constraint language} 
+straight-line symbolic execution $S$
+that satisfies one further condition:
 the pre-image of a regular language under any function 
-$f: (\ialphabet^*)^k \to \ialphabet^*$ in the constraint satisfies a 
-``regularity condition''.
-In the case when $k=1$, this regularity condition would state that the pre-image
-of a regular language under the function $f$ is effectively regular. This is
-satisfied by \FT{} \cite{Berstel,BG07,BG08}, and there is
+$f: (\ialphabet^*)^\arity \to \ialphabet^*$ in the constraint satisfies a 
+``\emph{regularity condition}''.
+In the case when $\arity=1$, this regularity condition would state that the pre-image
+of a regular language under the function $f$ is \emph{effectively regular}, i.e. an \FA{} can be computed to represent the pre-image of the regular language under $f$. This is
+satisfied by \FT{}s \cite{Berstel,BG07,BG08}, and there is
 a decision procedure for satisfiability of the straight-line constraint
 language %immediately follows from the decision procedure 
-with $f: \ialphabet^* \to \ialphabet^*$ being a \FT{}, e.g., see 
+with $f: \ialphabet^* \to \ialphabet^*$ being an \FT{}, e.g., see 
 \cite{LB16,BG07,BG08}. %This decision procedure, in fact, works when each
 %function $f$ satisfies the regularity condition. 
 We illustrate this decision procedure below.
 
 \begin{example}
-    Consider the constraint
+    Consider the symbolic execution $S$
     \[
-        \ASSERT{x \in L_0}; \quad y := f(x); \quad z := g(x); 
+        \ASSERT{x \in L_0}; \quad y := f(x); \quad z := g(y); 
         \quad \ASSERT{y \in L_1}; \quad \ASSERT{z \in L_2}
     \]
     where $f, g: \ialphabet^* \to \ialphabet^*$ satisfy the regularity 
-    condition. To check this constraint, we repeatedly \emph{remove the last
-    assignment} from the constraint by pre-image computation. More
+    condition. To check the path feasibility of $S$, we repeatedly \emph{remove the last
+    assignment} from the program by pre-image computation. More
     precisely, we compute the pre-image $g^{-1}(L_2)$
     of $L_2$ under $g$, which by assumption is a regular language $L_2'$,
-    yielding the equi-satisfiable constraint:
+    yielding the equi-path-feasible program:
     \[
-        \ASSERT{x \in L_0}; \quad y := f(x); \quad \ASSERT{y \in L_1}; \quad 
-        \ASSERT{x \in L_2'}
+        \ASSERT{x \in L_0}; \quad y := f(x); \quad \ASSERT{y \in L_1}; \quad  \ASSERT{y \in L_2'} 
     \]
-    Computing the regular pre-image $L_1' := f^{-1}(L_1)$ gives us
-    the constraint:
+%    \[
+%        \ASSERT{x \in L_0}; \quad y := f(x); \quad \ASSERT{y \in L_1}; \quad 
+%        \ASSERT{x \in L_2'}
+%    \]
+    Computing the regular pre-image $L_1' := f^{-1}(L_1 \cap L'_2)$ gives us
+    the program:
     \[
-        \ASSERT{x \in L_0}; \quad \ASSERT{x \in L_1'}; \quad \ASSERT{x \in L_2'}
+        \ASSERT{x \in L_0}; \quad \ASSERT{x \in L_1'}.
     \]
-    Checking this constraint amounts to checking emptiness of
-    $L_0 \cap L_1' \cap L_2'$, which can be done by a simple automata algorithm.
+%
+%    \[
+%        \ASSERT{x \in L_0}; \quad \ASSERT{x \in L_1'}; \quad \ASSERT{x \in L_2'}
+%    \]
+    Checking the path feasibility of this program amounts to checking the nonemptiness of
+    $L_0 \cap L_1'$, which can be done by a simple \FA{} algorithm.
     \qed
 \end{example}
-How do we generalise this generic procedure to partial functions $f: 
-(\ialphabet^*)^k \to \ialphabet^*$ with multiple inputs, which at least
+How do we generalise this generic decision procedure to partial functions $f: 
+(\ialphabet^*)^\arity \to \ialphabet^*$ with possibly multiple inputs, which at least
 subsume parametric transducers? 
 One answer is to use the generalisation of
 %There are at least three generalisations
-of the notion of ``regularity'' from sets to relations 
+of the notion of ``regularity'' from languages to relations 
 by means of \emph{recognisable relations} \cite{choffrut-survey}.
 [Other more expressive notions of regularity exist (see \cite{choffrut-survey}),
-but they are not suitable for generalising the above decision
-procedure for $k=1$.]
+but they are not suitable for generalising the aforementioned decision
+procedure for $\arity=1$.]
 %(in the increasing order of expressivity):
 %(a) \emph{recognisable} relations, (b) \emph{regular} relations 
 %(a.k.a.~synchronised rational relations), and (c) \emph{rational} relations. 
@@ -74,47 +85,49 @@ This tight coupling is, however, absent in recognisable relations.
 
 \begin{definition}[Recognisable relations]
 	%Assume a finite alphabet $\Sigma$. 
-    A $k$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_k$ where $L^{(i)}_j$ is regular for each $j\in [k]$.
+    A $\arity$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_\arity$ where $L^{(i)}_j$ is regular for each $j\in [\arity]$.
 %
 %	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
 In other words, a recognisable relation is simply a finite union of 
 cartesian products of regular languages. 
-For a recognisable relation $R$, a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_k)_{i\in [n]}$  such that 
-$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \ldots\times \Lang(\Aut^{(i)}_k)$, where each $\Aut^{(i)}_j$ is an \FA. 
+For a recognisable relation $R$, a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)_{i\in [n]}$  such that 
+$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \ldots\times \Lang(\Aut^{(i)}_\arity)$, where each $\Aut^{(i)}_j$ is an \FA. 
 %The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, 
-Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_k)$ is called a \emph{disjunct} of the representation, and  each \FA{} $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
+Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a \emph{disjunct} of the representation, and  each \FA{} $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
+%
 \begin{theorem}
-    There is a procedure which, given a constraint $S$ wherein 
-    each $f: (\ialphabet^*)^k \to \ialphabet^*$ satisfies the regularity 
+    There is a procedure which, given a symbolic execution $S$ wherein 
+    each $f: (\ialphabet^*)^\arity \to \ialphabet^*$ satisfies the regularity 
     condition (with respect to recognisable relations), decides whether $S$
-    is satisfiable.
+    is path feasible.
     \label{th:gen}
 \end{theorem}
+%
 \begin{proof}
     We provide a nondeterministic procedure which generalises the case when
-    all functions $f$ take only one input. Let $y := f(\bar x)$ (where
+    all functions $f$ take only one input. Let $S$  be a symbolic execution, $y := f(\bar x)$ (where
     $\bar x = x_1,\ldots,x_\arity$) be the last
-    assignment in $S$, and let $\sigma := \{ y \in L_1,\ldots, y \in L_s\}$
+    assignment in $S$, and $\sigma := \{ y \in L_1,\ldots, y \in L_s\}$
     be the set of all regular constraints on $y$ in assertions of $S$.
-    Let $S'$ be the constrained obtained by removing $y := f(\bar x)$ along
+    Let $S'$ be the program obtained by removing $y := f(\bar x)$ along
     with all assertions with conditionals in $\sigma$.
     Compute the regular language $L := L_1 \cap \cdots \cap L_s$ using
     the product construction. By 
     assumption, we can compute a finite set of disjuncts
-    $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ of \FA{} representing
+    $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$  to represent
     $f^{-1}(L)$. Nondeterministically guess one such disjunct
-    $(\Aut_1, \ldots, \Aut_\arity)$. Let $S''$ be the constraint 
+    $(\Aut_1, \ldots, \Aut_\arity)$. Let $S''$ be the program 
     \[
-        S; \quad \ASSERT{x_1 \in \Lang(\Aut_1)}; \quad \cdots\quad ; \quad \ASSERT{x_\arity \in
+        S'; \quad \ASSERT{x_1 \in \Lang(\Aut_1)}; \quad \cdots\quad ; \quad \ASSERT{x_\arity \in
         \Lang(\Aut_\arity)}
     \]
-    Then, $S$ is satisfiable iff there is a nondeterministic guess leading
-    to a construction of $S''$ that is satisfiable. 
+    Then, $S$ is path-feasible iff there is a nondeterministic guess leading
+    to a construction of $S''$ that is path-feasible. 
 
     In conclusion, the procedure will terminate when $S$ is a conjunction of
-    regular constraints on input variables, whose satisfiability can be
-    decided by checking language emptiness of automata.
+    assertions on input variables, whose path feasibility can be
+    decided by checking language nonemptiness of \FA{}s.
 \end{proof}
 \OMIT{
 Fortunately, recognisability is
