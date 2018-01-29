@@ -1,0 +1,289 @@
+%!TEX root = main.tex
+
+\section{Symbolic extensions}
+\label{sec:symbolic}
+
+In this section, we consider an extension of string manipulating programs to the symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} (to be introduced) respectively.
+%
+Intuitively, in symbolic automata %are an extension of finite-state automata in which 
+input letters are symbolically described by unary predicates from a logical theory. %On the other hand, 
+%
+Likewise, in symbolic parametric transducers %are an extension of parametric transducers in which 
+output letters are given by terms in the logic theory or by parameters, as in parametric transducers.
+%,  apart from the symbolic input letters. 
+Symbolic parametric transducers can be seen as extensions of both parametric transducers introduced in this paper and symbolic transducers in \cite{VHLMB12}.
+%In the sequel, we first define symbolic automata and transducers, then introduce symbolic parametric transducers.
+% and show how to extend the results in preceding sections to the symbolic setting.
+
+
+%Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
+We assume familiarity with the %(many-sorted) 
+first-order logic (cf.\ some textbook e.g. \cite{EFT94}). A concept of background theories will be used in the definition of symbolic automata and symbolic parametric transducers\footnote{In literature, symbolic automata are defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. In this paper, we define symbolic automata on background theories (rather than Boolean algebra) to align to the definition of symbolic parametric transducers.}.
+%and label theories. 
+Intuitively, 
+%a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
+a background theory is a set of unary first-order logic formulae closed under Boolean connectives and substitutions. 
+ %Label theories extend background theories further by adding inequalities of terms into the set of formulae.
+ 
+ 
+ \begin{definition}[Background theories]
+A background theory $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ such that
+%satisfying the following constraints:
+%\begin{itemize}
+%\item 
+$\signature=(\functions, \predicates)$ is a signature, where $\functions$ (resp. $\predicates$) is a recursively enumerable set of function symbols (resp. relation symbols), 
+%
+%\item 
+$\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is an at most countable set (the data domain), and $\interpretation$ is an interpretation of $\signature$ on $\data$, 
+%
+%\item 
+$\Psi$ is a recursively enumerable set of \emph{unary} $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$ and substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$. 
+%
+For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set of \emph{witnesses} of $\psi$, i.e. $\{d \in \data \mid  \structure \models \psi(d)\}$. 
+A formula $\psi \in \Psi$ is \emph{satisfiable}, if $\|\psi\| \neq \emptyset$. A background theory $\Upsilon = (\signature, \structure, \Psi)$ is \emph{decidable} if  the satisfiability of $\psi \in\Psi$ is decidable.
+\end{definition}
+
+
+In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\bigO(\beta(m))$ space for some monotone function $\beta$ such that $\beta(m) \ge \log m$. We also assume that the formulae and terms in $\Upsilon$ are encoded in a proper way, e.g. encoded in binary,  and let $|\psi|$  and $|t|$ to denote the size (i.e. number of symbols) of $\psi$ and $t$ with respect to this encoding.
+A \emph{data string} is an element of $\data^*$. A \emph{data language} is a set of data strings.
+
+
+
+%%%%===========================================================
+\hide{
+\begin{definition}[Background theories]
+A background theory  $\Upsilon$ is a tuple $(\signature, \structure, \Psi)$ satisfying the following constraints:
+\begin{itemize}
+\item $\signature=(\functions, \predicates)$ is a signature, where $\functions$ (resp. $\predicates$) is a recursively enumerable set of function symbols (resp. relation symbols), 
+%\begin{itemize}
+%\item
+%
+%\item for each $\vec{s} = s_1 \times \dots \times s_n$ and $i \in [n]$, there is a function $\pi_{\vec{s}, i}$ of arity $s_1 \times \dots \times s_n \rightarrow s_i$ in $\functions$ such that $\pi_{\vec{s},i}(\vec{t}) = t_i$ for each term $\vec{t} = (t_1,\dots, t_n)$ of sort $s_1 \times \dots \times s_n$.
+%\end{itemize}
+
+\item $\structure$ is an $\signature$-structure $(\data, \interpretation)$, where $\data$ is a countably infinite set (the data domain), and $\interpretation$ is a function on $\data$ satisfying: for each $n$-ary function symbol $f \in \functions$ (resp. relation symbol $R \in \predicates$), $\interpretation(f)$ is an $n$-ary function on $\data$ (resp. $\interpretation(R)$ is an $n$-ary relation on $\data$),
+%
+\item $\Psi$ is a recursively enumerable set of unary $\signature$-formulae closed under Boolean connectives $\vee, \wedge, \neg$. In addition, $\Psi$ is closed under substitutions, that is, for each $\signature$-term $t(x)$ and $\psi(x) \in \Psi$, we have $\psi[t(x)/x] \in \Psi$.
+%In addition, it is assumed that each formula $\psi \in \Psi$ of arity $s^\ell$ (where $\ell > 0$) has the same set of free variables $\{x_1,\dots, x_\ell\}$.
+For each $\psi(x) \in \Psi$, we use $\|\psi\|$ to denote the set $\{d \in \data \mid  \structure \models \psi(d)\}$. Elements of $\| \psi\|$ are called the \emph{witnesses} of $\psi$.
+\end{itemize}
+A formula $\psi \in \Psi$ is \emph{satisfiable}, denoted by $\issat(\psi)$, if $\|\psi\| \neq \emptyset$. In addition, $\Upsilon$ is \emph{decidable} if  checking  $\issat(\psi)$ for a  given $\psi \in\Psi$ is decidable.
+\end{definition}
+}
+%%%%===========================================================
+
+
+
+
+%\smallskip
+
+%Next, we introduce symbolic transducers.
+
+
+%we derive a new sort $s^*$ such that $\|s^* \| = \bigcup \limits_{i \in \Nat}\data_s^i$, where $\data^i_s = \{\varepsilon\}$. An element of $\|s^* \|$ is called a \emph{data string} of sort $s$.
+
+
+
+
+% ======= label theories are removed, which are only useful for deterministic SA ================
+% ======= label theories are removed, which are only useful for deterministic SA ================
+\hide{
+\begin{definition}[Label theories]
+A label theory  $\Upsilon$ is a tuple $(\signature, \structure, \Psi, \Psi')$ satisfying the following constraints:
+\begin{itemize}
+\item $(\signature, \structure, \Psi)$ is a background theory with $\signature = (\functions, \predicates)$,
+%
+\item $\Psi'$ is the set of formulae of the form $\psi(x) \wedge t_1(x) \neq t_2(x)$, where $\psi(x) \in \Psi$ and $t_1(x), t_2(x)$ are $\signature$-terms.
+\end{itemize}
+A label theory is decidable if it is decidable to check $\issat(\psi)$ for $\psi \in \Psi \cup \Psi'$.
+\end{definition}
+
+Given a formula $\psi(x) \in \Psi$ and two $\signature$-terms $t_1(x), t_2(x)$,
+$t_1$ and $t_2$ are \emph{equivalent up to $\psi$}, denoted by $t_1 \simeq_\psi t_2$, if
+ $\issat(\psi(x) \wedge t_1(x) \neq t_2(x))$ does not hold.
+%Two sequences of $s^i/ s$-terms $\vec{f}=f_1...f_n$ and $\vec{g}=g_1...g_m$ are \emph{equivalent up to $\psi$}, denoted by $\vec{f}\simeq_\psi \vec{g}$,
+%iff $n=m$ and for every $j \in [n]$, $f_j \simeq_\psi g_j$.
+
+%Given an $s^i/ s$-term sequence $\vec{f}=f_1...f_n$ and a sequence of data values $\vec{d} = (d_1, \dots, d_i) \in (\data_{s_{\sf in}})^i$,
+%let $\|\vec{f}\|(\vec{d})$ denote the sequence $\|f_1\|(\vec{d})...\|f_n\|(\vec{d})$, that is, a data string of sort $s$.
+}
+% ======= label theories are removed, which are only useful for deterministic SA ================
+% ======= label theories are removed, which are only useful for deterministic SA ================
+
+
+In the sequel, for briefness, we first define symbolic parametric transducers, then define symbolic transducers as symbolic parametric transducers without parameters and symbolic automata as symbolic transducers without outputs.
+
+%=========================================
+\hide{
+\begin{definition}[Symbolic finite-state transducers]
+    A (nondeterministic two-way) symbolic transducer (\SST) is an extension of an \SSA{} with outputs. More precisely, a \SST{} $\Transducer$ is a tuple $(\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  
+\begin{itemize}
+%\item $\Upsilon=(\signature, \structure, \Psi)$ is a decidable background theory, where $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
+%
+\item $\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \SSA{}s, 
+%
+\item $\transrel$ is a finite set of  transitions which are in one of the following forms,
+\begin{itemize}
+\item  symbolic transitions $(q, \psi(x), dir, q', \vec{t}(x))$ such that $q, q' \in Q$, $dir \in \{\Left, \Stay, \Right\}$, $\psi(x) \in \Psi$, and
+$\vec{t}(x) = t_1(x) \ldots t_r(x)$ is a (possibly empty) sequence of $\signature$-terms, 
+\item   $(q, \EndLeft, dir, q', \epsilon)$ or $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$,
+\end{itemize}
+\end{itemize}
+A \SST{} is an \ST{} if there are no transitions with the direction ``$\Left$". 
+%$(q, \psi(x), dir, q', \vec{t}(x))$ we have $dir \in \{\Stay, \Right\}$ and the transitions of the form $(q, \EndRight, \Left, q', c)$ are not present.
+\end{definition}
+}
+%=========================================
+
+
+%We are ready to introduce symbolic parametric transducers.
+
+\begin{definition}[Symbolic parametric transducers]
+A nondeterministic two-way symbolic parametric transducer (\SSPT) is an extension of a \SST{} with parameters. More precisely,  a \SSPT{} $\Transducer$ is a tuple
+$(\EndLeft, \EndRight, Y, \controls, q_0, \finals, \transrel)$ where
+%\begin{itemize}
+%\item $\Upsilon=(\signature,\structure, \Psi, \Psi')$ is a decidable background theory with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$,
+%
+%\item 
+$\EndLeft$, $\EndRight$, $\controls$, $q_0$, $\finals$ are defined precisely as in \FFA{}s, 
+%
+%\item 
+$Y=\{y_1,\ldots, y_m\}$ is a finite set of parameters, 
+%
+%\item 
+$\transrel$ is a finite set of transitions in one of the following forms: 
+%\begin{itemize}
+%\item 
+1) symbolic transitions $(q, \psi(x), dir, q', \vec{t})$ such that $q,q' \in Q$, $\psi(x) \in \Psi$, $dir \in \{\Left, \Right, \Stay\}$, 
+and $\vec{t} = t_1 \ldots t_s$ such that for each $i \in [s]$, either $t_i$ is an $\signature$-term where only the variable $x$ occurs, or $t_i \in Y$,
+%
+%\item 
+2) non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
+%\end{itemize}
+%\end{itemize}
+An \SPT{} is a  \SSPT{} that has no transitions with the direction ``$\Left$". 
+A \emph{symbolic transducer}(\SST) is a \SSPT{} where $Y = \emptyset$ (then $Y$ is omitted).  A \emph{symbolic automaton} (\SSA) is a symbolic transducer where each transition has the  empty output (then the outputs are omitted).
+\end{definition}
+%Notice that, as in \PPT{}s, parameters are only allowed in the output track.
+
+\paragraph{Semantics of \SSPT{}.}
+For a \SSPT{} $\Transducer$ with parameters $y_1,\ldots, y_m$,  each instantiation of $y_1,\ldots, y_m$ with data strings 
+$w_1,\ldots, w_m$ gives rise to a \SST{} $\Transducer[w_1/y_1,\ldots, w_m/y_m]$ by replacing each occurrence of $y_i$ with $w_i$ in the transitions of $\Transducer$. 
+Therefore, we obtain the semantics of \SSPT{}s from that of \SST{}s, which will be defined below. 
+
+Let $\Transducer=(\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a \SST. 
+A transition $\tau=(q_1,\psi(x), dir, q_2, \vec{t}(x)) \in \transrel$ with $\vec{t}(x) = t_1(x) \ldots t_r(x)$ in the \SST{} $\Transducer$ can be concretised
+into a set of \emph{concrete} transitions $\|\tau\| \subseteq Q \times \data \times \{\Left, \Stay, \Right\} \times Q \times \data^r$, where $(q_1, d, dir, q_2, d'_1\ldots d'_r)  \in \|\tau\|$ iff $d \in \|\psi\|$ and $d'_j = \interpretation(t_j)(d)$ for each $j \in [r]$.
+%Intuitively, suppose $\Transducer$ is at the state $q_1$ and reading the input data value $d \in \data$.
+%If there is a transition $(q_1, \psi(x), dir, q_2, t(x) )\in \transrel$ and $d \in \|\psi\|$, $\Transducer$ can move its reading head according to $dir$, update the current state $q_1$ to $q_2$,  and produce the data value $d' \in \data$.
+%
+Given a data string $w = d_1, \dots, d_n$, a \emph{run} of $\Transducer$ on $w$
+is a sequence of tuples $(q_0, i_0, \vec{d}'_0), \ldots, (q_m, i_m, \vec{d}'_m) \in \controls \times [0, n+1] \times \data^*$ 
+such that
+%let $d_0 = \EndLeft$ and $d_{n+1} = \EndRight$, %. The following conditions, then, have to be satisfied:
+%\begin{itemize}
+%    \item 
+    $i_0 = 0$, and
+%    \item 
+    for every $j \in [m-1]$, one of the following holds,
+    \begin{itemize}
+  	\item  $0< i_j < n+1$, there are $\psi(x) \in \Psi$, $dir \in \{\Left, \Stay, \Right\}$, and a sequence of  $\signature$-terms $\vec{t}(x)$ such that $\tau=(q_j, \psi(x), dir, q_{j+1}, \vec{t}(x)) \in \transrel$, $(q_j, d_{i_j}, dir, q_{j+1}, \vec{d}'_j) \in \|\tau\|$, and $i_{j+1} = i_j + dir$,
+	%
+	\item $i_j = 0$, $(q_j, \EndLeft, dir, q_{j+1}, \epsilon) \in \transrel$, $\vec{d}'_j  = \epsilon$, and $i_{j+1} = i_j + dir$, 
+	%
+	\item $i_j = n+1$, $(q_j, \EndRight, dir, q_{j+1}, \epsilon) \in \transrel$,  $\vec{d}'_j  = \epsilon$, and $i_{j+1} =i_j + dir$.
+  \end{itemize}
+%\end{itemize}
+The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$. When a run is accepting, $\vec{d}'_0, \ldots, \vec{d}'_m$ is the \emph{output} of the run.
+A data string $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
+$\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the \emph{transduction} defined by $\Transducer$, that is, the relation comprising the data-string pairs $(w, w')$ such that $w'$ is an output of $\Transducer$ on $w$.
+%
+
+Let $\Transducer$ be a \SSPT{} with parameters $y_1,\ldots, y_m$. We use $\transet(\Transducer)$ to denote the set of tuples $(w, w_1, \ldots, w_m, w')$ such that $(w, w') \in \transet(\Transducer[w_1/y_1,\ldots, w_m/y_m])$.
+%
+We define $|\Transducer|_s$ and $|\Transducer|_d$, the \emph{structural and data size} of $\Transducer$, by taking the guards and outputs of transitions into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$; 
+$|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q, \psi(x), dir, q', \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
+%the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
+
+
+
+
+
+
+%%%============================================
+%%%============================================
+\hide{
+%To extend the string constraint language $\straightline[\transet]$ to the symbolic setting, 
+To lift the result to the symbolic setting, we only need  \emph{symbolic automata}, the counterpart of \FA. We start with \emph{Boolean algebra}, 
+\tl{I am not an expert, but technically say $\Psi$ is a boolean algebra? More precisely, \SA{} works not on a background theory, but some more relaxed thing.}
+which is adapted from a background theory $\Upsilon=(\signature,\structure, \Psi)$ by dropping out the requirement that $\Psi$ is closed under substitutions.
+
+\tl{as we donot have $\straightlinesym[\transet]$ anymore? to be updated}
+For a class $\transet$ of symbolic parametric transducers, we use $\straightlinesym[\transet]$ to denote the extension of straight-line string constraint language by replacing parametric transducers with symbolic parametric transducers and finite-state automata with symbolic automata.
+}
+%%%============================================
+%%%============================================
+
+
+\paragraph{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of symbolic executions of programs with data strings, 
+%\tl{do we need to introduce formally?}
+ where each assertion is of the form $\ASSERT{x \in \Aut}$ with $\Aut$ being an \SA. 
+To solve the path feasibility problem for such programs,
+we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing recognisable relations with \emph{symbolic recognisable relations}. 
+Due to space limit, we do not address the complexity of the decision procedure here. More details can be found in Appendix~\ref{app-sym}.
+
+\begin{definition}[Symbolic recognisable relations]
+%	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
+	A $\arity$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_\arity$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [\arity]$.
+\end{definition}
+Similar to recognisable relations, we represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is an \SA{}.
+Then the regularity condition in Section~\ref{sec:algo} is replaced by the \emph{symbolic} regularity condition that for each function $f: (\data^*)^\arity \to \data^*$, the pre-image of a language definable by an \SA{} under $f$ is a symbolic recognisable relation and a representation of which can be computed.
+
+\begin{theorem}
+    There is a procedure which, given a symbolic execution $S$ of programs with data strings wherein 
+    each $f: (\data^*)^\arity \to \data^*$ satisfies the symbolic regularity 
+    condition, decides whether $S$
+    is path feasible.
+    \label{th:gen}
+\end{theorem}
+
+
+\begin{lemma}
+The data string functions definable in \SSPT{}s  (resp. \SPT{}s) satisfy the symbolic regularity condition.
+\end{lemma}
+
+\begin{theorem}
+Given a symbolic execution $S$ of programs with data strings wherein string functions are given by \SSPT{}s (resp. \SPT{}s), the path feasibility of $S$ is decidable.
+\end{theorem}
+
+
+%==========================================================================
+%==========================================================================
+%============================many sorted first-order logic=========================
+%==========================================================================
+%==========================================================================
+
+\hide
+{
+
+\paragraph{Many-sorted first-order logic.}
+We assume a signature $\signature=(\sorts, \functions, \predicates)$, where $\sorts$ is a countable set of \emph{sorts}, $\functions$ is a countable set of \emph{function symbols}, and $\predicates$ is a countable set of \emph{predicate symbols}. Each function or predicate symbol has an associated \emph{arity}, which is a tuple of sorts in $\sorts$.  A function symbol with a single sort is called a \emph{constant}. A predicate symbol with a single sort is called a \emph{set}, which intuitively denotes a set of elements of that sort.
+
+An $\signature$-term is built from the function symbols in $\functions$ and variables taken from a set $\mathcal{X}$ that is disjoint from $\sorts$, $\functions$, and $\predicates$. Each variable $x \in \mathcal{X}$ has an associated sort in $\sorts$. In addition, we assume that the variables in $\mathcal{X}$ are linearly ordered $\preceq_{\mathcal{X}}$. When writing $t(\vec{x})$ for a vector of distinct variables $\vec{x}$ such that $\vec{x} = (x_1,\dots, x_n)$ follows the ascending order of the linear order $\preceq_{\mathcal{X}}$, we assume that the variables occurring in the term $t$ are from $\vec{x}$. For a term $t(\vec{x})$ of sort $s$ such that $\vec{x} = (x_1, \dots, x_n)$ and each $x_i$ for $i \in [n]$ is of sort $s_i \in \sorts$, the term $t$ is said to be \emph{of arity} $(s_1 \times \dots \times s_n) \rightarrow s$. In addition, for a vector of terms $(t_1, \dots, t_m)$ such that all the variables of $t_1 ,\dots, t_m$ are from $\vec{x} = (x_1, \dots, x_n)$, if $x_1 \preceq_{\mathcal{X}} x_2  \preceq_{\mathcal{X}} \dots  \preceq_{\mathcal{X}} x_n$, each $x_i$ for $i \in [n]$ is of sort $s_i$, and each $t_j$ for $j \in [m]$ is of sort $s'_j$, then $(t_1,\dots, t_m)$ is said to be a term of arity $(s_1,\dots, s_n) \rightarrow (s'_1,\dots, s'_m)$. For readability, a term of arity $(s_1,\dots, s_n) \rightarrow (s'_1,\dots, s'_m)$ is also called a $(s_1,\dots, s_n) \big/ (s'_1,\dots, s'_m)$-term. We use $(t_1,\dots, t_m)(\vec{x})$ to denote a vector of terms whose variables are from $\vec{x}$.  For convenience, we also write $t(\vec{x})$ as $\lambda \vec{x}.\ t$ and $(t_1,\dots, t_m)(\vec{x})$ as $\lambda \vec{x}.\ (t_1,\dots, t_m)$. 
+
+We assume the standard notions of $\signature$-atoms, $\signature$-literals, and $\signature$-formulae, whose definitions can be found in some textbooks on mathematical logic (see e.g. \cite{Gal85}). The set of free variables of a $\signature$-formula $\psi$ is denoted by $\free(\psi)$. When writing $\psi(\vec{x})$, we assume that the free variables of $\psi$ are from $\vec{x}$. For a formula  $\psi(\vec{x})$ such that $\vec{x} = (x_1, \dots, x_n)$ and each $x_i$ for $i \in [n]$ is of sort $s_i \in \sorts$, the formula $\psi$ is said to be \emph{of arity} $s_1 \times \dots \times s_n$.
+A formula $\psi$ that contains exactly one free variable (resp. two, $n \ge 3$ free variables) is called a \emph{unary} (resp. \emph{binary}, $n$-ary) $\signature$-formula. A formula $\psi$ contains no free variables is called a $0$-ary formula, aka a sentence. For $i, j \in \Nat \backslash \{0\}$, a formula $\psi(\vec{x})$ of arity $s^j$ (where $\vec{x}=(x_1, \dots, x_j)$), and an $s^i/s^j$-term $\vec{f}=(f_1,\dots, f_j)$, we use $\psi[\vec{f}/\vec{x}]$ to denote the formula obtained from $\psi$ by simultaneously replacing $x_1$ with $f_1$, $\dots$, and $x_j$ with $f_j$.
+
+An $\signature$-interpretation $I$ maps: (i) each sort $s \in \sorts$  to a set $s^{I}$, (ii) each function symbol $f \in \functions$ of arity $s_1 \times \ldots \times s_n \rightarrow s$ to a total function $f^I: s_1^I \times \ldots \times s^I_n \rightarrow s^I$ if $n>0$, and to an element of $s^I$ if $n = 0$, and (iii) each predicate symbol $p \in \predicates$ of sort $s_1 \times \ldots \times s_n$ to a  subset of $p^I \subseteq s^I_1 \times \ldots s^I_n$.
+An $\signature$-assignment $\eta$ maps each variable $x \in \mathcal{X}$ of sort $s \in \sorts$ to an element of $s^I$.
+\begin{itemize}
+\item For a term $t$, the interpretation of $t$ under $(I, \eta)$ for an $\signature$-interpretation $I$ and $\signature$-assignment $\eta$, denoted by $t^{(I,\eta)}$, can be defined inductively on the syntax of terms.
+\item The satisfiability relation between pairs of an $\signature$-interpretation and an $\signature$-assignment, and $\signature$-formulae, written $I \models_{\eta} \psi$,
+is defined inductively, as usual.
+\end{itemize}
+We say that $(I,\eta)$ is a model of $\psi$ if $I \models_{\eta} \psi$. For an $\signature$-sentence $\psi$, we also write $I \models \psi$ if there is an $\signature$-assignment $\eta$ such that $I \models_\eta \psi$.
+
+Let $\signature$ be a signature and $\cI$ be a set of $\signature$-interpretations. Then $\theory(\cI)$, \emph{the $\signature$-theory associated with $\cI$}, is the set of  $\signature$-sentences $\psi$ such that for each $I \in \cI$, $I \models \psi$.
+
+
+}
