@@ -3,27 +3,26 @@
 %\section{Algorithmic results}
 
 \section{A generic decision procedure} \label{sec:algo}
-
-\zhilin{shall we use symbolic representation $S$ in order to not confuse the readers as well as ourselves ? }
+%
+%\zhilin{shall we use symbolic representation $S$ in order to not confuse the readers as well as ourselves ? }
 
 In this section, we present a generic decision procedure for any
 %straight-line \emph{constraint language} 
 straight-line symbolic execution $S$
 that satisfies one further condition:
 the pre-image of a regular language under any function 
-$f: (\ialphabet^*)^\arity \to \ialphabet^*$ in the constraint satisfies a 
+$f: (\ialphabet^*)^\arity \to \ialphabet^*$ in $S$ satisfies a 
 ``\emph{regularity condition}''.
 In the case when $\arity=1$, this regularity condition would state that the pre-image
 of a regular language under the function $f$ is \emph{effectively regular}, i.e. an \FA{} can be computed to represent the pre-image of the regular language under $f$. This is
 satisfied by \FT{}s \cite{Berstel,BG07,BG08}, and there is
-a decision procedure for satisfiability of the straight-line constraint
-language %immediately follows from the decision procedure 
+a decision procedure for checking path feasibility of $S$ %immediately follows from the decision procedure 
 with $f: \ialphabet^* \to \ialphabet^*$ being an \FT{}, e.g., see 
 \cite{LB16,BG07,BG08}. %This decision procedure, in fact, works when each
 %function $f$ satisfies the regularity condition. 
 We illustrate this decision procedure below.
 
-\begin{example}
+\begin{example} \label{ex:unif}
     Consider the symbolic execution $S$
     \[
         \ASSERT{x \in L_0}; \quad y := f(x); \quad z := g(y); 
@@ -31,7 +30,7 @@ We illustrate this decision procedure below.
     \]
     where $f, g: \ialphabet^* \to \ialphabet^*$ satisfy the regularity 
     condition. To check the path feasibility of $S$, we repeatedly \emph{remove the last
-    assignment} from the program by pre-image computation. More
+    assignment} from the program by the pre-image computation. More
     precisely, we compute the pre-image $g^{-1}(L_2)$
     of $L_2$ under $g$, which by assumption is a regular language $L_2'$,
     yielding the equi-path-feasible program:
@@ -60,11 +59,11 @@ How do we generalise this generic decision procedure to partial functions $f:
 subsume parametric transducers? 
 One answer is to use the generalisation of
 %There are at least three generalisations
-of the notion of ``regularity'' from languages to relations 
+the notion of ``regularity'' from languages to relations 
 by means of \emph{recognisable relations} \cite{choffrut-survey}.
-[Other more expressive notions of regularity exist (see \cite{choffrut-survey}),
+(Other more expressive notions of regularity exist (see \cite{choffrut-survey}),
 but they are not suitable for generalising the aforementioned decision
-procedure for $\arity=1$.]
+procedure for $\arity=1$.)
 %(in the increasing order of expressivity):
 %(a) \emph{recognisable} relations, (b) \emph{regular} relations 
 %(a.k.a.~synchronised rational relations), and (c) \emph{rational} relations. 
@@ -85,7 +84,7 @@ This tight coupling is, however, absent in recognisable relations.
 
 \begin{definition}[Recognisable relations]
 	%Assume a finite alphabet $\Sigma$. 
-    A $\arity$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_\arity$ where $L^{(i)}_j$ is regular for each $j\in [\arity]$.
+    An $\arity$-ary relation $R\subseteq \Sigma^*\times \ldots\times \Sigma^*$ is \emph{recognisable}  if $R=\bigcup_{i=1}^n L^{(i)}_1\times \ldots\times L^{(i)}_\arity$ where $L^{(i)}_j$ is regular for each $j\in [\arity]$.
 %
 %	[One can certainly generalise this to $n$-ary relations. ]
 \end{definition}
@@ -99,14 +98,14 @@ Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a \emph{disjunc
 \begin{theorem}
     There is a procedure which, given a symbolic execution $S$ wherein 
     each $f: (\ialphabet^*)^\arity \to \ialphabet^*$ satisfies the regularity 
-    condition (with respect to recognisable relations), decides whether $S$
+    condition (with respect to the recognisable relation), decides whether $S$
     is path feasible.
     \label{th:gen}
 \end{theorem}
 %
 \begin{proof}
-    We provide a nondeterministic procedure which generalises the case when
-    all functions $f$ take only one input. Let $S$  be a symbolic execution, $y := f(\bar x)$ (where
+    We provide a nondeterministic procedure which generalises the case for
+    univariate functions $f$ sketch in Example~\ref{ex:unif}. Let $S$  be a symbolic execution, $y := f(\bar x)$ (where
     $\bar x = x_1,\ldots,x_\arity$) be the last
     assignment in $S$, and $\sigma := \{ y \in L_1,\ldots, y \in L_s\}$
     be the set of all regular constraints on $y$ in assertions of $S$.
@@ -135,13 +134,10 @@ right notion of ``regularity'' that we need for pre-images of partial
 functions $f: (\ialphabet^*)^k \to \ialphabet^*$, which will be satisfied by
 parametric transducers as we will see in Section \ref{sec-instan}.
 }
-
-
-
 %
 \smallskip
 \noindent
-\textbf{Complexity consideration: }
+\textbf{Complexity consideration. }
 Although the algorithm in the proof of Theorem \ref{th:gen} is conceptually 
 clear, to obtain tight complexity bounds in this paper, it is crucial to 
 avoid applying the product construction before each pre-image computation.
@@ -150,7 +146,7 @@ To this end, we make two modifications and state a theorem with complexity.
 Firstly,
 since we assume that each $f: (\ialphabet^*)^\arity \to \ialphabet^*$
 in $S$ is a partial function, it follows that $f^{-1}(L_1 \cap L_2) = 
-f^{-1}(L_1) \cap f^{-1}(L_2)$. This is \emph{false} in general if $f$ is a \emph{relation}.
+f^{-1}(L_1) \cap f^{-1}(L_2)$. (This is \emph{false} in general if $f$ is a \emph{relation}.)
 This means that, for each $y := f(\bar x)$, we can \emph{separately} compute 
 the preimage $f^{-1}(L)$ for each regular constraint $y \in L$ in an assertion
 of $S$, i.e., no product construction is performed.
@@ -158,7 +154,8 @@ of $S$, i.e., no product construction is performed.
 %of Theorem \ref{th:gen}. 
 
 The second modification concerns the representation of each atom
-in a disjunct of a representation of recognisable relations. We propose
+in a disjunct of %a representation of 
+a recognisable relation. We propose
 to use (a variant of) conjunctions of regular constraints called
 \emph{conjunctive \FA{}}. 
 %iof each atoms of the representation, 

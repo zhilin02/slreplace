@@ -232,11 +232,7 @@ vulnerabilities.
 %which 
 %are respectively two-way and one-way finite-state automata extended with outputs.  
 \begin{definition}[Finite-State Transducers]
-    Let $\ialphabet$ be an alphabet.
-    % and $\ialphabet_\epsilon = \ialphabet \cup \{\epsilon\}$.
-    A \emph{nondeterministic two-way finite  transducer} (\FFT{}) $\Transducer$  over 
-    $\ialphabet$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where $\transrel$ is  a finite subset of $\controls \times 
-    \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
+    Let $\ialphabet$ be an alphabet. A \emph{nondeterministic two-way finite  transducer} (\FFT{}) $\Transducer$  over $\ialphabet$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where $\transrel$ is  a finite subset of $\controls \times \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
     \controls \times \ialphabet^*$, satisfying the syntactical constraints of \FFA{}s, and the additional constraint that the output must be $\epsilon$ when reading $\EndLeft$ or $\EndRight$. Formally, for each transition $(q, \EndLeft, dir, q', b)$ or $(q, \EndRight, dir, q', b)$ in $\delta$, we have $b=\epsilon$.
 %
 %    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) over 
@@ -251,10 +247,9 @@ vulnerabilities.
 %    Here, we assume $\EndLeft, \EndRight \notin \ialphabet$, and that
 %    there are no transitions that take the head of the tape past the left/right
 %    end marker. 
-    A (nondeterministic one-way) finite transducer (\FT{}) over
-    $\ialphabet$
-    is a \FFT{} such that 
-     $\transrel \subseteq \controls \times \overline{\ialphabet} \times
+%
+A (nondeterministic one-way) finite transducer (\FT{}) over
+    $\ialphabet$ is a \FFT{} such that $\transrel \subseteq \controls \times \overline{\ialphabet} \times
     \{\Right,\Stay\} \times \controls \times \ialphabet^*$.
 %    whose transition relation contains only tuples of the form
 %    $(p,a,dir,q,b)$, where $dir \in \{\Stay,\Right\}$.
@@ -267,12 +262,10 @@ vulnerabilities.
 The notion of runs of \FFT{}s on an input string can be seen as a generalisation 
 of \FFA{}s by adding outputs. More precisely, given a string $w = a_1 \dots a_n$, a \emph{run} of $\Transducer$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
-is a
-sequence of tuples $(q_0, i_0, w'_0),\ldots, (q_m, i_m, w'_m) \in \controls \times
+is a sequence of tuples $(q_0, i_0, w'_0),\ldots, (q_m, i_m, w'_m) \in \controls \times
 [0, n+1] \times \Sigma^*$ 
 such that, letting $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, 
-we have $i_0 = 0$, and
- for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, w'_j) \in
+we have $i_0 = 0$, and  for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, w'_j) \in
         \transrel$, and $i_{j+1} = i_j + dir$ for some $dir \in \{\Left, \Stay, \Right\}$.
  
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
@@ -290,8 +283,8 @@ With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft
 
 
 \begin{example}\label{exmp-ft}
-    We give two examples of finite transducers: %(1) erasing \texttt{a} from  a string, (2) 
-    (1) the function escapeString, and (2) the \textbf{reverse} function.
+    We give two examples of \FT{}s: %(1) erasing \texttt{a} from  a string, (2) 
+    (1) the function \textbf{escapeString}, and (2) the  function \textbf{reverse}.
 %Figure
 %\ref{fig:escapeString} contains an example of the function escapeString,
 %
@@ -332,7 +325,7 @@ With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft
 %%\zhilin{I removed the two end markers.}
 %
 The first transducer backslash-escapes every occurrence of \texttt{'} and 
-\texttt{"}. This can be done by a \FT{} with a single state $q_0$,
+\texttt{"}. This can be done by an \FT{} with a single state $q_0$,
 transitions 
 %$(q_0, \EndLeft, 1, q_1,\epsilon)$,
 $(q_0, \ell, 1, q_0, \ell)$ for each $\ell \neq  \texttt{'}$  or $\texttt{"} $, 
@@ -357,8 +350,7 @@ The second transducer requires us to use a \FFT{}. We will only describe
     this informally. The transducer will firstly move to $\EndRight$ of the input tape
     without outputting any symbol. It then scans the input from
     right to left, while simultaneously outputting the symbol that is read.
-    When hitting $\EndLeft$, it moves its input head right to $\EndRight$ (without outputting any further symbol), and accept.
-    \qed
+    When hitting $\EndLeft$, it moves its input head right to $\EndRight$ (without outputting any further symbol), and accepts.     \qed
 \end{example}
 
 %\tl{I propose we unify the term: e.g., using string instead of word}
@@ -441,7 +433,7 @@ results.
 
 \subsection{Parametric transducers}
 
-We introduce \emph{parametric transducers}, a \emph{novel} transducer model that can 
+We introduce parametric transducers, a transducer model that can 
 capture a wide range of string functions (all of what have discussed so far). 
 
 %all the aforementioned string operations, i.e. finite-state transducer \cite{LB16}, the concatenation function, the replace-all function \cite{CCHLW18}, and the string reverse function.
@@ -508,7 +500,7 @@ Intuitively, each instantiation of the parameters $x_1,\ldots,x_\arity$ with str
 $w_1,\ldots, w_\arity \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each occurrence of $x_j$ in transitions with $w_j$.
 % transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. 
 %<<<<<<< HEAD
-We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation.
+We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation,
 %=======
 %We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation.\footnote{The instantiation of the parameters is only done 
 	%\emph{once} before the parametric transducer is run. Because of this, parameteric transducers cannot in general be captured by the non-parametric transducers that nondeterministically ``guess''
@@ -518,19 +510,13 @@ We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{}
 %$\Transducer[w_1/x_1,\ldots,w_m/x_m]$ denote the (non-parametric) \FFT{} obtained from $\Transducer$ by replacing every occurrence of each
 %parameter $x_i$ in $\Transducer$ by the string $w_i$.
 %
-We use $\Tran(\Transducer)$ to denote the set of string tuples 
+and $\Tran(\Transducer)$ to denote the set of string tuples 
 $(w, w_1, \ldots, w_\arity, w')$ such that 
-%<<<<<<< HEAD
-$(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity])$, i.e., when
-$x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_\arity$, 
-$\Transducer$ produces the output $w'$ from the input $w$. 
-
-%=======
-%$(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_m/x_m])$. 
+$(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity])$.
 %
-%i.e., when $x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_m$, $\Transducer$ produces the output $w'$ from the input $w$. 
-%
-%>>>>>>> 7429533e25607629e2cd9d233fad7e75914bde4d
+%, i.e., when
+%$x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_\arity$, 
+%$\Transducer$ produces the output $w'$ from the input $w$. 
 Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\transrel \subseteq \controls \times 
     \ialphabet \times \{\Stay, \Right\} \times 
     \controls \times (\ialphabet^* \cup X)$.
@@ -542,10 +528,10 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %\tl{again, this is a relation, not a function.}
 
 \begin{example} \label{example:2pt}
- The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. 
+ The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the transducer's head must stop in the right end of the track to accept.) 
  
-  As proposed in Introduction, we now demonstrate how the  $\replaceall$ function considered in \cite{CCHLW18} can be simulated by \PT{}s.
-  \tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
+  As promised in the Introduction, we now show how the  $\replaceall$ function from \cite{CCHLW18} can be simulated by \PT{}s.
+  %\tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
 %  Intuitively,  
 %    the function $\replaceall$ takes three inputs:
 %    (1) a string $sub$, called the \emph{subject}, (2) a regular expression
@@ -563,16 +549,16 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %    %, not \texttt{aba}.
 %
     %For a regular expression $p$, let 
-    We consider $\replaceall_{p}$ where $p$ is a fixed regular expression. %be the $\replaceall$ function with the fixed pattern $p$,
+ Recall we consider $\replaceall_{p}(sub, rep)$ where $p$ is a fixed regular expression. %be the $\replaceall$ function with the fixed pattern $p$,
     %i.e., it only has two inputs: $sub$ and $rep$. 
     %
-    In case that $pat$ is  a single letter \texttt{a}, the transducer for $\replaceall_{p}$ has one state $q_0$ as both the initial and the final state,
+    In case that $p$ is  a single letter \texttt{a}, the transducer for $\replaceall_{p}$ has one state $q_0$ as both the initial and the final state,
     %$q_0$, $q_1$, $q_F$, 
     and transitions 
     %$(q_0,\EndLeft,1,q_1,\epsilon)$,
     $(q_0,\ell, 1, q_0, \ell)$ for each $\ell \in \ialphabet \backslash
     \{\texttt{a}\}$, 
-    and $(q_0, \texttt{a}, 1, q_0, rep)$. For the more general case, to resolve ambiguity, \cite{CCHLW18} uses the semantics of \emph{leftmost and longest matching} that is used by languages such as Python and sed (with the  \texttt{--posix} flag)
+    and $(q_0, \texttt{a}, 1, q_0, rep)$. For the more general case, to resolve ambiguity, \cite{CCHLW18} uses the semantics of \emph{leftmost and longest matching} that is used by languages such as Python and sed (with the  \texttt{--posix} flag).
 %    	   : if we parse $sub$ from left to right, as soon as 
 %    	    $pat$ is detected as the leftmost and longest matching after the previous matching, it will be replaced by $rep$. For example, the
 %    	    output of $\replaceall(\texttt{aabaa},\texttt{a}^+,\texttt{b})$ is
