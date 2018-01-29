@@ -44,7 +44,7 @@ A formula $\psi \in \Psi$ is \emph{satisfiable}, if $\|\psi\| \neq \emptyset$. A
 \end{definition}
 
 
-In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. Moreover, we assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\bigO(\beta(m))$ space for some monotone function $\beta$ such that $\beta(m) \ge \log m$. We also assume that the formulae and terms in $\Upsilon$ are encoded in a proper way, e.g. encoded in binary,  and let $|\psi|$  and $|t|$ to denote the size (i.e. number of symbols) of $\psi$ and $t$ with respect to this encoding.
+In the rest of this section, we {\bf fix a decidable background theory} $\Upsilon=(\signature, \structure, \Psi)$ with $\signature=(\functions, \predicates)$ and $\structure = (\data, \interpretation)$. 
 A \emph{data string} is an element of $\data^*$. A \emph{data language} is a set of data strings.
 
 
@@ -162,7 +162,7 @@ and $\vec{t} = t_1 \ldots t_s$ such that for each $i \in [s]$, either $t_i$ is a
 %\end{itemize}
 %\end{itemize}
 An \SPT{} is a  \SSPT{} that has no transitions with the direction ``$\Left$". 
-A \emph{symbolic transducer}(\SST) is a \SSPT{} where $Y = \emptyset$ (then $Y$ is omitted).  A \emph{symbolic automaton} (\SSA) is a symbolic transducer where each transition has the  empty output (then the outputs are omitted).
+A \emph{symbolic transducer}(\SST) is a \SSPT{} where $Y = \emptyset$ (then $Y$ is omitted).  A \emph{symbolic automaton} (\SSA) $\Aut$ is a symbolic transducer where each transition has the  empty output (then the outputs are omitted).
 \end{definition}
 %Notice that, as in \PPT{}s, parameters are only allowed in the output track.
 
@@ -201,8 +201,6 @@ $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 
 Let $\Transducer$ be a \SSPT{} with parameters $y_1,\ldots, y_m$. We use $\transet(\Transducer)$ to denote the set of tuples $(w, w_1, \ldots, w_m, w')$ such that $(w, w') \in \transet(\Transducer[w_1/y_1,\ldots, w_m/y_m])$.
 %
-We define $|\Transducer|_s$ and $|\Transducer|_d$, the \emph{structural and data size} of $\Transducer$, by taking the guards and outputs of transitions into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$; 
-$|\Transducer|_d$ is defined as the maximum size of symbolic transitions of $\Transducer$, where the size of a symbolic transition $(q, \psi(x), dir, q', \vec{t}(x))$ with $\vec{t}=t_1 \ldots t_r$ is defined as $|\psi| + |t_1| + \ldots + |t_r|$.
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
 
@@ -237,7 +235,7 @@ Due to space limit, we do not address the complexity of the decision procedure h
 	A $\arity$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_\arity$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [\arity]$.
 \end{definition}
 Similar to recognisable relations, we represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is an \SA{}.
-Then the regularity condition in Section~\ref{sec:algo} is replaced by the \emph{symbolic} regularity condition that for each function $f: (\data^*)^\arity \to \data^*$, the pre-image of a language definable by an \SA{} under $f$ is a symbolic recognisable relation and a representation of which can be computed.
+Then the regularity condition in Section~\ref{sec:algo} is replaced by the \emph{symbolic} regularity condition that for each function $f: (\data^*)^\arity \to \data^*$, the pre-image of a language definable by an \SA{} under $f$ is a symbolic recognisable relation and a representation of which can be computed effectively.
 
 \begin{theorem}
     There is a procedure which, given a symbolic execution $S$ of programs with data strings wherein 
