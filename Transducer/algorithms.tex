@@ -6,9 +6,9 @@
 %
 %\zhilin{shall we use symbolic representation $S$ in order to not confuse the readers as well as ourselves ? }
 
-In this section, we present a generic decision procedure for any
+In this section, we present a generic decision procedure for checking path feasibility of any
 %straight-line \emph{constraint language} 
-straight-line symbolic execution $S$
+(straight-line) symbolic execution $S$
 that satisfies one further condition:
 the pre-image of a regular language under any function 
 $f: (\ialphabet^*)^\arity \to \ialphabet^*$ in $S$ satisfies a 
@@ -16,7 +16,8 @@ $f: (\ialphabet^*)^\arity \to \ialphabet^*$ in $S$ satisfies a
 In the case when $\arity=1$, this regularity condition would state that the pre-image
 of a regular language under the function $f$ is \emph{effectively regular}, i.e. an \FA{} can be computed to represent the pre-image of the regular language under $f$. This is
 satisfied by \FT{}s \cite{Berstel,BG07,BG08}, and there is
-a decision procedure for checking path feasibility of $S$ %immediately follows from the decision procedure 
+a decision procedure for %checking path feasibility of 
+$S$ %immediately follows from the decision procedure 
 with $f: \ialphabet^* \to \ialphabet^*$ being an \FT{}, e.g., see 
 \cite{LB16,BG07,BG08}. %This decision procedure, in fact, works when each
 %function $f$ satisfies the regularity condition. 
@@ -154,7 +155,7 @@ of $S$, i.e., no product construction is performed.
 %of Theorem \ref{th:gen}. 
 
 The second modification concerns the representation of each atom
-in a disjunct of %a representation of 
+in %a disjunct of %a representation of 
 a recognisable relation. We propose
 to use (a variant of) conjunctions of regular constraints called
 \emph{conjunctive \FA{}}. 
@@ -177,7 +178,7 @@ Since each \FA{} $\Aut =
 can be assumed to have only one final state (i.e. $\finals = \{q_F\}$), each 
 \FA{} can be identified with the conjunctive \FA{}
 $((\controls,\transrel),\{(q_0,q_F)\})$.
-The \emph{size} of a conjunctive representation $((\controls, \transrel), S)$ is defined as $|\controls|$. Define the  \emph{atom size} of a conjunctive representation of $R$ to be the maximum size of the atoms therein.
+The \emph{size} of a conjunctive representation $((\controls, \transrel), S)$ is defined as $|\controls|$, and  the  \emph{atom size} of a conjunctive representation of $R$ is defined to be the maximum size of the atoms therein.
 
 %as follows: 
 %Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Then $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q\})$ can be decoupled as a pair $\cC^{(i)}_{j, (q^{(i)}_{0, j}, q)} = \left(\left(\controls^{(i)}_j,  \transrel^{(i)}_j \right), \{(q^{(i)}_{0,j}, q)\} \right)$. Therefore, $R$ is conjunctively represented by 
@@ -244,8 +245,8 @@ The main result of this section is a generic decision procedure for the path fea
 
 We now provide a refined version of Theorem \ref{th:gen} that accounts for
 complexity (full proof can be found in \shortlong{full version}{Appendix~\ref{app:algo}}). First,
-our regularity condition (called \prerec{}) now incorporates conjunctive
-\FA{}s as representations of atoms and accounts for complexity:
+the regularity condition (called \prerec{}) now incorporates conjunctive
+\FA{}s as representations of atoms: % and accounts for complexity:
 for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,
 there is an algorithm that runs in $\ell(|f|,|\Aut|)$ space which enumerates 
 each disjunct of $f^{-1}(\Aut)$ in conjunctive representation (where $\ell(\cdot, \cdot)$ is a monotone function).
