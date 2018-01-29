@@ -528,10 +528,10 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %\tl{again, this is a relation, not a function.}
 
 \begin{example} \label{example:2pt}
- The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. 
+ The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the transducer's head must stop in the right end of the track to accept.) 
  
-  As proposed in Introduction, we now demonstrate how the  $\replaceall$ function considered in \cite{CCHLW18} can be simulated by \PT{}s.
-  \tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
+  As promised in the Introduction, we now show how the  $\replaceall$ function from \cite{CCHLW18} can be simulated by \PT{}s.
+  %\tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
 %  Intuitively,  
 %    the function $\replaceall$ takes three inputs:
 %    (1) a string $sub$, called the \emph{subject}, (2) a regular expression
@@ -549,16 +549,16 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %    %, not \texttt{aba}.
 %
     %For a regular expression $p$, let 
-    We consider $\replaceall_{p}$ where $p$ is a fixed regular expression. %be the $\replaceall$ function with the fixed pattern $p$,
+ Recall we consider $\replaceall_{p}(sub, rep)$ where $p$ is a fixed regular expression. %be the $\replaceall$ function with the fixed pattern $p$,
     %i.e., it only has two inputs: $sub$ and $rep$. 
     %
-    In case that $pat$ is  a single letter \texttt{a}, the transducer for $\replaceall_{p}$ has one state $q_0$ as both the initial and the final state,
+    In case that $p$ is  a single letter \texttt{a}, the transducer for $\replaceall_{p}$ has one state $q_0$ as both the initial and the final state,
     %$q_0$, $q_1$, $q_F$, 
     and transitions 
     %$(q_0,\EndLeft,1,q_1,\epsilon)$,
     $(q_0,\ell, 1, q_0, \ell)$ for each $\ell \in \ialphabet \backslash
     \{\texttt{a}\}$, 
-    and $(q_0, \texttt{a}, 1, q_0, rep)$. For the more general case, to resolve ambiguity, \cite{CCHLW18} uses the semantics of \emph{leftmost and longest matching} that is used by languages such as Python and sed (with the  \texttt{--posix} flag)
+    and $(q_0, \texttt{a}, 1, q_0, rep)$. For the more general case, to resolve ambiguity, \cite{CCHLW18} uses the semantics of \emph{leftmost and longest matching} that is used by languages such as Python and sed (with the  \texttt{--posix} flag).
 %    	   : if we parse $sub$ from left to right, as soon as 
 %    	    $pat$ is detected as the leftmost and longest matching after the previous matching, it will be replaced by $rep$. For example, the
 %    	    output of $\replaceall(\texttt{aabaa},\texttt{a}^+,\texttt{b})$ is
