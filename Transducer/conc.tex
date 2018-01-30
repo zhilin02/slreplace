@@ -1,4 +1,28 @@
 \section{Conclusion and Future Work}
 \label{sec:conc}
 
-Conclude
+%  Finite-state transductions have emerged
+% as an expressive formalism for modelling string functions including
+% those that are crucial for %such an application as 
+% analysis of cross-site scripting (XSS) vulnerabilities in HTML5 
+% applications, e.g., sanitisers.
+% %including sanitisation functions (e.g.~htmlescape) and 
+% %implicit browser transductions (e.g.~innerhtml).  
+% Thanks to their good algorithmic properties, %it was recently shown that 
+% finite-state transductions have been incorporated into decidable
+% theories over strings (with concatenation and regular expression pattern
+% matching) in a way that is applicable for %for analysing
+% symbolic execution analysis of string-manipulating programs. Despite this,
+% such a formalism lacks the expressive power for modelling many
+% useful string functions; three notable examples being the replaceall 
+% function, %(replacing all occurrences of a ``pattern''
+% %string constant/variable/regular expression by a ``replacement'' string 
+% %constant/variable), 
+% string reverse, and string concatenation. 
+ 
+ 
+ 
+In this paper we have introduced parametric transducers as an expressive
+formalism for modelling string functions. With parametric transducers modelling string functions and regular constraints as assertions, we obtain a general string logic framework, which, in particular, subsumes existing string theories that are applicable for symbolic execution for string manipulating programs. We provided general decision procedures for checking path feasibility, with tight computational complexity bounds. We also have generalised our results to symbolic finite automata/transducers.
+ 
+Immediate future work includes implementation based on SLOTH \cite{HJLRV18}. Extensions of the assertions with, for instance, length constraints are certainly an interesting direction. We currently know that it is undecidable in general, but this does not rule out special cases. We also plan to explore non-regular transducers/constraints so more string functions can be supported.  

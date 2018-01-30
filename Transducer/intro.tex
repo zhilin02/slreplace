@@ -33,8 +33,8 @@ the system
 under test is a program that uses string data type (including most programs 
 written in scripting languages like JavaScript and PHP), these techiques 
 crucially need constraint solvers over the string domain (a.k.a. \emph{string 
-constraint solvers}). This in fact has been one main reason behind the development of
-the theory, implementation, and symbolic execution applications of string constraint 
+solvers}). This in fact has been one main reason behind the development of
+the theory, implementation, and symbolic execution applications of string 
 solving in the past decade, e.g., see 
 \cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,Vijay-length,YABI14,Abdulla14,LB16,fang-yu-circuits,Abdulla17,CCHLW18,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12,jalangi,expose}.
 
@@ -62,7 +62,6 @@ where $f: (\Sigma^*)^\arity \to \Sigma^*$ and $g: (\Sigma^*)^\arity \to \{0,1\}$
 some partial string functions. 
 The syntaxes for the functions $f$ and $g$ are now
 left undefined, but will be instantiated as one explores algorithmic issues.
-
 The following is a simple example of a symbolic execution $S$
 which uses string variables ($x$, $y$, and $z$'s) and string constants
 (letters \texttt{a} and \texttt{b}), and the concatenation operator ($\concat$):
@@ -164,7 +163,7 @@ way.
 \smallskip
 \noindent
 \textbf{Decidable string constraint languages:}
-A central theme in string constraint solving is to design an
+A central theme in string solving is to design an
 expressive string constraint language for symbolic executions of 
 string-manipulating
 programs that admits \emph{decidability}. 
@@ -233,8 +232,8 @@ are a good formal model of such string functions that satisfy some
 good closure and algorithmic properties. 
 %This model is the class of
 %\emph{finite-state transductions}
-Roughly speaking, finite transducers are
-finite-state machines that transform an input string to an output string. 
+Finite transducers are just like
+finite-state automata but with an output tape.
 \OMIT{
 The second model is the \emph{replaceall} function
 \cite{fang-yu-circuits,YABI14,Stranger,S3,TCJ16,Saner}, i.e.,
@@ -281,24 +280,35 @@ automata and hardware verification --- has recently been developed.
 }
 
 Despite the expressive power of finite-state transducers, 
-they cannot model some important string functions. We mention two examples. The first 
-example is 
-the 
+they cannot model some important string functions. In addition to string
+concatenation (which justifies combining transducers and concatenation in 
+string constraints \cite{LB16}), there are two other important examples. The 
+first example is the 
 replaceall functions $\replaceall_p(sub,rep)$ where the subject $sub$ and the replacement 
 $rep$ are string \emph{variables}, i.e., 
 replacing every matching of the pattern $p$ in the subject $sub$ by $rep$.
 %replacing every occurrence of a string $s$ in subject $sub$ matching the pattern $p$ by $rep$. 
 %As argued in \cite{CCHLW18},
-Such replaceall
-functions are important \cite{CCHLW18} for modelling string functions used in 
-web 
-templating like Mustache.js \cite{Mustache}. The more restricted replaceall
+In a recent paper \cite{CCHLW18},
+such replaceall functions were argued to be important for modelling string 
+functions used in web templating like Mustache.js \cite{Mustache}, and
+that straight-line string constraints with replaceall/concatenation in the
+assignment were shown to be decidable.
+\OMIT{
+The more restricted replaceall
 functions where $rep$ is a string constant can be modelled by finite-state  
-transducers \cite{LB16}.
+transducers \cite{LB16}. 
+}
 %It was shown in \cite{CCHLW18} that
 %theory of concatenation with regular constraints and this general replaceall
 %function is decidable whenever the straight-line restriction is imposed.
-The second example is the string reverse function.
+Secondly, the string reverse function cannot be expressed by a finite-state
+transducer. To admit such a function, we need to allow \emph{two-way} 
+finite-state transducers \cite{Berstel,Sakarovitch}, which thus far have never 
+been incorporated into a string constraint language. \emph{Our proposal is to
+design a expressive decidable string constraint language that admits all the
+aforementioned string functions, which furthermore unifies the decidable string 
+logics of \cite{CCHLW18,LB16}.}
 
 %restrictions limit the way the equality operator relates string variables in 
 %the constraints. For example, we obtain the decidable \emph{straight-line logic}
@@ -321,16 +331,23 @@ The second example is the string reverse function.
 
 \smallskip
 \noindent
-\textbf{Contributions.} The main results in this paper can be summarised
-as follows. We introduce \emph{parametric 
+\textbf{Contributions.} Rather than admitting many different classes of string 
+functions in our constraint language, we 
+%
+%
+%The main results in this paper can be summarised
+%as follows. 
+we introduce \emph{parametric 
 transducers}, an expressive formalism for modelling string (partial) functions 
-$f: (\ialphabet^*)^\arity \to \ialphabet^*$ with multiple inputs $x_1,\ldots, x_\arity$. Parametric
+$f: (\ialphabet^*)^\arity \to \ialphabet^*$ with multiple inputs $x_1,\ldots, 
+x_\arity$. Parametric
 transducers strictly generalise the standard finite-state transducers (which take only
 one input) by allowing: (1) parameters $x_2,\ldots,x_\arity$ in the output
 ($x_1$, the first argument of $f$, is placed on the input tape), 
 and (2) the two-way (left/right) head pointing to the input tape. 
 %input head moving in two directions. 
-Parametric transducers are capable of modelling the string functions as diverse as replaceall, string reverse, and concatenation, as well as finite-state transductions, thus \emph{unifying them into one single formalism}.
+Parametric transducers are capable of modelling the string functions as 
+diverse as replaceall, string reverse, and concatenation, as well as finite-state transductions, thus \emph{unifying them into one single formalism}.
 %In addition, 
 %not only can parametric
 %transducers model the $\replaceall_p(sub,rep)$ function, string reverse, and
@@ -338,15 +355,21 @@ Parametric transducers are capable of modelling the string functions as diverse 
 As a result of the expressibility, parametric transducers can model string functions required in \emph{context-sensitive
 auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Closure 
 \cite{Closure} and Handlebars \cite{Handlebars}. 
-We show \emph{decidability of path 
-feasibility problem} of string manipulating programs that use parametric transducers in an 
-assignment and regular constraints in an assertion. Our constraint language
-is one of the \emph{most expressive decidable} string languages for symbolic executions
-of programs with strings, and \emph{strictly} generalises 
+We provide a clean automata-theoretic algorithm for the \emph{path 
+feasibility problem} for symbolic executions that use parametric transducers in 
+an assignment and regular constraints in an assertion. Our constraint language
+is one of the \emph{most expressive decidable} string languages for symbolic 
+executions of programs with strings.
+Among others, our algorithm implies decidability (with the same complexity)
+of the string constraint 
+languages with finite transducers and concatenation \cite{LB16}, and
+replaceall \cite{CCHLW18}.
+%, and \emph{strictly} generalises 
 %the decidability of 
-the state-of-the-art decidable ones, e.g. 
-the subcases of finite-state transducers \cite{LB16}
-and replaceall \cite{CCHLW18}. We also provide a detailed complexity 
+%the state-of-the-art decidable ones, e.g. 
+%the subcases of finite-state transducers \cite{LB16}
+%and replaceall \cite{CCHLW18}. 
+We also provide a detailed complexity 
 analysis\footnote{
 \emph{Worst-case complexity} results of course do not prohibit fast solvers 
 \emph{in practice}, e.g., SLOTH for the straight-line 
