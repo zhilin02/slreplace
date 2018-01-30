@@ -1,0 +1,57 @@
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Theory}
+\emph{Length constraints} --- i.e. an assertion of the form 
+$\varphi(\Len(x_1),\ldots,\Len(x_n))$, where $\varphi$ is a Presburger formula
+and $\Len(x_i)$ is an integer variable interpreted as the length of the string
+$x_i$ --- have also been studied in the context of string solving. It is
+currently a major open problem whether the theory of concatenation with length
+constraints is decidable \cite{Vijay-length}. Several extensions of this 
+theory is known to be undecidable (e.g. with letter counting \cite{buchi} and
+string-number conversion \cite{GB16}).
+Several decidable restrictions, however,
+have been proposed including solved form \cite{Vijay-length} and acyclicity 
+\cite{Abdulla14}, both of which (like straight-line constraints) impose 
+syntactic restrictions on the way in which string equality/disequality can be
+used in the constraints. It was shown in \cite{LB16} the decidability of path 
+feasibility for symbolic
+executions allowing finite-state transduction and concatenation in the 
+assignments, and regular constraints, length constraints, and string disequality
+in the assertions. Unfortunately, if we allow the functions
+$\replaceall_p(sub,rep)$ in the assignments (instead of
+finite transducer/concatenation) and length constraints as assertions, path
+feasibility becomes undecidable \cite{CCHLW18}. This also implies undecidability
+of allowing length constraints in our constraint language with parametric
+transducers. Fortunately, decidability can be easily recovered in at least two
+cases. The first case is when the length constraints $\varphi$ has only
+one string variable $x_1$, e.g., $\Len(x_1) > 7$. In this case,
+$\varphi(\Len(x_1))$ can be turned into a regular constraint $x_1 \in L$ for
+some $L$. [This is because the set of integer solutions is effectively
+a finite union of arithmetic progressions $\bigcup_{i=1}^n a_i + b_i\N$
+(where $a_i + b_i\N := \{ a_i + b_in : n \in \N\}$), and each 
+$\Len(x_i) \in (a_i + b_i\N)$ is equivalent to the regular constraint 
+$x_i \in \ialphabet^{a_i} (\ialphabet^{b_i})^*$.] The second case is when
+the length constraints only relate input variables. In this case, running
+our algorithm on the constraint (with length constraints ignored)
+results in a conjunction of regular constraints on the input variables. Each
+regular constraint $x \in L$ on an input variable $x$ yields a length
+constraint $L_x$ on $x$ of the form a finite union of arithmetic progressions 
+\cite{Kozen-automata}. We collect all the length constraints in a big
+conjunction and run a solver for integer linear arithmetic.
+%\cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
+%\cite{LB16}) 
+%on the shape of string constraints. 
+
+casting functions (e.g. conversions
+between integers and strings) \cite{GB16}.
+
+The complexity of the theory of concatenation with regular constraints is
+known to be PSPACE-complete \cite{Plandowski,J17}, although the exact
+complexity for the theory of concatenation without regular constraints is
+still open (only known to be in between NP and PSPACE). 
+
+\subsection{Practical}
+Recursively defined functions.
+
+
