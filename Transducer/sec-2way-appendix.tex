@@ -1,3 +1,5 @@
+%!TEX root = main.tex
+
 \section{Details in Section~\ref{sec-2way}} \label{appendix:sec-2way}
 
 \paragraph{Claim.} For each tuple of strings $(w, w_1,\cdots, w_k)$, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $\conacc_{x_1}, \cdots, \conacc_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q})$ and $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [k]$, where $\Aut[\conacc_{x_i}]=((Q', \delta'), \conacc_{x_i})$.
@@ -17,56 +19,51 @@ Let $w, w_1, \cdots, w_k$ be strings and $w = a_1 \cdots a_n$ with $a_i \in \Sig
 Assume that $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$.
 
 
-From the definition of $\Pre_\Transducer(\Aut)$, we know that there are a string $w' $ and an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, such that 
+From the definition of $\Pre_\Transducer(\Aut)$, we know that there are a string $w' $ and an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, say $(q_0, i_0, w'_0),\ldots, (q_m, i_m, w'_m) \in \controls \times [n+1] \times \Gamma^*$, such that 
 %
 \begin{itemize}
-\item $i_0=0$, $i_m = n+1$, $q_m \in F$,
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$, 
 %
-\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
+\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then $w'_0 = w'_m = \varepsilon$, and for every $j \in [0, m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, w'_j) \in
         \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
         %
- \item $w'$ is the output corresponding to the run, that is, $ w' = w'_0 \cdots w'_m$, where for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $w'_j = \gamma_j$, otherwise, let $\gamma_j = x_i$, we have $w'_j = w_i$,
+ \item $w'$ is the output corresponding to the run, that is, $ w' = w''_1 \cdots w''_{m-1}$, where for each $j \in [m-1]$, $w''_j = w'_j[w_1/x_1,\ldots, w_k/x_k]$,
  %
  \item  $w' \in \Lang(\Aut)$.
 \end{itemize}
 
-Since $ w' = w'_0 \cdots w'_m$, we know that $w' \in \Lang(\Aut)$ iff for each $s=(p, p') \in \conacc$, there is a state sequence $q'_{s,0}, \cdots, q'_{s,m+1} \in Q'$ such that  $q'_{s,0}= p$, $q'_{s,j} \xrightarrow[\Aut]{w'_j} q'_{s, j+1}$ for each $j \in [m]$,  and $q'_{s, m+1} = p'$.
+For each $j \in [m-1]$, suppose $w'_j = w'_{j, 1} x_{i_{j, 1}} \ldots x_{i_{j, s_j}} w'_{j, s_j+1}$ such that $w'_{j,1}, \ldots, w'_{j, s_j +1 } \in \ialphabet^*$.
 
-Thus, we deduce that 
-there are a string $w' $ and an accepting run of $\Transducer$ on $w$, equipped with the parameters $w_1,\cdots, w_k$, say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, such that 
+Since $ w' = w''_1 \cdots w''_{m-1}$ and $w''_j = w'_j[w_1/x_1,\ldots, w_k/x_k]$, 
+from $w' \in \Lang(\Aut)$, we deduce that for each $\omega = (p, p') \in \conacc$, there is a state sequence 
+%
+{\small
+$$q'_{\omega, 1, 0}, \ldots, q'_{\omega, 1, 2s_1+1}, q'_{\omega, 2, 1}, \ldots, q'_{\omega, 2, 2s_2+1}, \ldots, q'_{\omega, m-1, 1}, \ldots, q'_{\omega, m-1, 2s_{m-1}+1} \in Q'$$ 
+}
 %
 \begin{itemize}
-\item $i_0=0$, $i_m = n+1$, $q_m \in F$,
+\item $q'_{\omega,1, 0}= p$, 
 %
-\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
-        \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
-        %
- \item $w'$ is the output corresponding to the run, that is, $ w' = w'_0 \cdots w'_m$, where for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $w'_j = \gamma_j$, otherwise, let $\gamma_j = x_i$, we have $w'_j = w_i$,
- %
- \item  for each $s=(p, p') \in \conacc$, there is a state sequence $q'_{s,0}, \cdots, q'_{s,m+1} \in Q'$ such that  $q'_{s,0}= p$, $q'_{s,j} \xrightarrow[\Aut]{w'_j} q'_{s, j+1}$ for each $j \in [m]$,  and $q'_{s, m+1} = p'$.
+\item for each $j \in [m-1]$ and $j' \in [s_j]$, 
+$$q'_{\omega, j, 2(j'-1)} \xrightarrow[\Aut]{w'_{j, j'}} q'_{\omega, j, 2j'-1} \xrightarrow[\Aut]{w_{i_{j, j'}}} q'_{\omega, j, 2j'},$$ 
+%
+and $q'_{\omega, j, 2s_j} \xrightarrow[\Aut]{w'_{j, s_j+1}} q'_{\omega, j, 2s_j+1}$,  where $q'_{\omega, j, 0} = q'_{\omega, j-1, 2s_{j-1}+1}$ if $j > 1$, 
+%and $q'_{\omega, j, 2j'-1} \xrightarrow[\Aut]{\conacc_{i_{j, j'}}} q'_{\omega, j, 2j'}$ means $(q'_{\omega, j, 2j'-1}, q'_{\omega, j, 2j'}) \in \conacc_{i_{j, j'}}$,
+%
+\item $q'_{\omega, m-1, 2s_{m-1}+1} = p'$.
 \end{itemize}
-
-Let $q = q_m$ and for each $i \in [k]$, let $\conacc_{x_i}$ denote the set of state pairs $(q'_{s, j}, q'_{s, j+1})$ such that $s \in \conacc$, $j \in [m]$ and $\gamma_j  = x_i$. 
-Then for each $i \in [k]$, $w_i$ is accepted by $\Aut[\conacc_{x_i}]$.  Moreover, we can construct the \FFA{} $\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$.
-It remains to show that $w$ is accepted by $\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$. 
-We reformulate the aforementioned conditions as follows: 
-%
+For each $i' \in [k]$, let $\conacc_{x_{i'}}$ be the set of state pairs $(q'_{\omega, j, 2j'-1}, q'_{\omega, j, 2j'})$ such that $\omega \in \conacc$, $j \in [m-1]$, and $x_{i_{j, j'}} = x_{i'}$. Evidently, for each $i' \in [k]$, $w_{i'}$ is accepted by $\Aut[\conacc_{x_{i'}}]$.
+With $\conacc_{x_1}, \ldots, \conacc_{x_k}$, we can construct the conjunctive \SSA{} $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_k}, q_m} = ((\controls'', \transrel''), \conacc'')$ as in Section~\ref{sec-2way}, where $\conacc'' = \{((q_0, p), (q_m, p') ) \mid (p, p') \in \conacc\}$. From the construction of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_k}, q_m}$, we know that $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_k}, q_m}$ contains the following transitions: 
 \begin{itemize}
-\item $i_0=0$, $i_m = n+1$, $q_m = q$,
-%
-\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
-        \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
-        %
- \item  for each $s=(p, p') \in \conacc$, there is a state sequence $q'_{s, 0}, \cdots, q'_{s,m+1} \in Q'$ such that $q'_{s,0}= p$, $q'_{s, m+1} = p'$, and 
- for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $(q'_{s, j}, \gamma_j, q'_{s, j+1}) \in \delta'$, otherwise, let $\gamma_j =x_i$, then $(q'_{s, j}, q'_{s, j+1}) \in \conacc_{x_i}$.  
-%  $q'_{s,0}= p$, $q'_{s,j} \xrightarrow[\Aut]{w'_j} q'_{s, j+1}$ for each $j \in [m]$,  and $q'_{s, m+1} = p'$, 
- %
- %there is a state sequence $q'_0, \cdots, q'_{m+1} \in Q'$ such that $q'_{m+1} \in F'$, and for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $(q'_j, \gamma_j, q'_{j+1}) \in \delta'$, otherwise, let $\gamma_j =x_i$, then $(q'_j, q'_{j+1}) \in S_{x_i}$.
+\item $((q_0, q'_{\omega, j, 0}), a_{i_0}, dir_{i_0}, (q_1, q'_{\omega, j, 0}))$,
+%  
+\item $((q_j, q'_{\omega, j, 0}), a_{i_j}, dir_{i_j}, (q_{j+1}, q'_{\omega, j, 2s_{j}+1}))$ for each $j \in [m-1]$ and $\omega \in \conacc$.
+%\item $(q_{m-1},q'), a_{i_m}, )$
 \end{itemize}
-Therefore, according to the construction of $\Aut''$ in the definition of $\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$, we infer that
-for each $(p, p') \in \conacc$, $(q_0, p) \xrightarrow[\Aut'']{w} (q, p')$. Thus, $w$ is accepted by $\Aut''$. Since  $\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$ is the \FFA{} equivalent to $\Aut''$, we conclude that $w$ is accepted by $\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$.
-
- %Moreover, for each $i \in [k]$, $w_i $ is accepted by $\Aut[S_{x_i}]$.
+Therefore, for each $\omega = (p, p') \in \conacc$, 
+$$((q_0, q'_{\omega, 1, 0}), i_0), \ldots, ((q_m, q'_{\omega, m-1, 2s_{m-1}+1}), i_m)$$ 
+is an accepting run of $((\controls'', \transrel''), \{((q_0, p), (q_m, p'))\})$ on $w$. 
+We then conclude that $w$ is accepted by $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_k}, q_m}$.
 
 \smallskip
 
@@ -77,20 +74,32 @@ for each $(p, p') \in \conacc$, $(q_0, p) \xrightarrow[\Aut'']{w} (q, p')$. Thus
 Suppose that there are $\conacc_{x_1},\cdots, \conacc_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q})$ and $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [k]$. 
 
 Since $\Lang(\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k}, q})=\Lang(\Aut'')$, we know that  there are an accepting run of $\Transducer$ on $w$, 
-say $(q_0, i_0, \gamma_0),\ldots, (q_m, i_m, \gamma_m) \in \controls \times [n+1] \times \Gamma$, such that 
+say $(q_0, i_0, w'_0),\ldots, (q_m, i_m, w'_m) \in \controls \times [n+1] \times \Gamma^*$, such that 
 \begin{itemize}
-\item $i_0=0$, $i_m = n+1$, $q_m \in F$, 
+\item $i_0=0$, $i_m = n+1$, $q_m \in F$, $w'_0 = \epsilon$,
 %
-\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, \gamma_j) \in
+\item let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$,  then for every $j \in [m-1]$, $(q_j, a_{i_j}, dir_{i_j}, q_{j+1}, w'_j) \in
         \transrel$ and $i_{j+1} = i_j + dir_{i_j}$ for some $dir_{i_j} \in \{\Left, \Stay, \Right\}$, 
         %
- \item  for each $s=(p, p') \in \conacc$, there is a state sequence $q'_{s, 0}, \cdots, q'_{s,m+1} \in Q'$ such that $q'_{s,0}= p$, $q'_{s, m+1} = p'$, and 
- for each $j \in \{0\} \cup [m]$, if $\gamma_j \in \Sigma$, then $(q'_{s, j}, \gamma_j, q'_{s, j+1}) \in \delta'$, otherwise, let $\gamma_j =x_i$, then $(q'_{s, j}, q'_{s, j+1}) \in \conacc_{x_i}$.  
+ \item  let $\omega =(p, p') \in \conacc$,  and for each $j \in [m-1]$, $w'_j = w'_{j, 1} x_{i_{j, 1}} \ldots w'_{j, s_j} x_{i_{j, s_j}} w'_{j, s_j + 1}$ such that $w'_{j, j'} \in \ialphabet^*$ for each $j' \in [s_j+1]$, then there are states 
+ $$q'_{\omega, 1, 0}, q'_{\omega, 1,1}, \ldots, q'_{\omega, 1, 2s_1 +1}, \ldots,  q'_{\omega, m-1, 1},  \ldots, q'_{\omega, m-1, 2s_{m-1} +1} \in \controls'$$
+ satisfying that 
+ \begin{itemize}
+\item $q'_{\omega, 1, 0} = p$, $q'_{\omega, m-1, 2s_{m-1} +1} = p'$, and 
+%
+\item for each $j \in [m-1]$, 
+{\small
+$$q'_{\omega, j, 0} \xrightarrow[\Aut]{w'_{j, 1} } q'_{\omega, j, 1} \xrightarrow{\conacc_{x_{i_{j, 1}}}} q'_{\omega, j, 2}\ \ldots\ q'_{\omega, j, 2s_j-1} \xrightarrow{\conacc_{x_{i_{j, s_j}}}} q'_{\omega, j, 2s_j} \xrightarrow[\Aut]{w'_{j, s_j + 1}} q'_{\omega, j, 2s_j+1},$$ 
+}
 \end{itemize}
-Let $w'$ be the output of the run on $w$, equipped with the parameters $w_1,\ldots, w_k$, more precisely, $w' = w'_0 \cdots w'_m$ such that for each $j \in \{0\} \cup [m]$, $w'_j = \gamma_j$ if $\gamma_j \in \Sigma$, and $w'_j = w_i$ if $\gamma_j = x_i$ for $i \in [k]$. From the fact that $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [k]$, we deduce that for each $s = (p,p') \in \conacc$ and $j \in \{0\} \cup [m]$, $q'_{s, j} \xrightarrow[\Aut]{w'_j} q'_{s, j+1}$.
-Therefore, for each $s = (p,p') \in \conacc$, $p \xrightarrow[\Aut]{w'} p'$. From this, we deduce that $w'$ is accepted by $\Aut=((Q', \delta'), \conacc)$.
+where $q'_{\omega, j, 0} = q'_{\omega, j-1, 2s_{j-1}+1}$ if $j > 1$, and $q'_{\omega, j, 2j'-1} \xrightarrow{\conacc_{x_{i_{j, j'}}}} q'_{\omega, j, 2j'}$ means $(q'_{\omega, j, 2j'-1} , q'_{\omega, j, 2j'}) \in \conacc_{x_{i_{j, j'}}}$ for each $j' \in [s_j]$.
+\end{itemize}
+
+Let $w'$ be the output of the run on $w$, equipped with the parameters $w_1,\ldots, w_k$, more precisely, $w' = w''_1 \cdots w''_{m-1}$ such that  $w''_j = w'_j[w_1/x_1, \ldots, w_k/x_k]$ for each $j \in  [m-1]$. From the fact that $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [k]$, we deduce that for each $\omega = (p,p') \in \conacc$ and $j \in [m-1]$, $q'_{\omega, j, 0} \xrightarrow[\Aut]{w''_j} q'_{\omega, j, 2s_j+1}$.
+Therefore, for each $\omega = (p,p') \in \conacc$, $p \xrightarrow[\Aut]{w'} p'$. From this, we deduce that $w'$ is accepted by $\Aut=((Q', \delta'), \conacc)$.
 Consequently, $(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$.
 \end{proof}
+
 
 
 
