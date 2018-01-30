@@ -202,6 +202,11 @@ Let $\Transducer$ be a \SSPT{} with parameters $y_1,\ldots, y_m$. We use $\trans
 %
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
+\begin{example}
+\SSPT{}s can be used to model some typical list operations in Python: The $list$.extend($y$) and $list$.reverse() methods, analogous to string concatenation and reverse operations,  can be easily modelled by \SSPT{}s. 
+%For instance,  $list$.extend($y$) is modelled by an \ST{} with states $\{q_0, q_1\}$, initial state $q_0$, final states $\{q_1\}$, and transitions $(q_0, \ltrue, \Right, q_0, x)$, $(q_0, \ltrue, \Right, q_1, x \cdot y)$, where $x$ represents the input list. 
+Moreover, \SSPT{}s can be used to model more complex list manipulations, e.g. the operation of replacing each occurrence of a sublist $[2,3]$ in $list$ with $y$, is modelled by an \SPT{} with states $\{q_0, q_1, q_2\}$, initial state $q_0$, final states $\{q_0, q_2\}$, and transitions $(q_0, x \neq 2, q_0, x)$, $(q_0, x = 2, q_1, \epsilon)$, $(q_1, x = 3, q_0, y)$, $(q_0, x = 2, q_2, x)$, and $(q_2, x \neq 3, q_0, x)$.  
+\end{example}
 
 
 
