@@ -4,12 +4,11 @@
 
 %We instantiate the generic decision procedure presented previously. 
 %As in Section~\ref{sec:framework}, 
-In our framework
-each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$) from the symbolic execution $S$ is modelled by a parametric transducer $\Transducer$  
+In our framework each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$) from the symbolic execution $S$ is modelled by a parametric transducer $\Transducer$  
 with $\arity-1$ parameters, and the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). 
 %We shall usually refer to them as \emph{string constraints with transducers}. 
 For the pre-image of an FA $\Aut$,  %$\Pre_{R_f}(\Aut)$ 
-$f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one must verify the \prerec{} assumption for the classes of parametric transducers considered. 
+$f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, i.e.,  the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one verifies the regularity condition \prerec{} for the respective class of parametric transducers. %under consideration. 
 %While the latter trivially holds as we only consider assertions being regular constraints, the former is not trivial. 
 %For the rest of this section, we consider three classes of parametric transducers, viz. two-way transducers, one-way transducers, and reversal-bounded two-way transducers. We shall show that in each case, the pre-image is a recognisable relation with various size bounds $\ell(|\Transducer|, |\Aut|)$. This would yield tight complexity bounds on the path feasibility problem for string manipulating programs $S$ when the string functions therein are given in parametric transducers.  
 
@@ -23,7 +22,7 @@ $f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, the set of tuples $(
 
 
 \begin{lemma}\label{lem-2pt}
-The \prerec{} assumption holds for symbolic executions with \PPT{}s, with $\ell(|\Transducer|, |\Aut|) = 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
+The  regularity condition  \prerec{} holds for \PPT{}s, with $\ell(|\Transducer|, |\Aut|) = 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
 %Let $\Transducer$ be a \PPT{} and $\Aut$ be a conjunctive \FA{} $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively. Moreover, each disjunct of the representation can be nondeterministically computed in $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$ space.
 \end{lemma}
 
@@ -81,19 +80,20 @@ the \prerec{} assumption holds for string functions definable in \PPT{}s with $\
 %$\Pre_\Transducer(\Aut)$ is a recognisable relation and a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be constructed effectively.
 \end{proof}
 
-From Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec}, %by some simple calculation, we deduce that 
-we have that, when instantiated by \PPT{}s, %given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, 
-the path feasibility of a symbolic execution $S$ can be decided in 
+Lemma~\ref{lem-2pt} and Theorem~\ref{thm-generic-dec} entail %by some simple calculation, we deduce that 
+%given a string manipulating program $S$ in SSA form where string functions are modelled by \PPT{}s, 
+one can decide the path feasibility of a symbolic execution $S$ with \PPT{}s in 
 %nondeterministic 
 %$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$$ 
 %space, where $f(j, k) = 2^{jk \log (j k)}$. 
-nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S) \log(\rcphi(S) \rcpsi(S)))$ space (which can be made deterministic space by Savitch's theorem \cite{Savitch70}). Here $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
+nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S)$ 
+$ \log(\rcphi(S) \rcpsi(S)))$ space (which can be even made in \emph{deterministic} space by Savitch's theorem \cite{Savitch70}). Here $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
 After the result we sketch the lower bound.
 %We conclude that the path feasibility of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
 %Moreover, we have a matching lower bound whose proof is sketched below.
 %
 \begin{theorem} \label{thm:two-way}
-Given a symbolic execution $S$ with \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, path feasibility is
+Given a symbolic execution $S$ with \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, checking path feasibility is
  $\expheight$-$\expspace$-hard.
 \end{theorem}
 
@@ -152,7 +152,7 @@ For each column, the first \FFT{} nondeterministically selects all the tiles in 
 The addresses of the selected tiles are output to the second \FFT{} which checks that they are equal.
 The first \FFT{} goes through a non-deterministic number of such passes and the second \FFT{} enforces that there are $2^n$ of them (in column order).
 To do this, the second \FFT{} checks that after the addresses of the $i$-th column are output by the first \FFT{}, then the addresses of the $(i+1)$-th column are output next.
-\mat{@Zhilin: is above better?}\zhilin{yes!}
+%\mat{@Zhilin: is above better?}\zhilin{yes!}
 
 With another \FFT we can increase the corridor width by another exponential.
 For doubly-exponential numbers, we to precede each tile with a binary sequence of exponential length.
@@ -190,7 +190,7 @@ With $(n+1)$ \FFT, we can encode tiling problems over an $n$-fold exponentially 
 In practice, many string functions need only a small number of reversals for the reading head, rather than full two-way transducers. 
 E.g., the reading head for one-way \PT{} (resp. the string reverse function) needs $0$ (resp. $2$) reversal(s).
 
-Let $k \in \Nat$ a $k$-reversal bounded \PPT{} $\Transducer$ ($k$-\RBPPT{}) is such that in every run of $\Transducer$, the reading direction is reversed at most $k$ times. 
+Let $k \in \Nat$. A $k$-reversal bounded \PPT{} $\Transducer$ ($k$-\RBPPT{}) is such that in every run of $\Transducer$, the reading direction is reversed at most $k$ times. 
 Notice that $k$ must be even since accepting runs must stop on the right end of input strings. 
 Evidently, $0$-reversal bounded \PPT{}s are precisely one-way \PT{}s.   
 Crucially, symbolic executions where string functions are given by $k$-\RBPPT{}s can be translated to those where string functions are given by only \PT{}s and a special transducer $\Transducer_{\sf reverse}$ for the string reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  

@@ -167,7 +167,7 @@ condition}, i.e., a string $w$ is accepted by $\Aut$ if
 for \emph{every} $(q, q') \in \conacc$, there is a run of $(\controls, \transrel)$ on
 $w$ from $q$ to $q'$. 
 %
-Note that $\Lang(((\controls, \transrel), \conacc)) = \bigcap \limits_{(q,q') \in \conacc} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$. Evidently, a  conjunctive \FA{} $\Aut=((\controls, \transrel), \conacc)$ is a \emph{succint} representation of the product of \FA{}s $\cB_{q,q'}$, which has a size exponentially large than that of $\Aut$ in the worst case.
+Note that $\Lang(((\controls, \transrel), \conacc)) = \bigcap \limits_{(q,q') \in \conacc} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$. Evidently, a  conjunctive \FA{} $\Aut=((\controls, \transrel), \conacc)$ is a \emph{succinct} representation of the product of \FA{}s $\cB_{q,q'}$, which has a size exponentially large than that of $\Aut$ in the worst case.
 %
 %We remark that the nonemptiness checking  can be done in nondeterministic logarithmic space for the standard representation of \FA{}s, but requires polynomial space for the conjunctive representation. (One needs to build up the product automaton which is of size $|Q|^{|S|}$.) 
 %
@@ -247,9 +247,9 @@ We now provide a refined version of Theorem \ref{th:gen} that accounts for
 complexity (full proof can be found in \shortlong{full version}{Appendix~\ref{app:algo}}). First,
 the regularity condition (called \prerec{}) now incorporates conjunctive
 \FA{}s as representations of atoms: % and accounts for complexity:
-for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,
+\emph{for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,
 there is an algorithm that runs in $\ell(|f|,|\Aut|)$ space which enumerates 
-each disjunct of $f^{-1}(\Aut)$ in conjunctive representation (where $\ell(\cdot, \cdot)$ is a monotone function).
+each disjunct of $f^{-1}(\Aut)$ in conjunctive representation} (where $\ell(\cdot, \cdot)$ is a monotone function).
 %not only assumes that each
 \OMIT{
 (1) each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a recognisable relation. Furthermore, 
