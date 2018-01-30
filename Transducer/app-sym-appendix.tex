@@ -199,7 +199,7 @@ $$
 \subsection{The details of the generic decision procedure}
 
 
-Similar to recognisable relations, we also represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ with $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
+Similar to recognisable relations, we also represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), \conacc)$ with $\conacc \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), \conacc)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
 
 
 The \prerec{} assumption in Section~\ref{sec:algo} is replaced by $\mathbb{S}$\prerec{} assumption presented below.
@@ -296,7 +296,7 @@ as well.
 For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$.
 Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcasrt(S)$ elements, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)$ elements. 
 
-Therefore, for each $x \in \vars(S)$, the conjunctive product \SA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \SA{}s  in $\cE(x)$ has a structural size bounded by 
+Therefore, for each $x \in \vars(S)$, the conjunctive product \SA{} $\Aut_x=((\controls_x, \transrel_x), \conacc_x)$ of these conjunctive \SA{}s  in $\cE(x)$ has a structural size bounded by 
 %
 $$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S)},$$
 %
@@ -304,7 +304,7 @@ and data size bounded by
 %
 \[ (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S)) \]
 %
-and $|S_x| \le (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2$. 
+and $|\conacc_x| \le (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2$. 
 It follows that the structural and data size of the (standard) \SA{} corresponding to $\Aut_x$ are  bounded by 
 %
 $$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) \left(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S))\right)^2}$$
@@ -382,9 +382,9 @@ The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transduce
 
 \begin{proof}
 
-We first consider \SSPT{}s. Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_\arity\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), S')$ with $S' \subseteq Q' \times Q'$. 
+We first consider \SSPT{}s. Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_\arity\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), \conacc')$ with $\conacc' \subseteq Q' \times Q'$. 
 
-Similarly to \FFA{}s, for $q \in F$ and  $S_{y_1}, \cdots, S_{y_\arity} \subseteq Q' \times Q'$, we  introduce a conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q} = ((\controls'', \transrel''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S'\}$, and the transition relation $\transrel''$ comprises the tuples 
+Similarly to \FFA{}s, for $q \in F$ and  $\conacc_{y_1}, \cdots, \conacc_{y_\arity} \subseteq Q' \times Q'$, we  introduce a conjunctive \SSA{} $\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity}, q} = ((\controls'', \transrel''), \conacc'')$, where $Q'' = Q \times Q'$, $\conacc'' = \{((q_0, p), (q, p')) \mid (p, p') \in \conacc'\}$, and the transition relation $\transrel''$ comprises the tuples 
 $((q_1, q'_1), \psi(x), dir, (q_2, q'_2))$ such that there are $\psi_0(x) \in \Psi$ and $\vec{t}$ satisfying that $(q_1, \psi_0(x), dir, q_2, \vec{t}) \in \transrel$, and one of the following constraints holds, 
 \begin{itemize}
 \item $\vec{t} = t_1(x) \ldots t_m(x)$ is a sequence of $\signature$-terms, there are transitions 
@@ -395,9 +395,9 @@ such that $p_0 = q'_1$, $p_r = q'_2$, and $\psi = \psi_0 \wedge \psi_1[t_1(x)/x]
 %
 $$
 \begin{array}{l}
-p_0 \xrightarrow[\Aut]{\psi_{1,1}} p_1\ \ldots\ p_{|\vec{t}_1|-1} \xrightarrow[\Aut]{\psi_{1, s_1}} p_{|\vec{t}_1|} \xrightarrow{S_{y_{i_1}}} p_{|\vec{t}_1|+1}\ \ldots\\
+p_0 \xrightarrow[\Aut]{\psi_{1,1}} p_1\ \ldots\ p_{|\vec{t}_1|-1} \xrightarrow[\Aut]{\psi_{1, s_1}} p_{|\vec{t}_1|} \xrightarrow{\conacc_{y_{i_1}}} p_{|\vec{t}_1|+1}\ \ldots\\
 p_{N - s_{m+1} - s_m -1} \xrightarrow[\Aut]{\psi_{m, 1}} p_{N - s_{m+1} - s_m } \ \ldots\ p_{N - |\vec{t}_{m+1}| - 2} \xrightarrow[\Aut]{\psi_{m, s_m}} p_{N-s_{m+1}-1}\\
- \xrightarrow{S_{y_{i_m}}} p_{N- s_{m+1}} \xrightarrow[\Aut]{\psi_{m+1, 1}} p_{N -s_{m+1}+1}\ \ldots\ p_{N - 1} \xrightarrow[\Aut]{\psi_{m+1,  s_{m+1}} } p_{N},
+ \xrightarrow{\conacc_{y_{i_m}}} p_{N- s_{m+1}} \xrightarrow[\Aut]{\psi_{m+1, 1}} p_{N -s_{m+1}+1}\ \ldots\ p_{N - 1} \xrightarrow[\Aut]{\psi_{m+1,  s_{m+1}} } p_{N},
 \end{array}
  $$ 
  and $\psi = \psi_0 \wedge \bigwedge \limits_{j \in [m+1], j' \in [s_j]} \psi_{j, j'} [\vec{t}_{j, j'}(x)/x].$
@@ -406,11 +406,11 @@ p_{N - s_{m+1} - s_m -1} \xrightarrow[\Aut]{\psi_{m, 1}} p_{N - s_{m+1} - s_m } 
 %
 %\item Define $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ as $((Q''', \delta'''), S')$, where $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (q'_1,q'_2) \in S, \vec{\rho}_1[1] =(q_0,q'_1), \vec{\rho}_2[|\vec{\rho}_2|] = (q, q'_2) \}$.
 %\end{enumerate} 
-Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\signature$-terms in transitions of $\Transducer$. Then 
+Evidently, $|\conacc''| = |\conacc'|$.  Let $L$ be the maximum length of sequences of $\signature$-terms in transitions of $\Transducer$. Then 
 \begin{itemize}
-\item the structural size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ is at most $|\Transducer|_s |\Aut|_s^{L} \le |\Transducer|_s |\Aut|_s^{|\Transducer|_s}$,
+\item the structural size of $\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity}, q}$ is at most $|\Transducer|_s |\Aut|_s^{L} \le |\Transducer|_s |\Aut|_s^{|\Transducer|_s}$,
 %
-\item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_m(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ is at most $|\Transducer|_d + |\Transducer|_d |\Aut|_d \approx \bigO(|\Transducer|_d |\Aut|_d)$.
+\item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_m(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity}, q}$ is at most $|\Transducer|_d + |\Transducer|_d |\Aut|_d \approx \bigO(|\Transducer|_d |\Aut|_d)$.
 \end{itemize}
 %It is easy to see that  the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c $ and $|S''| = |S'|$.   
 
@@ -418,14 +418,14 @@ Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\sign
 
 Therefore, $\Pre_\Transducer(\Aut)$ is equal to 
 \[
-\bigcup_{S_{y_1}, \cdots, S_{y_\arity} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity},q}) \times \Lang(\Aut[S_{y_1}]) \times \cdots  \times \Lang(\Aut[S_{y_\arity}])\]
+\bigcup_{\conacc_{y_1}, \cdots, \conacc_{y_\arity} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity},q}) \times \Lang(\Aut[\conacc_{y_1}]) \times \cdots  \times \Lang(\Aut[\conacc_{y_\arity}])\]
 
 We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation. 
 
-In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity},q}$ to a union of conjunctive \SA{}s as follows: Transform $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ into a one-way transition graph $(\controls''',\delta''')$. From Proposition~\ref{prop-2nsa}, $\controls'''$ are vectors of transitions of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ of lengths at most $2|\controls''|-1$. Then $\Lang(\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] = ((q_0, p), -, -)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (-, -, (q, p'))$.
+In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \SSA{} $\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity},q}$ to a union of conjunctive \SA{}s as follows: Transform $\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity}, q}$ into a one-way transition graph $(\controls''',\delta''')$. From Proposition~\ref{prop-2nsa}, $\controls'''$ are vectors of transitions of $\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity}, q}$ of lengths at most $2|\controls''|-1$. Then $\Lang(\cB_{\Transducer, \Aut, \conacc_{y_1}, \cdots, \conacc_{y_\arity},q})$ is the union of $\Lang(((\controls''',\delta'''), \conacc''))$ for $\conacc'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in \conacc'$, such that $\vec{\rho}_1[1] = ((q_0, p), -, -)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (-, -, (q, p'))$.
 %that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
 
-From Proposition~\ref{prop-2nsa}, the structural (resp. data) size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$
+From Proposition~\ref{prop-2nsa}, the structural (resp. data) size of each conjunctive \SA{} $((\controls''',\delta'''), \conacc'')$
 is  $ 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ 
 (resp. $ \bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|_d |\Aut|_d )$). 
 We conclude that 

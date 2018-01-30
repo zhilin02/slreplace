@@ -160,14 +160,14 @@ a recognisable relation. We propose
 to use (a variant of) conjunctions of regular constraints called
 \emph{conjunctive \FA{}}. 
 %iof each atoms of the representation, 
-More precisely, each conjunctive \FA{} is a tuple $\Aut = ((\controls, \transrel), S)$
+More precisely, each conjunctive \FA{} is a tuple $\Aut = ((\controls, \transrel), \conacc)$
 such that $(\controls, \transrel)$ is a transition graph of an \FA{} and 
-$S \subseteq \controls \times \controls$ is a \emph{conjunctive acceptance 
+$\conacc \subseteq \controls \times \controls$ is a \emph{conjunctive acceptance 
 condition}, i.e., a string $w$ is accepted by $\Aut$ if 
-for \emph{every} $(q, q') \in S$, there is a run of $(\controls, \transrel)$ on
+for \emph{every} $(q, q') \in \conacc$, there is a run of $(\controls, \transrel)$ on
 $w$ from $q$ to $q'$. 
 %
-Note that $\Lang(((\controls, \transrel), S)) = \bigcap \limits_{(q,q') \in S} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$. Evidently, a  conjunctive \FA{} $\Aut=((\controls, \transrel), S)$ is a \emph{succint} representation of the product of \FA{}s $\cB_{q,q'}$, which has a size exponentially large than that of $\Aut$ in the worst case.
+Note that $\Lang(((\controls, \transrel), \conacc)) = \bigcap \limits_{(q,q') \in \conacc} \Lang(\cB_{q,q'})$, where $\cB_{q,q'}$ is the \FA{} $(\controls, q, \{q'\}, \transrel)$. Evidently, a  conjunctive \FA{} $\Aut=((\controls, \transrel), \conacc)$ is a \emph{succint} representation of the product of \FA{}s $\cB_{q,q'}$, which has a size exponentially large than that of $\Aut$ in the worst case.
 %
 %We remark that the nonemptiness checking  can be done in nondeterministic logarithmic space for the standard representation of \FA{}s, but requires polynomial space for the conjunctive representation. (One needs to build up the product automaton which is of size $|Q|^{|S|}$.) 
 %
@@ -178,7 +178,7 @@ Since each \FA{} $\Aut =
 can be assumed to have only one final state (i.e. $\finals = \{q_F\}$), each 
 \FA{} can be identified with the conjunctive \FA{}
 $((\controls,\transrel),\{(q_0,q_F)\})$.
-The \emph{size} of a conjunctive representation $((\controls, \transrel), S)$ is defined as $|\controls|$, and  the  \emph{atom size} of a conjunctive representation of $R$ is defined to be the maximum size of the atoms therein.
+The \emph{size} of a conjunctive representation $((\controls, \transrel), \conacc)$ is defined as $|\controls|$, and  the  \emph{atom size} of a conjunctive representation of $R$ is defined to be the maximum size of the atoms therein.
 
 %as follows: 
 %Suppose $\Aut^{(i)}_j=(\controls^{(i)}_j, q^{(i)}_{0,j}, \transrel^{(i)}_j, \finals^{(i)}_j)$ for $i \in [n]$ and $j \in [k]$. Then $\Lang(\Aut^{(i)}_j) = \bigcup \limits_{q \in \finals^{(i)}_j} \Lang(\Aut^{(i)}_j(q^{(i)}_{0,j}, \{q\}))$. Furthermore,  $\Aut^{(i)}_j(q^{(i)}_{0, j}, \{q\})$ can be decoupled as a pair $\cC^{(i)}_{j, (q^{(i)}_{0, j}, q)} = \left(\left(\controls^{(i)}_j,  \transrel^{(i)}_j \right), \{(q^{(i)}_{0,j}, q)\} \right)$. Therefore, $R$ is conjunctively represented by 
@@ -223,7 +223,7 @@ R  & =   \bigcup_{i=1}^n \prod_{j=1}^k \Lang(\Aut^{(i)}_j) \\
 
 \OMIT{
 In the sequel, %when we say a representation of $R$, 
-the representation of $R$ simply refers to a \emph{conjunctive} representation of $R$. Moreover, a conjunctive \FA{} refers to a pair $((\controls, \transrel), S)$ whereas an \FA{} refers to an \FA{} in the original form, i.e. $(\controls, q_0, \finals, \transrel)$.
+the representation of $R$ simply refers to a \emph{conjunctive} representation of $R$. Moreover, a conjunctive \FA{} refers to a pair $((\controls, \transrel), \conacc)$ whereas an \FA{} refers to an \FA{} in the original form, i.e. $(\controls, q_0, \finals, \transrel)$.
 %
 
 }
