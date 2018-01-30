@@ -28,7 +28,7 @@ cases. The first case is when the length constraints $\varphi$ has only
 one string variable $x_1$, e.g., $\Len(x_1) > 7$. In this case,
 $\varphi(\Len(x_1))$ can be turned into a regular constraint $x_1 \in L$ for
 some $L$. [This is because the set of integer solutions is effectively
-a finite union of arithmetic progressions $\bigcup_{i=1}^n a_i + b_i\N$
+a finite union of arithmetic progressions $\bigcup_{i=1}^n (a_i + b_i\N)$
 (where $a_i + b_i\N := \{ a_i + b_in : n \in \N\}$), and each 
 $\Len(x_i) \in (a_i + b_i\N)$ is equivalent to the regular constraint 
 $x_i \in \ialphabet^{a_i} (\ialphabet^{b_i})^*$.] The second case is when
@@ -43,15 +43,25 @@ conjunction and run a solver for integer linear arithmetic.
 %\cite{LB16}) 
 %on the shape of string constraints. 
 
-casting functions (e.g. conversions
-between integers and strings) \cite{GB16}.
-
 The complexity of the theory of concatenation with regular constraints is
 known to be PSPACE-complete \cite{Plandowski,J17}, although the exact
-complexity for the theory of concatenation without regular constraints is
-still open (only known to be in between NP and PSPACE). 
+complexity for the theory of concatenation \emph{without} regular constraints is
+a long-standing open problem (only known to be in between NP and PSPACE). 
+The complexity of the straight-line logic with concatenation, finite
+transducers, and regular constraints is EXPSPACE-complete \cite{LB16}. The same 
+complexity holds when we swap finite transducers with replaceall 
+\cite{CCHLW18}. Our logic with reversal-bounded parameterised transducers
+as primitive operations strictly subsumes these two logics (e.g. since it can
+also express string reverse) and has precisely the same complexity EXPSPACE.
+The straight-line logic of \cite{LB16} extended with length constraints is still
+EXPSPACE-complete.
 
-\subsection{Practical}
+Symbolic automata/transducers were introduced by Veanes \emph{et al.}
+\cite{symbolic-transducer}
+
+\subsection{Heuristics and Implementation}
+
+
 Recursively defined functions.
 
 
