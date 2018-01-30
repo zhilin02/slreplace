@@ -483,7 +483,7 @@ transition relation  $\transrel\subseteq \controls \times
 \end{definition}
 }
 
-Notice that parameters are only allowed in the output track.
+Notice that parameters are only allowed in the output tape.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_\arity$ with strings 
 $w_1,\ldots, w_\arity \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each occurrence of $x_j$ in transitions with $w_j$.
 % transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. 
@@ -515,7 +515,7 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %\tl{again, this is a relation, not a function.}
 
 \begin{example} \label{example:2pt}
- The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the head of the \PT{} must stop in the right end of the track to accept.) 
+ The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the head of the \PT{} must stop in the right end of the tape to accept.) 
  
   As promised in the Introduction, we now demonstrate how the  $\replaceall$ function from \cite{CCHLW18} can be simulated by \PT{}s.
   %\tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
