@@ -199,17 +199,17 @@ $$
 \subsection{The details of the generic decision procedure}
 
 
-Similar to the recognisable relation, we also represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ with $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
+Similar to recognisable relations, we also represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), S)$ with $S \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), S)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
 
 
 The \prerec{} assumption in Section~\ref{sec:algo} is replaced by $\mathbb{S}$\prerec{} assumption presented below.
 \begin{quote}
 {\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $f^{-1}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
-a representation of $f^{-1}(\Aut)$, whose structural size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_c)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation of $f^{-1}(\Aut)$ can be enumerated in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
+a representation of $f^{-1}(\Aut)$, whose structural size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_s)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation of $f^{-1}(\Aut)$ can be enumerated in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
 %
 \end{quote} 
 %
-Here $|f|_s$ and $|f|_d$ are the structural and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $|\Aut|$), denoted by $|f|$ (resp. $\Aut$), as $|f|_s \cdot |f|_d$ (resp. $|\Aut|_s \cdot |\Aut|_d$).
+Here $|f|_s$ and $|f|_d$ are the structural and data sizes of a representation of $f$ respectively; the concrete definitions depend on the form of $f$, which will be given when the generic decision procedure is instantiated later. Furthermore, we define the size of $f$ (resp. $\Aut$), denoted by $|f|$ (resp. $|\Aut|$), as $|f|_s \cdot |f|_d$ (resp. $|\Aut|_s \cdot |\Aut|_d$).
 
 Let $S$ be a symbolic execution of programs with data strings.  We use $|S|$ to denote the sum of $|f|$ and $|\Aut|$ for data string functions $f$ and \SA{}s $\Aut$ occurring in $S$.  
 For a refined complexity analysis, we also define $\rcdep(S)$, $\rcdim(S)$, and $\rcasrt(S)$ similarly to the string setting. Moreover, we use $\rcphi_s(S)$ (resp. $\rcphi_d(S)$) to denote the maximum of $|f|_s$ (resp. $|f|_d$) for data string functions $f$ occurring in the assignments of $S$, and $\rcpsi_s(S)$ (resp. $\rcpsi_d(S)$) to denote the maximum of $|\Aut|_s$ (resp. $|\Aut|_d$) for \SA{}s $\Aut$ occurring in $S$.
@@ -228,11 +228,12 @@ $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\lan
 	Given a symbolic execution  $S$ of programs with data strings satisfying the $\mathbb{S}$\prerec{} assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
 	\[
 	\begin{array}{l c l}
-		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
-		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_c}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
+%		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
+		M & = & (\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{c}\ \cdot \\
+		& &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 	\]
-for some constant $r > 0$. 
+for some constant $c > 0$. 
 \end{theorem}
 
 
@@ -261,48 +262,57 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 %%%=============================================================
 
 
+\begin{proof}
 
-
-For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$,
-and $N_{i,s}$ (resp. $N_{i, d}$) be the maximum structural size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$. Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies  $|f|_s \le \rcphi_s(S)$, we have 
+For each $i$, let $N_{i,s}$ (resp. $N_{i, d}$) be the maximum structural size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$. From the $\mathbb{S}$\prerec{} assumption and the fact that each string function $f$ satisfies  $|f|_s \le \rcphi_s(S)$ and $|f|_d \le \rcphi_d(S)$, we have 
 %
 $$N_{i-1, s} \le \ell_s(|f|_s, N_{i, s}) \le \ell_s(\rcphi_s(S), N_{i,s})$$ 
 %
-Moreover, since $|f|_s \le \rcphi_s(S)$ and $|f|_d \le \rcphi_d(S)$, we have
+and
 %
 $$N_{i-1, d} \le \ell_d(|f|_s, |f|_d, N_{i, c}, N_{i,d}) \le \ell_d(\rcphi_s(S), \rcphi_d(S), N_{i, s}, N_{i,d}).$$ 
 
-Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcsreg(S)$ elements, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcsreg(S)$ elements. 
-Moreover, because each conjunctive \SA{} in $\cE_{\rcdep(S)}(x)$ satisfies that its control and data size are bounded by $\rcpsi_c(S)$ and $\rcpsi_d(S)$ respectively, 
+Because each conjunctive \SA{} in $\cE_{\rcdep(S)}(x)$ satisfies that its control and data size are bounded by $\rcpsi_c(S)$ and $\rcpsi_d(S)$ respectively, 
 we have that each conjunctive \SA{} in $\cE(x)$ satisfies that its control and data size are bounded by $\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S))$ and 
 %
 \[ (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)).\]
 % h(i, j, g^{\langle n \rangle}(k, l), h^{\langle n \rangle}(i, j, k, l))
 % 
-We emphasise that, according to the $\mathbb{S}$\prerec{} assumption, the construction of these \SA{}s can be done in nondeterministic space bounded by
+Therefore, the size of each conjunctive \SA{} in $\cE(x)$ is bounded by 
+{
+\small
+$$\ell_s^{\langle  \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),  \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)).$$
+}
+Furthermore, according to the $\mathbb{S}$\prerec{} assumption, the construction of these conjunctive \SA{}s can be done in nondeterministic space bounded by 
 %
 {
 \small
-$$\ell_c^{\langle  \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_c}(\rcphi_s(S),  \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S))$$
+$$\ell_s^{\langle  \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),  \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) $$
 }
+as well.
 %
+
+
+For each $i$, let $M_i$ be the maximum number of elements in $\cE_i(x)$ for $x  \in \vars(S)$.
+Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcasrt(S)$ elements, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)$ elements. 
+
 Therefore, for each $x \in \vars(S)$, the conjunctive product \SA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \SA{}s  in $\cE(x)$ has a structural size bounded by 
 %
-$$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)},$$
+$$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S)},$$
 %
 and data size bounded by
 %
-\[ (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S)).\]
+\[ (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S)) \]
 %
 and $|S_x| \le (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2$. 
-Therefore, the structural and data size of the (standard) \SA{} corresponding to $\Aut_x$ are  bounded by 
+It follows that the structural and data size of the (standard) \SA{} corresponding to $\Aut_x$ are  bounded by 
 %
-$$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S) (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2}$$
+$$(\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) \left(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S))\right)^2}$$
 %
 and
 $$
 \begin{array}{l}
-(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
+\left(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S))\right)^2 (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S)\ \cdot  \\
 \hspace{1cm}(\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 $$
@@ -312,11 +322,12 @@ Since the nonemptiness of an \SA{} $\Aut$ can be solved in nondeterministic $(\l
 {\small
 $$
 \begin{array}{l}
-(\rcdim(S)+1)^{\rcdep(S)} \cdot \rcsreg(S) \cdot (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 \log (\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S))) \\
+(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) \cdot \left(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S))\right)^2\ \cdot \\
+\hspace{3.5cm} \log (\ell^{\langle \rcdep(S) \rangle}_s(\rcphi_s(S), \rcpsi_s(S))) \\
 \hfill +\beta
 \left(
 \begin{array}{l}
-(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcsreg(S)\ \cdot  \\
+(\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^2 (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S)\ \cdot  \\
 \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 \right)
@@ -324,32 +335,42 @@ $$
 $$
 }
 
+In addition, from the fact $M_{i-1} \le (\rcdim(S)+1)M_i $, we deduce that each conjunctive \SA{} in $\bigcup \limits_{x \in \vars(S)} \cE_{\rcdep(S)}(x)$ gives rise to at most $(\rcdim(S)+1)^{\rcdep(S)}$ conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE(x)$. Therefore, we have $\sum \limits_{x \in \vars(S)} |\cE(x)| \le (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S)$. It follows that $\bigcup \limits_{x \in \vars(S)} \cE(x)$ occupies at most 
+{\small
+\[
+\begin{array}{l}
+(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) \cdot \ell_s^{\langle  \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \cdot \\
+  (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),  \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S))
+\end{array}
+\]
+}
+space. 
 
 In summary, the aforementioned nondeterministic algorithm takes  $M + \beta(M)$ space, where 
 %
 $$
 \begin{array}{l c l}
-M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
+M & = & (\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{c}\ \cdot \\
 & &  \hspace{1cm} (\ell_d)^{\langle  \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),\rcphi_d(S),  \rcpsi_s(S), \rcpsi_d(S))
 \end{array}
 $$
 %
-for some constant $r > 0$.
-
+for some constant $c > 0$.
+\end{proof}
 
 %%%========================================
 %F.3
 %%%========================================
 
-\subsection{Instantiation of the generic decision procedure to \SSPT{}s and \SPT{}s.}
+\subsection{Instantiation of the generic decision procedure to \SSPT{}s and $k$-\RBSSPT{}s.}
 
 
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|^2_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
+The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
 
-The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
+The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d)$.
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
@@ -361,25 +382,25 @@ The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transduce
 
 \begin{proof}
 
-We first consider \SSPT{}s. Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_k\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), S')$ with $S' \subseteq Q' \times Q'$. 
+We first consider \SSPT{}s. Assume a \SSPT{} $\Transducer=(Y, Q, q_0, F, \delta)$ with $Y = \{y_1,\cdots, y_\arity\}$ and a conjunctive \SA{} $\Aut = ((Q', \transrel'), S')$ with $S' \subseteq Q' \times Q'$. 
 
-Similarly to \FFA{}s, for $q \in F$ and  $S_{y_1}, \cdots, S_{y_k} \subseteq Q' \times Q'$, we  introduce a conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q} = ((\controls'', \transrel''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S'\}$, and the transition relation $\transrel''$ comprises the tuples 
+Similarly to \FFA{}s, for $q \in F$ and  $S_{y_1}, \cdots, S_{y_\arity} \subseteq Q' \times Q'$, we  introduce a conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q} = ((\controls'', \transrel''), S'')$, where $Q'' = Q \times Q'$, $S'' = \{((q_0, p), (q, p')) \mid (p, p') \in S'\}$, and the transition relation $\transrel''$ comprises the tuples 
 $((q_1, q'_1), \psi(x), dir, (q_2, q'_2))$ such that there are $\psi_0(x) \in \Psi$ and $\vec{t}$ satisfying that $(q_1, \psi_0(x), dir, q_2, \vec{t}) \in \transrel$, and one of the following constraints holds, 
 \begin{itemize}
-\item $\vec{t} = t_1(x) \ldots t_r(x)$ is a sequence of $\signature$-terms, there are transitions 
-$$(p_{0}, \psi_1(x), p_{1}), \ldots, (p_{r-1}, \psi_r(x), p_r) \in \transrel'$$ 
-such that $p_0 = q'_1$, $p_r = q'_2$, and $\psi = \psi_0 \wedge \psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_r(x)/x]$,
+\item $\vec{t} = t_1(x) \ldots t_m(x)$ is a sequence of $\signature$-terms, there are transitions 
+$$(p_{0}, \psi_1(x), p_{1}), \ldots, (p_{m-1}, \psi_m(x), p_m) \in \transrel'$$ 
+such that $p_0 = q'_1$, $p_r = q'_2$, and $\psi = \psi_0 \wedge \psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_m[t_m(x)/x]$,
 %
-\item $\vec{t} = \vec{t}_1 y_{i_1} \ldots \vec{t}_{r} y_{i_{r}} \vec{t}_{r+1}$ such that $r \ge 1$, $\vec{t}_j = t_{j, 1} \ldots t_{j, s_j}$ is a sequence of $\signature$-terms for each $j \in [r+1]$,  and $i_j \in [k]$ for each $j \in [r]$, let $N = (\sum \limits_{j \in [r]} (s_j+ 1)) +s_{r+1}$, then there are states $p_0, \ldots, p_{N} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{N} = q'_2$,  
+\item $\vec{t} = \vec{t}_1 y_{i_1} \ldots \vec{t}_{m} y_{i_{m}} \vec{t}_{m+1}$ such that $m \ge 1$, $\vec{t}_j = t_{j, 1} \ldots t_{j, s_j}$ is a sequence of $\signature$-terms for each $j \in [m+1]$,  and $i_j \in [k]$ for each $j \in [m]$, let $N = (\sum \limits_{j \in [m]} (s_j+ 1)) +s_{m+1}$, then there are states $p_0, \ldots, p_{N} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{N} = q'_2$,  
 %
 $$
 \begin{array}{l}
 p_0 \xrightarrow[\Aut]{\psi_{1,1}} p_1\ \ldots\ p_{|\vec{t}_1|-1} \xrightarrow[\Aut]{\psi_{1, s_1}} p_{|\vec{t}_1|} \xrightarrow{S_{y_{i_1}}} p_{|\vec{t}_1|+1}\ \ldots\\
-p_{N - s_{r+1} - s_r -1} \xrightarrow[\Aut]{\psi_{r, 1}} p_{N - s_{r+1} - s_r } \ \ldots\ p_{N - |\vec{t}_{r+1}| - 2} \xrightarrow[\Aut]{\psi_{r, s_r}} p_{N-s_{r+1}-1}\\
- \xrightarrow{S_{y_{i_r}}} p_{N- s_{r+1}} \xrightarrow[\Aut]{\psi_{r+1, 1}} p_{N -s_{r+1}+1}\ \ldots\ p_{N - 1} \xrightarrow[\Aut]{\psi_{r+1,  s_{r+1}} } p_{N},
+p_{N - s_{m+1} - s_m -1} \xrightarrow[\Aut]{\psi_{m, 1}} p_{N - s_{m+1} - s_m } \ \ldots\ p_{N - |\vec{t}_{m+1}| - 2} \xrightarrow[\Aut]{\psi_{m, s_m}} p_{N-s_{m+1}-1}\\
+ \xrightarrow{S_{y_{i_m}}} p_{N- s_{m+1}} \xrightarrow[\Aut]{\psi_{m+1, 1}} p_{N -s_{m+1}+1}\ \ldots\ p_{N - 1} \xrightarrow[\Aut]{\psi_{m+1,  s_{m+1}} } p_{N},
 \end{array}
  $$ 
- and $\psi = \psi_0 \wedge \bigwedge \limits_{j \in [r+1], j' \in [s_j]} \psi_{j, j'} [\vec{t}_{j, j'}(x)/x].$
+ and $\psi = \psi_0 \wedge \bigwedge \limits_{j \in [m+1], j' \in [s_j]} \psi_{j, j'} [\vec{t}_{j, j'}(x)/x].$
 \end{itemize}
 %
 %
@@ -387,8 +408,9 @@ p_{N - s_{r+1} - s_r -1} \xrightarrow[\Aut]{\psi_{r, 1}} p_{N - s_{r+1} - s_r } 
 %\end{enumerate} 
 Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\signature$-terms in transitions of $\Transducer$. Then 
 \begin{itemize}
-\item the structural size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_s |\Aut|_s^{L} \le |\Transducer|_s |\Aut|_s^{|\Transducer|_s}$,
-\item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_r(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_d + L |\Transducer|_d |\Aut|_d \le |\Transducer|^2_d |\Aut|_d$.
+\item the structural size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ is at most $|\Transducer|_s |\Aut|_s^{L} \le |\Transducer|_s |\Aut|_s^{|\Transducer|_s}$,
+%
+\item  on the other hand, since the size of $\psi_1[t_1(x)/x] \wedge \ldots \wedge \psi_r[t_m(x)/x]$ is at most $|\Transducer|_d |\Aut|_d$, we deduce that the data size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ is at most $|\Transducer|_d + |\Transducer|_d |\Aut|_d \approx \bigO(|\Transducer|_d |\Aut|_d)$.
 \end{itemize}
 %It is easy to see that  the control size of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ is at most $|\Transducer|_c |\Aut|_c $ and $|S''| = |S'|$.   
 
@@ -396,28 +418,35 @@ Evidently, $|S''| = |S'|$.  Let $L$ be the maximum length of sequences of $\sign
 
 Therefore, $\Pre_\Transducer(\Aut)$ is equal to 
 \[
-\bigcup_{S_{y_1}, \cdots, S_{y_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k},q}) \times \Lang(\Aut[S_{y_1}]) \times \cdots  \times \Lang(\Aut[S_{y_k}])\]
+\bigcup_{S_{y_1}, \cdots, S_{y_\arity} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity},q}) \times \Lang(\Aut[S_{y_1}]) \times \cdots  \times \Lang(\Aut[S_{y_\arity}])\]
 
 We conclude that $\Pre_\Transducer(\Aut)$ is a recognisable relation. 
 
-In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q}$ to a union of conjunctive \SA{}s as follows: Transform $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ into a one-way transition graph $(\controls''',\delta''')$. From Proposition~\ref{prop-2nsa}, $\controls'''$ are vectors of transitions of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_k}, q}$ of lengths at most $2|\controls''|-1$. Then $\Lang(\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] = ((q_0, p), -, -)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (-, -, (q, p'))$.
+In order to compute a representation of $\Pre_\Transducer(\Aut)$, we transform the conjunctive \SSA{} $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity},q}$ to a union of conjunctive \SA{}s as follows: Transform $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ into a one-way transition graph $(\controls''',\delta''')$. From Proposition~\ref{prop-2nsa}, $\controls'''$ are vectors of transitions of $\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity}, q}$ of lengths at most $2|\controls''|-1$. Then $\Lang(\cB_{\Transducer, \Aut, S_{y_1}, \cdots, S_{y_\arity},q})$ is the union of $\Lang(((\controls''',\delta'''), S''))$ for $S'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in S'$, such that $\vec{\rho}_1[1] = ((q_0, p), -, -)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (-, -, (q, p'))$.
 %that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
 
-From Proposition~\ref{prop-2nsa}, 
-the structural size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
-$ 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$, 
-and the data size of  each conjunctive \SA{} $((\controls''',\delta'''), S'')$ is 
-$ \bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|^2_d |\Aut|_d )$. 
+From Proposition~\ref{prop-2nsa}, the structural (resp. data) size of each conjunctive \SA{} $((\controls''',\delta'''), S'')$
+is  $ 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ 
+(resp. $ \bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|_d |\Aut|_d )$). 
 We conclude that 
-the $\mathbb{S}$\prerec{} assumption holds for string functions definable in \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|^2_d |\Aut|_d)$.
-On the other hand, the $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|^2_d |\Aut|_d)$.
+the $\mathbb{S}$\prerec{} assumption holds for data string functions definable in \SSPT{}s with 
+%
+$$\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$$
+ and 
+ %
+$$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|_d |\Aut|_d).
+$$
+On the other hand, the $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with 
+$$\ell_s(|\Transducer|_s, |\Aut|_s) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$$ 
+and  
+$$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d).$$
 \end{proof}
 
 
 
 From Theorem~\ref{thm-generic-dec-symbolic} and Lemma~\ref{lem-spt}, we have the following result.
 \begin{theorem}\label{thm-spt}
-The path feasibility of data string manipulating programs can be decided 
+The path feasibility of symbolic execution $S$ of programs with data strings can be decided 
 
 \begin{itemize}
 	\item in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space if the data string functions are given by \SSPT{}s;
@@ -433,12 +462,15 @@ The path feasibility of data string manipulating programs can be decided
 
 \begin{proof}
 Let us first consider \SSPT{}s. From Lemma~\ref{lem-spt}, we deduce that 
+{\small
 $$
-\begin{array}{l c l}
-\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& \tower(\rcdep(S), \bigO((\rcphi_s(S))^2 (\rcpsi_s(S))^{\rcphi_s})) \\
-& \le &  \tower(\rcdep(S)+1, \bigO(|S|^2)).
+\begin{array}{l l}
+& \ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \\
+=& \tower(\rcdep(S), \bigO((\rcphi_s(S))^2 (\rcpsi_s(S))^{\rcphi_s(S)} \log ((\rcphi_s(S))^2 (\rcpsi_s(S))^{\rcphi_s(S)}) )) \\ 
+\le &  \tower(\rcdep(S)+1, \bigO(|S|^2)).
 \end{array}
 $$
+}
 and
 $$
 (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_c(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) \\

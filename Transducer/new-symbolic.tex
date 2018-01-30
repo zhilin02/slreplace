@@ -161,8 +161,7 @@ and $\vec{t} = t_1 \ldots t_s$ such that for each $i \in [s]$, either $t_i$ is a
 2) non-symbolic transitions $(q, \EndLeft, dir, q', \epsilon)$, $(q, \EndRight, dir', q', \epsilon)$, with $dir \in \{\Right, \Stay\}$ and $dir' \in \{\Left, \Stay\}$. 
 %\end{itemize}
 %\end{itemize}
-An \SPT{} is a  \SSPT{} that has no transitions with the direction ``$\Left$". 
-A \emph{symbolic transducer}(\SST) is a \SSPT{} where $Y = \emptyset$ (then $Y$ is omitted).  A \emph{symbolic automaton} (\SSA) $\Aut$ is a symbolic transducer where each transition has the  empty output (then the outputs are omitted).
+A \emph{symbolic transducer}(\SST) is a \SSPT{} where $Y = \emptyset$ (then $Y$ is omitted).  A \emph{symbolic automaton} (\SSA) $\Aut$ is a symbolic transducer where each transition has the  empty output (then the outputs are omitted). An \SPT{} (resp. \ST, \SA) is a  \SSPT{}(resp. \SST, \SSA) that has no transitions with the direction ``$\Left$". 
 \end{definition}
 %Notice that, as in \PPT{}s, parameters are only allowed in the output track.
 
@@ -251,8 +250,12 @@ The data string functions definable in \SSPT{}s  (resp. \SPT{}s) satisfy the sym
 \end{lemma}
 
 \begin{theorem}
-Given a symbolic execution $S$ of programs with data strings wherein string functions are given by \SSPT{}s (resp. \SPT{}s), the path feasibility of $S$ is decidable.
+Given a symbolic execution $S$ of programs with data strings wherein string functions are given by \SSPT{}s (resp. $k$-\RBSSPT{}s for $k \in \Nat$), the path feasibility of $S$ is decidable.
 \end{theorem}
+
+
+
+
 
 
 %==========================================================================
