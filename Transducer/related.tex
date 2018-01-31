@@ -1,8 +1,13 @@
-\section{Related Work}
+\section{Related Work and Future Work}
 \label{sec:related}
 
-\subsubsection*{Decidability results.}
-\emph{Length constraints} --- i.e. an assertion of the form 
+We conclude with a discussion of related work and future work, focussing on
+(1) decidability, and (2) heuristics and implementation.
+
+\smallskip
+\noindent
+\textbf{Decidability:}
+\emph{Length constraints} --- i.e. an assertion 
 $\varphi(\Len(x_1),\ldots,\Len(x_n))$, where $\varphi$ is a Presburger formula
 and $\Len(x_i)$ is an integer variable interpreted as the length of the string
 $x_i$ --- have also been studied in the context of string solving. It is
@@ -54,7 +59,10 @@ complexity holds when we swap finite transducers with replaceall
 as primitive operations strictly subsumes these two logics (e.g. since it can
 also express string reverse) and has precisely the same complexity EXPSPACE.
 The straight-line logic of \cite{LB16} extended with length constraints is still
-EXPSPACE-complete.
+EXPSPACE-complete. One problem we leave for future work is the precise 
+complexity of our most general constraint language with two-way parametric 
+transducers, for which we only have a nonelementary upper bound (and the best
+lower bound is EXPSPACE).
 
 In this paper, we have combined two powerful formalisms 
 (two-way finite transducers and replaceall) into a single formalism. Since we 
@@ -83,8 +91,18 @@ functions. Therefore, our generic decision procedures would extend to ,
 albeit with a worse complexity. 
 }
 
-Symbolic automata were initially introduced in \cite{Watson96}, then investigated in \cite{NG01}, with motivation from natural language processing. The recent development of this topic was mainly driven by modern regular expression analysis and advanced web security analysis \cite{Vea13}. Symbolic transducers were introduced in \cite{symbolic-transducer}. See \cite{symbolic-transducer-power} for an excellent survey on symbolic automata/transducers.
-
+Symbolic automata were initially introduced in \cite{Watson96}, then
+investigated in \cite{NG01}, with motivation from natural language processing.
+The recent development of this topic was mainly driven by modern regular
+expression analysis and advanced web security analysis \cite{Vea13}, which
+require large alphabets (e.g. UTF16). Symbolic transducers were introduced in 
+\cite{symbolic-transducer}. See \cite{symbolic-transducer-power} for an 
+excellent survey on symbolic automata/transducers. 
+%Prior to this work, symbolic 
+%automata/transducers was never studied in the context of string solving.
+%;
+%the closest work related to this is the paper \cite{HJLRV18}, where the
+%constraint language admits bitvectors in the alphabet.
 
 %Symbolic automata/transducers were introduced by Veanes \emph{et al.}
 %\cite{symbolic-transducer,symbolic-transducer-power}. \anthony{Say more}
@@ -92,12 +110,54 @@ Symbolic automata were initially introduced in \cite{Watson96}, then investigate
 %array theory? They can't concatenate and we can't do $a[i] = b[i]$.
 
 
-
-\subsubsection*{Heuristics and implementation.}
+\smallskip
+\noindent
+\textbf{Heuristics and implementation:}
 There is a large amount of work on heuristics for developing fast practical
 string solvers, e.g., 
 \cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,YABI14,Abdulla14,fang-yu-circuits,Abdulla17,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12},
-among many others. 
-Recursively defined functions. 
+among many others. They are extremely important since (1) theoretical algorithms
+(e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to 
+practical solvers, and (2) the classes of constraints that are required in
+practice might require string operations that are not covered by decidable
+string constraint languages (e.g.~length constraints, replaceall, transducers,
+etc.). Some incomplete heuristics were developed that could work in practice,
+e.g., bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}), 
+induction, overapproximations \cite{Stranger,YABI14}, interpolation
+\cite{Abdulla14}, and flat automata \cite{Abdulla17}, to name a few. 
+Focusing on semi-algorithms also allows very general undecidable string 
+constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}. 
+Recently, the study of decidability of string constraints have also resulted in
+automata-theoretic algorithms that are amenable to optimisation, e.g.,
+acyclic logic with concatenation, regular constraints, and length constraints 
+\cite{Abdulla14}, and straight-line logic with finite transducers (or
+replaceall), concatenation, and regular constraints 
+\cite{HJLRV18,fang-yu-circuits,yan-tool}. None of these techniques, however,
+would immediately lead to a fast string solver for string constraints with 
+parametric transducers as primitive operations (e.g. global representations
+of solutions employed in \cite{HJLRV18} will not work for parametric
+transducers). We leave this challenging problem for future work.
 
-\subsubsection*{Benchmarking examples.}
+The development of theory and implementation of string solvers of course
+has to go hand in hand with the development of string constraint benchmarks.
+There are currently a number of interesting benchmarks that are available for 
+string constraints, some of which we will now mention. The first one is Kaluza 
+benchmarks
+\cite{Berkeley-JavaScript}, which contains
+string constraints with concatenation, regular constraints, and length
+constraints. It was shown in \cite{Vijay-length}
+that almost all the constraints are already in
+\emph{solved form} (in particular, also straight-line). Some of these length
+constraints are also expressible as regular constraints (see above discussion).
+The second is SLOG benchmarks \cite{fang-yu-circuits}, which contains
+string constraints with concatenation, (a restricted class of) replaceall, and 
+regular constraints. The third is SLOTH benchmarks \cite{HJLRV18}, which
+contains string constraints with concatenation, finite transducers, and
+regular constraints. In this paper, we have described an application of
+string constraints for modelling string functions required for context-sensitive
+auto-sanitisation web templating \cite{SSS11}. An immediate future research 
+direction is to develop string constraint benchmarks based on this application.
+
+%Some of these techniques utilise the power of
+%alternating automata (over bitvectors) 
+
