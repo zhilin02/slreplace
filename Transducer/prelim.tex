@@ -3,7 +3,7 @@
 \section{Preliminaries}
 \label{sec:prelim}
 
-\vspace*{-2mm}
+\vspace*{-3mm}
 
 \paragraph{General Notations.}
 Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers
@@ -51,7 +51,7 @@ $V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \s
 %=============================================================================
 %=============================================================================================================
 
-
+\vspace*{-3mm}
 \paragraph{Automata.} We review some background from automata theory;
 for more, see \cite{Kozen-automata,HU79}. Let $\ialphabet$ be a finite set (called
 \defn{alphabet}). We usually define  $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$, where $\EndLeft,\EndRight\notin \Sigma$ are tape end markers for 2-way automata/transducer models. 
@@ -59,6 +59,7 @@ for more, see \cite{Kozen-automata,HU79}. Let $\ialphabet$ be a finite set (call
  A sequence over $\ialphabet$ is called a \defn{string}. A \defn{language} is set of strings over $\ialphabet$.
 We will review regular languages and necessary models of finite-state automata below.
 
+\vspace*{-1mm}
 \begin{definition}[Two-way finite-state automata] \label{def:2nfa}
     A \emph{(nondeterministic) two-way finite-state automaton}
 (\FFA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
@@ -130,16 +131,21 @@ For convenience, we will also call an NFA without initial and final states, that
 \emph{regular languages}. The following result is standard and can be found in textbooks on automata theory
 (e.g. \cite{HU79}). 
 
+\vspace{-1mm}
 \begin{proposition}\label{prop-2nfa-nfa}
 	Every \FFA{} $\Aut$ can be transformed in exponential time into an equivalent \FA{} of size $2^{\bigO(|\Aut| \log |\Aut|)}$. 
 %	Moreover, the equivalent
 %    NFA can be computed in exponential time. 
     Moreover, every \FA{} can be transformed in polynomial time into an $\varepsilon$-free \FA{}, that is, an \FA{} where $\transrel\subseteq \controls \times \overline{\ialphabet} \times   \{\Right\} \times \controls $.
 \end{proposition}
+\vspace{-1mm}
+
 For latter reference, here we briefly mention the construction of \FA{}s from \FFA{}s in \cite{HU79}: For each  \FFA{} $\Aut=(\controls, q_0, \finals, \transrel)$, each state of the equivalent \FA{} is a vector of states from $\controls$ of \emph{odd} length, say $(q_1, \ldots, q_{2n+1})$, such that all the states of even (resp. odd) indices are mutually distinct.
 
 In the rest of this paper, \FA{}s refer to $\varepsilon$-free \FA{}s where directions in transitions are omitted. Moreover, for simplicity of notations, in \FA{}s, we omit the two end markers $\EndLeft, \EndRight$ and assume that $\transrel \subseteq \controls \times \ialphabet \times    \{\Right,\Stay\} \times \controls$. 
 %\zhilin{I assume that the two end markers are removed in FAs.}
+
+\vspace{-2mm}
 
 \paragraph{Operations of \FA{}s.} For an FA $\Aut=(Q, q_0, F, \delta)$, $q \in Q$ and $P \subseteq Q$, we use $\Aut(q, P)$ to denote the FA $(Q, q, P, \delta)$, that is, the FA obtained from $\Aut$ by changing the initial state and the set of final states to $q$ and $P$ respectively. We use $q \xrightarrow[\Aut]{w} q'$ to denote the fact that a string $w$ is accepted by $\Aut(q, \{q'\})$. 
 
@@ -170,6 +176,7 @@ Given two \FA{}s $\Aut_1 = (Q_1, q_{0,1}, F_{1}, \delta_1)$ and $\Aut_2 = (Q_2, 
 
 %%========= computational complexity==========================
 
+\vspace{-2mm}
 \paragraph{Computational complexity.} We study %decision procedures and 
 the complexity of the path feasibility problem for programs with 
 strings. 
