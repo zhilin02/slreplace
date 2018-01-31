@@ -13,30 +13,32 @@ and $\Len(x_i)$ is an integer variable interpreted as the length of the string
 $x_i$ --- have also been studied in the context of string solving. It is
 currently a major open problem whether the theory of concatenation with length
 constraints is decidable \cite{Vijay-length}. Several extensions of this 
-theory is known to be undecidable (e.g. with letter counting \cite{buchi} and
+theory is undecidable (e.g. with letter counting \cite{buchi} and
 string-number conversion \cite{GB16}).
 Several decidable restrictions, however,
 have been proposed including solved form \cite{Vijay-length} and acyclicity 
-\cite{Abdulla14}, both of which (like straight-line constraints) impose 
+\cite{Abdulla14}, both of which (like straight-line constraint) impose 
 syntactic restrictions on the way in which string equality/disequality can be
 used in the constraints. It was shown in \cite{LB16} the decidability of path 
 feasibility for symbolic
 executions allowing finite-state transduction and concatenation in the 
-assignments, and regular constraints, length constraints, and string disequality
+assignments, and regular constraints, and length constraints 
 in the assertions. Unfortunately, if we allow the functions
 $\replaceall_p(sub,rep)$ in the assignments (instead of
-finite transducer/concatenation) and length constraints as assertions, path
+\FT{}/concatenation) and length constraints as assertions, path
 feasibility becomes undecidable \cite{CCHLW18}. This also implies undecidability
 of allowing length constraints in our constraint language with parametric
-transducers. Fortunately, decidability can be easily recovered in at least two
-cases. The first case is when the length constraints $\varphi$ has only
+transducers. Fortunately, decidability can be easily recovered in some
+cases. One such case is when the length constraints $\varphi$ has only
 one string variable $x_1$, e.g., $\Len(x_1) > 7$. In this case,
 $\varphi(\Len(x_1))$ can be turned into a regular constraint $x_1 \in L$ for
 some $L$. [This is because the set of integer solutions is effectively
 a finite union of arithmetic progressions $\bigcup_{i=1}^n (a_i + b_i\N)$
 (where $a_i + b_i\N := \{ a_i + b_in : n \in \N\}$), and each 
 $\Len(x_i) \in (a_i + b_i\N)$ is equivalent to the regular constraint 
-$x_i \in \ialphabet^{a_i} (\ialphabet^{b_i})^*$.] The second case is when
+$x_i \in \ialphabet^{a_i} (\ialphabet^{b_i})^*$.] 
+\OMIT{
+The second case is when
 the length constraints only relate input variables. In this case, running
 our algorithm on the constraint (with length constraints ignored)
 results in a conjunction of regular constraints on the input variables. Each
@@ -47,19 +49,22 @@ conjunction and run a solver for integer linear arithmetic.
 %\cite{Vijay-length}, acyclicity \cite{Abdulla14,BFL13}, and straight-line
 %\cite{LB16}) 
 %on the shape of string constraints. 
+}
 
 The complexity of the theory of concatenation with regular constraints is
-known to be PSPACE-complete \cite{Plandowski,J17}, although the exact
-complexity for the theory of concatenation \emph{without} regular constraints is
-a long-standing open problem (only known to be in between NP and PSPACE). 
+known to be PSPACE-complete \cite{Plandowski,J17}.
+%, although the exact
+%complexity for the theory of concatenation \emph{without} regular constraints is
+%a long-standing open problem (only known to be in between NP and PSPACE). 
 The complexity of the straight-line logic with concatenation, finite
 transducers, and regular constraints is EXPSPACE-complete \cite{LB16}. The same 
 complexity holds when we swap finite transducers with replaceall 
-\cite{CCHLW18}. Our logic with reversal-bounded parameterised transducers
+\cite{CCHLW18}. Our logic with sweeping parameterised transducers
 as primitive operations strictly subsumes these two logics (e.g. since it can
 also express string reverse) and has precisely the same complexity EXPSPACE.
-The straight-line logic of \cite{LB16} extended with length constraints is still
-EXPSPACE-complete. One problem we leave for future work is the precise 
+%The straight-line logic of \cite{LB16} extended with length constraints is still
+%EXPSPACE-complete. 
+One problem we leave for future work is the precise 
 complexity of our most general constraint language with two-way parametric 
 transducers, for which we only have a nonelementary upper bound (and the best
 lower bound is EXPSPACE).
@@ -72,11 +77,16 @@ two-way deterministic finite transducers, streaming transducers, and
 transductions that are definable in Monadic Second-Order Logic
 \cite{EH01,AC10,AD11}. On the other hand, one-way transducers that define 
 functions are strictly more expressive than deterministic one-way transducers
-\cite{Berstel}. In either case, it makes sense to consider nondeterministic
+\cite{Berstel}. 
+\OMIT{
+In either case, it makes sense to consider nondeterministic
 transducers for a succinctness reason. %For future work, it 
+}
+\OMIT{
 It is also interesting to note that checking whether a \FFT{} defines a function
 is decidable \cite{CK87} (in fact, in polynomial-time for \FT{} \cite{GI83}),
 which implies decidability as well for \PPT{}.
+}
 %to consider 
 %In this case, path feasibility of a
 %symbolic execution $S$
@@ -97,7 +107,7 @@ The recent development of this topic was mainly driven by modern regular
 expression analysis and advanced web security analysis \cite{Vea13}, which
 require large alphabets (e.g. UTF16). Symbolic transducers were introduced in 
 \cite{symbolic-transducer}. See \cite{symbolic-transducer-power} for an 
-excellent survey on symbolic automata/transducers. 
+excellent survey. % on symbolic automata/transducers. 
 %Prior to this work, symbolic 
 %automata/transducers was never studied in the context of string solving.
 %;
@@ -113,30 +123,39 @@ excellent survey on symbolic automata/transducers.
 \smallskip
 \noindent
 \textbf{Heuristics and implementation:}
-There is a large amount of work on heuristics for developing fast practical
-string solvers, e.g., 
-\cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,YABI14,Abdulla14,fang-yu-circuits,Abdulla17,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12},
-among many others. They are extremely important since (1) theoretical algorithms
+Theoretical algorithms
 (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to 
-practical solvers, and (2) the classes of constraints that are required in
-practice might require string operations that are not covered by decidable
-string constraint languages (e.g.~length constraints, replaceall, transducers,
-etc.). Some incomplete heuristics were developed that could work in practice,
-e.g., bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}), 
+practical solvers. At the same time, the classes of constraints that are 
+required in practice sometimes require string operations that are not covered by
+decidable string constraint languages.
+ %(e.g.~length constraints, replaceall, 
+%transducers, etc.). 
+For these reasons,
+there is a large amount of work on heuristics for developing fast practical
+string solvers, e.g., 
+\cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,YABI14,Abdulla14,fang-yu-circuits,Abdulla17,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12}.
+%Some incomplete heuristics were developed that could work in practice,
+Some practical heuristics include
+bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}), 
 induction, overapproximations \cite{Stranger,YABI14}, interpolation
 \cite{Abdulla14}, and flat automata \cite{Abdulla17}, to name a few. 
-Focusing on semi-algorithms also allows very general undecidable string 
+Focusing on semi-algorithms also allows a highly expressive (but undecidable) 
+string 
 constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}. 
 Recently, the study of decidability of string constraints have also resulted in
-automata-theoretic algorithms that are amenable to optimisation, e.g.,
+automata-theoretic algorithms that are amenable to implementation, e.g.,
 acyclic logic with concatenation, regular constraints, and length constraints 
 \cite{Abdulla14}, and straight-line logic with finite transducers (or
 replaceall), concatenation, and regular constraints 
-\cite{HJLRV18,fang-yu-circuits,yan-tool}. None of these techniques, however,
-would immediately lead to a fast string solver for string constraints with 
-parametric transducers as primitive operations (e.g. global representations
-of solutions employed in \cite{HJLRV18} will not work for parametric
-transducers). We leave this challenging problem for future work.
+\cite{HJLRV18,fang-yu-circuits,yan-tool}. 
+%None of these techniques, however,
+%would immediately lead to a fast string solver for string constraints with 
+%parametric transducers as primitive operations.
+ %(e.g. global representations
+%of solutions employed in \cite{HJLRV18} will not work for parametric
+%transducers). 
+We leave the development of practical heuristics for our more expressive 
+constraint language for future work.
 
 The development of theory and implementation of string solvers of course
 has to go hand in hand with the development of string constraint benchmarks.
@@ -153,10 +172,14 @@ The second is SLOG benchmarks \cite{fang-yu-circuits}, which contains
 string constraints with concatenation, (a restricted class of) replaceall, and 
 regular constraints. The third is SLOTH benchmarks \cite{HJLRV18}, which
 contains string constraints with concatenation, finite transducers, and
-regular constraints. In this paper, we have described an application of
+regular constraints. Most of these benchmarking examples are expressible in our
+decidable constraint language.
+\OMIT{
+In this paper, we have described an application of
 string constraints for modelling string functions required for context-sensitive
 auto-sanitisation web templating \cite{SSS11}. An immediate future research 
 direction is to develop string constraint benchmarks based on this application.
+}
 
 %Some of these techniques utilise the power of
 %alternating automata (over bitvectors) 
