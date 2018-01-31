@@ -1,7 +1,7 @@
 \section{Related Work}
 \label{sec:related}
 
-\subsection{Theory}
+\subsubsection*{Decidability results.}
 \emph{Length constraints} --- i.e. an assertion of the form 
 $\varphi(\Len(x_1),\ldots,\Len(x_n))$, where $\varphi$ is a Presburger formula
 and $\Len(x_i)$ is an integer variable interpreted as the length of the string
@@ -56,12 +56,46 @@ also express string reverse) and has precisely the same complexity EXPSPACE.
 The straight-line logic of \cite{LB16} extended with length constraints is still
 EXPSPACE-complete.
 
+In this paper, we have combined two powerful formalisms 
+(two-way finite transducers and replaceall) into a single formalism. Since we 
+are considering
+only two-way transducers that define functions, they are equivalent to 
+two-way deterministic finite transducers, streaming transducers, and
+transductions that are definable in Monadic Second-Order Logic
+\cite{EH01,AC10,AD11}. On the other hand, one-way transducers that define 
+functions are strictly more expressive than deterministic one-way transducers
+\cite{Berstel}. In either case, it makes sense to consider nondeterministic
+transducers for a succinctness reason. %For future work, it 
+It is also interesting to note that checking whether a \FFT{} defines a function
+is decidable \cite{CK87} (in fact, in polynomial-time for \FT{} \cite{GI83}),
+which implies decidability as well for \PPT{}.
+%to consider 
+%In this case, path feasibility of a
+%symbolic execution $S$
+%is defined in an \emph{angelic} way: each function in $S$
+%should be able to produce \emph{some} output string that takes $S$ to the end of the
+%program.
+\OMIT{
+Note that the generic decision procedure in the proof of
+Theorem \ref{th:gen} still works when we admit relations, and the regularity
+conditions for \PPT{} and \PT{} are still satisfied whether or not they define
+functions. Therefore, our generic decision procedures would extend to ,
+albeit with a worse complexity. 
+}
+
+
 Symbolic automata/transducers were introduced by Veanes \emph{et al.}
-\cite{symbolic-transducer}
+\cite{symbolic-transducer,symbolic-transducer-power}. \anthony{Say more}
 
-\subsection{Heuristics and Implementation}
-
-
-Recursively defined functions.
+%array theory? They can't concatenate and we can't do $a[i] = b[i]$.
 
 
+
+\subsubsection*{Heuristics and implementation.}
+There is a large amount of work on heuristics for developing fast practical
+string solvers, e.g., 
+\cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,YABI14,Abdulla14,fang-yu-circuits,Abdulla17,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12},
+among many others. 
+Recursively defined functions. 
+
+\subsubsection*{Benchmarking examples.}
