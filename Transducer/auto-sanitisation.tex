@@ -1,22 +1,27 @@
 
-\paragraph{Context-Aware Transductions}
-
-Web pages are often constructed using templating systems such as Mustache.js or Google Closure.
+\paragraph{Context-sensitive auto-sanitisation example.} %Transductions.}
+%
+%
+%parametric transducers can model string functions required in \emph{context-sensitive
+%	auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Google Closure 
+%\cite{Closure} and Handlebars \cite{Handlebars}. 
+%
+Web pages are often constructed using templating systems \cite{SSS11} such as Mustache.js or Google Closure.
 Template HTML contains variables that are instantiated before the page is served.
-A simple template is given in Figure~\ref{fig:closure}\ref{fig:closure-eg} with variables \linkvar\ and \linktextvar.
+A simple template is given in Figure~\ref{fig:closure}(\ref{fig:closure-eg}) with variables \linkvar\ and \linktextvar.
 A parametric transducer can instantiate the variables with runtime values using the variable parameters.
 However templating systems may also provide a context-aware ``auto-escape'' feature.
 That is, the contents of the replaced variable will be ``escaped'' so that special characters (or sequences) which may allow code injection are replaced with safe alternatives to avoid attack.
 The escaping applied depends on the text surrounding the variable use.
-\mat{Changed above text to try and emphasize variables and context}
+%\mat{Changed above text to try and emphasize variables and context}
 
 For example, if \linkvar\ had the value \mintinline{js}{javascript: alert(1337)}, clicking the link in the instantiated template would run the JavaScript code \mintinline{js}{alert(1337)}.
 To avoid this, Closure wraps URLs beginning with \mintinline{html}{javascript:} in single quotes.
 Providing the value \mintinline{html}{<script>alert(1337)</script>} to \linktextvar\ would have a similar effect, but this time Closure replaces \texttt{<} with \texttt{\&lt;} and \texttt{>} with \texttt{\&gt;}.
 
-\begin{figure}
+\begin{wrapfigure}{r}{0.8\textwidth}
 \begin{center}
-\begin{minipage}{.75\linewidth}
+\begin{minipage}{\linewidth}
 \begin{enumerate}[(a)]
 \item \label{fig:closure-eg}
 \begin{minted}{html}
@@ -37,37 +42,38 @@ Providing the value \mintinline{html}{<script>alert(1337)</script>} to \linktext
 \end{center}
 \vspace{-3ex}
 \caption{\label{fig:closure}A simple template (\ref{fig:closure-eg}) with two transduction steps (\ref{fig:closure-tagged}, \ref{fig:closure-safe}).}
-\end{figure}
+\vspace{-3ex}
+\end{wrapfigure}
+
 
 A key point is that the safe transduction depends on the context of the variable:
 the escaping in a URL context is different to that in an HTML context.
 We can model this using two transducers.
 The first transducer instantiates the variables, but surrounds them with markers to indicate that the text inside needs to be escaped
-(Figure~\ref{fig:closure}\ref{fig:closure-tagged});
+(Figure~\ref{fig:closure}(\ref{fig:closure-tagged}));
 we use \urlstarttag, \urlendtag, \htmlstarttag, and \htmlendtag.
-Since transducers are a generalisation of finite automata, they are able to identify contexts using regular languages.
-The second transducer then applies the appropriate safe transductions inside the markers.
+Since transducers are a generalisation of finite automata, they are able to identify contexts using regular languages. The second transducer then applies the appropriate safe transductions inside the markers.
 For the URL context, values starting with \texttt{javascript:} will be quoted, while in HTML, instances of \texttt{<} and \texttt{>} are replaced by \texttt{\&lt;} and \texttt{\&gt;} respectively.
-The result is shown in Figure~\ref{fig:closure}\ref{fig:closure-safe}.
+The result is shown in Figure~\ref{fig:closure}(\ref{fig:closure-safe}).
 
-\zhilin{Can I understand the example in the following way? The first transducer is in fact the composition of the following two assignments 
- $$x' := \replaceall(x, "\{\$li\}", [URL] y_{li} [LRL])$$ 
- and 
- $$x'' := \replaceall(x', "\{\$txt\}", [HTML]y_{txt}[LTMH]),$$ 
- where $x$ represents the input string, and $y_{li}, y_{txt}$ are parameters. The second transducer is in fat a non-parametric transducer to do the sanitisation. Strictly speaking, this demonstrates the necessity to have both $\replaceall$ function and finite-state transducers, but not exactly the necessity of parametric transducers. But of course, it is nice to have a single formalism where both $\replaceall$ and finite-state transducers can be captured.}
+%\zhilin{Can I understand the example in the following way? The first transducer is in fact the composition of the following two assignments 
+% $$x' := \replaceall(x, "\{\$li\}", [URL] y_{li} [LRL])$$ 
+% and 
+% $$x'' := \replaceall(x', "\{\$txt\}", [HTML]y_{txt}[LTMH]),$$ 
+% where $x$ represents the input string, and $y_{li}, y_{txt}$ are parameters. The second transducer is in fat a non-parametric transducer to do the sanitisation. Strictly speaking, this demonstrates the necessity to have both $\replaceall$ function and finite-state transducers, but not exactly the necessity of parametric transducers. But of course, it is nice to have a single formalism where both $\replaceall$ and finite-state transducers can be captured.}
+%
+%\mat{
+%    @Zhilin
+%    The first replaceall needs to be a transducer because it is context-aware.
+%    I.e. it uses the fact that \linkvar\ appears in a value of an href attribute to know that it needs to be sanitised like a URL rather than HTML.
+%}
 
-\mat{
-    @Zhilin
-    The first replaceall needs to be a transducer because it is context-aware.
-    I.e. it uses the fact that \linkvar\ appears in a value of an href attribute to know that it needs to be sanitised like a URL rather than HTML.
-}
-
-\mat{
-    One might worry that identifying text starting with \texttt{javascript:} means the transudcer needs to keep a buffer of the input string, leading to large transducers.
-    In fact, we can avoid this by having the transducer non-deterministically guess that the following string will begin with \texttt{javascript:} and then verifying later that this was or was not the case.
-    Let me know if you think i should put a footnote about this.
-    It would also apply to contexts that need to see the text after the variable to confirm the (guessed) context is the right one.
-}
+%\mat{
+%    One might worry that identifying text starting with \texttt{javascript:} means the transudcer needs to keep a buffer of the input string, leading to large transducers.
+%    In fact, we can avoid this by having the transducer non-deterministically guess that the following string will begin with \texttt{javascript:} and then verifying later that this was or was not the case.
+%    Let me know if you think i should put a footnote about this.
+%    It would also apply to contexts that need to see the text after the variable to confirm the (guessed) context is the right one.
+%}
 
 
 
