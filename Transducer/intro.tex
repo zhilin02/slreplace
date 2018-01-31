@@ -226,7 +226,7 @@ are two types of string functions that are frequently used in client-side
 web applications. Many XSS vulnerabilities are caused by
 subtle interactions between these functions and other parts of the
 applications, e.g., see \cite{web-model,Kern14,DV13,LB16,mXSS}. 
-\emph{Finite-state transducers} 
+(One-way) \emph{Finite-state transducers} 
 \cite{BEK,web-model,DV13,symbolic-transducer,LB16}
 are a good formal model of such string functions that satisfy some
 good closure and algorithmic properties. 
@@ -360,19 +360,19 @@ executions of programs with strings.
 %replaceall \cite{CCHLW18}.
 %
 We also provide a detailed complexity 
-analysis\footnote{
+analysis.\footnote{
 \emph{Worst-case complexity} results of course do not prohibit fast solvers 
 \emph{in practice}, e.g., SLOTH for the straight-line 
 logic with finite transducers ({\sc expspace}) 
 \cite{HJLRV18}, and MONA for Weak Second-Order
 Theory of Successors ({\sc nonelementary}). Rather, they
 \emph{inform} algorithmic techniques that could work in practice, e.g., 
-symbolic techniques.},
+symbolic techniques.}
 %
-which ranges between {\sc expspace} (same as in \cite{LB16,CCHLW18}) and
-{\sc nonelementary} (i.e. complexity cannot be bounded by a $n$-fold exponential
-function for every fixed $n > 0$). 
-Among others, our generic decision procedure implies that \emph{the path feasibility problem is $\expspace$-complete for the straight-line string constraint language including all the aforementioned string functions, namely, finite-state transducers, concatenation, replaceall, and reverse}, thus strictly generalising the $\expspace$-completeness result for  finite transducers and concatenation in \cite{LB16}, and
+%which ranges between {\sc expspace} (same as in \cite{LB16,CCHLW18}) and
+%{\sc nonelementary} (i.e. complexity cannot be bounded by a $n$-fold exponential
+%function for every fixed $n > 0$). 
+Among others, our generic decision procedure implies that \emph{the path feasibility problem is $\expspace$-complete for the straight-line string constraint language including all the aforementioned string functions, namely, functional one-way finite-state transducers, concatenation, replaceall, and reverse}, thus strictly generalising the $\expspace$-completeness result for (functional one-way) finite transducers and concatenation in \cite{LB16}, and
 for replaceall in \cite{CCHLW18}.
 %
 Finally, we extend our results to symbolic automata/transducers

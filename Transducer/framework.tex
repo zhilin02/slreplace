@@ -266,10 +266,13 @@ run. Note that some of these $w'_i$'s could be empty strings.
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 \emph{transduction} defined by $\Transducer$, that is, the relation comprising
-the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. To take into consideration the outputs of transitions, we define the \emph{size} $|\Transducer|$ of $\Transducer$ as the sum of the sizes of transitions in $\Transducer$, where the size of a transition $(q, a, dir, q', w')$ is defined as $|w'|+1$.
+the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. 
+\tl{I add this, please feel free to edit}
+In this paper, we are mainly interested in \emph{functional
+transducers}, i.e., transducers that define functions instead of relations. (For instance, deterministic transducers are always functional.) In this paper, transducers 
+define functions, but can be non-deterministic.
 
-
-With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, for simplicity, we omit the two end markers $\EndLeft$ and $\EndRight$ in \FT{}s, that is, $\transrel \subseteq \controls \times \ialphabet \times \{\Right,\Stay\} \times \controls \times \ialphabet^*$. Note that each accepting run of an \FT{} has to read through the input string and stop in the right end.
+To take into consideration the outputs of transitions, we define the \emph{size} $|\Transducer|$ of $\Transducer$ as the sum of the sizes of transitions in $\Transducer$, where the size of a transition $(q, a, dir, q', w')$ is defined as $|w'|+1$. With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, for simplicity, we omit the two end markers $\EndLeft$ and $\EndRight$ in \FT{}s, that is, $\transrel \subseteq \controls \times \ialphabet \times \{\Right,\Stay\} \times \controls \times \ialphabet^*$. Note that each accepting run of an \FT{} has to read through the input string and stop in the right end.
 
 
 \begin{example}\label{exmp-ft}
