@@ -42,17 +42,20 @@ with $f: \ialphabet^* \to \ialphabet^*$ being an \FT{}, e.g., see
 %        \ASSERT{x \in L_0}; \quad y := f(x); \quad \ASSERT{y \in L_1}; \quad 
 %        \ASSERT{x \in L_2'}
 %    \]
-    Computing the regular pre-image $L_1' := f^{-1}(L_1 \cap L'_2)$ gives us
-    the program:
-    \[
-        \ASSERT{x \in L_0}; \quad \ASSERT{x \in L_1'}.
-    \]
+    Computing the regular pre-image $L_1' := f^{-1}(L_1 \cap L'_2)$ yields
+    a program with only two assertions of regular constraints
+    $x \in L_0$ and $x \in L_1'$, whose
+    %the program:
+    %\[
+        %\ASSERT{x \in L_0}; \quad \ASSERT{x \in L_1'}.
+    %\]
 %
 %    \[
 %        \ASSERT{x \in L_0}; \quad \ASSERT{x \in L_1'}; \quad \ASSERT{x \in L_2'}
 %    \]
-    Checking the path feasibility of this program amounts to checking the nonemptiness of
-    $L_0 \cap L_1'$, which can be done by a simple \FA{} algorithm.
+    satisfiability amounts to checking $L_0 \cap L_1' \neq \emptyset$
+    by an automata algorithm.
+    %, which can be done by a simple \FA{} algorithm.
     \qed
 \end{example}
 How do we generalise this generic decision procedure to partial functions $f: 
@@ -91,10 +94,15 @@ This tight coupling is, however, absent in recognisable relations.
 \end{definition}
 In other words, a recognisable relation is simply a finite union of 
 cartesian products of regular languages. 
-For a recognisable relation $R$, a \emph{representation} of $R$ is a collection of tuples $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)_{i\in [n]}$  such that 
-$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \ldots\times \Lang(\Aut^{(i)}_\arity)$, where each $\Aut^{(i)}_j$ is an \FA. 
+%For a recognisable relation $R$, 
+A \emph{representation} of a recognisable relation $R$ is a collection of 
+tuples $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)_{i\in [n]}$  such that 
+$L^{(i)}_j = \Lang(\Aut^{(i)})_j$ for each $j$.
+%$R = \bigcup_{i=1}^n \Lang(\Aut^{(i)}_1) \times \ldots\times \Lang(\Aut^{(i)}_\arity)$, where each $\Aut^{(i)}_j$ is an \FA. 
 %The numbers $k, n$ are called the \emph{dimension} and \emph{width}  of the representation respectively, 
-Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a \emph{disjunct} of the representation, and  each \FA{} $\Aut^{(i)}_j$ is called an \emph{atom} of the representation.
+Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a 
+\emph{disjunct}, and  each \FA{} $\Aut^{(i)}_j$ is called an \emph{atom}.
+%of the representation.
 %
 \begin{theorem}
     There is a procedure which, given a symbolic execution $S$ wherein 
@@ -124,7 +132,6 @@ Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a \emph{disjunc
     \]
     Then, $S$ is path-feasible iff there is a nondeterministic guess leading
     to a construction of $S''$ that is path-feasible. 
-
     In sum, the procedure will terminate when $S$ is a conjunction of
     assertions on input variables, which can be
     %whose satisfiability can be
