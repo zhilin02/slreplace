@@ -3,13 +3,13 @@
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
-In this section, we consider an extension of string manipulating programs to the symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} (to be introduced) respectively.
+In this section, we consider an extension of the work in preceding sections to the symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} (to be introduced) respectively.
 %
 Intuitively, in symbolic automata %are an extension of finite-state automata in which 
-input letters are symbolically described by unary predicates from a logical theory. %On the other hand, 
+input letters are symbolically described by unary predicates from a logical theory (called background theory). %On the other hand, 
 %
 Likewise, in symbolic parametric transducers %are an extension of parametric transducers in which 
-output letters are given by terms in the logic theory or by parameters, as in parametric transducers.
+output letters are given by terms in the logic theory or by parameters (as in the parametric transducers).
 %,  apart from the symbolic input letters. 
 Symbolic parametric transducers can be seen as extensions of both parametric
 transducers introduced in this paper and symbolic transducers in
@@ -20,7 +20,7 @@ transducers introduced in this paper and symbolic transducers in
 
 %Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
 We assume familiarity with the %(many-sorted) 
-first-order logic (cf.\ some textbook e.g. \cite{EFT94}). A concept of background theories will be used in the definition of symbolic automata and symbolic parametric transducers\footnote{In literature, symbolic automata are defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. In this paper, we define symbolic automata on background theories (rather than Boolean algebra) to align to the definition of symbolic parametric transducers.}.
+first-order logic (cf.\ some textbook e.g. \cite{EFT94}). A concept of background theories will be used in the definition of symbolic automata and symbolic parametric transducers.\footnote{In literature, symbolic automata are defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. In this paper, we define symbolic automata on background theories (rather than Boolean algebra) to align to the definition of symbolic parametric transducers.}
 %and label theories. 
 Intuitively, 
 %a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
@@ -206,8 +206,10 @@ Let $\Transducer$ be a \SSPT{} with parameters $y_1,\ldots, y_m$. We use $\trans
 %
 %the number of transitions of $\Transducer$, and $\sizetrans(\Transducer)$, the maximum size of transitions of $\Transducer$.
 
+
 \begin{example}
-\SSPT{}s can be used to model some typical list operations in Python: The $list$.extend($y$) and $list$.reverse() methods, analogous to string concatenation and reverse operations,  can be easily modelled by \SSPT{}s. 
+	\tl{not quite sure whether this example will distract the reader.}
+\SSPT{}s can be used to model some typical list operations in Python: The $list$.extend($y$) and $list$.reverse() methods, analogous to string concatenation and reverse operations, can be modelled by \SSPT{}s. 
 %For instance,  $list$.extend($y$) is modelled by an \ST{} with states $\{q_0, q_1\}$, initial state $q_0$, final states $\{q_1\}$, and transitions $(q_0, \ltrue, \Right, q_0, x)$, $(q_0, \ltrue, \Right, q_1, x \cdot y)$, where $x$ represents the input list. 
 Moreover, \SSPT{}s can be used to model more complex list manipulations, e.g. the operation of replacing each occurrence of a sublist $[2,3]$ in $list$ with $y$, is modelled by an \SPT{} with states $\{q_0, q_1, q_2\}$, initial state $q_0$, final states $\{q_0, q_2\}$, and transitions $(q_0, x \neq 2, q_0, x)$, $(q_0, x = 2, q_1, \epsilon)$, $(q_1, x = 3, q_0, y)$, $(q_0, x = 2, q_2, x)$, and $(q_2, x \neq 3, q_0, x)$.  
 \end{example}
@@ -235,17 +237,18 @@ For a class $\transet$ of symbolic parametric transducers, we use $\straightline
 \textbf{Symbolic extension of the generic decision procedure.} We consider the path feasibility problem of symbolic executions of programs with data strings, 
 %\tl{do we need to introduce formally?}
  where each assertion is of the form $\ASSERT{x \in \Aut}$ with $\Aut$ being an \SA. 
-To solve the path feasibility problem for such programs,
-we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing recognisable relations with \emph{symbolic recognisable relations}. 
+To check the path feasibility of such programs, we generalise the generic decision procedure in Section~\ref{sec:algo} by replacing the recognisable relation  with the \emph{symbolic recognisable relation}. 
 Due to space limit, we do not address the complexity of the decision procedure here. More details can be found in Appendix~\ref{app-sym}.
 
 \begin{definition}[Symbolic recognisable relations]
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
-	A $\arity$-ary relation $R \subseteq \data^*\times \ldots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \ldots \times L^{(i)}_\arity$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [\arity]$.
+	An $\arity$-ary relation $R \subseteq \data^*\times \cdots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \cdots \times L^{(i)}_\arity$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [\arity]$.
 \end{definition}
-Similar to recognisable relations, we represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is an \SA{}.
-Then the regularity condition in Section~\ref{sec:algo} is replaced by the \emph{symbolic} regularity condition that for each function $f: (\data^*)^\arity \to \data^*$, the pre-image of a language definable by an \SA{} under $f$ is a symbolic recognisable relation and a representation of which can be computed effectively.
+Similar to the recognisable relation, we represent an $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is an \SA{}.
+Accordingly, the regularity condition in Section~\ref{sec:algo} is replaced by the \emph{symbolic} regularity condition, i.e., for each function $f: (\data^*)^\arity \to \data^*$, the pre-image of a language definable by an \SA{} under $f$ is a symbolic recognisable relation, a representation of which can be computed effectively. Along with the same line as in Section~\ref{sec:algo}--\ref{sec-instan} via symbolic recognisable relations and symbolic regularity conditions, our main result is as follows. 
 
+%The following results are the symbolic counterparts of results in previous sections. 
+\OMIT{
 \begin{theorem}
     There is a procedure which, given a symbolic execution $S$ of programs with data strings wherein 
     each $f: (\data^*)^\arity \to \data^*$ satisfies the symbolic regularity 
@@ -256,11 +259,17 @@ Then the regularity condition in Section~\ref{sec:algo} is replaced by the \emph
 
 
 \begin{lemma}
-The data string functions definable in \SSPT{}s  (resp. \SPT{}s) satisfy the symbolic regularity condition.
+The data string functions definable in \SSPT{}s or \SPT{}s satisfy the symbolic regularity condition.
 \end{lemma}
-
+}
+\tl{zhilin, it is too radical? ;-)}
 \begin{theorem}
-Given a symbolic execution $S$ of programs with data strings wherein string functions are given by \SSPT{}s (resp. $k$-\RBSSPT{}s for $k \in \Nat$), the path feasibility of $S$ is decidable.
+%Given a symbolic execution $S$ of programs with %data strings wherein string functions are given by 
+%\SSPT{}s %(resp. $k$-\RBSSPT{}s for $k \in \Nat$), 
+%the path feasibility of $S$ is decidable.
+The path feasibility of symbolic executions of programs with %data strings wherein string functions are given by 
+ \SSPT{}s %(resp. $k$-\RBSSPT{}s for $k \in \Nat$), 
+is decidable.
 \end{theorem}
 
 
