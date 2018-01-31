@@ -10,20 +10,20 @@ We conclude with a discussion of related work and future work, focussing on
 \emph{Length constraints} --- i.e. an assertion 
 $\varphi(\Len(x_1),\ldots,\Len(x_n))$, where $\varphi$ is a Presburger formula
 and $\Len(x_i)$ is an integer variable interpreted as the length of the string
-$x_i$ --- have also been studied in the context of string solving. It is
-currently a major open problem whether the theory of concatenation with length
+$x_i$ --- have been studied in the context of string solving. It is
+a major open problem whether the theory of concatenation with length
 constraints is decidable \cite{Vijay-length}. Several extensions of this 
 theory is undecidable (e.g. with letter counting \cite{buchi} and
 string-number conversion \cite{GB16}).
 Several decidable restrictions, however,
 have been proposed including solved form \cite{Vijay-length} and acyclicity 
 \cite{Abdulla14}, both of which (like straight-line constraint) impose 
-syntactic restrictions on the way in which string equality/disequality can be
+syntactic restrictions on the way in which string equality can be
 used in the constraints. It was shown in \cite{LB16} the decidability of path 
 feasibility for symbolic
-executions allowing finite-state transduction and concatenation in the 
+executions allowing \FT{} and concatenation in the 
 assignments, and regular constraints, and length constraints 
-in the assertions. Unfortunately, if we allow the functions
+in the assertions. If we allow the functions
 $\replaceall_p(sub,rep)$ in the assignments (instead of
 \FT{}/concatenation) and length constraints as assertions, path
 feasibility becomes undecidable \cite{CCHLW18}. This also implies undecidability
@@ -64,10 +64,12 @@ as primitive operations strictly subsumes these two logics (e.g. since it can
 also express string reverse) and has precisely the same complexity EXPSPACE.
 %The straight-line logic of \cite{LB16} extended with length constraints is still
 %EXPSPACE-complete. 
-One problem we leave for future work is the precise 
-complexity of our most general constraint language with two-way parametric 
-transducers, for which we only have a nonelementary upper bound (and the best
-lower bound is EXPSPACE).
+One future research avenue is to identify \emph{larger subclasses} of
+constraints with parametric transducers that are still solvable in the same 
+complexity class.
+%
+%, for which we 
+%only have a nonelementary upper bound (and EXPSPACE lower bound).
 
 In this paper, we have combined two powerful formalisms 
 (two-way finite transducers and replaceall) into a single formalism. Since we 
@@ -133,8 +135,8 @@ decidable string constraint languages.
  %(e.g.~length constraints, replaceall, 
 %transducers, etc.). 
 For these reasons,
-there is a large amount of work on heuristics for developing fast practical
-string solvers, e.g., 
+there is a large amount of work on heuristics for developing practical
+(often incomplete) string solvers, e.g., 
 \cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,YABI14,Abdulla14,fang-yu-circuits,Abdulla17,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12}.
 %Some incomplete heuristics were developed that could work in practice,
 Some practical heuristics include
