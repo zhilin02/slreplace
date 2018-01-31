@@ -8,7 +8,7 @@ In our framework each string function $f(x_1, \cdots, x_\arity)$ ($\arity\geq 1$
 with $\arity-1$ parameters, and the size of $f$, $|f|$, is naturally defined by the size of $\Transducer$ (i.e., $|\Transducer|$). 
 %We shall usually refer to them as \emph{string constraints with transducers}. 
 For the pre-image of an FA $\Aut$,  %$\Pre_{R_f}(\Aut)$ 
-$f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, i.e.,  the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are equipped with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one verifies the regularity condition \prerec{} for the respective class of parametric transducers. %under consideration. 
+$f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, i.e.,  the set of tuples $(w_1,\ldots, w_\arity)$ such that there is an accepting run of $\Transducer$ on $w_1$ with output $w'\in \Lang(\Aut)$ when the parameters are instantiated with $w_2,\ldots, w_\arity$. To apply Theorem~\ref{thm-generic-dec}, one verifies the regularity condition \prerec{} for the respective class of parametric transducers. %under consideration. 
 %While the latter trivially holds as we only consider assertions being regular constraints, the former is not trivial. 
 %For the rest of this section, we consider three classes of parametric transducers, viz. two-way transducers, one-way transducers, and reversal-bounded two-way transducers. We shall show that in each case, the pre-image is a recognisable relation with various size bounds $\ell(|\Transducer|, |\Aut|)$. This would yield tight complexity bounds on the path feasibility problem for string manipulating programs $S$ when the string functions therein are given in parametric transducers.  
 
@@ -36,12 +36,12 @@ $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$, %define
 %
 where  $q \in F$ and  $\conacc_{x_1}, \cdots, \conacc_{x_\arity} \subseteq Q' \times Q'$.   
 %The conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is constructed 
-Intuitively this is done from $\Transducer$  by checking for an accepting run of $T$ on $w$ ending at state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. Thus, each state of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$ is some $(q,q') \in Q \times Q'$. 
+Intuitively this is done from $\Transducer$  by checking for an accepting run of $T$ on $w$ ending at state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. Thus, each state of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ is some $(q,q') \in Q \times Q'$. 
 %In particular, 
-When a transition of $\Transducer$ outputs a string $w'$ from $\oalphabet^*$ where some parameter $x_i$ appears (instead of a constant string), for each occurrence of $x_i$ in $w'$, a pair of states $(q_1', q_2')$ is nondeterministically selected from $\conacc_{x_i}$, and the second component of the state of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
+When a transition of $\Transducer$ outputs a string $w'$ from $\oalphabet^*$ where some parameter $x_i$ appears (instead of a constant string), for each occurrence of $x_i$ in $w'$, a pair of states $(q_1', q_2')$ is nondeterministically selected from $\conacc_{x_i}$, and the second component of the state of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
 %\tl{zhilin, I am not quite clear about the para, $y_1$ is a typo of $x_1$? I wrote a para above; please check}
 %(instead of materialising the output), where $S_{x_1}$ is used to jump over $y_1$ when $x_1$ is the output of a transition of $\Transducer$, similarly for $S_{x_2}, \cdots, S_{x_k}$. 
-More precisely, $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$ is defined as
+More precisely, $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ is defined as
 %\begin{enumerate} 
 %\item 
 %the conjunctive \FFA{} 
@@ -49,30 +49,30 @@ $\Aut'' = ((\controls'', \transrel''), \conacc'')$, where $Q'' = Q \times Q'$, $
 \begin{itemize}
 \item $w' \in \ialphabet^*$  and $q'_1 \xrightarrow[\Aut]{w'} q'_2$, or
 %
-\item suppose $w' = w'_1 x_{i_1} \ldots w'_{r} x_{i_{r}} w'_{r+1}$ such that $r \ge 1$, $w'_j \in \ialphabet^*$ for each $j \in [r+1]$,  and $i_j \in [k]$ for each $j \in [r]$, then there are states $p_0, p_1, \ldots, p_{2r+1} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{2r+1} = q'_2$, and 
-$$p_0 \xrightarrow[\Aut]{w'_1} p_1 \xrightarrow{\conacc_{x_{i_1}}} p_2\ \ldots\ p_{2r-2} \xrightarrow[\Aut]{w'_r}p_{2r-1} \xrightarrow{\conacc_{x_{i_r}}} p_{2r} \xrightarrow[\Aut]{w'_{r+1}} p_{2r+1},$$ 
-where $p_{2j-1} \xrightarrow{\conacc_{x_{i_j}}} p_{2j}$ means $(p_{2j-1}, p_{2j}) \in \conacc_{x_{i_j}}$ for each $j \in [r]$.
+\item suppose $w' = w'_1 x_{i_1} \ldots w'_{r} x_{i_{s}} w'_{s+1}$ such that $s \ge 1$, $w'_j \in \ialphabet^*$ for each $j \in [s+1]$,  and $i_j \in [\arity]$ for each $j \in [s]$, then there are states $p_0, p_1, \ldots, p_{2s+1} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{2s+1} = q'_2$, and 
+$$p_0 \xrightarrow[\Aut]{w'_1} p_1 \xrightarrow{\conacc_{x_{i_1}}} p_2\ \ldots\ p_{2s-2} \xrightarrow[\Aut]{w'_s}p_{2s-1} \xrightarrow{\conacc_{x_{i_s}}} p_{2s} \xrightarrow[\Aut]{w'_{s+1}} p_{2s+1},$$ 
+where $p_{2j-1} \xrightarrow{\conacc_{x_{i_j}}} p_{2j}$ means $(p_{2j-1}, p_{2j}) \in \conacc_{x_{i_j}}$ for each $j \in [s]$.
 \end{itemize}
 %
 %
 %\item Define $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ as $((Q''', \delta'''), S')$, where $S' = \{(\vec{\rho}_1, \vec{\rho}_2) \mid  (q'_1,q'_2) \in S, \vec{\rho}_1[1] =(q_0,q'_1), \vec{\rho}_2[|\vec{\rho}_2|] = (q, q'_2) \}$.
 %\end{enumerate} 
-It is easy to see that  the size of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k}, q}$ is at most $|\Transducer||\Aut|$ and $|\conacc''| = |\conacc'|$.   
+It is easy to see that  the size of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ is at most $|\Transducer||\Aut|$ and $|\conacc''| = |\conacc'|$.   
 %$2^{O(|T||\Aut| \log(|T||\Aut|))}$.   
 
 %For $S \subseteq Q' \times Q'$, let $\Aut[S]$ denote the product of $\Aut(q'_1, \{q'_2\})$ for $(q'_1,q'_2) \in S$ (cf. Section~\ref{sec:prelim}, {Operations of NFAs.}). Since $S$ contains at most $|Q'|^2=|\Aut|^2$ many elements, the size of $\Aut[S]$ is bounded by $|\Aut|^{|\Aut|^2} \approx 2^{O(|\Aut|^2 \log |\Aut|)}$.
 \smallskip
 \noindent
 \emph{Claim.} %For each tuple of strings $(w, w_1,\cdots, w_k)$, 
-$(w, w_1,\cdots, w_k) \in \Pre_\Transducer(\Aut)$ iff there are $\conacc_{x_1}, \cdots, \conacc_{x_k} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k}, q})$ and $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [k]$, where $\Aut[\conacc_{x_i}]=((Q', \delta'), \conacc_{x_i})$. [The proof the claim is given in Appendix~\ref{appendix:sec-2way}.]
+$(w, w_1,\cdots, w_\arity) \in \Pre_\Transducer(\Aut)$ iff there are $\conacc_{x_1}, \cdots, \conacc_{x_\arity} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q})$ and $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [r]$, where $\Aut[\conacc_{x_i}]=((Q', \delta'), \conacc_{x_i})$. [The proof the claim is given in Appendix~\ref{appendix:sec-2way}.]
 \smallskip
 
 Thus, $\Pre_\Transducer(\Aut)$ is a recognisable relation equal to
 \[
-\bigcup_{\conacc_{x_1}, \cdots, \conacc_{x_k} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k},q}) \times \Lang(\Aut[\conacc_{x_1}]) \times \cdots  \times \Lang(\Aut[\conacc_{x_k}]).\]
+\bigcup_{\conacc_{x_1}, \cdots, \conacc_{x_\arity} \subseteq Q' \times Q', q\in F} \Lang(\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity},q}) \times \Lang(\Aut[\conacc_{x_1}]) \times \cdots  \times \Lang(\Aut[\conacc_{x_\arity}]).\]
 %
 
-To represent $\Pre_\Transducer(\Aut)$, we transform the conjunctive \FFA{} $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_k},q}$ to a union of conjunctive \FA{}s as follows: Transform $\Aut''$ into a one-way transition graph $(\controls''',\delta''')$, where $\controls'''$ are vectors of states of $\Aut''$ of lengths at most $2|\controls''|-1$ (cf. Proposition~\ref{prop-2nfa-nfa}). Then $\Lang(\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_k},q})$ is the union of $\Lang(((\controls''',\delta'''), \conacc''))$ for $\conacc'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in \conacc'$, such that $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$.
+To represent $\Pre_\Transducer(\Aut)$, we transform the conjunctive \FFA{} $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity},q}$ to a union of conjunctive \FA{}s as follows: Transform $\Aut''$ into a one-way transition graph $(\controls''',\delta''')$, where $\controls'''$ are vectors of states of $\Aut''$ of lengths at most $2|\controls''|-1$ (cf. Proposition~\ref{prop-2nfa-nfa}). Then $\Lang(\cB_{\Transducer, \conacc_{x_1}, \cdots, \conacc_{x_\arity},q})$ is the union of $\Lang(((\controls''',\delta'''), \conacc''))$ for $\conacc'' \subseteq \controls''' \times \controls''',$ which comprises nondeterministically selected pairs $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$, one for each $(p, p') \in \conacc'$, such that $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$.
 %that is computed nondeterministically from $\cB_{\Transducer, S_{x_1}, \cdots, S_{x_k},q}$ and $S'$ as follows:  For each $(p, p') \in S$, nondeterministically select one pair $(\vec{\rho}_1, \vec{\rho}_2) \in \controls''' \times \controls'''$ satisfying $\vec{\rho}_1[1] =(q_0, p)$ and  $\vec{\rho}_2[|\vec{\rho}_2|] = (q, p')$, then put it into $S''$.
 
 Since the size of each conjunctive \FA{} $((\controls''',\delta'''), \conacc'')$ is $ 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, we conclude that 
@@ -86,17 +86,26 @@ one can decide the path feasibility of a symbolic execution $S$ with \PPT{}s in
 %nondeterministic 
 %$$O((\rcdim(\varphi)+2)^{\rcdep(\varphi)} (f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))^2 \log f^{\langle \rcdep(\varphi) \rangle}(|\varphi|, |\psi|))$$ 
 %space, where $f(j, k) = 2^{jk \log (j k)}$. 
-nondeterministic $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S)$ 
-$ \log(\rcphi(S) \rcpsi(S)))$ space (which can be even made in \emph{deterministic} space by Savitch's theorem \cite{Savitch70}). Here $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
+nondeterministic 
+
+\smallskip
+\hspace{1cm} $\tower(\rcdep(S), \bigO(\rcphi(S) \rcpsi(S)  \log(\rcphi(S) \rcpsi(S)))$ 
+\smallskip
+
+\noindent space (which can be even made in \emph{deterministic} space by Savitch's theorem \cite{Savitch70}). Here $\tower(1, k)= 2^k$ and $\tower(j+1, k) = 2^{\tower(j, k)}$. 
 After the result we sketch the lower bound.
 %We conclude that the path feasibility of such string manipulating programs  can be decided in $\rcdep(S)$-exponential space.
 %Moreover, we have a matching lower bound whose proof is sketched below.
 %
 \begin{theorem} \label{thm:two-way}
-Given a symbolic execution $S$ with \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. Moreover,  for any $\expheight$, checking path feasibility is
- $\expheight$-$\expspace$-hard.
+Given a symbolic execution $S$ with \PPT{}s, the path feasibility of $S$ can be decided in $\rcdep(S)$-exponential space. 
+%Moreover,  for any $\expheight$, checking path feasibility is $\expheight$-$\expspace$-hard.
 \end{theorem}
 
+
+
+%========================================lower bound removed==========================================
+\OMIT{
 \smallskip
 \noindent
 \textbf{Lower-bound.}
@@ -161,7 +170,8 @@ For doubly-exponential numbers, we to precede each tile with a binary sequence o
 For this we precede each bit with another binary sequence, this time of length $n$.
 The first \FFT\ outputs queries to the second, which outputs queries to the third \FFT, each time removing one exponential.
 With $(n+1)$ \FFT, we can encode tiling problems over an $n$-fold exponentially wide corridor.
-
+}
+%========================================lower bound removed==========================================
 
 
 %========================================one-way transducers==========================================
@@ -214,7 +224,7 @@ To instantiate the generic procedure, one only needs to verify the  \prerec{} as
 	The \prerec{} assumption holds for string functions definable in \PT{}s or $\Transducer_{\sf reverse}$, with $\ell(|\Transducer|, |\Aut|) = |\Transducer||\Aut|$.
 \end{lemma}
 
-The proof is the same as Lemma~\ref{lem-2pt} except constructing $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_k}, q}$ is simpler, with size at most $|\Transducer| |\Aut|$, since the transformation from  conjunctive \FFA{} to conjunctive \FA{} is unneeded. For $\Transducer_{\sf reverse}$, the pre-image is given by reversing the direction of each transition of $\Aut$ and swapping initial and final states.   
+The proof is the same as Lemma~\ref{lem-2pt} except constructing $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_\arity}, q}$ is simpler, with size at most $|\Transducer| |\Aut|$, since the transformation from  conjunctive \FFA{} to conjunctive \FA{} is unneeded. For $\Transducer_{\sf reverse}$, the pre-image is given by reversing the direction of each transition of $\Aut$ and swapping initial and final states.   
 
 Combing Theorem~\ref{thm-generic-dec}, Proposition~\ref{prop:trans}, and Lemma~\ref{lem-1pt} together, we have:
 
