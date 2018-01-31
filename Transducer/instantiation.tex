@@ -22,7 +22,7 @@ $f^{-1}(\Aut)$ is instantiated by $\Pre_\Transducer(\Aut)$, i.e.,  the set of tu
 
 
 \begin{lemma}\label{lem-2pt}
-The  regularity condition  \prerec{} holds for \PPT{}s, with $\ell(|\Transducer|, |\Aut|) = 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$.
+The  regularity condition  \prerec{} holds for \PPT{}s, with $\ell(|\Transducer|, |\Aut|) = 2^{\bigO(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, where $T$ is a  \PPT{}, and $\Aut$ is a conjunctive  \FFA{}. 
 %Let $\Transducer$ be a \PPT{} and $\Aut$ be a conjunctive \FA{} $\Aut$. Then $\Pre_\Transducer(\Aut)$ is a recognisable relation. Moreover, a representation of $\Pre_\Transducer(\Aut)$, whose atom size is bounded by $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$, can be computed effectively. Moreover, each disjunct of the representation can be nondeterministically computed in $2^{O(|\Transducer||\Aut|\log (|\Transducer||\Aut|))}$ space.
 \end{lemma}
 
@@ -36,7 +36,7 @@ $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$, %define
 %
 where  $q \in F$ and  $\conacc_{x_1}, \cdots, \conacc_{x_\arity} \subseteq Q' \times Q'$.   
 %The conjunctive \FFA{} $\cB_{\Transducer, \Aut, S_{x_1}, \cdots, S_{x_k}, q}$ is constructed 
-Intuitively this is done from $\Transducer$  by checking for an accepting run of $T$ on $w$ ending at state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. Thus, each state of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ is some $(q,q') \in Q \times Q'$. 
+Intuitively this is done from $\Transducer$  by checking for an accepting run of $T$ on $w$ ending at state $q$, and simulating an accepting run of $\Aut$ on the output of $\Transducer$. States of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ comprise $(q,q') \in Q \times Q'$. 
 %In particular, 
 When a transition of $\Transducer$ outputs a string $w'$ from $\oalphabet^*$ where some parameter $x_i$ appears (instead of a constant string), for each occurrence of $x_i$ in $w'$, a pair of states $(q_1', q_2')$ is nondeterministically selected from $\conacc_{x_i}$, and the second component of the state of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ will be updated from $q_1'$ to $q_2'$ to mimic a possible instantiation of $x_i$.  
 %\tl{zhilin, I am not quite clear about the para, $y_1$ is a typo of $x_1$? I wrote a para above; please check}
@@ -49,7 +49,7 @@ $\Aut'' = ((\controls'', \transrel''), \conacc'')$, where $Q'' = Q \times Q'$, $
 \begin{itemize}
 \item $w' \in \ialphabet^*$  and $q'_1 \xrightarrow[\Aut]{w'} q'_2$, or
 %
-\item suppose $w' = w'_1 x_{i_1} \ldots w'_{s} x_{i_{s}} w'_{s+1}$ such that $s \ge 1$, $w'_j \in \ialphabet^*$ for each $j \in [s+1]$,  and $i_j \in [\arity]$ for each $j \in [s]$, then there are states $p_0, p_1, \ldots, p_{2s+1} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{2s+1} = q'_2$, and 
+\item suppose $w' = w'_1 x_{i_1} \ldots w'_{s} x_{i_{s}} w'_{s+1}$ for some $s \ge 1$, $w'_j \in \ialphabet^*$ for each $j \in [s+1]$,  and $i_j \in [\arity]$ for each $j \in [s]$, then there are states $p_0, p_1, \ldots, p_{2s+1} \in \controls'$ satisfying that $p_0 = q'_1$, $p_{2s+1} = q'_2$, and 
 $$p_0 \xrightarrow[\Aut]{w'_1} p_1 \xrightarrow{\conacc_{x_{i_1}}} p_2\ \ldots\ p_{2s-2} \xrightarrow[\Aut]{w'_s}p_{2s-1} \xrightarrow{\conacc_{x_{i_s}}} p_{2s} \xrightarrow[\Aut]{w'_{s+1}} p_{2s+1},$$ 
 where $p_{2j-1} \xrightarrow{\conacc_{x_{i_j}}} p_{2j}$ means $(p_{2j-1}, p_{2j}) \in \conacc_{x_{i_j}}$ for each $j \in [s]$.
 \end{itemize}
@@ -64,7 +64,7 @@ It is easy to see that  the size of $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdo
 \smallskip
 \noindent
 \emph{Claim.} %For each tuple of strings $(w, w_1,\cdots, w_k)$, 
-$(w, w_1,\cdots, w_\arity) \in \Pre_\Transducer(\Aut)$ iff there are $\conacc_{x_1}, \cdots, \conacc_{x_\arity} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q})$ and $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [r]$, where $\Aut[\conacc_{x_i}]=((Q', \delta'), \conacc_{x_i})$. [The proof the claim is given in Appendix~\ref{appendix:sec-2way}.]
+$(w, w_1,\cdots, w_\arity) \in \Pre_\Transducer(\Aut)$ iff there are $\conacc_{x_1}, \cdots, \conacc_{x_\arity} \subseteq Q' \times Q'$ and $q \in F$ such that $w \in \Lang(\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q})$ and $w_i \in \Lang(\Aut[\conacc_{x_i}])$ for each $i \in [r]$, where $\Aut[\conacc_{x_i}]=((Q', \delta'), \conacc_{x_i})$. [The proof of the claim is given in Appendix~\ref{appendix:sec-2way}; it crucially relies on that $T$ is functional otherwise it would not be correct.]
 \smallskip
 
 Thus, $\Pre_\Transducer(\Aut)$ is a recognisable relation equal to

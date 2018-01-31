@@ -58,11 +58,11 @@ We illustrate this decision procedure below.
 How do we generalise this generic decision procedure to partial functions $f: 
 (\ialphabet^*)^\arity \to \ialphabet^*$ with possibly multiple inputs, which at least
 subsume parametric transducers? 
-One answer is to use the generalisation of
+One answer is to use a generalisation of
 %There are at least three generalisations
 the notion of ``regularity'' from languages to relations 
 by means of \emph{recognisable relations} \cite{choffrut-survey}.
-(Other more expressive notions of regularity exist (see \cite{choffrut-survey}),
+(Other more expressive notions of regularity do exist (see \cite{choffrut-survey}),
 but they are not suitable for generalising the aforementioned decision
 procedure for $\arity=1$.)
 %(in the increasing order of expressivity):
@@ -106,11 +106,11 @@ Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a \emph{disjunc
 %
 \begin{proof}
     We provide a nondeterministic procedure which generalises the case for
-    univariate functions $f$ sketched in Example~\ref{ex:unif}. Let $S$  be a symbolic execution, $y := f(\bar x)$ (where
-    $\bar x = x_1,\ldots,x_\arity$) be the last
+    univariate functions $f$ sketched in Example~\ref{ex:unif}. Let $S$  be a symbolic execution, $y := f(\vec{x})$ (where
+    $\vec{x} = x_1,\ldots,x_\arity$) be the last
     assignment in $S$, and $\sigma := \{ y \in L_1,\ldots, y \in L_s\}$
     be the set of all regular constraints on $y$ in assertions of $S$.
-    Let $S'$ be the program obtained by removing $y := f(\bar x)$ along
+    Let $S'$ be the program obtained by removing $y := f(\vec{x})$ along
     with all assertions with conditionals in $\sigma$.
     Compute the regular language $L := L_1 \cap \cdots \cap L_s$ using
     the product construction. By 
@@ -148,13 +148,12 @@ Firstly,
 since we assume that each $f: (\ialphabet^*)^\arity \to \ialphabet^*$
 in $S$ is a partial function, it follows that $f^{-1}(L_1 \cap L_2) = 
 f^{-1}(L_1) \cap f^{-1}(L_2)$. (This is \emph{false} in general if $f$ is a \emph{relation}.)
-This means that, for each $y := f(\bar x)$, we can \emph{separately} compute 
-the preimage $f^{-1}(L)$ for each regular constraint $y \in L$ in an assertion
-of $S$, i.e., no product construction is performed.
+This means that, for each $y := f(\vec{x})$ and $y\in L := L_1 \cap \cdots \cap L_s$, we can compute $f^{-1}(L)$ by \emph{separately} computing 
+the pre-image $f^{-1}(L_i)$ for each regular constraint $y \in L_i$, i.e., no product construction is performed.
 %as in the proof
 %of Theorem \ref{th:gen}. 
 
-The second modification concerns the representation of each atom
+The second modification concerns the \emph{representation} of each atom
 in %a disjunct of %a representation of 
 a recognisable relation. We propose
 to use (a variant of) conjunctions of regular constraints called
@@ -245,11 +244,11 @@ The main result of this section is a generic decision procedure for the path fea
 
 We now provide a refined version of Theorem \ref{th:gen} that accounts for
 complexity (full proof can be found in \shortlong{full version}{Appendix~\ref{app:algo}}). First,
-the regularity condition (called \prerec{}) now incorporates conjunctive
+the regularity condition \prerec{} now incorporates conjunctive
 \FA{}s as representations of atoms: % and accounts for complexity:
 \emph{for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$, 
-there is an algorithm that runs in $(\ell(|f|,|\Aut|)^{c_0}$ space which enumerates 
-each disjunct of a conjunctive representation of $f^{-1}(\Aut)$, whose atom size is bounded by $\ell(|f|,|\Aut|)$} (where $\ell(\cdot, \cdot)$ is a monotone function and $c_0 > 0$).
+there is an algorithm that runs in $\ell(|f|,|\Aut|)^{c_0}$ space which enumerates 
+each disjunct of a conjunctive representation of $f^{-1}(\Aut)$, whose atom size is bounded by $\ell(|f|,|\Aut|)$, where $\ell(\cdot, \cdot)$ is a monotone function and $c_0 > 0$ is a constant}.
 %not only assumes that each
 \OMIT{
 (1) each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a recognisable relation. Furthermore, 
