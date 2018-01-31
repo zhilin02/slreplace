@@ -13,7 +13,7 @@ the \emph{straight-line restriction} from Lin and Barcelo \cite{LB16} that we al
             \label{eq:SL}
     %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n) 
 \end{equation}
-where $f: (\Sigma^*)^\arity \to \Sigma^*$ is a partial function, and $L$ is a 
+where $f: (\Sigma^*)^\arity \to \Sigma^*$ is a (partial) string function, and $L$ is a 
 regular language. 
 %In general, it is useful to allow $f$ to be %\emph{partial} functions or, more
 \OMIT{
@@ -225,7 +225,7 @@ vulnerabilities.
 %which %are respectively two-way and one-way finite-state automata extended with outputs.  
 \begin{definition}[Finite-State Transducers]
     Let $\ialphabet$ be an alphabet. A \emph{nondeterministic two-way finite  transducer} (\FFT{}) $\Transducer$  over $\ialphabet$ is a tuple $(\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$, where $\transrel$ is  a finite subset of $\controls \times \overline{\ialphabet}\times \{\Left, \Stay, \Right\}\times 
-    \controls \times \ialphabet^*$, satisfying the syntactical constraints of \FFA{}s, and the additional constraint that the output must be $\epsilon$ when reading $\EndLeft$ or $\EndRight$. Formally, for each transition $(q, \EndLeft, dir, q', b)$ or $(q, \EndRight, dir, q', b)$ in $\delta$, we have $b=\epsilon$.
+    \controls \times \ialphabet^*$, satisfying the syntactical constraints of \FFA{}s, and the additional constraint that the output must be $\epsilon$ when reading $\EndLeft$ or $\EndRight$. Formally, for each transition $(q, \EndLeft, dir, q', w)$ or $(q, \EndRight, dir, q', w)$ in $\delta$, we have $w=\epsilon$.
 %
 %    A \emph{nondeterministic two-way (finite) \emph{transducer}} (\FFT{}) over 
 %    $\ialphabet$ is a tuple $\Transducer = (\ialphabet, \EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ where  $\controls$, $\EndLeft$, $\EndRight$, $q_0$, and $\finals$ are precisely the same as those of Definition~\ref{def:2nfa}
@@ -257,8 +257,8 @@ of \FFA{}s by adding outputs. More precisely, given a string $w = a_1 \dots a_n$
 is a sequence of tuples $(q_0, i_0, w'_0),\ldots, (q_m, i_m, w'_m) \in \controls \times
 [0, n+1] \times \Sigma^*$ 
 such that, letting $a_0 =\ \EndLeft$ and $a_{n+1} =\ \EndRight$, 
-we have $i_0 = 0$, and  for every $j \in [m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, w'_j) \in
-        \transrel$, and $i_{j+1} = i_j + dir$ for some $dir \in \{\Left, \Stay, \Right\}$.
+we have $i_0 = 0$, and  for every $j \in [0, m-1]$, $(q_j, a_{i_j}, dir, q_{j+1}, w'_j) \in
+        \transrel$, $i_{j+1} = i_j + dir$ for some $dir \in \{\Left, \Stay, \Right\}$, and $w'_0 = w'_m = \varepsilon$.
  
 The run is said to be \defn{accepting} if $i_m = n+1$ and $q_m \in \finals$.
 When a run is accepting, $w'_0 \cdots w'_m$ is said to be the \emph{output} of the
@@ -266,9 +266,11 @@ run. Note that some of these $w'_i$'s could be empty strings.
 A word $w'$ is said to be an output of $\Transducer$ on $w$ if there is an accepting run of
 $\Transducer$ on $w$ with output $w'$. We use $\Tran(\Transducer)$ to denote the
 \emph{transduction} defined by $\Transducer$, that is, the relation comprising
-the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. 
+the pairs $(w,w')$ such that $w'$ is an output of $\Transducer$ on $w$. To take into consideration the outputs of transitions, we define the \emph{size} $|\Transducer|$ of $\Transducer$ as the sum of the sizes of transitions in $\Transducer$, where the size of a transition $(q, a, dir, q', w')$ is defined as $|w'|+1$.
+
 
 With the assumption that only $\epsilon$ can be outputted when reading $\EndLeft$ or $\EndRight$, for simplicity, we omit the two end markers $\EndLeft$ and $\EndRight$ in \FT{}s, that is, $\transrel \subseteq \controls \times \ialphabet \times \{\Right,\Stay\} \times \controls \times \ialphabet^*$. Note that each accepting run of an \FT{} has to read through the input string and stop in the right end.
+
 
 \begin{example}\label{exmp-ft}
     We give two examples of \FT{}s: %(1) erasing \texttt{a} from  a string, (2) 
@@ -427,7 +429,7 @@ capture a wide range of string functions (e.g., all of what have discussed so fa
 %all the aforementioned string operations, i.e. finite-state transducer \cite{LB16}, the concatenation function, the replace-all function \cite{CCHLW18}, and the string reverse function.
 
 \begin{definition}[Parametric Transducers]
-    Let $\ialphabet$ an alphabet, and $X$ be a set of \emph{parameters}. 
+    Let $\ialphabet$ be an alphabet, and $X$ be a set of \emph{parameters}. 
     Assume that $\ialphabet \cap X = \emptyset$  and let $\oalphabet = \ialphabet \cup X$. 
     %Define $\oalphabet_\epsilon = \oalphabet \cup \{\epsilon\}$.
     A (nondeterministic) two-way \emph{parametric transducer} (\PPT)  $\Transducer$ over 
@@ -485,9 +487,8 @@ transition relation  $\transrel\subseteq \controls \times
 
 Notice that parameters are only allowed in the output tape.
 Intuitively, each instantiation of the parameters $x_1,\ldots,x_\arity$ with strings 
-$w_1,\ldots, w_\arity \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} $\Transducer'$ which is obtained from $\Transducer$ by replacing each occurrence of $x_j$ in transitions with $w_j$.
-% transition $(p, a, dir, q, x_j)$ with $(p, a, dir, q, w_j)$. 
-%<<<<<<< HEAD
+$w_1,\ldots, w_\arity \in \ialphabet^*$ in a \PPT{} $\Transducer$ gives rise to a \FFT{} which is obtained from $\Transducer$ by replacing each occurrence of $x_j$ in transitions with $w_j$.
+%
 We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation,
 %=======
 %We will use $\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity]$ to denote the \FFT{} resulting from the instantiation.\footnote{The instantiation of the parameters is only done 
@@ -506,7 +507,7 @@ $(w,w') \in \Tran(\Transducer[w_1/x_1,\ldots,w_\arity/x_\arity])$.
 %$x_1,\cdots, x_m$ are instantiated with strings $w_1,\ldots, w_\arity$, 
 %$\Transducer$ produces the output $w'$ from the input $w$. 
 Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\transrel \subseteq \controls \times 
-\ialphabet \times \{\Stay, \Right\} \times \controls \times (\ialphabet^* \cup X)$.
+\ialphabet \times \{\Stay, \Right\} \times \controls \times \oalphabet^*$.
 
 
 %\tl{maybe emphasise that this is a  ``off-line" rather than on-line  instantiation?}
@@ -515,7 +516,7 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %\tl{again, this is a relation, not a function.}
 
 \begin{example} \label{example:2pt}
- The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 0, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the head of the \PT{} must stop in the right end of the tape to accept.) 
+ The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 1, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the head of the \PT{} must stop in the right end of the tape to accept.) 
  
   As promised in the Introduction, we now demonstrate how the  $\replaceall$ function from \cite{CCHLW18} can be simulated by \PT{}s.
   %\tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
@@ -551,7 +552,7 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %    	    output of $\replaceall(\texttt{aabaa},\texttt{a}^+,\texttt{b})$ is
 %    	    \texttt{bbb}.
 %    	    %, not \texttt{aba}.
-     We refer to \cite{CCHLW18} for the details. When this semantics is adopted, the \PPT{} for $\replaceall_{p}$ is given in Appendix~\ref{appendix:replace2pt}.     \qed
+     We refer to \cite{CCHLW18} for the details. When this semantics is adopted, we can construct the \PPT{} for $\replaceall_{p}$, which can be found in Appendix~\ref{appendix:replace2pt}.     \qed
 %    
 %    
 %    We can express

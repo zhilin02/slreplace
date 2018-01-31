@@ -204,7 +204,7 @@ extension by B\"{u}chi and Senger \cite{buchi}.
 This decidability holds even when
 \emph{regular constraints} (i.e. regular expression matching, e.g., 
 $y \in (\texttt{ab})^*$) --- useful to specify the set of ``bad'' strings ---
-are allowed as an assertion \cite{Schulz}. 
+are allowed as assertions \cite{Schulz}. 
 %Decidability becomes slightly problematic beyond this.
 %string operation (e.g. to specify the set of ``bad'' strings) which
 %can be incorporated to the theory of concatenation (as an assertion) without 
@@ -253,7 +253,7 @@ the \emph{straight-line restriction}. %, which is
 This is done 
 by \emph{disallowing string equality checks in the assertions} $g$ in 
 (\ref{eq:symbex}). In other words, concatenation and finite-state transductions
-can both be used in an assignment, while only regular constraints can be used in
+can both be used in assignments, while only regular constraints can be used in
 assertions. The string logic is still 
 sufficiently expressive
 for many examples that arise in practice \cite{LB16,HJLRV18}.
@@ -291,8 +291,8 @@ replacing every matching of the pattern $p$ in the subject $sub$ by $rep$.
 In a recent paper \cite{CCHLW18},
 such replaceall functions were argued to be important for modelling string 
 functions used in web templating like Mustache.js \cite{Mustache}, and
-that straight-line string constraints with replaceall/concatenation in the
-assignment were shown to be decidable.
+that straight-line string constraints with replaceall/concatenation in 
+assignments were shown to be decidable.
 %\OMIT{
 %The more restricted replaceall
 %functions where $rep$ is a string constant can be modelled by finite-state  
@@ -349,20 +349,16 @@ diverse as replaceall, string reverse, and concatenation, as well as finite-stat
 As a result of the expressibility, parametric transducers can model string functions required in \emph{context-sensitive
 auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Closure 
 \cite{Closure} and Handlebars \cite{Handlebars}. 
-We provide a clean automata-theoretic algorithm for the \emph{path 
-feasibility problem} for symbolic executions that use parametric transducers in 
-an assignment and regular constraints in an assertion. Our constraint language
+We provide a \emph{generic} automata-theoretic decision procedure for the \emph{path 
+feasibility problem} of symbolic executions that use parametric transducers in 
+assignments and regular constraints in assertions. Our constraint language
 is one of the \emph{most expressive decidable} string languages for symbolic 
 executions of programs with strings.
-Among others, our algorithm implies decidability (with the same complexity)
-of the string constraint 
-languages with finite transducers and concatenation \cite{LB16}, and
-replaceall \cite{CCHLW18}.
-%, and \emph{strictly} generalises 
-%the decidability of 
-%the state-of-the-art decidable ones, e.g. 
-%the subcases of finite-state transducers \cite{LB16}
-%and replaceall \cite{CCHLW18}. 
+%Among others, our algorithm implies decidability (with the same complexity)
+%of the string constraint 
+%languages with finite transducers and concatenation \cite{LB16}, and
+%replaceall \cite{CCHLW18}.
+%
 We also provide a detailed complexity 
 analysis\footnote{
 \emph{Worst-case complexity} results of course do not prohibit fast solvers 
@@ -372,9 +368,13 @@ logic with finite transducers ({\sc expspace})
 Theory of Successors ({\sc nonelementary}). Rather, they
 \emph{inform} algorithmic techniques that could work in practice, e.g., 
 symbolic techniques.},
+%
 which ranges between {\sc expspace} (same as in \cite{LB16,CCHLW18}) and
-{\sc nonelementary} (i.e. time complexity cannot be bounded by a $k$-fold exponential
-function for any fixed $k > 0$). 
+{\sc nonelementary} (i.e. complexity cannot be bounded by a $n$-fold exponential
+function for every fixed $n > 0$). 
+Among others, our generic decision procedure implies that \emph{the path feasibility problem is $\expspace$-complete for the straight-line string constraint language including all the aforementioned string functions, namely, finite-state transducers, concatenation, replaceall, and reverse}, thus strictly generalising the $\expspace$-completeness result for  finite transducers and concatenation in \cite{LB16}, and
+for replaceall in \cite{CCHLW18}.
+%
 Finally, we extend our results to symbolic automata/transducers
 \cite{BEK,symbolic-transducer,DV13,symbolic-transducer-power}, which are crucial for practical 
 applications requiring large alphabets (e.g.~UTF16).

@@ -171,8 +171,7 @@ A \emph{symbolic transducer}(\SST) is a \SSPT{} where $Y = \emptyset$ (then $Y$ 
 \noindent
 \textbf{Semantics of \SSPT{}.}
 For a \SSPT{} $\Transducer$ with parameters $y_1,\ldots, y_m$,  each instantiation of $y_1,\ldots, y_m$ with data strings 
-$w_1,\ldots, w_m$ gives rise to a \SST{} $\Transducer[w_1/y_1,\ldots, w_m/y_m]$ by replacing each occurrence of $y_i$ with $w_i$ in the transitions of $\Transducer$. 
-Therefore, we obtain the semantics of \SSPT{}s from that of \SST{}s, which will be defined below. 
+$w_1,\ldots, w_m$ gives rise to a \SST{}, denoted with $\Transducer[w_1/y_1,\ldots, w_m/y_m]$, by replacing each occurrence of $y_i$ with $w_i$ in the transitions of $\Transducer$. Therefore, we obtain the semantics of \SSPT{}s from that of \SST{}s, which will be defined below. 
 
 Let $\Transducer=(\EndLeft, \EndRight, \controls, q_0, \finals, \transrel)$ be a \SST. 
 A transition $\tau=(q_1,\psi(x), dir, q_2, \vec{t}(x)) \in \transrel$ with $\vec{t}(x) = t_1(x) \ldots t_r(x)$ in the \SST{} $\Transducer$ can be concretised
@@ -244,7 +243,7 @@ Due to space limit, we do not address the complexity of the decision procedure h
 %	Given a decidable Boolean algebra $\Upsilon=(\signature, \structure, \Psi)$ with $\signature = (\functions, \predicates)$ and $\structure = (\data, \interpretation)$, 
 	An $\arity$-ary relation $R \subseteq \data^*\times \cdots\times \data^*$ is a \emph{symbolic recognisable} relation if $R=\bigcup_{i=1}^n L^{(i)}_1 \times \cdots \times L^{(i)}_\arity$ where $L^{(i)}_j$ is recognised by some \SA{} for each $j\in [\arity]$.
 \end{definition}
-Similar to the recognisable relation, we represent an $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_k)$, where each atom $\Aut_i$ is an \SA{}.
+Similar to the recognisable relation, we represent an $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is an \SA{}.
 Accordingly, the regularity condition in Section~\ref{sec:algo} is replaced by the \emph{symbolic} regularity condition, i.e., for each function $f: (\data^*)^\arity \to \data^*$, the pre-image of a language definable by an \SA{} under $f$ is a symbolic recognisable relation, a representation of which can be computed effectively. Along with the same line as in Section~\ref{sec:algo}--\ref{sec-instan} via symbolic recognisable relations and symbolic regularity conditions, our main result is as follows. 
 
 %The following results are the symbolic counterparts of results in previous sections. 
@@ -262,7 +261,7 @@ Accordingly, the regularity condition in Section~\ref{sec:algo} is replaced by t
 The data string functions definable in \SSPT{}s or \SPT{}s satisfy the symbolic regularity condition.
 \end{lemma}
 }
-\tl{zhilin, it is too radical? ;-)}
+%\tl{zhilin, it is too radical? ;-)}
 \begin{theorem}
 %Given a symbolic execution $S$ of programs with %data strings wherein string functions are given by 
 %\SSPT{}s %(resp. $k$-\RBSSPT{}s for $k \in \Nat$), 
