@@ -221,12 +221,17 @@ Let  $k \in \Nat$. The path feasibility of string constraints with $k$-\RBPPT{}s
 
 
 %Crucially, symbolic executions where string functions are given by $k$-\RBPPT{}s can be translated to those where string functions are given by only \PT{}s and a special transducer $\Transducer_{\sf reverse}$ for the string reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
-
+%%%==========================================
 \hide{
 \begin{proposition} \label{prop:trans}
 	Any symbolic execution $S$ where string functions are given by $k$-\RBPPT{}s can be translated to $S'$ where string functions are given by \PT{}s and $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(k\cdot \rcdep(S))$. 
 \end{proposition}
 }
+%%%==========================================
+
+
+Crucially, symbolic executions where string functions are given by \SPPT{}s can be translated in polynomial time to those where string functions are given by only \PT{}s and a special transducer $\Transducer_{\sf reverse}$ for the string reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
+
 
 \begin{proposition}\label{prop-sweep-rb}
 Suppose $\Transducer=(\controls, X, q_0, \finals, \transrel)$ is a \emph{functional} \SPPT{}  with $X= \{x_1,\ldots, x_\arity\}$. Then for each $(w, w', w_1,\ldots, w_\arity) \in \transet(\Transducer)$, there is an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the output $w'$, such that the run contains at most $2|\controls|-1$ reversals.
