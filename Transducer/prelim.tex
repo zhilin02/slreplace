@@ -13,8 +13,8 @@ $\vec{x}=(x_1,\cdots, x_n)$, let $|\vec{x}|$ denote the length of $\vec{x}$
 (i.e., $n$) and  $\vec{x}[i]$ denote $x_i$ for each $i \in [n]$. For a set
 $S$, we use $S^*$ (resp.~$S^+$) to denote the set of all finite (resp.~finite
 and nonempty) sequences over $S$. We use $\epsilon$ for the empty sequence.
-Given a function $f: A \to B$ and $X \subseteq B$, we use $f^{-1}(B)$ to
-define the pre-image of $B$ under $f$, i.e., $\{ a \in A: f(a) \in B \}$.
+Given a function $f: A \to B$ and $X \subseteq B$, we use $f^{-1}(X)$ to
+define the pre-image of $X$ under $f$, i.e., $\{ a \in A: f(a) \in X \}$.
 
 %===================================================================================================
 %=======================================================================
@@ -93,7 +93,7 @@ $w = a_1 \dots a_n$, a \emph{run} of $\Aut$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
 is a sequence of pairs $(q_0,i_0),\ldots, (q_m,i_m) \in \controls \times [0, n+1]$ 
 defined as follows. Let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$. The
-following conditions then have to be satisfied: $i_0 = 0$, and for every $j \in [m-1]$, we have $(q_j,a_{i_j}, dir, q_{j+1}) \in
+following conditions then have to be satisfied: $i_0 = 0$, and for every $j \in [0, m-1]$, we have $(q_j,a_{i_j}, dir, q_{j+1}) \in
 	\transrel$ and $i_{j+1} = i_j + dir$ for some $dir \in  \{\Left, \Stay, \Right\}$.
 
 %\begin{itemize}
@@ -124,10 +124,10 @@ For convenience, we will also call an NFA without initial and final states, that
 
 \FFA{} and \FA{} recognise precisely the same class of languages, i.e., 
 \emph{regular languages}. The following result is standard and can be found in textbooks on automata theory
-(e.g. \cite{Kozen-automata}). 
+(e.g. \cite{HU79}). 
 
-\begin{proposition}[\cite{HU79}]\label{prop-2nfa-nfa}
-	Every \FFA{} $\Aut$ is equivalent to an \FA{} of size $2^{\bigO(|\Aut| \log |\Aut|)}$. 
+\begin{proposition}\label{prop-2nfa-nfa}
+	Every \FFA{} $\Aut$ can be transformed in exponential time into an equivalent \FA{} of size $2^{\bigO(|\Aut| \log |\Aut|)}$. 
 %	Moreover, the equivalent
 %    NFA can be computed in exponential time. 
     Moreover, every \FA{} can be transformed in polynomial time into an $\varepsilon$-free \FA{}, that is, an \FA{} where $\transrel\subseteq \controls \times \overline{\ialphabet} \times   \{\Right\} \times \controls $.
