@@ -29,7 +29,7 @@ define $\cE_{\rcdep(S)}(x)$  as the set of conjunctive \FA{}s $((\controls, \tra
 %, by utilising the dependency graph $\cG(\varphi)$. 
 % , in a top-down manner.
 Note that at this stage each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ is 
-actually just a normal \FA{}. 
+actually just a normal \FA{}. Let $i:=\rcdep(S)$ and iterate the following procedure until $i=0$.
  %$\Aut$ $\left\{\Aut \mid x\in \Aut \text{ is a conjunct of }\psi \right\}$ for each variable $x$. 
 
 %Starting from $\cG_0$ we repeat the following procedure until %we reach some $i$ where 
@@ -47,13 +47,14 @@ we \emph{nondeterministically} select one state $q \in \finals$ and include $((\
 %(Intuitively this corresponds to a relational constraint $x=T(y_0, \vec{y})$ for $\vec{y}=(y_1, \ldots, y_k)$.
 %Note that two different outgoing edges of $x$ in $\cG_i$ may correspond to the same variable.)
 
-For the $i$-th iteration, suppose the $i$-th assignment of $S$ is $y:= f(x_1,
-\cdots, x_\arity)$ with $\arity\geq 1$, \zhilin{it is possible that $x_i = x_j$ for $i < j$} and 
+%For the $i$-th iteration, 
+Suppose the $i$-th assignment of $S$ is $y:= f(x_1,
+\cdots, x_\arity)$ with $\arity\geq 1$ (note here possibly $x_{j_1} = x_{j_2}$ for some $j_1 < j_2$), and 
 $\cE_i(y)=\{\Aut_1, \ldots, \Aut_n\}$, 
 where $\Aut_j$ is a conjunctive FA for each $j \in [n]$.
 %$(\Sigma, Q_j, q_{0,j}, F_j, \delta_j)$ 
 By \prerec{}, we can enumerate each disjunct $(\Aut^{(\iota)}_{j, 1}, \ldots, \Aut^{(\iota)}_{j, \arity})$ of a conjunctive representation of 
-$f^{-1}(\Aut_j)$ in $\ell(|f|,|\Aut_j|)$ space.
+$f^{-1}(\Aut_j)$ in $(\ell(|f|,|\Aut_j|))^{c_0}$ space, where each atom is of size at most $\ell(|f|,|\Aut_j|)$.
 %enumerate a representation of which, say 
 %\tl{zhilin: why the index starts from 0? it is a $k$-ary relation, isn't it?} 
 %can be computed effectively. 
@@ -73,11 +74,13 @@ Let
 %We set $\cE_{i+1}(x) = \emptyset$.
 %
 %\item Let $\cG_{i+1}:= \cG_i \backslash \{(x, (\Transducer, j), y_j) \mid j \in \{0\} \cup [k]\}$.
+\item Let $i: = i-1$.
 \end{enumerate}
 %For each iteration, $i$ is updated by  $i: = i+1$.
 %\end{enumerate}
 %
-After all assignments of $S$ are scanned,  let $\cE(x):=\cE_{0}(x)$ for each variable $x$.
+%After all assignments of $S$ are scanned,  
+Let $\cE(x):=\cE_{0}(x)$ for each variable $x$.
 To decide the path feasibility of $S$, we simply show that each collection
 $\cE(x)$ (for each $x \in \vars(S)$) of conjunctive \FA{}s has a nonempty 
 language intersection.
@@ -109,7 +112,7 @@ let $N_i$ be the maximum size of the conjunctive \FA{}s in $\bigcup \limits_{x \
 %\end{itemize}
 Since each string function $f$ satisfies $|f| \le \rcphi(S)$, we have that $N_{i-1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotone). Furthermore, because each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ for each $x \in \vars(S)$ is of size bounded by $\rcpsi(S)$, we have that for each $x \in \vars(S)$, each conjunctive \FA{} in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
 %
-We emphasise that, according to the \prerec{} assumption, the construction of these conjunctive \FA{}s can be done in nondeterministic $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
+We emphasise that, according to the \prerec{} assumption, the construction of these conjunctive \FA{}s can be done in nondeterministic $(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{c_0}$ space. 
 
 According to Proposition~\ref{prop-conj-fa-prod}, for each $x \in \vars(S)$, the conjunctive product \FA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \FA{}s  in $\cE(x)$ is of size 
 $$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)|},$$

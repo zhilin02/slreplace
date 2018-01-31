@@ -99,14 +99,14 @@ Each tuple $(\Aut^{(i)}_1, \ldots, \Aut^{(i)}_\arity)$ is called a \emph{disjunc
 \begin{theorem}
     There is a procedure which, given a symbolic execution $S$ wherein 
     each $f: (\ialphabet^*)^\arity \to \ialphabet^*$ satisfies the regularity 
-    condition (with respect to the recognisable relation), decides whether $S$
+    condition (with respect to recognisable relations), decides whether $S$
     is path feasible.
     \label{th:gen}
 \end{theorem}
 %
 \begin{proof}
     We provide a nondeterministic procedure which generalises the case for
-    univariate functions $f$ sketch in Example~\ref{ex:unif}. Let $S$  be a symbolic execution, $y := f(\bar x)$ (where
+    univariate functions $f$ sketched in Example~\ref{ex:unif}. Let $S$  be a symbolic execution, $y := f(\bar x)$ (where
     $\bar x = x_1,\ldots,x_\arity$) be the last
     assignment in $S$, and $\sigma := \{ y \in L_1,\ldots, y \in L_s\}$
     be the set of all regular constraints on $y$ in assertions of $S$.
@@ -247,9 +247,9 @@ We now provide a refined version of Theorem \ref{th:gen} that accounts for
 complexity (full proof can be found in \shortlong{full version}{Appendix~\ref{app:algo}}). First,
 the regularity condition (called \prerec{}) now incorporates conjunctive
 \FA{}s as representations of atoms: % and accounts for complexity:
-\emph{for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,
-there is an algorithm that runs in $\ell(|f|,|\Aut|)$ space which enumerates 
-each disjunct of $f^{-1}(\Aut)$ in conjunctive representation} (where $\ell(\cdot, \cdot)$ is a monotone function).
+\emph{for each function $f$ in $S$ and each conjunctive \FA{} $\Aut$, 
+there is an algorithm that runs in $(\ell(|f|,|\Aut|)^{c_0}$ space which enumerates 
+each disjunct of a conjunctive representation of $f^{-1}(\Aut)$, whose atom size is bounded by $\ell(|f|,|\Aut|)$} (where $\ell(\cdot, \cdot)$ is a monotone function and $c_0 > 0$).
 %not only assumes that each
 \OMIT{
 (1) each function $f$ in $S$ and each conjunctive \FA{} $\Aut$,  $\Pre_{R_f}(\Aut)$ is a recognisable relation. Furthermore, 
