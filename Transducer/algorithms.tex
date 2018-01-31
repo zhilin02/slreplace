@@ -299,11 +299,12 @@ for $\ell:\Nat^2\rightarrow \Nat$, we define $\ell^{\langle n \rangle}(j, k)$ ($
 %==== theorem ==============================
 \begin{theorem}\label{thm-generic-dec}
 	Given a symbolic execution $S$ satisfying \prerec{}, the 
-    path feasibility problem of $S$ can be decided in \emph{nondeterministic} 
+    path feasibility problem of $S$ can be decided \emph{nondeterministically} 
+    with space
         %
-	$$(\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$$
+	$$(\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \left(\ell^{\langle \rcdep(S)
+    \rangle}(\rcphi(S), \rcpsi(S)) \right)^{O(1)}$$
 	%
-	space for some constant $c > 0$.
 %
 %	$|\vars(S)|(\rcdim(S)+1)^{\rcdep(S)}  \rcreg(S) \left(\ell^{\langle
 %    \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$ space for some constant
@@ -398,9 +399,11 @@ and $N_i$ be the maximum size of the conjunctive FAs in $\bigcup \limits_{x \in 
 Then we have $M_{i-1} \le (\rcdim(S)+1)M_i $. Moreover, since each string function $f$ satisfies   $|f| \le \rcphi(S)$, we have that $N_{i-1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotonic). Because for each $x \in \vars(S)$, $\cE_{\rcdep(S)}(x)$ contains at most $\rcreg(S)$ elements, and 
 each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ is of size bounded by $\rcpsi(S)$, we have that for each $x \in \vars(S)$, $\cE(x)$ contains at most $(\rcdim(S)+1)^{\rcdep(S)}\rcreg(S)$ elements, and each conjunctive \FA{} in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
 %We emphasise that, according to the \prerec{} assumption, the construction of these \FA{}s can be done in nondeterministic $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$ space as well. 
-Then by utilising  the \prerec{} assumption and Proposition~\ref{prop-conj-fa-prod}, after some simple calculations, we can deduce that the aforementioned nondeterministic algorithm takes 
-$|\vars(S)|(\rcdim(S)+1)^{\rcdep(S)}  \rcreg(S) \left(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)) \right)^c$
- space for some constant $c > 0$.
+Then by utilising  the \prerec{} assumption and
+Proposition~\ref{prop-conj-fa-prod}, after some simple calculations, we can
+deduce that the aforementioned nondeterministic algorithm takes space
+$|\vars(S)|(\rcdim(S)+1)^{\rcdep(S)}  \rcreg(S) \left(\ell^{\langle \rcdep(S)
+\rangle}(\rcphi(S), \rcpsi(S)) \right)^{O(1)}$.
  
 
 
