@@ -1,9 +1,17 @@
 %!TEX root = main.tex
 
+\vspace{-3mm}
+
 \section{Symbolic extensions}
 \label{sec:symbolic}
 
+\vspace{-2mm}
+
 In this section, we consider an extension of the work in preceding sections to the symbolic setting, where finite-state automata and parametric transducers are replaced by \emph{symbolic automata} \cite{NG01,DV14} and \emph{symbolic parametric transducers} (to be introduced) respectively.
+This extension is important for
+practical applications like analysis of XSS vulnerabilities in web applications
+since the transducers representing sanitisers have to operate over
+large alphabets (e.g. UTF16), e.g., see \cite{DV13,symbolic-transducer,BEK}.
 %
 Intuitively, in symbolic automata %are an extension of finite-state automata in which 
 input letters are symbolically described by unary predicates from a logical theory (called background theory). %On the other hand, 
@@ -19,8 +27,9 @@ transducers introduced in this paper and symbolic transducers in
 
 
 %Let $\data$ be an infinite data domain.  We define data strings as elements of $\data^\ast$.
-We assume familiarity with the %(many-sorted) 
-first-order logic (cf.\ some textbook e.g. \cite{EFT94}). A concept of background theories will be used in the definition of symbolic automata and symbolic parametric transducers.\footnote{In literature, symbolic automata are defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. In this paper, we define symbolic automata on background theories (rather than Boolean algebra) to align to the definition of symbolic parametric transducers.}
+%We assume familiarity with the %(many-sorted) 
+%first-order logic (cf.\ some textbook e.g. \cite{EFT94}). 
+A concept of background theories will be used in the definition of symbolic automata and symbolic parametric transducers.\footnote{In literature, symbolic automata are defined on a Boolean algebra, which is a background theory without requiring the set of formulae to be closed under substitutions. In this paper, we define symbolic automata on background theories (rather than Boolean algebra) to align to the definition of symbolic parametric transducers.}
 %and label theories. 
 Intuitively, 
 %a Boolean algebra is a set of unary first-order logic formulae closed under Boolean connectives, 
