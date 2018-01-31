@@ -1,17 +1,54 @@
 %!TEX root = main.tex
+\newcommand\init{\mathsf{init}}
+\newcommand\prefix{\mathsf{prefix}}
+\newcommand\suffix{\mathsf{suffix}}
+\newcommand\finalpass{\mathsf{finalpass}}
+\newcommand\reverse{\mathsf{reverse}}
+\newcommand\concatpt{\mathsf{concat}}
+\newcommand\symof[1]{\overline{#1}}
 
 \section{Proof of Theorem~\ref{thm-rb-2pt}: $k$-\RBPPT{} is in EXPSPACE}\label{app-rb-2pt}
 
-We reduce in polynomial time the satisfiability problem for $k$-\RBPPT{}s to
-that for \PT{}s plus the reverse function.
-
+We compute the pre-image of a $k$-\RBPPT{}s and show
+$\ell(|\Transducer|, |\Aut|) = C|\Transducer||\Aut|$
+for some constant $C$.
+%
 Let
 $y := \Transducer(x)$
 be an assignment statement in $S$ such that
 $\Transducer = (\controls, q_0, \finals, \transrel)$
 is $(2k)$-reversal bounded for some $k > 0$.
 %
-We replace $y := \Transducer(x)$ by a program $S'$ as follows.
+For this we will first implement
+$y := \Transducer(x)$
+using a program that only has one-way transducers -- which may not be
+functional -- and the function $\reverse$.
+%
+We will then argue that we can apply the generic decision procedure and still
+obtain a correct pre-image computation.
+%
+For this we rely on the complete program being functional (since $\Transducer$
+is), even if individual components are not.
+
+\subsection{Handling Parameters}
+
+For simplicity, we will assume $\Transducer$ has no parameters.
+%
+In the general case, we can always reduce
+$y := \Transducer(x, x_1, \ldots, x_n)$
+to
+\[
+    \begin{array}{rcl}
+        y_0 &:=& \Transducer'(x); \\
+        y_1 &:=& \replaceall(\symof{x_1}, y_0, x_1); \\
+            &\vdots& \\
+        y_n &:=& \replaceall(\symof{x_n}, y_{n-1}, x_n);
+    \end{array}
+\]
+where $\Transducer'$ simply outputs a special symbol $\symof{x_i}$ in place of
+the contents of a variable $x_i$.
+
+\subsection{Program Encoding}
 
 Each accepting run of $\Transducer$ on an input string can be split into $2k+1$
 maximal subruns without reversals (i.e.\ split the run at the turning points).
@@ -20,12 +57,6 @@ Intuitively, we shall split $y$ into $2k+1$ substrings, corresponding to the
 $2k+1$ maximal subruns, and for each substring of $y$, use one \PT{} and the
 reverse function to produce it.
 
-\newcommand\init{\mathsf{init}}
-\newcommand\prefix{\mathsf{prefix}}
-\newcommand\suffix{\mathsf{suffix}}
-\newcommand\finalpass{\mathsf{finalpass}}
-\newcommand\reverse{\mathsf{reverse}}
-\newcommand\concatpt{\mathsf{concat}}
 
 For preparation, we introduce the following \FT{}s:
     $\init$,
@@ -188,7 +219,8 @@ $\reverse$ to its output.
 %
 Then, we concatenate all outputs to obtain $y$.
 %
-Thus, the output $y$ of the following program on an input $x$ is the same as
+Thus, the output $y$ of the following program $S$ on an input $x$ is the same
+as
 $y := \Transducer(x)$
 when $\Transducer$ performs $2k$ reversals.
 \[
@@ -214,3 +246,397 @@ when $\Transducer$ performs $2k$ reversals.
     \end{array}
 \]
 
+
+\subsection{Computing the Pre-Image}
+
+We can apply our generic decision procedure to compute the pre-image of the
+program $S$.
+%
+Since correctness of the decision procedure relies on each transducer encoding
+a function, the reduction is not \textit{a priori} correct.
+%
+Fortunately, we can use the fact that the program implements a function to
+retain correctness.
+
+For this, we reason backwards.
+%
+We first assume that the constraints on $y$ are non-conjunctive \FA{}.
+%
+That is, we expand conjunctive \FA{}s into a sequence of assertions, each
+containing a single \FA{}.
+%
+Let $A_1, \ldots, A_n$ be the set of such \FA{}.
+%
+We apply the generic decision procedure to each \FA{} in turn and for each
+$A_i$ obtain a set of constraints
+$B^i_1, \ldots, B^i_m$
+on $x$.
+%
+It will be shown that any value of $x$ satisfying each $B^i_j$ will map to a
+value of $y$ that satisfies $A_i$.
+%
+Thus, if there is a value of $x$ satisfying $B^i_j$ for all $i, j$, and since
+$\Transducer$ is functional, the value of $y$ mapped to will satisfy all $A_i$
+as required.
+
+We now consider a single
+$A \in \{A_1, \ldots, A_n\}$
+and drop the index $i$.
+%
+We make the following observations.
+\begin{itemize}
+\item
+    From the pre-image of $\concatpt$ we select a tuple
+    $A^c_1, \ldots, A^c_n$
+    of constraints which require that $y_i$ accepted by $A^c_i$.
+    %
+    These are each of size $|A|$.
+\item
+    For any \FA{} $A$ and one-way (nondeterministic) transducer $\Transducer'$
+    we can compute in polynomial time a \FA{} $B$ that is the pre-image of $A$
+    under $\Transducer'$.
+    %
+    Its size is $|T||A|$.
+    %
+    This is a standard result.
+    %
+    \mat{cite?}
+\end{itemize}
+%
+Figure~\ref{fig:aut-deps} shows the dependencies of the variables in $S$.
+%
+In Figure~\ref{fig:aut-constraints} we show the same diagram except variables
+are replaced by the automata constraints each variable must satisfy.
+%
+We explain how to obtain these constraints.
+%
+First $y$ must satisfy $A$.
+%
+From the pre-image of $\concat$ we obtain
+$A^c_1, \ldots, A^c_{2k+1}$
+as remarked above.
+%
+When $\reverse$ is applied we obtain $A'_i$ which is the reverse of $A^c_i$ and of the same size.
+%
+Now we reach the top row of the diagram.
+
+On the far right we obtain $B_{2k+1}$ as the pre-image of $A^c_{2k+1}$ under $\Transducer_f$.
+%
+This, as all automata here, is of linear size.
+%
+To $x_k$ we obtain two constraints:
+    $B^1_{2k}$ which is the pre-image of $B_{2k+1}$ under $\finalpass$, and
+    $B^2_{2k}$ which is the pre-image of $A'_{2k}$ under $\Transducer_b$.
+%
+Notice, we computed these pre-images independently.
+%
+This is where we may lose precision in our algorithm, since the values assigned to the variables may diverge between the separate automata.
+%
+We continue to $x_{2k-1}$ where we obtain three automata: one from $B^1_{2k}$, one from $B^2_{2k}$ and on from $A^c_{2k-1}$.
+%
+This continues leftwards along the row until $x$ is reached.
+
+\begin{figure}
+    \begin{tikzpicture}
+        \node (x) {$x$};
+        \node (x0) [right=of x] {$x_0$};
+        \node (x1) [right=of x0] {$x_1$};
+        \node (x2) [right=of x1] {$x_2$};
+        \node (xdots) [right=of x2] {$\cdots$};
+        \node (xkkm) [right=of xdots] {$x_{2k-1}$};
+        \node (xkk) [right=of xkkm] {$x_{2k}$};
+        \node (xkkp) [right=of xkk] {$x_{2k+1}$};
+        \node (yp2) [below=of x2] {$y'_2$};
+        \node (y2) [below=of yp2] {$y_2$};
+        \node (y1) [below=of x1,left=of y2] {$y_1$};
+        \node (ypkk) [below=of xkk] {$y'_{2k}$};
+        \node (ykk) [below=of ypkk] {$y_{2k}$};
+        \node (ykkm) [below=of xkkm,left=of ykk] {$y_{2k-1}$};
+        \node (ykkp) [below=of xkkp,right=of ykk] {$y_{2k+1}$};
+        \node (ydots) [below=of xdots,right=of y2] {$\cdots$};
+        \node (concat) [below=of ydots] {$\concatpt$};
+        \node (y) [below=of concat] {$y$};
+        \path[->]
+            (x) edge node [above] {$\init$} (x0)
+            (x0) edge node [above] {$\prefix$} (x1)
+            (x1) edge node [above] {$\suffix$} (x2)
+            (x2) edge node [above] {$\prefix$} (xdots)
+            (xdots) edge node [above] {$\prefix$} (xkkm)
+            (xkkm) edge node [above] {$\suffix$} (xkk)
+            (xkk) edge node [above] {$\finalpass$} (xkkp);
+        \path[->]
+            (x1) edge node [left] {$\Transducer_f$} (y1)
+            (y1) edge (concat)
+            (concat) edge (y);
+        \path[->]
+            (x2) edge node [left] {$\Transducer_b$} (yp2)
+            (yp2) edge node [left] {$\reverse$} (y2)
+            (y2) edge (concat);
+        \path[->]
+            (xkkm) edge node [left] {$\Transducer_f$} (ykkm)
+            (ykkm) edge (concat);
+        \path[->]
+            (xkk) edge node [left] {$\Transducer_b$} (ypkk)
+            (ypkk) edge node [left] {$\reverse$} (ykk)
+            (ykk) edge (concat);
+        \path[->]
+            (xkkp) edge node [left] {$\Transducer_f$} (ykkp)
+            (ykkp) edge (concat);
+    \end{tikzpicture}
+    \caption{\label{fig:aut-deps} The dependencies in $S$.}
+\end{figure}
+
+\begin{figure}
+    \begin{tikzpicture}
+        \node (x) {$
+            \begin{array}{c}
+                B^1, \\
+                \vdots \\
+                B^{2k+1}
+            \end{array}
+        $};
+        \node (x0) [right=of x] {$
+            \begin{array}{c}
+                B^1_0, \\
+                \vdots \\
+                B^{2k+1}_0
+            \end{array}
+        $};
+        \node (x1) [right=of x0] {$
+            \begin{array}{c}
+                B^1_1, \\
+                \vdots \\
+                B^{2k+1}_1
+            \end{array}
+        $};
+        \node (x2) [right=of x1] {$
+            \begin{array}{c}
+                B^1_2, \\
+                \vdots \\
+                B^{2k}_2
+            \end{array}
+        $};
+        \node (xdots) [right=of x2] {$\cdots$};
+        \node (xkkm) [right=of xdots] {$
+            \begin{array}{c}
+                B^1_{2k-1}, \\
+                B^2_{2k-1}, \\
+                B^3_{2k-1}
+            \end{array}
+        $};
+        \node (xkk) [right=of xkkm] {$
+            \begin{array}{c}
+                B^1_{2k}, \\
+                B^2_{2k}
+            \end{array}
+        $};
+        \node (xkkp) [right=of xkk] {$B_{2k+1}$};
+        \node (yp2) [below=of x2] {$A'_2$};
+        \node (y2) [below=of yp2] {$A^c_2$};
+        \node (y1) [below=of x1,left=of y2] {$A^c_1$};
+        \node (ypkk) [below=of xkk] {$A'_{2k}$};
+        \node (ykk) [below=of ypkk] {$A^c_{2k}$};
+        \node (ykkm) [below=of xkkm,left=of ykk] {$A^c_{2k-1}$};
+        \node (ykkp) [below=of xkkp,right=of ykk] {$A^c_{2k+1}$};
+        \node (ydots) [below=of xdots,right=of y2] {$\cdots$};
+        \node (concat) [below=of ydots] {$\concatpt$};
+        \node (y) [below=of concat] {$A$};
+        \path[->]
+            (x) edge node [above] {$\init$} (x0)
+            (x0) edge node [above] {$\prefix$} (x1)
+            (x1) edge node [above] {$\suffix$} (x2)
+            (x2) edge node [above] {$\prefix$} (xdots)
+            (xdots) edge node [above] {$\prefix$} (xkkm)
+            (xkkm) edge node [above] {$\suffix$} (xkk)
+            (xkk) edge node [above] {$\finalpass$} (xkkp);
+        \path[->]
+            (x1) edge node [left] {$\Transducer_f$} (y1)
+            (y1) edge (concat)
+            (concat) edge (y);
+        \path[->]
+            (x2) edge node [left] {$\Transducer_b$} (yp2)
+            (yp2) edge node [left] {$\reverse$} (y2)
+            (y2) edge (concat);
+        \path[->]
+            (xkkm) edge node [left] {$\Transducer_f$} (ykkm)
+            (ykkm) edge (concat);
+        \path[->]
+            (xkk) edge node [left] {$\Transducer_b$} (ypkk)
+            (ypkk) edge node [left] {$\reverse$} (ykk)
+            (ykk) edge (concat);
+        \path[->]
+            (xkkp) edge node [left] {$\Transducer_f$} (ykkp)
+            (ykkp) edge (concat);
+    \end{tikzpicture}
+    \caption{\label{fig:aut-constraints} The automata constructed for $S$.}
+\end{figure}
+
+We now argue that despite this divergence, the constraints
+$B^1, \ldots, B^{2k+1}$
+can be satisfied by some value of $x$ iff
+$x = \Transducer(y)$
+and $y$ satisfies $A$.
+%
+The right-to-left inclusion is clear since a run of $\Transducer$ can be mapped
+onto an assignment to variables in $S$ that satisfy the program.
+%
+In the other direction, the danger is that intermediate variables may take on
+multiple values since the constraints are not synchronised.
+%
+That is, a variable in $S$ may take on a different value for each path through
+the automaton constraints it must satisfy.
+%
+The worst-case for this situation is show in Figure~\ref{fig:worst-case}.
+%
+Notice there are $2k+1$ values even for $x_{2k+1}$ which had only one automaton
+constraint.
+%
+This is because, from $x$ it can be reached from any of the $2k+1$ values for
+$x_1$.
+%
+Also notice that the variable $y$ only has one value.
+%
+We know from the fact that $\Transducer$ is functional that there can only be
+one value $v$ for $y$ given $w$ for $x$.
+%
+Moreover, all the relations together in our program preserve this
+functionality.
+
+\begin{figure}
+    \begin{tikzpicture}
+        \node (x) {$w$};
+        \node (x0) [right=of x] {$w_0$};
+        \node (x1) [right=of x0] {$
+            \begin{array}{c}
+                w^1_1, \\
+                \vdots \\
+                w^{2k+1}_1
+            \end{array}
+        $};
+        \node (x2) [right=of x1] {$
+            \begin{array}{c}
+                w^1_2, \\
+                \vdots \\
+                w^{2k+1}_2
+            \end{array}
+        $};
+        \node (xdots) [right=of x2] {$\cdots$};
+        \node (xkkm) [right=of xdots] {$
+            \begin{array}{c}
+                w^1_{2k-1}, \\
+                \vdots \\
+                w^{2k+1}_{2k-1}
+            \end{array}
+        $};
+        \node (xkk) [right=of xkkm] {$
+            \begin{array}{c}
+                w^1_{2k}, \\
+                \vdots \\
+                w^{2k+1}_{2k}
+            \end{array}
+        $};
+        \node (xkkp) [right=of xkk] {$
+            \begin{array}{c}
+                w^1_{2k+1}, \\
+                \vdots \\
+                w^{2k+1}_{2k+1}
+            \end{array}
+        $};
+        \node (yp2) [below=of x2] {$
+             \begin{array}{c}
+                u^1_{2}\ ', \\
+                \vdots \\
+                u^{2k+1}_{2}\ '
+            \end{array}
+        $};
+        \node (y2) [below=of yp2] {$
+            \begin{array}{c}
+                u^1_{2}, \\
+                \vdots \\
+                u^{2k+1}_{2}
+            \end{array}
+        $};
+        \node (y1) [below=of x1,left=of y2] {$
+            \begin{array}{c}
+                u^1_{1}, \\
+                \vdots \\
+                u^{2k+1}_{1}
+            \end{array}
+        $};
+        \node (ypkk) [below=of xkk] {$
+            \begin{array}{c}
+                u^1_{2k}\ ', \\
+                \vdots \\
+                u^{2k+1}_{2k}\ '
+            \end{array}
+        $};
+        \node (ykk) [below=of ypkk] {$
+            \begin{array}{c}
+                u^1_{2k}, \\
+                \vdots \\
+                u^{2k+1}_{2k}
+            \end{array}
+        $};
+        \node (ykkm) [below=of xkkm,left=of ykk] {$
+            \begin{array}{c}
+                u^1_{2k-1}, \\
+                \vdots \\
+                u^{2k+1}_{2k-1}
+            \end{array}
+        $};
+        \node (ykkp) [below=of xkkp,right=of ykk] {$
+            \begin{array}{c}
+                u^1_{2k+1}, \\
+                \vdots \\
+                u^{2k+1}_{2k+1}
+            \end{array}
+        $};
+        \node (ydots) [below=of xdots,right=of y2] {$\cdots$};
+        \node (concat) [below=of ydots] {$\concatpt$};
+        \node (y) [below=of concat] {$v$};
+        \path[->]
+            (x) edge node [above] {$\init$} (x0)
+            (x0) edge node [above] {$\prefix$} (x1)
+            (x1) edge node [above] {$\suffix$} (x2)
+            (x2) edge node [above] {$\prefix$} (xdots)
+            (xdots) edge node [above] {$\prefix$} (xkkm)
+            (xkkm) edge node [above] {$\suffix$} (xkk)
+            (xkk) edge node [above] {$\finalpass$} (xkkp);
+        \path[->]
+            (x1) edge node [left] {$\Transducer_f$} (y1)
+            (y1) edge (concat)
+            (concat) edge (y);
+        \path[->]
+            (x2) edge node [left] {$\Transducer_b$} (yp2)
+            (yp2) edge node [left] {$\reverse$} (y2)
+            (y2) edge (concat);
+        \path[->]
+            (xkkm) edge node [left] {$\Transducer_f$} (ykkm)
+            (ykkm) edge (concat);
+        \path[->]
+            (xkk) edge node [left] {$\Transducer_b$} (ypkk)
+            (ypkk) edge node [left] {$\reverse$} (ykk)
+            (ykk) edge (concat);
+        \path[->]
+            (xkkp) edge node [left] {$\Transducer_f$} (ykkp)
+            (ykkp) edge (concat);
+    \end{tikzpicture}
+    \caption{\label{fig:aut-constraints} The dependencies and automata constructed from $S$.}
+\end{figure}
+
+
+\subsection{The Pre-Image Returned}
+
+For clarity, we emphasis that the pre-image computation for $\Transducer$
+returns a conjunctive automaton representing the intersection of
+$B^1, \ldots, B^{2k+1}$
+which were the constraints obtained on $x$.
+%
+These are of a size $C|T||A|$ where $C$ is a constant bound by
+$|\concat||\reverse||\Transducer_f||\Transducer_b||\finalpass||\suffix|^k|\prefix|^k|\init|$.
+%
+Note, the number of states needed to implement $\prefix$ and $\suffix$ is
+fixed: the transducers simply need to remember if they have output one or two
+states of $\Transducer$.
+%
+Furthermore, $k$ is fixed.
