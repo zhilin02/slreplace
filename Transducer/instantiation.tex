@@ -234,7 +234,7 @@ Crucially, symbolic executions where string functions are given by \SPPT{}s can 
 
 
 \begin{proposition}\label{prop-sweep-rb}
-Suppose $\Transducer=(\controls, X, q_0, \finals, \transrel)$ is a \emph{functional} \SPPT{}  with $X= \{x_1,\ldots, x_\arity\}$. Then for each $(w, w', w_1,\ldots, w_\arity) \in \transet(\Transducer)$, there is an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the output $w'$, such that the run contains at most $2|\controls|-1$ reversals.
+Suppose $\Transducer=(\controls, X, q_0, \finals, \transrel)$ is a \emph{functional} \SPPT{}  with $X= \{x_1,\ldots, x_\arity\}$. Then for each $(w, w', w_1,\ldots, w_\arity) \in \transet(\Transducer)$, there is an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the output $w'$, such that the run contains at most $2(|\controls|-1)$ reversals.
 \end{proposition}
 
 From Proposition~\ref{prop-sweep-rb}, we deduce the following result.
@@ -245,8 +245,8 @@ From Proposition~\ref{prop-sweep-rb}, we deduce the following result.
 
 Proposition~\ref{prop:trans} is shown in
 \shortlong{the full version}{Appendix~\ref{app-rb-2pt}}.
-Intuitively, a run of a \SPPT{} $\Transducer$ can be split into $2n-1$ subruns (where $n$ is the size of the state space of $\Transducer$), each travelling in a single direction.
-We simulate the subruns with $2n-1$ one-way \PT{}s whose outputs are concatenated.
+Intuitively, a run of a \SPPT{} $\Transducer$ can be split into $2(n-1)$ subruns (where $n$ is the size of the state space of $\Transducer$), each travelling in a single direction.
+We simulate the subruns with $2(n-1)$ one-way \PT{}s whose outputs are concatenated.
 Right-to-left subruns are simulated left-to-right, and thus the output must be reversed before concatenation.
 
 

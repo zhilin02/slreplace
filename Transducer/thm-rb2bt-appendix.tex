@@ -7,8 +7,299 @@
 \newcommand\concatpt{\mathsf{concat}}
 \newcommand\symof[1]{\overline{#1}}
 
-\section{Proof of Theorem~\ref{thm-rb-2pt}: $k$-\RBPPT{} is in EXPSPACE}\label{app-rb-2pt}
+\section{Proofs in Section~\ref{subsec:krb} }\label{app-rb-2pt}
 
+\subsection{Proof of Proposition~\ref{prop-sweep-rb}: Reversal bound for \SPPT{}s}
+
+Suppose $\Transducer=(\controls, X, q_0, \finals, \transrel)$ is a \emph{functional} \SPPT{}  with $X= \{x_1,\ldots, x_\arity\}$, and $(w, w', w_1,\ldots, w_\arity) \in \transet(\Transducer)$. 
+
+Then there is an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the output $w'$. 
+Let $w = a_1 \ldots a_n$. In addition, let $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$. 
+Then for each $i \in [0, n+1]$, let $\vec{\rho}_i$ denote the sequence of states of the run when the reading head is in in position $i$.
+
+We apply the following reduction to the accepting run until no more reduction can be done. 
+
+Let $\rho_0 = (q_1, \ldots, q_{2m+1})$. If $q_i = q_j$ for some $i < j$, then it must be the case that each transition in the subrun between $q_i$ and $q_j$ outputs $\epsilon$. Because otherwise, the subrun produces a nonempty output and we can repeat the subrun one more time and produces a different output than $w'$. This would contradict to the fact that $\Transducer$ is functional. Therefore, we can remove the subrun between $q_i$ and $q_j$, with the state $q_i$ remained, and get a shorter accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the same output $w'$.
+We can apply similar reductions to $\rho_{n+1}$.
+
+In the end, we get an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the same output $w'$, where all the states in $\vec{\rho}_0$ (resp. $\vec{\rho}_{n+1}$) are mutually distinct. Then $|\vec{\rho}_0|, |\vec{\rho}_{n+1}| \le |\controls|$ and the accepting run contains at most $2|\controls|-2$ reversals (there is no reversal for the first state of $\vec{\rho}_0$ and the last state of $\vec{\rho}_{n+1}$). 
+
+
+\subsection{Proof of Proposition~\ref{prop:trans}: Translation from \SPPT{}s to \PT{}s and $\Transducer_{\sf reverse}$}
+
+	Any symbolic execution $S$ where string functions are given by \SPPT{}s can be translated to $S'$ where string functions are given by \PT{}s and $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(\rcphi(S) \cdot \rcdep(S))$. 
+
+Intuitively, a run of a \SPPT{} $\Transducer$ can be split into $2n-1$ subruns (where $n$ is the size of the state space of $\Transducer$), each travelling in a single direction.
+We simulate the subruns with $2n-1$ one-way \PT{}s whose outputs are concatenated.
+Right-to-left subruns are simulated left-to-right, and thus the output must be reversed before concatenation.
+
+
+
+
+
+We compute the pre-image of a $k$-\RBPPT{}s and show
+$\ell(|\Transducer|, |\Aut|) = C|\Transducer||\Aut|$
+for some constant $C$.
+%
+Let
+$y := \Transducer(x)$
+be an assignment statement in $S$ such that
+$\Transducer = (\controls, q_0, \finals, \transrel)$
+is $(2k)$-reversal bounded for some $k > 0$.
+%
+For this we will first implement
+$y := \Transducer(x)$
+using a program that only has one-way transducers -- which may not be
+functional -- and the function $\reverse$.
+%
+We will then argue that we can apply the generic decision procedure and still
+obtain a correct pre-image computation.
+%
+For this we rely on the complete program being functional (since $\Transducer$
+is), even if individual components are not.
+
+\subsubsection{Handling Parameters}
+
+For simplicity, we will assume $\Transducer$ has no parameters.
+%
+In the general case, we can always reduce
+$y := \Transducer(x, x_1, \ldots, x_n)$
+to
+\[
+    \begin{array}{rcl}
+        y_0 &:=& \Transducer'(x); \\
+        y_1 &:=& \replaceall(\symof{x_1}, y_0, x_1); \\
+            &\vdots& \\
+        y_n &:=& \replaceall(\symof{x_n}, y_{n-1}, x_n);
+    \end{array}
+\]
+where $\Transducer'$ simply outputs a special symbol $\symof{x_i}$ in place of
+the contents of a variable $x_i$.
+
+\subsubsection{Program Encoding}
+
+Each accepting run of $\Transducer$ on an input string can be split into $2k+1$
+maximal subruns without reversals (i.e.\ split the run at the turning points).
+%
+Intuitively, we shall split $y$ into $2k+1$ substrings, corresponding to the
+$2k+1$ maximal subruns, and for each substring of $y$, use one \PT{} and the
+reverse function to produce it.
+
+
+For preparation, we introduce the following \FT{}s:
+    $\init$,
+    $\prefix$,
+    $\suffix$,
+    $\finalpass$,
+    $\reverse$,
+    $\concatpt$.
+These \FT{}s behave as follows.
+\begin{itemize}
+\item
+    $\init$ begins by outputting $q_0$ and then directly copying its input to
+    the output tape.
+
+\item
+    $\prefix$ marks the beginning and end of a forwards run of $\Transducer$,
+    assuming that an initial or backwards marking has already taken place (that
+    is, either one or two states from $\controls$ appear in the input).
+    %
+    It directly copies its input to the output tape until it the first instance
+    of some
+    $q \in \controls$.
+    %
+    This $q$ is also output.
+    %
+    After this, it will copy the rest of the input tape to the output tape with
+    the exception that any occurrence of a state from $\controls$ is not copied
+    (erased).
+    %
+    At some point during this second phase it will non-deterministically output
+    a single
+    $q' \in \controls$
+    between the copies of two input characters and then continue to copy its
+    input to the output until the end of the tape (ignoring any $\controls$).
+
+\item
+    $\suffix$ marks the end and beginning of a backwards run assuming $\prefix$
+    has previously marked the beginning and end of the preceding forwards run.
+    %
+    It will do this by copying the input tape directly to the output tape,
+    omitting the first instance of $\controls$.
+    %
+    Additionally, before the second occurrence of some $\controls$ it will
+    non-deterministically output some single $q \in \controls$ between the
+    copies of two input characters.
+    %
+    On encountering the second instance of $\controls$ it will copy this and
+    continue to copy the remainder of the tape.
+
+\item
+    $\finalpass$ behaves as prefix, but instead of non-deterministically
+    choosing a position to output some
+    $q \in \controls$
+    it will output some accepting $q$ after all input has been copied.
+    %
+    Note, it will still copy the first instance of some $\controls$ to the
+    output tape.
+
+\item
+    $\reverse$ reverses its input string.
+
+\item
+    $\concatpt$ concatenates its arguments.
+\end{itemize}
+
+We illustrate the use of these \FT{}s with an example.  Let the input word be
+$a b c a b c$
+and consider the program below.
+%
+To the left of the program we give the output of an example run with the input
+$x = a b c a b c$.
+%
+\[
+    \begin{array}{rcll}
+        x_0 &:=& \init(x);
+            & \qquad (x_0 = q_0\ a\ b\ c\ a\ b\ c) \\
+        x_1 &:=& \prefix(x_0);
+            & \qquad (x_1 = q_0\ a\ b\ c\ a\ q_1\ b\ c) \\
+        x_2 &:=& \suffix(x_1);
+            & \qquad (x_2 = a\ b\ q_2\ c\ a\ q_1\ b\ c) \\
+        x_3 &:=& \prefix(x_2);
+            & \qquad (x_3 = a\ b\ q_2\ c\ a\ b\ q_3\ c) \\
+        x_4 &:=& \suffix(x_3);
+            & \qquad (x_4 = a\ b\ c\ a\ q_4\ b\ q_3\ c) \\
+        x_5 &:=& \finalpass(x_4)
+            & \qquad (x_5 = a\ b\ c\ a\ q_4\ b\ c\ q_5) \\
+    \end{array}
+\]
+%
+The values of
+$x_0, \ldots, x_5$
+correspond to a $4$-reversal run of $\Transducer$.
+%
+Beginning at $q_0$ we first read $abca$ and reach $q_1$; here we reverse
+direction and read $ac$ to reach $q_2$; next we reverse direction again and
+read $c a b$ to reach $q_3$; after another reversal $b$ is read and the state
+$q_4$ is reached; finally, $bc$ is read and $q_5$ is reached at the end of the
+tape.
+
+We now define $\Transducer_f$ and $\Transducer_b$ which simulate a
+single-direction run of $\Transducer$ between the two instances of $\controls$
+in the forwards or backwards direction.
+%
+That is
+\begin{itemize}
+\item
+    $\Transducer_f$ (from the beginning of the input tape) skips over all
+    characters until the first instance of $\controls$ is found.
+    %
+    Let this first instance be $q$.
+    %
+    It then starts simulating $\Transducer$ in the left-to-right direction
+    starting from $q$.
+    %
+    That is, it can only simulate moves of the form
+    $(q, a, d, q', b)$
+    where
+    $d \in \{\Stay, \Right\}$.
+    %
+    Any output is written to the output tape.
+    %
+    This simulation continues until $\Transducer_f$ reads some
+    $q' \in \controls$.
+    %
+    It accepts only if the simulation has also reached $q'$.
+
+\item
+    $\Transducer_b$ (from the beginning of the input tape) skips over all
+    characters until the first instance of $\controls$ is found.
+    %
+    Let this first instance be $q$.
+    %
+    It then starts simulating a right-to-left run of $\Transducer$ for a run
+    that would end at $q$.
+    %
+    To do this it has to perform moves \emph{in reverse};
+    that is, for moves of $\Transducer$ of the form
+    $(q, a, d, q', b)$
+    where
+    $d \in \{\Left, \Stay\}$
+    the transducer $\Transducer_b$ can simulate
+    $(q', a, d^{-1}, q, b)$
+    where
+        $(\Left)^{-1} = \Right$
+        and
+        $(\Stay)^{-1} = \Stay$.
+    %
+    Any output is written to the output tape.
+    %
+    This simulation continues until $\Transducer_b$ reads some
+    $q' \in \controls$
+    and accepts only if the simulation has also reached $q'$.
+\end{itemize}
+
+We can now apply $\Transducer_f$ to the output of each use of $\prefix$ or
+$\finalpass$ and $\Transducer_b$ to the output of each use of $\suffix$.
+%
+Since $\Transducer_b$ performs its simulation in reverse, we need to apply
+$\reverse$ to its output.
+%
+Then, we concatenate all outputs to obtain $y$.
+%
+Thus, the output $y$ of the following program $S$ on an input $x$ is the same
+as
+$y := \Transducer(x)$
+when $\Transducer$ performs $2k$ reversals.
+\[
+    \begin{array}{rcl}
+        x_0 &:=& \init(x); \\
+        x_1 &:=& \prefix(x_0); \\
+        x_2 &:=& \suffix(x_1); \\
+        &\vdots& \\
+        x_{2k-1} &:=& \prefix(x_{2k-2}); \\
+        x_{2k} &:=& \suffix(x_{2k-1}); \\
+        x_{2k+1} &:=& \finalpass(x_{2k}); \\
+        \\
+        y_1 &:=& \Transducer_f(x_1); \\
+        y'_2 &:=& \Transducer_b(x_2); \\
+        y_2 &:=& \reverse(y'_2); \\
+        &\vdots& \\
+        y_{2k-1} &:=& \Transducer_f(x_{2k-1}); \\
+        y'_{2k} &:=& \Transducer_b(x_{2k}); \\
+        y_{2k} &:=& \reverse(y'_{2k}); \\
+        y_{2k+1} &:=& \Transducer_f(x_{2k+1}); \\
+        \\
+        y &:=& \concatpt(y_1, \ldots, y_{2k+1})
+    \end{array}
+\]
+
+
+
+%Proposition~\ref{prop:trans} is shown in
+%\shortlong{the full version}{Appendix~\ref{app-rb-2pt}}.
+%Intuitively, a run of a $k$-\RBPPT{} can be split into $k$ runs, each travelling in a single direction.
+%We simulate the runs with $k$ one-way \PT{}s whose outputs are concatenated.
+%Right-to-left runs are simulated left-to-right, and thus the output must be reversed before concatenation.
+
+
+
+\subsection{Proof of Corollary~\ref{cor-s2pt}}
+
+The path feasibility of string constraints with \FT{}s, replaceall, concatenation, and reverse is $\expspace$-complete.
+
+
+
+
+
+%\section{Proof of Theorem~\ref{thm-rb-2pt}: $k$-\RBPPT{} is in EXPSPACE}\label{app-rb-2pt}
+
+
+
+
+
+
+\hide{
 We compute the pre-image of a $k$-\RBPPT{}s and show
 $\ell(|\Transducer|, |\Aut|) = C|\Transducer||\Aut|$
 for some constant $C$.
@@ -640,3 +931,4 @@ fixed: the transducers simply need to remember if they have output one or two
 states of $\Transducer$.
 %
 Furthermore, $k$ is fixed.
+}
