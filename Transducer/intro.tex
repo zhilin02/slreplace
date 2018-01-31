@@ -357,8 +357,8 @@ diverse as replaceall, string reverse, and concatenation, as well as finite-stat
 As a result of the expressibility, parametric transducers can model string functions required in \emph{context-sensitive
 auto-sanitisation} in web templating systems \cite{SSS11}, e.g., Google Closure 
 \cite{Closure} and Handlebars \cite{Handlebars}. 
-We provide a \emph{generic} automata-theoretic decision procedure for the \emph{path 
-feasibility problem} of symbolic executions that use parametric transducers in 
+We provide a \emph{generic} automata-theoretic decision procedure for the path 
+feasibility problem of symbolic executions that use parametric transducers in 
 assignments and regular constraints in assertions. Our constraint language
 is one of the \emph{most expressive decidable} string languages for symbolic 
 executions of programs with strings.
@@ -368,19 +368,25 @@ executions of programs with strings.
 %replaceall \cite{CCHLW18}.
 %
 We also provide a detailed complexity 
-analysis of the generic decision procedure and its instantiations with different classes of transducers.\footnote{
+analysis of the generic decision procedure and its instantiations with different
+classes of transducers\footnote{
 \emph{Worst-case complexity} results  do not prohibit fast solvers 
 \emph{in practice}, e.g., SLOTH for the straight-line 
 logic with finite transducers ({\sc expspace}) 
 \cite{HJLRV18}, and MONA for Weak Second-Order
 Theory of Successors ({\sc nonelementary}). Rather, they
 \emph{inform} algorithmic techniques that could work in practice, e.g., 
-symbolic techniques.}
+symbolic techniques}.
 %
 %which ranges between {\sc expspace} (same as in \cite{LB16,CCHLW18}) and
 %{\sc nonelementary} (i.e. complexity cannot be bounded by a $n$-fold exponential
 %function for every fixed $n > 0$). 
-Among others, our generic decision procedure implies that \emph{the path feasibility problem is $\expspace$-complete for the straight-line string constraint language including all the aforementioned string functions, namely, functional one-way finite-state transducers, concatenation, replaceall, and reverse}, thus strictly generalising the $\expspace$-completeness result for (functional one-way) finite transducers and concatenation in \cite{LB16}, and
+Among others, our generic decision procedure implies that \emph{the path
+feasibility problem is $\expspace$-complete for the straight-line string
+constraint language including all the aforementioned string functions, namely,
+(functional) one-way finite transducers, concatenation, replaceall, and 
+reverse}, thus strictly generalising the $\expspace$-completeness result for 
+finite transducers and concatenation in \cite{LB16}, and
 for replaceall in \cite{CCHLW18}.
 %
 Finally, we extend our results to symbolic automata/transducers
