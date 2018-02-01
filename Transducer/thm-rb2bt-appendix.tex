@@ -7,7 +7,7 @@
 \newcommand\concatpt{\mathsf{concat}}
 \newcommand\symof[1]{\overline{#1}}
 
-\section{Proofs in Section~\ref{subsec:krb} }\label{app-rb-2pt}
+\section{Proof of Theorem~\ref{cor-s2pt}: EXPSPACE upper bound for \FT{}s, replaceall, concatenation, and reverse}\label{app-rb-2pt}
 
 
 %=========================================================
@@ -494,10 +494,10 @@ y &:=& \concatpt(y_0, \ldots, y_{2k-1})
 
 
 
-\subsection{Proof of Theorem~\ref{cor-s2pt}}
+%\paragraph{Proof of Theorem~\ref{cor-s2pt}}
 %
 %The path feasibility of string constraints with \FT{}s, replaceall, concatenation, and reverse is $\expspace$-complete.
-\begin{proof}
+%\begin{proof}
 Let $S$ be a string constraint with \FT{}s, replaceall, concatenation, and reverse.
 
 We first notice that, by Lemma~\ref{lem-rb2pt}, since \FT{}s are corresponding to 0-\RBPPT{}s, they satisfy the regularity condition \prerec{} with  $\ell(|\Transducer|, |\Aut|) = |\Transducer||\Aut|$. 
@@ -508,7 +508,7 @@ It is also easy to observe that concatenation and reverse satisfy  \prerec{} wit
 
 Let $\Transducer_1, \ldots, \Transducer_m$ be an enumeration of  \FT{}s in $S$ and $\replaceall_{p_1}, \ldots, \replaceall_{p_n}$  be an enumeration of replaceall functions in $S$. Then by Theorem~\ref{thm-generic-dec}, 
 the generic decision procedure runs in nondeterministic  
-$$(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) \prod \limits_{i \in [m], j \in [n]} |\Transducer_i| 2^{\bigO(|p_j|^c)} \rcpsi(S)$$
+$$(\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S) \prod \limits_{i \in [m], j \in [n]} (|\Transducer_i| 2^{\bigO(|p_j|^c)} \rcpsi(S))^{\bigO(1)}$$
  space. 
 
 By Savitch's theorem, we conclude that the path feasibility problem of $S$ can be solved in (deterministic) exponential space.
@@ -516,7 +516,7 @@ By Savitch's theorem, we conclude that the path feasibility problem of $S$ can b
 %
 %	$$(\rcdim(S)+1)^{\rcdep(S)}  \rcasrt(S) \left(\ell^{\langle \rcdep(S)
 %	\rangle}(\rcphi(S), \rcpsi(S)) \right)^{O(1)}$$
-\end{proof}
+%\end{proof}
 
 
 
