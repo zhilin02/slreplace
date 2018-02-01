@@ -127,12 +127,13 @@ According to Proposition~\ref{prop-conj-fa-prod}, for each $x \in \vars(S)$, the
     $$|\cE(x)|(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))),$$
 %$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S)},$$
 and $|S_x| \le (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2$. Therefore, the size of the (standard) \FA{} corresponding to $\Aut_x$ is 
-$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^3}.$$
+    $$(|\cE(x)| \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
 %$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S) (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
 
 Since the nonemptiness of an \FA{} can be solved in nondeterministic logarithmic space, we conclude that the nonemptiness of $\Aut_x$ can be solved in nondeterministic
 {\small
-$$|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^3 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
+    $$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 
+    \log(|\cE(x)|\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))$$
 }
 space.
 
@@ -143,13 +144,17 @@ Then we have $M_{i-1} \le (r+1)M_i \le (\rcdim(S)+1)M_i $. Since $\cE_{\rcdep(S)
 Therefore, for each $x \in \vars(S)$, 
 the nonemptiness of $\Aut_x$ can be solved in nondeterministic 
 {\small
-$$(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^3 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
+$$
+    (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 
+    \log[(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)
+    \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))]$$
 }
 space.
 
 Moreover, from the aforementioned analysis, we know that each \FA{} $\Aut$ occurring in $S$ gives rise to at most $(\rcdim(S)+1)^{\rcdep(S)}$ conjunctive \FA{}s in $\bigcup \limits_{x \in \vars(S)} \cE(x)$. Therefore, 
 $$\sum \limits_{x \in \vars(S)} |\cE(x)| \le (\rcdim(S)+1)^{\rcdep(S)} \rcasrt(S).$$
-We then deduce that the sum of the sizes of all the conjunctive \FA{}s in $\cE(x)$ for $x \in \vars(S)$ is bounded by 
+We then deduce that the sum of the sizes of all the conjunctive \FA{}s in
+    $\cE(x)$ for all $x \in \vars(S)$ is bounded by 
 $$
 \begin{array}{l l}
 & \sum \limits_{x \in \vars(S)} (|\cE(x)| \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))  \\
