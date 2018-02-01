@@ -202,7 +202,8 @@ With $(n+1)$ \FFT, we can encode tiling problems over an $n$-fold exponentially 
 %====================================
 
 \vspace{-4mm}
-\subsection{$k$-Reversal-bounded and sweeping two-way transducers} \label{subsec:krb}
+\subsection{$k$-Reversal-bounded transducers} %and sweeping two-way transducers} 
+\label{subsec:krb}
 \vspace{-1mm}
 
  
@@ -213,18 +214,25 @@ Let $k \in \Nat$. A $k$-reversal bounded \PPT{} $\Transducer$ ($k$-\RBPPT{}) is 
 Notice that $k$ must be even since accepting runs must stop on the right end of input strings. 
 Evidently, $0$-reversal bounded \PPT{}s are precisely one-way \PT{}s.   
 
-From the proof of Lemma~\ref{lem-2pt}, we know that the size of the \FFA{} $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$  is at most $|\Transducer| |\Aut|$. Moreover, $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ is $k$-reversal bounded. Therefore, according to the construction of \FA{} from \FFA{}  (cf. \cite{HU79}), we know that the size of each conjunctive \FA{}  in the proof of Lemma~\ref{lem-2pt} is at most $ (|\Transducer||\Aut|)^{k+1}$. 
+
 %Therefore, we have: 
 %
 \begin{lemma}\label{lem-rb2pt}
 The regularity condition \prerec{} holds for string functions definable in $k$-\RBPPT{}s, with $\ell(|\Transducer|, |\Aut|) = (|\Transducer||\Aut|)^{k+1}$.
 \end{lemma}
 
+From the proof of Lemma~\ref{lem-2pt}, we know that the size of the \FFA{} $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$  is at most $|\Transducer| |\Aut|$. Moreover, $\cB_{\Transducer, \Aut, \conacc_{x_1}, \cdots, \conacc_{x_\arity}, q}$ is $k$-reversal bounded. Therefore, according to the construction of \FA{} from \FFA{}  (cf. \cite{HU79}), we have that the size of each conjunctive \FA{}  in the proof of Lemma~\ref{lem-2pt} is at most $ (|\Transducer||\Aut|)^{k+1}$. 
+
 Combing Theorem~\ref{thm-generic-dec} and Lemma~\ref{lem-rb2pt}, we have:
 
 \begin{theorem} \label{thm-rb-2pt}
 Let  $k \in \Nat$. The path feasibility of string constraints with $k$-\RBPPT{}s is in 2-$\expspace$. 
 \end{theorem}
+%
+To see Theorem~\ref{thm-rb-2pt}, we invoke Theorem~\ref{thm-generic-dec}. One can observe that the space required by the instantiation of the generic procedure is $\bigO(\rcphi(S)^{k+k^2+...+k^m}\cdot  \rcpsi(S)^{2^m})$, where $m=\rcdep(S)$, which is doubly exponential in the size of $S$. 
+
+
+
 
 
 %Crucially, symbolic executions where string functions are given by $k$-\RBPPT{}s can be translated to those where string functions are given by only \PT{}s and a special transducer $\Transducer_{\sf reverse}$ for the string reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
@@ -236,26 +244,26 @@ Let  $k \in \Nat$. The path feasibility of string constraints with $k$-\RBPPT{}s
 }
 %%%==========================================
 
-
-Crucially, symbolic executions where string functions are given by \SPPT{}s can be translated in polynomial time to those where string functions are given by only \PT{}s and a special transducer $\Transducer_{\sf reverse}$ for the string reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
-
-
-\begin{proposition}\label{prop-sweep-rb}
-Suppose $\Transducer=(\controls, X, q_0, \finals, \transrel)$ is a \emph{functional} \SPPT{}  with $X= \{x_1,\ldots, x_\arity\}$. Then for each $(w, w', w_1,\ldots, w_\arity) \in \transet(\Transducer)$, there is an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the output $w'$, such that the run contains at most $2(|\controls|-1)$ reversals.
-\end{proposition}
-
-From Proposition~\ref{prop-sweep-rb}, we deduce the following result.
-
-\begin{proposition} \label{prop:trans}
-	Any symbolic execution $S$ where string functions are given by \SPPT{}s can be translated to $S'$ where string functions are given by \PT{}s and $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(\rcphi(S) \cdot \rcdep(S))$. 
-\end{proposition}
-
-Proposition~\ref{prop:trans} is shown in
-\shortlong{the full version}{Appendix~\ref{app-rb-2pt}}.
-Intuitively, a run of a \SPPT{} $\Transducer$ can be split into $2(n-1)$ subruns (where $n$ is the number of states of $\Transducer$), each travelling in a single direction.
-We simulate the subruns with $2(n-1)$ one-way \PT{}s whose outputs are concatenated.
-Right-to-left subruns are simulated left-to-right, and thus the output must be reversed before concatenation.
-
+%\hide{
+%Crucially, symbolic executions where string functions are given by \SPPT{}s can be translated in polynomial time to those where string functions are given by only \PT{}s and a special transducer $\Transducer_{\sf reverse}$ for the string reverse function  (cf. Example~\ref{exmp-ft} in Section~\ref{sec:framework}).  
+%
+%
+%\begin{proposition}\label{prop-sweep-rb}
+%Suppose $\Transducer=(\controls, X, q_0, \finals, \transrel)$ is a \emph{functional} \SPPT{}  with $X= \{x_1,\ldots, x_\arity\}$. Then for each $(w, w', w_1,\ldots, w_\arity) \in \transet(\Transducer)$, there is an accepting run of $\Transducer$ on $w$, equipped with $w_1,\ldots, w_\arity$, with the output $w'$, such that the run contains at most $2(|\controls|-1)$ reversals.
+%\end{proposition}
+%
+%From Proposition~\ref{prop-sweep-rb}, we deduce the following result.
+%
+%\begin{proposition} \label{prop:trans}
+%	Any symbolic execution $S$ where string functions are given by \SPPT{}s can be translated to $S'$ where string functions are given by \PT{}s and $\Transducer_{\sf reverse}$, and $ \rcdep(S')\in \mathcal{O}(\rcphi(S) \cdot \rcdep(S))$. 
+%\end{proposition}
+%
+%Proposition~\ref{prop:trans} is shown in
+%\shortlong{the full version}{Appendix~\ref{app-rb-2pt}}.
+%Intuitively, a run of a \SPPT{} $\Transducer$ can be split into $2(n-1)$ subruns (where $n$ is the number of states of $\Transducer$), each travelling in a single direction.
+%We simulate the subruns with $2(n-1)$ one-way \PT{}s whose outputs are concatenated.
+%Right-to-left subruns are simulated left-to-right, and thus the output must be reversed before concatenation.
+%}
 
 
 %Proposition~\ref{prop:trans} is shown in
@@ -264,8 +272,7 @@ Right-to-left subruns are simulated left-to-right, and thus the output must be r
 %We simulate the runs with $k$ one-way \PT{}s whose outputs are concatenated.
 %Right-to-left runs are simulated left-to-right, and thus the output must be reversed before concatenation.
 
-
-To instantiate the generic decision procedure for \PT{}s and $\Transducer_{\sf reverse}$, we verify the regularity condition \prerec{} for them as follows.
+We are also interested in the question whether one could obtain lower complexity bounds for more specific string functions. In particular, we will examine \PT{}s, $\Transducer_{\sf reverse}$ and the transducer for the $\replaceall$ function. To instantiate the generic decision procedure for these functions, we verify the regularity condition \prerec{} for them as follows.
 %The  \prerec{} assumption for \PT{}s and $\Transducer_{\sf reverse}$. Indeed,
 One may notice that although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general \PPT{}s would have. 
 
@@ -275,14 +282,16 @@ One may notice that although $\Transducer_{\sf reverse}$ is a two-way transducer
 
 The proof is the same as Lemma~\ref{lem-2pt} except constructing $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_\arity}, q}$ is simpler, with size at most $|\Transducer| |\Aut|$, since the transformation from  conjunctive \FFA{} to conjunctive \FA{} is unneeded. For $\Transducer_{\sf reverse}$, the pre-image is given by reversing the direction of each transition of $\Aut$ and swapping initial and final states.   
 
-Combing Theorem~\ref{thm-generic-dec}, Proposition~\ref{prop:trans}, and Lemma~\ref{lem-1pt} together, we have:
+Combing Theorem~\ref{thm-generic-dec} and Lemma~\ref{lem-1pt} together, we have:
 
-\begin{theorem} \label{thm-s2pt}
-The path feasibility of string constraints with \SPPT{}s is $\expspace$-complete. 
+\begin{theorem}\label{cor-s2pt}
+	The path feasibility of string constraints with \FT{}s, replaceall, concatenation, and reverse is $\expspace$-complete.
 \end{theorem}
+%
+%\begin{theorem} \label{thm-s2pt}
+%The path feasibility of string constraints with \SPPT{}s is $\expspace$-complete. 
+%\end{theorem}
 
 The lower bound is from the $\expspace$-hardness of path feasibility of straight-line string constraints with concatenation and one-way (non-parametric) transducers,  both of which are special cases of \PT{}s~\cite{LB16}.
 
-\begin{corollary}\label{cor-s2pt}
-The path feasibility of string constraints with \FT{}s, replaceall, concatenation, and reverse is $\expspace$-complete.
-\end{corollary}
+
