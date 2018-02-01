@@ -1,7 +1,7 @@
 %!TEX root = main.tex
 \section{Details in Section~\ref{sec:symbolic}: Symbolic extensions}\label{app-sym}
 
-In this section, we add the details of Section~\ref{sec:symbolic}, especially the complexity analysis of the decision procedure.
+In this section, we supply the details of Section~\ref{sec:symbolic}, especially the complexity analysis of the decision procedure.
 
 \subsection{Some definitions, notations, and basic facts}
 
@@ -58,7 +58,7 @@ For simplicity, we usually omit $\EndLeft$, and $\EndRight$ from the definition 
 }
 %%%====================semantics removed=============================
 
-\paragraph{Size measures}
+\paragraph{Size measures.}
 We first assume that given a formula $\psi \in \Psi$ of size $m$ in $\Upsilon$, $\issat(\psi)$ can be decided in $\bigO(\beta(m))$ space for some monotone function $\beta$ such that $\beta(m) \ge \log m$. We also assume that the formulae and terms in $\Upsilon$ are encoded in a proper way, e.g. encoded in binary,  and let $|\psi|$  and $|t|$ to denote the size (i.e. number of symbols) of $\psi$ and $t$ with respect to this encoding.
 
 Let $\Transducer$ be a \SSPT{}. We define $|\Transducer|_s$ and $|\Transducer|_d$, the \emph{structural and data size} of $\Transducer$, by taking the guards and outputs of transitions (from the background theory $\Upsilon$) into consideration. Specifically, $|\Transducer|_s$ is defined as the product of the number of transitions and the maximum length of sequences of $\signature$-terms in  transitions of $\Transducer$; 
@@ -199,12 +199,12 @@ $$
 \subsection{The details of the generic decision procedure}
 
 
-Similar to recognisable relations, we also represent a  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), \conacc)$ with $\conacc \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), \conacc)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
+Similar to recognisable relations, we also represent an  $\arity$-ary symbolic recognisable relation as a collection of tuples $(\Aut_1, \ldots, \Aut_\arity)$, where each atom $\Aut_i$ is a conjunctive representation of \SA{}, namely, of the form $((\controls, \transrel), \conacc)$ with $\conacc \subseteq \controls \times \controls$. We will use a conjunctive \SA{} to mean a conjunctive representation of the \SA{}. For a conjunctive \SA{} $\cC= ((\controls, \transrel), \conacc)$, two size measures $|\cC|_s$ and $|\cC|_d$ are defined similarly to \SA{}s. Moreover, the structural (resp. data) size of a representation of a symbolic recognisable relation is defined as the maximum structural (resp. data) size of the atoms.
 
 
-The \prerec{} assumption in Section~\ref{sec:algo} is replaced by $\mathbb{S}$\prerec{} assumption presented below.
+The regularity condition \prerec{}  in Section~\ref{sec:algo} is replaced by $\mathbb{S}$\prerec{} presented below.
 \begin{quote}
-{\bf The $\mathbb{S}$\prerec{} assumption}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $f^{-1}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
+{\bf The symbolic regularity condition $\mathbb{S}$\prerec{}}. For each data string function $f$ in $S$ and each conjunctive \SA{} $\Aut$,  $f^{-1}(\Aut)$ is a symbolic recognisable relation. Furthermore, 
 a representation of $f^{-1}(\Aut)$, whose structural size (resp. data size) is bounded by  $\ell_s(|f|_s, |\Aut|_s)$ (resp. $\ell_d(|f|_s,  |f|_d, |\Aut|_s, |\Aut|_d)$) for some monotone functions $\ell_s$ and $\ell_d$, can be computed effectively. We also assume that each disjunct of the representation of $f^{-1}(\Aut)$ can be enumerated in $\ell_s(|f|_s, |\Aut|_s) \cdot \ell_d(|f|_s,  |f|_d, |\Aut|_s,  |\Aut|_d)$ space.
 %
 \end{quote} 
@@ -225,7 +225,7 @@ $$g^{\langle n+1 \rangle}( k, l) = g(k, g^{\langle n \rangle}( k, l)), \ h^{\lan
 
 
 \begin{theorem}\label{thm-generic-dec-symbolic}
-	Given a symbolic execution  $S$ of programs with data strings satisfying the $\mathbb{S}$\prerec{} assumption, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
+	Given a symbolic execution  $S$ of programs with data strings satisfying $\mathbb{S}$\prerec{}, the path feasibility problem of $S$ can be decided in \emph{nondeterministic} $M+ \beta(M)$ space, where  
 	\[
 	\begin{array}{l c l}
 %		M & = & |\vars(S)| \cdot (\rcdim(S)+1)^{\rcdep(S)}  \rcsreg(S) \cdot  (\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)))^{r}\ \cdot \\
@@ -264,7 +264,7 @@ $$\sizetrans'' = h^{\langle \rcdep(\varphi) \rangle}_g(\numtrans(\Transducer), \
 
 \begin{proof}
 
-For each $i$, let $N_{i,s}$ (resp. $N_{i, d}$) be the maximum structural size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$. From the $\mathbb{S}$\prerec{} assumption and the fact that each string function $f$ satisfies  $|f|_s \le \rcphi_s(S)$ and $|f|_d \le \rcphi_d(S)$, we have 
+For each $i$, let $N_{i,s}$ (resp. $N_{i, d}$) be the maximum structural size (resp. data size) of the conjunctive \SA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$. From $\mathbb{S}$\prerec{} and the fact that each string function $f$ satisfies  $|f|_s \le \rcphi_s(S)$ and $|f|_d \le \rcphi_d(S)$, we have 
 %
 $$N_{i-1, s} \le \ell_s(|f|_s, N_{i, s}) \le \ell_s(\rcphi_s(S), N_{i,s})$$ 
 %
@@ -283,7 +283,7 @@ Therefore, the size of each conjunctive \SA{} in $\cE(x)$ is bounded by
 \small
 $$\ell_s^{\langle  \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) \cdot (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S),  \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)).$$
 }
-Furthermore, according to the $\mathbb{S}$\prerec{} assumption, the construction of these conjunctive \SA{}s can be done in nondeterministic space bounded by 
+Furthermore, according to $\mathbb{S}$\prerec{}, the construction of these conjunctive \SA{}s can be done in nondeterministic space bounded by 
 %
 {
 \small
@@ -368,13 +368,13 @@ for some constant $c > 0$.
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with 
+The regularity condition $\mathbb{S}$\prerec{} holds for \SSPT{}s with 
 $$\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$$ 
 and  
 $$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d).$$ 
 %
-The $\mathbb{S}$\prerec{} assumption holds for $k$-\RBSSPT{}s, with 
-$$\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO( (|\Transducer|_s)^{k+1} |\Aut|_s^{(k+1)|\Transducer|_s})$$ 
+The regularity condition $\mathbb{S}$\prerec{} holds for $k$-\RBSSPT{}s, with 
+$$\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO( |\Transducer|_s^{k+1} |\Aut|_s^{(k+1)|\Transducer|_s})$$ 
 and  
 $$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d).$$
 %
@@ -435,7 +435,7 @@ From Proposition~\ref{prop-2nsa}, the structural (resp. data) size of each conju
 is  $ 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ 
 (resp. $ \bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|_d |\Aut|_d )$). 
 We conclude that 
-the $\mathbb{S}$\prerec{} assumption holds for data string functions definable in \SSPT{}s with 
+$\mathbb{S}$\prerec{} holds for data string functions definable in \SSPT{}s with 
 %
 $$\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$$
  and 
@@ -443,7 +443,7 @@ $$\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Tran
 $$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|_d |\Aut|_d).
 $$
 %
-On the other hand, since there are at most $k+1$ transitions in each crossing sequence, from the proof of Proposition~\ref{prop-2nsa}, we know that the $\mathbb{S}$\prerec{} assumption holds for $k$-\SSPT{}s, with 
+On the other hand, since there are at most $k+1$ transitions in each crossing sequence, from the proof of Proposition~\ref{prop-2nsa}, we know that $\mathbb{S}$\prerec{} holds for $k$-\SSPT{}s, with 
 $$\ell_s(|\Transducer|_s, |\Aut|_s) = \bigO((|\Transducer|_s)^{k+1} (|\Aut|_s^{|\Transducer|_s})^{k+1})$$ 
 and  
 $$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d).$$
@@ -499,7 +499,7 @@ $$
 (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) = |S|^{\bigO(\rcdep(S))}.
 %=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
 $$
-From according to Theorem~\ref{thm-generic-dec-symbolic}, the path feasibility problem for $k$-\RBSSPT{}s can be solved in nondeterministic 
+From Theorem~\ref{thm-generic-dec-symbolic}, the path feasibility problem for $k$-\RBSSPT{}s can be solved in nondeterministic 
 $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$
 space.
 %
