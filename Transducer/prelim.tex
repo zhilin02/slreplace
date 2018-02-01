@@ -3,9 +3,10 @@
 \section{Preliminaries}
 \label{sec:prelim}
 
-\vspace*{-3mm}
+%\vspace*{-2mm}
 
-\paragraph{General Notations.}
+\smallskip
+\noindent\textbf{General Notations.}
 Let $\mathbb{Z}$ and $\Nat$ denote the set of integers and natural numbers
 respectively. For $i \le j \in \Nat$, $[i, j]:=\{i,i+1,\ldots,j\}$ and
 $[i] := [1, i]$. 
@@ -20,39 +21,39 @@ define the pre-image of $X$ under $f$, i.e., $\{ a \in A: f(a) \in X \}$.
 
 %===================================================================================================
 %=======================================================================
-\OMIT{
-\paragraph{Graph-Theoretical Notation.} \tl{not sure whether it is really needed; will see}
-A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
-no directed cycles, where $V$ (resp.~$E \subseteq V \times V$) is a set of vertices (resp.~edges).
-%. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $\mathit{v}$ and follow a consistently-directed sequence of edges that eventually loops back to $\mathit{v}$ again.
-Equivalently, a DAG is a directed graph that has a topological ordering, which
-is a sequence of the vertices such that every edge is directed from an earlier
-vertex to a later vertex in the sequence. An edge $(\mathit{v},\mathit{v'})$ in
-$G$ is called an \emph{incoming} edge of $\mathit{v'}$ and an \emph{outgoing}
-edge of $\mathit{v}$. If $(\mathit{v},\mathit{v'}) \in E$, then $\mathit{v'}$ is
-called a \emph{successor} of $\mathit{v}$ and $\mathit{v}$ is called a
-\emph{predecessor} of $\mathit{v'}$. A \emph{path} $\pi$ in $G$ is a sequence
-$\mathit{v}_0 \mathit{e}_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} \mathit{e}_n
-\mathit{v}_n$ such that for each $i \in [n]$, we have $\mathit{e}_i =
-(\mathit{v}_{i-1},\mathit{v}_i) \in E$. The \emph{length} of the path $\pi$
-%$\mathit{v}_0 e_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} e_n \mathit{v}_n$ in $G$
-is the number $n$ of edges in $\pi$. If there is a path from
-$\mathit{v}$ to $\mathit{v'}$ (resp. from $\mathit{v'}$ to $\mathit{v}$) in $G$,
-then $\mathit{v'}$ is said to be \emph{reachable} (resp. \emph{co-reachable})
-from $\mathit{v}$ in $G$. If $\mathit{v}$ is reachable from $\mathit{v'}$ in
-$G$, then $\mathit{v'}$ is also called an \emph{ancestor} of $\mathit{v}$ in
-$G$. In addition, an edge $(\mathit{v'},\mathit{v''})$ is said to be reachable
-(resp. co-reachable) from $\mathit{v}$ if $\mathit{v'}$ is reachable from $\mathit{v}$ (resp. $\mathit{v''}$ is co-reachable from $\mathit{v}$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $\mathit{v}$ is the number of incoming (resp. outgoing) edges of $\mathit{v}$.
-%A vertex $\mathit{v}$ in $G$ is said to be a \emph{join} vertex if the in-degree of $\mathit{v}$ is at least two.
-%A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.
-A \emph{subgraph} $G'$ of $G=(V,E)$ is a directed graph $(V', E')$ with
-$V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$.
-}
+%\OMIT{
+%\paragraph{Graph-Theoretical Notation.} \tl{not sure whether it is really needed; will see}
+%A DAG (\emph{directed acyclic graph}) $G$ is a finite directed graph $(V, E)$ with
+%no directed cycles, where $V$ (resp.~$E \subseteq V \times V$) is a set of vertices (resp.~edges).
+%%. That is, each DAG consists of finitely many vertices and edges, with each edge directed from one vertex to another, such that there is no way to start at any vertex $\mathit{v}$ and follow a consistently-directed sequence of edges that eventually loops back to $\mathit{v}$ again.
+%Equivalently, a DAG is a directed graph that has a topological ordering, which
+%is a sequence of the vertices such that every edge is directed from an earlier
+%vertex to a later vertex in the sequence. An edge $(\mathit{v},\mathit{v'})$ in
+%$G$ is called an \emph{incoming} edge of $\mathit{v'}$ and an \emph{outgoing}
+%edge of $\mathit{v}$. If $(\mathit{v},\mathit{v'}) \in E$, then $\mathit{v'}$ is
+%called a \emph{successor} of $\mathit{v}$ and $\mathit{v}$ is called a
+%\emph{predecessor} of $\mathit{v'}$. A \emph{path} $\pi$ in $G$ is a sequence
+%$\mathit{v}_0 \mathit{e}_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} \mathit{e}_n
+%\mathit{v}_n$ such that for each $i \in [n]$, we have $\mathit{e}_i =
+%(\mathit{v}_{i-1},\mathit{v}_i) \in E$. The \emph{length} of the path $\pi$
+%%$\mathit{v}_0 e_1 \mathit{v}_1 \cdots \mathit{v}_{n-1} e_n \mathit{v}_n$ in $G$
+%is the number $n$ of edges in $\pi$. If there is a path from
+%$\mathit{v}$ to $\mathit{v'}$ (resp. from $\mathit{v'}$ to $\mathit{v}$) in $G$,
+%then $\mathit{v'}$ is said to be \emph{reachable} (resp. \emph{co-reachable})
+%from $\mathit{v}$ in $G$. If $\mathit{v}$ is reachable from $\mathit{v'}$ in
+%$G$, then $\mathit{v'}$ is also called an \emph{ancestor} of $\mathit{v}$ in
+%$G$. In addition, an edge $(\mathit{v'},\mathit{v''})$ is said to be reachable
+%(resp. co-reachable) from $\mathit{v}$ if $\mathit{v'}$ is reachable from $\mathit{v}$ (resp. $\mathit{v''}$ is co-reachable from $\mathit{v}$). The \emph{in-degree} (resp. \emph{out-degree}) of a vertex $\mathit{v}$ is the number of incoming (resp. outgoing) edges of $\mathit{v}$.
+%%A vertex $\mathit{v}$ in $G$ is said to be a \emph{join} vertex if the in-degree of $\mathit{v}$ is at least two.
+%%A DAG $G$ is called an \emph{arborescence} if there is a vertex $v_0$ such that all the vertices are reachable from $v_0$ in $G$, in addition, there are no join vertices in $G$.
+%A \emph{subgraph} $G'$ of $G=(V,E)$ is a directed graph $(V', E')$ with
+%$V' \subseteq V$ and $E' \subseteq E$. Let $G'$ be a subgraph of $G$. Then $G \setminus G'$ is the graph obtained from $G$ by removing all the edges in $G'$.
+%}
 %=============================================================================
 %=============================================================================================================
 
-\vspace*{-3mm}
-\paragraph{Automata.} We review some background from automata theory;
+\smallskip
+\noindent\textbf{Automata.} We review some background from automata theory;
 for more, see \cite{Kozen-automata,HU79}. Let $\ialphabet$ be a finite set (called
 \defn{alphabet}). We usually define  $\overline{\ialphabet} := \ialphabet \cup \{\EndLeft,\EndRight\}$, where $\EndLeft,\EndRight\notin \Sigma$ are tape end markers for 2-way automata/transducer models. 
 %\tl{I made  $\overline{\ialphabet}$ here as it used in multiple places}
@@ -145,9 +146,8 @@ For latter reference, here we briefly mention the construction of \FA{}s from \F
 In the rest of this paper, \FA{}s refer to $\varepsilon$-free \FA{}s where directions in transitions are omitted. Moreover, for simplicity of notations, in \FA{}s, we omit the two end markers $\EndLeft, \EndRight$ and assume that $\transrel \subseteq \controls \times \ialphabet \times    \{\Right,\Stay\} \times \controls$. 
 %\zhilin{I assume that the two end markers are removed in FAs.}
 
-\vspace{-2mm}
-
-\paragraph{Operations of \FA{}s.} For an FA $\Aut=(Q, q_0, F, \delta)$, $q \in Q$ and $P \subseteq Q$, we use $\Aut(q, P)$ to denote the FA $(Q, q, P, \delta)$, that is, the FA obtained from $\Aut$ by changing the initial state and the set of final states to $q$ and $P$ respectively. We use $q \xrightarrow[\Aut]{w} q'$ to denote the fact that a string $w$ is accepted by $\Aut(q, \{q'\})$. 
+\smallskip
+\noindent\textbf{Operations of \FA{}s.} For an FA $\Aut=(Q, q_0, F, \delta)$, $q \in Q$ and $P \subseteq Q$, we use $\Aut(q, P)$ to denote the FA $(Q, q, P, \delta)$, that is, the FA obtained from $\Aut$ by changing the initial state and the set of final states to $q$ and $P$ respectively. We use $q \xrightarrow[\Aut]{w} q'$ to denote the fact that a string $w$ is accepted by $\Aut(q, \{q'\})$. 
 
 
 Given two \FA{}s $\Aut_1 = (Q_1, q_{0,1}, F_{1}, \delta_1)$ and $\Aut_2 = (Q_2, q_{0,2}, F_2, \delta_2)$, the \emph{product} of $\Aut_1$ and $\Aut_2$, denoted by $\Aut_1 \times \Aut_2$, is defined as $(Q_1 \times Q_2, (q_{0,1}, q_{0,2}), F_1 \times F_2, \delta_1 \times \delta_2)$, where $\delta_1 \times \delta_2$ is the set of tuples $((q_1,q_2), a, (q'_1, q'_2))$ such that $(q_1, a, q'_1) \in \delta_1$ and $(q_2, a, q'_2) \in \delta_2$. Evidently, we have $\Lang(\Aut_1 \times \Aut_2) = \Lang(\Aut_1) \cap \Lang(\Aut_2)$.
@@ -176,8 +176,8 @@ Given two \FA{}s $\Aut_1 = (Q_1, q_{0,1}, F_{1}, \delta_1)$ and $\Aut_2 = (Q_2, 
 
 %%========= computational complexity==========================
 
-\vspace{-2mm}
-\paragraph{Computational complexity.} We study %decision procedures and 
+\smallskip
+\noindent\textbf{Computational complexity.} We study %decision procedures and 
 the complexity of the path feasibility problem for programs with 
 strings. 
 %============ add if space
