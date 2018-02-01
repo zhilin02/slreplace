@@ -7,7 +7,7 @@
 \newcommand\concatpt{\mathsf{concat}}
 \newcommand\symof[1]{\overline{#1}}
 
-\section{Proof of Theorem~\ref{cor-s2pt}: EXPSPACE upper bound for \PT{}s, replaceall, concatenation, and reverse}\label{app-rb-2pt}
+\section{Proof of Theorem~\ref{cor-s2pt}: EXPSPACE upper bound for \PT{}s, replaceall, and reverse}\label{app-rb-2pt}
 
 
 %=========================================================
@@ -498,13 +498,13 @@ y &:=& \concatpt(y_0, \ldots, y_{2k-1})
 %
 %The path feasibility of string constraints with \FT{}s, replaceall, concatenation, and reverse is $\expspace$-complete.
 %\begin{proof}
-Let $S$ be a string constraint with \PT{}s, replaceall, concatenation, and reverse.
+Let $S$ be a string constraint with \PT{}s, replaceall, and reverse.
 
 We first notice that, by Lemma~\ref{lem-rb2pt}, since \PT{}s are corresponding to 0-\RBPPT{}s, they satisfy the regularity condition \prerec{} with  $\ell(|\Transducer|, |\Aut|) = |\Transducer||\Aut|$. 
 
 For replaceall  $\replaceall_{p}(sub, rep)$ where $p$ is a fixed regular expression, we notice that, by Proposition~\ref{prop-replace-pt}, the \PT{} $\Transducer_p$ modelling this function is of exponential size in that of $p$, i.e., $|\Transducer_p| \in 2^{\bigO(|p|^c)}$ for some constant $c > 0$. Therefore, according to Lemma~\ref{lem-rb2pt}, $\replaceall_{p}(sub, rep)$ satisfies the  \prerec{} with  $\ell_{\sf replace}(|\Aut|) =  2^{\bigO(|p|^c)} |\Aut|$.
 
-It is also easy to observe that concatenation and reverse satisfy  \prerec{} with  $\ell_{\sf conc}(|\Aut|) = \bigO(|\Aut|)$, and $\ell_{\sf reverse}(|\Aut|) = \bigO(|\Aut|)$. 
+It is also easy to observe reverse (and concatenation) satisfy  \prerec{} with  $\ell_{\sf conc}(|\Aut|) = \bigO(|\Aut|)$, and $\ell_{\sf reverse}(|\Aut|) = \bigO(|\Aut|)$. 
 
 Let $\Transducer_1, \ldots, \Transducer_m$ be an enumeration of  \PT{}s in $S$ and $\replaceall_{p_1}, \ldots, \replaceall_{p_n}$  be an enumeration of replaceall functions in $S$. Then by Theorem~\ref{thm-generic-dec}, 
 the generic decision procedure runs in nondeterministic  
