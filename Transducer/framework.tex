@@ -277,7 +277,7 @@ To take into consideration the outputs of transitions, we define the \emph{size}
 
 
 \begin{example}\label{exmp-ft}
-    We give two examples of \FT{}s: %(1) erasing \texttt{a} from  a string, (2) 
+    We give two examples of \FFT{}s: %(1) erasing \texttt{a} from  a string, (2) 
     (1) the function \textbf{escapeString}, and (2) the  function \textbf{reverse}.
 %Figure
 %\ref{fig:escapeString} contains an example of the function escapeString,
@@ -521,7 +521,7 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %\tl{again, this is a relation, not a function.}
 
 \begin{example} \label{example:2pt}
- The concatenation operation $x \cdot y$ can be simulated by a \PT{} that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 1, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the head of the \PT{} must stop in the right end of the tape to accept.) 
+ The concatenation operation $x \cdot y$ can be simulated by a \PT{} $\Transducer_{\mathsf{concat}}$  that takes $x$ as the input, output each letter it reads, and output the parameter $y$ in the right end. Specifically, the \PT{} has two states $q_0, q_1$, transitions $(q_0, \ell, 1, q_0, \ell)$ and $(q_0, \ell, 1, q_1, \ell \cdot y)$ for each $\ell \in \ialphabet$,  initial state $q_0$, and final state $q_1$. (Notice that the head of the \PT{} must stop in the right end of the tape to accept.) 
  
   As promised in the Introduction, we now demonstrate how the  $\replaceall$ function from \cite{CCHLW18} can be simulated by \PT{}s.
   %\tl{the replaceall example is much shortened as they already are mentioned in the intro.} 
