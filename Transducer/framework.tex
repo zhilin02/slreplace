@@ -557,7 +557,7 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %    	    output of $\replaceall(\texttt{aabaa},\texttt{a}^+,\texttt{b})$ is
 %    	    \texttt{bbb}.
 %    	    %, not \texttt{aba}.
-     We refer to \cite{CCHLW18} for the details. When this semantics is adopted, we can construct the \PPT{} for $\replaceall_{p}$, which can be found in Appendix~\ref{appendix:replace2pt}.     \qed
+     We refer to \cite{CCHLW18} for the details. When this semantics is adopted, we can construct the \PPT{} for $\replaceall_{p}$ in exponential time (see Proposition~\ref{prop-replace-pt}).    \qed
 %    
 %    
 %    We can express
@@ -578,9 +578,8 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %    The transducer uses the parameter $rep$. Whenever the replacement
 %    is a constant string, a (non-parametric) \FT{} is sufficient to
 %    capture the function; cf. \cite{LB16}. 
-    
-
 \end{example}
+
 
 %The general $\replaceall$ function (see \cite{CCHLW18}) actually admits 
 %a regular expression pattern $p$. In this case, we can use the leftmost
@@ -588,11 +587,12 @@ Similarly to \FT{}s, we also omit $\EndLeft, \EndRight$ in \PT{}s, that is, $\tr
 %Python and sed. Such a function can also be captured by parametric transducers,
 %as the following proposition claims.
 %
-%\begin{proposition}\label{prop-replace-pt}
-%    Given a regular expression pattern $p$, we can compute a 
-%    \PT{} $\Transducer$ such that $\Tran(\Transducer)$ expresses the function $\replaceall_p$.
-%    \label{prop:replaceAll}
-%\end{proposition}
+\begin{proposition}\label{prop-replace-pt}
+    For the function $\replaceall_p$ with the pattern $p$ being a regular expression, we can compute a 
+    \PT{} $\Transducer$ of size $2^{\bigO(|p|^c)}$ for some $c > 0$ such that $\Tran(\Transducer)$ expresses $\replaceall_p$.
+    \label{prop:replaceAll}
+\end{proposition}
+The proof of Proposition~\ref{prop-replace-pt} can be found in Appendix~\ref{appendix:replace2pt}. 
 
 %Give examples: htmlescape, replace-all, and reverse.
 
