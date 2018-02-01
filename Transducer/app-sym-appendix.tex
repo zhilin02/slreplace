@@ -362,15 +362,21 @@ for some constant $c > 0$.
 %F.3
 %%%========================================
 
-\subsection{Instantiation of the generic decision procedure to \SSPT{}s and $k$-\RBSSPT{}s.}
+\subsection{Instantiation of the generic decision procedure to \SSPT{}s and \RBSSPT{}s.}
 
 
 %\noindent Finally, we instantiate the generic decision procedure to \SSPT{}s.
 
 \begin{lemma}\label{lem-spt}
-The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with $\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d)$. 
-
-The $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with $\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$ and  $\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d)$.
+The $\mathbb{S}$\prerec{} assumption holds for \SSPT{}s with 
+$$\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Transducer|_s} \log (|\Transducer|_s |\Aut|_s^{|\Transducer|_s}))}$$ 
+and  
+$$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s  |\Transducer|_d |\Aut|_s^{|\Transducer|_s} |\Aut|_d).$$ 
+%
+The $\mathbb{S}$\prerec{} assumption holds for $k$-\RBSSPT{}s, with 
+$$\ell_s(|\Transducer|_s, |\Aut|_s) =\bigO( (|\Transducer|_s)^{k+1} |\Aut|_s^{(k+1)|\Transducer|_s})$$ 
+and  
+$$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d).$$
 %
 %Given a \SSPT{} $\Transducer$ and a conjunctive \SA{} $\Aut$, $\Pre_\Transducer(\Aut)$ is a symbolic recognisable relation and a representation of which can be computed effectively, such that for each atom $\Aut'$ therein, 
 %$|\Aut'|_c = 2^{\bigO(|\Transducer|_c |\Aut|_c \log (|\Transducer|_c |\Aut|_c))},$ 
@@ -436,8 +442,9 @@ $$\ell_s(|\Transducer|_s, |\Aut|_s) = 2^{\bigO( |\Transducer|_s |\Aut|_s^{|\Tran
  %
 $$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s} |\Transducer|_d |\Aut|_d).
 $$
-On the other hand, the $\mathbb{S}$\prerec{} assumption holds for \SPT{}s, with 
-$$\ell_s(|\Transducer|_s, |\Aut|_s) = \bigO(|\Transducer|_s |\Aut|_s^{|\Transducer|_s})$$ 
+%
+On the other hand, since there are at most $k+1$ transitions in each crossing sequence, from the proof of Proposition~\ref{prop-2nsa}, we know that the $\mathbb{S}$\prerec{} assumption holds for $k$-\SSPT{}s, with 
+$$\ell_s(|\Transducer|_s, |\Aut|_s) = \bigO((|\Transducer|_s)^{k+1} (|\Aut|_s^{|\Transducer|_s})^{k+1})$$ 
 and  
 $$\ell_d(|\Transducer|_s, |\Transducer|_d, |\Aut|_s, |\Aut|_d) = \bigO(|\Transducer|_d |\Aut|_d).$$
 \end{proof}
@@ -451,7 +458,7 @@ The path feasibility of symbolic execution $S$ of programs with data strings can
 \begin{itemize}
 	\item in nondeterministic $\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$  space if the data string functions are given by \SSPT{}s;
 	
-	\item  in nondeterministic $|S|^{|S|^{\bigO(k\cdot \rcdep(S))}} + \beta(|S|^{|S|^{\bigO(k\cdot \rcdep(S))}})$ space if the data string functions are given by $k$-RB2SPTs. %\SPT{}s;
+	\item  in nondeterministic $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$ space if the data string functions are given by $k$-RB2SPTs. %\SPT{}s;
 	
 \end{itemize}
 %
@@ -481,7 +488,7 @@ Therefore, according to Theorem~\ref{thm-generic-dec-symbolic},  the path feasib
 $$\tower(\rcdep(S)+1, \bigO(|S|^2)) + \beta(\tower(\rcdep(S)+1, \bigO(|S|^2)))$$
  space.
  
- For \SPT{}s, 
+ For $k$-\RBSSPT{}s, 
  $$
 \begin{array}{l c l}
 \ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& |S|^{|S|^{\bigO(\rcdep(S))}},
@@ -492,23 +499,21 @@ $$
 (\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) = |S|^{\bigO(\rcdep(S))}.
 %=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
 $$
-From according to Theorem~\ref{thm-generic-dec-symbolic}, the path feasibility problem for \SPT{}s can be solved in nondeterministic 
+From according to Theorem~\ref{thm-generic-dec-symbolic}, the path feasibility problem for $k$-\RBSSPT{}s can be solved in nondeterministic 
 $|S|^{|S|^{\bigO(\rcdep(S))}} + \beta(|S|^{|S|^{\bigO(\rcdep(S))}})$
 space.
-
- For $k$-RB2SPTs, one can follow the approach of Section~\ref{subsec:krb}, in particular, the reduction given in Proposition~\ref{prop:trans} to reduce to the case of  \SPT{}s together with the transducer for the ${\sf reverse}$ function (which is a non-symbolic transducer), with only linear blowup in size over the original data string manipulating program. As a result  
-$$
-\begin{array}{l c l}
-\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& |S|^{|S|^{\bigO(k\cdot \rcdep(S))}},
-\end{array}
-$$
-and
-$$
-(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) = |S|^{\bigO(k\cdot \rcdep(S))}.
-%=& (\rcphi_c(S) \rcphi_d(S))^{\rcdep(S)} \tower(\rcdep(S)-1, \bigO(\rcphi_c^2 \rcpsi_c^{\rcphi_c}))  \\
-$$
-%From according to Theorem~\ref{thm-generic-dec-symbolic}, 
-and the path feasibility problem for  $k$-RB2SPTs can be solved in nondeterministic 
-$|S|^{|S|^{\bigO(k\cdot \rcdep(S))}} + \beta(|S|^{|S|^{\bigO(k\cdot \rcdep(S))}})$
-space.
+%
+% For $k$-RB2SPTs, one can follow the approach of Section~\ref{subsec:krb}, in particular, the reduction given in Proposition~\ref{prop:trans} to reduce to the case of  \SPT{}s together with the transducer for the ${\sf reverse}$ function (which is a non-symbolic transducer), with only linear blowup in size over the original data string manipulating program. As a result  
+%$$
+%\begin{array}{l c l}
+%\ell_s^{\langle \rcdep(S) \rangle}(\rcphi_s(S), \rcpsi_s(S)) &=& |S|^{|S|^{\bigO(k\cdot \rcdep(S))}},
+%\end{array}
+%$$
+%and
+%$$
+%(\ell_d)^{\langle \rcdep(S) \rangle}_{\ell_s}(\rcphi_s(S), \rcphi_d(S), \rcpsi_s(S), \rcpsi_d(S)) = |S|^{\bigO(k\cdot \rcdep(S))}.
+%$$
+%and the path feasibility problem for  $k$-RB2SPTs can be solved in nondeterministic 
+%$|S|^{|S|^{\bigO(k\cdot \rcdep(S))}} + \beta(|S|^{|S|^{\bigO(k\cdot \rcdep(S))}})$
+%space.
 \end{proof}
