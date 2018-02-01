@@ -229,7 +229,13 @@ Combing Theorem~\ref{thm-generic-dec} and Lemma~\ref{lem-rb2pt}, we have:
 Let  $k \in \Nat$. The path feasibility of string constraints with $k$-\RBPPT{}s is in 2-$\expspace$. 
 \end{theorem}
 %
-To see Theorem~\ref{thm-rb-2pt}, we invoke Theorem~\ref{thm-generic-dec} again. One can observe that the space required by the instantiation of the generic procedure is $\bigO(\rcphi(S)^{k+k^2+...+k^m}\cdot  \rcpsi(S)^{2^m})$ (where $m=\rcdep(S)$), which is doubly exponential in the size of $S$. 
+To see Theorem~\ref{thm-rb-2pt}, we invoke Theorem~\ref{thm-generic-dec} again. One can observe that the space required by the instantiation of the generic procedure is 
+
+\smallskip
+\hspace{1.5cm} $\bigO(\rcphi(S)^{(k+1)+(k+1)^2+...+(k+1)^m}\cdot  \rcpsi(S)^{(k+1)^m})$
+\smallskip
+
+\noindent (where $m=\rcdep(S)$), which is doubly exponential in the size of $S$. 
 
 
 
@@ -272,7 +278,9 @@ To see Theorem~\ref{thm-rb-2pt}, we invoke Theorem~\ref{thm-generic-dec} again. 
 %We simulate the runs with $k$ one-way \PT{}s whose outputs are concatenated.
 %Right-to-left runs are simulated left-to-right, and thus the output must be reversed before concatenation.
 
-We are also interested in the question whether one could obtain lower complexity bounds for more specific string functions. In particular, we will examine \PT{}s, $\Transducer_{\sf reverse}$ (cf. Example~\ref{example:2pt}) and  $\Transducer_{\sf replaceall}$ (cf.\ Proposition~\ref{prop-replace-pt}). To instantiate the generic decision procedure for these functions, we verify the regularity condition \prerec{} for them as follows.
+We are also interested in the question whether one could obtain lower complexity bounds for more specific string functions. In particular, we will examine \PT{}s, 
+%$\Transducer_{\sf reverse}$ (cf. Example~\ref{example:2pt}) and  $\Transducer_{\sf replaceall}$
+reverse function modelled by $\Transducer_{\sf reverse}$ (cf.\ Example~\ref{exmp-ft}), concatenation and replaceall function modelled by $\Transducer_{\mathsf{concat}}$ and $\Transducer_{\replaceall_p}$ respectively (cf.\ Example~\ref{example:2pt}). To instantiate the generic decision procedure for these functions, we verify the regularity condition \prerec{} for them as follows.
 %The  \prerec{} assumption for \PT{}s and $\Transducer_{\sf reverse}$. Indeed,
 One may notice that although $\Transducer_{\sf reverse}$ is a two-way transducer, its pre-image does \emph{not} bring an exponential blowup as general \PPT{}s would have. 
 
@@ -280,9 +288,9 @@ One may notice that although $\Transducer_{\sf reverse}$ is a two-way transducer
 	The regularity condition \prerec{} holds for string functions definable in \PT{}s or $\Transducer_{\sf reverse}$, with $\ell(|\Transducer|, |\Aut|) = |\Transducer||\Aut|$.
 \end{lemma}
 
-The proof is the same as Lemma~\ref{lem-2pt} except constructing $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_\arity}, q}$ is simpler, with size at most $|\Transducer| |\Aut|$, since the transformation from  conjunctive \FFA{} to conjunctive \FA{} is not needed. For $\Transducer_{\sf reverse}$, the pre-image is given by reversing the direction of each transition of $\Aut$ and swapping initial and final states.   
+The proof is the same as Lemma~\ref{lem-2pt} except constructing $\cB_{\Transducer, \Aut, \conacc_{x_1}, \ldots, \conacc_{x_\arity}, q}$ is simpler, with size at most $|\Transducer| |\Aut|$, since the transformation from  conjunctive \FFA{} to conjunctive \FA{} is not needed. For $\Transducer_{\sf reverse}$, the pre-image is given by reversing the direction of each transition of $\Aut$ and swapping initial and final states. 
 
-Combing Theorem~\ref{thm-generic-dec} and Lemma~\ref{lem-1pt} together, we have:
+Furthermore, from Proposition~\ref{prop-replace-pt}, we know that  $\Transducer_{\replaceall_p}$ is of size $2^{\bigO(|p|^c)}$ for some constant $c > 0$.  Combining this fact, Theorem~\ref{thm-generic-dec}, and Lemma~\ref{lem-1pt}  together, we have:
 
 \begin{theorem}\label{cor-s2pt}
 	The path feasibility of string constraints with \FT{}s, replaceall, concatenation, and reverse is $\expspace$-complete.
