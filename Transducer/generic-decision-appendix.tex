@@ -4,14 +4,21 @@
 
 In this proof, we will use the following proposition.
 \begin{proposition}\label{prop-conj-fa-prod}
-For a pair of conjunctive \FA{}s $\Aut_1 = ((\controls_1, \transrel_1), S_1)$ and $\Aut_2 = ((\controls_2, \transrel_2), S_2)$, a conjunctive \FA{} $\Aut = (\controls_1 \times \controls_2, \transrel_1 \times \transrel_2, S)$ such that $|S| = \max(|S_1|, |S_2|)$ can be constructed to recognise $\Lang(\Aut_1) \cap \Lang(\Aut_2)$. 
+For a pair of conjunctive \FA{}s $\Aut_1 = ((\controls_1, \transrel_1), S_1)$
+    and $\Aut_2 = ((\controls_2, \transrel_2), S_2)$, the conjunctive \FA{} 
+    $\Aut = (\controls_1 \cup \controls_2, \transrel_1 \cup \transrel_2, S_1
+    \cup S_2)$ recognises $\Lang(\Aut_1) \cap \Lang(\Aut_2)$.
+    %such that $|S| = \max(|S_1|, |S_2|)$ can be constructed to recognise $\Lang(\Aut_1) \cap \Lang(\Aut_2)$. 
 \end{proposition}
+This is immediate from the definition of acceptance for \FA{}.
+\OMIT{
 \begin{proof}
 %\paragraph{Proof of Proposition~\ref{prop-conj-fa-prod}.}
 Let $\Aut_1 = ((\controls_1, \transrel_1), S_1)$ and $\Aut_2 = ((\controls_2, \transrel_2), S_2)$ be two conjunctive \FA{}s such that $S_1 = \{(p_1, p'_1),\ldots, (p_m, p'_m)\}$ and $S_2 = \{(q_1, q'_1), \ldots, (q_n, q'_n)\}$ with $m \le n$. Then we construct a conjunctive \FA{} $\Aut = (\controls_1 \times \controls_2, \transrel_1 \times \transrel_2, S)$, where 
 $$S= \{((p_i, q_i), (p'_i, q'_i)) \mid i \in [m]\} \cup \{((p_m, q_{m+i}), (p'_m, q_{m+i})) \mid i \in [n-m]\}.$$ 
 Note $|S|  = \max(|S_1|, |S_2|)$. Evidently $\Lang(\Aut) = \Lang(\Aut_1) \cap \Lang(\Aut_2)$. 
 \end{proof}
+}
 
 \paragraph{Spelling out the algorithm in full.}
 To facilitate the complexity analysis, we will spell out the modified algorithm 
@@ -110,20 +117,22 @@ For each $i$,
 %\item 
 let $N_i$ be the maximum size of the conjunctive \FA{}s in $\bigcup \limits_{x \in \vars(S)} \cE_i(x)$.
 %\end{itemize}
-Since each string function $f$ satisfies $|f| \le \rcphi(S)$, we have that $N_{i-1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotone). Furthermore, because each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ for each $x \in \vars(S)$ is of size bounded by $\rcpsi(S)$, we have that for each $x \in \vars(S)$, each conjunctive \FA{} in $\cE(x)$ is of size bounded by $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
+Since each string function $f$ satisfies $|f| \le \rcphi(S)$, we have that $N_{i-1} \le \ell(|f|, N_i) \le \ell(\rcphi(S), N_i)$ (note that we have assumed that $\ell$ is monotone). Furthermore, because each conjunctive \FA{} in $\cE_{\rcdep(S)}(x)$ for each $x \in \vars(S)$ is of size bounded by $\rcpsi(S)$, we have 
+    that for each $x \in \vars(S)$, each conjunctive \FA{} in $\cE(x)$ is of
+    size bounded by \\ $\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$. 
 %
 We emphasise that, according to the \prerec{} assumption, the construction of these conjunctive \FA{}s can be done in nondeterministic $(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{c_0}$ space. 
 
 According to Proposition~\ref{prop-conj-fa-prod}, for each $x \in \vars(S)$, the conjunctive product \FA{} $\Aut_x=((\controls_x, \transrel_x), S_x)$ of these conjunctive \FA{}s  in $\cE(x)$ is of size 
-$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)|},$$
+    $$|\cE(x)|(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))),$$
 %$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S)},$$
 and $|S_x| \le (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2$. Therefore, the size of the (standard) \FA{} corresponding to $\Aut_x$ is 
-$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
+$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^3}.$$
 %$$(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^{(\rcdim(S)+1)^{\rcdep(S)} \rcreg(S) (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2}.$$
 
 Since the nonemptiness of an \FA{} can be solved in nondeterministic logarithmic space, we conclude that the nonemptiness of $\Aut_x$ can be solved in nondeterministic
 {\small
-$$|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
+$$|\cE(x)| (\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^3 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
 }
 space.
 
@@ -134,7 +143,7 @@ Then we have $M_{i-1} \le (r+1)M_i \le (\rcdim(S)+1)M_i $. Since $\cE_{\rcdep(S)
 Therefore, for each $x \in \vars(S)$, 
 the nonemptiness of $\Aut_x$ can be solved in nondeterministic 
 {\small
-$$(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^2 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
+$$(\rcdim(S)+1)^{\rcdep(S)}\rcasrt(S)(\ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S)))^3 \log \ell^{\langle \rcdep(S) \rangle}(\rcphi(S), \rcpsi(S))$$
 }
 space.
 
