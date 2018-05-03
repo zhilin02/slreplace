@@ -1,0 +1,88 @@
+----------------------- REVIEW 1 ---------------------
+Overall evaluation: -1 (weak reject)
+
+----------- Overall evaluation -----------
+
+Q1: The mode of parametric transducers is not a new model, thus the reviewer is not sure what is the contribution in the paper.
+
+Answer: 
+
+As the 2nd reviewer pointed out, the key difference between a standard transducer and a parametric transducers is that the former outputs specific strings over transitions while the latter prints out symbolic variables which can later be instantiated to particular strings. One concrete example that parametric transducers are *strictly more powerful* than standard ones is that replaceall function of the form replaceall(x, p, y), where x, y are string variables, and p is a regular expression, cannot be modelled by standard transducers, but can be easily modelled by parametric ones.
+
+Since parametric transducers can model string functions with multiple string inputs, the pre-images of parametric transducers are not regular languages, but recognisable relations, which are finite unions of *cartesian product* of regular languages. Therefore, the pre-image computation of parametric transducers is still nontrivial, considering the known result that the pre-image of two-way transducers is regular.
+
+Q2: The extension to symbolic transducers is interesting, but the proofs in the appendix are not detailed enough and I can’t quite verify their correctness. I’m confused by the extensions to symbolic alphabets. I can’t quite follow the appendix since there is very little intuition, but I would expect the number of midterms (number satisfiable predicate boolean combinations) to appear somewhere in the complexity terms. It’s pretty easy to build a transducer that keeps reading the same symbol with different predicates (this doesn’t happen when going one way) and one has to reason about all such combinations of predicates.
+
+Answer: 
+The extension to symbolic transducers is the second contribution of this paper and we only sketch the results in the main text, due to space limit. Although the proofs in the appendix should be polished further, the proofs follow the same line as non-symbolic setting, simply replacing recognisable relations by symbolic recognisable relations.
+
+In the transformation from two-way symbolic automata to one-way symbolic automata (Proposition 2) involves the boolean combination of predicates. But since the boolean combination contains only at most exponentially many predicates from the original two-way symbolic automata, we derive the exponential upper bound for the transformation, without explicitly mentioning the size of these midterms.
+
+In view of the above arguments, we do hope the reviewer could reconsider his score on this paper.
+
+
+
+----------------------- REVIEW 2 ---------------------
+Overall evaluation: 1 (weak accept)
+
+----------- Overall evaluation -----------
+
+The paper is rather dense and quite difficult to follow. 
+Specifically, reading Section 5 is rather challenging.
+However, even though I am not an expert in the area, the paper provided enough context to clarify its position within the rich literature about string solvers. 
+
+The paper provides some decidability results. 
+While these are not too promising (the decidability problem is wEXSPACE-complete.)
+Nevertheless, one can only hope that in practice, the solving would tun out to be efficient enough.
+Thus, it is unfortunate that the authors did not provide an implementation, as this would have made the paper even stronger. However, even in its current state the paper provides interesting and useful results.
+
+
+Comments:
+========= 
+
+- One of the main contributions of the paper is the support of the reverse operation. As supporting it requires introducing two-way transducers, one can wonder if it is worth it. I.e., us this operation common in practical applications? Can you obtain better complexity results without it?
+
+Major comments:
+================ 
+
+- Page 10, line 4: What is "B_{q,q'}" ? 
+
+
+----------------------- REVIEW 3 ---------------------
+Overall evaluation: 1 (weak accept)
+
+----------- Overall evaluation -----------
+Overall, the problem addressed in this paper is interesting. The paper is easy to read and to follow however I found the relation between string functions and parametric transducers is very complicated. I wonder why not considering from the beginning a transducer with multiple tapes. The results presented in this paper are interesting (at least form the theoretical point of view) however not very surprising.  It is not clear if the results obtained in this paper will lead to efficient techniques for the analysis of string constraints given the complexity. The techniques which are used to prove the decidability results are standard in my opinion. Furthermore,  the novelty of the used techniques is not clear compared to some previously published paper [15,28,39].  In my opinion, this paper slightly extends these results especially for the most interesting case of the one-way parametric transducer or parametric transducers implementing “ReplaceAll" or “Reverse (which has th!
+ e lowest complexity). Finally, the paper would be stronger if tight lower-bounds were given for the first two subclasses.
+
+----------------------- REVIEW 4 ---------------------
+Overall evaluation: -1 (weak reject)
+
+----------- Overall evaluation -----------
+Evaluation
+-----------
+
+1. This is a theoretically solid paper. One of the significant achievements is
+summarized by Theorem 5, showing that the procedure in the paper preserves
+decidability and complexity in the presence of replaceall and reverse
+constraints.
+
+2. I disagree with the intuition the authors present about transducer-based
+reasoning being necessarily the way to go for reasoning about string
+constraints. This paper proves decidability - yes. Also, automata theoretic
+techniques are a natural step towards the problem, but I feel that recent
+experience shows that one must combine with symbolic reasoning techniques, and
+in fact, as shown by reference 38, one may question if the automata part is
+required at all. Specifically, I intuitively feel that in practice, an
+effective way to reason about the reverse and replaceall functions is to use
+some axiomatic constraints.
+
+3. I think one thing that the paper did not make clear to me in the lead-up is
+that it is a purely theoretical paper. There is a lot of emphasis on practical
+applications and I was surprised to find in the related work section, a whole
+paragraph discussing existing benchmarks, but no benchmarking in the paper
+itself. Since there are already a few transducer-based string solvers I wonder
+what prevented the authors from implementing their procedure. Alternatively, I
+would have been fine if they presented it as a purely theoretical result.
+
+------------------------------------------------------
