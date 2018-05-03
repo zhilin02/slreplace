@@ -1,0 +1,346 @@
+%% For double-blind review submission
+%\documentclass[acmsmall,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission
+%\documentclass[acmsmall,10pt,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission
+%\documentclass[acmsmall,10pt]{acmart}\settopmatter{}
+\documentclass[acmsmall,screen]{acmart}
+%\documentclass[acmsmall,review]{acmart}
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format should change 'acmsmall' to
+%% 'sigplan'.
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{amsmath}
+\usepackage{leftidx}
+\usepackage{mathtools}
+\usepackage{paralist}
+\usepackage{color}
+\usepackage{mathrsfs}
+\usepackage{tikz}
+\usepackage[draft]{minted}
+\usetikzlibrary{shapes}
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+%==========================================================
+\input{macros.tex}
+\input{comm-anthony}
+%==========================================================
+
+%\newcommand\shortlong[2]{#2}
+\newcommand\shortlong[2]{#1}
+
+%\newif\ifdraft\drafttrue
+\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {YA: #1 :AY} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\fi
+
+\newcommand{\concat} {\circ}
+\newcommand{\replace} {{\sf replace}}
+\newcommand{\str} {{\sf Str}}
+\newcommand{\intnum} {{\sf Int}}
+\newcommand{\regexp} {{\sf RegExp}}
+\newcommand{\strarr} {{\sf StringArray}}
+\newcommand{\dtypes} {{\sf DataTypes}}
+\newcommand{\anarr} {{\mathbb{A}}}
+
+%============================================================
+
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+%%% If you see 'ACMUNKNOWN' in the 'setcopyright' statement below,
+%%% please first submit your publishing-rights agreement with ACM (follow link on submission page).
+%%% Then please update our instructions page and copy-and-paste the NEW commands into your article.
+%%% Please contact us in case of questions; allow up to 10 min for the system to propagate the information.
+%%%
+%%% The following is specific to POPL'18 and the paper
+%%% 'What's Decidable about String Constraints with ReplaceAll Function?'
+%%% by Taolue Chen, Yan Chen, Matthew Hague, Anthony W. Lin, and Zhilin Wu.
+%%%
+\setcopyright{acmlicensed}
+\acmPrice{}
+%\acmDOI{10.1145/3158091}
+\acmYear{2019}
+\copyrightyear{2019}
+\acmJournal{PACMPL}
+\acmVolume{1}
+\acmNumber{XXXX}
+\acmArticle{1}
+\acmMonth{1}
+
+\begin{document}
+\newtheorem{remark}[theorem]{Remark}
+
+%% Title information
+\title[String Constraint Solving with Transducers, ReplaceAll and Reverse]{String Constraint Solving with Transducers, ReplaceAll and Reverse \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
+                                        %% when present, will be used in
+                                        %% header instead of Full Title.
+%\titlenote{}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{}                     %% \subtitle is optional
+%\subtitlenote{}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+\author{Taolue Chen}
+\orcid{0000-0002-5993-1665}
+\affiliation{
+  %\position{Position1}
+  \department{Department of Computer Science and Information Systems}              %% \department is recommended
+  \institution{Birkbeck, University of London}            %% \institution is required
+  \streetaddress{Malet Street}
+  \city{London}
+  %\state{State1}
+  \postcode{WC1E 7HX}
+  \country{United Kingdom}
+}
+\email{taolue@dcs.bbk.ac.uk}          %% \email is recommended
+
+\author{Matthew Hague}
+\orcid{0000-0003-4913-3800}
+\affiliation{
+  %\position{Position1}
+  \department{Department of Computer Science} %% \department is recommended
+  \institution{Royal Holloway, University of London} %% \institution is required
+  \streetaddress{Egham Hill}
+  \city{Egham}
+  \state{Surrey}
+  \postcode{TW20 0EX}
+  \country{United Kingdom}
+}
+\email{matthew.hague@rhul.ac.uk}          %% \email is recommended
+
+\author{Anthony W. Lin}
+\orcid{0000-0003-4715-5096}
+\affiliation{
+  %\position{Position1}
+  \department{Department of Computer Science}              %% \department is recommended
+  \institution{University of Oxford}            %% \institution is required
+  \streetaddress{Wolfson Buildin, Parks Road}
+  \city{Oxford}
+  %\state{State1}
+  \postcode{OX1 3QD}
+  \country{United Kingdom}
+}
+\email{anthony.lin@cs.ox.ac.uk}          %% \email is recommended
+
+
+\author{Philipp Ruemmer}
+\orcid{}
+\affiliation{
+  %\position{Position1}
+  \department{Department of Information Technology}              %% \department is recommended
+  \institution{Uppsala University}            %% \institution is required
+  \streetaddress{Box 337}
+  \city{Uppsala}
+  %\state{State1}
+  \postcode{SE-751 05}
+  \country{Sweden}
+}
+\email{philipp.ruemmer@it.uu.se}     
+
+\author{Zhilin Wu}
+%\orcid{0000-0002-5993-1665}
+\affiliation{
+  %\position{Position1}
+%  \department{State Key Laboratory of Computer Science} %% \department is recommended
+  \institution{State Key Laboratory of Computer Science, Institute of Software, Chinese Academy of Sciences} %% \institution is required
+  %\streetaddress{Street1 Address1}
+  %\city{City1}
+  %\state{State1}
+  %\postcode{Post-Code1}
+  \country{China}
+}
+%\email{first1.last1@inst1.edu}          %% \email is recommended
+
+
+
+
+%% Paper note
+%% The \thanks command may be used to create a "paper note" ---
+%% similar to a title note or an author note, but not explicitly
+%% associated with a particular element.  It will appear immediately
+%% above the permission/copyright statement.
+%\thanks{with paper note}                %% \thanks is optional
+                                        %% can be repeated if necesary
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10003752.10003790.10003794</concept_id>
+<concept_desc>Theory of computation~Automated reasoning</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10003790.10011192</concept_id>
+<concept_desc>Theory of computation~Verification by model checking</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010138.10010142</concept_id>
+<concept_desc>Theory of computation~Program verification</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10010124.10010138.10010143</concept_id>
+<concept_desc>Theory of computation~Program analysis</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10003790.10002990</concept_id>
+<concept_desc>Theory of computation~Logic and verification</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.10003777.10003778</concept_id>
+<concept_desc>Theory of computation~Complexity classes</concept_desc>
+<concept_significance>100</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Theory of computation~Automated reasoning}
+\ccsdesc[500]{Theory of computation~Verification by model checking}
+\ccsdesc[500]{Theory of computation~Program verification}
+\ccsdesc[500]{Theory of computation~Program analysis}
+\ccsdesc[300]{Theory of computation~Logic and verification}
+\ccsdesc[100]{Theory of computation~Complexity classes}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{String Constraints, Transducers, ReplaceAll, Reverse, Decision Procedures, Straight-Line Programs}
+
+\input{abstract.tex}
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+\input{01_intro.tex}
+
+\input{02_prel.tex}
+
+\input{03_core.tex}
+
+\input{04_decision.tex}
+
+\input{05_fragments.tex}
+
+\input{06_extensions.tex}
+
+\input{07_related}
+
+\input{08_conc}
+
+% Acknowledgments
+\begin{acks}
+ %% acks environment is optional
+ %% contents suppressed with 'anonymous'
+ %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
+ %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
+ %% acknowledge financial support and will be used by metadata
+ %% extraction tools.
+ % This material is based upon work supported by the
+ % \grantsponsor{GS100000001}{National Science
+ %   Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
+ % No.~\grantnum{GS100000001}{nnnnnnn} and Grant
+ % No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
+ % conclusions or recommendations expressed in this material are those
+ % of the author and do not necessarily reflect the views of the
+ % National Science Foundation.
+    %This work was supported by the
+\OMIT{
+T. Chen is supported by the
+\grantsponsor{}{Australian Research Council }{} under Grant No.~\grantnum{}{DP160101652}
+and the
+\grantsponsor{}{Engineering and Physical Sciences Research Council}{} under Grant No.~\grantnum{}{EP/P00430X/1}.
+    %
+    M. Hague is supported by the
+    \grantsponsor{GS501100000266}{Engineering and Physical Sciences Research Council}
+                 {http://dx.doi.org/10.13039/501100000266}
+    under Grant No.~\grantnum{GS501100000266}{EP/K009907/1}.
+    A.~Lin is supported by the European Research Council (ERC) under the European
+    Union's Horizon 2020 research and innovation programme (grant agreement no
+    759969).
+    %
+    Z. Wu is supported by the
+    \grantsponsor{}{National Natural Science Foundation of China}{}
+    under Grant No.~\grantnum{}{61472474} and Grant No. ~\grantnum{}{61572478},
+    \grantsponsor{}{the INRIA-CAS joint research project ``Verification, Interaction, and Proofs''}{},
+    \mat{Add your sponsors here!}\zhilin{I suggest ordering the grants according to the order of the authors}
+}
+\end{acks}
+
+
+%% Bibliography
+%\bibliography{bibfile}
+
+\newpage
+
+\bibliography{string}
+
+\shortlong{}{
+
+\newpage
+
+% Appendix
+\input{09_appendix}
+}
+
+
+
+\end{document}
