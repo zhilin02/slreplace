@@ -1,5 +1,7 @@
-%!TEX root = popl2018.tex
+%!TEX root = main.tex
 
+\newcommand{\brac}[1]{\left( #1 \right)}
+\newcommand{\tup}[1]{\left( #1 \right)}
 \newcommand{\set}[1]{\{ #1 \}}
 \newcommand{\sequence}[2]{(#1, \ldots, #2)}
 \newcommand{\couple}[2]{(#1,#2)}
@@ -141,7 +143,7 @@
 \newcommand{\malloc}{\mathtt{malloc}}
 \newcommand{\cons}{\mathtt{cons}}
 \newcommand{\new}{\mathtt{new}}
-\newcommand{\free}[1]{\mathtt{free} \ #1}
+\newcommand{\free}[1]{\mathtt{free} #1}
 \newcommand{\maxform}[1]{\mathtt{maxForms}(#1)}
 \newcommand{\locations}[1]{\mathtt{loc}(#1)}
 \newcommand{\values}{\mathtt{Val}}
@@ -178,8 +180,8 @@
 \newcommand{\pointsl}[1]{\stackrel{#1}{\hookrightarrow}}
 \newcommand{\ppointsl}[1]{\stackrel{#1}{\mapsto}}
 \newcommand{\ourhook}[1]{\stackrel{#1}{\hookrightarrow}}
-\newcommand{\ltrue}{{\sf true}}
-\newcommand{\lfalse}{{\sf false}}
+\newcommand{\ltrue}{\mathsf{true}}
+\newcommand{\lfalse}{\mathsf{false}}
 
 
 \newcommand{\variables}{\mathtt{FVAR}}
@@ -293,6 +295,7 @@
 \newcommand\cC{\mathcal{C}}
 \newcommand\cE{\mathcal{E}}
 \newcommand\cG{\mathcal{G}}
+\newcommand\cI{\mathcal{I}}
 \newcommand\Ll{\mathcal{L}}
 \newcommand\cM{\mathcal{M}}
 \newcommand\cP{\mathcal{P}}
@@ -300,10 +303,14 @@
 \newcommand\cS{\mathcal{S}}
 \newcommand\cT{\mathcal{T}}
 
+\newcommand\bigO{\mathcal{O}}
+
+
 \newcommand\vard{\mathfrak{d}}
 
 \newcommand\replaceall{\mathsf{replaceAll}}
 \newcommand\indexof{\mathsf{IndexOf}}
+
 
 
 \newcommand\strline{\mathsf{SL}}
@@ -312,11 +319,11 @@
 
 \newcommand\search{\mathsf{search}}
 
-\newcommand\verify{\mathsf{vfy}}
+\newcommand\verify{\mathsf{verify}}
 
-\newcommand\searchleft{\mathsf{left}}
+\newcommand\searchleft{\mathsf{searchLeft}}
 
-\newcommand\searchlong{\mathsf{long}}
+\newcommand\searchlong{\mathsf{searchLong}}
 
 
 \newcommand\pref{\mathsf{Pref}}
@@ -367,5 +374,121 @@
 \newcommand{\dmdidx}{{\sf Idx_{dmd}}}
 \newcommand{\lftlen}{{\sf Len_{lft}}}
 
+\newcommand\rcdim{\mathsf{art}}
+
+\newcommand\rcdep{\mathsf{asgn}}
+
+\newcommand\rcasrt{\mathsf{asrt}}
+
+\newcommand\rcreg{\mathsf{reg}}
+
+\newcommand\rcsreg{\mathsf{sreg}}
+
+
+\newcommand\tower{\mathrm{Tower}}
+
+\newcommand\rcphi{\mathsf{fnsize}}
+\newcommand\rcpsi{\mathsf{fasize}}
+
+%\newtheorem{remark}[theorem]{Remark}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macros for two-way lower bound proof.
+
+\usepackage{unicode-math}
+
+\newcommand\ap[2]{{#1}\mathord{\brac{#2}}}
+
+% Tiling
+
+\newcommand\tiles{\Theta}
+\newcommand\hrel{H}
+\newcommand\vrel{V}
+\newcommand\tile{t}
+\newcommand\inittile{t_I}
+\newcommand\fintile{t_F}
+\newcommand\tileheight{h}
+
+% Large numbers
+
+\newcommand\expheight{n}
+\newcommand\linlen{m}
+\newcommand\tilesnum[1]{\Theta_{#1}}
+\newcommand\hrelnum[1]{H_{#1}}
+\newcommand\vrelnum[1]{V_{#1}}
+\newcommand\inittilenum[1]{\inittile^{#1}}
+\newcommand\fintilenum[1]{\fintile^{#1}}
+
+% \goodnums{n}{x} means x is good seqs of level-n nums
+\newcommand\goodnums[2]{\ap{S_{#1}}{#2}}
+
+% \tenc{n}{val} = tile encoding of val in level-n
+\newcommand\tenc[2]{[#2]_{#1}}
+% \exptower{n}{m}  = tower of height n, to the m.
+\newcommand\nexp[2]{2 \uparrow_{#1} \brac{#2}}
+% \nmax{n} -- max number encodable at level n
+\newcommand\nmax[1]{\text{MAX}_{#1}}
+
+% nested alphabets, argument is level of nesting
+\newcommand\bone[1]{1_{#1}}
+\newcommand\bzero[1]{0_{#1}}
+\newcommand\nestednum[1]{c^{#1}}
+\newcommand\nestedalphabet[1]{\Sigma_{#1}}
+
+\newcommand\numeq{\circledequal}
+\newcommand\numplus{\oplus}
+\newcommand\numsep{\#}
+
+\newcommand\tilerow{r}
 
 \newcommand{\ASSERT}[1]{\textbf{assert}(#1)}
+
+\newcommand{\straightline}{\textsf{SL}}
+\newcommand{\straightlinesym}{\textsf{SLS}}
+
+\newcommand{\Pre}{\textsf{Pre}}
+
+\newcommand{\twpt}{\textsf{2PT}}
+\newcommand{\owpt}{\textsf{PT}}
+\newcommand{\rbtwpt}{\textsf{RB2PT}}
+\newcommand{\twspt}{\textsf{2SPT}}
+\newcommand{\owspt}{\textsf{SPT}}
+
+\newcommand{\transet}{\mathscr{T}}
+
+\newcommand\theory{{\sf Th}}
+
+\newcommand{\signature}{\mathcal{S}}
+
+\newcommand{\sorts}{{\mathfrak{S}}}
+
+\newcommand{\functions}{{\mathcal{F}}}
+
+\newcommand{\predicates}{{\mathcal{P}}}
+
+\newcommand\data{\mathbb{D}}
+
+\newcommand{\interpretation}{\mathcal{I}}
+
+\newcommand{\structure}{\mathcal{D}}
+
+\newcommand{\issat}{\mathsf{isSat}}
+
+\newcommand{\bigoh}{\mathcal{O}}
+
+\newcommand{\conacc}{\Omega}
+
+
+
+\newcommand{\prerec}{\textbf{PreRec}}
+
+%%%%%%%%%%%%
+% Auto escape eg
+
+\newcommand\linkvar{\mintinline{html}{$li}}
+\newcommand\linktextvar{\mintinline{html}{$txt}}
+\newcommand\urlstarttag{\texttt{[URL]}}
+\newcommand\urlendtag{\texttt{[LRU]}}
+\newcommand\htmlstarttag{\texttt{[HTML]}}
+\newcommand\htmlendtag{\texttt{[LMTH]}}
+

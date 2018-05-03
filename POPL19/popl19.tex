@@ -36,8 +36,8 @@
 \usepackage[linesnumbered,ruled]{algorithm2e}
 
 %==========================================================
-\input{macros.tex}
-\input{comm-anthony}
+%\input{macros.tex}
+%\input{comm-anthony}
 %==========================================================
 
 %\newcommand\shortlong[2]{#2}
@@ -101,8 +101,7 @@
 
 %% Title information
 \title[What Is Decidable about String Constraints with the ReplaceAll
-Function]{What Is Decidable about String Constraints with the ReplaceAll
-Function \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
+Function]{What Is Decidable about String Constraints with Transducers and the Reverse Function\shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
                                         %% when present, will be used in
                                         %% header instead of Full Title.
 %\titlenote{}             %% \titlenote is optional;
@@ -138,29 +137,8 @@ Function \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
 }
 \email{taolue@dcs.bbk.ac.uk}          %% \email is recommended
 
-\author{Yan Chen}
-%\orcid{0000-0002-5993-1665}
-\affiliation{
-  %\position{Position1}
-%  \department{State Key Laboratory of Computer Science} %% \department is recommended
-  \institution{State Key Laboratory of Computer Science, Institute of Software, Chinese Academy of Sciences} %% \institution is required
-  %\streetaddress{Street1 Address1}
-  %\city{City1}
-  %\state{State1}
-  %\postcode{Post-Code1}
-  \country{China}
-}
-\affiliation{
-  %\position{Position1}
-%  \department{State Key Laboratory of Computer Science} %% \department is recommended
-  \institution{University of Chinese Academy of Sciences} %% \institution is required
-  %\streetaddress{Street1 Address1}
-  %\city{City1}
-  %\state{State1}
-  %\postcode{Post-Code1}
-  \country{China}
-}
-%\email{first1.last1@inst1.edu}          %% \email is recommended
+
+ 
 
 \author{Matthew Hague}
 \orcid{0000-0003-4913-3800}
@@ -190,6 +168,21 @@ Function \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
 }
 \email{anthony.lin@cs.ox.ac.uk}          %% \email is recommended
 
+
+
+\author{Philipp}
+%\orcid{0000-0002-5993-1665}
+\affiliation{
+	%\position{Position1}
+	%  \department{State Key Laboratory of Computer Science} %% \department is recommended
+	\institution{} %% \institution is required
+	%\streetaddress{Street1 Address1}
+	%\city{City1}
+	%\state{State1}
+	%\postcode{Post-Code1}
+	\country{}
+}
+
 \author{Zhilin Wu}
 %\orcid{0000-0002-5993-1665}
 \affiliation{
@@ -201,6 +194,16 @@ Function \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
   %\state{State1}
   %\postcode{Post-Code1}
   \country{China}
+}
+\affiliation{
+	%\position{Position1}
+	%  \department{State Key Laboratory of Computer Science} %% \department is recommended
+	\institution{University of Chinese Academy of Sciences} %% \institution is required
+	%\streetaddress{Street1 Address1}
+	%\city{City1}
+	%\state{State1}
+	%\postcode{Post-Code1}
+	\country{China}
 }
 %\email{first1.last1@inst1.edu}          %% \email is recommended
 
@@ -281,9 +284,9 @@ Function \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
 %% environment and commands, and keywords command.
 \maketitle
 
-\input{intro.tex}
+%\input{intro.tex}
 %
-\input{prel.tex}
+%\input{prel.tex}
 %
 %\input{dp-outline}
 %
@@ -300,41 +303,27 @@ Function \shortlong{}{(Technical Report)}}         %% [Short Title] is optional;
 %\input{conc}
 
 % Acknowledgments
-\begin{acks}
- %% acks environment is optional
- %% contents suppressed with 'anonymous'
- %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
- %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
- %% acknowledge financial support and will be used by metadata
- %% extraction tools.
- % This material is based upon work supported by the
- % \grantsponsor{GS100000001}{National Science
- %   Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
- % No.~\grantnum{GS100000001}{nnnnnnn} and Grant
- % No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
- % conclusions or recommendations expressed in this material are those
- % of the author and do not necessarily reflect the views of the
- % National Science Foundation.
-    %This work was supported by the
-T. Chen is supported by the
-\grantsponsor{}{Australian Research Council }{} under Grant No.~\grantnum{}{DP160101652}
-and the
-\grantsponsor{}{Engineering and Physical Sciences Research Council}{} under Grant No.~\grantnum{}{EP/P00430X/1}.
-    %
-    M. Hague is supported by the
-    \grantsponsor{GS501100000266}{Engineering and Physical Sciences Research Council}
-                 {http://dx.doi.org/10.13039/501100000266}
-    under Grant No.~\grantnum{GS501100000266}{EP/K009907/1}.
-    A.~Lin is supported by the European Research Council (ERC) under the European
-    Union's Horizon 2020 research and innovation programme (grant agreement no
-    759969).
-    %
-    Z. Wu is supported by the
-    \grantsponsor{}{National Natural Science Foundation of China}{}
-    under Grant No.~\grantnum{}{61472474} and Grant No. ~\grantnum{}{61572478},
-    \grantsponsor{}{the INRIA-CAS joint research project ``Verification, Interaction, and Proofs''}{},
-    \mat{Add your sponsors here!}\zhilin{I suggest ordering the grants according to the order of the authors}
-\end{acks}
+%\begin{acks}
+%
+%T. Chen is supported by the
+%\grantsponsor{}{Australian Research Council }{} under Grant No.~\grantnum{}{DP160101652}
+%and the
+%\grantsponsor{}{Engineering and Physical Sciences Research Council}{} under Grant No.~\grantnum{}{EP/P00430X/1}.
+%    %
+%    M. Hague is supported by the
+%    \grantsponsor{GS501100000266}{Engineering and Physical Sciences Research Council}
+%                 {http://dx.doi.org/10.13039/501100000266}
+%    under Grant No.~\grantnum{GS501100000266}{EP/K009907/1}.
+%    A.~Lin is supported by the European Research Council (ERC) under the European
+%    Union's Horizon 2020 research and innovation programme (grant agreement no
+%    759969).
+%    %
+%    Z. Wu is supported by the
+%    \grantsponsor{}{National Natural Science Foundation of China}{}
+%    under Grant No.~\grantnum{}{61472474} and Grant No. ~\grantnum{}{61572478},
+%    \grantsponsor{}{the INRIA-CAS joint research project ``Verification, Interaction, and Proofs''}{},
+%    \mat{Add your sponsors here!}\zhilin{I suggest ordering the grants according to the order of the authors}
+%\end{acks}
 
 
 %% Bibliography
