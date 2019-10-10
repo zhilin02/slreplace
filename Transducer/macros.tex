@@ -1,7 +1,5 @@
-%!TEX root = main.tex
+%!TEX root = sl-int-v2.tex
 
-\newcommand{\brac}[1]{\left( #1 \right)}
-\newcommand{\tup}[1]{\left( #1 \right)}
 \newcommand{\set}[1]{\{ #1 \}}
 \newcommand{\sequence}[2]{(#1, \ldots, #2)}
 \newcommand{\couple}[2]{(#1,#2)}
@@ -25,6 +23,8 @@
 \newcommand{\astring}{s}
 
 \newcommand{\Cc}{\mathcal{C}}
+
+\newcommand{\intnum}{\mathbb{Z}}
 
 
 \newcommand {\notof}{\ensuremath{\neg}}
@@ -61,7 +61,7 @@
 \newcommand{\aautomaton}{{\mathbb A}}
 \newcommand{\aautomatonbis}{{\mathbb B}}
 
-\newcommand {\length}[1] {\ensuremath{|#1|}}
+%\newcommand {\length}[1] {\ensuremath{|#1|}}
 
 
 
@@ -98,6 +98,7 @@
 \newcommand {\nlogspace} {\textsc{nlogspace}}
 \newcommand {\logspace} {\textsc{logspace}}
 \newcommand {\expspace} {\textsc{expspace}}
+\newcommand {\exptime} {\textsc{exptime}}
 \newcommand {\np} {\textsc{np}}
 \newcommand {\threeexptime} {\textsc{3exptime}}
 \newcommand {\polytime} {\textsc{p}}
@@ -105,6 +106,9 @@
 \newcommand{\threeexpspace}{\textsc{3expspace}}
 \newcommand {\nexptime} {\textsc{nexptime}}
 
+\newcommand {\nonelementary} {\textsc{non-elementary}}
+
+\newcommand {\elementary} {\textsc{elementary}}
 
 
 \newcommand{\aalphabet}{\Sigma}     % an alphabet, A is already used for atoms
@@ -143,7 +147,7 @@
 \newcommand{\malloc}{\mathtt{malloc}}
 \newcommand{\cons}{\mathtt{cons}}
 \newcommand{\new}{\mathtt{new}}
-\newcommand{\free}[1]{\mathtt{free} #1}
+\newcommand{\free}[1]{\mathtt{free} \ #1}
 \newcommand{\maxform}[1]{\mathtt{maxForms}(#1)}
 \newcommand{\locations}[1]{\mathtt{loc}(#1)}
 \newcommand{\values}{\mathtt{Val}}
@@ -180,8 +184,8 @@
 \newcommand{\pointsl}[1]{\stackrel{#1}{\hookrightarrow}}
 \newcommand{\ppointsl}[1]{\stackrel{#1}{\mapsto}}
 \newcommand{\ourhook}[1]{\stackrel{#1}{\hookrightarrow}}
-\newcommand{\ltrue}{\mathsf{true}}
-\newcommand{\lfalse}{\mathsf{false}}
+\newcommand{\ltrue}{{\sf true}}
+\newcommand{\lfalse}{{\sf false}}
 
 
 \newcommand{\variables}{\mathtt{FVAR}}
@@ -295,7 +299,6 @@
 \newcommand\cC{\mathcal{C}}
 \newcommand\cE{\mathcal{E}}
 \newcommand\cG{\mathcal{G}}
-\newcommand\cI{\mathcal{I}}
 \newcommand\Ll{\mathcal{L}}
 \newcommand\cM{\mathcal{M}}
 \newcommand\cP{\mathcal{P}}
@@ -303,15 +306,17 @@
 \newcommand\cS{\mathcal{S}}
 \newcommand\cT{\mathcal{T}}
 
-\newcommand\bigO{\mathcal{O}}
-
-
 \newcommand\vard{\mathfrak{d}}
 
 \newcommand\replaceall{\mathsf{replaceAll}}
-\newcommand\indexof{\mathsf{IndexOf}}
+\newcommand\sreplaceall{\mathsf{sreplaceAll}}
+\newcommand\reverse{\mathsf{reverse}}
+\newcommand\indexof{\mathsf{indexOf}}
+\newcommand\length{\mathsf{length}}
+\newcommand\substring{\mathsf{substring}}
 
 
+\newcommand\revsym{\pi}
 
 \newcommand\strline{\mathsf{SL}}
 
@@ -319,11 +324,11 @@
 
 \newcommand\search{\mathsf{search}}
 
-\newcommand\verify{\mathsf{verify}}
+\newcommand\verify{\mathsf{vfy}}
 
-\newcommand\searchleft{\mathsf{searchLeft}}
+\newcommand\searchleft{\mathsf{left}}
 
-\newcommand\searchlong{\mathsf{searchLong}}
+\newcommand\searchlong{\mathsf{long}}
 
 
 \newcommand\pref{\mathsf{Pref}}
@@ -374,6 +379,66 @@
 \newcommand{\dmdidx}{{\sf Idx_{dmd}}}
 \newcommand{\lftlen}{{\sf Len_{lft}}}
 
+
+\newcommand{\ASSERT}[1]{\textbf{assert}(#1)}
+
+\newcommand{\concat}{\cdot}
+
+\newcommand{\parabs}{\Theta} % parametr abstraction
+\newcommand{\arity}{r}
+
+\newcommand{\FA}{FA}
+\newcommand{\FFA}{2FA}
+\newcommand{\SFFA}{S2FA}
+\newcommand{\FT}{FT}
+\newcommand{\FFT}{2FT}
+\newcommand{\FunFT}{FFT}
+\newcommand{\SFFT}{S2FT}
+\newcommand{\PT}{PT}
+\newcommand{\PPT}{2PT}
+\newcommand{\SPPT}{S2PT}
+\newcommand{\RBPPT}{RB2PT}
+\newcommand{\RBSPPT}{RBS2PT}
+\newcommand{\SA}{SA}
+\newcommand{\SSA}{2SA}
+\newcommand{\ST}{ST}
+\newcommand{\SST}{2ST}
+\newcommand{\SPT}{SPT}
+\newcommand{\SSPT}{2SPT}
+\newcommand{\RBSSPT}{RB2SPT}
+
+\newcommand{\ialphabet}{\Sigma}
+\newcommand{\oalphabet}{\Gamma}
+
+
+\newcommand{\EndLeft}{\ensuremath{\vartriangleright}}
+\newcommand{\EndRight}{\ensuremath{\vartriangleleft}}
+
+\newcommand{\Lang}{\mathcal{L}}
+\newcommand{\Tran}{\mathcal{T}}
+
+\newcommand{\Aut}{\ensuremath{\mathcal{A}}}
+\newcommand{\AutB}{\ensuremath{\mathcal{B}}}
+\newcommand{\Transducer}{\ensuremath{T}}
+\newcommand{\controls}{\ensuremath{Q}}
+\newcommand{\finals}{\ensuremath{F}}
+\newcommand{\transrel}{\ensuremath{\delta}}
+
+\newcommand{\Left}{\ensuremath{-1}}
+\newcommand{\Right}{\ensuremath{1}}
+\newcommand{\Stay}{\ensuremath{0}}
+
+
+\newcommand{\defn}[1]{\emph{#1}}
+
+\newcommand{\conacc}{\Omega}
+
+\newcommand{\reginvrel}{\textbf{RegInvRel}}
+
+\newcommand{\prerec}{\reginvrel}
+
+\newcommand{\regmondec}{\textbf{RegMonDec}}
+
 \newcommand\rcdim{\mathsf{art}}
 
 \newcommand\rcdep{\mathsf{asgn}}
@@ -390,98 +455,6 @@
 \newcommand\rcphi{\mathsf{fnsize}}
 \newcommand\rcpsi{\mathsf{fasize}}
 
-%\newtheorem{remark}[theorem]{Remark}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Macros for two-way lower bound proof.
-
-    \usepackage{unicode-math}
-
-    \newcommand\ap[2]{{#1}\mathord{\brac{#2}}}
-
-    % Tiling
-
-    \newcommand\tiles{\Theta}
-    \newcommand\hrel{H}
-    \newcommand\vrel{V}
-    \newcommand\tile{t}
-    \newcommand\inittile{t_I}
-    \newcommand\fintile{t_F}
-    \newcommand\tileheight{h}
-
-    % Large numbers
-
-    \newcommand\expheight{n}
-    \newcommand\linlen{m}
-    \newcommand\tilesnum[1]{\Theta_{#1}}
-    \newcommand\hrelnum[1]{H_{#1}}
-    \newcommand\vrelnum[1]{V_{#1}}
-    \newcommand\inittilenum[1]{\inittile^{#1}}
-    \newcommand\fintilenum[1]{\fintile^{#1}}
-
-    % \goodnums{n}{x} means x is good seqs of level-n nums
-    \newcommand\goodnums[2]{\ap{S_{#1}}{#2}}
-
-    % \tenc{n}{val} = tile encoding of val in level-n
-    \newcommand\tenc[2]{[#2]_{#1}}
-    % \exptower{n}{m}  = tower of height n, to the m.
-    \newcommand\nexp[2]{2 \uparrow_{#1} \brac{#2}}
-    % \nmax{n} -- max number encodable at level n
-    \newcommand\nmax[1]{\text{MAX}_{#1}}
-
-    % nested alphabets, argument is level of nesting
-    \newcommand\bone[1]{1_{#1}}
-    \newcommand\bzero[1]{0_{#1}}
-    \newcommand\nestednum[1]{c^{#1}}
-    \newcommand\nestedalphabet[1]{\Sigma_{#1}}
-
-    \newcommand\numeq{\circledequal}
-    \newcommand\numplus{\oplus}
-    \newcommand\numsep{\#}
-
-    \newcommand\tilerow{r}
-
-\newcommand{\ASSERT}[1]{\textbf{assert}(#1)}
-
-\newcommand{\straightline}{\textsf{SL}}
-\newcommand{\straightlinesym}{\textsf{SLS}}
-
-\newcommand{\Pre}{\textsf{Pre}}
-
-\newcommand{\twpt}{\textsf{2PT}}
-\newcommand{\owpt}{\textsf{PT}}
-\newcommand{\rbtwpt}{\textsf{RB2PT}}
-\newcommand{\twspt}{\textsf{2SPT}}
-\newcommand{\owspt}{\textsf{SPT}}
-
-\newcommand{\transet}{\mathscr{T}}
-
-\newcommand\theory{{\sf Th}}
-
-\newcommand{\signature}{\mathcal{S}}
-
-\newcommand{\sorts}{{\mathfrak{S}}}
-
-\newcommand{\functions}{{\mathcal{F}}}
-
-\newcommand{\predicates}{{\mathcal{P}}}
-
-\newcommand\data{\mathbb{D}}
-
-\newcommand{\interpretation}{\mathcal{I}}
-
-\newcommand{\structure}{\mathcal{D}}
-
-\newcommand{\issat}{\mathsf{isSat}}
-
-\newcommand{\bigoh}{\mathcal{O}}
-
-\newcommand{\conacc}{\Omega}
-
-
-
-\newcommand{\prerec}{\textbf{PreRec}}
-
 %%%%%%%%%%%%
 % Auto escape eg
 
@@ -492,3 +465,128 @@
 \newcommand\htmlstarttag{\texttt{[HTML]}}
 \newcommand\htmlendtag{\texttt{[LMTH]}}
 
+\newcommand{\Pre}{\textsf{Pre}}
+
+\newcommand\bigO{\mathcal{O}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Macros for two-way lower bound proof.
+
+%\usepackage{unicode-math}
+
+
+
+% Tiling
+
+\newcommand\tiles{\Theta}
+\newcommand\hrel{H}
+\newcommand\vrel{V}
+\newcommand\tile{t}
+\newcommand\inittile{t_I}
+\newcommand\fintile{t_F}
+\newcommand\tileheight{h}
+\newcommand\tilewidth{\ell}
+
+% Large numbers
+
+\newcommand\expheight{n}
+\newcommand\linlen{m}
+\newcommand\tilesnum[1]{\Theta_{#1}}
+\newcommand\hrelnum[1]{H_{#1}}
+\newcommand\vrelnum[1]{V_{#1}}
+\newcommand\inittilenum[1]{\inittile^{#1}}
+\newcommand\fintilenum[1]{\fintile^{#1}}
+
+% \goodnums{n}{x} means x is good seqs of level-n nums
+\newcommand\goodnums[2]{\ap{S_{#1}}{#2}}
+
+% \tenc{n}{val} = tile encoding of val in level-n
+\newcommand\tenc[2]{[#2]_{#1}}
+% \exptower{n}{m}  = tower of height n, to the m.
+\newcommand\nexp[2]{2 \uparrow_{#1} \brac{#2}}
+% \nmax{n} -- max number encodable at level n
+\newcommand\nmax[1]{\text{MAX}_{#1}}
+
+% nested alphabets, argument is level of nesting
+\newcommand\bone[1]{1_{#1}}
+\newcommand\bzero[1]{0_{#1}}
+\newcommand\nestednum[1]{c^{#1}}
+\newcommand\nestedalphabet[1]{\Sigma_{#1}}
+
+
+\newcommand\numeq{\bowtie}
+\newcommand\numplus{\oplus}
+\newcommand\numsep{\#}
+\newcommand\passsep{\natural}
+
+\newcommand\tilerow{r}
+
+\newcommand{\bigoh}{\mathcal{O}}
+
+\newcommand{\tup}[1]{\left( #1 \right)}
+
+\newcommand\ap[2]{{#1}\mathord{\brac{#2}}}
+%\newcommand\ap[2]{{#1}\mathord{\brac{#2}}}
+
+\newcommand{\opset}{\mathscr{O}}
+
+\newcommand{\strlineall}{$\strline$[\FT, $\replaceall$, $\reverse$]}
+
+\newcommand{\strlineconcat}{$\strline$[$\concat$, $\sreplaceall$, $\reverse$, \FT]}
+
+\newcommand{\strlinefft}{$\strline$[$\concat$, $\replaceall$, $\reverse$, \FunFT]}
+
+
+%%% Macros for expspace lower bound with replaceall
+
+% General
+\newcommand\brac[1]{\left(#1\right)}
+
+% \setcomp{ele}{comp} = { ele | comp }
+\newcommand\setcomp[2]{\left\{{#1}\ \middle|\ {#2}\right\}}
+
+% \lang{A} = L(A)
+\newcommand\lang[1]{\mathcal{L}\mathord{\brac{#1}}}
+
+
+% Tiling
+
+\newcommand\rowdelim{\#}
+
+% Reduction
+\newcommand\resetchar{!}
+\newcommand\bit{b}
+
+% \nbit[i][0] = 0_i, similarly for 1
+\newcommand\nbit[2]{{#2}_{#1}}
+
+% \repl{n}{0}{1} = $^1_{n,0} means if nth bit is 0, turn into a 1
+\newcommand\repl[3]{\$^{#3}_{#1, #2}}
+\newcommand\replall[1]{\$_{#1}}
+\newcommand\simplerepl[2]{\$^{#2}_{#1}}
+
+
+
+
+%% Optimisations
+
+\newcommand\caleybox[1]{\llparenthesis #1 \rrparenthesis}
+\newcommand\internalchar{\flat}
+
+% Tools
+
+\newcommand\stranger{Stranger}
+
+\newcommand\transducerbench{\textsc{Transducer}}
+\newcommand\slogbench{\textsc{SLOG}}
+\newcommand\slogbenchr{\textsc{SLOG (replace)}}
+\newcommand\slogbenchra{\textsc{SLOG (replaceall)}}
+\newcommand\kaluzabench{\textsc{Kaluza}}
+
+
+\newtheorem{fact}{Fact}
+
+\newcommand\slint{SL$_{int}$}
+
+\newcommand\cslint{SL$^{\dag}_{int}$}
