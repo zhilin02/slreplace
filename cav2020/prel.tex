@@ -1,0 +1,16 @@
+We write $\nat$ for the set of natural numbers. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Throughout the paper we use $\Sigma$ to denote a  finite alphabet. 
+
+A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. Let $w=a_1\cdots a_n$ be a string. The reverse of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$. An empty string is usually denoted by $\varepsilon$.
+
+We consider two data types, i.e., the string data type and the integer data type. We will use $c, d,\dots$ to denote integer constants, $u, v, \dots$ to denote string constants,  $i, j, \dots$ to denote the  integer variables, and $x, y, \dots$ to denote the string variables.
+
+\noindent\textbf{Automata models.} A finite automaton (FA) $\Aut$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. 
+
+A string $w=\sigma_1 \cdots \sigma_n$ is accepted by $\Aut$ if there is a state sequence $q_0 \cdots q_n$ such that $q_0 \in I$, $q_n \in F$, and $(q_{i-1}, \sigma_i, q_i) \in \delta$ for each $i \in [n]$. In particular, an empty string $\varepsilon$ is accepted by $\Aut$ if $I \cap F \neq \emptyset$. The language defined by $\Aut$, denoted by $\Lang(\Aut)$, is defined as the set of strings accepted by $\Aut$.
+
+A finite transducer (FT) $T$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta$ is the transition relation, which is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, \sigma, q', u)$ as $q \xrightarrow{\sigma, u} q'$. 
+
+A run of $T$ over a string $w=\sigma_1 \cdots \sigma_n$ is a state sequence of transitions $q_0 \xrightarrow{\sigma_1, u_1} q_1 \cdots q_n \xrightarrow{\sigma_n, u_n} q_n$. The run is accepting if $q_0 \in I$ and $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. We use $\cT(T)$ to denote the set of pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$.
+
+\noindent\textbf{Linear arithmetic.}  A linear arithmetic formula $\phi$ is defined by the rules: $\phi::= t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi$, where $o \in \{=, \neq, \le, \ge, <, >\}$ and $t$ is defined by  $t::= i \mid c \mid ct \mid t + t $.  
+For a quantifier-free linear integer arithmetic formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\left\{(c_1, \cdots ,c_k) \mid \phi[c_1/i_1, \cdots, c_k/i_k]\right\}$. An existential linear arithmetic formula is a linear arithmetic formula where all the existential quantifiers are under the scope of even number of negation symbols.
