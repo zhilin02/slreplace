@@ -1,8 +1,9 @@
  \documentclass{llncs}
 
 %\documentclass[envcountsame, fleqn]{llncs}
-  \usepackage{amsmath, amssymb, latexsym}
-  \usepackage{graphicx}
+\usepackage{amsmath, latexsym}
+\usepackage{amsthm}
+\usepackage{graphicx}
 \usepackage{epic,eepic}
 
 \pagestyle{plain}
@@ -57,7 +58,7 @@ Furthermore, we show that common string operations,  including concat, replaceal
 Our approach is based on a variant of cost register automata.
 \end{abstract}
 
-%\section{Introduction}
+\section{Introduction}
 %\label{intro}
 %
 %\section{Preliminaries}
@@ -155,7 +156,7 @@ In the next section, we specify the semantic conditions for {\slint} in order to
 
 \subsection{Cost-enriched regular languages and recognisable relations}
 
-A cost-enriched string is $(w, (n_1, \cdots, n_k))$ with $w$  a string and $n_i \in \intnum$ for all $i \in [k]$. 
+A cost-enriched string is $(w, (n_1, \cdots, n_k))$ with a string $w$ and $n_i \in \intnum$ for all $i \in [k]$. 
 A cost-enriched language $L$ is a subset of $\Sigma^* \times \intnum^k$ for some $k$. Note that all the cost-enriched strings in $L$ have the same number of costs, namely $k$.
 A cost-enriched relation $\cR$ is a subset of $\Sigma^* \times \intnum^{k_1} \times \cdots \Sigma^* \times \intnum^{k_l}$.
 
@@ -164,7 +165,7 @@ A cost-enriched finite automaton (CEFA) $\Aut$ is a tuple $(Q, \Sigma, R, \delta
 \\
 A cost-enriched string $(w, (n_1, \cdots,n_k)) \in \Sigma^* \times \intnum^k$ with $w=\sigma_1 \cdots \sigma_m$ is accepted by $\Aut$ if there is a sequence of transitions $q_0 \xrightarrow{\sigma_1, \eta_1} q_1 \cdots q_{m-1} \xrightarrow{\sigma_m, \eta_m} q_m$ such that $n_i = \eta_1(r_i) + \cdots + \eta_m(r_i)$ for each $i \in [k]$. The set of cost-enriched strings accepted by $\Aut$ is denoted as $\Lang(\Aut)$. A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\Aut$ such that $L = \Lang(\Aut)$.
 \end{definition}
-CEFA can be seen as a variant of CRA in \cite{RLJ+13}, by adding the nondeterminism and discarding the partial final cost function. 
+CEFA can be seen as a variant of CRA in \cite{RLJ+13}, by allowing nondeterminism and disallowing  partial final cost functions. 
 
 For a CEFA $\Aut$, we use $R(\Aut)$ to denote the vector of registers occurring in $\Aut$. Moreover, for a CEFA $\Aut$ and a vector of integer variables $\vec{i}$ such that $R(\Aut) \cap \vec{i} = \emptyset$, we use $\Aut[\vec{i}/R(\Aut)]$ to denote the CEFA obtained from $\Aut$ by replacing the registers in $R(\Aut)$ with those from $\vec{i}$. 
 
