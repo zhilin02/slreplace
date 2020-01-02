@@ -6,14 +6,12 @@ The string logic {\slint} defined by the following rules% satisfies the two sema
 t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
 S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
 & & x := \substring(y, t_1, t_2)  \mid S;S, \\
+A & ::= &   A_r \wedge A_i,\\
 A_r & ::= & x \in \Aut \mid A_r \wedge A_r,\\
-A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,\\
-A & ::= &   A_r \wedge A_i,
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,
 \end{array}
 \]
 where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
-
-
 
 We consider two types of functions, string functions that return strings and integer functions that return integers. Specifically, we consider 
 \begin{itemize}
@@ -87,6 +85,26 @@ Note that it is applied  to $S$ only while it is remitted from the integer const
 \begin{example}
 The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2 \indexof(x, c)$ belongs to \slint.
 \end{example}
+
+
+\subsection{Semantics}
+
+The semantics of  {\slint}  is largely self-explanatory. In particular, $\length(x)$ returns the length of string $x$, $\indexof_u(x, i)$ returns the first index of $u$ in $x$ after $i$. 
+
+$\substring(y, t_1, t_2)$ returns the string of $y$ between $t_1$ and $t_2$. 
+
+
+%The replaceAll function encompasses two parameters: the first parameter is the subject string, and the second parameter is the replacement
+%string whereas $u$ the
+%second parameter is a pattern that is a regular expression, . For the semantics of replaceAll function, in particular when the pattern is a regular expression,
+%we adopt the leftmost and longest matching. For instance, replaceAll(aababaab, (ab)+, c) = ac ·
+%replaceAll(aab, (ab)+, c) = acac, since the leftmost and longest matching of (ab)+ in aababaab is
+%abab. Herewe require that the language defined by the pattern parameter does not contain the empty
+%string, in order to avoid the troublesome definition of the semantics of the matching of the empty
+%string. We refer the reader to [Chen et al. 2018] for the formal semantics of the replaceAll function.
+%To be consistent with the notations in this paper, for each regular expression e, we define the string
+%function replaceAlle : Σ∗ × Σ∗ → Σ∗ such that for u,v ∈ Σ∗, replaceAlle (u,v) = replaceAll(u, e,v),
+%and we write replaceAll(x, e,y) as replaceAlle (x,y).
 
 In the next section, we specify the semantic conditions for {\slint} in order to achieve decision procedures. For this purpose, we need the concepts of cost-enriched regular languages and recognisable relations. 
 

@@ -1,7 +1,11 @@
+%!TEX root = main.tex
+
 %For specifying the semantic conditions, we introduce two additional concepts. 
 
 \begin{definition}[CERR linear integer functions]
-An integer function $g: \Sigma^* \times \intnum^{k_1} \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^\intnum$ is a CERR linear integer function if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \intnum^{k_1+1} \times \Sigma^* \times \intnum^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \intnum^{k_1}, \cdots, \vec{c_l} \in \intnum^{k_l}$, and $d_1 \in \intnum, \cdots, d_l \in \intnum$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [n]}, t)$, where $(\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
+An integer function $g: \Sigma^* \times \intnum^{k_1} \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^\intnum$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \intnum^{k_1+1} \times \Sigma^* \times \intnum^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \intnum^{k_1}, \cdots, \vec{c_l} \in \intnum^{k_l}$, and $d_1, \cdots, d_l \in \intnum$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
+
+For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [n]}, t)$, where $(\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
 
 \end{definition}
 
@@ -29,14 +33,14 @@ Let $\Aut = (Q, R, \delta, I, F)$. The $R$-cost enrichment of the pre-image of $
 \end{example}
 
 
-\hide{
-Now we are ready to state the two semantic conditions.
-\begin{description}
-\item [The 1st semantic condition.] Each integer function $g$ is a CERR linear integer function, moreover, a CEFA representation of $g$ can be effectively computed from $g$.
-%
-\item [The 2nd semantic condition.] Each string function $f$ satisfies that for each CERL $L$, the cost enriched pre-image of $L$ under $f$, say $(\cR,\vec{t})$, satisfies that $\cR$ is a CERR, moreover, a CEFA representation can be effectively computed from $f$ and $L$.
-\end{description}
-}
+%\hide{
+%Now we are ready to state the two semantic conditions.
+%\begin{description}
+%\item [The 1st semantic condition.] Each integer function $g$ is a CERR linear integer function, moreover, a CEFA representation of $g$ can be effectively computed from $g$.
+%%
+%\item [The 2nd semantic condition.] Each string function $f$ satisfies that for each CERL $L$, the cost enriched pre-image of $L$ under $f$, say $(\cR,\vec{t})$, satisfies that $\cR$ is a CERR, moreover, a CEFA representation can be effectively computed from $f$ and $L$.
+%\end{description}
+%}
 
 
 %Let $X$ be a set of registers and $G_{inc}(X)$ denote the set of terms defined by the rules $t::=c \mid x \mid t+c$, where $c$ is an integer constant.  We interpret terms from $G_{inc}(X)$ over the set of integers.
@@ -47,11 +51,12 @@ Now we are ready to state the two semantic conditions.
 
 %\subsection{A string logic satisfying the semantic conditions}\label{sec-cslint}
 
-
-In the following, we show that the integer and string operations in {\cslint} satisfy the semantic conditions.
+\subsection{Computation of pre-images}
+In this section, we show that the pre-images of the integer and string operations in {\slint} are representable by CEFAs. %satisfy the semantic conditions.
 
 Let $\Aut=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_m)$. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip
 \noindent \emph{Concatenation $x_1 \concat x_2$}.
 
@@ -65,6 +70,7 @@ Then $((\Aut_{I, q}, \Aut_{q, F})_{q \in Q}, \vec{t})$ is a CEFA representation 
 and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_m + r^{(2)}_m)$.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip 
 
 \noindent \emph{Reverse $\reverse(x_1)$}. 
@@ -72,6 +78,7 @@ and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_m + r^{(2)}_m)$.
 $(\Aut^{(r)}, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $\reverse$, where $\Aut^{(r)}$ is $(Q, \Sigma, R, \delta', F, I)$ such that $\delta'$ comprises the set of tuples $(q', \sigma, q, \eta)$ with  $(q, \sigma, q', \eta) \in \delta$. Note that $\Lang(\Aut^{(r)}) = \{(w^{(r)}, \vec{c}) \mid (w, \vec{c}) \in \Lang(\Aut)\}$.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip
 
 \noindent \emph{Substring $\substring(x_1, i, j)$}.
@@ -93,6 +100,7 @@ $(\cB, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-co
 \end{itemize}
 %
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip
 \noindent \emph{FT $T(x_1)$}.
 
@@ -101,6 +109,7 @@ $(\cB, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-co
 Let $T= (Q', \Sigma, \delta', I', F')$. Then $(\cB, (r^{(1)}, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $T$, where $ \cB= (Q \times Q', \Sigma, R^{(1)}, \delta'', I \times I', F \times F')$ such that $R^{(1)}  = (r^{(1)}, \cdots, r^{(1)}_m)$, $\delta''$ comprises the tuples $((q_1, q'_1), \sigma, (q_2, q'_2), \eta')$ satisfying that $(q'_1, \sigma, q'_2, u) \in \delta'$ with $u = \sigma_1 \cdots \sigma_i$, and in $\Aut$, we have $p_1 \xrightarrow{\sigma_1, \eta_1} p_2 \cdots \xrightarrow{\sigma_i, \eta_i} p_{i+1}$ with $p_1 = q_1$ and $p_{i+1}= q_2$, and for each $j \in [m]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_i(r_j)$.
 %
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip 
 
 \noindent \emph{ReplaceAll $\replaceall_{e,u}(x)$}.
@@ -113,6 +122,7 @@ From the results in \cite{CCH+18}, we know that  a FT $T_{e,u}$ can be construct
 Therefore, a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $T$ can be constructed as in the FT case.
 % 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip 
 
 \noindent \emph{Length $\length(x_1)$}.
@@ -121,6 +131,7 @@ Therefore, a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\A
 
 $(\cB, r^{(1)})$ is a CEFA representation of $\length$, where $\cB = (Q', \Sigma, R^{(1)}, \delta', I', F')$ such that $Q' = \{q'_0\}$, $I'=F'=\{q'_0\}$, $R^{(1)} = (r^{(1)})$, $\delta' = \{(q'_0, \sigma, q'_0, \eta) \mid \sigma \in \Sigma, \eta(r^{(1)}) = 1\}$.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip 
 
 \noindent \emph{IndexOf $\indexof_u(x_1, i)$}.
@@ -160,7 +171,7 @@ $\cB= (Q', \Sigma, R', \delta', I', F')$ such that  $Q' = \{q'_0, q'_1\} \cup WP
 
 
 
- 
+\subsection{Decision procedures}
 
 Let $S':=S$ and $A':=A$. Moreover, let $A'':= \ltrue$. Then execute the following procedure to (partially) flatten the integer terms.
 \begin{description}
