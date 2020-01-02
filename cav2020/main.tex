@@ -30,12 +30,25 @@
 
 
 \input{macros.tex}
+\newif\ifdraft\drafttrue
+%\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {AL: #1 :LA} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
-\title{An Efficient Decision Procedure for\\
+\title{Efficient Decision Procedures \\ for
  String and Numeric Constraints}
 
 
@@ -49,12 +62,12 @@
 \maketitle
 
 \begin{abstract}
-In this note, we consider straight-line string constraints involving string and integer data types. 
-%We define both the concrete and abstract version of the straight-line fragment. 
-We propose semantic conditions and a generic decision procedure for the path feasibility of the symbolic execution of programs satisfying the semantic conditions. 
-Furthermore, we show that common string operations,  including concat, replaceall, transducers, reverse, substring, indexof, and length, satisfy the semantic conditions.
-%the concrete version of straight-line fragment satisfies the semantic conditions, thus enjoys a decidable satisfiability problem. 
-Our approach is based on a variant of cost register automata.
+%In this note, we consider straight-line string constraints involving string and integer data types. 
+%%We define both the concrete and abstract version of the straight-line fragment. 
+%We propose semantic conditions and a generic decision procedure for the path feasibility of the symbolic execution of programs satisfying the semantic conditions. 
+%Furthermore, we show that common string operations,  including concat, replaceall, transducers, reverse, substring, indexof, and length, satisfy the semantic conditions.
+%%the concrete version of straight-line fragment satisfies the semantic conditions, thus enjoys a decidable satisfiability problem. 
+%Our approach is based on a variant of cost register automata.
 \end{abstract}
 
 %\section{Introduction}
@@ -69,142 +82,18 @@ Our approach is based on a variant of cost register automata.
 
 \section{Preliminaries}
 
-For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$.
-
-A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. Let $w=a_1\cdots a_n$ be a string. The reserve of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$.
-
-We consider two data types, the string data type and the integer data type. We will use $c, d,\dots$ to denote integer constants, $u, v, \dots$ to denote string constants,  $i, j, \dots$ to denote the  integer variables, and $x, y, \dots$ to denote the string variables.
-
-A finite automaton (FA) $\Aut$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. A string $w=\sigma_1 \cdots \sigma_n$ is accepted by $\Aut$ if there is a state sequence $q_0 \cdots q_n$ such that $q_0 \in I$, $q_n \in F$, and $(q_{i-1}, \sigma_i, q_i) \in \delta$ for each $i \in [n]$. In particular, an empty string $\varepsilon$ is accepted by $\Aut$ if $I \cap F \neq \emptyset$. The language defined by $\Aut$, denoted by $\Lang(\Aut)$, is defined as the set of strings accepted by $\Aut$.
-
-A finite transducer (FT) $T$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta$ is the transition relation, which is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, \sigma, q', u)$ as $q \xrightarrow{\sigma, u} q'$. A run of $T$ over a string $w=\sigma_1 \cdots \sigma_n$ is a state sequence of transitions $q_0 \xrightarrow{\sigma_1, u_1} q_1 \cdots q_n \xrightarrow{\sigma_n, u_n} q_n$. The run is accepting if $q_0 \in I$ and $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. We use $\cT(T)$ to denote the set of pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$.
-
-A linear arithmetic formula $\phi$ is defined by the rules: $\phi::= t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi$, where $o \in \{=, \neq, \le, \ge, <, >\}$ and $t$ is defined by the rules $t::= i \mid c \mid ct \mid t + t $.  
-For a quantifier free linear integer arithmetic formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\{(c_1, \cdots ,c_k) \mid \phi[c_1/i_1, \cdots, c_k/i_k] \mbox{ holds}\}$. An existential linear arithmetic formula is a linear arithmetic formula where all the existential quantifiers are under the scope of even number of negation symbols.
+\input{prel.tex}
 
 \section{The logic \slint}
 
-The string logic {\cslint} defined by the following rules satisfies the two semantic conditions,
-\[
-\begin{array}{l c l}
-t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
-S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
-& & x := \substring(y, t_1, t_2)  \mid S;S, \\
-A_r & ::= & x \in \Aut \mid A_r \wedge A_r,\\
-A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,\\
-A & ::= &   A_r \wedge A_i,
-\end{array}
-\]
-where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
-
-
-
-We consider two types of functions, string functions that return strings and integer functions that return integers. Specifically, we consider 
-\begin{itemize}
-\item string functions $f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $f$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^{\Sigma^*}$, and
-\item  integer functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $g$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^\intnum$.
-\end{itemize} 
-Note that $f$ and $g$ can be nondeterministic.
-%\subsection{The abstract version}
-
-We consider string constraints where the formulae are of the form $S \wedge A$ defined by the following rules,
-\[
-\begin{array}{l c l}
-t  &::=& i \mid c \mid  g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid ct \mid t + t,   \\
-S &::= &  x:=f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid S;S, \\
-A_r & ::= & x \in \Aut  \mid A_r \wedge A_r, \\
-A_i & ::= & t\ o\ t \mid A_i \wedge A_i \mid A_i \vee A_i,\\
-A & ::= &   A_r \wedge A_i, 
-\end{array}
-\]
-where $f$ is a string function and $g$ is an integer function, $\vec{t_j} = t_{j,1}, \cdots, t_{j, n_j}$ for each $j \in [k]$, $\Aut$ is a finite-state automaton, and $o \in \{=, \neq, \ge, \le, >, <\}$.
-
-The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
-%Intuitively speaking, the integer constraints in $S \wedge A$ are split into the integer assignments in $S$ where the right-hand side is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ and the constraints $t\ o\ t$ in $A$ where the integer functions $g$ do not occur.
-%\begin{itemize}
-%\item $S$ is in single static assignment (SSA) form,
-%\item all the assignments $i: = t$ in $S$ satisfy that either $t$ is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, or $t$ contains no occurrences of the functions of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, namely, $t$ is an integer term built from integer variables and constants ,
-%
-%\item $A$ contains no occurrences of the functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$,
-%
-%\item all the string variables in $A$ also occur in $S$.
-%\end{itemize} 
-
-\begin{example}
-The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2 \indexof(x, c)$ belongs to \slint.
-\end{example}
-
-In the next section, we specify the semantic conditions for {\slint} in order to achieve decision procedures. For this purpose, we need the concepts of cost-enriched regular languages and recognisable relations. 
+\input{logic.tex}
 
 %\section{The semantic conditions}
 
 
 \section{Cost-enriched regular languages and recognisable relations}
 
-%\subsection{Cost-enriched regular languages and recognisable relations}
-
-A cost-enriched string is $(w, (n_1, \cdots, n_k))$ with $w$  a string and $n_i \in \intnum$ for all $i \in [k]$. 
-A cost-enriched language $L$ is a subset of $\Sigma^* \times \intnum^k$ for some $k$. Note that all the cost-enriched strings in $L$ have the same number of costs, namely $k$.
-A cost-enriched relation $\cR$ is a subset of $\Sigma^* \times \intnum^{k_1} \times \cdots \Sigma^* \times \intnum^{k_l}$.
-
-\begin{definition}[Cost-enriched finite automata and regular languages]
-A cost-enriched finite automaton (CEFA) $\Aut$ is a tuple $(Q, \Sigma, R, \delta, I, F)$ where $Q, \Sigma, I, F$ are as in FA, $R=(r_1, \cdots, r_k)$ is a vector of (mutually distinct) registers, $\delta$ is the transition relation which is a finite set of tuples $(q, \sigma, q', \eta)$ where $q, q' \in Q$, $\sigma \in \Sigma$, and $\eta: R \rightarrow \intnum$ is the cost-update function. For convenience, we usually write $(q, \sigma, q', \eta) \in \Delta$ as $q \xrightarrow{\sigma, \eta} q'$.
-\\
-A cost-enriched string $(w, (n_1, \cdots,n_k)) \in \Sigma^* \times \intnum^k$ with $w=\sigma_1 \cdots \sigma_m$ is accepted by $\Aut$ if there is a sequence of transitions $q_0 \xrightarrow{\sigma_1, \eta_1} q_1 \cdots q_{m-1} \xrightarrow{\sigma_m, \eta_m} q_m$ such that $n_i = \eta_1(r_i) + \cdots + \eta_m(r_i)$ for each $i \in [k]$. The set of cost-enriched strings accepted by $\Aut$ is denoted as $\Lang(\Aut)$. A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\Aut$ such that $L = \Lang(\Aut)$.
-\end{definition}
-CEFA can be seen as a variant of CRA in \cite{RLJ+13}, by adding the nondeterminism and discarding the partial final cost function. 
-
-For a CEFA $\Aut$, we use $R(\Aut)$ to denote the vector of registers occurring in $\Aut$. Moreover, for a CEFA $\Aut$ and a vector of integer variables $\vec{i}$ such that $R(\Aut) \cap \vec{i} = \emptyset$, we use $\Aut[\vec{i}/R(\Aut)]$ to denote the CEFA obtained from $\Aut$ by replacing the registers in $R(\Aut)$ with those from $\vec{i}$. 
-
-%Let $\Aut = (Q, \Sigma, R, \delta, I, F)$ be a CEFA and $I',F' \in Q$. Then we use $\Aut_{I', F'}$ to denote the CEFA $(Q, \Sigma, R, \delta, I', F')$.
-
-Given two CEFAs $\Aut_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\Aut_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$, we define the product of $\Aut_1$ and $\Aut_2$, denoted by $\Aut_1 \times \Aut_2$, as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$ such that $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ satisfying that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$ for some $\eta_1, \eta_2$.
-
-%Note that according to the definition, over each word $w$, $\Aut^{(r)}(w) = \Aut(w)$. 
-
-\begin{definition}[LA-SAT w.r.t. CEFA]\label{def-la-sat-cefa}
-Let $\Aut_1=(Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$, $\cdots$, $\Aut_k=(Q_k, \Sigma, R_k, \delta_k, I_k, F_k)$ be CEFAs
-%  with $R_i = (r_{i,1}, \cdots, r_{i, l_i})$ for each $i \in [k]$, 
-  and $\phi$ be a quantifier-free linear arithmetic formula whose free variables are from  $R_1 \cup \cdots \cup R_k \cup X$ for some $X$ such that $X \cap (R_1 \cup \cdots \cup R_k) = \emptyset$. Then $\phi$ is said to be satisfiable w.r.t. $\Aut_1, \cdots, \Aut_k$ if  there are words $w_1, \cdots, w_k$ and an assignment function $\eta: R_1 \cup \cdots R_k \cup X \rightarrow \intnum$  %integers $\vec{c_1} \in \intnum^{|R_1|}, \cdots, \vec{c_k} \in \intnum^{|R_k|}$, $\vec{d} \in \intnum^{|X|}$
- such that  $(w_1, \eta(R_1)) \in \Lang(\Aut_1)$, $ \cdots$, $(w_k, \eta(R_k)) \in \Lang(\Aut_k)$, and $\phi[\eta(R_1)/R_1, \cdots,\eta(R_k)/R_k, \eta(X)/X]$ holds.
-\end{definition}
-Note that in Definition~\ref{def-la-sat-cefa}, it may happen that $R_i \cap R_j \neq \emptyset$ for some $i, j \in [k]$ with $i \neq j$.
-
-\begin{theorem}\label{thm-incra-la-sat}
-The LA-SAT w.r.t. CEFA problem is decidable.
-\end{theorem}
-
-For the proof of Theorem~\ref{thm-incra-la-sat}, we state and prove the following lemma. 
-
-\begin{lemma}\label{lem-incra-la}
-Let $\Aut=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots,  r_m)$. Then there is an existential linear arithmetic formula $\varphi_\Aut(r_1, \cdots, r_m)$ such that $\cM(\varphi_\Aut)= \{(c_1, \cdots, c_m) \mid \mbox{there exists } w \mbox{ such that } (w, c_1, \cdots, c_m) \in \Lang(\Aut)\}$.
-\end{lemma}
-
-\begin{proof}
-Let $\delta = \{\tau_1, \cdots, \tau_l\}$ such that $\tau_j = (p_j, \sigma_j, p'_j, \eta_j)$ and $\eta_j(r_i) =  c_{i,j}$ for each $j \in [l]$ and $i \in [m]$.
-According the results on FA, we know that for each pair of states $(q, q') \in I \times F$,  an existential linear arithmetic formula $\varphi_{q,q'}(j_1, \cdots, j_l)$ can be computed in linear time such that $\cM(\varphi_{q,q'})$ is the set of Parikh images of the transition sequences of $\Aut$ starting from $q$ and ending at $q'$. 
-
-Then 
-\[\varphi_\Aut(r_1, \cdots, r_m) ::= \bigvee \limits_{(q,q') \in I \times F} \exists j_1 \cdots \exists j_l.\ \left(\varphi_{q,q'}(j_1, \cdots, j_l) \wedge \bigwedge \limits_{i \in [m]} r_i = \sum \limits_{j \in [l]} c_{i,j} j_j \right).\]
-\qed
-\end{proof}
-
-\begin{proof}[Theorem~\ref{thm-incra-la-sat}]
-Let $\Aut_1=(Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$, $\cdots$, $\Aut_k=(Q_k, \Sigma, R_k, \delta_k, I_k, F_k)$ be CEFAs and $\phi$ be a quantifier-free linear arithmetic formula whose free variables are from  $R_1 \cup \cdots \cup R_k \cup X$ for some $X$ such that $X \cap (R_1 \cdots R_k) = \emptyset$.
-Suppose that for each $i \in [k]$, $R_i = (r_{i, 1}, \cdots, r_{i, l_i})$. Then the satisfiability of $\phi$ w.r.t. $\Aut_1,\cdots, \Aut_k$ can be reduced to the satisfiability problem of the  existential linear arithmetic formula
-$
-\phi \wedge \bigwedge \limits_{i \in [k]} \varphi_{\Aut_i}(r_{i,1}, \cdots, r_{i, l_i}).
-$
-\qed
-\end{proof}
-
-\begin{definition}[Cost-enriched recognisable relations]
-A cost-enriched relation $\cR \subseteq \Sigma^* \times \intnum^{k_1} \times \cdots  \times \Sigma^* \times \intnum^{k_l}$ is a cost-enriched recognisable relation (CERR)  if it is a finite union of products of cost-enriched regular languages, namely, 
-\[\cR = \bigcup \limits_{i=1}^n L_{i,1 } \times \cdots \times L_{i, l},\]
-where $L_{i,1} \subseteq \Sigma^* \times \intnum^{k_1}, \cdots, L_{i, l} \subseteq \Sigma^* \times \intnum^{k_l}$ are CERL. 
-A CEFA representation of $\cR$ is a collection of CERA tuples $(\Aut_{i,1}, \cdots, \Aut_{i,l})_{i \in [n]}$ such that $\Lang(\Aut_{i,j}) = L_{i,j}$ for each $i \in [n]$ and $j \in [l]$.
-\end{definition}
-
+\input{cefa.tex}
 
 
 %\subsection{The two semantic conditions}

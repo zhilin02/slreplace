@@ -1,71 +1,20 @@
 %!TEX root = main.tex
 
+We write $\nat$ for the set of natural numbers. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Throughout the paper we use $\Sigma$ to denote a  finite alphabet. 
 
-For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$.
+A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. An empty string is usually denoted by $\varepsilon$. We write $\Sigma^*$ (resp. $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$. Let $w=a_1\cdots a_n$ be a string. The reverse of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$. 
 
-A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. Let $w=a_1\cdots a_n$ be a string. The reserve of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$.
+We consider two data types, i.e., the string data type and the integer data type. We will use $c, d,\dots$ to denote integer constants, $u, v, \dots$ to denote string constants,  $i, j, \dots$ to denote the  integer variables, and $x, y, \dots$ to denote the string variables.
 
-We consider two data types, the string data type and the integer data type. We will use $c, d,\dots$ to denote integer constants, $u, v, \dots$ to denote string constants,  $i, j, \dots$ to denote the  integer variables, and $x, y, \dots$ to denote the string variables.
+\noindent\textbf{Automata models.} A finite automaton (FA) $\Aut$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. 
 
-A finite automaton (FA) $\Aut$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. A string $w=\sigma_1 \cdots \sigma_n$ is accepted by $\Aut$ if there is a state sequence $q_0 \cdots q_n$ such that $q_0 \in I$, $q_n \in F$, and $(q_{i-1}, \sigma_i, q_i) \in \delta$ for each $i \in [n]$. In particular, an empty string $\varepsilon$ is accepted by $\Aut$ if $I \cap F \neq \emptyset$. The language defined by $\Aut$, denoted by $\Lang(\Aut)$, is defined as the set of strings accepted by $\Aut$.
+A string $w=\sigma_1 \cdots \sigma_n$ is accepted by $\Aut$ if there is a state sequence $q_0 \cdots q_n$ such that $q_0 \in I$, $q_n \in F$, and $(q_{i-1}, \sigma_i, q_i) \in \delta$ for each $i \in [n]$. In particular, an empty string $\varepsilon$ is accepted by $\Aut$ if $I \cap F \neq \emptyset$. The language defined by $\Aut$, denoted by $\Lang(\Aut)$, is defined as the set of strings accepted by $\Aut$.
 
-A finite transducer (FT) $T$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta$ is the transition relation, which is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, \sigma, q', u)$ as $q \xrightarrow{\sigma, u} q'$. A run of $T$ over a string $w=\sigma_1 \cdots \sigma_n$ is a state sequence of transitions $q_0 \xrightarrow{\sigma_1, u_1} q_1 \cdots q_n \xrightarrow{\sigma_n, u_n} q_n$. The run is accepting if $q_0 \in I$ and $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. We use $\cT(T)$ to denote the set of pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$.
+A regular expression ... 
 
-A linear arithmetic formula $\phi$ is defined by the rules: $\phi::= t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi$, where $o \in \{=, \neq, \le, \ge, <, >\}$ and $t$ is defined by the rules $t::= i \mid c \mid ct \mid t + t $.  
-For a quantifier free linear integer arithmetic formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\{(c_1, \cdots ,c_k) \mid \phi[c_1/i_1, \cdots, c_k/i_k] \mbox{ holds}\}$. An existential linear arithmetic formula is a linear arithmetic formula where all the existential quantifiers are under the scope of even number of negation symbols.
+A finite transducer (FT) $T$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta$ is the transition relation, which is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, \sigma, q', u)$ as $q \xrightarrow{\sigma, u} q'$. 
 
-\section{The logic \slint}
+A run of $T$ over a string $w=\sigma_1 \cdots \sigma_n$ is a state sequence of transitions $q_0 \xrightarrow{\sigma_1, u_1} q_1 \cdots q_n \xrightarrow{\sigma_n, u_n} q_n$. The run is accepting if $q_0 \in I$ and $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. We use $\cT(T)$ to denote the set of pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$.
 
-The string logic {\cslint} defined by the following rules satisfies the two semantic conditions,
-\[
-\begin{array}{l c l}
-t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
-S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
-& & x := \substring(y, t_1, t_2)  \mid S;S, \\
-A_r & ::= & x \in \Aut \mid A_r \wedge A_r,\\
-A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,\\
-A & ::= &   A_r \wedge A_i,
-\end{array}
-\]
-where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
-
-
-
-We consider two types of functions, string functions that return strings and integer functions that return integers. Specifically, we consider 
-\begin{itemize}
-\item string functions $f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $f$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^{\Sigma^*}$, and
-\item  integer functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $g$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^\intnum$.
-\end{itemize} 
-Note that $f$ and $g$ can be nondeterministic.
-%\subsection{The abstract version}
-
-We consider string constraints where the formulae are of the form $S \wedge A$ defined by the following rules,
-\[
-\begin{array}{l c l}
-t  &::=& i \mid c \mid  g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid ct \mid t + t,   \\
-S &::= &  x:=f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid S;S, \\
-A_r & ::= & x \in \Aut  \mid A_r \wedge A_r, \\
-A_i & ::= & t\ o\ t \mid A_i \wedge A_i \mid A_i \vee A_i,\\
-A & ::= &   A_r \wedge A_i, 
-\end{array}
-\]
-where $f$ is a string function and $g$ is an integer function, $\vec{t_j} = t_{j,1}, \cdots, t_{j, n_j}$ for each $j \in [k]$, $\Aut$ is a finite-state automaton, and $o \in \{=, \neq, \ge, \le, >, <\}$.
-
-The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
-%Intuitively speaking, the integer constraints in $S \wedge A$ are split into the integer assignments in $S$ where the right-hand side is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ and the constraints $t\ o\ t$ in $A$ where the integer functions $g$ do not occur.
-%\begin{itemize}
-%\item $S$ is in single static assignment (SSA) form,
-%\item all the assignments $i: = t$ in $S$ satisfy that either $t$ is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, or $t$ contains no occurrences of the functions of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, namely, $t$ is an integer term built from integer variables and constants ,
-%
-%\item $A$ contains no occurrences of the functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$,
-%
-%\item all the string variables in $A$ also occur in $S$.
-%\end{itemize} 
-
-\begin{example}
-The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2 \indexof(x, c)$ belongs to \slint.
-\end{example}
-
-In the next section, we specify the semantic conditions for {\slint} in order to achieve decision procedures. For this purpose, we need the concepts of cost-enriched regular languages and recognisable relations. 
-
-%\section{The semantic conditions}
+\noindent\textbf{Linear arithmetic.}  A linear arithmetic formula $\phi$ is defined by the rules: $\phi::= t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi$, where $o \in \{=, \neq, \le, \ge, <, >\}$ and $t$ is defined by  $t::= i \mid c \mid ct \mid t + t $.  
+For a quantifier-free linear integer arithmetic formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\left\{(c_1, \cdots ,c_k) \mid \phi[c_1/i_1, \cdots, c_k/i_k]\right\}$. An existential linear arithmetic formula is a linear arithmetic formula where all the existential quantifiers are under the scope of even number of negation symbols.
