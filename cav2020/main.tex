@@ -5,13 +5,13 @@
   \usepackage{graphicx}
 \usepackage{epic,eepic}
 
-\pagestyle{plain}
+%\pagestyle{plain}
 \usepackage{listings}
 \usepackage{psfrag}
 \usepackage{rotating}
 
 \usepackage{url}
-\usepackage{amssymb,epsfig,amstext}
+\usepackage{amssymb,amsthm, epsfig,amstext}
 \usepackage{txfonts}
 \usepackage{algorithmic}
 \usepackage{algorithm}
@@ -129,37 +129,6 @@ The logic {\slint} is defined as straight-line fragment of the aforementioned st
 %
 %\item all the string variables in $A$ also occur in $S$.
 %\end{itemize} 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-\subsection{The concrete version}
-
-SL$_{int}$ comprises all the formulae $S \wedge A$ defined by the following rules,
-\[
-\begin{array}{l c l}
-t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid t + t,   \\
-S &::= & i:= t \mid x := \substring(y, i, j)  \mid x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid\\
-&&  x:=\reverse(y) \mid x:=T(y) \mid S;S, \\
-A & ::= &   x \in \Aut \mid t\ o\ t \mid A \wedge A,
-\end{array}
-\]
-where $c$ is an integer constant, $e$ is a regular expression,  $u$ is a string constant, $T$ is an NFT, $\Aut$ is an NFA, and $o \in \{=, \neq, \le, \ge, <, >\}$.
-Note that $\replaceall_{e,u}$ is the replaceAll function where $e$ and $u$ are the pattern and the replacement parameters.
-
-For technical convenience, we assume that 
-\begin{itemize}
-\item $S$ is in single static assignment (SSA) form,
-%
-\item all the assignments $i: = t$ in $S$ satisfy that either $t = \length(x)$, $t=\indexof_u(x, j)$, or $t$ contains no occurrences of these two functions,
-%
-\item $A$ contains no occurrences of the functions $\length$ or $\indexof$,
-%
-\item all the variables in $A$ also occur in $S$.
-\end{itemize} 
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{example}
 The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2 \indexof(x, c)$ belongs to \slint.
