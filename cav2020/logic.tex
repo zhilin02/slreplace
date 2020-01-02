@@ -1,0 +1,56 @@
+\section{The logic \slint}
+
+The string logic {\cslint} defined by the following rules satisfies the two semantic conditions,
+\[
+\begin{array}{l c l}
+t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
+S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
+& & x := \substring(y, t_1, t_2)  \mid S;S, \\
+A_r & ::= & x \in \Aut \mid A_r \wedge A_r,\\
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,\\
+A & ::= &   A_r \wedge A_i,
+\end{array}
+\]
+where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+
+
+
+We consider two types of functions, string functions that return strings and integer functions that return integers. Specifically, we consider 
+\begin{itemize}
+\item string functions $f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $f$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^{\Sigma^*}$, and
+\item  integer functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $g$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^\intnum$.
+\end{itemize} 
+Note that $f$ and $g$ can be nondeterministic.
+%\subsection{The abstract version}
+
+We consider string constraints where the formulae are of the form $S \wedge A$ defined by the following rules,
+\[
+\begin{array}{l c l}
+t  &::=& i \mid c \mid  g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid ct \mid t + t,   \\
+S &::= &  x:=f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid S;S, \\
+A_r & ::= & x \in \Aut  \mid A_r \wedge A_r, \\
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i \mid A_i \vee A_i,\\
+A & ::= &   A_r \wedge A_i, 
+\end{array}
+\]
+where $f$ is a string function and $g$ is an integer function, $\vec{t_j} = t_{j,1}, \cdots, t_{j, n_j}$ for each $j \in [k]$, $\Aut$ is a finite-state automaton, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+
+The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
+%Intuitively speaking, the integer constraints in $S \wedge A$ are split into the integer assignments in $S$ where the right-hand side is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ and the constraints $t\ o\ t$ in $A$ where the integer functions $g$ do not occur.
+%\begin{itemize}
+%\item $S$ is in single static assignment (SSA) form,
+%\item all the assignments $i: = t$ in $S$ satisfy that either $t$ is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, or $t$ contains no occurrences of the functions of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, namely, $t$ is an integer term built from integer variables and constants ,
+%
+%\item $A$ contains no occurrences of the functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$,
+%
+%\item all the string variables in $A$ also occur in $S$.
+%\end{itemize} 
+
+\begin{example}
+The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2 \indexof(x, c)$ belongs to \slint.
+\end{example}
+
+In the next section, we specify the semantic conditions for {\slint} in order to achieve decision procedures. For this purpose, we need the concepts of cost-enriched regular languages and recognisable relations. 
+
+%\section{The semantic conditions}
+
