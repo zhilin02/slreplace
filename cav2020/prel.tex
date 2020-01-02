@@ -1,12 +1,14 @@
 We write $\nat$ for the set of natural numbers. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Throughout the paper we use $\Sigma$ to denote a  finite alphabet. 
 
-A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. Let $w=a_1\cdots a_n$ be a string. The reverse of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$. An empty string is usually denoted by $\varepsilon$.
+A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. An empty string is usually denoted by $\varepsilon$. We write $\Sigma^*$ (resp. $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$. Let $w=a_1\cdots a_n$ be a string. The reverse of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$. 
 
 We consider two data types, i.e., the string data type and the integer data type. We will use $c, d,\dots$ to denote integer constants, $u, v, \dots$ to denote string constants,  $i, j, \dots$ to denote the  integer variables, and $x, y, \dots$ to denote the string variables.
 
 \noindent\textbf{Automata models.} A finite automaton (FA) $\Aut$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. 
 
 A string $w=\sigma_1 \cdots \sigma_n$ is accepted by $\Aut$ if there is a state sequence $q_0 \cdots q_n$ such that $q_0 \in I$, $q_n \in F$, and $(q_{i-1}, \sigma_i, q_i) \in \delta$ for each $i \in [n]$. In particular, an empty string $\varepsilon$ is accepted by $\Aut$ if $I \cap F \neq \emptyset$. The language defined by $\Aut$, denoted by $\Lang(\Aut)$, is defined as the set of strings accepted by $\Aut$.
+
+A regular expression ... 
 
 A finite transducer (FT) $T$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta$ is the transition relation, which is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, \sigma, q', u)$ as $q \xrightarrow{\sigma, u} q'$. 
 
