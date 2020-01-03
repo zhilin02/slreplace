@@ -33,6 +33,13 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newcommand{\zhilin}[1]{\color{cyan} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{purple} {TL: #1 :LT} \color{black}}
+\newcommand{\anthony}[1]{\color{blue} {AL: #1 :LA} \color{black}}
+\newcommand{\matt}[1]{\color{blue} {MH: #1 :HM} \color{black}}
+\newcommand{\philipp}[1]{\color{blue} {PR: #1 :RP} \color{black}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \title{An Automata-Based Decision Procedure \\
@@ -45,6 +52,12 @@ for String and Numeric Constraints}
 
 \begin{document}
 
+
+%Regular Papers should not exceed 20 pages in LNCS format, not counting references and appendices.
+%
+%Regular papers at CAV 2020 will follow a full double blind review process, which means that author names and affiliations must be omitted from the submission. Additionally, if a submission refers to prior work done by the authors, the reference should be made in the third person. These are firm submission requirements, and any regular paper that does not conform to these requirements will be rejected without review.
+%
+%Authors can include a clearly marked appendix at the end of their submissions that is exempt from the page limit restrictions. However, the reviewers are not obliged to read the contents of these appendices. These papers should contain original research and sufficient detail to assess the merits and relevance of the contribution. Papers will be evaluated on basis of a combination of correctness, technical depth, significance, novelty, clarity, and elegance.
 
 \maketitle
 
@@ -62,35 +75,48 @@ We propose a decision procedure for the logic, based on a variant of cost regist
 %
 %Definition for NFA, NFT.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 
-\input{intro}
+\input{intro.tex}
 
-related work
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Preliminaries}
 
-\input{prel}
+\input{prel.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{The logic \slint}
+
+\input{logic.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Cost-enriched regular languages and recognisable relations}
 
-\input{cefa}
+\input{cefa.tex}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Decision procedure}
+\section{Decision procedures}
 
-\input{decproc}
+\input{decision.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Implementation}
 
-\input{impl}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Evaluation}
 
-\input{eval}
+\input{eval.tex}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bibliographystyle{abbrv}
 \bibliography{string}
