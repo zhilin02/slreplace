@@ -5,7 +5,7 @@
 \begin{definition}[CERR linear integer functions]
 An integer function $g: \Sigma^* \times \intnum^{k_1} \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^\intnum$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \intnum^{k_1+1} \times \Sigma^* \times \intnum^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \intnum^{k_1}, \cdots, \vec{c_l} \in \intnum^{k_l}$, and $d_1, \cdots, d_l \in \intnum$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
 
-For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [n]}, t)$, where $(\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
+For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}, t)$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
 
 \end{definition}
 
@@ -14,7 +14,7 @@ The string functions $\length$ and $\indexof_u$ are CERR linear integer function
 \end{example}
 
 \begin{definition}[Cost enriched pre-image of CERL]
-Suppose that $f: \Sigma^* \times \intnum^{k_1} \times \cdots \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^{\Sigma^*}$ is a string function, $L \subseteq \Sigma^* \times \intnum^n$ is a CERL, and $L = \Lang(\Aut)$ for some CEFA $\Aut=(Q, R, \delta, I, F)$ where $R= (r_1, \cdots, r_n)$. Then the $R$-cost enriched pre-image of $L$ under $f$ is a pair $(\cR, \vec{t})$ such that 
+Suppose that $f: \Sigma^* \times \intnum^{k_1} \times \cdots \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^{\Sigma^*}$ is a string function, $L \subseteq \Sigma^* \times \intnum^n$ is a CERL, and $L = \Lang(\NFA)$ for some CEFA $\NFA=(Q, R, \delta, I, F)$ where $R= (r_1, \cdots, r_n)$. Then the $R$-cost enriched pre-image of $L$ under $f$ is a pair $(\cR, \vec{t})$ such that 
 \begin{itemize}
 \item $\cR \subseteq \Sigma^* \times \intnum^{k_1 + n} \times \cdots \times \Sigma^* \times \intnum^{k_l + n}$,
 \item $\vec{t} = (t_1, \cdots ,t_n)$ is a vector of linear integer terms where for each $i \in [n]$, $t_i$ is a term over $\vec{r_i} = (r^{(1)}_i, \cdots, r^{(l)}_i)$,
@@ -24,12 +24,12 @@ $L = \{(f(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l}), t_1[d_{1,1}/r^{(1)}_1, \cdots
 %
 (where $\vec{d_1}=(d_{1,1}, \cdots, d_{1,n})$, $\cdots$, and $\vec{d_l}=(d_{l,1},\cdots, d_{l,n})$).
 \end{itemize}
-The $R$-cost enriched pre-image of $L$ under $f$, say $(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. If the $R$-cost enriched pre-image of $L$ under $f$, say $(\cR, \vec{t})$, is CERR-definable,  then its CEFA representation is a tuple $((\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [m]}, \vec{t})$, where $(\Aut_{i,1}, \cdots, \Aut_{i, l})_{i \in [m]}$ is a CEFA representation of $\cR$. 
+The $R$-cost enriched pre-image of $L$ under $f$, say $(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. If the $R$-cost enriched pre-image of $L$ under $f$, say $(\cR, \vec{t})$, is CERR-definable,  then its CEFA representation is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [m]}, \vec{t})$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [m]}$ is a CEFA representation of $\cR$. 
 \end{definition}
 
 
 \begin{example}
-Let $\Aut = (Q, R, \delta, I, F)$. The $R$-cost enrichment of the pre-image of $\Lang(\Aut)$ under $\substring$ is CERR-definable and its CEFA representation can be found in Section~\ref{sec-cslint}.
+Let $\NFA = (Q, R, \delta, I, F)$. The $R$-cost enrichment of the pre-image of $\Lang(\NFA)$ under $\substring$ is CERR-definable and its CEFA representation can be found in Section~\ref{sec-cslint}.
 \end{example}
 
 
@@ -45,16 +45,16 @@ Let $\Aut = (Q, R, \delta, I, F)$. The $R$-cost enrichment of the pre-image of $
 
 %Let $X$ be a set of registers and $G_{inc}(X)$ denote the set of terms defined by the rules $t::=c \mid x \mid t+c$, where $c$ is an integer constant.  We interpret terms from $G_{inc}(X)$ over the set of integers.
 
-%Let $\Aut=(\Sigma, Q, I, F, R, \delta)$ be an INCRA with $R=r_1\cdots r_m$. Over an input word $w=\sigma_1 \cdots \sigma_n \in \Sigma^+$, a run of $\Aut$ on $w$ is a sequence $q_0 \xrightarrow{\sigma_1, \eta_1} q_1 \cdots q_{n-1} \xrightarrow{\sigma_n, \eta_n} q_n$ such that $q_0 \in I$ and $(q_{i-1}, \sigma_i, \eta_i, q_i) \in \delta$ for each $i \in [n]$. A run is accepting if $q_n \in F$. The output of an accepting run of $\Aut$ on $w$ is a tuple $(i_1,\cdots, i_m)$, where $i_j = \eta_n(r_j) (\cdots \eta_1(r_j)(0)\cdots)$ for each $j \in [m]$. Note that the initial value of each register $r_j$ is zero. We define $\Aut(w)$ as the set of outputs of the accepting runs of $\Aut$ on $w$ (possibly it is an empty set). Note the in general, an output of an INCRA is a tuple, instead of a single integer. Moreover, we also use $\Lang(\Aut)$ to denote $\{w \in \Sigma^* \mid \Aut(w) \neq \emptyset\}$ and $\cR(w) = \{(w, \vec{n}) \mid \vec{n} \in \Aut(w)\}$.
+%Let $\NFA=(\Sigma, Q, I, F, R, \delta)$ be an INCRA with $R=r_1\cdots r_m$. Over an input word $w=\sigma_1 \cdots \sigma_n \in \Sigma^+$, a run of $\NFA$ on $w$ is a sequence $q_0 \xrightarrow{\sigma_1, \eta_1} q_1 \cdots q_{n-1} \xrightarrow{\sigma_n, \eta_n} q_n$ such that $q_0 \in I$ and $(q_{i-1}, \sigma_i, \eta_i, q_i) \in \delta$ for each $i \in [n]$. A run is accepting if $q_n \in F$. The output of an accepting run of $\NFA$ on $w$ is a tuple $(i_1,\cdots, i_m)$, where $i_j = \eta_n(r_j) (\cdots \eta_1(r_j)(0)\cdots)$ for each $j \in [m]$. Note that the initial value of each register $r_j$ is zero. We define $\NFA(w)$ as the set of outputs of the accepting runs of $\NFA$ on $w$ (possibly it is an empty set). Note the in general, an output of an INCRA is a tuple, instead of a single integer. Moreover, we also use $\Lang(\NFA)$ to denote $\{w \in \Sigma^* \mid \NFA(w) \neq \emptyset\}$ and $\cR(w) = \{(w, \vec{n}) \mid \vec{n} \in \NFA(w)\}$.
 
-%Note that a nondeterministic finite-state automaton can be seen as an INCRA $\Aut=(\Sigma, Q, I, F, R, \delta)$ where $R$ is empty.
+%Note that a nondeterministic finite-state automaton can be seen as an INCRA $\NFA=(\Sigma, Q, I, F, R, \delta)$ where $R$ is empty.
 
 %\subsection{A string logic satisfying the semantic conditions}\label{sec-cslint}
 
 \subsection{Computation of pre-images}
 In this section, we show that the pre-images of the integer and string operations in {\slint} are representable by CEFAs. %satisfy the semantic conditions.
 
-Let $\Aut=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_m)$. 
+Let $\NFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_m)$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \smallskip
@@ -62,7 +62,7 @@ Let $\Aut=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_m)$.
 
 \smallskip
 
-Then $((\Aut_{I, q}, \Aut_{q, F})_{q \in Q}, \vec{t})$ is a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $\concat$, where $\Aut_{I, q}=(Q, \Sigma, R^{(1)}, \delta^{(1)}, I, \{q\})$ and  $\Aut_{q, F}=(Q, \Sigma, R^{(2)}, \delta^{(2)}, \{q\}, F)$ such that 
+Then $((\NFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$ is a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $\concat$, where $\NFA_{I, q}=(Q, \Sigma, R^{(1)}, \delta^{(1)}, I, \{q\})$ and  $\NFA_{q, F}=(Q, \Sigma, R^{(2)}, \delta^{(2)}, \{q\}, F)$ such that 
 \begin{itemize}
 \item $R^{(1)} = (r^{(1)}_1, \cdots, r^{(1)}_m)$, $R^{(2)} = (r^{(2)}_1, \cdots, r^{(2)}_m)$, 
 \item $\delta^{(1)}$ comprises the tuples $(q, \sigma, q', \eta')$ satisfying that $(q, \sigma, q', \eta) \in \delta$ and for each $j \in [m]$, $\eta'(r^{(1)}_j)=\eta(r_j)$,  similarly for $\delta^{(2)}$,
@@ -75,7 +75,7 @@ and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_m + r^{(2)}_m)$.
 
 \noindent \emph{Reverse $\reverse(x_1)$}. 
 
-$(\Aut^{(r)}, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $\reverse$, where $\Aut^{(r)}$ is $(Q, \Sigma, R, \delta', F, I)$ such that $\delta'$ comprises the set of tuples $(q', \sigma, q, \eta)$ with  $(q, \sigma, q', \eta) \in \delta$. Note that $\Lang(\Aut^{(r)}) = \{(w^{(r)}, \vec{c}) \mid (w, \vec{c}) \in \Lang(\Aut)\}$.
+$(\NFA^{(r)}, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $\reverse$, where $\NFA^{(r)}$ is $(Q, \Sigma, R, \delta', F, I)$ such that $\delta'$ comprises the set of tuples $(q', \sigma, q, \eta)$ with  $(q, \sigma, q', \eta) \in \delta$. Note that $\Lang(\NFA^{(r)}) = \{(w^{(r)}, \vec{c}) \mid (w, \vec{c}) \in \Lang(\NFA)\}$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,7 +85,7 @@ $(\Aut^{(r)}, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the
 
 %Intuitively, $\substring(x_1, i, j)$ returns the substring of $x_1$ starting from the position $i$ and ending at the position $j$ (assuming that $i  < j$), with the letter at the position $j$ excluded.
 
-$(\cB, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $\substring$, where $\cB = (Q \times \{p_0, p_1, p_2\}, \Sigma, R', \delta', I \times \{p_0\}, F \times \{p_2\})$ such that $R' = (i, j, r^{(1)}_1,\cdots, r^{(1)}_m)$ and $\delta'$ comprises 
+$(\cB, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $\substring$, where $\cB = (Q \times \{p_0, p_1, p_2\}, \Sigma, R', \delta', I \times \{p_0\}, F \times \{p_2\})$ such that $R' = (i, j, r^{(1)}_1,\cdots, r^{(1)}_m)$ and $\delta'$ comprises 
 \begin{itemize}
 \item the tuples $((q, p_0), \sigma, (q, p_0), \eta')$ such that $q \in I$ and $\eta' = \eta_0 \cup \{i \rightarrow 1, j \rightarrow 1\}$, where $\eta_0(r^{(1)}_j)=0$ for each $j \in [m]$,
 %
@@ -106,7 +106,7 @@ $(\cB, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-co
 
 \smallskip
 
-Let $T= (Q', \Sigma, \delta', I', F')$. Then $(\cB, (r^{(1)}, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $T$, where $ \cB= (Q \times Q', \Sigma, R^{(1)}, \delta'', I \times I', F \times F')$ such that $R^{(1)}  = (r^{(1)}, \cdots, r^{(1)}_m)$, $\delta''$ comprises the tuples $((q_1, q'_1), \sigma, (q_2, q'_2), \eta')$ satisfying that $(q'_1, \sigma, q'_2, u) \in \delta'$ with $u = \sigma_1 \cdots \sigma_i$, and in $\Aut$, we have $p_1 \xrightarrow{\sigma_1, \eta_1} p_2 \cdots \xrightarrow{\sigma_i, \eta_i} p_{i+1}$ with $p_1 = q_1$ and $p_{i+1}= q_2$, and for each $j \in [m]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_i(r_j)$.
+Let $T= (Q', \Sigma, \delta', I', F')$. Then $(\cB, (r^{(1)}, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $T$, where $ \cB= (Q \times Q', \Sigma, R^{(1)}, \delta'', I \times I', F \times F')$ such that $R^{(1)}  = (r^{(1)}, \cdots, r^{(1)}_m)$, $\delta''$ comprises the tuples $((q_1, q'_1), \sigma, (q_2, q'_2), \eta')$ satisfying that $(q'_1, \sigma, q'_2, u) \in \delta'$ with $u = \sigma_1 \cdots \sigma_i$, and in $\NFA$, we have $p_1 \xrightarrow{\sigma_1, \eta_1} p_2 \cdots \xrightarrow{\sigma_i, \eta_i} p_{i+1}$ with $p_1 = q_1$ and $p_{i+1}= q_2$, and for each $j \in [m]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_i(r_j)$.
 %
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,7 +119,7 @@ Let $T= (Q', \Sigma, \delta', I', F')$. Then $(\cB, (r^{(1)}, \cdots, r^{(1)}_m)
 Intuitively, $\replaceall_{e,u}(x)$ is the string obtained by replacing every occurrence of $e$ in $x$ with the constant string $u$.
 
 From the results in \cite{CCH+18}, we know that  a FT $T_{e,u}$ can be constructed to simulate $\replaceall_{e,u}$. 
-Therefore, a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $T$ can be constructed as in the FT case.
+Therefore, a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $T$ can be constructed as in the FT case.
 % 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -206,8 +206,8 @@ Let $S \wedge A$ be an {\slint} formula (satisfying the property ($*$)).
 
 For each occurrence of $i = g(x_1, \vec{i'_1}, \cdots, x_k, \vec{i'_k})$ in $A$ with $g$ an integer function, apply the following nondeterministic transformation to $A$: 
 \begin{quote}
-According to the 1st semantic condition, $g$ is a CERR linear integer function and a CEFA representation of $g$, say $((\Aut_{j,1}, \cdots, \Aut_{j, k})_{j \in [m]}, t)$, can be computed effectively from $g$. Consider $((\Aut'_{j,1}, \cdots, \Aut'_{j, k})_{j \in [m]}, t')$, where $\Aut'_{j,1}=\Aut_{j,1}[\vec{i'_1}/R(\Aut_{j,1})]$, $\cdots$, $\Aut'_{j,k}=\Aut_{j,k}[\vec{i'_k}/R(\Aut_{j,k})]$, and $t' = t[i^{(1)}/r^{(1)}, \cdots, i^{(k)}/r^{(k)}]$.
-Nondeterministically choose $j \in [m]$, and replace $i = g(x_1, \vec{i'_1}, \cdots, x_k, \vec{i'_k})$ by $x_1 \in \Aut'_{j,1} \wedge \cdots \wedge x_k \in \Aut'_{j,k} \wedge i = t'$ in $A$.
+According to the 1st semantic condition, $g$ is a CERR linear integer function and a CEFA representation of $g$, say $((\NFA_{j,1}, \cdots, \NFA_{j, k})_{j \in [m]}, t)$, can be computed effectively from $g$. Consider $((\NFA'_{j,1}, \cdots, \NFA'_{j, k})_{j \in [m]}, t')$, where $\NFA'_{j,1}=\NFA_{j,1}[\vec{i'_1}/R(\NFA_{j,1})]$, $\cdots$, $\NFA'_{j,k}=\NFA_{j,k}[\vec{i'_k}/R(\NFA_{j,k})]$, and $t' = t[i^{(1)}/r^{(1)}, \cdots, i^{(k)}/r^{(k)}]$.
+Nondeterministically choose $j \in [m]$, and replace $i = g(x_1, \vec{i'_1}, \cdots, x_k, \vec{i'_k})$ by $x_1 \in \NFA'_{j,1} \wedge \cdots \wedge x_k \in \NFA'_{j,k} \wedge i = t'$ in $A$.
 \end{quote}
 Note that after this transformation, $S \wedge A$ contains no occurrences of integer functions, moreover, as a result of the property ($*$), for every variable $x$, all the CEFAs to which $x$ belongs satisfy that their sets of registers are  mutually disjoint.
 
@@ -216,8 +216,8 @@ Then repeat the following procedure until $S$ becomes empty.
 \begin{quote}
 Suppose $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ is the last assignment of $S$. 
 \\
-Let $\rho := \{\Aut_1, \cdots, \Aut_s\}$ be the set of all CEFAs such that $y \in \Aut_j$ occurs in $A$ for each $j \in [s]$. Construct $\Aut = \Aut_1 \times \cdots \times \Aut_s$ (Recall that the sets of registers of $\Aut_1$, $\cdots$, $\Aut_s$ are mutually disjoint). Let  the vector of registers in $\Aut$ be $R = (r'_1, \cdots, r'_n)$. Then according to the 2nd semantic condition, 
-a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\Aut)$ under $f$, say $((\cB_{j, 1}, \cdots, \cB_{j, k})_{j \in [\ell]}, \vec{t})$, can be effectively computed from $\Aut$ and $f$. Consider $((\cB'_{j, 1}, \cdots, \cB'_{j, k})_{j \in [\ell]}, \vec{t'})$, where $\cB'_{j, 1} = \cB_{j, 1}[\vec{i_1}/R(\cB_{j,1}), \vec{(r')^{(1)}}/\vec{r^{(1)}}]$, $\cdots$, $\cB'_{j,k}=\cB_{j,k}[\vec{i_k}/R(\cB_{j,k}), \vec{(r')^{(k)}}/\vec{r^{(k)}}]$ (with $\vec{r^{(1)}}= (r^{1}_1, \cdots, r^{(1)}_n)$, similarly for $\vec{r^{(2)}}$ and so on), and $\vec{t'} = \vec{t}[\vec{r'_1}/\vec{r_1}, \cdots, \vec{r'_n}/\vec{r_n}]$ (with $\vec{r_1} = (r^{(1)}_1, \cdots, r^{(k)}_1)$, similarly for $\vec{r^{(2)}}$ and so on). 
+Let $\rho := \{\NFA_1, \cdots, \NFA_s\}$ be the set of all CEFAs such that $y \in \NFA_j$ occurs in $A$ for each $j \in [s]$. Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$ (Recall that the sets of registers of $\NFA_1$, $\cdots$, $\NFA_s$ are mutually disjoint). Let  the vector of registers in $\NFA$ be $R = (r'_1, \cdots, r'_n)$. Then according to the 2nd semantic condition, 
+a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $f$, say $((\cB_{j, 1}, \cdots, \cB_{j, k})_{j \in [\ell]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$. Consider $((\cB'_{j, 1}, \cdots, \cB'_{j, k})_{j \in [\ell]}, \vec{t'})$, where $\cB'_{j, 1} = \cB_{j, 1}[\vec{i_1}/R(\cB_{j,1}), \vec{(r')^{(1)}}/\vec{r^{(1)}}]$, $\cdots$, $\cB'_{j,k}=\cB_{j,k}[\vec{i_k}/R(\cB_{j,k}), \vec{(r')^{(k)}}/\vec{r^{(k)}}]$ (with $\vec{r^{(1)}}= (r^{1}_1, \cdots, r^{(1)}_n)$, similarly for $\vec{r^{(2)}}$ and so on), and $\vec{t'} = \vec{t}[\vec{r'_1}/\vec{r_1}, \cdots, \vec{r'_n}/\vec{r_n}]$ (with $\vec{r_1} = (r^{(1)}_1, \cdots, r^{(k)}_1)$, similarly for $\vec{r^{(2)}}$ and so on). 
 \\
 Nondeterministically choose $j \in [\ell]$ and let 
 $$A:= A \wedge x_1 \in \cB'_{j, 1} \wedge \cdots \wedge x_k \in \cB'_{j, k}  \wedge \bigwedge \limits_{j' \in [n]} r'_{j'} = t'_{j'}.$$
@@ -227,7 +227,7 @@ Remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$.
 
 We would like to remark that if all the string functions $f$ in $S \wedge A$ are \emph{deterministic}, then the product of CEFAs before the pre-image computation can be avoided and the pre-image can be computed \emph{distributively} for CEFAs in $\rho$.
 
-In the end, we get a formula $S \wedge A$ where $S$ is empty. Suppose $A = A_r \wedge A_i$, where $A_r$ is a conjunction of atomic formulae of the form $x \in \Aut$, and $A_i$ is linear arithmetic formula (containing no integer functions). By computing the product construction of CEFAs, $A_r$ can be rewritten as $x_1 \in \Aut_1 \wedge \cdots \wedge x_n \in \Aut_n$, where $x_1,\cdots, x_n$ are mutually distinct. Therefore, the path feasibility of $S \wedge A$ is exactly the satisfiability of $A_i$ w.r.t. the CEFAs $\Aut_1, \cdots, \Aut_n$. From Theorem~\ref{thm-incra-la-sat}, we conclude that the path feasibility of  {\slint} is decidable.
+In the end, we get a formula $S \wedge A$ where $S$ is empty. Suppose $A = A_r \wedge A_i$, where $A_r$ is a conjunction of atomic formulae of the form $x \in \NFA$, and $A_i$ is linear arithmetic formula (containing no integer functions). By computing the product construction of CEFAs, $A_r$ can be rewritten as $x_1 \in \NFA_1 \wedge \cdots \wedge x_n \in \NFA_n$, where $x_1,\cdots, x_n$ are mutually distinct. Therefore, the path feasibility of $S \wedge A$ is exactly the satisfiability of $A_i$ w.r.t. the CEFAs $\NFA_1, \cdots, \NFA_n$. From Theorem~\ref{thm-incra-la-sat}, we conclude that the path feasibility of  {\slint} is decidable.
 \qed
 \end{proof}
 
