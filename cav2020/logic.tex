@@ -44,7 +44,10 @@ defined below.
 %
 \item The assignment $x:=\NFT(y)$ denotes that $x$ is an output of some accepting run of $\NFT$ on $y$.
 %
-\item The assignment $x:=\substring(y, t_1, t_2)$ denotes that $x$ is the substring of $y$ from the position $t_1$ to the position $t_2-1$. \zhilin{to be refined}
+\item The assignment $x:=\substring(y, t_1, t_2)$ denotes that $x$ is equal to the return value of $\substring(y, t_1, t_2)$, where 
+ %the substring of $y$ that begins at the position $t_1$ and extends to the length $t_2$. 
+$\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  
+%Note here we require that $t_2 \ge 0$. 
 %
 \item The conditional statement $\ASSERT{x \in \NFA}$ denotes that $x$ belongs to $\Lang(\NFA)$.
 %
@@ -52,9 +55,9 @@ defined below.
 %
 \item The integer term $\length(x)$ denotes the length of $x$. 
 %
-\item The integer term $\indexof_v(x, i)$ denotes the starting position of the first occurrence of $v$ in $x$ after the position $i$.  \zhilin{to be refined}
+\item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. For instance, $\indexof_{ab}(aab, 1) = 1$ and $\indexof_{ab}(aab, 2)=-1$.
 \end{itemize}
-We would like to remark that the function ${\sf charAt}(x, i)$ can be seen as a special case of $\substring$, namely ${\sf charAt}(x, i) \equiv \substring(x, i, i+1)$.
+We would like to remark that the function ${\sf charAt}(x, i)$ can be seen as a special case of $\substring$, namely ${\sf charAt}(x, i) \equiv \substring(x, i, 0)$.
 
 
 %The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
