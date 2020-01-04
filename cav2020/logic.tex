@@ -1,6 +1,47 @@
 %!TEX root = main.tex
 
 
+The string numeric logic (abbreviated as {\slint}) is defined by the following rules,% satisfies the two semantic conditions,
+\[
+\begin{array}{l c l}
+t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
+S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
+& & x := \substring(y, t_1, t_2)  \mid S;S, \\
+A & ::= &   A_r \wedge A_i,\\
+A_r & ::= & x \in \NFA \mid A_r \wedge A_r,\\
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,
+\end{array}
+\]
+where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+
+
+The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% The original abstract logic definition %%%%%%%%%%%%
+%%%%%%%%%%% The original abstract logic definition %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hide{
 The string logic {\slint} defined by the following rules% satisfies the two semantic conditions,
 \[
 \begin{array}{l c l}
@@ -113,3 +154,4 @@ tbc...
 In the next section, we specify the semantic conditions for {\slint} in order to achieve decision procedures. For this purpose, we need the concepts of cost-enriched regular languages and recognisable relations. 
 
 %\section{The semantic conditions}
+}
