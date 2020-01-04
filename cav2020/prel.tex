@@ -1,13 +1,13 @@
 %!TEX root = main.tex
 
-We write $\nat$ and $\Int$ for the set of natural and integer numbers respectively. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Throughout the paper, we use $\Sigma$ to denote a finite alphabet which is usually ranged over by $a,b,\cdots$.
+We write $\nat$ and $\Int$ for the set of natural and integer numbers respectively. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{0, \cdots, n-1\}$. \zhilin{changed the definition of [n]} Throughout the paper, we use $\Sigma$ to denote a finite alphabet which is usually ranged over by $a,b,\cdots$.
 
 \paragraph*{Strings, languages, and transductions.}
 A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. An empty string is usually denoted by $\varepsilon$. We will use $u, v, w, \cdots$ to denote strings. We write $\Sigma^*$ (resp. $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$.
 
 Let $u$ be a string over $\Sigma$. We use $|u|$ to denote the length of $|u|$, namely, the number of occurrences of elements of $\Sigma$ in $u$. In particular, $|\varepsilon|=0$. Moreover, for $a \in \Sigma$, let $|u|_a$ denote the number of occurrences of $a$ in $u$. 
-Assume $u=a_1\cdots a_n$ is nonempty and $i<j\in [|u|]$. %Then a \emph{position} of $u$ is a number $i \in [|u|]$ (Note that the first position is $1$, instead of  0). In addition, 
-We let $u[i]$ denote the $i$-th letter of $u$ (i.e., $a_i$) and $u[i,j]$ for the substring of $u$ starting from $i$ and ending with $j$ (i.e., $a_i\cdots a_j$). \tl{check later for consistency}
+Assume $u=a_0\cdots a_{n-1}$ is nonempty and $i<j \in [n]$. %Then a \emph{position} of $u$ is a number $i \in [|u|]$ (Note that the first position is $1$, instead of  0). In addition, 
+We let $u[i]$ denote the $i$-th letter of $u$ (i.e., $a_i$) and $u[i,j]$ for the substring of $u$ starting from $i$ and ending with $j$ (i.e., $a_i\cdots a_j$). \tl{check later for consistency}\zhilin{the indices start from 0, to be consistent with the semantics of substring and indexof}
 
 Let $u, v$ be two strings. We use $u \cdot v$ to denote the \emph{concatenation} of $u$ and $v$, that is, the string $w$ such that $|w|= |u| + |v|$ and for each $i \in [|u|]$, $w[i]= u[i]$, and for each $i \in |v|$, $w[|u|+i]=v[i]$. The string $u$ is said to be a \emph{prefix} of $v$ if $v = u \cdot v'$ for some string $v'$.
 In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then 
