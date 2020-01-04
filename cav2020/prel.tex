@@ -1,18 +1,19 @@
 %!TEX root = main.tex
 
-We write $\nat$ for the set of natural numbers and $\Int$ for the set of integer numbers. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Throughout the paper, we use $\Sigma$ to denote a  finite alphabet. We will use $a,b,\cdots$ to denote the elements of $\Sigma$.
+We write $\nat$ and $\Int$ for the set of natural and integer numbers respectively. For $n \in \nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Throughout the paper, we use $\Sigma$ to denote a finite alphabet which is usually ranged over by $a,b,\cdots$.
 
 \paragraph*{Strings, languages, and transductions.}
-A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. An empty string is usually denoted by $\varepsilon$. We will use $u, v, w, \cdots$ to denote strings. 
+A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. An empty string is usually denoted by $\varepsilon$. We will use $u, v, w, \cdots$ to denote strings. We write $\Sigma^*$ (resp. $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$.
 
-Let $u$ be a string over $\Sigma$. We use $|u|$ to denote the length of $|u|$, namely, the number of occurrences of elements of $\Sigma$ in $u$. In particular, $|\varepsilon|=0$. Moreover, for $a \in \Sigma$, let $|u|_a$ denote the number of occurrences of $a$ in $u$. Suppose $u$ is nonempty. Then a \emph{position} of $u$ is a number $i \in [|u|]$ (Note that the first position is $1$, instead of  0). In addition, for $i \in [|u|]$, let $u[i]$ denote the $i$-th letter of $u$. 
+Let $u$ be a string over $\Sigma$. We use $|u|$ to denote the length of $|u|$, namely, the number of occurrences of elements of $\Sigma$ in $u$. In particular, $|\varepsilon|=0$. Moreover, for $a \in \Sigma$, let $|u|_a$ denote the number of occurrences of $a$ in $u$. 
+Assume $u=a_1\cdots a_n$ is nonempty and $i<j\in [|u|]$. %Then a \emph{position} of $u$ is a number $i \in [|u|]$ (Note that the first position is $1$, instead of  0). In addition, 
+We let $u[i]$ denote the $i$-th letter of $u$ (i.e., $a_i$) and $u[i,j]$ for the substring of $u$ starting from $i$ and ending with $j$ (i.e., $a_i\cdots a_j$). \tl{check later for consistency}
 
 Let $u, v$ be two strings. We use $u \cdot v$ to denote the \emph{concatenation} of $u$ and $v$, that is, the string $w$ such that $|w|= |u| + |v|$ and for each $i \in [|u|]$, $w[i]= u[i]$, and for each $i \in |v|$, $w[|u|+i]=v[i]$. The string $u$ is said to be a \emph{prefix} of $v$ if $v = u \cdot v'$ for some string $v'$.
 In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. If $u$ is a prefix of $v$, that is, $v = u \cdot v'$ for some string $v'$, then 
 we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
-If $u=a_1 \cdots a_n$ is nonempty, then we use $u^R$ to denote the \emph{reverse} of $u$, that is, $u^R= a_n \cdots a_1$.
+If $u=a_1 \cdots a_n$ is nonempty, then we use $u^R$ to denote the \emph{reverse} of $u$, that is, $u^R= a_n \cdots a_1$. \tl{$u^r$ check later for consistency}
 
-We write $\Sigma^*$ (resp. $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$. 
 
 A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$.  
 We will use $L_1, L_2, \dots$ to denote languages. For two languages $L_1$ and $L_2$, let $L_1 \cup L_2$ denote the union of $L_1$ and $L_2$, and $L_1 \cdot L_2$ denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. 
@@ -48,7 +49,7 @@ $\Ll(e_1^*)=(\Ll(e_1))^*$.
 In addition, we use $|e|$ to denote the number of symbols occurring in $e$.
 
 
-\paragraph*{Automata models.} A \emph{nondeterministic finite automaton} (NFA) $\NFA$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, a, q') \in \delta$ as $q \xrightarrow[\delta]{a} q'$. Moreover, when $\delta$ is clear from the context, we omit $\delta$ in $q \xrightarrow[\delta]{a} q'$ and write $q \xrightarrow{a} q'$.
+\paragraph*{Automata models.} A \emph{nondeterministic finite automaton} (NFA) $\NFA$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, a, q') \in \delta$ as $q \xrightarrow[\delta]{a} q'$. Moreover, when $\delta$ is clear from context, we omit $\delta$ in $q \xrightarrow[\delta]{a} q'$ and write $q \xrightarrow{a} q'$.
 %
 A \emph{run} of $\NFA$ on a string $w = a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1} q_1 \cdots q_{n-1} \xrightarrow{a_n} q_n$ with $q_0 \in I$. The run is \emph{accepting} if $q_n \in F$.
 A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\NFA$ if $I \cap F \neq \emptyset$. The language defined by $\NFA$, denoted by $\Lang(\NFA)$, is the set of strings accepted by $\NFA$. An NFA $\NFA$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one state $q' \in Q$ such that $(q, a, q') \in \delta$.
@@ -60,7 +61,7 @@ A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$
 
 
 
-A \emph{nondeterministic finite transducer} (NFT) $\NFT$ is an extension of NFA with outputs, formally, an NFT $\NFT$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q, \Sigma, I, F$ are as in NFA, and the transition relation $\delta$ is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$. Similarly to NFA, for readability, we write a transition $(q, a, q', u) \in \delta$ as $q \xrightarrow[\delta]{a, u} q'$ or even $q \xrightarrow{a, u} q'$. 
+A \emph{nondeterministic finite transducer} (NFT) $\NFT$ is an extension of NFA with outputs. Formally, an NFT $\NFT$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q, \Sigma, I, F$ are as in NFA and the transition relation $\delta$ is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$. Similarly to NFA, for readability, we write a transition $(q, a, q', u) \in \delta$ as $q \xrightarrow[\delta]{a, u} q'$ or $q \xrightarrow{a, u} q'$. 
 %
 A run of $\NFT$ over a string $w=a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1, u_1} q_1 \cdots q_{n-1} \xrightarrow{a_n, u_n} q_n$ with $q_0 \in I$. The run is accepting if $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. The transduction defined by $\NFT$, denote dby $\Tran(\NFT)$, is the set of string pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$. An NFT $\NFT$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one pair $(q', u) \in Q \times \Sigma^*$ such that $(q, a, q', u) \in \delta$.
 
