@@ -1,21 +1,50 @@
 %!TEX root = main.tex
 
-
-The string numeric logic (abbreviated as {\slint}) is defined by the following rules,% satisfies the two semantic conditions,
+We consider symbolic executions of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules,% satisfies the two semantic conditions,
 \[
 \begin{array}{l c l}
-t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
-S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
-& & x := \substring(y, t_1, t_2)  \mid S;S, \\
-A & ::= &   A_r \wedge A_i,\\
-A_r & ::= & x \in \NFA \mid A_r \wedge A_r,\\
-A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,
+S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=\NFT(y) \mid \\
+& & x := \substring(y, t_1, t_2)  \mid \ASSERT{x \in \NFA} \mid \ASSERT{t_1\ o\ t_2} \mid S;S, 
 \end{array}
 \]
-where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+where $e$ is a regular expression, $u \in \Sigma^*$, $\NFT$ is an NFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
+\[
+t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } v \in \Sigma^+.
+\]
+%
+%\[
+%\begin{array}{l c l}
+%t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
+%S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=\NFT(y) \mid \\
+%& & x := \substring(y, t_1, t_2)  \mid S;S, \\
+%A_r & ::= & x \in \NFA \mid A_r \wedge A_r,\\
+%A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,\\
+%A & ::= &   A_r \wedge A_i,
+%\end{array}
+%\]
+We require that the string-manipulating programs are in {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but does not restrict the conditional statements.
+
+%\begin{example}
+%The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2\ \indexof(x, c)$ belongs to \slint.
+%\end{example}
+
+\zhilin{stopped here}
+
+%\subsection{Semantics}
+\paragraph*{Semantics.}
+The semantics of  {\slint}  is largely self-explanatory. In particular, $\length(x)$ returns the length of string $x$, $\indexof_u(x, i)$ returns the first index of $u$ in $x$ after $i$. 
+
+$\substring(y, t_1, t_2)$ returns the string of $y$ between $t_1$ and $t_2$. 
+
+Intuitively, $\substring(x_1, i, j)$ returns the substring of $x_1$ starting from the position $i$ and ending at the position $j$ (assuming that $i  < j$), with the letter at the position $j$ excluded.
+
+tbc...
 
 
-The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
+Note that some other functions, e.g. ${\sf charAt}(x, i)$ can be seen as special cases of $\substring$ function, namely ${\sf charAt}(x, i) \equiv \substring(x, i, i+1)$.
+
+
+%The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
 
 
 
