@@ -1,13 +1,14 @@
 %!TEX root = main.tex
 
-We consider symbolic executions of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules,% satisfies the two semantic conditions,
+We consider symbolic execution of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules,% satisfies the two semantic conditions,
+%
 \[
 \begin{array}{l c l}
 S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=\NFT(y) \mid \\
 & & x := \substring(y, t_1, t_2)  \mid \ASSERT{x \in \NFA} \mid \ASSERT{t_1\ o\ t_2} \mid S;S, 
 \end{array}
 \]
-where $e$ is a regular expression, $u \in \Sigma^*$, $\NFT$ is an NFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
+where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an NFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
 \[
 t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } v \in \Sigma^+.
 \]
@@ -22,17 +23,15 @@ t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbo
 %A & ::= &   A_r \wedge A_i,
 %\end{array}
 %\]
-We require that the string-manipulating programs are in {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but does not restrict the conditional statements. A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear in the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
+We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but does not restrict the conditional statements. 
+\tl{what does conditional statement mean? you mean asserations?}
+A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear in the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
 
-
-
-
-%\subsection{Semantics}
 \paragraph*{Semantics.}
 The semantics of {\slint} is 
 %self-explanatory, 
 %if we know the semantics of the string-manipulating functions in {\slint}, 
-defined below.
+defined below. \tl{the semantics is not quite formal, so we may just **explain** them}
 \begin{itemize}
 \item The assignment $x:=y \cdot z$ denotes that $x$ is the concatenation of two strings $y$ and $z$.
 
@@ -43,8 +42,16 @@ defined below.
 \item The assignment $x:=\NFT(y)$ denotes that $x$ is an output of some accepting run of $\NFT$ on $y$.
 %
 \item The assignment $x:=\substring(y, t_1, t_2)$ denotes that $x$ is equal to the return value of $\substring(y, t_1, t_2)$, where 
+
+\[ \substring(y, t_1, t_2)=
+\begin{cases}
+\epsilon & if t_1<0\vee t_1>|y| \vee t_2=0 \\
+y[t_1, t_1+t_2-1] & o/w
+\end{cases}
+\]
  %the substring of $y$ that begins at the position $t_1$ and extends to the length $t_2$. 
 $\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\varepsilon$, $\substring(abaab, 3,2)=ab$, and $\substring(abaab, 3,3)=ab$.
+\tl{check the starting position}
 %Note here we require that $t_2 \ge 0$. 
 %
 \item The conditional statement $\ASSERT{x \in \NFA}$ denotes that $x$ belongs to $\Lang(\NFA)$.
