@@ -2,25 +2,61 @@
 
 %\subsection{Cost-enriched regular languages and recognisable relations}
 
-A cost-enriched string is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. 
-A cost-enriched language $L$ is a subset of $\Sigma^* \times \intnum^k$ for some $k$. Note that all the cost-enriched strings in $L$ are associated with the same number of costs (i.e., $k$).
-A cost-enriched relation $\cR$ is a subset of $\Sigma^* \times \intnum^{k_1} \times \cdots \Sigma^* \times \intnum^{k_l}$.
+Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. 
+A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. 
+%Note that all the cost-enriched strings in $L$ are associated with the same number of costs (i.e., $k$).
 
-\begin{definition}[Cost-enriched finite automata and regular languages]
-	A cost-enriched finite automaton (CEFA) $\NFA$ is a tuple $(Q, \Sigma, R, \delta, I, F)$ where $Q, \Sigma, I, F$ are defined as in FA, $R=(r_1, \cdots, r_k)$ is a vector of (mutually distinct) registers, $\delta$ is the transition relation which is a finite set of tuples $(q, \sigma, q', \eta)$ where $q, q' \in Q$, $\sigma \in \Sigma$, and $\eta: R \rightarrow \intnum$ is the cost-update function. For convenience, we usually write $(q, \sigma, q', \eta) \in \Delta$ as $q \xrightarrow{\sigma, \eta} q'$.
-	
-	A cost-enriched string $(\sigma_1 \cdots \sigma_m, (n_1, \cdots,n_k)) \in \Sigma^* \times \intnum^k$ is accepted by $\NFA$ if there is a sequence of transitions $q_0 \xrightarrow{\sigma_1, \eta_1} q_1 \cdots q_{m-1} \xrightarrow{\sigma_m, \eta_m} q_m$ such that $n_i = \sum_{1\leq j\leq m}\eta_j(r_i)$ for each $i \in [k]$. The set of cost-enriched strings accepted by $\NFA$ is denoted as $\Lang(\NFA)$. A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\NFA$ such that $L = \Lang(\NFA)$.
+\begin{definition}[Cost-enriched regular languages]
+Let $k \in \Nat$ with $k > 0$. A $k$-cost-enriched language is \emph{regular} (abbreviated as CERL) if it can be defined by a \emph{cost-enriched finite automaton}. A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delta, I, F)$ where 
+\begin{itemize}
+\item $Q, \Sigma, I, F$ are defined as in NFAs, 
+%
+\item $R=(r_1, \cdots, r_k)$ is a vector of (mutually distinct) \emph{cost registers}, 
+%
+\item $\delta$ is the transition relation which is a finite set of tuples $(q, a, q', \eta)$ where $q, q' \in Q$, $a \in \Sigma$, and $\eta: R \rightarrow \intnum$ is a cost register update function. \\
+For convenience, we usually write $(q, a, q', \eta) \in \Delta$ as $q \xrightarrow{a, \eta} q'$.
+\end{itemize}
+%
+A \emph{run} of $\CEFA$ on a $k$-cost-enriched string $(a_1 \cdots a_m, (n_1, \cdots,n_k))$ is a  transition sequence $q_0 \xrightarrow{a_1, \eta_1} q_1 \cdots q_{m-1} \xrightarrow{a_m, \eta_m} q_m$ such that $q_0 \in I$ and $n_i = \sum \limits_{1\leq j\leq m}\eta_j(r_i)$ for each $i \in [k]$ (Note that the initial values of cost registers are zero). The run is \emph{accepting} if $q_m \in F$. A $k$-cost-enriched string $(w, (n_1, \cdots,n_k))$ is accepted by $\CEFA$ if there is an accepting run of $\CEFA$ on $(w, (n_1, \cdots,n_k))$. In particular, $(\varepsilon, n)$ is accepted by $\CEFA$ if $n=0$ and $I\cap F \neq \emptyset$.
+The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is the set of $k$-cost-enriched strings accepted by $\CEFA$. 
+%A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\NFA$ such that $L = \Lang(\NFA)$.
 \end{definition}
 
+\begin{remark}
+CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. 
+\end{remark}
 
-For a CEFA $\NFA$, we use $R(\NFA)$ to denote the registers occurring in $\NFA$. %Moreover, for a CEFA $\NFA$ and 
-Given a vector of integer variables $\vec{i}$ such that $R(\NFA) \cap \vec{i} = \emptyset$, we use $\NFA[\vec{i}/R(\NFA)]$ to denote the CEFA obtained from $\NFA$ by replacing the registers in $R(\NFA)$ with those from $\vec{i}$. 
+\begin{example}[CEFA for the function $\length$]\label{exm:len}
+Let $L$ be a regular language defined by an NFA $\NFA=(Q, \Sigma, \delta, I, F)$. 
+Then the $1$-cost-enriched regular language $L' = \{(w, |w|) \mid w \in L\}$ is a CERL, defined by the CEFA $\CEFA' = (Q, \Sigma, R=(r_1), \delta', I, F)$, where $\delta'$ comprises the tuples $(q, a, q', \eta)$ such that $(q,a,q') \in \delta$ and $\eta(r_1) = 1$.  In particular, if $L=\Sigma^*$, then $L' = \{(w, |w|) \mid w \in \Sigma^*\}$ is defined by the CEFA $\CEFA'$ with $Q =I=F= \{q_0\}$ and $\delta' = \{(q_0, a, q_0, \eta)\}$.
+\end{example}
 
-CEFA can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. 
+Given two CEFAs $\NFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\NFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where the notation is abused a bit, viewing $R_1$ and $R_2$ as sets),  the product of $\NFA_1$ and $\NFA_2$, denoted by $\NFA_1 \times \NFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
 
-%Let $\NFA = (Q, \Sigma, R, \delta, I, F)$ be a CEFA and $I',F' \in Q$. Then we use $\NFA_{I', F'}$ to denote the CEFA $(Q, \Sigma, R, \delta, I', F')$.
 
-Given two CEFAs $\NFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\NFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$,  the product of $\NFA_1$ and $\NFA_2$, denoted by $\NFA_1 \times \NFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$ where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
+For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.
+%Moreover, for a CEFA $\NFA$ and 
+Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ with $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for every $j \in [k]$ in $\CEFA$. 
+
+\smallskip
+
+%Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A  $(k_1,\cdots, k_l)$-cost-enriched relation $\cR$ is a subset of $(\Sigma^* \times \intnum^{k_1}) \times \cdots (\Sigma^* \times \intnum^{k_l})$.
+\begin{definition}[Cost-enriched recognisable relations]
+Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. Intuitively, a cost-enriched recognisable relation (CERR)  $\cR \subseteq (\Sigma^* \times \intnum^{k_1}) \times \cdots  \times (\Sigma^* \times \intnum^{k_l})$ is a finite union of products of CERLs. Formally,
+	\[\cR = \bigcup \limits_{i=1}^n L_{i,1 } \times \cdots \times L_{i, l},\]
+	where for every $j \in [l]$, $L_{i,j} \subseteq \Sigma^* \times \intnum^{k_j}$ is a CERL. 
+	A CEFA representation of $\cR$ is a collection of CEFA tuples $(\CEFA_{i,1}, \cdots, \CEFA_{i,l})_{i \in [n]}$ such that $\Lang(\CEFA_{i,j}) = L_{i,j}$ for every $i \in [n]$ and $j \in [l]$.
+\end{definition}
+
+\begin{example}
+The relation 
+\[\cR=\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\}\] 
+is a CERR since it is represented by CEFA tuples $(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$, where 
+\begin{itemize}
+\item $\CEFA_{1,1} = (\{p_0\}, \{a,b\}, (r_{1,1}), \emptyset, \{p_0\}, \{p_0\})$ recognises only the empty string $\varepsilon$, $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{1,2}), \{(q_0, b, q_1), (q_1, b, q_2), (q_2, b, q_1)\}, \{q_0\}, \{q_1\})$,
+\item 
+\end{itemize}
+\end{example}
 
 %Note that according to the definition, over each word $w$, $\NFA^{(r)}(w) = \NFA(w)$. 
 
@@ -37,6 +73,9 @@ Given two CEFAs $\NFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\NFA_2 =
 	% such that  $(w_1, \eta(R_1)) \in \Lang(\NFA_1)$, $ \cdots$, $(w_k, \eta(R_k)) \in \Lang(\NFA_k)$, and $\phi[\eta(R_1)/R_1, \cdots,\eta(R_k)/R_k, \eta(X)/X]$ holds.
 \end{definition}
 Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. %it may happen that $R_i \cap R_j \neq \emptyset$ for some $i, j \in [k]$ with $i \neq j$.
+
+\begin{example}
+\end{example}
 
 \begin{theorem}\label{thm-incra-la-sat}
 	The LA-SAT w.r.t. CEFA problem is decidable.
@@ -65,9 +104,3 @@ For the proof of Theorem~\ref{thm-incra-la-sat}, we state and prove the followin
 	$
 \end{proof}
 
-\begin{definition}[Cost-enriched recognisable relations]
-	A cost-enriched relation $\cR \subseteq \Sigma^* \times \intnum^{k_1} \times \cdots  \times \Sigma^* \times \intnum^{k_l}$ is a cost-enriched recognisable relation (CERR)  if it is a finite union of products of cost-enriched regular languages, namely, 
-	\[\cR = \bigcup \limits_{i=1}^n L_{i,1 } \times \cdots \times L_{i, l},\]
-	where $L_{i,1} \subseteq \Sigma^* \times \intnum^{k_1}, \cdots, L_{i, l} \subseteq \Sigma^* \times \intnum^{k_l}$ are CERL. 
-	A CEFA representation of $\cR$ is a collection of CERA tuples $(\NFA_{i,1}, \cdots, \NFA_{i,l})_{i \in [n]}$ such that $\Lang(\NFA_{i,j}) = L_{i,j}$ for each $i \in [n]$ and $j \in [l]$.
-\end{definition}
