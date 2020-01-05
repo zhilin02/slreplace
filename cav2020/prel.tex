@@ -52,7 +52,7 @@ $\Ll(e_1^*)=(\Ll(e_1))^*$.
 %\end{itemize}
 In addition, we use $|e|$ to denote the number of symbols occurring in $e$.
 
-A \emph{nondeterministic finite automaton} (NFA) $\NFA$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, a, q') \in \delta$ as $q \xrightarrow[\delta]{a} q'$. Moreover, when $\delta$ is clear from context, we omit $\delta$ in $q \xrightarrow[\delta]{a} q'$ and write $q \xrightarrow{a} q'$.
+A \emph{nondeterministic finite automaton} (NFA) $\NFA$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, a, q') \in \delta$ as $q \xrightarrow[\delta]{a} q'$. Moreover, when $\delta$ is clear from context, we omit $\delta$ in $q \xrightarrow[\delta]{a} q'$ and write $q \xrightarrow{a} q'$. The \emph{size} of an NFA $\NFA$, denoted by $|\NFA|$, is defined as the number of transitions of $\NFA$.
 %
 A \emph{run} of $\NFA$ on a string $w = a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1} q_1 \cdots q_{n-1} \xrightarrow{a_n} q_n$ with $q_0 \in I$. The run is \emph{accepting} if $q_n \in F$.
 A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\NFA$ if $I \cap F \neq \emptyset$. The language defined by $\NFA$, denoted by $\Lang(\NFA)$, is the set of strings accepted by $\NFA$. An NFA $\NFA$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one state $q' \in Q$ such that $(q, a, q') \in \delta$.
@@ -69,9 +69,10 @@ A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$
 %Let $w=a_1\cdots a_n$ be a string. The reverse of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$. 
 
 
-\paragraph*{Finite transducers.} A \emph{nondeterministic finite transducer} (NFT) $\NFT$ is an extension of NFA with outputs. Formally, an NFT $\NFT$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q, \Sigma, I, F$ are as in NFA and the transition relation $\delta$ is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$. Similarly to NFA, for readability, we write a transition $(q, a, q', u) \in \delta$ as $q \xrightarrow[\delta]{a, u} q'$ or $q \xrightarrow{a, u} q'$. 
+\paragraph*{Finite transducers.} A \emph{nondeterministic finite transducer} (NFT) $\NFT$ is an extension of NFA with outputs. Formally, an NFT $\NFT$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q, \Sigma, I, F$ are as in NFA and the transition relation $\delta$ is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$. Similarly to NFA, for readability, we write a transition $(q, a, q', u) \in \delta$ as $q \xrightarrow[\delta]{a, u} q'$ or $q \xrightarrow{a, u} q'$. The \emph{size} of an NFT $\NFT$, denoted by $|\NFT|$, is defined as the sum of the sizes of the transitions of $\NFT$, where the size of a transition $q \xrightarrow{a, u} q'$ is defined as $|u|+3$.
 %
 A run of $\NFT$ over a string $w=a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1, u_1} q_1 \cdots q_{n-1} \xrightarrow{a_n, u_n} q_n$ with $q_0 \in I$. The run is accepting if $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. The transduction defined by $\NFT$, denote dby $\Tran(\NFT)$, is the set of string pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$. An NFT $\NFT$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one pair $(q', u) \in Q \times \Sigma^*$ such that $(q, a, q', u) \in \delta$.
+
 
 %We remark that an FT usually defines a relation.
 
@@ -87,5 +88,6 @@ t & ::=  & i \mid c \mid ct \mid t + t, \mbox{ where } c \in \Int, \\
 \phi &::= & t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi, \mbox{ where } o \in \{=, \neq, \le, \ge, <, >\}.
 \end{array}
 \]
+The \emph{size} of a LIA formula $\phi$, denoted by $|\phi|$, is defined as the number of symbols in $\phi$.
 Let $\phi$ be a LIA formula and $i$ be a variable occurring in $\phi$. Then an occurrence of $i$ in $\phi$ is said to be \emph{free}  if the occurrence is not under the scope of $\exists i$. A formula $\phi$ is \emph{quantifier-free} if it does not contain quantifiers. The semantics of LIA formulas is standard and its definition is omitted here.
 For a quantifier-free formula LIA formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\cM(\phi) = \left\{(n_1, \cdots , n_k) \in \Int^k \mid \phi[n_1/i_1, \cdots, n_k/i_k] \mbox{ is evaluated to } true\right\}$, where $\phi[n_1/i_1, \cdots, n_k/i_k]$ is the formula obtained from $\phi$ by simultaneously replacing $i_1,\cdots, i_k$ with $n_1,\cdots, n_k$. An \emph{existential} LIA formula is a LIA formula where all the existential quantifiers are under the scope of an even number of negation symbols.
