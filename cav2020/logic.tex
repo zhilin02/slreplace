@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-We consider symbolic execution of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules,% satisfies the two semantic conditions,
+We consider symbolic execution of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules, 
 %
 \[
 \begin{array}{l c l}
@@ -23,8 +23,8 @@ t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbo
 %A & ::= &   A_r \wedge A_i,
 %\end{array}
 %\]
-We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but does not restrict the conditional statements. 
-\tl{what does conditional statement mean? you mean asserations?}
+We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but not on the conditional statements. 
+\tl{what does conditional statement mean? you mean assertions?}
 A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear in the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
 
 \paragraph*{Semantics.}
@@ -39,32 +39,33 @@ defined below. \tl{the semantics is not quite formal, so we may just **explain**
 %
 \item The assignment $x:=\reverse(y)$ denotes that $x$ is the reverse of $y$.
 %
-\item The assignment $x:=\NFT(y)$ denotes that $x$ is an output of some accepting run of $\NFT$ on $y$.
+\item The assignment $x:=\NFT(y)$ denotes that $(y,x) \in \Tran(\NFT)$. %$x$ is an output of some accepting run of $\NFT$ on $y$.
 %
 \item The assignment $x:=\substring(y, t_1, t_2)$ denotes that $x$ is equal to the return value of $\substring(y, t_1, t_2)$, where 
 
 \[ \substring(y, t_1, t_2)=
 \begin{cases}
-\epsilon & if t_1<0\vee t_1>|y| \vee t_2=0 \\
-y[t_1, t_1+t_2-1] & o/w
+\epsilon & \mbox{if }t_1<0\vee t_1>|y| \vee t_2=0 \\
+y[t_1, \min\{t_1+t_2-1, |y|-1\}] & o/w
 \end{cases}
 \]
  %the substring of $y$ that begins at the position $t_1$ and extends to the length $t_2$. 
-$\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\varepsilon$, $\substring(abaab, 3,2)=ab$, and $\substring(abaab, 3,3)=ab$.
-\tl{check the starting position}
+%$\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  
+For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\varepsilon$, $\substring(abaab, 3,2)=ab$, and $\substring(abaab, 3,3)=ab$.
+%\tl{check the starting position}
 %Note here we require that $t_2 \ge 0$. 
 %
 \item The conditional statement $\ASSERT{x \in \NFA}$ denotes that $x$ belongs to $\Lang(\NFA)$.
 %
-\item The conditional statement $\ASSERT{t_1 \ o\ t_2}$ denotes that the value of $t_1$ is equal to (not equal to, \dots) that of $t_2$, if $o$ is $=, \neq, \cdots$.
+\item The conditional statement $\ASSERT{t_1 \ o\ t_2}$ denotes that the value of $t_1$ is equal to (not equal to, \dots) that of $t_2$, if $o\in \{ =, \neq, \geq, >, \leq, < \}$.
 %
 \item The integer term $\length(x)$ denotes the length of $x$. 
 %
-\item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. For instance, $\indexof_{ab}(aab, 1) = 1$ and $\indexof_{ab}(aab, 2)=-1$.
+\item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. For instance, $\indexof_{ab}(aaba, 1) = 1$ and $\indexof_{ab}(aaba, 2)=-1$.
 \end{itemize}
 
 \begin{remark}
-The function $\replaceall_{e,u}$ can be seen as a special case of NFT, although the transformation into NFT has an exponential blowup \cite{CCH+18}.
+The function $\replaceall_{e,u}$ can be seen as a special case of NFT, although the transformation into NFT may incur an exponential blowup \cite{CCH+18}.
 \end{remark}
 
 \begin{remark}
