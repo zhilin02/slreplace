@@ -1,59 +1,64 @@
 %!TEX root = main.tex
 
-%For specifying the semantic conditions, we introduce two additional concepts. 
+In this section, we will design a decision procedure for the path feasibility problem of {\slint} programs, based on the concepts of CERLs and CERRs introduced Section~\ref{sec:cefa}.
 
-\zhilin{the rest to be cleaned}
+Before presenting the decision procedure, we introduce an additional concept, cost-enriched pre-images of CERLs under string operations. Moreover, we will show that the cost-enriched pre-images of CERLs under the string operations in {\slint}, namely, concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$, are CERRs. 
 
-\begin{definition}[CERR linear integer functions]
-An integer function $g: \Sigma^* \times \intnum^{k_1} \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^\intnum$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \intnum^{k_1+1} \times \Sigma^* \times \intnum^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \intnum^{k_1}, \cdots, \vec{c_l} \in \intnum^{k_l}$, and $d_1, \cdots, d_l \in \intnum$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
+To simplify the presentation of the decision procedure, in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, we consider string operations $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ (if there is no integer input parameter, then $k_1,\cdots,k_l$ are zero), where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
 
-For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}, t)$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
 
-\end{definition}
+\subsection{Pre-images of CERLs under string operations}
 
-\begin{example}
-The string functions $\length$ and $\indexof_u$ are CERR linear integer functions, whose CEFA representations can be found in Section~\ref{sec-cslint}.
-\end{example}
-
-\begin{definition}[Cost enriched pre-image of CERL]
-Suppose that $f: \Sigma^* \times \intnum^{k_1} \times \cdots \times \Sigma^* \times \intnum^{k_l} \rightarrow 2^{\Sigma^*}$ is a string function, $L \subseteq \Sigma^* \times \intnum^n$ is a CERL, and $L = \Lang(\NFA)$ for some CEFA $\NFA=(Q, R, \delta, I, F)$ where $R= (r_1, \cdots, r_n)$. Then the $R$-cost enriched pre-image of $L$ under $f$ is a pair $(\cR, \vec{t})$ such that 
+\begin{definition}[Cost-enriched pre-images of CERLs]
+Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string operation, $L \subseteq \Sigma^* \times \Int^{k_0}$ is a CERL defined by a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$ with $R= (r_1, \cdots, r_{k_0})$. Then the $R$-cost-enriched pre-image of $L$ under $f$, denoted by $f^{-1}_R(L)$, is a pair $(\cR, \vec{t})$ such that 
 \begin{itemize}
-\item $\cR \subseteq \Sigma^* \times \intnum^{k_1 + n} \times \cdots \times \Sigma^* \times \intnum^{k_l + n}$,
-\item $\vec{t} = (t_1, \cdots ,t_n)$ is a vector of linear integer terms where for each $i \in [n]$, $t_i$ is a term over $\vec{r_i} = (r^{(1)}_i, \cdots, r^{(l)}_i)$,
-\item and 
-
-$L = \{(f(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l}), t_1[d_{1,1}/r^{(1)}_1, \cdots, d_{l, 1}/r^{(l)}_1], \cdots, t_n[d_{1,n}/r^{(1)}_n, \cdots, d_{l, n}/r^{(l)}_n]) \mid (w_1, (\vec{c_1}, \vec{d_1}), \cdots, w_l, (\vec{c_l}, \vec{d_l})) \in \cR\}$ 
+\item $\cR \subseteq (\Sigma^* \times \Int^{k_1 + k_0}) \times \cdots \times (\Sigma^* \times \Int^{k_l + k_0})$,
+\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\{r^{(1)}_i, \cdots, r^{(l)}_i\}$ (intuitively, each cost register $r_i$ is split into $l$ cost registers $r^{(1)}_i, \cdots,r^{(l)}_i$, one for each string input parameter, and $t_i$ tells how to compute $r_i$ from $r^{(1)}_i, \cdots,r^{(l)}_i$), and
+\item $L$ is equal to the language comprising the $k_0$-cost-enriched strings
 %
-(where $\vec{d_1}=(d_{1,1}, \cdots, d_{1,n})$, $\cdots$, and $\vec{d_l}=(d_{l,1},\cdots, d_{l,n})$).
+\[\left(w_0, t_1\left[d^{(1)}_{1}/r^{(1)}_1, \cdots, d^{(l)}_{1}/r^{(l)}_1\right], \cdots, t_{k_0}\left[d^{(1)}_{k_0}/r^{(1)}_{k_0}, \cdots, d^{(l)}_{k_0}/r^{(l)}_{k_0}\right]
+\right), \]
+%
+such that 
+\[w_0 \in f\left((w_1, \vec{c_1}), \cdots, (w_l, \vec{c_l}\right)) \mbox{ for some } ((w_1, (\vec{c_1}, \vec{d_1})), \cdots, (w_l, (\vec{c_l}, \vec{d_l}))) \in \cR,\]
+where $\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
 \end{itemize}
-The $R$-cost enriched pre-image of $L$ under $f$, say $(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. If the $R$-cost enriched pre-image of $L$ under $f$, say $(\cR, \vec{t})$, is CERR-definable,  then its CEFA representation is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [m]}, \vec{t})$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [m]}$ is a CEFA representation of $\cR$. 
+The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$. 
 \end{definition}
 
-
-\begin{example}
-Let $\NFA = (Q, R, \delta, I, F)$. The $R$-cost enrichment of the pre-image of $\Lang(\NFA)$ under $\substring$ is CERR-definable and its CEFA representation can be found in Section~\ref{sec-cslint}.
+\begin{example}\label{exm:pre-image}
+Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, R, \delta, I, F)$ with $R=(r_1)$. Since the concatenation operation $\concat$  is a string function from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ and 
+\[\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2} \cup L_{3,1} \times L_{3,2} \cup L_{4,1} \times L_{4,2} \cup L_{5,1} \times L_{5,2},\]
+such that
+\begin{itemize}
+\item $L_{1,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{1,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$,
+%
+\item $L_{2,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{2,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((aa)^*b(bb)^*)\}$,
+%
+\item $L_{3,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang(a(aa)^*)\}$ and $L_{3,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(a(aa)^*b(bb)^*)\}$,
+%
+\item $L_{4,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*b(bb)^*)\}$ and $L_{4,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((bb)^*)\}$,
+%
+\item $L_{5,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*(bb)^*)\}$ and $L_{5,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$.
+\end{itemize}
+It is easy to see that $\cR$ is a CERR. Thus $\concat^{-1}_R(L)$ is CERR-definable.
 \end{example}
 
+It turns out that for each string operation $f$ in {\slint}, the cost-enriched pre-images of CERLs under $f$ are CERR-definable.
 
-%\hide{
-%Now we are ready to state the two semantic conditions.
-%\begin{description}
-%\item [The 1st semantic condition.] Each integer function $g$ is a CERR linear integer function, moreover, a CEFA representation of $g$ can be effectively computed from $g$.
-%%
-%\item [The 2nd semantic condition.] Each string function $f$ satisfies that for each CERL $L$, the cost enriched pre-image of $L$ under $f$, say $(\cR,\vec{t})$, satisfies that $\cR$ is a CERR, moreover, a CEFA representation can be effectively computed from $f$ and $L$.
-%\end{description}
-%}
+\begin{proposition}\label{prop-pre-image}
+Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string operation $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
+\begin{itemize}
+\item a CEFA representation of $\concat^{-1}_R(L)$, (resp. $\reverse^{-1}_R(L)$ and $\substring^{-1}_R(L)$) can be computed in time $\bigO(|\CEFA|$,
+%
+\item a CEFA representation of  $(\Tran(\NFT))^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|\NFT|$,
+%
+\item a CEFA representation of  $(\replaceall_{e,u})^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|e|$ and $|u|$.
+\end{itemize}
+\end{proposition}
 
+\zhilin{stopped here}
 
-%Let $X$ be a set of registers and $G_{inc}(X)$ denote the set of terms defined by the rules $t::=c \mid x \mid t+c$, where $c$ is an integer constant.  We interpret terms from $G_{inc}(X)$ over the set of integers.
-
-%Let $\NFA=(\Sigma, Q, I, F, R, \delta)$ be an INCRA with $R=r_1\cdots r_m$. Over an input word $w=\sigma_1 \cdots \sigma_n \in \Sigma^+$, a run of $\NFA$ on $w$ is a sequence $q_0 \xrightarrow{\sigma_1, \eta_1} q_1 \cdots q_{n-1} \xrightarrow{\sigma_n, \eta_n} q_n$ such that $q_0 \in I$ and $(q_{i-1}, \sigma_i, \eta_i, q_i) \in \delta$ for each $i \in [n]$. A run is accepting if $q_n \in F$. The output of an accepting run of $\NFA$ on $w$ is a tuple $(i_1,\cdots, i_m)$, where $i_j = \eta_n(r_j) (\cdots \eta_1(r_j)(0)\cdots)$ for each $j \in [m]$. Note that the initial value of each register $r_j$ is zero. We define $\NFA(w)$ as the set of outputs of the accepting runs of $\NFA$ on $w$ (possibly it is an empty set). Note the in general, an output of an INCRA is a tuple, instead of a single integer. Moreover, we also use $\Lang(\NFA)$ to denote $\{w \in \Sigma^* \mid \NFA(w) \neq \emptyset\}$ and $\cR(w) = \{(w, \vec{n}) \mid \vec{n} \in \NFA(w)\}$.
-
-%Note that a nondeterministic finite-state automaton can be seen as an INCRA $\NFA=(\Sigma, Q, I, F, R, \delta)$ where $R$ is empty.
-
-%\subsection{A string logic satisfying the semantic conditions}\label{sec-cslint}
-
-\subsection{Computation of pre-images}
 In this section, we show that the pre-images of the integer and string operations in {\slint} are representable by CEFAs. %satisfy the semantic conditions.
 
 Let $\NFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_m)$. 
@@ -236,3 +241,23 @@ In the end, we get a formula $S \wedge A$ where $S$ is empty. Suppose $A = A_r \
 \begin{corollary}
 Path feasibility of {\cslint} is decidable.
 \end{corollary}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hide{
+\begin{definition}[CERR linear integer functions]
+An integer function $g: \Sigma^* \times \Int^{k_1} \times \Sigma^* \times \Int^{k_l} \rightarrow 2^\Int$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \Int^{k_1+1} \times \Sigma^* \times \Int^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \Int^{k_1}, \cdots, \vec{c_l} \in \Int^{k_l}$, and $d_1, \cdots, d_l \in \Int$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
+
+For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}, t)$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
+
+\end{definition}
+
+\begin{example}
+The string functions $\length$ and $\indexof_u$ are CERR linear integer functions, whose CEFA representations can be found in Section~\ref{sec-cslint}.
+\end{example}
+}
