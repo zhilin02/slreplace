@@ -36,7 +36,7 @@ defined below.
 \begin{itemize}
 \item The assignment $x:=y \cdot z$ denotes that $x$ is the concatenation of two strings $y$ and $z$.
 
-\item The assignment $x:=\replaceall_{e,u}(y)$ denotes that $x$ is the string obtained by replacing all occurrences of $e$ in $y$ with $u$, where the \emph{leftmost and longest} matching of $e$ is used. For instance, $x:=\replaceall_{(ab)^+,c}(aababaab) =ac \cdot \replaceall_{(ab)^+,c}(aab)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by $e$ does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCH+18} for the formal semantics of the $\replaceall$ function.
+\item The assignment $x:=\replaceall_{e,u}(y)$ denotes that $x$ is the string obtained by replacing all occurrences of $e$ in $y$ with $u$, where the \emph{leftmost and longest} matching of $e$ is used. For instance, $\replaceall_{(ab)^+,c}(aababaab) =ac \cdot \replaceall_{(ab)^+,c}(aab)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by $e$ does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCH+18} for the formal semantics of the $\replaceall$ function.
 %
 \item The assignment $x:=\reverse(y)$ denotes that $x$ is the reverse of $y$.
 %
@@ -44,7 +44,7 @@ defined below.
 %
 \item The assignment $x:=\substring(y, t_1, t_2)$ denotes that $x$ is equal to the return value of $\substring(y, t_1, t_2)$, where 
  %the substring of $y$ that begins at the position $t_1$ and extends to the length $t_2$. 
-$\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  
+$\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\varepsilon$, $\substring(abaab, 3,2)=ab$, and $\substring(abaab, 3,3)=ab$.
 %Note here we require that $t_2 \ge 0$. 
 %
 \item The conditional statement $\ASSERT{x \in \NFA}$ denotes that $x$ belongs to $\Lang(\NFA)$.
