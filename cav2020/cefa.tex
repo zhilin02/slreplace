@@ -1,6 +1,9 @@
 %!TEX root = main.tex
 
-%\subsection{Cost-enriched regular languages and recognisable relations}
+
+In this section, we introduce cost-enriched regular languages and recognisable relations, as the extensions of regular languages and recognisable relations, moreover, we investigate the decidability and complexity of a related decision problem, thus laying down the theoretical foundations of the decision procedure in the next section. 
+
+\subsection{Cost-Enriched Regular Languages and Recognisable Relations}
 
 Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. 
 A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. 
@@ -48,59 +51,100 @@ Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. Intuiti
 	A CEFA representation of $\cR$ is a collection of CEFA tuples $(\CEFA_{i,1}, \cdots, \CEFA_{i,l})_{i \in [n]}$ such that $\Lang(\CEFA_{i,j}) = L_{i,j}$ for every $i \in [n]$ and $j \in [l]$.
 \end{definition}
 
-\begin{example}
+\begin{example}\label{exm:CERR}
 The relation 
 \[\cR=\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\}\] 
-is a CERR since it is represented by CEFA tuples $(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$, where 
+is a CERR since 
+$\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2}$, where 
 \begin{itemize}
-\item $\CEFA_{1,1} = (\{p_0\}, \{a,b\}, (r_{1,1}), \emptyset, \{p_0\}, \{p_0\})$ recognises only the empty string $\varepsilon$, $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{1,2}), \{(q_0, b, q_1), (q_1, b, q_2), (q_2, b, q_1)\}, \{q_0\}, \{q_1\})$,
-\item 
+\item $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, 
+\item $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$ , 
+\item $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$,  and
+\item $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$. 
+\end{itemize}
+Note that $L_{1,1}$, $L_{1,2}$, $L_{2,1}$, and $L_{2,2}$ are CERLs, according to Example~\ref{exm:len}. Moreover, $(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ is a CEFA representation of $\cR$, where 
+\begin{itemize}
+\item  $\CEFA_{1,1} = (\{p_0, p_1\}, \{a,b\}, (r_{1}), \delta_{1,1}, \{p_0\}, \{p_0\})$ defines $L_{1,1}$, such that $\delta_{1,1}= \{(p_0, a, p_1,\eta_1)$, $(p_1, a, p_0, \eta_1)\}$, with $\eta_1(r_{1})=1$,
+%
+\item $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{1,2}, \{q_0\}, \{q_1\})$ defines $L_{1,2}$, such that $\delta_{1,2}=\{(q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$,
+%
+\item $\CEFA_{2,1} = (\{p_0, p_1,p_2, p_3\}, \{a,b\}, (r_{1}), \delta_{2,1}, \{p_0\}, \{p_2\})$ defines $L_{2,1}$, such that $\delta_{2,1} = \{(p_0, a, p_1, \eta_1), (p_1, a, p_2, \eta_1), (p_2, a, p_3, \eta_1), (p_3, a, p_2, \eta_1)\}$, with $\eta_1(r_{1})=1$, and
+%
+\item $\CEFA_{2,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{2,2}, \{q_1\})$ defines $L_{2,2}$, such that $\delta_{2,2}= (q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$.
 \end{itemize}
 \end{example}
 
-%Note that according to the definition, over each word $w$, $\NFA^{(r)}(w) = \NFA(w)$. 
+\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
 
-\begin{definition}[LA-SAT w.r.t. CEFA]\label{def-la-sat-cefa}
-	Given $k$ CEFAs $\NFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for $i\in [k]$, % , $\cdots$, $\NFA_k=(Q_k, \Sigma, R_k, \delta_k, I_k, F_k)$ be CEFAs
-	%  with $R_i = (r_{i,1}, \cdots, r_{i, l_i})$ for each $i \in [k]$, 
-	and  a quantifier-free linear arithmetic formula $\phi$ 
-	%    
-	whose free variables contain $\bigcup_{i\in [k]} R_i$. Then $\phi$ is said to be satisfiable w.r.t. $\NFA_1, \cdots, \NFA_k$ if  there are words $w_1, \cdots, w_k$ and an assignment function $\eta$ %: R_1 \cup \cdots R_k \cup X \rightarrow \intnum$  %integers $\vec{c_1} \in \intnum^{|R_1|}, \cdots, \vec{c_k} \in \intnum^{|R_k|}$, $\vec{d} \in \intnum^{|X|}$
-	such that  $(w_i, \eta(R_i)) \in \Lang(\NFA_i)$ for $1\leq i\leq k$, and $\phi$ holds under $\eta$.
-	%
-	%  
-	%  whose free variables are from  $R_1 \cup \cdots \cup R_k \cup X$ for some $X$ such that $X \cap (R_1 \cup \cdots \cup R_k) = \emptyset$. Then $\phi$ is said to be satisfiable w.r.t. $\NFA_1, \cdots, \NFA_k$ if  there are words $w_1, \cdots, w_k$ and an assignment function $\eta: R_1 \cup \cdots R_k \cup X \rightarrow \intnum$  %integers $\vec{c_1} \in \intnum^{|R_1|}, \cdots, \vec{c_k} \in \intnum^{|R_k|}$, $\vec{d} \in \intnum^{|X|}$
-	% such that  $(w_1, \eta(R_1)) \in \Lang(\NFA_1)$, $ \cdots$, $(w_k, \eta(R_k)) \in \Lang(\NFA_k)$, and $\phi[\eta(R_1)/R_1, \cdots,\eta(R_k)/R_k, \eta(X)/X]$ holds.
+In the sequel, we consider a decision problem for CEFAs, for the decision procedure of the path feasibility problem of {\slint} in the next section.
+
+\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is to decide for a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that 
+\begin{itemize}
+\item	$\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
+\item $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+\item the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
+\end{itemize}
+whether $\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ is evaluated to $true$ and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
 \end{definition}
-Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. %it may happen that $R_i \cap R_j \neq \emptyset$ for some $i, j \in [k]$ with $i \neq j$.
+%Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. 
 
 \begin{example}
+Let $\phi \equiv r_1 = r_2$ and $\CEFA_{1,1}, \CEFA_{1,2}$ be two CEFAs in Example~\ref{exm:CERR} defining $L_{1,1}, L_{1,2}$ respectively (Recall that $R(\CEFA_{1,1})=(r_1)$ and $R(\CEFA_{1,2})=(r_2)$). Then it is easy to see that $\phi$ is unsatisfiable w.r.t. $\CEFA_{1,1}$ and $\CEFA_{1,2}$, since for each $(w_1, n_1) \in L_{1,1}$, we have that $n_1$ is even, while for each $(w_2, n_2) \in L_{1,2}$, we have that $n_2$ is odd, thus $n_1$ and $n_2$ cannot be equal.
 \end{example}
 
 \begin{theorem}\label{thm-incra-la-sat}
-	The LA-SAT w.r.t. CEFA problem is decidable.
+	The {\lasat} problem is NP-complete.
 \end{theorem}
 
 For the proof of Theorem~\ref{thm-incra-la-sat}, we state and prove the following lemma. 
 
+For a $k$-cost-enriched language $L$, we define 
+\[
+\prjnum(L) = \left\{(n_1, \cdots, n_k) \in \Int^k \mid \mbox{ there exist } w \in \Sigma^*.\ (w,(n_1,\cdots,n_k)) \in L \right\}.
+\]
+
 \begin{lemma}\label{lem-incra-la}
-	Let $\NFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots,  r_m)$. Then there is an existential linear arithmetic formula $\varphi_\NFA(r_1, \cdots, r_m)$ such that $\cM(\varphi_\NFA)= \{(c_1, \cdots, c_m) \mid \exists w.  (w, c_1, \cdots, c_m) \in \Lang(\NFA)\}$.
+	Let $\CEFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots,  r_k)$. Then an existential LIA formula $\phi_\CEFA(r_1, \cdots, r_k)$ such that $\cM(\phi_\CEFA)= \prjnum(\Lang(\CEFA))$ can be computed in linear time from $\CEFA$.
 \end{lemma}
 
 \begin{proof}
-	Let $\delta = \{\tau_1, \cdots, \tau_l\}$ such that $\tau_j = (p_j, \sigma_j, p'_j, \eta_j)$ and $\eta_j(r_i) =  c_{i,j}$ for each $j \in [l]$ and $i \in [m]$.
-	According the results on FA, we know that for each pair of states $(q, q') \in I \times F$,  an existential linear arithmetic formula $\varphi_{q,q'}(j_1, \cdots, j_l)$ can be computed in linear time such that $\cM(\varphi_{q,q'})$ is the set of Parikh images of the transition sequences of $\NFA$ starting from $q$ and ending at $q'$. 
+	Suppose $\delta = \{\tau_1, \cdots, \tau_l\}$ such that $\tau_j = (q_j, a_j, q'_j, \eta_j)$ and $\eta_j(r_i) =  c_{j,i}$ for every $j \in [l]$ and $i \in [k]$.
 	
-	Then 
-	\[\varphi_\NFA(r_1, \cdots, r_m) ::= \bigvee \limits_{(q,q') \in I \times F} \exists j_1 \cdots \exists j_l.\ \left(\varphi_{q,q'}(j_1, \cdots, j_l) \wedge \bigwedge \limits_{i \in [m]} r_i = \sum \limits_{j \in [l]} c_{i,j} j_j \right).\]
-	\qed
+	From the results on NFAs (Theorem~1 in \cite{SSMH04}), we know that for each pair of states $(q, q') \in I \times F$,  an existential LIA formula $\phi_{q,q'}(m_1, \cdots, m_l)$ can be computed in linear time such that $\cM(\phi_{q,q'})$ is the set of Parikh images of the runs of $\NFA$ starting from $q$ and ending at $q'$, where the variables $m_1, \cdots, m_l$ represent the numbers of occurrences of $\tau_1,\cdots, \tau_l$ respectively in the run. 
+	
+	Then the desired existential LIA formula $\phi_\NFA$ is constructed as follows,
+	\[\phi_\NFA(r_1, \cdots, r_k) ::= \bigvee \limits_{(q,q') \in I \times F} \exists m_1 \cdots \exists m_l.\ \left(\varphi_{q,q'}(m_1, \cdots, m_l) \wedge \bigwedge \limits_{i \in [k]} r_i = \sum \limits_{j \in [l]} c_{j,i} m_j \right).\]
 \end{proof}
 
-\begin{proof}[Theorem~\ref{thm-incra-la-sat}]
-	Let $\NFA_1=(Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$, $\cdots$, $\NFA_k=(Q_k, \Sigma, R_k, \delta_k, I_k, F_k)$ be CEFAs and $\phi$ be a quantifier-free linear arithmetic formula whose free variables are from  $R_1 \cup \cdots \cup R_k \cup X$ for some $X$ such that $X \cap (R_1 \cdots R_k) = \emptyset$.
-	Suppose that for each $i \in [k]$, $R_i = (r_{i, 1}, \cdots, r_{i, l_i})$. Then the satisfiability of $\phi$ w.r.t. $\NFA_1,\cdots, \NFA_k$ can be reduced to the satisfiability problem of the  existential linear arithmetic formula
-	$
-	\phi \wedge \bigwedge \limits_{i \in [k]} \varphi_{\NFA_i}(r_{i,1}, \cdots, r_{i, l_i}).
-	$
+We are ready to prove Theorem~\ref{thm-incra-la-sat}.
+\begin{proof}[Proof of Theorem~\ref{thm-incra-la-sat}]
+The NP lower bound follows from the fact that the satisfiability problem of existential LIA formulas is NP-complete \cite{XX}.
+
+For the upper bound, suppose that $\phi$ is a quantifier-free LIA formula and $\CEFA_1,\cdots,\CEFA_m$ are CEFAs such that 
+\begin{itemize}
+\item	$\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$  with $R_i = (r_{i, 1}, \cdots, r_{i, k_i})$, for every $i\in [m]$,
+\item $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+\item the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$.
+\end{itemize}
+From Lemma~\ref{lem-incra-la}, for every $i \in [m]$, an existential LIA formula $\phi_{\CEFA_i}(r_{i,1}, \cdots, r_{i, k_i})$ such that $\cM(\phi_{\CEFA_i})= \prjnum(\Lang(\CEFA_i))$ can be computed in linear time from $\CEFA_i$.
+
+Then the satisfiability of $\phi$ w.r.t. $\CEFA_1,\cdots, \CEFA_m$ is reduced to the satisfiability problem of the  following existential LIA formula
+\[
+	\phi' \equiv \phi \wedge \bigwedge \limits_{i \in [m]} \phi_{\CEFA_i}(r_{i,1}, \cdots, r_{i, k_i}).
+\]
+Since the size of $\phi'$ is linear in the size of $\phi$ as well as those of $\CEFA_1,\cdots,\CEFA_m$, and the satisfiability problem of existential LIA formulas is NP-complete, we conclude that the satisfiability of $\phi$ w.r.t.  $\CEFA_1,\cdots,\CEFA_m$ can be decided in nondeterministic polynomial time.
+
+It remains to prove the correctness of the reduction, namely, $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$ iff $\phi'$ is satisfiable.
+
+\smallskip
+
+\noindent \emph{``Only if'' direction}. Suppose $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$. Then there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ is evaluated to $true$ and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$. For every $i \in [m]$, from $\cM(\phi_{\CEFA_i})=\prjnum(\Lang(\CEFA_i))$, we know that $\theta(R_i)$ satisfies $\phi_{\CEFA_i}$, namely, $\phi_{\CEFA_i}[\theta(R_i)/R_i]$ is evaluated to $true$. Therefore, the assignment $\theta$ makes $\phi'$ satisfied.
+	
+\smallskip 
+
+\noindent \emph{``If'' direction}. Suppose $\phi'$ is satisfiable. Then there is an assignment $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ such that $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$, $\phi_{\CEFA_1}[\theta(R_1)/R_1]$, $\cdots$, and $\phi_{\CEFA_m}[\theta(R_m)/R_m]$ are all evaluated to $true$. For every $i \in [m]$, from $\cM(\phi_{\CEFA_i})=\prjnum(\Lang(\CEFA_i))$,  we know that there is a string $w_i$ such that $(w_i, \theta(R_i)) \in \Lang(\CEFA_i)$. From Definition~\ref{def-la-sat-cefa}, we conclude that $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$.
 \end{proof}
 

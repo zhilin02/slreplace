@@ -80,12 +80,12 @@ A run of $\NFT$ over a string $w=a_1 \cdots a_n$ is a sequence of transitions $q
 In this paper, we consider logics involving two data types, i.e., the string data type and the integer data type. We will use $u, v, \dots$ to denote string constants,  $c, d,\dots$ to denote integer constants, $x, y, \dots$ to denote string variables, and $i, j, \dots$ to denote  integer variables.
 
 
-\paragraph*{Linear integer arithmetic.}  A linear integer arithmetic formula $\phi$ is defined by the following rules
+\paragraph*{Linear integer arithmetic.}  A linear integer arithmetic (abbreviated as LIA) formula $\phi$ is defined by the following rules
 \[
 \begin{array}{l c l}
-t & ::=  & i \mid c \mid ct \mid t + t, \mbox{ where } c \in \Nat, \\
+t & ::=  & i \mid c \mid ct \mid t + t, \mbox{ where } c \in \Int, \\
 \phi &::= & t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi, \mbox{ where } o \in \{=, \neq, \le, \ge, <, >\}.
 \end{array}
 \]
-Let $\phi$ be a linear integer arithmetic formula and $i$ be a variable occurring in $\phi$. Then an occurrence of $i$ in $\phi$ is said to be \emph{free}  if the occurrence is not under the scope of $\exists i$. A formula $\phi$ is \emph{quantifier-free} if it does not contain quantifiers. The semantics of linear integer arithmetic formula is standard and its definition is omitted here.
-For a quantifier-free formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\cM(\phi) = \left\{(c_1, \cdots ,c_k) \in \Int^k \mid \phi[c_1/i_1, \cdots, c_k/i_k] \mbox{ is evaluated to } true\right\}$, where $\phi[c_1/i_1, \cdots, c_k/i_k]$ is the formula obtained from $\phi$ by simultaneously replacing $i_1,\cdots, i_k$ with $c_1,\cdots, c_k$. An \emph{existential} linear arithmetic formula is a linear integer arithmetic formula where all the existential quantifiers are under the scope of an even number of negation symbols.
+Let $\phi$ be a LIA formula and $i$ be a variable occurring in $\phi$. Then an occurrence of $i$ in $\phi$ is said to be \emph{free}  if the occurrence is not under the scope of $\exists i$. A formula $\phi$ is \emph{quantifier-free} if it does not contain quantifiers. The semantics of LIA formulas is standard and its definition is omitted here.
+For a quantifier-free formula LIA formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\cM(\phi) = \left\{(n_1, \cdots , n_k) \in \Int^k \mid \phi[n_1/i_1, \cdots, n_k/i_k] \mbox{ is evaluated to } true\right\}$, where $\phi[n_1/i_1, \cdots, n_k/i_k]$ is the formula obtained from $\phi$ by simultaneously replacing $i_1,\cdots, i_k$ with $n_1,\cdots, n_k$. An \emph{existential} LIA formula is a LIA formula where all the existential quantifiers are under the scope of an even number of negation symbols.
