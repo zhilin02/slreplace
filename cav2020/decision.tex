@@ -1,6 +1,15 @@
 %!TEX root = main.tex
 
-In this section, we will design a decision procedure for the path feasibility problem of {\slint} programs, based on the concepts of CERLs and CERRs introduced Section~\ref{sec:cefa}.
+In this section, we show the main result of this paper. 
+
+\begin{theorem}\label{thm-main}
+The path feasibility of {\slint} programs is $\expspace$-complete.
+\end{theorem}
+%
+The lower bound of Theorem~\ref{thm-main} follows from Theorem~5 in \cite{LB16}, where the satisfiability of straight-line sting constraints with concatenation and finite transducers is shown to be the $\expspace$-complete.
+
+For the upper bound, we will design a decision procedure for the path feasibility problem of {\slint} programs, based on the concepts of CERLs and CERRs introduced Section~\ref{sec:cefa}.
+
 
 Before presenting the decision procedure, we introduce an additional concept, cost-enriched pre-images of CERLs under string operations. Moreover, we will show that the cost-enriched pre-images of CERLs under the string operations in {\slint}, namely, concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$, are CERRs. 
 
@@ -183,7 +192,7 @@ Let $N$ denote the maximum number of transitions between a given pair of states 
 %
 \end{proof}
 
-\subsection{Skeleton of the Decision Procedure}
+\subsection{The Decision Procedure}
 
 %
 Let $S$  be a {\slint} program. We show how to decide the path feasibility of $S$. The decision procedure is nondeterministic and divided into three steps. 
@@ -250,7 +259,7 @@ Let $X$ denote the set of string variables occurring in $S$.
 For each string variable $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$. From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
 
 
-\paragraph*{Complexity analysis.}
+\paragraph*{Complexity analysis.} Step I can be fulfilled in linear time. The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during Step II, for each input string variable $x$ in $S$, at most exponentially many CEFAs are introduced for $x$, with each of them of at most exponential size. Therefore, Step II can be fulfilled in nondeterministic exponential space. For Step III, \zhilin{remained to be done.}
 
 
 
