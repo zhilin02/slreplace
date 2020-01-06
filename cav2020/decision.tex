@@ -23,7 +23,7 @@ such that
 \[w_0 \in f\left((w_1, \vec{c_1}), \cdots, (w_l, \vec{c_l}\right)) \mbox{ for some } ((w_1, (\vec{c_1}, \vec{d_1})), \cdots, (w_l, (\vec{c_l}, \vec{d_l}))) \in \cR,\]
 where $\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
 \end{itemize}
-The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and fresh.) 
+The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and freshly introduced.) 
 \end{definition}
 
 \begin{example}\label{exm:pre-image}
@@ -46,7 +46,7 @@ It is easy to see that $\cR$ is a CERR. Thus $\concat^{-1}_R(L)$ is CERR-definab
 
 It turns out that for each string operation $f$ in {\slint}, the cost-enriched pre-images of CERLs under $f$ are CERR-definable.
 
-\begin{proposition}\label{prop-pre-image}
+\begin{proposition}\label{prop:pre-image}
 Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string operation $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
 \begin{itemize}
 \item a CEFA representation of $\concat^{-1}_R(L)$ can be computed in time $\bigO(|\CEFA|^2)$, 
@@ -183,25 +183,104 @@ Let $N$ denote the maximum number of transitions between a given pair of states 
 %
 \end{proof}
 
-\subsection{The Decision Procedure}
+\subsection{Skeleton of the Decision Procedure}
 
-The decision procedure is nondeterministic and divided into four steps. 
-\begin{description}
-\item[Step I: Preprocessing.] 
 %
-\item[Step II: Removing the integer terms.]
+Let $S$  be a {\slint} program. We show how to decide the path feasibility of $S$. The decision procedure is nondeterministic and divided into three steps. 
+%\begin{description}
+%\item[Step I: Preprocessing.] 
 %
-\item [Step III: Removing the assignment statements]
+%\item 
+
+\medskip
+\noindent {\bf Step I: Removing $\length$ and $\indexof$}.
+
+\smallskip
+
+Repeat the following procedure until there are no occurrences of $\length$ and $\indexof$.
+\begin{itemize}
+\item For each term $\length(x)$ occurring in $S$, introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
 %
-\item[Step IV: Solving {\lasat} problem.]
-\end{description}
-preprossessing 
+\item 
+For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for the definition of $\CEFA_{\rm \indexof_v}$.)
+\end{itemize}
+%
+%\item 
+
+\medskip
+\noindent {\bf Step II: Removing the assignment statements}.
+
+\smallskip
+
+Repeat the following procedure until $S$ contains no assignment statements.
+%
+\begin{quote}
+Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the last assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is any function from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
+\\
+Let $\rho := \{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y \in \CEFA_j}$ occurs in $S$ for every $j \in [s]$. Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$ (Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$, and $R(\CEFA_s)$ are mutually disjoint). 
+%
+Suppose $R(\CEFA) = (r_1, \cdots, r_{k_0})$. Then from Proposition~\ref{prop:pre-image}, 
+a CEFA representation of $f^{-1}_{R(\CEFA)}(\Lang(\CEFA))$, say $((\cB_{j, 1}, \cdots, \cB_{j, l})_{j \in [m]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$, where 
+\[
+R(\cB_{j,j'})=\left(r'_{j',1}, \cdots, r'_{j',k_j}, r^{(j')}_1, \cdots,r^{(j')}_{k_0} \right)
+\]
+for each $j \in [m]$ and $j' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{k_0})$. Note that the cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and freshly introduced.\\
+%
+Remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$, moreover, nondeterministically choose $j \in [m]$ and add the following statements to $S$, 
+%
+\[
+\begin{array}{l}
+\ASSERT{x_1 \in \cB_{j, 1}};\ \cdots;\ \ASSERT{x_l \in \cB_{j, l}}; \\
+\ASSERT{\bigwedge \limits_{j' \in [l], j'' \in [k_j]} i_{j', j''} = r'_{j', j''}}; \ASSERT{\bigwedge \limits_{j' \in [k_0]} r_{j'} = t_{j'}}.
+\end{array}
+\]
+%
+\end{quote}
+
+We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$.
+
+\medskip
+\noindent{\bf Step III: Solving the {\lasat} problem}.
+
+\smallskip
+
+Suppose $S$ is a {\slint} program containing no assignment statements and all the integer terms are linear integer arithmetic terms. 
+
+Let $X$ denote the set of string variables occurring in $S$.
+For each string variable $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$. From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
+
+
+\paragraph*{Complexity analysis.}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hide{
+\begin{definition}[CERR linear integer functions]
+An integer function $g: \Sigma^* \times \Int^{k_1} \times \Sigma^* \times \Int^{k_l} \rightarrow 2^\Int$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \Int^{k_1+1} \times \Sigma^* \times \Int^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \Int^{k_1}, \cdots, \vec{c_l} \in \Int^{k_l}$, and $d_1, \cdots, d_l \in \Int$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
+
+For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}, t)$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
+
+\end{definition}
+
+\begin{example}
+The string functions $\length$ and $\indexof_u$ are CERR linear integer functions, whose CEFA representations can be found in Section~\ref{sec-cslint}.
+\end{example}
+
+Suppose $A = A_r \wedge A_i$, where $A_r$ is a conjunction of atomic formulae of the form $x \in \NFA$, and $A_i$ is linear arithmetic formula (containing no integer functions). By computing the product construction of CEFAs, $A_r$ can be rewritten as $x_1 \in \NFA_1 \wedge \cdots \wedge x_n \in \NFA_n$, where $x_1,\cdots, x_n$ are mutually distinct. Therefore, the path feasibility of $S \wedge A$ is exactly the satisfiability of $A_i$ w.r.t. the CEFAs $\NFA_1, \cdots, \NFA_n$. From Theorem~\ref{thm-incra-la-sat}, we conclude that the path feasibility of  {\slint} is decidable.
+
+
+
 
 Without loss of generality, we assume that string operations only apply to string variables.
 
-For each term $\length(x)$ occurring in $S$, introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$.  
-
-For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add $\ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}; \ASSERT{i_1 = i}$.  
 
 Let $S':=S$ and $A':=A$. Moreover, let $A'':= \ltrue$. Then execute the following procedure to (partially) flatten the integer terms.
 \begin{description}
@@ -264,23 +343,4 @@ In the end, we get a formula $S \wedge A$ where $S$ is empty. Suppose $A = A_r \
 \begin{corollary}
 Path feasibility of {\cslint} is decidable.
 \end{corollary}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\hide{
-\begin{definition}[CERR linear integer functions]
-An integer function $g: \Sigma^* \times \Int^{k_1} \times \Sigma^* \times \Int^{k_l} \rightarrow 2^\Int$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \Int^{k_1+1} \times \Sigma^* \times \Int^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \Int^{k_1}, \cdots, \vec{c_l} \in \Int^{k_l}$, and $d_1, \cdots, d_l \in \Int$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
-
-For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}, t)$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
-
-\end{definition}
-
-\begin{example}
-The string functions $\length$ and $\indexof_u$ are CERR linear integer functions, whose CEFA representations can be found in Section~\ref{sec-cslint}.
-\end{example}
 }
