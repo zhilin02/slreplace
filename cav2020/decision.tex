@@ -23,7 +23,7 @@ such that
 \[w_0 \in f\left((w_1, \vec{c_1}), \cdots, (w_l, \vec{c_l}\right)) \mbox{ for some } ((w_1, (\vec{c_1}, \vec{d_1})), \cdots, (w_l, (\vec{c_l}, \vec{d_l}))) \in \cR,\]
 where $\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
 \end{itemize}
-The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$. 
+The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and fresh.) 
 \end{definition}
 
 \begin{example}\label{exm:pre-image}
@@ -136,7 +136,7 @@ $(\cB, \vec{t})$, where
 \begin{itemize}
 \item $\cB$ simulates the run of $\NFT$ on the input string, meanwhile, it simulates the run of $\CEFA$ on the output string of $\NFT$, formally, $\cB= (Q' \times Q, \Sigma, R^{(1)}, \delta'', I' \times I, F' \times F)$ such that 
 \begin{itemize}
-\item $R^{(1)}  = (r^{(1)}, \cdots, r^{(1)}_k)$, and
+\item $R^{(1)}  = (r^{(1)}_1, \cdots, r^{(1)}_k)$, and
 \item $\delta''$ comprises the tuples $((q'_1, q_1), a, (q'_2, q_2), \eta')$ satisfying one of the following conditions,
 \begin{itemize}
 \item there exist $u = a_1 \cdots a_n \in \Sigma^+$ and a transition sequence $p_0 \xrightarrow[\delta]{a_1, \eta_1} p_2 \cdots p_{n-1} \xrightarrow[\delta]{a_n, \eta_n} p_{n}$ in $\CEFA$ such that $(q'_1, a, q'_2, u) \in \delta'$, $p_0 = q_1$, $p_{n}= q_2$, and for each $j \in [k]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_n(r_j)$,
@@ -184,6 +184,24 @@ Let $N$ denote the maximum number of transitions between a given pair of states 
 \end{proof}
 
 \subsection{The Decision Procedure}
+
+The decision procedure is nondeterministic and divided into four steps. 
+\begin{description}
+\item[Step I: Preprocessing.] 
+%
+\item[Step II: Removing the integer terms.]
+%
+\item [Step III: Removing the assignment statements]
+%
+\item[Step IV: Solving {\lasat} problem.]
+\end{description}
+preprossessing 
+
+Without loss of generality, we assume that string operations only apply to string variables.
+
+For each term $\length(x)$ occurring in $S$, introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$.  
+
+For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add $\ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}; \ASSERT{i_1 = i}$.  
 
 Let $S':=S$ and $A':=A$. Moreover, let $A'':= \ltrue$. Then execute the following procedure to (partially) flatten the integer terms.
 \begin{description}

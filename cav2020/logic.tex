@@ -24,7 +24,7 @@ t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbo
 %\end{array}
 %\]
 We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but not on the conditional statements. 
-\tl{what does conditional statement mean? you mean assertions?}
+\tl{what does conditional statement mean? you mean assertions?}\zhilin{yes, I mean assertions. But actually they are not assertions we usually talk about, they are more like the conditions in the if-the-else statement.}
 A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear in the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
 
 \paragraph*{Semantics.}
@@ -65,8 +65,14 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 \end{itemize}
 
 \begin{remark}
+Note that to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and disallow string constants therein. For instance, string variables, instead of string constants, are required to appear as the string parameters of $\reverse$. This is not a real restriction, since $x:=\reverse({\mbox``}abc\mbox{''})$, for instance, can be equivalently replaced by $x:=\reverse(y); \ASSERT{y \in \NFA_{abc}}$, where $y$ is a fresh variable and $\NFA_{abc}$ is the NFA for the string ``$abc$''.
+\end{remark}
+
+
+\begin{remark}
 The function $\replaceall_{e,u}$ can be seen as a special case of NFT, although the transformation into NFT may incur an exponential blowup \cite{CCH+18}.
 \end{remark}
+
 
 \begin{remark}
 The function ${\sf charAt}(x, i)$ can be seen as a special case of $\substring$, namely ${\sf charAt}(x, i) \equiv \substring(x, i, 1)$.
