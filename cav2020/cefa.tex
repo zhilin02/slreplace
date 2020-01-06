@@ -24,6 +24,7 @@ A \emph{run} of $\CEFA$ on a $k$-cost-enriched string $(a_1 \cdots a_m, (n_1, \c
 The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is the set of $k$-cost-enriched strings accepted by $\CEFA$. 
 %A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\NFA$ such that $L = \Lang(\NFA)$.
 \end{definition}
+The \emph{size} of  a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of a transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here the binary encoding is used to represent the integer constants occurring in $\CEFA$.
 
 \begin{remark}
 CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. 

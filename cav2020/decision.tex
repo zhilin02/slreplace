@@ -49,7 +49,9 @@ It turns out that for each string operation $f$ in {\slint}, the cost-enriched p
 \begin{proposition}\label{prop-pre-image}
 Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string operation $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
 \begin{itemize}
-\item a CEFA representation of $\concat^{-1}_R(L)$, (resp. $\reverse^{-1}_R(L)$ and $\substring^{-1}_R(L)$) can be computed in time $\bigO(|\CEFA|)$,
+\item a CEFA representation of $\concat^{-1}_R(L)$ can be computed in time $\bigO(|\CEFA|^2)$, 
+%
+\item a CEFA representation of $\reverse^{-1}_R(L)$ (resp. $\substring^{-1}_R(L)$) can be computed in time $\bigO(|\CEFA|)$,
 %
 \item a CEFA representation of  $(\Tran(\NFT))^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|\NFT|$,
 %
@@ -58,131 +60,130 @@ Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then
 \end{proposition}
 
 \begin{proof}
-to be done
+Let $\CEFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_k)$. We show how to construct a CEFA representation of $f^{-1}_R(L)$ for each function $f$ in {\slint}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{$\concat^{-1}_R(L)$.}
+%
+A CEFA representation of $\concat^{-1}_R(L)$ is given by $((\CEFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$, where 
+\begin{itemize}
+\item $\CEFA_{I, q}=(Q, \Sigma, R^{(1)}, \delta^{(1)}, I, \{q\})$ and  $\CEFA_{q, F}=(Q, \Sigma, R^{(2)}, \delta^{(2)}, \{q\}, F)$ such that 
+\begin{itemize}
+\item $R^{(1)} = (r^{(1)}_1, \cdots, r^{(1)}_k)$, $R^{(2)} = (r^{(2)}_1, \cdots, r^{(2)}_k)$, 
+\item $\delta^{(1)}$ comprises the tuples $(q, a, q', \eta')$ satisfying that there exists $\eta$ such that $(q, a, q', \eta) \in \delta$ and for each $j \in [k]$, and $\eta'(r^{(1)}_j)=\eta(r_j)$,  similarly for $\delta^{(2)}$,
+\end{itemize}
+\item and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_k + r^{(2)}_k)$.
+\end{itemize}
+Note that the size of $((\CEFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$ is $\bigO(|\CEFA|^2)$.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\paragraph*{$\reverse^{-1}_R(L)$.} 
+%
+A CEFA representation of $\reverse^{-1}_R(L)$ is given by $(\CEFA^{(r)}, \vec{t})$, where 
+\begin{itemize}
+\item $\CEFA^{(r)}=(Q, \Sigma, R^{(1)}, \delta', F, I)$ such that 
+\begin{itemize}
+\item $R^{(1)}=(r^{(1)}_1,\cdots,r^{(1)}_k)$, and 
+\item $\delta'$ comprises the tuples $(q', a, q, \eta')$ satisfying that there exists $\eta$ such that $(q, a, q', \eta) \in \delta$, and $\eta'(r^{(1)}_i) = \eta(r_i)$ for each $i \in [k]$,
+\end{itemize}
+%
+\item and $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$. 
+\end{itemize}
+Note that $\Lang(\CEFA^{(r)}) = \{(w^{(r)}, \vec{n}) \mid (w, \vec{n}) \in \Lang(\CEFA)\}$, and the size of $(\CEFA^{(r)}, \vec{t})$ is $\bigO(|\CEFA|)$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph*{$\substring^{-1}_R(L)$.}
+A CEFA representation of $\substring^{-1}_R(L)$ is given by $(\cB, \vec{t})$, where 
+\begin{itemize}
+\item $\cB = (Q', \Sigma, R', \delta', I', F')$ such that 
+\begin{itemize}
+\item $Q' = Q \times \{p_0, p_1, p_2\}$, (intuitively, $p_0$, $p_1$, and $p_2$ denote that the current position is before the starting position, between the starting position and ending position, and after the ending position respectively)
+%
+\item $R' = \left(r^{(1)}_1,\cdots, r^{(1)}_k, r'_1, r'_2 \right)$, (intuitively, $r'_1$ denotes the starting position, and $r'_2$ denotes the length of the substring)
+%
+\item $I'=I \times \{p_0\}$, $F'=F \times \{p_2\}$,
+%
+\item and $\delta'$ comprises 
+\begin{itemize}
+\item the tuples $((q, p_0), a, (q, p_0), \eta')$ such that $q \in I$, $a \in \Sigma$, and $\eta'$ satisfies that $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1)= 1$, and $\eta'(r'_2) = 0$,
+%
+\item the tuples $((q, p_0), a, (q', p_1), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,  $\eta'(r'_1)=0$ (recall that the positions of strings start at $0$), and $\eta'(r'_2) = 1$,
+%
+\item the tuples $((q, p_0), a, (q', p_2), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $q' \in F$, $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,  $\eta'(r'_1)=0$ (recall that the positions of strings start at $0$), and $\eta'(r'_2) = 1$,
+%
+\item the tuples $((q, p_1), a, (q', p_1), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$ and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
+%
+\item the tuples $((q, p_1), a, (q', p_2), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $q' \in F$, and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
+%
+%\item the tuples $((q, p_1), a, (q, p_2), \eta')$ such that $q \in F$ and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
+%
+\item the tuples $((q, p_2), a, (q, p_2), \eta')$ such that $q \in F$ and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 0$,
+%
+\end{itemize}
+\end{itemize}
+\item $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$.
+\end{itemize}
+Note that the size of $(\cB, \vec{t})$ is $\bigO(|\CEFA|)$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+\paragraph*{$(\Tran(\NFT))^{-1}_R(L)$.}
+%
+Suppose $\NFT = (Q', \Sigma, \delta', I', F')$. Then a CEFA representation of $(\Tran(\NFT))^{-1}_R(L)$ is given by 
+$(\cB, \vec{t})$, where 
+\begin{itemize}
+\item $\cB$ simulates the run of $\NFT$ on the input string, meanwhile, it simulates the run of $\CEFA$ on the output string of $\NFT$, formally, $\cB= (Q' \times Q, \Sigma, R^{(1)}, \delta'', I' \times I, F' \times F)$ such that 
+\begin{itemize}
+\item $R^{(1)}  = (r^{(1)}, \cdots, r^{(1)}_k)$, and
+\item $\delta''$ comprises the tuples $((q'_1, q_1), a, (q'_2, q_2), \eta')$ satisfying one of the following conditions,
+\begin{itemize}
+\item there exist $u = a_1 \cdots a_n \in \Sigma^+$ and a transition sequence $p_0 \xrightarrow[\delta]{a_1, \eta_1} p_2 \cdots p_{n-1} \xrightarrow[\delta]{a_n, \eta_n} p_{n}$ in $\CEFA$ such that $(q'_1, a, q'_2, u) \in \delta'$, $p_0 = q_1$, $p_{n}= q_2$, and for each $j \in [k]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_n(r_j)$,
+%
+\item $(q'_1, a, q'_2, \varepsilon) \in \delta'$, $q_1 = q_2$, and $\eta'(r^{(1)}_j) =0$ for each $j \in [k]$,
+\end{itemize}
+\end{itemize}
+%
+\item $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$.
+\end{itemize}
+Note that the number of transitions of $\cB$ can be exponential in the worst case, since it summarises the updates of cost registers of $\CEFA$ on the output strings of the transitions of $\NFT$. More precisely,  let
+\begin{itemize}
+\item $\ell$ be the maximum length of the output strings of transitions of $\NFT$, 
+\item $N$ be the maximum number of transitions between a given pair of states of $\CEFA$, and
+\item  $C$ be the maximum absolute value of the integer constants occurring in $\CEFA$,
+\end{itemize}
+then $|\delta''|$, the cardinality of $\delta''$, is bounded by $|\delta'| \times |Q|^2 \times N^\ell $, and the integer constants occurring in each transition of $\delta''$ are bounded by $\ell C$. Therefore, 
+the size of $(\cB, \vec{t})$ is 
+\[
+\bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)).
+\] 
+Since $|\delta'|, \ell \le |\NFT|$, $|Q|, N, k \le |\CEFA|$, and $C \le 2^{|\CEFA|}$, we deduce that the size of $(\cB, \vec{t})$ is 
+$
+\bigO( |\NFT| \times  |\CEFA|^2 \times |\CEFA|^{|\NFT|} \times |\CEFA|^2 \log_2(|\NFT|))= |\CEFA|^{\bigO(|\NFT|)} |\NFT| \log_2(|\NFT|).$
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\paragraph*{$(\replaceall_{e,u})^{-1}_R(L)$.}
+%
+From the result in \cite{CCH+18}, we know that  a NFT $\NFT_{e,u}=(Q', \Sigma, \delta', I', F')$ can be constructed to capture $\replaceall_{e,u}$.  Moreover, 
+\begin{itemize}
+\item $|Q'|$, as well as $|\delta'|$, is $2^{\bigO(|e|)}$,
+\item $\ell$, the maximum length of the output strings of transitions of $\NFT_{e,u}$, is $|u|$.
+\end{itemize}
+Then a CEFA representation of $(\replaceall_{e,u})^{-1}_R(L)$ can be constructed as that of $(\Tran(\NFT_{e,u}))^{-1}_R(L)$.
+Let $N$ denote the maximum number of transitions between a given pair of states of $\CEFA$, and $C$ be the maximum absolute value of the integer constants occurring in $\CEFA$, which is bounded by $2^{|\CEFA|}$. Then the CEFA representation of $(\replaceall_{e,u})^{-1}_R(L)$ is of size 
+\[
+\bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)) = 2^{\bigO(|e|)} |\CEFA|^2 |\CEFA|^{|u|} |\CEFA|^2 \log_2 |u|=2^{\bigO(|e|)} |\CEFA|^{\bigO(|u|)}.
+\]
+
+%
+ according to the aforementioned discussion for NFTs.
+% 
+%
 \end{proof}
 
-\zhilin{stopped here}
-
-In this section, we show that the pre-images of the integer and string operations in {\slint} are representable by CEFAs. %satisfy the semantic conditions.
-
-Let $\NFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_m)$. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip
-\noindent \emph{Concatenation $x_1 \concat x_2$}.
-
-\smallskip
-
-Then $((\NFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$ is a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $\concat$, where $\NFA_{I, q}=(Q, \Sigma, R^{(1)}, \delta^{(1)}, I, \{q\})$ and  $\NFA_{q, F}=(Q, \Sigma, R^{(2)}, \delta^{(2)}, \{q\}, F)$ such that 
-\begin{itemize}
-\item $R^{(1)} = (r^{(1)}_1, \cdots, r^{(1)}_m)$, $R^{(2)} = (r^{(2)}_1, \cdots, r^{(2)}_m)$, 
-\item $\delta^{(1)}$ comprises the tuples $(q, \sigma, q', \eta')$ satisfying that $(q, \sigma, q', \eta) \in \delta$ and for each $j \in [m]$, $\eta'(r^{(1)}_j)=\eta(r_j)$,  similarly for $\delta^{(2)}$,
-\end{itemize}
-and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_m + r^{(2)}_m)$.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip 
-
-\noindent \emph{Reverse $\reverse(x_1)$}. 
-
-$(\NFA^{(r)}, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $\reverse$, where $\NFA^{(r)}$ is $(Q, \Sigma, R, \delta', F, I)$ such that $\delta'$ comprises the set of tuples $(q', \sigma, q, \eta)$ with  $(q, \sigma, q', \eta) \in \delta$. Note that $\Lang(\NFA^{(r)}) = \{(w^{(r)}, \vec{c}) \mid (w, \vec{c}) \in \Lang(\NFA)\}$.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip
-
-\noindent \emph{Substring $\substring(x_1, i, j)$}.
-
-%Intuitively, $\substring(x_1, i, j)$ returns the substring of $x_1$ starting from the position $i$ and ending at the position $j$ (assuming that $i  < j$), with the letter at the position $j$ excluded.
-
-$(\cB, (r^{(1)}_1, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $\substring$, where $\cB = (Q \times \{p_0, p_1, p_2\}, \Sigma, R', \delta', I \times \{p_0\}, F \times \{p_2\})$ such that $R' = (i, j, r^{(1)}_1,\cdots, r^{(1)}_m)$ and $\delta'$ comprises 
-\begin{itemize}
-\item the tuples $((q, p_0), \sigma, (q, p_0), \eta')$ such that $q \in I$ and $\eta' = \eta_0 \cup \{i \rightarrow 1, j \rightarrow 1\}$, where $\eta_0(r^{(1)}_j)=0$ for each $j \in [m]$,
-%
-\item the tuples $((q, p_0), \sigma, (q', p_1), \eta')$ such that $(q, \sigma, q', \eta) \in \delta$ and $\eta' = \eta^{(1)} \cup \{i \rightarrow 1, j  \rightarrow 1\}$, where $\eta^{(1)}(r^{(1)}_j)=\eta(r_j)$ for each $j \in [m]$,
-%
-\item the tuples $((q, p_1), \sigma, (q', p_1), \eta')$ such that $(q, \sigma, q', \eta) \in \delta$ and $\eta' = \eta^{(1)} \cup \{i \rightarrow 0, j  \rightarrow 1\}$, where $\eta^{(1)}(r^{(1)}_j)=\eta(r_j)$ for each $j \in [m]$,
-%
-\item the tuples $((q, p_1), \sigma, (q, p_2), \eta')$ such that $q \in F$ and $\eta' = \eta_0 \cup \{i \rightarrow 0, j  \rightarrow 1\}$, where $\eta_0(r^{(1)}_j)=0$ for each $j \in [m]$,
-%
-\item the tuples $((q, p_2), \sigma, (q, p_2), \eta')$ such that $q \in F$ and $\eta' = \eta_0 \cup \{i \rightarrow 0, j  \rightarrow 0\}$, where $\eta_0(r^{(1)}_j)=0$ for each $j \in [m]$.
-%
-\end{itemize}
-%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip
-\noindent \emph{FT $T(x_1)$}.
-
-\smallskip
-
-Let $T= (Q', \Sigma, \delta', I', F')$. Then $(\cB, (r^{(1)}, \cdots, r^{(1)}_m))$ is the CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $T$, where $ \cB= (Q \times Q', \Sigma, R^{(1)}, \delta'', I \times I', F \times F')$ such that $R^{(1)}  = (r^{(1)}, \cdots, r^{(1)}_m)$, $\delta''$ comprises the tuples $((q_1, q'_1), \sigma, (q_2, q'_2), \eta')$ satisfying that $(q'_1, \sigma, q'_2, u) \in \delta'$ with $u = \sigma_1 \cdots \sigma_i$, and in $\NFA$, we have $p_1 \xrightarrow{\sigma_1, \eta_1} p_2 \cdots \xrightarrow{\sigma_i, \eta_i} p_{i+1}$ with $p_1 = q_1$ and $p_{i+1}= q_2$, and for each $j \in [m]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_i(r_j)$.
-%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip 
-
-\noindent \emph{ReplaceAll $\replaceall_{e,u}(x)$}.
-
-\smallskip
-
-Intuitively, $\replaceall_{e,u}(x)$ is the string obtained by replacing every occurrence of $e$ in $x$ with the constant string $u$.
-
-From the results in \cite{CCH+18}, we know that  a FT $T_{e,u}$ can be constructed to simulate $\replaceall_{e,u}$. 
-Therefore, a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $T$ can be constructed as in the FT case.
-% 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip 
-
-\noindent \emph{Length $\length(x_1)$}.
-
-\smallskip
-
-$(\cB, r^{(1)})$ is a CEFA representation of $\length$, where $\cB = (Q', \Sigma, R^{(1)}, \delta', I', F')$ such that $Q' = \{q'_0\}$, $I'=F'=\{q'_0\}$, $R^{(1)} = (r^{(1)})$, $\delta' = \{(q'_0, \sigma, q'_0, \eta) \mid \sigma \in \Sigma, \eta(r^{(1)}) = 1\}$.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\smallskip 
-
-\noindent \emph{IndexOf $\indexof_u(x_1, i)$}.
-
-\smallskip 
-
-Suppose $u = \sigma_1 \cdots \sigma_j$. We use the concept of window profiles of positions w.r.t. $u$, which are elements of $\{\bot, \top\}^{j-1}$, to recognise the first occurrence of $u$ after the position $i$. 
-
-For $\pi \in \{\bot, \top\}^{j-1}$ and $\sigma' \in \Sigma$, $upt(\vec{\pi}, \sigma')$ is the updated window profile after reading the letter $\sigma'$, specifically, $upt(\vec{\pi}, \sigma') = \vec{\pi'}$ such that  
-\begin{itemize}
-\item $\pi'_1 = \top$ iff $\sigma' = \sigma_1$, 
-%
-\item for each $j' \in [j-2]$, $\pi'_{j'+1} = \top$ iff $\pi_{j'} = \top$ and $\sigma' = \sigma_{j'+1}$. 
-\end{itemize}
-The set of window profiles of $u$, denoted by $WP_u$, is computed by setting $WP_0 := \{\bot^{j-1}\}$ and iterating the following procedure, until $WP_i = WP_{i+1}$:
-\[WP_{i+1}:=WP_i \cup \{upt(\vec{\pi}, \sigma') \mid \vec{\pi} \in WP_i, \sigma' \in \Sigma\}.\] 
-From the results in \cite{CCH+18}, we know that $|WP_u| \le |u|$. Therefore, the aforementioned iteration terminates in at most $|u|$ steps.
-
-
-Then $(\cB, r^{(1)})$ is a CEFA representation of $\indexof_u$, where 
-$\cB= (Q', \Sigma, R', \delta', I', F')$ such that  $Q' = \{q'_0, q'_1\} \cup WP_u \cup WP_u \times [i]$, $R'=(i, r^{(1)})$, $I'=\{q'_0\}$, $F'=\{q'_1\}$, and $\delta'$ comprises 
-\begin{itemize}
-\item the tuples $(q'_0, \sigma, q'_0, \eta)$ such that $\sigma \in \Sigma$, $\eta(i)=1$, and $\eta(r^{(1)}) = 1$,
-%
-\item the tuples $(q'_0, \sigma, \vec{\pi}, \eta)$ such that $\sigma \in \Sigma$, $\vec{\pi} = \theta \bot^{j-2}$ where $\theta  = \top$ iff $\sigma = \sigma_1$, $\eta(i) = 1$, and $\eta(r^{(1)})= 1$,
-% 
-\item the tuples  $(\vec{\pi}, \sigma, upt(\vec{\pi}, \sigma), \eta)$ such that $\vec{\pi} \in WP_u$, $\sigma \in \Sigma$, $\pi_{j-1} = \bot$ or $\sigma \neq \sigma_{j}$, $\eta(i) = 0$, and $\eta(r^{(1)})= 1$,
-%
-\item the tuples $(\vec{\pi}, \sigma, (upt(\vec{\pi}, \sigma), 1), \eta)$ such that $\vec{\pi} \in WP_u$, $\sigma = \sigma_1$, $\pi_{j-1} = \bot$ or $\sigma \neq \sigma_{j}$, $\eta(i) = 0$, and $\eta(r^{(1)})= 1$,
-%
-\item the tuples $((\vec{\pi}, j'),  \sigma, (upt(\vec{\pi}, \sigma), j'+1), \eta)$ such that $\vec{\pi} \in WP_u$, $j' \in [j-2]$, $\sigma = \sigma_{j'+1}$, $\pi_{j-1} = \bot$ or $\sigma \neq \sigma_{j}$, $\eta(i) = 0$, and $\eta(r^{(1)})= 0$,
-%
-\item the tuples $((\vec{\pi}, j-1),  \sigma, q'_1, \eta)$ such that $\vec{\pi} \in WP_u$, $\sigma = \sigma_{j}$, $\eta(i) =0$, and $\eta(r^{(1)})= 0$,
-%
-\item the tuples  $(q'_1, \sigma, q'_1, \eta)$ such that $\sigma \in \Sigma$, $\eta(i) = 0$, and $\eta(r^{(1)})= 0$.
-\end{itemize}
-
-
-
-\subsection{Decision procedures}
+\subsection{The Decision Procedure}
 
 Let $S':=S$ and $A':=A$. Moreover, let $A'':= \ltrue$. Then execute the following procedure to (partially) flatten the integer terms.
 \begin{description}
