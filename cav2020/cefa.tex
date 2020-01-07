@@ -33,62 +33,31 @@ CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admit
 \end{remark}
 
 \begin{example}[CEFA for $\length$]\label{exm:len}
-The string function $\length$ can be captured by the CEFA $\CEFA_{\rm len}=(Q, \Sigma, R, \delta, I, F)$ such that $Q =I=F= \{q_0\}$, $R=(r_1)$, and $\delta = \{(q_0, a, q_0, \eta)\}$, where $\eta(r_1) = 1$.
-\tl{it is a bit vague; you mean for any RE $e$, $\{(w, \length(w)) \mid w\in e\}$ is a cerl?}
-\end{example}
-%
-In the next example, we are going to show that for a given string $v \in \Sigma^+$, $\indexof_v$ can be captured by a CEFA $\CEFA_{\indexof_v}$. 
-For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string. 
-Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
-\begin{itemize}
-\item $\pi'_1 = \top$ iff $b = a_1$, 
-%
-\item for each $i \in [n-2]$, $\pi'_{i+1} = \top$ iff $\pi_{i} = \top$ and $b = a_{i+1}$. 
-\end{itemize}
-Let $WP_v$ denote the set of window profiles of string positions w.r.t. $v$. From the result in \cite{CCH+18}, we know that $|WP_v| \le |v|$. 
-%Then the set of window profiles of $v$, denoted by $WP_v$, is computed by setting $WP_0 := \{\bot^{n-1}\}$ and iterating the following procedure, until $WP_i = WP_{i+1}$:
-%\[WP_{i+1}:=WP_i \cup \{\uwp(\vec{\pi}, b) \mid \vec{\pi} \in WP_i, b \in \Sigma\}.\] 
-%Therefore, the aforementioned iteration terminates in at most $|v|$ steps.\\
-%
-%
-\begin{example}[CEFA for $\indexof_v$]\label{exm:indexof}
-Suppose $v = a_1 \cdots a_n$ with $n \ge 1$. Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \delta, I, F)$, such that 
-\begin{itemize}
-\item $Q = \{q_0, q_1\} \cup WP_v \cup WP_v \times [n]$, 
-\item $R=(r_1, r_2)$ (where $r_1,r_2$ represent the input and output positions of $\indexof_v$ respectively), 
-\item $I=\{q_0\}$, 
-\item $F=\{q_1\}$, and 
-\item $\delta$ comprises 
-\begin{itemize}
-\item the tuples $(q_0, a, q_0, \eta)$ such that $a \in \Sigma$, $\eta(r_1)=1$, and $\eta(r_2) = 1$,
-%
-\item the tuples $(q_0, a, \vec{\pi}, \eta)$ such that $a \in \Sigma$, $\vec{\pi} = \theta \bot^{n-2}$ where $\theta  = \top$ iff $a = a_1$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$ (recall that the first position of a string is $0$),
-% 
-\item the tuples  $(\vec{\pi}, a, \uwp(\vec{\pi}, a), \eta)$ such that $\vec{\pi} \in WP_u$, $a \in \Sigma$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 1$,
-%
-\item the tuples $(\vec{\pi}, a, (\uwp(\vec{\pi}, a), 1), \eta)$ such that $\vec{\pi} \in WP_u$, $a = a_1$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 1$,
-%
-\item the tuples $((\vec{\pi}, i),  a, (\uwp(\vec{\pi}, a), i+1), \eta)$ such that $\vec{\pi} \in WP_u$, $i \in [n-2]$, $a = a_{i+1}$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$,
-%
-\item the tuples $((\vec{\pi}, n-1),  a, q_1, \eta)$ such that $\vec{\pi} \in WP_u$, $a = a_{n}$, $\eta(r_1) =0$, and $\eta(r_2)= 0$,
-%
-\item the tuples  $(q_1, a, q_1, \eta)$ such that $a \in \Sigma$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$.
-\end{itemize}
-\end{itemize}
+The string function $\length$ can be captured by CEFA. For any NFA $\NFA=(Q, \Sigma,  \delta, I, F)$, it is not difficult to see that the cost-enriched language $\{(w, \length(w)) \mid w\in \Lang(\NFA)\}$ is accepted by a $1$-cost-enriched automaton, i.e.
+$\CEFA_{\rm len}=(Q, \Sigma, (r_1), \delta', I, F)$ such that %$Q =I=F= \{q_0\}$, $R=(r_1)$, and 
+such that for each $(q, a, q')\in \delta$, we let $(q, a, q', \eta)\in \delta'$, where $\eta(r_1) = 1$.
+%\tl{it is a bit vague; you mean for any RE $e$,  is a cerl?}
 \end{example}
 
-Given two CEFAs $\NFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\NFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where the notation is abused a bit, viewing $R_1$ and $R_2$ as sets),  the product of $\NFA_1$ and $\NFA_2$, denoted by $\NFA_1 \times \NFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
+We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a $2$-cost-enriched automaton $\CEFA_{\indexof_v}$ such that $\Lang(\CEFA_{\indexof_v})=\{(w, (c, \indexof_v(w, c))\mid w\in \Lang(\NFA) \}$. The details are slightly technical and will be given in Appendix, Section~\ref{appendix:cefa_indexof}. 
 
 
-For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.
+
+Given two CEFAs $\NFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\NFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where %the notation is abused a bit, viewing 
+$R_1$ and $R_2$ are treated as sets), the product of $\NFA_1$ and $\NFA_2$, denoted by $\NFA_1 \times \NFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
+
+
+For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. %Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.
 %Moreover, for a CEFA $\NFA$ and 
-Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ with $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for every $j \in [k]$ in $\CEFA$. 
+Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ with $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for $j \in [k]$. 
 
 \smallskip
 
 %Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A  $(k_1,\cdots, k_l)$-cost-enriched relation $\cR$ is a subset of $(\Sigma^* \times \intnum^{k_1}) \times \cdots (\Sigma^* \times \intnum^{k_l})$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{definition}[Cost-enriched recognisable relations]
-Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. Intuitively, a cost-enriched recognisable relation (CERR)  $\cR \subseteq (\Sigma^* \times \intnum^{k_1}) \times \cdots  \times (\Sigma^* \times \intnum^{k_l})$ is a finite union of products of CERLs. Formally,
+Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A cost-enriched recognisable relation (CERR)  $\cR \subseteq (\Sigma^* \times \intnum^{k_1}) \times \cdots  \times (\Sigma^* \times \intnum^{k_l})$ is a finite union of products of CERLs. Formally,
 	\[\cR = \bigcup \limits_{i=1}^n L_{i,1 } \times \cdots \times L_{i, l},\]
 	where for every $j \in [l]$, $L_{i,j} \subseteq \Sigma^* \times \intnum^{k_j}$ is a CERL. 
 	A CEFA representation of $\cR$ is a collection of CEFA tuples $(\CEFA_{i,1}, \cdots, \CEFA_{i,l})_{i \in [n]}$ such that $\Lang(\CEFA_{i,j}) = L_{i,j}$ for every $i \in [n]$ and $j \in [l]$.
@@ -96,7 +65,7 @@ Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. Intuiti
 
 \begin{example}\label{exm:CERR}
 The relation 
-\[\cR=\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\}\] 
+\[\cR=\left\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\right\}\] 
 is a CERR since 
 $\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2}$, where 
 \begin{itemize}
@@ -105,24 +74,26 @@ $\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2}$, where
 \item $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$,  and
 \item $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$. 
 \end{itemize}
-Note that $L_{1,1}$, $L_{1,2}$, $L_{2,1}$, and $L_{2,2}$ are CERLs, according to Example~\ref{exm:len}. Moreover, $(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ is a CEFA representation of $\cR$, where 
-\begin{itemize}
-\item  $\CEFA_{1,1} = (\{p_0, p_1\}, \{a,b\}, (r_{1}), \delta_{1,1}, \{p_0\}, \{p_0\})$ defines $L_{1,1}$, such that $\delta_{1,1}= \{(p_0, a, p_1,\eta_1)$, $(p_1, a, p_0, \eta_1)\}$, with $\eta_1(r_{1})=1$,
-%
-\item $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{1,2}, \{q_0\}, \{q_1\})$ defines $L_{1,2}$, such that $\delta_{1,2}=\{(q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$,
-%
-\item $\CEFA_{2,1} = (\{p_0, p_1,p_2, p_3\}, \{a,b\}, (r_{1}), \delta_{2,1}, \{p_0\}, \{p_2\})$ defines $L_{2,1}$, such that $\delta_{2,1} = \{(p_0, a, p_1, \eta_1), (p_1, a, p_2, \eta_1), (p_2, a, p_3, \eta_1), (p_3, a, p_2, \eta_1)\}$, with $\eta_1(r_{1})=1$, and
-%
-\item $\CEFA_{2,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{2,2}, \{q_1\})$ defines $L_{2,2}$, such that $\delta_{2,2}= (q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$.
-\end{itemize}
+Note that $L_{i,j}$ for $i,j\in [2]$ are CERLs, with corresponding CEFAs $\CEFA_{i,j}$, as per Example~\ref{exm:len}. It follows that %Moreover, 
+$(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ gives a CEFA representation of $\cR$. %, where 
+%\tl{to be simplified.}
+%\begin{itemize}
+%\item  $\CEFA_{1,1} = (\{p_0, p_1\}, \{a,b\}, (r_{1}), \delta_{1,1}, \{p_0\}, \{p_0\})$ defines $L_{1,1}$, such that $\delta_{1,1}= \{(p_0, a, p_1,\eta_1)$, $(p_1, a, p_0, \eta_1)\}$, with $\eta_1(r_{1})=1$,
+%%
+%\item $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{1,2}, \{q_0\}, \{q_1\})$ defines $L_{1,2}$, such that $\delta_{1,2}=\{(q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$,
+%%
+%\item $\CEFA_{2,1} = (\{p_0, p_1,p_2, p_3\}, \{a,b\}, (r_{1}), \delta_{2,1}, \{p_0\}, \{p_2\})$ defines $L_{2,1}$, such that $\delta_{2,1} = \{(p_0, a, p_1, \eta_1), (p_1, a, p_2, \eta_1), (p_2, a, p_3, \eta_1), (p_3, a, p_2, \eta_1)\}$, with $\eta_1(r_{1})=1$, and
+%%
+%\item $\CEFA_{2,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{2,2}, \{q_1\})$ defines $L_{2,2}$, such that $\delta_{2,2}= (q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$.
+%\end{itemize}
 \end{example}
 
 \subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
 
-In the sequel, we consider a decision problem for CEFAs, for the decision procedure of the path feasibility problem of {\slint} in the next section.
+In the sequel, we consider a decision problem for CEFAs which will be used for the decision procedure of the path feasibility problem for {\slint} in the next section.
 
 \begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
-	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is to decide for a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that 
+	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is to decide, for a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that 
 \begin{itemize}
 \item	$\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
 \item $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
@@ -134,14 +105,13 @@ whether $\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether
 %Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. 
 
 \begin{example}
-Let $\phi \equiv r_1 = r_2$ and $\CEFA_{1,1}, \CEFA_{1,2}$ be two CEFAs in Example~\ref{exm:CERR} defining $L_{1,1}, L_{1,2}$ respectively (Recall that $R(\CEFA_{1,1})=(r_1)$ and $R(\CEFA_{1,2})=(r_2)$). Then it is easy to see that $\phi$ is unsatisfiable w.r.t. $\CEFA_{1,1}$ and $\CEFA_{1,2}$, since for each $(w_1, n_1) \in L_{1,1}$, we have that $n_1$ is even, while for each $(w_2, n_2) \in L_{1,2}$, we have that $n_2$ is odd, thus $n_1$ and $n_2$ cannot be equal.
+Let $\phi \equiv r_1 = r_2$ and $\CEFA_{1,1}, \CEFA_{1,2}$ be two CEFAs in Example~\ref{exm:CERR} defining $L_{1,1}, L_{1,2}$ respectively. (Recall that $R(\CEFA_{1,1})=(r_1)$ and $R(\CEFA_{1,2})=(r_2)$.) Then it is easy to see that $\phi$ is unsatisfiable w.r.t. $\CEFA_{1,1}$ and $\CEFA_{1,2}$, since for each $(w_1, n_1) \in L_{1,1}$, we have that $n_1$ is even, while for each $(w_2, n_2) \in L_{1,2}$, we have that $n_2$ is odd, thus $n_1$ and $n_2$ cannot be equal.
 \end{example}
 
 \begin{theorem}\label{thm-la-sat-cefa}
 	The {\lasat} problem is NP-complete.
 \end{theorem}
-
-For the proof of Theorem~\ref{thm-la-sat-cefa}, we state and prove the following lemma. 
+%To prove Theorem~\ref{thm-la-sat-cefa}, we state and prove the following lemma. 
 
 For a $k$-cost-enriched language $L$, we define 
 \[
@@ -177,7 +147,7 @@ Then the satisfiability of $\phi$ w.r.t. $\CEFA_1,\cdots, \CEFA_m$ is reduced to
 \[
 	\phi' \equiv \phi \wedge \bigwedge \limits_{i \in [m]} \phi_{\CEFA_i}(r_{i,1}, \cdots, r_{i, k_i}).
 \]
-Since the size of $\phi'$ is linear in the size of $\phi$ as well as those of $\CEFA_1,\cdots,\CEFA_m$, and the satisfiability problem of existential LIA formulas is NP-complete, we conclude that the satisfiability of $\phi$ w.r.t.  $\CEFA_1,\cdots,\CEFA_m$ can be decided in nondeterministic polynomial time.
+Since the size of $\phi'$ is linear in the size of $\phi$ and those of $\CEFA_1,\cdots,\CEFA_m$, and the satisfiability problem of existential LIA formulas is NP-complete, we conclude that the satisfiability of $\phi$ w.r.t.  $\CEFA_1,\cdots,\CEFA_m$ can be decided in nondeterministic polynomial time.
 
 It remains to prove the correctness of the reduction, namely, $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$ iff $\phi'$ is satisfiable.
 

@@ -1,0 +1,41 @@
+%
+%In the next example, we are going to show that for a given string $v \in \Sigma^+$, $\indexof_v$ can be captured by a CEFA $\CEFA_{\indexof_v}$. 
+\section{Construction of $\CEFA_{\indexof_v}$} \label{appendix:cefa_indexof}
+For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string. 
+Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
+\begin{itemize}
+\item $\pi'_1 = \top$ iff $b = a_1$, 
+%
+\item for each $i \in [n-2]$, $\pi'_{i+1} = \top$ iff $\pi_{i} = \top$ and $b = a_{i+1}$. 
+\end{itemize}
+Let $WP_v$ denote the set of window profiles of string positions w.r.t. $v$. From the result in \cite{CCH+18}, we know that $|WP_v| \le |v|$. 
+%Then the set of window profiles of $v$, denoted by $WP_v$, is computed by setting $WP_0 := \{\bot^{n-1}\}$ and iterating the following procedure, until $WP_i = WP_{i+1}$:
+%\[WP_{i+1}:=WP_i \cup \{\uwp(\vec{\pi}, b) \mid \vec{\pi} \in WP_i, b \in \Sigma\}.\] 
+%Therefore, the aforementioned iteration terminates in at most $|v|$ steps.\\
+%
+%
+\begin{example}[CEFA for $\indexof_v$]\label{exm:indexof}
+Suppose $v = a_1 \cdots a_n$ with $n \ge 1$. Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \delta, I, F)$, such that 
+\begin{itemize}
+\item $Q = \{q_0, q_1\} \cup WP_v \cup WP_v \times [n]$, 
+\item $R=(r_1, r_2)$ (where $r_1,r_2$ represent the input and output positions of $\indexof_v$ respectively), 
+\item $I=\{q_0\}$, 
+\item $F=\{q_1\}$, and 
+\item $\delta$ comprises 
+\begin{itemize}
+\item the tuples $(q_0, a, q_0, \eta)$ such that $a \in \Sigma$, $\eta(r_1)=1$, and $\eta(r_2) = 1$,
+%
+\item the tuples $(q_0, a, \vec{\pi}, \eta)$ such that $a \in \Sigma$, $\vec{\pi} = \theta \bot^{n-2}$ where $\theta  = \top$ iff $a = a_1$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$ (recall that the first position of a string is $0$),
+% 
+\item the tuples  $(\vec{\pi}, a, \uwp(\vec{\pi}, a), \eta)$ such that $\vec{\pi} \in WP_u$, $a \in \Sigma$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 1$,
+%
+\item the tuples $(\vec{\pi}, a, (\uwp(\vec{\pi}, a), 1), \eta)$ such that $\vec{\pi} \in WP_u$, $a = a_1$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 1$,
+%
+\item the tuples $((\vec{\pi}, i),  a, (\uwp(\vec{\pi}, a), i+1), \eta)$ such that $\vec{\pi} \in WP_u$, $i \in [n-2]$, $a = a_{i+1}$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$,
+%
+\item the tuples $((\vec{\pi}, n-1),  a, q_1, \eta)$ such that $\vec{\pi} \in WP_u$, $a = a_{n}$, $\eta(r_1) =0$, and $\eta(r_2)= 0$,
+%
+\item the tuples  $(q_1, a, q_1, \eta)$ such that $a \in \Sigma$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$.
+\end{itemize}
+\end{itemize}
+\end{example}

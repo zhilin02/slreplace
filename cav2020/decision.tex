@@ -1,9 +1,9 @@
 %!TEX root = main.tex
 
-In this section, we show the main result of this paper. 
+%In this section, we show the main result of this paper. 
 
 \begin{theorem}\label{thm-main}
-The path feasibility of {\slint} programs is $\expspace$-complete.
+The path feasibility of {\slint} programs is $\expspace$-complete. \tl{to be examined}
 \end{theorem}
 %
 The lower bound of Theorem~\ref{thm-main} follows from Theorem~5 in \cite{LB16}, where the satisfiability of straight-line sting constraints with concatenation and finite transducers is shown to be the $\expspace$-complete.
@@ -11,7 +11,10 @@ The lower bound of Theorem~\ref{thm-main} follows from Theorem~5 in \cite{LB16},
 For the upper bound, we will design a decision procedure for the path feasibility problem of {\slint} programs, based on the concepts of CERLs and CERRs introduced Section~\ref{sec:cefa}.
 
 
-Before presenting the decision procedure, we introduce an additional concept, cost-enriched pre-images of CERLs under string operations. Moreover, we will show that the cost-enriched pre-images of CERLs under the string operations in {\slint}, namely, concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$, are CERRs. 
+%Before presenting the decision procedure, we introduce an additional concept, i.e., cost-enriched pre-images of CERLs under string operations. Moreover, 
+The crux of the procedure is to %we will 
+show that the %cost-enriched 
+pre-images of CERLs under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, NFTs $\NFT$, and $\substring$) are CERRs. 
 
 To simplify the presentation of the decision procedure, in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, we consider string operations $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ (if there is no integer input parameter, then $k_1,\cdots,k_l$ are zero), where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
 
@@ -36,7 +39,7 @@ The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t}
 \end{definition}
 
 \begin{example}\label{exm:pre-image}
-Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, R, \delta, I, F)$ with $R=(r_1)$. Since the concatenation operation $\concat$  is a string function from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ and 
+Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, (r_1), \delta, I, F)$. Since the concatenation operation $\concat$  is a string function from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ and 
 \[\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2} \cup L_{3,1} \times L_{3,2} \cup L_{4,1} \times L_{4,2} \cup L_{5,1} \times L_{5,2},\]
 such that
 \begin{itemize}
