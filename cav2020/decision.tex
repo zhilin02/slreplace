@@ -25,7 +25,9 @@ To simplify the presentation of the decision procedure, in this section, we usua
 Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string operation, $L \subseteq \Sigma^* \times \Int^{k_0}$ is a CERL defined by a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$ with $R= (r_1, \cdots, r_{k_0})$. Then the $R$-cost-enriched pre-image of $L$ under $f$, denoted by $f^{-1}_R(L)$, is a pair $(\cR, \vec{t})$ such that 
 \begin{itemize}
 \item $\cR \subseteq (\Sigma^* \times \Int^{k_1 + k_0}) \times \cdots \times (\Sigma^* \times \Int^{k_l + k_0})$,
-\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\{r^{(1)}_i, \cdots, r^{(l)}_i\}$ (intuitively, each cost register $r_i$ is split into $l$ cost registers $r^{(1)}_i, \cdots,r^{(l)}_i$, one for each string input parameter, and $t_i$ tells how to compute $r_i$ from $r^{(1)}_i, \cdots,r^{(l)}_i$), and
+\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\{r^{(1)}_i, \cdots, r^{(l)}_i\}$ 
+
+%[intuitively, each cost register $r_i$ is split into $l$ cost registers $r^{(1)}_i, \cdots,r^{(l)}_i$, one for each string input parameter, and $t_i$ tells how to compute $r_i$ from $r^{(1)}_i, \cdots,r^{(l)}_i$]
 \item $L$ is equal to the language comprising the $k_0$-cost-enriched strings
 %
 \[\left(w_0, t_1\left[d^{(1)}_{1}/r^{(1)}_1, \cdots, d^{(l)}_{1}/r^{(l)}_1\right], \cdots, t_{k_0}\left[d^{(1)}_{k_0}/r^{(1)}_{k_0}, \cdots, d^{(l)}_{k_0}/r^{(l)}_{k_0}\right]
@@ -33,9 +35,15 @@ Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \ti
 %
 such that 
 \[w_0 \in f\left((w_1, \vec{c_1}), \cdots, (w_l, \vec{c_l}\right)) \mbox{ for some } ((w_1, (\vec{c_1}, \vec{d_1})), \cdots, (w_l, (\vec{c_l}, \vec{d_l}))) \in \cR,\]
-where $\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
+where $\vec{c_j} \in \Int^{k_j}$, $\vec{d_j} = (d^{(j)}_{1}, \cdots, d^{(j)}_{k_0}) \in \Int^{k_0}$ for $j\in [l]$.
+
+
+%
+%$\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
 \end{itemize}
-The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and freshly introduced.) 
+The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. 
+
+A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and freshly introduced.) 
 \end{definition}
 
 \begin{example}\label{exm:pre-image}
