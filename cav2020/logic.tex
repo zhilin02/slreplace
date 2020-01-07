@@ -23,15 +23,14 @@ t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbo
 %A & ::= &   A_r \wedge A_i,
 %\end{array}
 %\]
-We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form puts restrictions only on the assignment statements, but not on the conditional statements. 
-\tl{what does conditional statement mean? you mean assertions?}\zhilin{yes, I mean assertions. But actually they are not assertions we usually talk about, they are more like the conditions in the if-the-else statement.}
+We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form imposes restrictions only on the assignment statements, but not on the assertions. %conditional statements. 
+%\tl{what does conditional statement mean? you mean assertions?}\zhilin{yes, I mean assertions. But actually they are not assertions we usually talk about, they are more like the conditions in the if-the-else statement.}
 A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear in the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
 
 \paragraph*{Semantics.}
-The semantics of {\slint} is 
-%self-explanatory, 
+The semantics of {\slint} is explained as follows. %mostly%self-explanatory, 
 %if we know the semantics of the string-manipulating functions in {\slint}, 
-defined below. \tl{the semantics is not quite formal, so we may just **explain** them}
+%defined below. \tl{the semantics is not quite formal, so we may just **explain** them}
 \begin{itemize}
 \item The assignment $x:=y \cdot z$ denotes that $x$ is the concatenation of two strings $y$ and $z$.
 
@@ -65,7 +64,10 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 \end{itemize}
 
 \begin{remark}
-Note that to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and disallow string constants therein. For instance, string variables, instead of string constants, are required to appear as the string parameters of $\reverse$. This is not a real restriction, since $x:=\reverse({\mbox``}abc\mbox{''})$, for instance, can be equivalently replaced by $x:=\reverse(y); \ASSERT{y \in \NFA_{abc}}$, where $y$ is a fresh variable and $\NFA_{abc}$ is the NFA for the string ``$abc$''.
+Note that %to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and 
+for simplicity, strictly speaking, string constants are not allowed in the assignments. %therein. 
+For instance, %string variables, instead of string constants, are required to appear as the string parameters of $\reverse$. This is not a real restriction, since 
+$x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real restriction because it can be written as $x:=\reverse(y); \ASSERT{y \in \NFA_{abc}}$, where $y$ is a fresh variable and $\NFA_{abc}$ is the NFA which accepts ``$abc$''  only.
 \end{remark}
 
 
@@ -75,7 +77,7 @@ The function $\replaceall_{e,u}$ can be seen as a special case of NFT, although 
 
 
 \begin{remark}
-The function ${\sf charAt}(x, i)$ can be seen as a special case of $\substring$, namely ${\sf charAt}(x, i) \equiv \substring(x, i, 1)$.
+The function ${\sf charAt}(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely ${\sf charAt}(x, i) \equiv \substring(x, i, 1)$.
 \end{remark}
 
 \begin{example}
@@ -86,7 +88,7 @@ x:= y \concat z; y := \substring(y', \indexof(x, c), j); \ASSERT{y' \in \NFA_{(a
 \ASSERT{z \in \NFA_{a^* c b^*}}; \ASSERT{j = 2\ \indexof(x, c)}
 \end{array}
 \] 
-belongs to {\slint}, where $\NFA_{(ab)^*}$ and $\NFA_{a^* c b^*}$ are the NFAs for the regular expressions $(ab)^*$ and $a^* c b^*$ respectively.
+is in {\slint}, where $\NFA_{(ab)^*}$ and $\NFA_{a^* c b^*}$ are the NFAs for the regular expressions $(ab)^*$ and $a^* c b^*$ respectively.
 \end{example}
 
 %The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.

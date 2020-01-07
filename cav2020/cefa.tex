@@ -6,11 +6,13 @@ In this section, we introduce cost-enriched regular languages and recognisable r
 \subsection{Cost-Enriched Regular Languages and Recognisable Relations}
 
 Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. 
-A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. 
+A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. For our purpose, we identify a ``regular" fragment of cost-enriched languages as follows. 
 %Note that all the cost-enriched strings in $L$ are associated with the same number of costs (i.e., $k$).
 
 \begin{definition}[Cost-enriched regular languages]
-Let $k \in \Nat$ with $k > 0$. A $k$-cost-enriched language is \emph{regular} (abbreviated as CERL) if it can be defined by a \emph{cost-enriched finite automaton}. A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delta, I, F)$ where 
+Let $k \in \Nat$ with $k > 0$. A $k$-cost-enriched language is \emph{regular} (abbreviated as CERL) if it can be accepted by a \emph{cost-enriched finite automaton}. 
+
+A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delta, I, F)$ where 
 \begin{itemize}
 \item $Q, \Sigma, I, F$ are defined as in NFAs, 
 %
@@ -24,7 +26,7 @@ A \emph{run} of $\CEFA$ on a $k$-cost-enriched string $(a_1 \cdots a_m, (n_1, \c
 The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is the set of $k$-cost-enriched strings accepted by $\CEFA$. 
 %A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\NFA$ such that $L = \Lang(\NFA)$.
 \end{definition}
-The \emph{size} of  a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of a transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here the binary encoding is used to represent the integer constants occurring in $\CEFA$.
+The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of each transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here  the integer constants in $\CEFA$ are encoded in binary.
 
 \begin{remark}
 CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. 
