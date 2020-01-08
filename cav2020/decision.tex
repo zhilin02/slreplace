@@ -21,17 +21,16 @@ pre-images of cost-enriched regular languages under the string operations in {\s
 
 \subsection{Pre-images of CERLs under string operations} \label{sect:pre}
 
-
 To unify the presentation of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
 we consider string operations $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$. (If there is no integer input parameter, then $k_1,\cdots,k_l$ are zero.)  
 %where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. 
 Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
 
-\begin{definition}[Cost-enriched pre-images of CERLs]
+\begin{definition}[Cost-enriched pre-images of CERLs] \label{def:preimage}
 Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string operation, $L \subseteq \Sigma^* \times \Int^{k_0}$ is a CERL defined by a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$ with $R= (r_1, \cdots, r_{k_0})$. Then the $R$-cost-enriched pre-image of $L$ under $f$, denoted by $f^{-1}_R(L)$, is a pair $(\cR, \vec{t})$ such that 
 \begin{itemize}
-\item $\cR \subseteq (\Sigma^* \times \Int^{k_1 + k_0}) \times \cdots \times (\Sigma^* \times \Int^{k_l + k_0})$,
-\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\{r^{(1)}_i, \cdots, r^{(l)}_i\}$ 
+\item $\cR \subseteq (\Sigma^* \times \Int^{k_1 + k_0}) \times \cdots \times (\Sigma^* \times \Int^{k_l + k_0})$;
+\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\{r^{(1)}_i, \cdots, r^{(l)}_i\}$ which are fresh cost registers and are disjoint from $R$ in $\CEFA$;
 
 %[intuitively, each cost register $r_i$ is split into $l$ cost registers $r^{(1)}_i, \cdots,r^{(l)}_i$, one for each string input parameter, and $t_i$ tells how to compute $r_i$ from $r^{(1)}_i, \cdots,r^{(l)}_i$]
 \item $L$ is equal to the language comprising the $k_0$-cost-enriched strings
@@ -42,15 +41,17 @@ Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \ti
 such that 
 \[w_0 \in f\left((w_1, \vec{c_1}), \cdots, (w_l, \vec{c_l}\right)) \mbox{ for some } ((w_1, (\vec{c_1}, \vec{d_1})), \cdots, (w_l, (\vec{c_l}, \vec{d_l}))) \in \cR,\]
 where $\vec{c_j} \in \Int^{k_j}$, $\vec{d_j} = (d^{(j)}_{1}, \cdots, d^{(j)}_{k_0}) \in \Int^{k_0}$ for $j\in [l]$.
-
-
 %
 %$\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
 \end{itemize}
 The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. 
-
-A CEFA representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and freshly introduced.) \tl{$r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are actually introduced above?}
 \end{definition}
+
+Definition~\ref{def:preimage} is essentially a semantic definition of the pre-images. For the decision procedure, one desires an effective representation of $(\cR, \vec{t})$ in terms of CEFAs. Namely,
+a CEFA representation of %a CERR-definable $f^{-1}_R(L)=
+$(\cR, \vec{t})$ (where $t_j$ is over $\{r^{(1)}_j, \cdots, r^{(l)}_j\}$ for $j\in [k_0]$)
+is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}$ %, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ 
+are mutually distinct and freshly introduced.) %\tl{$r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are actually introduced above?}
 
 
 \begin{example}\label{exm:pre-image}
@@ -204,9 +205,8 @@ Let $N$ denote the maximum number of transitions between a given pair of states 
 \[
 \bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)) = 2^{\bigO(|e|)} |\CEFA|^2 |\CEFA|^{|u|} |\CEFA|^2 \log_2 |u|=2^{\bigO(|e|)} |\CEFA|^{\bigO(|u|)}.
 \]
-
 %
- according to the aforementioned discussion for NFTs.
+according to the aforementioned discussion for NFTs.
 % 
 %
 \end{proof}
@@ -276,25 +276,26 @@ In this step, $S$ %is a {\slint} program containing
 contains assertions of the form $\ASSERT{x \in \NFA}$ and  $\ASSERT{t_1\ o\ t_2}$  only. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
 %
 Let $X$ denote the set of string variables occurring in $S$.
-For each $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+For each $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$ where the vector of the cost registers in $\CEFA_x$ is denoted by $R_x$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. It is straighforward to observe that $\phi$ is over %the set of integer variables 
+$\bigcup_{x\in X}R_x$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
 	%The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
-	
+%	
 %	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
 %	$R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
 %	the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
 to decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
-	there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
-	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
+there are an assignment function $\theta: \bigcup_{x\in X}R_x \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[(\theta(R_x)/R_x)_{x \in X}]$ holds and $(w_x, \theta(R_x)) \in \Lang(\NFA_x)$ for every $x \in X$.
 %\end{definition}
 
-From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
+%From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
+
+
+\paragraph*{Complexity analysis.} Step I can be fulfilled in linear time. The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during Step II, for each input string variable $x$ in $S$, at most exponentially many CEFAs are introduced for $x$, with each of them of at most exponential size. Therefore, Step II can be fulfilled in nondeterministic exponential time. For Step III, for each input string variable $x$, we compute the product of all CEFAs for $x$, then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
+
 
 
 \paragraph*{Functional string operations.}
 We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$. \zhilin{I think we should only present the decision procedure for deterministic string operations, since this is the case for {\slint}.}
-
-\paragraph*{Complexity analysis.} Step I can be fulfilled in linear time. The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during Step II, for each input string variable $x$ in $S$, at most exponentially many CEFAs are introduced for $x$, with each of them of at most exponential size. Therefore, Step II can be fulfilled in nondeterministic exponential time. For Step III, for each input string variable $x$, we compute the product of all CEFAs for $x$, then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
-
 
 %\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
 
