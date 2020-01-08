@@ -1,9 +1,9 @@
 %!TEX root = main.tex
 
 
-In this section, we introduce cost-enriched regular languages and recognisable relations, as the extensions of regular languages and recognisable relations, moreover, we investigate the decidability and complexity of a related decision problem, thus laying down the theoretical foundations of the decision procedure in the next section. 
+%In this section, we introduce cost-enriched regular languages and recognisable relations, as the extensions of regular languages and recognisable relations, moreover, we investigate the decidability and complexity of a related decision problem, thus laying down the theoretical foundations of the decision procedure in the next section. 
 
-\subsection{Cost-Enriched Regular Languages and Recognisable Relations}
+\subsection{Cost-Enriched Regular Languages and Recognisable Relations} \label{sect:ce}
 
 Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. 
 A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. For our purpose, we identify a ``regular" fragment of cost-enriched languages as follows. 
@@ -18,7 +18,9 @@ A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delt
 %
 \item $R=(r_1, \cdots, r_k)$ is a vector of (mutually distinct) \emph{cost registers}, 
 %
-\item $\delta$ is the transition relation which is a finite set of tuples $(q, a, q', \eta)$ where $q, q' \in Q$, $a \in \Sigma$, and $\eta: R \rightarrow \intnum$ is a cost register update function. \\
+\item $\delta$ is the transition relation which is a finite set of tuples $(q, a, q', \eta)$ where $q, q' \in Q$, $a \in \Sigma$, and %$\eta: R \rightarrow \intnum$ 
+$\eta: R \rightarrow \Nat$
+is a cost register update function. \\
 For convenience, we usually write $(q, a, q', \eta) \in \Delta$ as $q \xrightarrow{a, \eta} q'$.
 \end{itemize}
 %
@@ -29,7 +31,7 @@ The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is
 The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of each transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here  the integer constants in $\CEFA$ are encoded in binary.
 
 \begin{remark}
-CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. 
+CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to  
 \end{remark}
 
 \begin{example}[CEFA for $\length$]\label{exm:len}
@@ -88,28 +90,28 @@ $(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ gives a CEFA representation of $\cR$. %
 %\end{itemize}
 \end{example}
 
-\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
-
-In the sequel, we consider a decision problem for CEFAs which will be used for the decision procedure of the path feasibility problem for {\slint} in the next section.
-
-\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
-	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
-	
-	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
-  $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
- the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
- 
-Decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
-there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
-	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
-\end{definition}
-%Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. 
-
-\begin{example}
-Let $\phi \equiv r_1 = r_2$ and $\CEFA_{1,1}, \CEFA_{1,2}$ be two CEFAs in Example~\ref{exm:CERR} defining $L_{1,1}, L_{1,2}$ respectively. (Recall that $R(\CEFA_{1,1})=(r_1)$ and $R(\CEFA_{1,2})=(r_2)$.) Then it is easy to see that $\phi$ is unsatisfiable w.r.t. $\CEFA_{1,1}$ and $\CEFA_{1,2}$, since for each $(w_1, n_1) \in L_{1,1}$, $n_1$ must be even, while for each $(w_2, n_2) \in L_{1,2}$, $n_2$ must be odd. Hence $n_1$ and $n_2$ cannot be equal.
-\end{example}
-
-\begin{theorem}\label{thm-la-sat-cefa}
-	The {\lasat} problem is NP-complete.
-\end{theorem}
-The proof is given in Appendix, Section~\ref{appendix:thm-la-sat-cefa}.
+%\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
+%
+%In the sequel, we consider a decision problem for CEFAs which will be used for the decision procedure of the path feasibility problem for {\slint} in the next section.
+%
+%\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+%	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
+%	
+%	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
+%  $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+% the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
+% 
+%Decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
+%there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+%	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
+%\end{definition}
+%%Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. 
+%
+%\begin{example}
+%Let $\phi \equiv r_1 = r_2$ and $\CEFA_{1,1}, \CEFA_{1,2}$ be two CEFAs in Example~\ref{exm:CERR} defining $L_{1,1}, L_{1,2}$ respectively. (Recall that $R(\CEFA_{1,1})=(r_1)$ and $R(\CEFA_{1,2})=(r_2)$.) Then it is easy to see that $\phi$ is unsatisfiable w.r.t. $\CEFA_{1,1}$ and $\CEFA_{1,2}$, since for each $(w_1, n_1) \in L_{1,1}$, $n_1$ must be even, while for each $(w_2, n_2) \in L_{1,2}$, $n_2$ must be odd. Hence $n_1$ and $n_2$ cannot be equal.
+%\end{example}
+%
+%\begin{theorem}\label{thm-la-sat-cefa}
+%	The {\lasat} problem is NP-complete.
+%\end{theorem}
+%The proof is given in Appendix, Section~\ref{appendix:thm-la-sat-cefa}.
