@@ -22,7 +22,10 @@ pre-images of cost-enriched regular languages under the string operations in {\s
 \subsection{Pre-images of CERLs under string operations} \label{sect:pre}
 
 
-To simplify the presentation of the decision procedure, in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, we consider string operations $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ (if there is no integer input parameter, then $k_1,\cdots,k_l$ are zero), where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
+To unify the presentation of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
+we consider string operations $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$. (If there is no integer input parameter, then $k_1,\cdots,k_l$ are zero.)  
+%where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. 
+Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
 
 \begin{definition}[Cost-enriched pre-images of CERLs]
 Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string operation, $L \subseteq \Sigma^* \times \Int^{k_0}$ is a CERL defined by a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$ with $R= (r_1, \cdots, r_{k_0})$. Then the $R$-cost-enriched pre-image of $L$ under $f$, denoted by $f^{-1}_R(L)$, is a pair $(\cR, \vec{t})$ such that 
@@ -208,10 +211,12 @@ Let $N$ denote the maximum number of transitions between a given pair of states 
 %
 \end{proof}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Decision Procedure}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-Let $S$  be a {\slint} program. We show how to decide the path feasibility of $S$. The decision procedure is nondeterministic and divided into three steps. 
+Let $S$  be a {\slint} program. %We show how to decide the path feasibility of $S$. 
+We present a decision procedure for the path feasibility problem of $S$. %is nondeterministic and divided into three steps. 
 %\begin{description}
 %\item[Step I: Preprocessing.] 
 %
@@ -224,7 +229,7 @@ Let $S$  be a {\slint} program. We show how to decide the path feasibility of $S
 
 Repeat the following procedure until there are no occurrences of $\length$ and $\indexof$.
 \begin{itemize}
-\item For each term $\length(x)$ occurring in $S$, introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
+\item For  $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
 %
 \item 
 For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for the definition of $\CEFA_{\rm \indexof_v}$.)
@@ -240,18 +245,17 @@ For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer v
 Repeat the following procedure until $S$ contains no assignment statements.
 %
 \begin{quote}
-Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the last assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is any function from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
+Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the last assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string function. %from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
 \\
-Let $\rho := \{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y \in \CEFA_j}$ occurs in $S$ for every $j \in [s]$. Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$ (Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$, and $R(\CEFA_s)$ are mutually disjoint). 
-%
-Suppose $R(\CEFA) = (r_1, \cdots, r_{k_0})$. Then from Proposition~\ref{prop:pre-image}, 
-a CEFA representation of $f^{-1}_{R(\CEFA)}(\Lang(\CEFA))$, say $((\cB_{j, 1}, \cdots, \cB_{j, l})_{j \in [m]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$, where 
+Let $\rho := \{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y \in \CEFA_j}$ occurs in $S$ for every $j \in [s]$. Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$\footnote{Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$,  $R(\CEFA_s)$ are mutually disjoint.} 
+with $R(\CEFA) = (r_1, \cdots, r_{k_0})$. Then from Proposition~\ref{prop:pre-image}, 
+a CEFA representation of $f^{-1}_{R(\CEFA)}(\Lang(\CEFA))$, $((\cB_{j, 1}, \cdots, \cB_{j, l})_{j \in [m]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$, where we write
 \[
 R(\cB_{j,j'})=\left(r'_{j',1}, \cdots, r'_{j',k_j}, r^{(j')}_1, \cdots,r^{(j')}_{k_0} \right)
 \]
 for each $j \in [m]$ and $j' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{k_0})$. Note that the cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are mutually distinct and freshly introduced.\\
 %
-Remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$, moreover, nondeterministically choose $j \in [m]$ and add the following statements to $S$, 
+We remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$, nondeterministically choose $j \in [m]$, and add the following statements to $S$, 
 %
 \[
 \begin{array}{l}
@@ -262,37 +266,41 @@ Remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$, moreover, nond
 %
 \end{quote}
 
-We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$. \zhilin{I think we should only present the decision procedure for deterministic string operations, since this is the case for {\slint}.}
 
 \medskip
 \noindent{\bf Step III: Solving the {\lasat} problem}.
 
 \smallskip
 
-Suppose $S$ is a {\slint} program containing no assignment statements and all the integer terms are linear integer arithmetic terms. 
-
+In this step, $S$ %is a {\slint} program containing 
+contains assertions of the form $\ASSERT{x \in \NFA}$ and  $\ASSERT{t_1\ o\ t_2}$  only. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
+%
 Let $X$ denote the set of string variables occurring in $S$.
-For each string variable $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$. From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
+For each $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+	%The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
+	
+%	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
+%	$R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+%	the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
+to decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
+	there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
+%\end{definition}
 
+From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
+
+
+\paragraph*{Functional string operations.}
+We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$. \zhilin{I think we should only present the decision procedure for deterministic string operations, since this is the case for {\slint}.}
 
 \paragraph*{Complexity analysis.} Step I can be fulfilled in linear time. The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during Step II, for each input string variable $x$ in $S$, at most exponentially many CEFAs are introduced for $x$, with each of them of at most exponential size. Therefore, Step II can be fulfilled in nondeterministic exponential time. For Step III, for each input string variable $x$, we compute the product of all CEFAs for $x$, then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
 
 
 %\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
 
-In the sequel, we consider a decision problem for CEFAs which will be used for the decision procedure of the path feasibility problem for {\slint} in the next section.
+%In the sequel, we consider a decision problem for CEFAs which will be used for the decision procedure of the path feasibility problem for {\slint} in the next section.
 
-\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
-	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
-	
-	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
-	$R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
-	the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
-	
-	Decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
-	there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
-	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
-\end{definition}
+
 %Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. 
 
 %\begin{example}

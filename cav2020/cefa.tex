@@ -31,7 +31,7 @@ The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is
 The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of each transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here  the integer constants in $\CEFA$ are encoded in binary.
 
 \begin{remark}
-CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to  
+CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to the monotonic counter machine \cite{LB16}. The main difference is that CEFAs allow natural numbers in cost updates which are restricted to $0,1$ only in monotonic counter machine. Moreover, we explicit define CEFA as a language acceptor for an enriched language.
 \end{remark}
 
 \begin{example}[CEFA for $\length$]\label{exm:len}
