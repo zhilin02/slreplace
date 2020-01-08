@@ -290,7 +290,12 @@ there are an assignment function $\theta: \bigcup_{x\in X}R_x \rightarrow \Int$ 
 %From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
 
 
-\paragraph*{Complexity analysis.} Step I can be fulfilled in linear time. The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during Step II, for each input string variable $x$ in $S$, at most exponentially many CEFAs are introduced for $x$, with each of them of at most exponential size. Therefore, Step II can be fulfilled in nondeterministic exponential time. For Step III, for each input string variable $x$, we compute the product of all CEFAs for $x$, then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
+\paragraph*{Complexity analysis.} Step I can be done in linear time. %The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during 
+In Step II, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step II can be done in nondeterministic exponential time. For Step III, for each input string variable $x$, we compute the product $\CEFA_x$ of all CEFAs for $x$, which has at most doubly exponential number of states and singly exponential number of registers. By the same argument of Proposition 16 and Lemma 13 \cite{LB16}, we can generate an LIA formula of exponential size, and its satisfiability can be checked in EXPSPACE. \tl{to be checked later}
+%then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, 
+
+
+%and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
 
 
 
