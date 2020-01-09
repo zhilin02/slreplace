@@ -47,7 +47,8 @@
 
 
 \title{A Decision Procedure for Path Feasibility of \\
-String Numeric Programs}
+String-Manipulating Programs\\
+with Integer Data Type}
 
 
 \author{}
@@ -66,9 +67,15 @@ String Numeric Programs}
 \maketitle
 
 \begin{abstract}
-String and numeric constraints are widely used in programs, especially in Web programs, e.g. Javascript and PHP. 
-In this paper, we consider a string logic which can express both string and numeric constraints, in particular, the logic includes not only pure string operations, e.g. concatenation, replaceAll, reverse, and transducers, but also those operations involving the integer data type, e.g. length, substring, and indexOf functions.  
-We propose a decision procedure for the logic, based on a variant of cost register automata (Alur et al. LICS 2013), which seamlessly extends that of the OSTRICH solver. Moreover, we implement the decision procedure on top of OSTRICH. The experimental results show that the decision procedure performances very well on a wide range of benchmarks. 
+Strings are widely used in programs, especially in Web programs, e.g. Javascript and PHP. 
+The integer data type naturally occurs in string-manipulating programs, typically referring to the lengths of strings or positions of strings. For instance, the inputs or outputs of widely used string operations including length, substring, and indexof involve the integer data type.
+The path feasibility problem is to decide whether a given execution path is feasible, namely, whether there exist assignments to input variables so that a given path can execute to the end, which plays a central role in the static analysis and verification, e.g. symbolic execution, of programs. 
+Path feasibility problem of string-manipulating programs is very challenging and undecidable in general, especially when involving the integer data type. 
+Aiming at solving the path feasibility of string-manipulating programs in practice, 
+on the one hand, most of the state-of-the-art string constraint solvers do support the string operations involving integer data type, and on the other hand, they mainly resort to heuristics without completeness guarantees. \\
+In this paper, we propose a decision procedure for the path feasibility problem of a class of string-manipulating programs
+which not only supports the complex operations involving only the string data type, e.g. concatenation, replaceAll, reverse, and finite state transducers, but also the operations involving both string and integer data type, e.g. length, substring, and indexof. Our decision procedure is automata-theoretic and based on a variant of cost register automata (Alur et al. LICS 2013). 
+To the best of our knowledge, this is the first time that decision procedures have been achieved for the path feasibility problem of such an expressive class of string-manipulating programs. Furthermore, we implement the decision procedure on top of OSTRICH, resulting into a new solver called OSTRICH+. We utilise a wide range of benchmark suites to evaluate the performance of OSTRICH+. The experimental results show that OSTRICH+ is competitive against some of the best state-of-the-art string constraint solvers.
 \end{abstract}
 
 %\section{Introduction}
