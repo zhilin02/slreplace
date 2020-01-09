@@ -73,8 +73,12 @@ A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$
 
 \paragraph*{Finite transducers.} A \emph{nondeterministic finite transducer} (NFT) $\NFT$ is an extension of NFA with outputs. Formally, an NFT $\NFT$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q, \Sigma, I, F$ are as in NFA and the transition relation $\delta$ is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$. Similarly to NFA, for readability, we write a transition $(q, a, q', u) \in \delta$ as $q \xrightarrow[\delta]{a, u} q'$ or $q \xrightarrow{a, u} q'$. The \emph{size} of an NFT $\NFT$, denoted by $|\NFT|$, is defined as the sum of the sizes of the transitions of $\NFT$, where the size of a transition $q \xrightarrow{a, u} q'$ is defined as $|u|+3$.
 %
-A run of $\NFT$ over a string $w=a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1, u_1} q_1 \cdots q_{n-1} \xrightarrow{a_n, u_n} q_n$ with $q_0 \in I$. The run is accepting if $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. The transduction defined by $\NFT$, denoted by $\Tran(\NFT)$, is the set of string pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$. An NFT $\NFT$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one pair $(q', u) \in Q \times \Sigma^*$ such that $(q, a, q', u) \in \delta$.
+A run of $\NFT$ over a string $w=a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1, u_1} q_1 \cdots q_{n-1} \xrightarrow{a_n, u_n} q_n$ with $q_0 \in I$. The run is accepting if $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. The transduction defined by $\NFT$, denoted by $\Tran(\NFT)$, is the set of string pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$. An NFT $\NFT$ is said to be \emph{deterministic} if $I$ is a singleton, and, for every $q \in Q$ and $a \in \Sigma$  there is at most one pair $(q', u) \in Q \times \Sigma^*$ such that $(q, a, q', u) \in \delta$.
+%
+In this paper, we are mainly interested in \emph{functional} transducers, i.e., transducers that define functions instead of relations.
+(For instance, deterministic transducers are always functional.)
 
+\tl{to put in a different place later} Note that our decision procedure is applicable to general transducers as well, however, the EXPSPACE complexity bound is not, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional transducers $f$.  
 
 %We remark that an FT usually defines a relation.
 
