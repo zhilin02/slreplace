@@ -88,128 +88,7 @@ Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then
 \end{itemize}
 \end{proposition}
 
-\begin{proof}
-Let $\CEFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_k)$. We show how to construct a CEFA representation of $f^{-1}_R(L)$ for each function $f$ in {\slint}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph*{$\concat^{-1}_R(L)$.}
-%
-A CEFA representation of $\concat^{-1}_R(L)$ is given by $((\CEFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$, where 
-\begin{itemize}
-\item $\CEFA_{I, q}=(Q, \Sigma, R^{(1)}, \delta^{(1)}, I, \{q\})$ and  $\CEFA_{q, F}=(Q, \Sigma, R^{(2)}, \delta^{(2)}, \{q\}, F)$ such that 
-\begin{itemize}
-\item $R^{(1)} = (r^{(1)}_1, \cdots, r^{(1)}_k)$, $R^{(2)} = (r^{(2)}_1, \cdots, r^{(2)}_k)$, 
-\item $\delta^{(1)}$ comprises the tuples $(q, a, q', \eta')$ satisfying that there exists $\eta$ such that $(q, a, q', \eta) \in \delta$ and for each $j \in [k]$, and $\eta'(r^{(1)}_j)=\eta(r_j)$,  similarly for $\delta^{(2)}$,
-\end{itemize}
-\item and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_k + r^{(2)}_k)$.
-\end{itemize}
-Note that the size of $((\CEFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$ is $\bigO(|\CEFA|^2)$.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-\paragraph*{$\reverse^{-1}_R(L)$.} 
-%
-A CEFA representation of $\reverse^{-1}_R(L)$ is given by $(\CEFA^{(r)}, \vec{t})$, where 
-\begin{itemize}
-\item $\CEFA^{(r)}=(Q, \Sigma, R^{(1)}, \delta', F, I)$ such that 
-\begin{itemize}
-\item $R^{(1)}=(r^{(1)}_1,\cdots,r^{(1)}_k)$, and 
-\item $\delta'$ comprises the tuples $(q', a, q, \eta')$ satisfying that there exists $\eta$ such that $(q, a, q', \eta) \in \delta$, and $\eta'(r^{(1)}_i) = \eta(r_i)$ for each $i \in [k]$,
-\end{itemize}
-%
-\item and $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$. 
-\end{itemize}
-Note that $\Lang(\CEFA^{(r)}) = \{(w^{(r)}, \vec{n}) \mid (w, \vec{n}) \in \Lang(\CEFA)\}$, and the size of $(\CEFA^{(r)}, \vec{t})$ is $\bigO(|\CEFA|)$.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\paragraph*{$\substring^{-1}_R(L)$.}
-A CEFA representation of $\substring^{-1}_R(L)$ is given by $(\cB, \vec{t})$, where 
-\begin{itemize}
-\item $\cB = (Q', \Sigma, R', \delta', I', F')$ such that 
-\begin{itemize}
-\item $Q' = Q \times \{p_0, p_1, p_2\}$, (intuitively, $p_0$, $p_1$, and $p_2$ denote that the current position is before the starting position, between the starting position and ending position, and after the ending position respectively)
-%
-\item $R' = \left(r^{(1)}_1,\cdots, r^{(1)}_k, r'_1, r'_2 \right)$, (intuitively, $r'_1$ denotes the starting position, and $r'_2$ denotes the length of the substring)
-%
-\item $I'=I \times \{p_0\}$, $F'=F \times \{p_2\}$,
-%
-\item and $\delta'$ comprises 
-\begin{itemize}
-\item the tuples $((q, p_0), a, (q, p_0), \eta')$ such that $q \in I$, $a \in \Sigma$, and $\eta'$ satisfies that $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1)= 1$, and $\eta'(r'_2) = 0$,
-%
-\item the tuples $((q, p_0), a, (q', p_1), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,  $\eta'(r'_1)=0$ (recall that the positions of strings start at $0$), and $\eta'(r'_2) = 1$,
-%
-\item the tuples $((q, p_0), a, (q', p_2), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $q' \in F$, $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,  $\eta'(r'_1)=0$ (recall that the positions of strings start at $0$), and $\eta'(r'_2) = 1$,
-%
-\item the tuples $((q, p_1), a, (q', p_1), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$ and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
-%
-\item the tuples $((q, p_1), a, (q', p_2), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $q' \in F$, and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
-%
-%\item the tuples $((q, p_1), a, (q, p_2), \eta')$ such that $q \in F$ and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
-%
-\item the tuples $((q, p_2), a, (q, p_2), \eta')$ such that $q \in F$ and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 0$,
-%
-\end{itemize}
-\end{itemize}
-\item $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$.
-\end{itemize}
-Note that the size of $(\cB, \vec{t})$ is $\bigO(|\CEFA|)$.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
-\paragraph*{$(\Tran(\NFT))^{-1}_R(L)$.}
-%
-Suppose $\NFT = (Q', \Sigma, \delta', I', F')$. Then a CEFA representation of $(\Tran(\NFT))^{-1}_R(L)$ is given by 
-$(\cB, \vec{t})$, where 
-\begin{itemize}
-\item $\cB$ simulates the run of $\NFT$ on the input string, meanwhile, it simulates the run of $\CEFA$ on the output string of $\NFT$, formally, $\cB= (Q' \times Q, \Sigma, R^{(1)}, \delta'', I' \times I, F' \times F)$ such that 
-\begin{itemize}
-\item $R^{(1)}  = (r^{(1)}_1, \cdots, r^{(1)}_k)$, and
-\item $\delta''$ comprises the tuples $((q'_1, q_1), a, (q'_2, q_2), \eta')$ satisfying one of the following conditions,
-\begin{itemize}
-\item there exist $u = a_1 \cdots a_n \in \Sigma^+$ and a transition sequence $p_0 \xrightarrow[\delta]{a_1, \eta_1} p_2 \cdots p_{n-1} \xrightarrow[\delta]{a_n, \eta_n} p_{n}$ in $\CEFA$ such that $(q'_1, a, q'_2, u) \in \delta'$, $p_0 = q_1$, $p_{n}= q_2$, and for each $j \in [k]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_n(r_j)$,
-%
-\item $(q'_1, a, q'_2, \varepsilon) \in \delta'$, $q_1 = q_2$, and $\eta'(r^{(1)}_j) =0$ for each $j \in [k]$,
-\end{itemize}
-\end{itemize}
-%
-\item $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$.
-\end{itemize}
-Note that the number of transitions of $\cB$ can be exponential in the worst case, since it summarises the updates of cost registers of $\CEFA$ on the output strings of the transitions of $\NFT$. More precisely,  let
-\begin{itemize}
-\item $\ell$ be the maximum length of the output strings of transitions of $\NFT$, 
-\item $N$ be the maximum number of transitions between a given pair of states of $\CEFA$, and
-\item  $C$ be the maximum absolute value of the integer constants occurring in $\CEFA$,
-\end{itemize}
-then $|\delta''|$, the cardinality of $\delta''$, is bounded by $|\delta'| \times |Q|^2 \times N^\ell $, and the integer constants occurring in each transition of $\delta''$ are bounded by $\ell C$. Therefore, 
-the size of $(\cB, \vec{t})$ is 
-\[
-\bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)).
-\] 
-Since $|\delta'|, \ell \le |\NFT|$, $|Q|, N, k \le |\CEFA|$, and $C \le 2^{|\CEFA|}$, we deduce that the size of $(\cB, \vec{t})$ is 
-$
-\bigO( |\NFT| \times  |\CEFA|^2 \times |\CEFA|^{|\NFT|} \times |\CEFA|^2 \log_2(|\NFT|))= |\CEFA|^{\bigO(|\NFT|)} |\NFT| \log_2(|\NFT|).$
-%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph*{$(\replaceall_{e,u})^{-1}_R(L)$.}
-%
-From the result in \cite{CCH+18}, we know that  a NFT $\NFT_{e,u}=(Q', \Sigma, \delta', I', F')$ can be constructed to capture $\replaceall_{e,u}$.  Moreover, 
-\begin{itemize}
-\item $|Q'|$, as well as $|\delta'|$, is $2^{\bigO(|e|)}$,
-\item $\ell$, the maximum length of the output strings of transitions of $\NFT_{e,u}$, is $|u|$.
-\end{itemize}
-Then a CEFA representation of $(\replaceall_{e,u})^{-1}_R(L)$ can be constructed as that of $(\Tran(\NFT_{e,u}))^{-1}_R(L)$.
-Let $N$ denote the maximum number of transitions between a given pair of states of $\CEFA$, and $C$ be the maximum absolute value of the integer constants occurring in $\CEFA$, which is bounded by $2^{|\CEFA|}$. Then the CEFA representation of $(\replaceall_{e,u})^{-1}_R(L)$ is of size 
-\[
-\bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)) = 2^{\bigO(|e|)} |\CEFA|^2 |\CEFA|^{|u|} |\CEFA|^2 \log_2 |u|=2^{\bigO(|e|)} |\CEFA|^{\bigO(|u|)}.
-\]
-%
-according to the aforementioned discussion for NFTs.
-% 
-%
-\end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Decision Procedure}
@@ -245,7 +124,8 @@ For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer v
 Repeat the following procedure until $S$ contains no assignment statements.
 %
 \begin{quote}
-Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the last assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string function. %from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
+Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the last assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow 2^{\Sigma^*}$ is a string function. 
+\tl{as we are considering functional transducers, shall we change to $... \rightarrow \Sigma^*$; if decided, step ii will be updated as the product would be unnecessary}%from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
 \\
 Let $\rho := \{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y \in \CEFA_j}$ occurs in $S$ for every $j \in [s]$. Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$\footnote{Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$,  $R(\CEFA_s)$ are mutually disjoint.} 
 with $R(\CEFA) = (r_1, \cdots, r_{k_0})$. Then from Proposition~\ref{prop:pre-image}, 
@@ -268,24 +148,44 @@ We remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$, nondetermin
 
 
 \medskip
-\noindent{\bf Step III: Solving the {\lasat} problem}.
+\noindent{\bf Step III: Final satisfiability checking.}%Solving the {\lasat} problem}.
 
 \smallskip
 
 In this step, $S$ %is a {\slint} program containing 
-contains assertions of the form $\ASSERT{x \in \NFA}$ and  $\ASSERT{t_1\ o\ t_2}$  only. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
+contains only assertions of the form $\ASSERT{x \in \CEFA}$ and  $\ASSERT{t_1\ o\ t_2}$  where $\CEFA$ are CEFAs and $t_1, t_2$ are linear integer terms. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
 %
 Let $X$ denote the set of string variables occurring in $S$.
-For each $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$ where the vector of the cost registers in $\CEFA_x$ is denoted by $R_x$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. It is straighforward to observe that $\phi$ is over %the set of integer variables 
-$\bigcup_{x\in X}R_x$. Then the path feasibility of $S$ is reduced to deciding whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+For each $x \in X$, let $\CEFA_x$ denote the product of all CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$ where the vector of the cost registers in $\CEFA_x$ is denoted by $R_x$. Let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. It is straightforward to observe that $\phi$ is over %the set of integer variables 
+$\bigcup_{x\in X}R_x$. Then the path feasibility of $S$ is reduced to deciding 
+\begin{quote}
+whether $\phi$ is satisfiable w.r.t. $(\CEFA_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
 	%The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
 %	
 %	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
 %	$R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
 %	the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
-to decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
+whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
 there are an assignment function $\theta: \bigcup_{x\in X}R_x \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[(\theta(R_x)/R_x)_{x \in X}]$ holds and $(w_x, \theta(R_x)) \in \Lang(\NFA_x)$ for every $x \in X$.
+\end{quote}
 %\end{definition}
+
+%\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+%	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
+%	
+%	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
+%  $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+% the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
+% 
+%Decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
+%there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+%	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
+%\end{definition}
+
+\begin{proposition}
+	Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are contained by $\bigcup_{i,j} R_i^j$. Deciding whether  %such that the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$,  and here are 
+	there are an assignment function $\theta: \bigcup_{i,j}R_i^j \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[(\theta(\bigcup_{i,j}R_i^j )/\bigcup_{i,j}R_i^j )]$ holds and $(w_i, \theta(\bigcup_{j\in J_i} R_i^j)) \in \bigcap_{j\in J_i} \Lang(\CEFA_i)$ for every $i \in I$ is PSPACE-complete. 
+\end{proposition}
 
 %From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
 
@@ -299,8 +199,8 @@ In Step II, for each input string variable $x$ in $S$, at most exponentially man
 
 
 
-\paragraph*{Functional string operations.}
-We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$. \zhilin{I think we should only present the decision procedure for deterministic string operations, since this is the case for {\slint}.}
+%\paragraph*{Functional string operations.}
+%We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$. \zhilin{I think we should only present the decision procedure for deterministic string operations, since this is the case for {\slint}.}
 
 %\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
 
