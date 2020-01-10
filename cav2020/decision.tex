@@ -104,13 +104,13 @@ We present a decision procedure for the path feasibility problem of $S$. %is non
 \zhilin{Dealing with the corner cases of $\indexof_v$ and $\substring$ is missing in the decision procedure.}
 
 \medskip
-\noindent {\bf Step I: Removing $\vee$ and $\wedge$}.
+\noindent {\bf Step I: Reducing to atomic asserations.}%Removing $\vee$ and $\wedge$}.
 
 \smallskip
+Note first that in our lanaugaue, each asseration is a Boolean combination of atomic formulas of the form $x\in CEFA$ or $t_1o t_2$ (cf. Section~\ref{sec:logic}).  
+Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
 
-Nondeterministically choose for each assertion $\ASSERT{\varphi}$ of $S$ a set of atomic formulas therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
-
-For each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, replace $\ASSERT{\varphi}$ with $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$.
+Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constains atomic asserations only. 
 
 \medskip
 \noindent {\bf Step II: Removing $\length$ and $\indexof$}.
@@ -236,7 +236,7 @@ y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \
 \] 
 We show how to decide the path feasibility of $S$. 
 \begin{description}
-\item[Step I.]   Trivial since $S$ contains neither disjunction nor conjunction.
+\item[Step I.]   Vacous since $S$ contains only atomic asserations already. %neither disjunction nor conjunction.
 %
 \item[Step II.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce a fresh variable $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, two fresh variables $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting into the program 
 \[
