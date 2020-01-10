@@ -9,7 +9,7 @@ S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \m
 \varphi &::= & x \in \NFA \mid t_1\ o\ t_2 \mid \varphi \vee \varphi \mid \varphi \wedge \varphi,
 \end{array}
 \]
-where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an FFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
+where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an FFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the following rules,
 \[
 t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } c \in \Int, v \in \Sigma^+.
 \]
@@ -26,7 +26,7 @@ t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbo
 %\]
 We require that the string-manipulating programs are in the {\bf single static assignment (SSA) form}. Note that the SSA form imposes restrictions only on the assignment statements, but not on the assertions. %conditional statements. 
 %\tl{what does conditional statement mean? you mean assertions?}\zhilin{yes, I mean assertions. But actually they are not assertions we usually talk about, they are more like the conditions in the if-the-else statement.}
-A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear in the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
+A string variable $x$ in a {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear on the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
 
 \paragraph*{Semantics.}
 The semantics of {\slint} is explained as follows. %mostly%self-explanatory, 
@@ -76,10 +76,10 @@ The program $S$
 \[
 \begin{array}{l}
 y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
-\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}
+\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{"("}(x,0) < \indexof_{")"}(x,0)}
 \end{array}
 \] 
-is in {\slint}, where $\Sigma \setminus a$ (where $a \in \{(,)\}$) is the regular expression $(+b)_{b \in \Sigma \setminus \{a\}}$. Intuitively the program states that $x$ contains the same number of occurrences of ``('' and ``)'', moreover, the first occurrence of ``('' is before the first occurrence of ``)''.
+is in {\slint}, where $\Sigma \setminus a$ (where $a \in \{(,)\}$) is the regular expression $(+b)_{b \in \Sigma \setminus \{a\}}$. Intuitively the program states that $x$ contains the same number of occurrences of ``('' and ``)''; and the first occurrence of ``('' is before the first occurrence of ``)''.
 \end{example}
 
 
@@ -95,21 +95,15 @@ $x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real 
 The function $\replaceall_{e,u}$ can be seen as a special case of FFT, although the transformation into the equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
 \end{remark}
 
-
-\begin{remark}
-The function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$.
-\end{remark}
-
-\begin{remark}
-The string inequality $x \neq y$ can be expressed as 
+To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as 
 \[
 \begin{array}{l}
 z_1:=\charat(x,i); z_2 := \charat(y,i); \\
 \ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
 \end{array}
 \] 
-where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA defining $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or there exists some position where the characters of the two strings are different.
-\end{remark}
+where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA accepting $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or otherwise, there exists some position where the characters of the two strings are different.
+ 
 
 
 
