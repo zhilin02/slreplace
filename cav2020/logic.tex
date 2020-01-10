@@ -5,12 +5,13 @@ We consider symbolic execution of string-manipulating programs with numeric cond
 \[
 \begin{array}{l c l}
 S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=\NFT(y) \mid \\
-& & x := \substring(y, t_1, t_2)  \mid \ASSERT{x \in \NFA} \mid \ASSERT{t_1\ o\ t_2} \mid S;S, 
+& & x := \substring(y, t_1, t_2)  \mid \ASSERT{\varphi}  \mid S;S, \\
+\varphi &::= & x \in \NFA \mid t_1\ o\ t_2 \mid \varphi \vee \varphi \mid \varphi \wedge \varphi,
 \end{array}
 \]
 where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an NFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
 \[
-t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } v \in \Sigma^+.
+t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } c \in \Int, v \in \Sigma^+.
 \]
 %
 %\[
@@ -63,6 +64,19 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 \item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. For instance, $\indexof_{ab}(aaba, 1) = 1$ and $\indexof_{ab}(aaba, 2)=-1$.
 \end{itemize}
 
+\begin{example}
+The program 
+\[
+\begin{array}{l}
+y := \substring(x, 0, \indexof(x, c)); \ASSERT{y \in \NFA_{a^*}}; \\
+z:= \substring(x, \indexof(x, c)+1,\length(x) - \indexof(x,c)-1); \\
+\ASSERT{z \in \NFA_{b^*}}; \ASSERT{\length(y) = \length(z)}
+\end{array}
+\] 
+is in {\slint}, where $\NFA_{a^*}$ and  $\NFA_{b^*}$ are the NFAs for the regular expressions $a^*$ and $b^*$ respectively. Intuitively the program specifies that $x \in \Lang(a^* c b^*)$, and $y,z$ are the substrings of $x$ before resp. after the occurrence of $c$, moreover, the lengths of $y$ and $z$ are the same.
+\end{example}
+
+
 \begin{remark}
 Note that %to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and 
 for simplicity, strictly speaking, string constants are not allowed in the assignments. %therein. 
@@ -80,16 +94,18 @@ The function $\replaceall_{e,u}$ can be seen as a special case of NFT, although 
 The function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$.
 \end{remark}
 
-\begin{example}
-The program 
+\begin{remark}
+The string inequality $x \neq y$ can be expressed as 
 \[
 \begin{array}{l}
-x:= y \concat z; y := \substring(y', \indexof(x, c), j); \ASSERT{y' \in \NFA_{(ab)^*}}; \\
-\ASSERT{z \in \NFA_{a^* c b^*}}; \ASSERT{j = 2\ \indexof(x, c)}
+z_1:=\charat(x,i); z_2 := \charat(y,i); \\
+\ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
 \end{array}
 \] 
-is in {\slint}, where $\NFA_{(ab)^*}$ and $\NFA_{a^* c b^*}$ are the NFAs for the regular expressions $(ab)^*$ and $a^* c b^*$ respectively.
-\end{example}
+where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA defining $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or there exists some position where the characters of the two strings are different.
+\end{remark}
+
+
 
 %The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
 
