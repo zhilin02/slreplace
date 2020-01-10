@@ -9,7 +9,7 @@ S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \m
 \varphi &::= & x \in \NFA \mid t_1\ o\ t_2 \mid \varphi \vee \varphi \mid \varphi \wedge \varphi,
 \end{array}
 \]
-where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an NFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
+where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an FFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the rules,
 \[
 t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } c \in \Int, v \in \Sigma^+.
 \]
@@ -86,7 +86,7 @@ $x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real 
 
 
 \begin{remark}
-The function $\replaceall_{e,u}$ can be seen as a special case of NFT, although the transformation into NFT may incur an exponential blowup \cite{CCH+18}.
+The function $\replaceall_{e,u}$ can be seen as a special case of FFT, although the transformation into FFT may incur an exponential blowup \cite{CCH+18}.
 \end{remark}
 
 
