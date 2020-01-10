@@ -1,14 +1,30 @@
 %!TEX root = main.tex
 
-Benchmarks
+We have compared OSTRICH+ with the state-of-the-art solvers on a wide range of benchmarks. The solvers we considered include CVC4, Z3-str3, two variants of Trau, namely Trau+ and Z3-Trau, and SLENT. 
 
-KALUZA
+\paragraph*{Benchmark suites.} We consider the following five benchmark suites.
 
-SLOG(replace), SLOG(replaceall)
+The first benchmark suite {\kaluzabench} is the well-known \emph{Kaluza} benchmark suite~\cite{Berkeley-JavaScript}.
+Kaluza contains concatenation, regular constraints, and length constraints.
+{\kaluzabench} contains 47,284 instances.
 
-Transducer
+The second benchmark suite {\slogbench} is adapted from the SLOG benchmark suite used by the SLOG tool~\cite{fang-yu-circuits} and has 3,392 instances \zhilin{the number to be checked}. 
+%The SLOG are derived from the security analysis of real web applications and contain 1-211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).
+The SLOG benchmark suite contains only the string data type and no integer data type.
+In order to evaluate OSTRICH+ more faithfully, we adapt each SLOG instance into one containing the integer data type, by choosing an output string variable\footnote{A string variable is called the output variable if it occurs in the left-hand side of an assignment statement, but does not appear in the right-hand sides of the assignment statements}, say $x$, and adding the statement $\ASSERT{2\ \indexof_{a}(x, 0) < \length(x)}$ for some $a \in \Sigma$.
+% and $c \in \Nat$ with $c > 1$.
+We split the {\slogbench} benchmark suite into two sub-suites \slogbenchr\ and \slogbenchra.
+%Each use conjunction, disjunction, regular constraints, and concatenation.
+The \slogbenchr\ sub-suite contains 3,391 instances \zhilin{the number to be checked} and uses the $\replace$ function (replacing the first occurrence), while the \slogbenchra\ sub-suite contains 120 instances \zhilin{the number to be checked} using the $\replaceall$ function (replacing all occurrences).
 
-PyEX \cite{ReynoldsWBBLT17}
+The third benchmark suite {\transducerbench+} is adapted from {\transducerbench} benchmark of OSTRICH in \cite{CHL+19}  xxx.
+
+The fourth benchmark suite is PyEX \cite{ReynoldsWBBLT17}
+
+
+\paragraph*{Experimental results.}
+
+
 
 
 %$z_1:=\charat(x,i); z_2 := \charat(y,i); \ASSERT{\bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma^* \setminus a})}$, where $\NFA_a$ is the NFA accepting $\{a\}$ and $\NFA_{\Sigma^* \setminus a}$ is the NFA accepting $\Sigma^* \setminus \{a\}$.
