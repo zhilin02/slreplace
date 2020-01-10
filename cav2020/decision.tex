@@ -147,7 +147,7 @@ R(\cB^{(j'')}_{j, j'})=\left((r')^{(j'',1)}_{j, j'}, \cdots, (r')_{j, j'}^{(j'',
 \]
 for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced.\\
 %
-We remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 
+We remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$, as well as all the statements $\ASSERT{y \in \CEFA_1}$, $\cdots$, $\ASSERT{y \in \CEFA_s}$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 
 %
 \[
 \begin{array}{l}
@@ -223,6 +223,59 @@ The proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in the append
 In Step III, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step III can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step IV can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ according to Savitch's theorem \cite{complexity-book}. \tl{to be checked later}
 %then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, 
 
+
+\begin{example}
+Consider the program $S$ in Example~\ref{exmp:running},
+\[
+\begin{array}{l}
+y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
+\end{array}
+\] 
+We show how to decide the path feasibility of $S$. 
+\begin{description}
+\item[Step I.]   Trivial since $S$ contains neither disjunction nor conjunction.
+%
+\item[Step II.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce a fresh variable $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, two fresh variables $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting into the program 
+\[
+\begin{array}{l}
+y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{i_1 = i_2}; \ASSERT{ j_2 < j'_2};\\
+\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}; \ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]};\\
+\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]};  \\
+\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}.
+\end{array}
+\] 
+%
+\item[Step III.] Recall that $\CEFA_{\rm len}=(\{q_0\}, \Sigma, (r_1), \delta_{\rm len}, \{q_0\}, \{q_0\})$, where $\delta_{\rm len} = \{(q_0, a, q_0, \eta) \mid a \in \Sigma, \eta(r_1)=1\}$. Moreover, let $\NFT_{\replaceall_{\Sigma \setminus (, \varepsilon}} = (\{p_0\}, \Sigma, \delta_{\replaceall_{\Sigma \setminus (, \varepsilon}}, \{p_0\}, \{p_0\})$, where $\delta_{\replaceall_{\Sigma \setminus (, \varepsilon}} = \{(p_0, a, p_0, a), (p_0, (, p_0, \varepsilon) \mid a \in \Sigma \setminus \{(\}\}$. Then a CEFA representation of $(\replaceall_{\Sigma \setminus (, \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_2/r_1]))$ is 
+%
+\[\CEFA' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_2), \delta', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_2)\right),\]
+%
+where $\delta'$ comprises the tuples $((p_0,q_0), (, (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{(\}$, $\eta_1(i^{(1)}_2)=1$, and $\eta_0(i^{(1)}_2)=0$. 
+
+Remove  $z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x)$ and $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$ from the program and add the statement $\ASSERT{i_2=i^{(1)}_2};\ASSERT{x \in \CEFA'}$. 
+
+Similarly, a CEFA representation of $(\replaceall_{\Sigma \setminus ), \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_1/r_1]))$ is  
+\[\CEFA'' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_1), \delta'', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_1)\right),\]
+%
+where $\delta''$ comprises the tuples $((p_0,q_0), ), (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{)\}$, $\eta_1(i^{(1)}_1)=1$, and $\eta_0(i^{(1)}_1)=0$. 
+
+Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$ from the program and add the statement $\ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}$, resulting into the following program,
+\[
+\begin{array}{l}
+%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{i_1 = i_2}; \ASSERT{ j_2 < j'_2};\\
+%\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}; \ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]};\\
+\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]};  \\
+\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]};\\
+\ASSERT{i_2=i^{(1)}_2}; \ASSERT{x \in \CEFA'}; \ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}.
+\end{array}
+\] 
+%
+\item[Step IV.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
+\end{description}
+
+\end{example}
 
 %and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
 

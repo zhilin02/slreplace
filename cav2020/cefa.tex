@@ -35,18 +35,36 @@ CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admit
 \end{remark}
 
 \begin{example}[CEFA for $\length$]\label{exm:len}
-The string function $\length$ can be captured by CEFA. For any NFA $\NFA=(Q, \Sigma,  \delta, I, F)$, it is not difficult to see that the cost-enriched language $\{(w, \length(w)) \mid w\in \Lang(\NFA)\}$ is accepted by a $1$-cost-enriched automaton, i.e.
-$\CEFA_{\rm len}=(Q, \Sigma, (r_1), \delta', I, F)$ such that %$Q =I=F= \{q_0\}$, $R=(r_1)$, and 
-such that for each $(q, a, q')\in \delta$, we let $(q, a, q', \eta)\in \delta'$, where $\eta(r_1) = 1$.
+The string function $\length$ can be captured by CEFA. For any NFA $\NFA=(Q, \Sigma,  \delta, I, F)$, it is not difficult to see that the cost-enriched language $\{(w, \length(w)) \mid w\in \Lang(\NFA)\}$ is accepted by a CEFA, i.e.
+$(Q, \Sigma, (r_1), \delta', I, F)$ such that %$Q =I=F= \{q_0\}$, $R=(r_1)$, and 
+such that for each $(q, a, q')\in \delta$, we let $(q, a, q', \eta)\in \delta'$, where $\eta(r_1) = 1$. For convenience, we use $\CEFA_{\rm len}$ to denote the CEFA $(Q, \Sigma, (r_1), \delta', I, F)$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$, specifically, $\NFA_{\rm len} = (\{q_0\}, \Sigma, (r_1), \{(q_0, a, q_0, \eta) \mid \eta(r_1) = 1\}, \{q_0\}, \{q_0\})$.
 %\tl{it is a bit vague; you mean for any RE $e$,  is a cerl?}
 \end{example}
 
-We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a $2$-cost-enriched automaton $\CEFA_{\indexof_v}$ such that $\Lang(\CEFA_{\indexof_v})=\{(w, (c, \indexof_v(w, c))\mid w\in \Lang(\NFA) \}$. The details are slightly technical and will be given in Appendix, Section~\ref{appendix:cefa_indexof}. 
+We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA $\CEFA'$ such that $R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
+For convenience, we use $\CEFA_{\indexof_v}$ to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. In the sequel, we will exemplify the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single character. 
+
+\begin{example}\label{exm:indexof}
+Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
+\begin{itemize}
+\item $(q_0, b, q_0, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=1$, $\eta(r_2)=1$,
+%
+\item $(q_0, b, q_1, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2) = 1$,
+%
+\item $(q_0, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2) = 0$,
+%
+\item $(q_1, b, q_1, \eta)$ such that $b \in \Sigma \setminus \{a\}$, $\eta(r_1)=0$, $\eta(r_2)=1$,
+%
+\item $(q_1, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2)=0$,
+%
+\item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
+\end{itemize}
+Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
+\end{example}
 
 
-
-Given two CEFAs $\NFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\NFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where %the notation is abused a bit, viewing 
-$R_1$ and $R_2$ are treated as sets), the product of $\NFA_1$ and $\NFA_2$, denoted by $\NFA_1 \times \NFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
+Given two CEFAs $\CEFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\CEFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where %the notation is abused a bit, viewing 
+$R_1$ and $R_2$ are treated as sets), the product of $\CEFA_1$ and $\CEFA_2$, denoted by $\CEFA_1 \times \CEFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
 
 
 For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. %Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.

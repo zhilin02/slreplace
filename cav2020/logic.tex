@@ -64,16 +64,22 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 \item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. For instance, $\indexof_{ab}(aaba, 1) = 1$ and $\indexof_{ab}(aaba, 2)=-1$.
 \end{itemize}
 
-\begin{example}
-The program 
+\begin{example}\label{exmp:running}
+The program $S$
+%\[
+%\begin{array}{l}
+%y := \substring(x, 0, \indexof_{b}(x, 0)); \ASSERT{y \in \NFA_{a^+}}; \\
+%z:= \substring(x, \indexof_b(x,0),\length(x) - \indexof_b(x,0)); \\
+%\ASSERT{z \in \NFA_{b^+}}; \ASSERT{\length(y) = \length(z)}
+%\end{array}
+%\] 
 \[
 \begin{array}{l}
-y := \substring(x, 0, \indexof(x, c)); \ASSERT{y \in \NFA_{a^*}}; \\
-z:= \substring(x, \indexof(x, c)+1,\length(x) - \indexof(x,c)-1); \\
-\ASSERT{z \in \NFA_{b^*}}; \ASSERT{\length(y) = \length(z)}
+y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}
 \end{array}
 \] 
-is in {\slint}, where $\NFA_{a^*}$ and  $\NFA_{b^*}$ are the NFAs for the regular expressions $a^*$ and $b^*$ respectively. Intuitively the program specifies that $x \in \Lang(a^* c b^*)$, and $y,z$ are the substrings of $x$ before resp. after the occurrence of $c$, moreover, the lengths of $y$ and $z$ are the same.
+is in {\slint}, where $\Sigma \setminus a$ (where $a \in \{(,)\}$) is the regular expression $(+b)_{b \in \Sigma \setminus \{a\}}$. Intuitively the program states that $x$ contains the same number of occurrences of ``('' and ``)'', moreover, the first occurrence of ``('' is before the first occurrence of ``)''.
 \end{example}
 
 
@@ -86,7 +92,7 @@ $x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real 
 
 
 \begin{remark}
-The function $\replaceall_{e,u}$ can be seen as a special case of FFT, although the transformation into FFT may incur an exponential blowup \cite{CCH+18}.
+The function $\replaceall_{e,u}$ can be seen as a special case of FFT, although the transformation into the equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
 \end{remark}
 
 
