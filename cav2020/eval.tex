@@ -1,6 +1,74 @@
 %!TEX root = main.tex
 
-Benchmarks
+
+We have implemented our decision procedure for path feasibility based on the tool OSTRICH, which is built on top of the SMT solver Princess \cite{}. 
+%
+%OSTRICH implements the optimised
+%decision procedure for string functions as described in Section 5.1 (i.e. using distributivity of regular
+%constraints across pre-images of functions) and has built-in support for concatenation, reverse, FFT,
+%and replaceAll. Moreover, since the optimisation only requires that string operations are functional,
+%we can also support additional functions that satisfy RegInvRel, such as replacee which replaces
+%only the first (leftmost and longest) match of a regular expression. OSTRICH is extensible and new
+%string functions can be added quite simply (Section 6.3).
+%Our implementation adds a new theory solver for conjunctive formulas representing path
+%feasibility problems to Princess (Section 6.1). This means that we support disjunction as well as
+%conjunction in formulas, as long as every conjunction of literals fed to the theory solver corresponds
+%to a path feasibility problem. OSTRICH also implements a number of optimisations to efficiently
+%compute pre-images of relevant functions (Section 6.2). OSTRICH is entirely written in Scala and is
+%open-source. We report on our experiments with OSTRICH in Section 6.4. The tool is available on
+%GitHub6.  
+
+
+\subsection{Benchmarks}
+ 
+We have compared our tool with a number of existing solvers on a wide range of benchmarks. In
+particular, we compared  with CVC4 1.6 \cite{}, SLOTH \cite{},
+and Z3 configured to use the Z3-str3 string solver \cite{}. 
+
+We considered several sets
+of benchmarks which are described in the next sub-section. The results are given in Section 6.4.2.
+
+
+In [Holík et al. 2018] SLOTH was compared with S3P [Trinh et al. 2016] where inconsistent
+behaviour was reported. We contacted the S3P authors who report that the current code is unsupported;
+moreover, S3P is being integrated with Z3. Hence, we do not compare with this tool.
+
+
+The first set of benchmarks we call \textbf{Transducer}. It combines the benchmark
+sets of Stranger [Yu et al. 2010] and the mutation XSS benchmarks of [Lin and Barceló 2016]. The
+first (sub-)set appeared in [Holík et al. 2018] and contains instances manually derived from PHP
+programs taken from the website of Stranger [Yu et al. 2010]. It contains 10 formulae (5 sat, 5
+unsat) each testing for the absence of the vulnerability pattern .*<script.* in the program output.
+These formulae contain between 7 and 42 variables, with an average of 21. The number of atomic
+constraints ranges between 7 and 38 and averages 18. These examples use disjunction, conjunction,
+regular constraints, and concatenation, replaceAll. They also contain several one-way functional
+transducers (defined in SMTLIB in [Holík et al. 2018]) encoding functions such as addslashes and
+trim used by the programs. Note that transducers have been known for some time to be a good
+framework for specifying sanitisers and browser transductions (e.g., see the works by Minamide,
+Veanes, Saxena, and others [D’Antoni and Veanes 2013; Hooimeijer et al. 2011; Minamide 2005;
+Weinberger et al. 2011]), and a library of transducer specifications for such functions is available
+(e.g. see the language BEK [Hooimeijer et al. 2011]).
+
+The second (sub-)set was used by [Holík et al. 2018; Lin and Barceló 2016] and consists of 8
+formulae taken from [Kern 2014; Lin and Barceló 2016]. These examples explore mutation XSS
+vulnerabilities in JavaScript programs. They contain between 9 and 12 variables, averaging 9.75, and
+9-13 atomic constraints, with an average of 10.5. They use conjunctions, regular constraints, concatenation,
+replaceAll, and transducers providing functions such as htmlEscape and escapeString.
+Our next set of benchmarks, SLOG, came from the SLOG tool [Wang et al. 2016] and consist of
+3,392 instances. They are derived from the security analysis of real web applications and contain 1-
+211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).We split these benchmarks
+into two sets SLOG (replace) and SLOG (replaceall). Each use conjunction, disjunction, regular
+constraints, and concatenation. The set SLOG (replace) contains 3,391 instances and uses replace.
+SLOG (replaceall) contains 120 instances using the replaceAll operation.
+
+
+Our next set of benchmarks Kaluza is the well-known set of Kaluza benchmarks [Saxena et al.
+2010] restricted to those instances which satisfy our semantic conditions (roughly 80\% of the
+benchmarks). Kaluza contains concatenation, regular constraints, and length constraints, most of
+which admit regular monadic decomposition. There are 37,090 such benchmarks (28 032 sat).
+We also considered the benchmark set of [Chen 2018a,b]. This contains 42 hand-crafted benchmarks
+using regular constraints, concatenation, and replaceAll with variables in both argument
+positions. The benchmarks contain 3-7 string variables and 3-9 atomic constraints.
 
 KALUZA
 
@@ -13,6 +81,7 @@ PyEX \cite{ReynoldsWBBLT17}
 
 %$z_1:=\charat(x,i); z_2 := \charat(y,i); \ASSERT{\bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma^* \setminus a})}$, where $\NFA_a$ is the NFA accepting $\{a\}$ and $\NFA_{\Sigma^* \setminus a}$ is the NFA accepting $\Sigma^* \setminus \{a\}$.
 
+\subsection{Results} 
 comparison
 
 CVC4
