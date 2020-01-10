@@ -238,7 +238,7 @@ We show how to decide the path feasibility of $S$.
 \begin{description}
 \item[Step I.]   Vacous since $S$ contains only atomic asserations already. %neither disjunction nor conjunction.
 %
-\item[Step II.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce a fresh variable $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, two fresh variables $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting into the program 
+\item[Step II.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce fresh variables $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting in  the program 
 \[
 \begin{array}{l}
 y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
@@ -262,7 +262,7 @@ Similarly, a CEFA representation of $(\replaceall_{\Sigma \setminus ), \varepsil
 %
 where $\delta''$ comprises the tuples $((p_0,q_0), ), (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{)\}$, $\eta_1(i^{(1)}_1)=1$, and $\eta_0(i^{(1)}_1)=0$. 
 
-Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$ from the program and add the statement $\ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}$, resulting into the following program,
+Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$ from the program and add the statement $\ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}$, resulting in the following program,
 \[
 \begin{array}{l}
 %y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
