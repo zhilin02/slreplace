@@ -19,8 +19,8 @@ A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delt
 \item $R=(r_1, \cdots, r_k)$ is a vector of (mutually distinct) \emph{cost registers}, 
 %
 \item $\delta$ is the transition relation which is a finite set of tuples $(q, a, q', \eta)$ where $q, q' \in Q$, $a \in \Sigma$, and %$\eta: R \rightarrow \intnum$ 
-$\eta: R \rightarrow \Nat$
-is a cost register update function. \\
+$\eta: R \rightarrow \Int$
+is a cost register update function. \zhilin{I restore to integers, since an integer cost register can be encoded by two monotonic registers.}\\
 For convenience, we usually write $(q, a, q', \eta) \in \Delta$ as $q \xrightarrow{a, \eta} q'$.
 \end{itemize}
 %
@@ -31,7 +31,7 @@ The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is
 The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of each transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here  the integer constants in $\CEFA$ are encoded in binary.
 
 \begin{remark}
-CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to the monotonic counter machine \cite{LB16}. The main difference is that CEFAs allow natural numbers in cost updates which are restricted to $0,1$ only in monotonic counter machine. Moreover, we explicit define CEFA as a language acceptor for an enriched language.
+CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to monotonic counter machines \cite{LB16}. The main difference is that CEFAs discard guards in transitions and allow integers in cost updates, while monotonic counter machines allow guards in transitions but restrict the cost updates to being monotonic, i.e. $0,1$ only. Moreover, we explicitly define CEFAs as language acceptors for  cost-enriched languages.
 \end{remark}
 
 \begin{example}[CEFA for $\length$]\label{exm:len}
@@ -53,7 +53,7 @@ The construction is slightly technical and can be found in Appendix, Section~\re
 For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^* \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
 In the sequel, we will exemplify the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single letter. 
 
-\begin{example}\label{exm:indexof}
+\begin{example}[CEFA for $\indexof_a$]\label{exm:indexof}
 Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
 \begin{itemize}
 \item $(q_0, b, q_0, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=1$, $\eta(r_2)=1$,
@@ -69,7 +69,7 @@ Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r
 \item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
 \end{itemize}
 Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
-\tl{do I need to worry about that the return value could be -1, if $a$ does not appear at all?}
+\tl{do I need to worry about that the return value could be -1, if $a$ does not appear at all?}\zhilin{this corner case should be dealt by the decision procedure, instead of the CEFA, but we had better add a sentence to clarify this.}
 \end{example}
 
 

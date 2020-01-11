@@ -101,34 +101,57 @@ We present a decision procedure for the path feasibility problem of $S$. %is non
 %
 %\item 
 
-\zhilin{Dealing with the corner cases of $\indexof_v$ and $\substring$ is missing in the decision procedure.}
-
 \medskip
 \noindent {\bf Step I: Reducing to atomic asserations.}%Removing $\vee$ and $\wedge$}.
 
 \smallskip
-Note first that in our lanaugaue, each asseration is a Boolean combination of atomic formulas of the form $x\in CEFA$ or $t_1o t_2$ (cf. Section~\ref{sec:logic}).  
+Note first that in our language, each asseration is a Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}).  
 Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
 
 Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constains atomic asserations only. 
 
-\medskip
-\noindent {\bf Step II: Removing $\length$ and $\indexof$}.
+\medskip 
+\noindent {\bf Step II: Dealing with the case splits in the semantics of $\indexof_v$ and $\substring$.}%Removing $\vee$ and $\wedge$}.
 
 \smallskip
 
-Repeat the following procedure until there are no occurrences of $\length$ and $\indexof$.
-\begin{itemize}
-\item For  $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
+Nondeterministically choose a subset $\mathcal{I}$ of the integer terms of the form $\indexof_v(x,i)$ in $S$, and for each $\indexof_v(x,i) \in \mathcal{I}$, do the following.
+\begin{quote}
+Replace $\indexof_v(x, i)$ with $-1$, and add the statements $y:=\substring(x, i, \length(x) - i); \ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, where $y$ is a fresh variable and $\NFA_{\overline{\Sigma^*v\Sigma^*}}$ is an NFA defining the language $\{w \in \Sigma^*\mid v \mbox{ does not occur as a substring in } w\}$. 
+\end{quote}
+
+%Nondeterministically choose a subset of $\Theta$ of the assignment statements of the form $y:=\substring(x, i, j)$ in $S$, and 
 %
-\item 
-For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)\zhilin{The full construction is in the appendix}
+For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following to do.
+\begin{itemize}
+\item Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
+%
+\item Add the statements $\ASSERT{i \ge 0}; \ASSERT{i+j  > \length(x)}$ to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, \length(x) - i)$.
+%
+\item Add the statement $\ASSERT{i < 0}$ to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y := \varepsilon$.
 \end{itemize}
+
+
+
+
+\medskip
+\noindent {\bf Step III: Removing $\length$ and $\indexof$}.
+
+\smallskip
+
+%Repeat the following procedure until there are no occurrences of $\indexof$.
+
+For each term $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
+
+For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)\zhilin{The full construction is in the appendix}
+
+%
+%\end{enumerate}
 %
 %\item 
 
 \medskip
-\noindent {\bf Step III: Removing the assignment statements}.
+\noindent {\bf Step IV: Removing the assignment statements}.
 
 \smallskip
 
@@ -147,9 +170,10 @@ a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $((\cB^{(1)}
 \[
 R(\cB^{(j'')}_{j, j'})=\left((r')^{(j'',1)}_{j, j'}, \cdots, (r')_{j, j'}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
 \]
-for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced.\\
+for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced.
 %
-We remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$, as well as all the statements $\ASSERT{y \in \CEFA_1}$, $\cdots$, $\ASSERT{y \in \CEFA_s}$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 
+
+Remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$, as well as all the statements $\ASSERT{y \in \CEFA_1}$, $\cdots$, $\ASSERT{y \in \CEFA_s}$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 
 %
 \[
 \begin{array}{l}
@@ -174,7 +198,7 @@ S_{j, \vec{t}} \equiv \ASSERT{r_{j, 1} = t_1}; \cdots, \ASSERT{r_{j, \ell_j} = t
 \end{quote}
 
 \medskip
-\noindent{\bf Step IV: Final satisfiability checking.}%Solving the {\lasat} problem}.
+\noindent{\bf Step V: Final satisfiability checking.}%Solving the {\lasat} problem}.
 
 \smallskip
 
@@ -221,8 +245,8 @@ The proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in the append
 %From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
 
 
-\paragraph*{Complexity analysis of the decision procedure.} Step I can be done in nondeterministic linear time, while Step II can be done in linear time. %The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during 
-In Step III, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step III can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step IV can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ according to Savitch's theorem \cite{complexity-book}. \tl{to be checked later}
+\paragraph*{Complexity analysis of the decision procedure.} Step I and Step II can be done in nondeterministic linear time. Step III can be done in linear time. %The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during 
+In Step IV, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step IV can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step V can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ according to Savitch's theorem \cite{complexity-book}. \tl{to be checked later}
 %then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, 
 
 
@@ -238,7 +262,9 @@ We show how to decide the path feasibility of $S$.
 \begin{description}
 \item[Step I.]   Vacous since $S$ contains only atomic asserations already. %neither disjunction nor conjunction.
 %
-\item[Step II.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce fresh variables $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting in  the program 
+\item[Step II.] Nondeterministically choose $\mathcal{I} = \emptyset$.  
+%
+\item[Step III.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce fresh variables $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting in  the program 
 \[
 \begin{array}{l}
 y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
@@ -249,7 +275,7 @@ y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \
 \end{array}
 \] 
 %
-\item[Step III.] Recall that $\CEFA_{\rm len}=(\{q_0\}, \Sigma, (r_1), \delta_{\rm len}, \{q_0\}, \{q_0\})$, where $\delta_{\rm len} = \{(q_0, a, q_0, \eta) \mid a \in \Sigma, \eta(r_1)=1\}$. Moreover, let $\NFT_{\replaceall_{\Sigma \setminus (, \varepsilon}} = (\{p_0\}, \Sigma, \delta_{\replaceall_{\Sigma \setminus (, \varepsilon}}, \{p_0\}, \{p_0\})$, where $\delta_{\replaceall_{\Sigma \setminus (, \varepsilon}} = \{(p_0, a, p_0, a), (p_0, (, p_0, \varepsilon) \mid a \in \Sigma \setminus \{(\}\}$. Then a CEFA representation of $(\replaceall_{\Sigma \setminus (, \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_2/r_1]))$ is 
+\item[Step IV.] Recall that $\CEFA_{\rm len}=(\{q_0\}, \Sigma, (r_1), \delta_{\rm len}, \{q_0\}, \{q_0\})$, where $\delta_{\rm len} = \{(q_0, a, q_0, \eta) \mid a \in \Sigma, \eta(r_1)=1\}$. Moreover, let $\NFT_{\replaceall_{\Sigma \setminus (, \varepsilon}} = (\{p_0\}, \Sigma, \delta_{\replaceall_{\Sigma \setminus (, \varepsilon}}, \{p_0\}, \{p_0\})$, where $\delta_{\replaceall_{\Sigma \setminus (, \varepsilon}} = \{(p_0, a, p_0, a), (p_0, (, p_0, \varepsilon) \mid a \in \Sigma \setminus \{(\}\}$. Then a CEFA representation of $(\replaceall_{\Sigma \setminus (, \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_2/r_1]))$ is 
 %
 \[\CEFA' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_2), \delta', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_2)\right),\]
 %
@@ -274,7 +300,7 @@ Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \i
 \end{array}
 \] 
 %
-\item[Step IV.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
+\item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
 \end{description}
 
 \end{example}
