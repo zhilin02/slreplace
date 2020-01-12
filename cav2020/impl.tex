@@ -1,5 +1,83 @@
 %!TEX root = main.tex
+
+
+
 the pseudo-code
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{Sets~$\mathit{active}, \mathit{passive}$ of regex constraints
+    $x \in L$;
+    acyclic set~$\mathit{funApps}$ of assignments $x := f(\bar y)$.}
+  \KwResult{Either $\mathit{Model}(m)$ with $m$ a model satisfying
+    all constraints and function applications;\newline
+    or $\mathit{Conflict}(s)$ with $s$ a set of regex constraints that
+    is inconsistent with $\mathit{funApps}$.}
+
+  \Begin{
+    \eIf{$\mathit{active} = \emptyset$}{
+      \tcc{Extract a model by solving constraints and evaluating functions}
+      $\mathit{leafTerms} \leftarrow
+      \{ x \mid x \text{~occurs in~} \mathit{passive} \cup \mathit{funApps} \}
+      \setminus
+      \{x \mid (x := f(\bar y)) \in \mathit{funApps} \}$\;
+      $\mathit{leafModel} \leftarrow
+      \{ x \mapsto w \mid x \in \mathit{leafTerms}, ~w
+      \text{~satisfies all constraints on~} x \text{~in~} \mathit{passive}\}$\;
+      $m \leftarrow
+      \mu m\,.\, \mathit{leafModel} \cup
+        \{ x \mapsto f(\bar w) \mid (x := f(\bar y)) \in \mathit{funApps},~
+        m(\bar y) = \bar w \text{~is defined}\}$\;
+      \Return{$\mathit{Model}(m)$}
+    }{
+      \tcc{Compute the pre-image of one of the active constraints}
+      choose a constraint~$x \in L$ in $\mathit{active}$\;
+      \eIf{there is an assignment~$x := f(y_1, \ldots, y_r)$ defining $x$
+        in $\mathit{funApps}$}{
+        $\mathit{cset} \leftarrow \{x \in L\}$ \tcc*{start constructing a conflict set}
+        compute the pre-image $f^{-1}(L) = \bigcup_{i=1}^n L_1^{(i)} \times \cdots \times L_r^{(i)}$\;
+        $\mathit{act} \leftarrow \mathit{active} \setminus \{x \in L\},~~
+        \mathit{pas} \leftarrow \mathit{passive} \cup \{x \in L\}$\;
+        \For{$i \leftarrow 1$ \KwTo $n$}{
+          $\mathit{newRegexes} \leftarrow
+          \{y_1 \in L_1^{(i)}, \ldots, y_r \in L_r^{(i)}\} \setminus (\mathit{act} \cup \mathit{pas})$\;
+          \eIf{$\mathit{act} \cup \mathit{pas} \cup \mathit{newRegexes}$ is inconsistent}{
+            compute an unsatisfiable core $c \subseteq \mathit{act} \cup \mathit{pas} \cup \mathit{newRegexes}$\;
+            $\mathit{cset} \leftarrow \mathit{cset} \cup (c \setminus \{y_1 \in L_1^{(i)}, \ldots, y_r \in L_r^{(i)}\})$\;
+          }{
+          \Switch{$\mathit{findModel}(\mathit{act}
+            \cup \mathit{newRegexes},\;
+          \mathit{pas},\;
+          \mathit{funApps})$}{
+          \uCase{$\mathit{Model}(m)$}{
+            \Return{$\mathit{Model}(m)$}\;
+          }
+          \Case{$\mathit{Conflict}(s)$}{
+            \eIf{$s \cap \mathit{newRegexes} = \emptyset$}{
+              \Return{$\mathit{Conflict}(s)$}  \tcc*{back-jump}
+            }{
+              $\mathit{cset} \leftarrow \mathit{cset} \cup (s \setminus \{y_1 \in L_1^{(i)}, \ldots, y_r \in L_r^{(i)}\})$\;
+            }
+          }
+          }
+        }}
+        \Return{$\mathit{Conflict}(cset)$} \tcc*{backtrack}
+      }{
+        \Return{$\mathit{findModel}(\mathit{active} \setminus \{x \in L\},\;
+          \mathit{passive} \cup \{x \in L\},\;
+          \mathit{funApps})$}\;
+      }
+%      , and
+%      the function application~$x = f(\bar y)$ in $\mathit{funApps}$\;
+%      $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in L\}$\;
+%      $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in L\}$\;
+    }
+  }
+
+  \caption{Recursive function~$\mathit{findModel}$
+    defining depth-first model construction for
+    SL \label{alg:dfs}}
+\end{algorithm}
 
 
 Written in Scala.
