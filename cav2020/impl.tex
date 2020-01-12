@@ -1,14 +1,31 @@
 %!TEX root = main.tex
-
 the pseudo-code
 
-the optimization
+
+Written in Scala.
+
+Extension of NFA to CEFA. Extend the Class $State$, transition set $\delta(q) \subseteq  \Sigma \times Q$ changed into  $\delta(q) \subseteq \Sigma \times Q \times \Int^k$. 
 
 reduce the number of registers
+\begin{itemize}
+\item $\substring(x, 0, i)$, remove the input register,
+%
+\item CEFAs without registers: product + minimization 
 
-$contains(x, u)$: transformed into regular constraints
+CEFAs with one register updated with $+1$: product + minimization
+
+Other CEFAs: no optimization
+\end{itemize}
+
+$prefixOf(x, u), suffixOf(x,u), contains(x, u)$: transformed into regular constraints
 
 using nuxmv to avoid state explosion of the product operation.
+
+introduction to nuxmv
+
+introduction to the encoding into nuxmv instances
+
+start two threads, one guessing sat, another one guessing unsat, run concurrently
 
 three strategies: 
 
