@@ -3,7 +3,6 @@
 %In the next example, we are going to show that for a given string $v \in \Sigma^+$, $\indexof_v$ can be captured by a CEFA $\CEFA_{\indexof_v}$. 
 \section{Construction of $\CEFA_{\indexof_v}$} \label{appendix:cefa_indexof}
 
-\tl{to be checked...}
 For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string. 
 Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
 \begin{itemize}
@@ -95,7 +94,21 @@ We are ready to prove Theorem~\ref{thm-la-sat-cefa}.
 	\noindent \emph{``If'' direction}. Suppose $\phi'$ is satisfiable. Then there is an assignment $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ such that $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$, $\phi_{\CEFA_1}[\theta(R_1)/R_1]$, $\cdots$, and $\phi_{\CEFA_m}[\theta(R_m)/R_m]$ are all evaluated to $true$. For every $i \in [m]$, from $\cM(\phi_{\CEFA_i})=\prjnum(\Lang(\CEFA_i))$,  we know that there is a string $w_i$ such that $(w_i, \theta(R_i)) \in \Lang(\CEFA_i)$. From Definition~\ref{def-la-sat-cefa}, we conclude that $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$.
 \end{proof}
 
-\section{Proof of Proposition~\ref{prop:pre-image}}
+\section{Proof of Proposition~\ref{prop:pre-image}}\label{app:pre-image}
+
+
+\noindent {\bf Proposition~\ref{prop:pre-image}}.
+\emph{Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string function $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
+\begin{itemize}
+\item a CEFA representation of $\concat^{-1}_R(L)$ can be computed in time $\bigO(|\CEFA|^2)$, 
+%
+\item a CEFA representation of $\reverse^{-1}_R(L)$ (resp. $\substring^{-1}_R(L)$) can be computed in time $\bigO(|\CEFA|)$,
+%
+\item a CEFA representation of  $(\Tran(\NFT))^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|\NFT|$,
+%
+\item a CEFA representation of  $(\replaceall_{e,u})^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|e|$ and $|u|$.
+\end{itemize}
+}
 
 \begin{proof}
 	Let $\CEFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_k)$. We show how to construct a CEFA representation of $f^{-1}_R(L)$ for each function $f$ in {\slint}.
@@ -221,15 +234,34 @@ We are ready to prove Theorem~\ref{thm-la-sat-cefa}.
 \end{proof}
 
 
-
-
-\smallskip
-
+\section{Proof of Proposition~\ref{prop:la-sat-cefa-inter}}\label{app:sat-cefa}
+ 
 \noindent{\bf Proposition~\ref{prop:la-sat-cefa-inter}}.
 \emph{Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. Deciding whether  %such that the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$,  and here are 
 	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is PSPACE-complete.} 
 	
 \begin{proof}
-Use Proposition 16 in \cite{LB16}.
-\zhilin{@Anthony, please write your proof here.}
+At first, we observe that we can focus on the CEFAs where the cost registers are monotone in the sense that their values are non-decreasing, in other words, they can only be updated with natural number constants. This observation is justified by the following reduction.
+
+For each register $r \in R^i_j$, introduce two registers $r^+, r^-$. Let $(R^i_j)^{\pm}$ denote the vector of registers by replacing each $r \in R^i_j$ with $(r^+, r^-)$. Intuitively,  for each $r \in R^i_j$, the updates of $r$ in $\CEFA_i^{j} $ are split into the non-negative ones and negative ones, with the former stored in $r^+$ and the latter in $r^-$. Suppose $(R')^{\pm} = \bigcup_{i,j} (R_i^j)^{\pm}$. Then we construct CEFAs $(\cB_i^{j})_{i \in I, j \in J_i}$ and an LIA formula $\phi^\pm$ such that
+\begin{quote}
+	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ 
+	\begin{center} if and only if \end{center}
+	there are an assignment function $\theta^\pm: (R')^\pm \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi^\pm[\theta^\pm((R')^\pm)/(R')^\pm]$ holds and $(w_i, \theta^\pm((R_i^j)^\pm)) \in \Lang(\cB_{i}^j)$ for every $i \in I$ and $j \in J_i$.
+\end{quote}
+For $i \in I$ and $j \in J_i$, the CEFA $\cB_{i}^j$ is obtained from $\CEFA_{i}^j$ by replacing each transition $(q, a, q', \eta)$ in $\CEFA_i^j$ by the transition $(q, a, q', \eta')$ such that for each $r \in R_j^j$, 
+\[
+\eta'(r^+) = \left\{ \begin{array}{l  l}\eta(r), & \mbox{ if } \eta(r) \ge 0 \\ 0 & \mbox{ otherwise} \end{array}\right.,  \eta'(r^-) = \left\{ \begin{array}{l  l} 0, & \mbox{ if } \eta(r) \ge 0 \\ -\eta(r) & \mbox{ otherwise} \end{array}\right..
+\]
+In addition, $\phi^\pm$ is obtained from $\phi$ by replacing each $r \in R'$ with $r^+-r^-$.
+
+\smallskip
+
+It remains to prove the following result.
+\begin{quote}
+Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint,  and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$, moreover, for each transition $(q, a, q', \eta)$ of $ \CEFA_i^{j}$ and each $r \in R_i^j$, we have $\eta(r) \ge 0$. Deciding whether  
+	there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is PSPACE-complete.
+\end{quote}
+
+\zhilin{@Anthony, please write your proof here.} Use Proposition 16 in \cite{LB16}.
 \end{proof}
