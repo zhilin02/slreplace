@@ -29,7 +29,7 @@ function urlSimpleParse(url)
 }
 %\end{example}
 
-we want to check whether it is possible that in the return value of urlSimpleParse, protocol contains ``javascript'' as a substring.
+we expect that $/$ occurs after $:$, but it is possible that $/$ occurs before $:$, namely, the return value protocol contains $/$.
 
 protocol:=''; host:='';
 url1 := trim(url);
@@ -40,7 +40,7 @@ protocol2: = toLowerCase(protocol1);
 url2 = $\substring$(url1, colonpos+3);
 slashpos = url2.indexof('/');
 $\ASSERT{slashpos < 0}$;
-protocol2 $\in \NFA_{\Sigma^*javascript\Sigma^*}$;
+protocol2 $\in \NFA_{\Sigma^*/\Sigma^*}$;
 
 
 
