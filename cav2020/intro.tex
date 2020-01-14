@@ -1,5 +1,64 @@
 %!TEX root = main.tex
 
+string manipulating programs
+
+symbolic execution
+
+string operations with integer data type
+
+We use the following running example to illustrate the decision procedure in this paper.
+%\begin{example}
+{\small
+\begin{minted}[linenos]{javascript}
+function urlSimpleParse(url)
+{
+  var protocol='', host='';
+  url = url.trim();
+  var colonpos = url.indexof(':');
+  if (colonpos >= 0) 
+  {
+    protocol = url.substr(0, colonpos).toLowerCase();
+    if(/^http$|^https$/.test(protocol))
+    {
+      url = url.substr(colonpos+3);
+      var slashpos = url.indexof('/');
+      if (slashpos >= 0)  host = url.substr(0, slashpos); 
+    }
+    else protocol = '';
+    return protocol, host; 
+  }
+}
+\end{minted}
+}
+%\end{example}
+
+% \in [\backslash w | \backslash x2E]^*$
+We expect that host contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
+
+{\small
+\begin{minted}{javascript}
+  protocol = ''; host = ''; url1 = url.trim(); 
+  colonpos = url1.indexof(':'); assert(colonpos >= 0); 
+  protocol1 = url1.substr(0, colonpos); 
+  protocol2 = protocol1.toLowerCase();
+  assert(/^http$|^https$/.test(protocol2));
+  url2 = url1.substr(colonpos+3);
+  slashpos = url2.indexof('/'); assert(slashpos >= 0);
+  host1 = url2.substr(0, slashpos); assert(!/[\w|\x2E]*/.test(host1))
+\end{minted}
+}
+
+state-of-the-art: heuristics
+
+The contribution of this paper: decision procedure for string constraints involving integer data type
+
+automata-theoretic, cost-enriched regular languages and recognisable relations, backward computation
+
+implementation OSTRICH+, experimental results promising
+
+first decision procedure for such an expressive class of string constraints involving so many different operations, natural extension of the decision procedure of OSTRICH, efficient implementation, extensive experiments, 
+
+
 related work
 
 SLENT: \cite{WC+18}
