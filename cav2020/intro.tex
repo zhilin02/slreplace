@@ -6,6 +6,44 @@ symbolic execution
 
 string operations with integer data type
 
+We use the following running example to illustrate the decision procedure in this paper.
+%\begin{example}
+{\small
+\begin{minted}{js}
+function urlSimpleParse(url)
+{
+  var protocol='', host='';
+  url = url.trim();
+  var colonpos = url.indexof(':');
+  if (colonpos >= 0) 
+  {
+    protocol = url.substr(0, colonpos);
+    protocol = protocol.toLowerCase();
+    url = url.substr(colonpos+3);
+    var slashpos = url.indexof('/');
+    if (slashpos >= 0)  host = url.substr(0, slashpos); 
+  }
+  return protocol, host; 
+}
+\end{minted}
+}
+%\end{example}
+
+we want to check whether it is possible that in the return value of urlSimpleParse, protocol contains ``javascript'' as a substring.
+
+protocol:=''; host:='';
+url1 := trim(url);
+$\ASSERT{colonpos = \indexof_{:}(url1)}$;
+$\ASSERT{colonpos>=0}$;
+protocol1:= $\substring$(url1, 0, colonpos);
+protocol2: = toLowerCase(protocol1);
+url2 = $\substring$(url1, colonpos+3);
+slashpos = url2.indexof('/');
+$\ASSERT{slashpos < 0}$;
+protocol2 $\in \NFA_{\Sigma^*javascript\Sigma^*}$;
+
+
+
 state-of-the-art: heuristics
 
 The contribution of this paper: decision procedure for string constraints involving integer data type
@@ -15,6 +53,7 @@ automata-theoretic, cost-enriched regular languages and recognisable relations, 
 implementation OSTRICH+, experimental results promising
 
 first decision procedure for such an expressive class of string constraints involving so many different operations, natural extension of the decision procedure of OSTRICH, efficient implementation, extensive experiments, 
+
 
 related work
 
