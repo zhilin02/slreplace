@@ -6,47 +6,61 @@ symbolic execution
 
 string operations with integer data type
 
-We use the following running example to illustrate the decision procedure in this paper.
+We use the following running example to illustrate the decision procedure in this paper. The following program get the query component from the given URL.
 %\begin{example}
 {\small
 \begin{minted}[linenos]{javascript}
-function urlSimpleParse(url)
+function getUrlQuery(url)
 {
-  var protocol='', host='';
-  url = url.trim();
-  var colonpos = url.indexof(':');
-  if (colonpos >= 0) 
-  {
-    protocol = url.substr(0, colonpos).toLowerCase();
-    if(/^http$|^https$/.test(protocol))
+    var query='';
+    url = url.trim();
+    var qmarkpos = url.indexof('?');
+    if(qmarkpos >= 0) 
     {
-      url = url.substr(colonpos+3);
-      var slashpos = url.indexof('/');
-      if (slashpos >= 0)  host = url.substr(0, slashpos); 
+        url = url.substr(qmarkpos+1);
+        var sharppos = url.indexof('#');
+        if(sharppos >= 0) query = url.substr(0, sharppos);
+        else query = url;
     }
-    else protocol = '';
-    return protocol, host; 
-  }
+    return query;
 }
 \end{minted}
 }
 %\end{example}
 
 % \in [\backslash w | \backslash x2E]^*$
-We expect that host contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
+%We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
+
+If to check whether the query component of a given URL contains the $<$script$>$ as a substring is reduced to the existence of an execution path in the {\tt getUrlQuery} function so that the corresponding return value contains $<$script$>$ as a substring, or alternatively, reduced to the path feasibility of three programs (in the SSA form) corresponding to the three execution paths, with one of them presented below,
 
 {\small
 \begin{minted}{javascript}
-  protocol = ''; host = ''; url1 = url.trim(); 
-  colonpos = url1.indexof(':'); assert(colonpos >= 0); 
-  protocol1 = url1.substr(0, colonpos); 
-  protocol2 = protocol1.toLowerCase();
-  assert(/^http$|^https$/.test(protocol2));
-  url2 = url1.substr(colonpos+3);
-  slashpos = url2.indexof('/'); assert(slashpos >= 0);
-  host1 = url2.substr(0, slashpos); assert(!/[\w|\x2E]*/.test(host1))
+  query = ''; url1 = url.trim(); 
+  qmarkpos = url1.indexof('?'); assert(qmarkpos >= 0); 
+  url2 = url1.substr(qmarkpos+1);
+  slashpos = url2.indexof('#'); assert(slashpos >= 0);
+  query1 = url2.substr(0, slashpos); assert(/<script>/.test(query1))
 \end{minted}
 }
+
+\zhilin{the following two paragraphs to be cleaned}
+Reflected javascript injection vulnerabilities exist when web applications take parameters from the URL 
+and display them on a page. URL reflection XSS attacks are a type of attack that does not rely on saving 
+malicious code in a database, but rather hiding it in URLs and for sending to unsuspecting victims. 
+Reflection vulnerabilities occur when a website outputs a variable from the webpage URL directly to the page, 
+such as in a PHP application that accepts parameters and displays them on screen. If javascript code is passed 
+into the PHP script and output to the page, the browser may be tricked into treating it like other javascript and executing it.
+A malicious url might look like this:
+\begin{verbatim}
+    students.washington.edu/squakmix/reflect.php?param=<script>alert('xss!');</script>
+\end{verbatim}
+
+The "param" value gets retrieved from the URL, and then placed somewhere on the page by the php code. 
+This causes the <script> element to become a part of the HTML of the page, and get treated like any other page element by the browser.
+URL reflection scripting attacks are sometimes used for phishing attacks in which victims are solicited to visit a trusted URL that leads to 
+a vulnerable web application with a URL containing an XSS reflection attack. The victim sees facebook.com or becu.org (etc) in the browser, 
+but because of vulnerabilities in the web application, she/he is unwittingly executing an attacker's scripts. 
+
 
 state-of-the-art: heuristics
 
