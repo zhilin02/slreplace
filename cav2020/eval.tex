@@ -1,8 +1,10 @@
 %!TEX root = main.tex
 
-We have compared OSTRICH+ with the state-of-the-art solvers on a wide range of benchmarks. The solvers we considered include CVC4, Z3-str3, two variants of Trau, namely Trau+ and Z3-Trau, and SLENT. 
+We have compared OSTRICH+ with the state-of-the-art solvers on a wide range of benchmarks. The solvers we considered include CVC4 \cite{cvc4}, Z3-str3 \cite{Z3-str}, two variants of Trau (i.e., Trau+ \cite{AbdullaA+19} and Z3-Trau \cite{Abdulla17}), and SLENT \cite{WC+18}. 
 
-We have implemented our decision procedure for path feasibility based on the tool OSTRICH, which is built on top of the SMT solver Princess \cite{}. 
+ 
+
+We have implemented our decision procedure for path feasibility based on the tool OSTRICH \cite{CHL+19}, which is built on top of the SMT solver Princess \cite{}. 
 %
 %OSTRICH implements the optimised
 %decision procedure for string functions as described in Section 5.1 (i.e. using distributivity of regular
@@ -22,9 +24,11 @@ We have implemented our decision procedure for path feasibility based on the too
 
 \subsection{Benchmarks}
  
-We have compared our tool with a number of existing solvers on a wide range of benchmarks. In
-particular, we compared  with CVC4 1.6 \cite{}, SLOTH \cite{},
-and Z3 configured to use the Z3-str3 string solver \cite{}. 
+We have compared our tool with a number of existing solvers on a wide range of benchmarks. 
+
+%In
+%particular, we compared  with CVC4 1.6 \cite{}, SLOTH \cite{},
+%and Z3 configured to use the Z3-str3 string solver \cite{}. 
 
 %We considered several sets
 %of benchmarks which are described in the next sub-section. The results are given in Section 6.4.2.
@@ -74,9 +78,9 @@ and Z3 configured to use the Z3-str3 string solver \cite{}.
 
  
 
-\paragraph*{Benchmark suites.} We consider the following four benchmark suites.
+\paragraph*{Benchmark suites.} We consider the following four sets of benchmarks.
 
-The first benchmark suite {\transducerbench+} is generated from the {\transducerbench} benchmark suite of OSTRICH \cite{CHL+19}.  The {\transducerbench} suite involves the following seven transducers: toUpperCase and its dual toLowerCase, htmlEscape\footnote{\url{https://github.com/google/closure-library/blob/master/closure/goog/string/string.js#L549}} and its dual htmlUnescape, escapeString\footnote{\url{https://github.com/google/closure-library/blob/master/closure/goog/string/string.js#L878}}, addslashes\footnote{\url{http://php.net/manual/en/function.addslashes.php}}, and trim\footnote{\url{https://www.php.net/manual/en/function.trim.php}}. The {\transducerbench+} suite is generated from these transducers by encoding the idempotence, duality, commutativity, and equivalence\footnote{These problems have been investigated for transducers in \cite{BEK}.} problems into the path feasibility of {\slint} programs as follows:
+The first benchmark suite {\transducerbench+} is derived from the {\transducerbench} benchmark suite of OSTRICH \cite{CHL+19}.  The {\transducerbench} suite involves the following seven transducers: toUpperCase and its dual toLowerCase, htmlEscape\footnote{\url{https://github.com/google/closure-library/blob/master/closure/goog/string/string.js#L549}} and its dual htmlUnescape, escapeString\footnote{\url{https://github.com/google/closure-library/blob/master/closure/goog/string/string.js#L878}}, addslashes\footnote{\url{http://php.net/manual/en/function.addslashes.php}}, and trim\footnote{\url{https://www.php.net/manual/en/function.trim.php}}. The {\transducerbench+} suite is generated from these transducers by encoding the idempotence, duality, commutativity, and equivalence\footnote{These problems have been investigated for transducers in \cite{BEK}.} problems into the path feasibility of {\slint} programs as follows:
 \begin{description}
 \item[Idempotence.] For each FFT $\NFT$,  we encode the non-idempotence of $\NFT$, namely deciding whether $\exists x.\ \NFT(\NFT(x)) \neq \NFT(x)$, into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$).
 %
