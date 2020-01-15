@@ -6,23 +6,24 @@ symbolic execution
 
 string operations with integer data type
 
-We use the following running example to illustrate the decision procedure in this paper. The following program get the query component from the given URL.
+We use the following Javascript code as a running example to illustrate the approach of this paper, where a function {\urlxsssanitise} is defined, with the parameter url specifying an input URL. A typical URL consists of a hierarchical sequence of components referred to as the protocol, host, path, query, and fragment. For instance, in the URL ``http://www.example.com/some/abc.js?name=john$\#$print'', protocol = ``http'', host = ``www.example.com'', path = ``/some/abc.js'', query = ``name=john'' (preceded by $?$), fragment = ``print'' (preceded by $\#$). Note that either query or fragment could be missing in an URL. The aim of {\urlxsssanitise} is to mitigate a type of cross-site-scripting (XSS) attacks, called \emph{URL reflection attacks}, by filtering out the dangerous substrings ``$<$script$>$'' or ``javascript:'' from the input URL. URL reflection attacks  do not rely on saving malicious code in a database, but rather hiding it in the query or fragment components of URLs, e.g. ``http://www.example.com/some/abc.js?name=$<$script$>$alert('xss!');$<$/script$>$''.
 %\begin{example}
 {\small
 \begin{minted}[linenos]{javascript}
-function getUrlQuery(url)
+function urlXssSanitise(url)
 {
-    var query='';
+    var prothostpath='', querfrag = '';
     url = url.trim();
-    var qmarkpos = url.indexof('?');
+    var qmarkpos = url.indexof('?'), sharppos = url.indexof('#');
     if(qmarkpos >= 0) 
-    {
-        url = url.substr(qmarkpos+1);
-        var sharppos = url.indexof('#');
-        if(sharppos >= 0) query = url.substr(0, sharppos);
-        else query = url;
-    }
-    return query;
+    {   prothostpath = url.substr(0,qmarkpos);
+        querfrag = url.substr(qmarkpos); }
+    else if(sharppos >= 0)
+    {   prothostpath = url.substr(0,sharppos);
+        querfrag = url.substr(sharppos); }
+    querfrag = querfrag.replace(/<script>|javascript:/gi, '');
+    url = prothostpath.concat(querfrag);
+    return url;
 }
 \end{minted}
 }
@@ -31,35 +32,21 @@ function getUrlQuery(url)
 % \in [\backslash w | \backslash x2E]^*$
 %We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
 
-If to check whether the query component of a given URL contains the $<$script$>$ as a substring is reduced to the existence of an execution path in the {\tt getUrlQuery} function so that the corresponding return value contains $<$script$>$ as a substring, or alternatively, reduced to the path feasibility of three programs (in the SSA form) corresponding to the three execution paths, with one of them presented below,
+One may want to know whether {\urlxsssanitise} indeed works, namely, whether after applying {\urlxsssanitise} on the input URL, ``$<$script$>$'' and ``javascript:'' disappears.  This is reduced to checking whether there is some execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains an occurrence of ``$<$script$>$'' or ``javascript:''. For instance, if the first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to solving the path feasibility of the following javascript program of the single static assignment (SSA) form,
 
 {\small
 \begin{minted}{javascript}
-  query = ''; url1 = url.trim(); 
-  qmarkpos = url1.indexof('?'); assert(qmarkpos >= 0); 
-  url2 = url1.substr(qmarkpos+1);
-  slashpos = url2.indexof('#'); assert(slashpos >= 0);
-  query1 = url2.substr(0, slashpos); assert(/<script>/.test(query1))
+    prothostpath =''; querfrag = '';
+    url1 = url.trim(); qmarkpos = url1.indexof('?');
+    sharppos = url1.indexof('#'); assert(qmarkpos >= 0); 
+    prothostpath1 = url1.substr(0, qmarkpos);
+    querfrag1 = url1.substr(qmarkpos);
+    querfrag2 = querfrag1.replace(/<script>|javascript:/gi, '');
+    url2 = prothostpath1.concat(querfrag2);
+    assert(! /<script>|javascript:/.test(querfrag2));
 \end{minted}
 }
-
-\zhilin{the following two paragraphs to be cleaned}
-Reflected javascript injection vulnerabilities exist when web applications take parameters from the URL 
-and display them on a page. URL reflection XSS attacks are a type of attack that does not rely on saving 
-malicious code in a database, but rather hiding it in URLs and for sending to unsuspecting victims. 
-Reflection vulnerabilities occur when a website outputs a variable from the webpage URL directly to the page, 
-such as in a PHP application that accepts parameters and displays them on screen. If javascript code is passed 
-into the PHP script and output to the page, the browser may be tricked into treating it like other javascript and executing it.
-A malicious url might look like this:
-\begin{verbatim}
-    students.washington.edu/squakmix/reflect.php?param=<script>alert('xss!');</script>
-\end{verbatim}
-
-The "param" value gets retrieved from the URL, and then placed somewhere on the page by the php code. 
-This causes the <script> element to become a part of the HTML of the page, and get treated like any other page element by the browser.
-URL reflection scripting attacks are sometimes used for phishing attacks in which victims are solicited to visit a trusted URL that leads to 
-a vulnerable web application with a URL containing an XSS reflection attack. The victim sees facebook.com or becu.org (etc) in the browser, 
-but because of vulnerabilities in the web application, she/he is unwittingly executing an attacker's scripts. 
+where the $\ASSERT{cond}$ statements check that the condition $cond$ is satisfied.
 
 
 state-of-the-art: heuristics
@@ -72,15 +59,5 @@ implementation OSTRICH+, experimental results promising
 
 first decision procedure for such an expressive class of string constraints involving so many different operations, natural extension of the decision procedure of OSTRICH, efficient implementation, extensive experiments, 
 
+\input{related}
 
-related work
-
-SLENT: \cite{WC+18}
-
-CVC4: \cite{cvc4}
-
-TRAU, Z3-TRAU, TRAU+: \cite{Abdulla17,AbdullaA+19}
-
-Z3-STR: \cite{Z3-str}
-
-OSTRICH: \cite{CHL+19}
