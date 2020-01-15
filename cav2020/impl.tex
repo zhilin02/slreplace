@@ -6,43 +6,45 @@ the pseudo-code
 
 \begin{algorithm}[htbp]
   \small
-  \KwIn{Sets~$\mathit{active}, \mathit{passive}$ of regex constraints, 
-    $x \in L$,
-    acyclic set~$\mathit{funApps}$ of assignments $x := f(\bar y)$, constraints $LC$ of Linear Integer Constraints.}
+  \KwIn{$active, passive$: sets of CEFA constraints, 
+%    $x \in L$,
+    acyclic set $\mathit{funApps}$ of assignment statements $x := f(\bar y)$, $LA$: set of LIA constraints. }
   \KwResult{$\mathit{sat}$ if input constraints are satisfiable;\newline
   $\mathit{unsat}$ if input constraints are not satisfiable;\newline
    }
 
   \Begin{
     \eIf{$\mathit{active} = \emptyset$}{
-      \tcc{use symbolic tool to check whether regex constraints are consistent with Linear Integer Constraints}
-      \Return{$\mathit{symbolicCheckSat(passive, LC)} $} 
+      \tcc{use symbolic model checker {NuXmv} to check whether regex constraints are consistent with Linear Integer Constraints}
+      \Return{$symbolicCheckSat(passive, LA)$} 
     }{
+      choose a constraint $x \in L$ in $active$\;
       \tcc{Compute the pre-image of one function}
       \eIf{there is an assignment~$x := f(y_1, \ldots, y_r)$ defining $x$
         in $\mathit{funApps}$}{
         $\mathit{funApps} \leftarrow \mathit{funApps} \backslash \{x := f(y_1, \ldots, y_r)\}  $\;
-        \eIf{ $x$ is string varible}
-        {choose all constraint $x\in L$ in $\mathit{active}$\;
-        compute the pre-image $f^{-1}(L) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)} , preLC^{(i)} ) $\;
-        $\mathit{act} \leftarrow \mathit{active} \setminus \{x \in L\}$
-         }{
-         \tcc{$x$ is integer varible}
-          compute the pre-image $f^{-1}(x) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)}, preLC^{(i)} ) $\;
-          }
+%        \eIf{ $x$ is string varible}
+%        {
+%	choose all constraint $x\in L$ in $\mathit{active}$\;
+        compute the pre-image $f^{-1}(L) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)} , preLA^{(i)} ) $\;
+        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in L\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in L\}$\;
+%         }{
+%         \tcc{$x$ is integer varible}
+%          compute the pre-image $f^{-1}(x) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)}, preLA^{(i)} ) $\;
+%          }
     
         \For{$i \leftarrow 1$ \KwTo $n$}{
-          $\mathit{newRegexes} \leftarrow
+          $\mathit{newCEFA} \leftarrow
           \{y_1 \in L_1^{(i)}, \ldots, y_r \in L_r^{(i)}\} $\;
-          $ \mathit{newLC} \leftarrow \mathit{LC} \cup \mathit{preLC^{(i)} } $\;
-          \eIf{$\mathit{act} \cup \mathit{pas} \cup \mathit{newRegexes}$ is inconsistent}{
+          $ \mathit{newLA} \leftarrow LA \cup \mathit{preLA^{(i)} } $\;
+          \eIf{$\mathit{active} \cup \mathit{passive} \cup \mathit{newCEFA}$ is inconsistent}{
             \Return{unsat}
           }{
-          \Switch{$\mathit{checkSat}(\mathit{act}
-            \cup \mathit{newRegexes},\;
-          \mathit{pas},\;
+          \Switch{$\mathit{checkSat}(\mathit{active}
+            \cup \mathit{newCEFA},\;
+          \mathit{passive},\;
           \mathit{funApps},\;
-           \mathit{newLC} )$}{
+           \mathit{newLA} )$}{
           \uCase{$sat$}{
             \Return{$sat$}\;
           }
@@ -57,7 +59,7 @@ the pseudo-code
         \Return{$\mathit{checkSat}(\mathit{active \backslash \{x\in L\} },\;
           \mathit{passive \cup \{x\in L\}},\;
           \mathit{funApps},\;
-           \mathit{LC} )$}
+           \mathit{LA} )$}
       }
 %      , and
 %      the function application~$x = f(\bar y)$ in $\mathit{funApps}$\;
@@ -67,8 +69,7 @@ the pseudo-code
   }
 
   \caption{Recursive function~$\mathit{checkSat}$
-    defining depth-first satisfiable check for
-    $SL_{int}$ \label{alg:dfs}}
+    for Step IV-V of the decision procedure \label{alg:dfs}}
 \end{algorithm}
 
 
