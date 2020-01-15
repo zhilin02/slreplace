@@ -183,28 +183,30 @@ constraints. In other words, path feasibility becomes undecidable \cite{CCHLW18}
 Theoretical algorithms  (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to  practical solvers. At the same time, the classes of constraints that are required in practice sometimes require string operations that are not covered by decidable string constraint languages.
  %(e.g.~length constraints, replaceall, 
  %transducers, etc.). 
-For these reasons, there is a large amount of work on heuristics for developing practical (often incomplete) string solvers, e.g., Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2~\cite{Z3-str,Z3-str2}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14,Stranger}, Norn~\cite{Abdulla14}, S3 and S3P~\cite{S3,TCJ16}, FAT~\cite{Abdulla17}, Z3-TRAU \cite{AbdullaACDHRR18-trau}, TRAU+ \cite{AbdullaA+19}, SLOG \cite{fang-yu-circuits}, SLOTH\cite{HJLRV18}
+For these reasons, there is a large amount of work on heuristics for developing practical (often incomplete) string solvers, e.g., Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2~\cite{Z3-str,Z3-str2}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Z3-TRAU \cite{AbdullaACDHRR18-trau}, TRAU+ \cite{AbdullaA+19}, 
+%
+SLOG \cite{fang-yu-circuits}/SLENT \cite{WC+18}, Norn~\cite{Abdulla14}, SLOTH \cite{HJLRV18}, OSTRICH \cite{CHL+19}
 as well as earlier work \cite{BTV09,RVG12} which integrated string constraint solving with respective dynamic symbolic execution engine %Pex.  
-ACO-Solver \cite{ThomeSBB17}
+
 %
 % A large amount of recent work develops practical string solvers
 
-%{ReynoldsWBBLT17}
-%Efficient reasoning about strings is essential to a growing number of security and verification applications. We describe satisfiability checking techniques in an extended theory of strings that includes operators commonly occurring in these applications, such as   𝖼𝗈𝗇𝗍𝖺𝗂𝗇𝗌,𝗂𝗇𝖽𝖾𝗑_𝗈𝖿  and   𝗋𝖾𝗉𝗅𝖺𝖼𝖾 . We introduce a novel context-dependent simplification technique that improves the scalability of string solvers on challenging constraints coming from real-world problems. Our evaluation shows that an implementation of these techniques in the SMT solver cvc4 significantly outperforms state-of-the-art string solvers on benchmarks generated using PyEx, a symbolic execution engine for Python programs. Using a test suite sampled from four popular Python packages, we show that PyEx uses only   41%  of the runtime when coupled with cvc4 than when coupled with cvc4’s closest competitor while achieving comparable program coverage.
+%We can classify this large body of practical string constraint solvers into 
 
-
- 
-%Some incomplete heuristics were developed that could work in practice,
-Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, to name a few. 
+A large body of these tools provide support for complex string operations, but relatively limited support for integer related constraints (for instance, typically they only support the length function or simply variant thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
 Focusing on semi-algorithms also allows highly expressive (but undecidable) 
-string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}. 
+string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}, but sometimes results in  hybrid constraint solving procedure based on, for instance, 
+ant colony optimization meta-heuristic \cite{ThomeSBB17}. 
+
+Despite the excellent performance of some of these solvers on several existing benchmarks, a potential risk is that these heuristic based approaches may not be generalized well to further practical cases. After all,  string constraint solving is still a research area in its infancy. One implication is that the currently insufficient range of benchmarking may not be representative in the growing number of application of string constraints in, e.g., program verification and security analysis. 
+%there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g.,
+%in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that
+%string constraint solving is a research area in its infancy with an insufficient range of benchmarking
+%examples to convince us that if a string solver works well on existing benchmarks, it will also work
+%well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon
+%which a practical solver could further improve and optimise.
 
 
-Trau Trau \cite{Abdulla17} integrates SMT
-solvers with the CEGAR framework using flat automata to over
-and under approximation the solution set.
-
-\cite{ThomeSBB17}
 %Constraint solving is an essential technique for
 %detecting vulnerabilities in programs, since it can reason about
 %input sanitization and validation operations performed on user
@@ -212,17 +214,17 @@ and under approximation the solution set.
 %string operations that challenge vulnerability detection. State-ofthe-art string constraint solvers support only a limited set of
 %string operations and fail when they encounter an unsupported
 %one; this leads to limited effectiveness in finding vulnerabilities.
-In this paper we propose a search-driven constraint solving
-technique that complements the support for complex string
-operations provided by any existing string constraint solver. Our
-technique uses a hybrid constraint solving procedure based on the
-Ant Colony Optimization meta-heuristic. The idea is to execute
-it as a fallback mechanism, only when a solver encounters a
-constraint containing an operation that it does not support.
-We have implemented the proposed search-driven constraint
-solving technique in the ACO-Solver tool, which we have evaluated
-in the context of injection and XSS vulnerability detection
-for Java Web applications. 
+%In this paper we propose a search-driven constraint solving
+%technique that complements the support for complex string
+%operations provided by any existing string constraint solver. Our
+%technique uses a hybrid constraint solving procedure based on the
+%Ant Colony Optimization meta-heuristic. The idea is to execute
+%it as a fallback mechanism, only when a solver encounters a
+%constraint containing an operation that it does not support.
+%We have implemented the proposed search-driven constraint
+%solving technique in the ACO-Solver tool, which we have evaluated
+%in the context of injection and XSS vulnerability detection
+%for Java Web applications. 
 %We have assessed the benefits and
 %costs of combining the proposed technique with two state-ofthe-art constraint solvers (Z3-str2 and CVC4). The experimental
 %results, based on a benchmark with 104 constraints derived from
@@ -233,6 +235,23 @@ for Java Web applications.
 %on which the solver fails when used stand-alone (46 more solved
 %cases for Z3-str2, and 11 more for CVC4), while still keeping the
 %execution time affordable in practice
+
+
+%Trau \cite{Abdulla17} integrates SMT
+%solvers with the CEGAR framework using flat automata to over
+%and under approximation the solution set.
+%Our work particularly aims to support integer constraints arising from symbolic execution.  
+%\cite{ReynoldsWBBLT17}
+%Efficient reasoning about strings is essential to a growing number of security and verification applications. We describe satisfiability checking techniques in an extended theory of strings that includes operators commonly occurring in these applications, such as   𝖼𝗈𝗇𝗍𝖺𝗂𝗇𝗌,𝗂𝗇𝖽𝖾𝗑_𝗈𝖿  and   𝗋𝖾𝗉𝗅𝖺𝖼𝖾 . We introduce a novel context-dependent simplification technique that improves the scalability of string solvers on challenging constraints coming from real-world problems. Our evaluation shows that an implementation of these techniques in the SMT solver cvc4 significantly outperforms state-of-the-art string solvers on benchmarks generated using PyEx, a symbolic execution engine for Python programs. Using a test suite sampled from four popular Python packages, we show that PyEx uses only   41%  of the runtime when coupled with cvc4 than when coupled with cvc4’s closest competitor while achieving comparable program coverage.
+
+
+ 
+%Some incomplete heuristics were developed that could work in practice,
+
+
+
+
+
  
  %This is one reason why 
 %Some string solving practitioners opted to support more string
@@ -244,10 +263,28 @@ Recently, the study of decidability of string constraints have also resulted in 
  acyclic logic with concatenation, regular constraints, and length constraints 
  \cite{Abdulla14}, and straight-line logic with finite transducers (or
  replaceall), concatenation, and regular constraints 
- \cite{HJLRV18,fang-yu-circuits,CHL+19}. 
+ \cite{HJLRV18,fang-yu-circuits,WC+18,CHL+19}. 
+ 
+ 
+ 
+% For example, the tool S3  \cite{S3,TCJ16} supports general
+%recursively-defined predicates and uses a number of incomplete heuristics to detect unsatisfiable
+%constraints. As another example, the tool Stranger \cite{Stranger,YABI14}
+%supports concatenation,
+%replaceAll (but with both pattern and replacement strings being constants), and regular constraints,
+%and performs widening (i.e. an overapproximation) when a concatenation operator is seen in the
+%analysis. 
+
+%Despite the excellent performance of some of these solvers on several existing benchmarks,
+%there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g.,
+%in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that
+%string constraint solving is a research area in its infancy with an insufficient range of benchmarking
+%examples to convince us that if a string solver works well on existing benchmarks, it will also work
+%well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon
+%which a practical solver could further improve and optimise.
  
 %============== benchmarks ========================= 
-We start with some interesting benchmarks that are available for string constraints. The first one is Kaluza benchmarks \cite{Berkeley-JavaScript}, which contain
+We also mention some interesting benchmarks that are available for string constraints. The first one is Kaluza benchmarks \cite{Berkeley-JavaScript}, which contain
 string constraints with concatenation, regular constraints, and length constraints. It was shown in \cite{Vijay-length} that almost all the constraints are already in \emph{solved form} (in particular, also straight-line). Some of these length constraints are also expressible as regular constraints.
 %
 The second is SLOG benchmarks \cite{fang-yu-circuits}, which contain string constraints with concatenation, a restricted class of replaceall similar to what are considered in the current paper \tl{check this later}, and regular constraints. 
