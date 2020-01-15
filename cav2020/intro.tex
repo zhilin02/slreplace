@@ -1,10 +1,27 @@
 %!TEX root = main.tex
 
-string manipulating programs
+Strings are a fundamental data type in virtually all programming languages.
+Their generic nature can, however, lead to many subtle programming
+bugs, some with security consequences, e.g., cross-site scripting
+(XSS), which is among the OWASP Top 10 Application Security Risks
+\cite{owasp17}. One effective
+automatic testing method for identifying subtle programming errors
+is based on \emph{symbolic execution}
+\cite{king76} and combinations with dynamic analysis
+called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
+See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
+which runs only \emph{concrete} program executions on different
+inputs, the techniques of symbolic execution analyse \emph{static} paths
+(also called symbolic executions) through the software system under test.
+Such a path can be viewed as a constraint $\varphi$ (over
+appropriate data domains) and the hope is that a fast
+solver is available for checking the satisfiability of $\varphi$ (i.e. to check
+the \emph{feasibility} of the static path), which can be used for generating
+inputs that lead to certain parts of the program or an erroneous behaviour.
 
-symbolic execution
+Integer data type naturally comes to play in string-manipulating programs, typically in the form of lengths or positions of strings. String functions involving the integer data type, for instance,  $\length$, $\indexof$, and $\substring$, are widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications. This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}.
 
-string operations with integer data type
+%$\length: \Sigma^* \rightarrow \Int$ (where $\Sigma$ is the alphabet and $\Sigma^*$ is the set of strings over $\Sigma$), $\substring: \Sigma^* \times \Int \times \Int \rightarrow \Sigma^*$, and $\indexof: \Sigma^* \times \Int \rightarrow \Int$.
 
 We use the following Javascript code as a running example to illustrate the approach of this paper, where a function {\urlxsssanitise} is defined, with the parameter url specifying an input URL. A typical URL consists of a hierarchical sequence of components referred to as the protocol, host, path, query, and fragment. For instance, in the URL ``http://www.example.com/some/abc.js?name=john$\#$print'', protocol = ``http'', host = ``www.example.com'', path = ``/some/abc.js'', query = ``name=john'' (preceded by $?$), fragment = ``print'' (preceded by $\#$). Note that either query or fragment could be missing in an URL. The aim of {\urlxsssanitise} is to mitigate a type of cross-site-scripting (XSS) attacks, called \emph{URL reflection attacks}, by filtering out the dangerous substrings ``$<$script$>$'' or ``javascript:'' from the input URL. URL reflection attacks  do not rely on saving malicious code in a database, but rather hiding it in the query or fragment components of URLs, e.g. ``http://www.example.com/some/abc.js?name=$<$script$>$alert('xss!');$<$/script$>$''.
 %\begin{example}
