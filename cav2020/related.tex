@@ -94,8 +94,7 @@ used in the constraints) of string constraints but with more complex string oper
 %are constants, while preserving decidability. In contrast, 
 if we allow variables on the replacement parameters of formulas, as it was done in \cite{CHL+18}, %in $\strline[\replaceall]$,
 we can easily encode the Hilbert's 10th problem with length (integer) 
-constraints. In other words, path
-feasibility becomes undecidable \cite{CCHLW18}. In light of this, in the current paper, ....
+constraints. In other words, path feasibility becomes undecidable \cite{CCHLW18}. In light of this, to retain decidable,  in the current paper the replaceall functions are only supported in the restricted form, as our language is significantly more expressive regarding the integer data types than the length constraints. 
 %
 %Several decidable restrictions, however,
 %have been proposed including solved form \cite{Vijay-length} and acyclicity 
@@ -103,11 +102,6 @@ feasibility becomes undecidable \cite{CCHLW18}. In light of this, in the current
 %syntactic restrictions on the way in which string equality can be
 %used in the constraints.
 
-
-
-
- 
-%
 %
 %%\emph{Length constraints} --- i.e. an assertion 
 %%$\varphi(\Len(x_1),\ldots,\Len(x_n))$, where $\varphi$ is a Presburger formula
@@ -161,17 +155,12 @@ feasibility becomes undecidable \cite{CCHLW18}. In light of this, in the current
 %For instance, one may consider the term $\replaceall(x, cur \equiv 0 \bmod 2, y)$ which replaces every even number in $x$ with $y$. %This, however, is not addressed in the current paper. 
 %
 %Finally, the $\replaceall$ function is related to Array Folds Logic introduced by Daca et al \cite{DHK16}. The authors considered an extension of the quantifier-free theory of integer arrays with counting. The main feature of the logic is the \emph{fold} terms, borrowed from the folding concept in functional programming languages. Intuitively, a fold term applies a function to every element of the array to compute an output. If strings are treated as arrays over a finite domain (the alphabet), the $\replaceall$ function can be seen as a fold term. Nevertheless, the $\replaceall$ function goes beyond the fold terms considered in \cite{DHK16}, since it outputs a string (an array), instead of an integer. Therefore, the results in \cite{DHK16} cannot be applied to our setting.
-
-
-
 %============================================================
 \smallskip
 \noindent
 \textbf{Heuristics and implementation.}
 %=============================================================
 
-
-%\textbf{Practical Solvers.} 
 
 %Among them, only Stranger, S3, and S3P support $\replaceall$.  
 
@@ -191,29 +180,71 @@ feasibility becomes undecidable \cite{CCHLW18}. In light of this, in the current
 %general an undecidable problem.
 % 
  
- 
-
-Theoretical algorithms  (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to  practical solvers. At the same time, the classes of constraints that are 
- required in practice sometimes require string operations that are not covered by
- decidable string constraint languages.
+Theoretical algorithms  (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to  practical solvers. At the same time, the classes of constraints that are required in practice sometimes require string operations that are not covered by decidable string constraint languages.
  %(e.g.~length constraints, replaceall, 
  %transducers, etc.). 
- For these reasons,
- there is a large amount of work on heuristics for developing practical
- (often incomplete) string solvers, e.g., 
- \cite{BTV09,Berkeley-JavaScript,HAMPI,Stranger,YABI14,Abdulla14,fang-yu-circuits,Abdulla17,HJLRV18,S3,TCJ16,Z3-str,Z3-str2,cvc4,Saner,RVG12}.
+For these reasons, there is a large amount of work on heuristics for developing practical (often incomplete) string solvers, e.g., Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2~\cite{Z3-str,Z3-str2}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14,Stranger}, Norn~\cite{Abdulla14}, S3 and S3P~\cite{S3,TCJ16}, FAT~\cite{Abdulla17}, Z3-TRAU \cite{AbdullaACDHRR18-trau}, TRAU+ \cite{AbdullaA+19}, SLOG \cite{fang-yu-circuits}, SLOTH\cite{HJLRV18}
+as well as earlier work \cite{BTV09,RVG12} which integrated string constraint solving with respective dynamic symbolic execution engine %Pex.  
+ACO-Solver \cite{ThomeSBB17}
+%
+% A large amount of recent work develops practical string solvers
+
+%{ReynoldsWBBLT17}
+%Efficient reasoning about strings is essential to a growing number of security and verification applications. We describe satisfiability checking techniques in an extended theory of strings that includes operators commonly occurring in these applications, such as   𝖼𝗈𝗇𝗍𝖺𝗂𝗇𝗌,𝗂𝗇𝖽𝖾𝗑_𝗈𝖿  and   𝗋𝖾𝗉𝗅𝖺𝖼𝖾 . We introduce a novel context-dependent simplification technique that improves the scalability of string solvers on challenging constraints coming from real-world problems. Our evaluation shows that an implementation of these techniques in the SMT solver cvc4 significantly outperforms state-of-the-art string solvers on benchmarks generated using PyEx, a symbolic execution engine for Python programs. Using a test suite sampled from four popular Python packages, we show that PyEx uses only   41%  of the runtime when coupled with cvc4 than when coupled with cvc4’s closest competitor while achieving comparable program coverage.
+
+
  
- A large amount of recent work develops practical string solvers
- including  Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI}, 
- Z3-str~\cite{Z3-str}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14}, Norn~\cite{Abdulla14}, S3 and S3P~\cite{S3,TCJ16}, and FAT~\cite{Abdulla17}.
- 
- %TRAU, Z3-TRAU, TRAU+: \cite{Abdulla17,AbdullaA+19}
+%Some incomplete heuristics were developed that could work in practice,
+Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, to name a few. 
+Focusing on semi-algorithms also allows highly expressive (but undecidable) 
+string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}. 
+
+
+Trau Trau \cite{Abdulla17} integrates SMT
+solvers with the CEGAR framework using flat automata to over
+and under approximation the solution set.
+
+\cite{ThomeSBB17}
+%Constraint solving is an essential technique for
+%detecting vulnerabilities in programs, since it can reason about
+%input sanitization and validation operations performed on user
+%inputs. However, real-world programs typically contain complex
+%string operations that challenge vulnerability detection. State-ofthe-art string constraint solvers support only a limited set of
+%string operations and fail when they encounter an unsupported
+%one; this leads to limited effectiveness in finding vulnerabilities.
+In this paper we propose a search-driven constraint solving
+technique that complements the support for complex string
+operations provided by any existing string constraint solver. Our
+technique uses a hybrid constraint solving procedure based on the
+Ant Colony Optimization meta-heuristic. The idea is to execute
+it as a fallback mechanism, only when a solver encounters a
+constraint containing an operation that it does not support.
+We have implemented the proposed search-driven constraint
+solving technique in the ACO-Solver tool, which we have evaluated
+in the context of injection and XSS vulnerability detection
+for Java Web applications. 
+%We have assessed the benefits and
+%costs of combining the proposed technique with two state-ofthe-art constraint solvers (Z3-str2 and CVC4). The experimental
+%results, based on a benchmark with 104 constraints derived from
+%nine realistic Web applications, show that our approach, when
+%combined in a state-of-the-art solver, significantly improves the
+%number of detected vulnerabilities (from 4.7% to 71.9% for Z3-
+%str2, from 85.9% to 100.0% for CVC4), and solves several cases
+%on which the solver fails when used stand-alone (46 more solved
+%cases for Z3-str2, and 11 more for CVC4), while still keeping the
+%execution time affordable in practice
  
  %This is one reason why 
- Some string solving practitioners opted to support more string
- operations and settle with incomplete solvers (e.g. with no guarantee of termination) that could
- still solve some constraints that arise in practice. 
+%Some string solving practitioners opted to support more string
+% operations and settle with incomplete solvers (e.g. with no guarantee of termination) that could
+% still solve some constraints that arise in practice. 
  
+ 
+Recently, the study of decidability of string constraints have also resulted in automata-theoretic algorithms that are amenable to implementation, e.g.,
+ acyclic logic with concatenation, regular constraints, and length constraints 
+ \cite{Abdulla14}, and straight-line logic with finite transducers (or
+ replaceall), concatenation, and regular constraints 
+ \cite{HJLRV18,fang-yu-circuits,CHL+19}. 
  
 %============== benchmarks ========================= 
 We start with some interesting benchmarks that are available for string constraints. The first one is Kaluza benchmarks \cite{Berkeley-JavaScript}, which contain
@@ -224,13 +255,14 @@ The second is SLOG benchmarks \cite{fang-yu-circuits}, which contain string cons
 The third is SLOTH benchmarks \cite{HJLRV18}, which contains string constraints with concatenation, finite transducers, and regular constraints. 
 % 
 The fourth is OSTRICH benchmarks \cite{CHL+19}, which contains Transducer
-
+%
 %The first set of benchmarks we call Transducer. It combines the benchmark
 %sets of Stranger [Yu et al. 2010] and the mutation XSS benchmarks of [Lin and Barceló 2016]. The
 %first (sub-)set appeared in [Holík et al. 2018] and contains instances manually derived from PHP
 %programs taken from the website of Stranger [Yu et al. 2010].
-
-The fifth is {\pyexbench} suite from \cite{ReynoldsWBBLT17}, This suite is derived from PyEx, a symbolic executor for Python programs. The {\pyexbench} suite was generated by the CVC4 group on four popular Python packages: httplib2, pip, pymongo, and requests. These instances use regular constraints, concatenation, $\length$, $\substring$, and $\indexof$ functions. Moreover, the {\pyexbench} suite is further divided into the three sub-suites: {\pyextdbench} comprising \zhilin{xxx} instances, {\pyexztbench} comprising \zhilin{xxx} instances, and {\pyexzzbench} comprising \zhilin{xxx} instances.
+%
+The fifth is {\pyexbench} suite from \cite{ReynoldsWBBLT17}, This suite is derived from PyEx, a symbolic executor for Python programs. The {\pyexbench} suite was generated by the CVC4 group on four popular Python packages: httplib2, pip, pymongo, and requests. These instances use regular constraints, concatenation, $\length$, $\substring$, and $\indexof$ functions. 
+%Moreover, the {\pyexbench} suite is further divided into the three sub-suites: {\pyextdbench} comprising \zhilin{xxx} instances, {\pyexztbench} comprising \zhilin{xxx} instances, and {\pyexzzbench} comprising \zhilin{xxx} instances.
  %related work
  %
 % SLENT: \cite{WC+18}
@@ -253,23 +285,10 @@ The fifth is {\pyexbench} suite from \cite{ReynoldsWBBLT17}, This suite is deriv
 % 	
 % \end{tabular}
  
+
  
- %Some incomplete heuristics were developed that could work in practice,
-Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, to name a few. 
- Focusing on semi-algorithms also allows highly expressive (but undecidable) 
- string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}. 
- 
- 
- Trau Trau \cite{Abdulla17} integrates SMT
- solvers with the CEGAR framework using flat automata to over
- and under approximation the solution set.
- 
- Recently, the study of decidability of string constraints have also resulted in
- automata-theoretic algorithms that are amenable to implementation, e.g.,
- acyclic logic with concatenation, regular constraints, and length constraints 
- \cite{Abdulla14}, and straight-line logic with finite transducers (or
- replaceall), concatenation, and regular constraints 
- \cite{HJLRV18,fang-yu-circuits,yan-tool}. 
+ %=============================================================
+
  %None of these techniques, however,
  %would immediately lead to a fast string solver for string constraints with 
  %parametric transducers as primitive operations.
