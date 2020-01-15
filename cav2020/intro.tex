@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-Strings are a fundamental data type in virtually all programming languages.
+\zhilin{this paragraph is copied from POPL'19 paper should be adapted.}Strings are a fundamental data type in virtually all programming languages.
 Their generic nature can, however, lead to many subtle programming
 bugs, some with security consequences, e.g., cross-site scripting
 (XSS), which is among the OWASP Top 10 Application Security Risks
@@ -19,62 +19,30 @@ solver is available for checking the satisfiability of $\varphi$ (i.e. to check
 the \emph{feasibility} of the static path), which can be used for generating
 inputs that lead to certain parts of the program or an erroneous behaviour.
 
-Integer data type naturally comes to play in string-manipulating programs, typically in the form of lengths or positions of strings. String functions involving the integer data type, for instance,  $\length$, $\indexof$, and $\substring$, are widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications. This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}.
+Integer data type naturally comes to play in string-manipulating programs, typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
 
 %$\length: \Sigma^* \rightarrow \Int$ (where $\Sigma$ is the alphabet and $\Sigma^*$ is the set of strings over $\Sigma$), $\substring: \Sigma^* \times \Int \times \Int \rightarrow \Sigma^*$, and $\indexof: \Sigma^* \times \Int \rightarrow \Int$.
 
-We use the following Javascript code as a running example to illustrate the approach of this paper, where a function {\urlxsssanitise} is defined, with the parameter url specifying an input URL. A typical URL consists of a hierarchical sequence of components referred to as the protocol, host, path, query, and fragment. For instance, in the URL ``http://www.example.com/some/abc.js?name=john$\#$print'', protocol = ``http'', host = ``www.example.com'', path = ``/some/abc.js'', query = ``name=john'' (preceded by $?$), fragment = ``print'' (preceded by $\#$). Note that either query or fragment could be missing in an URL. The aim of {\urlxsssanitise} is to mitigate a type of cross-site-scripting (XSS) attacks, called \emph{URL reflection attacks}, by filtering out the dangerous substrings ``$<$script$>$'' or ``javascript:'' from the input URL. URL reflection attacks  do not rely on saving malicious code in a database, but rather hiding it in the query or fragment components of URLs, e.g. ``http://www.example.com/some/abc.js?name=$<$script$>$alert('xss!');$<$/script$>$''.
-%\begin{example}
-{\small
-\begin{minted}[linenos]{javascript}
-function urlXssSanitise(url)
-{
-    var prothostpath='', querfrag = '';
-    url = url.trim();
-    var qmarkpos = url.indexof('?'), sharppos = url.indexof('#');
-    if(qmarkpos >= 0) 
-    {   prothostpath = url.substr(0,qmarkpos);
-        querfrag = url.substr(qmarkpos); }
-    else if(sharppos >= 0)
-    {   prothostpath = url.substr(0,sharppos);
-        querfrag = url.substr(sharppos); }
-    querfrag = querfrag.replace(/<script>|javascript:/gi, '');
-    url = prothostpath.concat(querfrag);
-    return url;
-}
-\end{minted}
-}
-%\end{example}
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+\input{runexmp.tex}
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
 
-% \in [\backslash w | \backslash x2E]^*$
-%We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
+Indeed, the vast majority of the state-of-the-art string constraint solvers, e.g. CVC4\cite{cvc4}, Z3-str3\cite{Z3-str3}, Trau \cite{Abdulla17} (as well as its variants Trau+ \cite{AbdullaA+19} and Z3-Trau \cite{Z3-trau}),  and ABC \cite{ABC}, do support simultaneous reasoning about strings and integers. 
+Nevertheless, solving string constraints involving the integer data type is far from trivial and actually undecidable in general \cite{buchi,CCH+18}. Therefore, all the aforementioned string constraint solvers resort to heuristics, with a lack of completeness guarantee. Decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), however, as argued in \cite{CHL+19}, are desirable, since on the one hand, they are appealing from a scientific point of view, and on the other hand, they provide a kind of robustness guarantee upon which a practical solver could further improve and optimise.
 
-One may want to know whether {\urlxsssanitise} indeed works, namely, whether after applying {\urlxsssanitise} on the input URL, ``$<$script$>$'' and ``javascript:'' disappears.  This is reduced to checking whether there is some execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains an occurrence of ``$<$script$>$'' or ``javascript:''. For instance, if the first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to solving the path feasibility of the following javascript program of the single static assignment (SSA) form,
+%\zhilin{this paragraph is copied from the popl paper} Despite the excellent performance of some of these solvers on several existing benchmarks, there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that string constraint solving is a research area in its infancy with an insufficient range of benchmarking examples to convince us that if a string solver works well on existing benchmarks, it will also work well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon which a practical solver could further improve and optimise.
 
-{\small
-\begin{minted}{javascript}
-    prothostpath =''; querfrag = '';
-    url1 = url.trim(); qmarkpos = url1.indexof('?');
-    sharppos = url1.indexof('#'); assert(qmarkpos >= 0); 
-    prothostpath1 = url1.substr(0, qmarkpos);
-    querfrag1 = url1.substr(qmarkpos);
-    querfrag2 = querfrag1.replace(/<script>|javascript:/gi, '');
-    url2 = prothostpath1.concat(querfrag2);
-    assert(! /<script>|javascript:/.test(querfrag2));
-\end{minted}
-}
-where the $\ASSERT{cond}$ statements check that the condition $cond$ is satisfied.
+Recently, researchers started investigating the decision procedures for string constraints involving the integer data type, for instance \cite{Vijay-length,L16,LinM18,LB16}. Nevertheless, those decision procedures are largely only of the theoretical value, since they either support limited string functions (concatenation, length and regular constraints) or are too complicated for efficient implementation. We tackle this issue in this paper and aim at designing decision procedures for string constraints involving the integer data type, which, on the one hand, \emph{provide completeness guarantee}, and on the other hand, \emph{admit efficient implementation}.
 
+The main contribution of this paper is an automata-theoretical decision procedure for an expressive class of string constraints involving the integer data type, which includes not only the string functions concatenation, $\replaceall$, and finite-state transducers, but also $\length$, $\indexof$ and $\substring$. The decision procedure is automata-theoretic and utilises a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, called \emph{cost-enriched finite automata} (abbreviated as CEFA). The decision procedure is in the same flavour as that of OSTRICH \cite{CHL+19}, namely computing the backward image of CEFAs under string functions. \zhilin{say a bit more?}
 
-state-of-the-art: heuristics
+Most importantly, our decision procedure admits efficient implementation, as an extension of the OSTRICH solver \cite{CHL+19}, resulting int a new solver OSTRICH+.  In addition, we do experiments on a wide range of benchmark suites to evaluate the performance of OSTRICH+. The experiment results show that compared against the other competitive string constraint solvers, OSTRICH+ is one of the best ones. \zhilin{a bit weak, improve later when the experimental results are available.}
 
-The contribution of this paper: decision procedure for string constraints involving integer data type
-
-automata-theoretic, cost-enriched regular languages and recognisable relations, backward computation
-
-implementation OSTRICH+, experimental results promising
-
-first decision procedure for such an expressive class of string constraints involving so many different operations, natural extension of the decision procedure of OSTRICH, efficient implementation, extensive experiments, 
+To the best of our knowledge, our decision procedure is the first decision procedure for string constraints involving the integer data type, which on the one hand, supports many commonly used string functions, including $\length$, $\indexof$, and $\substring$,  as well as concatenation, $\replaceall$, and finite-state transducers, and on the other hand, admits efficient implementation and is competitive against the other state-of-the-art solvers.
 
 \input{related}
 
