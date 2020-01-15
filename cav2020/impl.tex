@@ -5,61 +5,61 @@
 the pseudo-code
 
 \begin{algorithm}[htbp]
+\SetKw{Continue}{continue}
   \small
   \KwIn{$active, passive$: sets of CEFA constraints, 
 %    $x \in L$,
-    acyclic set $\mathit{funApps}$ of assignment statements $x := f(\bar y)$, $LA$: set of LIA constraints. }
-  \KwResult{$\mathit{sat}$ if input constraints are satisfiable;\newline
-  $\mathit{unsat}$ if input constraints are not satisfiable;\newline
+    $funApps$: acyclic set of assignment statements, $LA$: set of LIA constraints. }
+  \KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise;\newline
    }
 
   \Begin{
     \eIf{$\mathit{active} = \emptyset$}{
       \tcc{use symbolic model checker {NuXmv} to check whether regex constraints are consistent with Linear Integer Constraints}
-      \Return{$symbolicCheckSat(passive, LA)$} 
+      \Return{$symbolicCheckSat(passive, LA)$;} 
     }{
-      choose a constraint $x \in L$ in $active$\;
-      \tcc{Compute the pre-image of one function}
-      \eIf{there is an assignment~$x := f(y_1, \ldots, y_r)$ defining $x$
-        in $\mathit{funApps}$}{
+      choose a CEFA constraint $x \in \CEFA$ in $active$\;
+      \tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\CEFA$ under $f$}
+      \eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$
+        in $funApps$}{
 %        $\mathit{funApps} \leftarrow \mathit{funApps} \backslash \{x := f(y_1, \ldots, y_r)\}  $\;
 %        \eIf{ $x$ is string varible}
 %        {
 %	choose all constraint $x\in L$ in $\mathit{active}$\;
-        compute the pre-image $f^{-1}(L) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)} , preLA^{(i)} ) $\;
-        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in L\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in L\}$\;
+        compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = ((\CEFA_1^{(j)}, \cdots, \CEFA_l^{(j)})_{j \in [n]}, preLA)$\;
+        $active \leftarrow active \setminus \{x \in \CEFA\}$; $passive \leftarrow passive \cup \{x \in \CEFA\}$\;
 %         }{
 %         \tcc{$x$ is integer varible}
 %          compute the pre-image $f^{-1}(x) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)}, preLA^{(i)} ) $\;
 %          }
     
         \For{$i \leftarrow 1$ \KwTo $n$}{
-          $\mathit{newCEFA} \leftarrow
-          \{y_1 \in L_1^{(i)}, \ldots, y_r \in L_r^{(i)}\} $\;
-          $ \mathit{newLA} \leftarrow LA \cup \mathit{preLA^{(i)} } $\;
-          \eIf{$\mathit{active} \cup \mathit{passive} \cup \mathit{newCEFA}$ is inconsistent}{
-            \Return{unsat}
+          $newCEFA \leftarrow
+          \{y_1 \in \CEFA_1^{(j)}, \ldots, y_l \in \CEFA_l^{(j)}\} $\;
+          $ newLA \leftarrow LA \wedge preLA$\;
+          \eIf{$active \cup passive \cup newCEFA$ is inconsistent}{
+            \Return{unsat};
           }{
-          \Switch{$\mathit{checkSat}(\mathit{active}
-            \cup \mathit{newCEFA},\;
-          \mathit{passive},\;
-          \mathit{funApps},\;
-           \mathit{newLA} )$}{
+          \Switch{$checkSat(active
+            \cup newCEFA,\;
+          passive,\;
+          funApps,\;
+           newLA )$}{
           \uCase{$sat$}{
-            \Return{$sat$}\;
+            \Return{$sat$};
           }
           \Case{$unsat$}{
-            $CONTINUE $ \tcc*{backtrack}
+            \Continue\tcc*{backtrack}
           }
           }
         }}
-        \Return{unsat} 
+        \Return{unsat}; 
       }{
-        \tcc{funApps is null }
-        \Return{$\mathit{checkSat}(\mathit{active \backslash \{x\in L\} },\;
-          \mathit{passive \cup \{x\in L\}},\;
-          \mathit{funApps},\;
-           \mathit{LA} )$}
+%       \tcc{funApps is null }
+        \Return{$checkSat(active \backslash \{x\in \CEFA\} ,\;
+          passive \cup \{x\in \CEFA\},\;
+          funApps,\;
+           LA)$;}
       }
 %      , and
 %      the function application~$x = f(\bar y)$ in $\mathit{funApps}$\;
@@ -69,7 +69,7 @@ the pseudo-code
   }
 
   \caption{Recursive function~$\mathit{checkSat}$
-    for Step IV-V of the decision procedure \label{alg:dfs}}
+    for Step IV and Step V of the decision procedure \label{alg:dfs}}
 \end{algorithm}
 
 
