@@ -1,0 +1,48 @@
+%!TEX root = main.tex
+
+\begin{example}
+We use the following Javascript program to demonstrate the use of string functions involving the integer data type.
+The program defines a function {\urlxsssanitise}, with the input parameter url specifying an URL. A typical URL consists of a hierarchical sequence of components referred to as the protocol, host, path, query, and fragment. For instance, in the URL ``http://www.example.com/some/abc.js?name=john$\#$print'', protocol is ``http'', host is ``www.example.com'', path is ``/some/abc.js'', query is ``name=john'' (preceded by $?$), and fragment is ``print'' (preceded by $\#$). Note that either query or fragment could be empty in an URL. The aim of {\urlxsssanitise} is to mitigate a type of cross-site-scripting (XSS) attacks, called \emph{URL reflection attacks}, by filtering out the dangerous substrings ``$<$script$>$'' or ``javascript:'' from the input URL. URL reflection attacks  do not rely on saving malicious code in a database, but rather hiding it in the query or fragment components of URLs, e.g. ``http://www.example.com/some/abc.js?name=$<$script$>$alert('xss!');$<$/script$>$''.
+%\begin{example}
+{\small
+\begin{minted}[linenos]{javascript}
+function urlXssSanitise(url)
+{
+    var prothostpath='', querfrag = '';
+    url = url.trim();
+    var qmarkpos = url.indexof('?'), sharppos = url.indexof('#');
+    if(qmarkpos >= 0) 
+    {   prothostpath = url.substr(0, qmarkpos);
+        querfrag = url.substr(qmarkpos); }
+    else if(sharppos >= 0)
+    {   prothostpath = url.substr(0, sharppos);
+        querfrag = url.substr(sharppos); }
+    querfrag = querfrag.replace(/<script>|javascript:/gi, '');
+    url = prothostpath.concat(querfrag);
+    return url;
+}
+\end{minted}
+}
+%\end{example}
+
+Note that {\urlxsssanitise} uses the Javascript string functions including the sanitisation operation $\sf trim$ that removes whitespace from both ends of a string, which can be conveniently modelled as finite-state transducers, and the two functions involving the integer data type, namely, $\sf indexof$ and $\sf substr$, as well as concatenation and replace (with the gi, global and case-insensitive search, flags).
+
+% \in [\backslash w | \backslash x2E]^*$
+%We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
+
+One may want to know whether {\urlxsssanitise} indeed works, namely, whether after applying {\urlxsssanitise} on the input URL, ``$<$script$>$'' and ``javascript:'' does disappear.  This problem is reduced to checking whether there is some execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains an occurrence of ``$<$script$>$'' or ``javascript:''. For instance, if the first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to solving the path feasibility of the following Javascript program in the single static assignment (SSA) form,
+
+{\small
+\begin{minted}{javascript}
+    prothostpath =''; querfrag = '';
+    url1 = url.trim(); qmarkpos = url1.indexof('?');
+    sharppos = url1.indexof('#'); assert(qmarkpos >= 0); 
+    prothostpath1 = url1.substr(0, qmarkpos);
+    querfrag1 = url1.substr(qmarkpos);
+    querfrag2 = querfrag1.replace(/<script>|javascript:/gi, '');
+    url2 = prothostpath1.concat(querfrag2);
+    assert(! /<script>|javascript:/.test(querfrag2))
+\end{minted}
+}
+where the $\ASSERT{cond}$ statements check that the condition $cond$ is satisfied.\qed
+\end{example}
