@@ -19,41 +19,39 @@ The discussion will mainly focus on (1) theoretical results in terms of decidabi
 
 \smallskip 
 \noindent\textbf{Theoretical results.}
-The research on the theory of strings with concatenation has a long history, largely motivated by %. This research programme builds on
-the question of solving satisfiability of \emph{word equations} (i.e., strings equation containing concatenation of string constants and variables). Makanin showed decidability \cite{Makanin}, but the upper bound was improved to PSPACE about 25 years later \cite{P04} and  %using a word compression technique. 
-a simpler algorithm was given recently \cite{J17}. %using the recompression technique. 
+The research on the theory of strings with concatenation %has a long history, largely 
+was motivated by %. This research programme builds on
+the question of solving satisfiability of word equations (i.e., equations containing concatenation of string constants and variables). Makanin showed decidability \cite{Makanin}, but the upper bound was only improved to PSPACE about 25 years later \cite{P04}   %using a word compression technique. 
+a simpler algorithm of which was given recently \cite{J17}. %using the recompression technique. 
 The best lower bound for this problem is still NP, and closing this complexity gap is a long-standing open problem. %Decidability
 %
 The PSPACE upper bound stands %can be retained 
-in the presence of regular constraints (e.g., see \cite{Schulz}). Even further, the existential theory
-of concatenation with regular constraints was shown to be decidable using the technique of \cite{buchi}.
+in the presence of regular constraints (e.g., see \cite{Schulz}). 
+%Even further, the existential theory
+%of concatenation with regular constraints was shown to be decidable using the technique of \cite{buchi}.
 %
-In practice, it is common for a string-manipulating program to contain multiple operations which may be well beyond concatenation
-(e.g., finite-state transductions), which motivates research on more expressive string constraint languages.   %, and so a path feasibility solver nonetheless needs to be able to
+In practice, it is common for a string-manipulating program to contain multiple operations (e.g., finite-state transductions) which may be well beyond concatenation, which has motivated research on more expressive string constraint languages.   %, and so a path feasibility solver nonetheless needs to be able to
 %handle them. 
 Unfortunately, it takes very little for %a string constraint language 
-them to become undecidable \cite{LB16}. For instance, when finite state transductions are allowed, checking a simple formula of the form $\exists x.R(x, x)$, for a given rational transduction $R$, can easily encode the Post Correspondence Problem, and therefore is undecidable.
+them to become undecidable \cite{LB16}. For instance, when finite state transductions are allowed, checking a simple formula of the form $\exists x.R(x, x)$ for a given rational transduction $R$, can easily encode the Post Correspondence Problem, and therefore is undecidable.
 %When applying string constraint solving to analysis of string manipulating programs, one common practice is to use dynamic symbolic execution, which would result in constraints with complex operations which are well beyond concatenation. In the last few decades much research suggests that
 %
 %Despite the undecidability of allowing various operations in string constraints,
 %
 %Fortunately, 
 
-A recent research endeavor %years have seen the possibility of recovering 
-is to recover some decidability of string constraint
-languages with multiple string operations, while retaining applicability for constraints that
-arise in practical symbolic execution applications. This is done by imposing syntactic restrictions
-including acyclicity \cite{Abdulla14,BFL13}, solved form \cite{Vijay-length}, and
-straight-line \cite{LB16,HJLRV18,CCH+18}.
-Particularly related to the present work, the straight-line logic of \cite{LB16}  (by the way in which string equality can be
-used in the constraints) unified the earlier logics by allowing concatenation, regular constraints, rational
+Hence,  recent research endeavors %years have seen the possibility of recovering 
+to recover decidability of some string constraint languages with multiple string operations, while retaining applicability for constraints that
+arise in practical symbolic execution applications. This is mainly done by imposing syntactic restrictions along the way in which string equality can be
+used in the constraints. This includes acyclicity \cite{Abdulla14,BFL13}, solved form \cite{Vijay-length}, and straight-line \cite{LB16,HJLRV18,CCH+18}.
+Particularly related to the present work, the straight-line logic of \cite{LB16}  unified the earlier logics by allowing concatenation, regular constraints, rational
 transductions. %, and length and letter-counting functions. 
 It was further extended %pointed out by 
 %that this logic cannot express the 
 by supporting a more general form of replaceAll functions with the replacement string provided as a
-variable \cite{CCH+18} where it is shown that a new straight-line logic with the more general replaceAll function and
-concatenation is decidable. Furthermore, \cite{CHL+19} identified two general semantic conditions which together ensure the decidability of path
-feasibility. They show that the semantic conditions  are satisfied by a multitude of string operations
+variable \cite{CCH+18} where it is shown that a new straight-line logic (with the more general replaceAll function and
+concatenation) is decidable.  Furthermore two general semantic conditions are identified  \cite{CHL+19}  which together ensure the decidability of path
+feasibility. In particular, the semantic conditions  are satisfied by a multitude of string operations
 including concatenation, one-way and two-way finite-state transducers, replaceAll functions
 % (where the
 %replacement string could contain variables), 
@@ -99,17 +97,24 @@ string-reverse functions, regular-expression matching, etc.
 %Plandowski explored an approach of compression and proposed a PSPACE algorithm \cite{P04}.  This is the best bound up to date, though a simpler PSPACE algorithm with smaller space requirement (nondeterministic $O(n \log n)$ space) was proposed by Jez \cite{J16}, based on compression. Very recently, Jez \cite{J17} further improves the complexity to (nondeterministic) $O(n )$, i.e.,  linear space. 
 
  
-String data types have a close relationship with integer data types. Perhaps in its simplest form, 
-length constraints have been  studied in the context of string constraint solving, though much less is known comparing to the pure string counterparts. For instance, it is still a major open problem whether the theory of concatenation with length constraints is decidable \cite{Vijay-length}, though  several extensions of this 
-theory are undecidable (e.g. with letter counting \cite{buchi} and
-string-number conversion \cite{GB16}). 
+%String data types have a close relationship with integer data types. Perhaps in its simplest form, 
+%length constraints have been  studied in the context of string constraint solving, though much less is known comparing
+As mentioned before, integer constraints, manly in the form of length constraints has been considered as well, but is certainly less developed.  %to the pure string counterparts. For instance, 
+(As an example, it is still a major open problem whether the theory of concatenation with length constraints is decidable \cite{Vijay-length}.)
+%, though  several extensions of this 
+%theory are undecidable (e.g. with letter counting \cite{buchi} and
+%string-number conversion \cite{GB16}). 
 %
-Along the same line, length constraints have been considered for the  aforementioned syntactic restrictions of string constraints but with more complex string operations. For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
+In parallel with the  line of allowing more complex string operations but imposing syntactic restrictions, length constraints, as well as some variants, have been considered  For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
 %added to the subclass of $\strline[\replaceall]$ where the pattern/replacement 
 %are constants, while preserving decidability. In contrast, 
-if we allow variables on the replacement parameters of formulas, as it was done in \cite{CHL+18}, %in $\strline[\replaceall]$,
-we can easily encode the Hilbert's 10th problem with length (integer) 
-constraints. In other words, path feasibility becomes undecidable \cite{CCH+18}. In light of this, to retain decidable,  the replaceall functions must be in the restricted form, as our language is significantly more expressive regarding the integer data types than the length constraints. 
+%if we allow variables on the replacement parameters of formulas, 
+if one insists decidability of path feasibility, the length constraint cannot co-exist with the general form of replaceAll functions because otherwise Hilbert's 10th problem could have been encoded \cite{CCH+18}. %as it was done in \cite{CHL+18}, %in $\strline[\replaceall]$,
+%we can easily encode the  with length (integer) 
+%constraints. In other words, path feasibility becomes undecidable . 
+%In light of this, to retain decidable,  
+This result shows that the replaceall functions must not use variables in the replacement string in the string constraint language considered in the current paper. 
+%is significantly more expressive regarding the integer data types than the length constraints. 
 %
 %Several decidable restrictions, however,
 %have been proposed including solved form \cite{Vijay-length} and acyclicity 
