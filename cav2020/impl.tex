@@ -5,12 +5,18 @@ OSTRICH+ reuses the parser of Princess. Moreover, it replaces NFAs in OSTRICH wi
 
 Similarly to OSTRICH, OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
 splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$.
-The pseudo-code of Step II-V of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (corresponding to Step IV of the decision procedure). Moreover, $\mathit{BackDfsExp}$ calls a function $\mathit{CheckCefaLIASat}$ to solve. Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and omitted here.
+The pseudo-code of Step II-V of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (corresponding to Step IV of the decision procedure). Moreover, $\mathit{BackDfsExp}$ calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (corresponding to Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and omitted here. 
+
+\paragraph*{Optimisations for solving the {\lasat} problem.} From Proposition~\ref{prop:la-sat-cefa-inter}, a natural approach to solve the {\lasat} problem is to compute an existential LIA formula defining the Parikh image of products of CEFAs, then use SMT solvers, e.g. CVC4 or Z3, to decide the satisfiability of existential LIA formulas. Nevertheless, this approach faces the state explosion problem when computing the products of CEFAs.  We did implement this approach in the beginning. However, some preliminary experiments showed that this approach is not scalable. Therefore, in the implementation of the function $\mathit{CheckCefaLIASat}$ in Algorithm~\ref{alg:dfs},  we finally choose to utilise the symbolic model checker nuXmv \cite{nuxmv} to elevate the state explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of solving the model checking problem for both finite and infinite state systems. Our main idea is to encode the {\lasat} problem as instances of the model checking problem and then call nuXmv to solve it. Since  {\lasat} is a problem for quantifier-free LIA formulas and CEFAs that contain integer variables, the {\lasat} problem actually corresponds to the problem of model checking \emph{infinite state systems}. In the following, we use a simple example to illustrate how to encode the instances of  the {\lasat} problem into the inputs of nuXmv.
+
+\begin{example}
+Encoding of {\lasat} into nuXmv.
+\end{example}
 
 
 %%%%%%% the pseudo-code
 %%%%%%% the pseudo-code
-\begin{algorithm}[htbp]
+\begin{algorithm}[tbp]
 \SetKw{Continue}{continue}
   \small
   \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
@@ -172,28 +178,29 @@ The pseudo-code of Step II-V of the decision procedure in Section~\ref{sec:dec} 
 %Other CEFAs: no optimization
 %\end{itemize}
 
-The main bottleneck of the decision procedure is 
 
-$prefixOf(x, u), suffixOf(x,u), contains(x, u)$: transformed into regular constraints
-
-using nuxmv to avoid state explosion of the product operation.
-
-introduction to nuxmv
-
-introduction to the encoding into nuxmv instances
-
-\begin{example}
-An example for the nuxmv encoding.
-\end{example}
-
-start two threads, one guessing sat, another one guessing unsat, run concurrently
-
-three strategies: 
-
-product + parikh image
-
-product + nuxmv
-
-nuxmv
+%The main bottleneck of the decision procedure is 
+%
+%$prefixOf(x, u), suffixOf(x,u), contains(x, u)$: transformed into regular constraints
+%
+%using nuxmv to avoid state explosion of the product operation.
+%
+%introduction to nuxmv
+%
+%introduction to the encoding into nuxmv instances
+%
+%\begin{example}
+%An example for the nuxmv encoding.
+%\end{example}
+%
+%start two threads, one guessing sat, another one guessing unsat, run concurrently
+%
+%three strategies: 
+%
+%product + parikh image
+%
+%product + nuxmv
+%
+%nuxmv
 
 
