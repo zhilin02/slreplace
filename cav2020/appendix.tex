@@ -271,7 +271,7 @@ Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carr
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}
+\section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}\label{app:case-split-semantics}
 
 \begin{algorithm}[htbp]
   \small
@@ -303,13 +303,15 @@ Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carr
 			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
 			 $\mathit{funApps} \leftarrow \mathit{funApps} \cup \{y:=\substring(x, i, j)\}$\;
 		}		
-\caption{$\mathit{indexofCaseSplit}$}\label{alg:indexof}
+\caption{$\mathit{indexofCaseSplit}$ for case splits in the semantics of $\indexof_v$}\label{alg:indexof}
 \end{algorithm}
 
 \begin{algorithm}[htbp]
   \small
-  \KwIn{ }
-  \KwResult{ }
+  \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+    $\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
+  \KwResult{$(active, arith, \mathit{funApps})$\newline}
+
   		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
 		{
 			 $arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
@@ -326,6 +328,6 @@ Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carr
 			 $active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
 			 $\mathit{funApps} \leftarrow \mathit{funApps} \setminus \{y:=\substring(x, i, j)\}$\;		 
 		}
-\caption{$\mathit{substringCaseSplit}$}\label{alg:substring}
+\caption{$\mathit{substringCaseSplit}$  for case splits in the semantics of $\substring$}\label{alg:substring}
 \end{algorithm}
 
