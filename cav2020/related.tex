@@ -195,25 +195,31 @@ This result shows that the replaceall functions must not use variables in the re
 %incomplete as reasoning about unbounded strings defined recursively is in 
 %general an undecidable problem.
 % 
-Theoretical algorithms  (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to  practical solvers. At the same time, the classes of constraints that are required in practice sometimes require string operations that are not covered by decidable string constraint languages.
+%Theoretical algorithms  (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to  practical solvers. At the same time, the classes of constraints that are required in practice sometimes require string operations that are not covered by decidable string constraint languages.
  %(e.g.~length constraints, replaceall, 
  %transducers, etc.). 
-For these reasons, there is a large amount of work on heuristics for developing practical (often incomplete) string solvers, e.g., Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Trau/Z3-Trau/Trau+ \cite{AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}, 
+%For these reasons, 
+%There is a large amount of work %on heuristics for 
+%developing 
+Many practical (often incomplete) string solvers have been developed. A exhaustiveness list  includes earlier work \cite{BTV09,RVG12} which integrates 
+%string constraint solving 
+with respective dynamic symbolic execution engines, Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3}, CVC4~\cite{cvc4}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Trau/Z3-Trau/Trau+ \cite{AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}, 
 %
 SLOG \cite{fang-yu-circuits}/SLENT \cite{WC+18}, Norn~\cite{Abdulla14}, SLOTH \cite{HJLRV18}, OSTRICH \cite{CHL+19}
-as well as earlier work \cite{BTV09,RVG12} which integrated string constraint solving with respective dynamic symbolic execution engine %Pex.  
-
+ %Pex.  
+%
 %
 % A large amount of recent work develops practical string solvers
-
+%
 %We can classify this large body of practical string constraint solvers into 
 
-A large body of these tools provide support for complex string operations, but only offer relatively limited support for integer related constraints (for instance, typically they only support the length function or simple variant thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
+A large body of these tools provide support for complex string operations, but only offer relatively limited support for integer constraints (for instance, typically  only the length function or simple variant thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
 Focusing on semi-algorithms also allows highly expressive (but undecidable) 
-string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}, but sometimes results in  hybrid constraint solving procedure based on, for instance, 
-ant colony optimization meta-heuristic \cite{ThomeSBB17}. 
+string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}; sometimes hybrid constraint solving procedures based on, for instance, 
+ant colony optimization meta-heuristic \cite{ThomeSBB17} are utilized. 
 
-Despite the excellent performance of some of these solvers on several existing benchmarks, a potential risk is that these heuristic based approaches may not be generalized well to further practical cases. After all,  string constraint solving is still a research area in its infancy. One implication is that the currently insufficient range of benchmarking may not be representative in the growing number of application of string constraints in, e.g., program verification and security analysis. 
+%Despite the excellent performance of some of these solvers on several existing benchmarks, a potential risk is that these heuristic based approaches may not be generalized well to further practical cases. After all,  string constraint solving is still a research area in its infancy. One implication is that the currently insufficient range of benchmarking may not be representative in the growing number of application of string constraints in, e.g., program verification and security analysis. 
+
 %there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g.,
 %in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that
 %string constraint solving is a research area in its infancy with an insufficient range of benchmarking
@@ -274,11 +280,9 @@ Despite the excellent performance of some of these solvers on several existing b
 % still solve some constraints that arise in practice. 
  
  
-Recently, the study of decidability of string constraints have also resulted in automata-theoretic algorithms that are amenable to implementation, e.g.,
- acyclic logic with concatenation, regular constraints, and length constraints 
- \cite{Abdulla14}, and straight-line logic with finite transducers (or
- replaceall), concatenation, and regular constraints 
- \cite{HJLRV18,fang-yu-circuits,WC+18,CHL+19}. The current work builds on the solver OSTRICH \cite{CHL+19}, but focuses on integer constraints which were unavailable. 
+Recently, the study of decidability of string constraints has also resulted in automata-theoretic algorithms that are amenable to implementation. For instance, the tool Norm supports solving  acyclic logic with concatenation, regular constraints, and length constraints \cite{Abdulla14}; %SLOG \cite{fang-yu-circuits},  SLENT \cite{WC+18}, 
+SLOTH \cite{HJLRV18} and OSTRICH \cite{CHL+19} support straight-line logic with finite transducers (or
+ replaceall), concatenation, and regular constraints, but no support for even the length constraints. The current work builds on the solver OSTRICH , but focuses on integer constraints which were unavailable. 
  
  
  
