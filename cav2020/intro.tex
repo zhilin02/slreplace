@@ -1,26 +1,44 @@
 %!TEX root = main.tex
 
-\zhilin{this paragraph is copied from POPL'19 paper should be adapted.} 
-Strings are a fundamental data type in virtually all programming languages.
-Their generic nature can, however, lead to many subtle programming
-bugs, some with security consequences, e.g., cross-site scripting
+%\zhilin{this paragraph is copied from POPL'19 paper should be adapted.} 
+This paper concerns strings and integers, two fundamental data type
+%Strings are a fundamental data type 
+in virtually all programming languages.
+%Their generic nature can, however, lead to 
+String-manipulating programs are notoriously subtle and their potential bugs %Many subtle programming bugs are caused by , some with 
+may bring severe security consequences, a typical example of which is cross-site scripting
 (XSS), which is among the OWASP Top 10 Application Security Risks
-\cite{owasp17}. One effective
-automatic testing method for identifying subtle programming errors
-is based on \emph{symbolic execution}
-\cite{king76} and combinations with dynamic analysis
-called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
-See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
-which runs only \emph{concrete} program executions on different
-inputs, the techniques of symbolic execution analyse \emph{static} paths
-(also called symbolic executions) through the software system under test.
+\cite{owasp17}. Integer  %data type 
+comes naturally with string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
+Typically, mainstream programming languages provide, apart from standard string functions such as concatenation and $\replaceall$, %string functions involving the integer data type, e.g. 
+functions such as $\length$, $\indexof$, and $\substring$ which can convert strings to integers and vice verse. %, are also widely used in string-manipulating programs. 
+They are indeed heavily utilized in practice, for instance, it was reported \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$ (or variants thereof) comprise over 80\% of string functions in some JavaScript applications (notably more frequently used than concatenation). Undoubtedly, the introduction of integers exacerbates the intricacy of string-manipulating programs, which call for a unified framework to improve their quality. 
+
+
+%This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
+
+
+
+
+%in programs it , typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
+
+One effective
+automatic analysis and testing method for identifying subtle programming errors is based on \emph{symbolic execution}.
+%\cite{king76} and combinations with dynamic analysis
+%called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
+See \cite{symbex-survey} for an excellent survey. 
+%Unlike purely random testing,
+%which runs only \emph{concrete} program executions on different
+%inputs, the techniques of symbolic execution 
+This technique analyzes static paths
+(also called symbolic executions) through the program under consideration. %software system under test.
 Such a path can be viewed as a constraint $\varphi$ (over
 appropriate data domains) and the hope is that a fast
 solver is available for checking the satisfiability of $\varphi$ (i.e. to check
 the \emph{feasibility} of the static path), which can be used for generating
-inputs that lead to certain parts of the program or an erroneous behaviour.
+inputs that lead to certain parts of the program or an erroneous behavior.
 
-Integer data type naturally comes to play in string-manipulating programs, typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
+
 
 %$\length: \Sigma^* \rightarrow \Int$ (where $\Sigma$ is the alphabet and $\Sigma^*$ is the set of strings over $\Sigma$), $\substring: \Sigma^* \times \Int \times \Int \rightarrow \Sigma^*$, and $\indexof: \Sigma^* \times \Int \rightarrow \Int$.
 
