@@ -267,3 +267,65 @@ Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carr
 
 \zhilin{@Anthony, please write your proof here.} Use Proposition 16 in \cite{LB16}.
 \end{proof}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+    $\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
+  \KwResult{$(active, arith, \mathit{funApps})$\newline}
+  
+\For{each $\indexof_v(x, i) \in \mathcal{I}_1$}
+		{
+			$arith \leftarrow arith[\indexof_v(x, 0)/\indexof_v(x,i)] \wedge i < 0$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_2$}
+		{
+			$active \leftarrow active \cup \{x \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i < 0$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_3$}
+		{
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge \length(x)$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_4$}
+		{
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x)$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_5$}
+		{
+			choose fresh variables $y$ and $j$\;
+			$active \leftarrow active \cup \{y \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
+			 $\mathit{funApps} \leftarrow \mathit{funApps} \cup \{y:=\substring(x, i, j)\}$\;
+		}		
+\caption{$\mathit{indexofCaseSplit}$}\label{alg:indexof}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{ }
+  \KwResult{ }
+  		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
+		{
+			 $arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
+		}
+		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_2$}
+		{
+			 choose a fresh integer variable $i'$\;
+			 $arith \leftarrow arith \wedge i \ge 0 \wedge i \le \length(x) \wedge i+j > \length(x) \wedge i' = \length(x)-i$\;
+			 $\mathit{funApps} \leftarrow \mathit{funApps}[y:=\substring(x, i, i')/y:=\substring(x, i, j)]$\;
+		}
+		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_3$}
+		{
+			 $arith \leftarrow arith \wedge i < 0$\;
+			 $active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
+			 $\mathit{funApps} \leftarrow \mathit{funApps} \setminus \{y:=\substring(x, i, j)\}$\;		 
+		}
+\caption{$\mathit{substringCaseSplit}$}\label{alg:substring}
+\end{algorithm}
+

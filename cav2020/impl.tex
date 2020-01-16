@@ -5,7 +5,7 @@ OSTRICH+ reuses the parser of Princess. Moreover, it replaces NFAs in OSTRICH wi
 
 Similarly to OSTRICH, OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
 splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$.
-The pseudo-code of Step II-V of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (corresponding to Step IV of the decision procedure). Moreover, $\mathit{BackDfsExp}$ calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (corresponding to Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and omitted here. 
+The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$. Due to space limit, the details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ are omitted here and can be found in the appendix. Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and omitted here. 
 
 %%%%%%% the pseudo-code
 %%%%%%% the pseudo-code
@@ -17,14 +17,14 @@ The pseudo-code of Step II-V of the decision procedure in Section~\ref{sec:dec} 
     $\mathit{funApps}$: acyclic set of assignment statements. }
   \KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise.\newline
    }
-
-  \Begin{
-    	\For{each partition $\mathcal{I}_1, \mathcal{I}_2,\mathcal{I}_3,\mathcal{I}_4,\mathcal{I}_5$ of the set of $\indexof_v(x, i)$ in $arith$ and \newline
-	\hspace*{4mm} each partition $\mathcal{J}_1, \mathcal{J}_2, \mathcal{J}_3$ of the set of $y:=\substring(x, i, j)$ in $\mathit{funApps}$ 
+%  \Begin{
+    	\For{each partition $(\mathcal{I}_l)_{l \in [5]}$ of the set of $\indexof_v(x, i)$ in $arith$ and \newline
+	\hspace*{4mm} each partition $(\mathcal{J}_l)_{l \in [3]}$ of the set of $y:=\substring(x, i, j)$ in $\mathit{funApps}$ 
 	}
 	{
 		\tcc{Case splits for semantics of $\indexof$ and $\substring$}
-		$\mathit{indexofCaseSplit}(\mathcal{I}_1, \mathcal{I}_2,\mathcal{I}_3,\mathcal{I}_4,\mathcal{I}_5)$; $\mathit{substringCaseSplit}(\mathcal{J}_1, \mathcal{J}_2,\mathcal{J}_3)$\; 
+		$(active, arith, \mathit{funApps}) = \mathit{indexofCaseSplit}(active, arith, \mathit{funApps}, (\mathcal{I}_l)_{l \in [5]})$\; 
+		$(active, arith, \mathit{funApps})= \mathit{substringCaseSplit}(active, arith, \mathit{funApps}, (\mathcal{J}_l)_{l \in [3]})$\; 
 		\For{each $\length(x)$ occurring in $arith$}
 		{
 			choose a fresh integer variable $i$\;
@@ -41,9 +41,9 @@ The pseudo-code of Step II-V of the decision procedure in Section~\ref{sec:dec} 
 %		{\Continue;}
 	}
 	\Return $unsat$; 		
-}
+%}
   \caption{Function $\mathit{checkSat}$
-    for Step II-V of the decision procedure} \label{alg:checksat} 
+    for Step II-III} \label{alg:checksat} 
 \end{algorithm}
 
 
@@ -63,7 +63,7 @@ Encoding of {\lasat} into nuXmv.
   \KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise.\newline
    }
 
-  \Begin{
+%  \Begin{
     \eIf{$\mathit{active} = \emptyset$}{
 %      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
       \tcc{Check whether the LIA constraint $arith$ is satisfiable with respect to the CEFA constraints in $passive$ (i.e. Step V).}
@@ -97,8 +97,8 @@ Encoding of {\lasat} into nuXmv.
         	\Return{$\mathit{BackDfsExp}(active \backslash \{x\in \CEFA\}, passive \cup \{x\in \CEFA\}, arith, \mathit{funApps})$;}
       	}
 	} 
-}
-  \caption{Function~$\mathit{BackDfsExp}$ for depth-first exploration (Step IV)}\label{alg:dfs}
+%}
+  \caption{Function~$\mathit{BackDfsExp}$ for Step IV (depth-first exploration)}\label{alg:dfs}
 \end{algorithm}
 %%%%%%% the pseudo-code
 %%%%%%% the pseudo-code
@@ -106,64 +106,6 @@ Encoding of {\lasat} into nuXmv.
 
 
 
-%%%%% Case splits of semantics %%%%
-%%%%% Case splits of semantics %%%%
-\hide{
-
-\begin{algorithm}[htbp]
-  \small
-  \KwIn{ }
-  \KwResult{ }
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_1$}
-		{
-			$arith \leftarrow arith[\indexof_v(x, 0)/\indexof_v(x,i)] \wedge i < 0$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_2$}
-		{
-			$active \leftarrow active \cup \{x \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i < 0$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_3$}
-		{
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge \length(x)$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_4$}
-		{
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x)$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_5$}
-		{
-			choose fresh variables $y$ and $j$\;
-			$active \leftarrow active \cup \{y \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
-			 $\mathit{funApps} \leftarrow \mathit{funApps} \cup \{y:=\substring(x, i, j)\}$\;
-		}		
-\caption{$\mathit{indexofCaseSplit}$}
-\end{algorithm}
-
-\begin{algorithm}[htbp]
-  \small
-  \KwIn{ }
-  \KwResult{ }
-  		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
-		{
-			 $arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
-		}
-		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_2$}
-		{
-			 choose a fresh integer variable $i'$\;
-			 $arith \leftarrow arith \wedge i \ge 0 \wedge i \le \length(x) \wedge i+j > \length(x) \wedge i' = \length(x)-i$\;
-			 $\mathit{funApps} \leftarrow \mathit{funApps}[y:=\substring(x, i, i')/y:=\substring(x, i, j)]$\;
-		}
-		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_3$}
-		{
-			 $arith \leftarrow arith \wedge i < 0$\;
-			 $active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
-			 $\mathit{funApps} \leftarrow \mathit{funApps} \setminus \{y:=\substring(x, i, j)\}$\;		 
-		}
-\caption{$\mathit{substringCaseSplit}$}
-\end{algorithm}
-}
 %%%%% Case splits of semantics %%%%
 %%%%% Case splits of semantics %%%%
 
