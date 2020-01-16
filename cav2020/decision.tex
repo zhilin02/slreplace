@@ -228,9 +228,9 @@ Let $X$ denote the set of string variables occurring in $S$.
 For each $x \in X$, let $\Lambda_x=\{\CEFA_{x}^1, \cdots, \CEFA_{x}^{s_x}\}$ denote the set of CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. 
 %$R_x$ be the vector of cost registers obtained by concatenating $R(\CEFA_{x,1})$, $\cdots$, and $R(\CEFA_{x,s_x})$. 
 Moreover, let $\phi$ denote the conjunction of all the LIA formulas occurring in $S$. It is straightforward to observe that $\phi$ is over %the set of integer variables 
-$R'=\bigcup_{x\in X, j \in [s_x]}R(\CEFA_{x}^{j})$. Then the path feasibility of $S$ is reduced to deciding 
+$R'=\bigcup_{x\in X, j \in [s_x]}R(\CEFA_{x}^{j})$. Then the path feasibility of $S$ is reduced to \emph{the satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem)} that is defined below, 
 \begin{quote}
-whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+deciding whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
 	%The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
 %	
 %	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
@@ -239,7 +239,7 @@ whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely,  %\begin{d
 whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
 there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[\theta(R')/R']$ holds and $(w_x, \theta(R(\CEFA_{x}^{j}))) \in \Lang(\CEFA_{x}^{j})$ for every $x \in X$ and $j \in [s_x]$.
 \end{quote}
-This problem is decidable and $\pspace$-complete, as stated in the proposition below.
+This {\lasat} problem is decidable and $\pspace$-complete, as stated in the proposition below.
 %\end{definition}
 
 %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
@@ -255,8 +255,9 @@ This problem is decidable and $\pspace$-complete, as stated in the proposition b
 %\end{definition}
 
 \begin{proposition}\label{prop:la-sat-cefa-inter}
-	Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. Deciding whether  %such that the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$,  and here are 
-	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
+This {\lasat} problem is $\pspace$-complete.
+%	Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. Deciding whether  %such that the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$,  and here are 
+%	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
 \end{proposition}
 
 The proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in the appendix.

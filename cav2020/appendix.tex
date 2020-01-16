@@ -237,10 +237,12 @@ We are ready to prove Theorem~\ref{thm-la-sat-cefa}.
 \section{Proof of Proposition~\ref{prop:la-sat-cefa-inter}}\label{app:sat-cefa}
  
 \noindent{\bf Proposition~\ref{prop:la-sat-cefa-inter}}.
-\emph{Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. Deciding whether  %such that the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$,  and here are 
-	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is PSPACE-complete.} 
+\emph{The {\lasat} problem is $\pspace$-complete.}
 	
 \begin{proof}
+	Let $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ be a family of CEFAs  each of which carries a vector of registers $R_i^j$ and  $\phi$ be a quantifier-free LIA formula such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. 
+%Deciding whether  there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
+
 At first, we observe that we can focus on the CEFAs where the cost registers are monotone in the sense that their values are non-decreasing, in other words, they can only be updated with natural number constants. This observation is justified by the following reduction.
 
 For each register $r \in R^i_j$, introduce two registers $r^+, r^-$. Let $(R^i_j)^{\pm}$ denote the vector of registers by replacing each $r \in R^i_j$ with $(r^+, r^-)$. Intuitively,  for each $r \in R^i_j$, the updates of $r$ in $\CEFA_i^{j} $ are split into the non-negative ones and negative ones, with the former stored in $r^+$ and the latter in $r^-$. Suppose $(R')^{\pm} = \bigcup_{i,j} (R_i^j)^{\pm}$. Then we construct CEFAs $(\cB_i^{j})_{i \in I, j \in J_i}$ and an LIA formula $\phi^\pm$ such that
