@@ -95,7 +95,8 @@ Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 Let $S$  be a {\slint} program. %We show how to decide the path feasibility of $S$. 
-We present a decision procedure for the path feasibility problem of $S$. %is nondeterministic and divided into three steps. 
+Without loss of generality, we assume that for every occurrence of assignments of the form $y:= \substring(x, t_1, t_2)$, it holds that $t_1$ and $t_2$ are integer variables. This is not really a restriction, since if in $y:= \substring(x, t_1, t_2)$, $t_1$(resp. $t_2$) is not an integer variable, then we introduce a fresh integer variable $i$ (resp. $j$), replace $t_1$ by $i$ (resp. replace $t_2$ by $j$), and add $\ASSERT{i=t_1}$ (resp. $\ASSERT{j = t_2}$) in $S$.
+We present a decision procedure for the path feasibility problem of $S$ which is divided into five steps. %is nondeterministic and divided into three steps. 
 %\begin{description}
 %\item[Step I: Preprocessing.] 
 %
@@ -115,10 +116,26 @@ Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\c
 
 \smallskip
 
-Nondeterministically choose a subset $\mathcal{I}$ of the integer terms of the form $\indexof_v(x,i)$ in $S$, and for each $\indexof_v(x,i) \in \mathcal{I}$, do the following.
-\begin{quote}
-Replace $\indexof_v(x, i)$ with $-1$, and add the statements $y:=\substring(x, i, \length(x) - i); \ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, where $y$ is a fresh variable and $\NFA_{\overline{\Sigma^*v\Sigma^*}}$ is an NFA defining the language $\{w \in \Sigma^*\mid v \mbox{ does not occur as a substring in } w\}$. 
-\end{quote}
+For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following to do.
+\begin{itemize}
+\item Add $\ASSERT{i < 0}$ to $S$, replace $\indexof_v(x,i)$ with $\indexof_v(x,0)$ in $S$. 
+%
+\item Add $\ASSERT{i < 0};\ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, replace $\indexof_v(x,i)$ with $-1$ in $S$.
+%
+\item Add $\ASSERT{i \ge \length(x)}$ to $S$, replace $\indexof_v(x,i)$ with $-1$ in $S$.
+%
+\item Add $\ASSERT{i \ge 0}; \ASSERT{i < \length(x)}$ to $S$.
+%
+\item Add 
+%
+$$
+\begin{array}{l}
+\ASSERT{i \ge 0}; \ASSERT{i < \length(x)}; \ASSERT{j=\length(x)-i}; \\
+\ \ \ \ y:=\substring(x, i, j); \ASSERT{y \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}
+\end{array}
+$$ 
+to $S$, where $y$ is a fresh string variable, $j$ is a fresh integer variable, and $\NFA_{\overline{\Sigma^*v\Sigma^*}}$ is an NFA defining the language $\{w \in \Sigma^*\mid v \mbox{ does not occur as a substring in } w\}$. Replace $\indexof_v(x, i)$ with $-1$ in $S$.
+\end{itemize}
 
 %Nondeterministically choose a subset of $\Theta$ of the assignment statements of the form $y:=\substring(x, i, j)$ in $S$, and 
 %
@@ -126,9 +143,11 @@ For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose
 \begin{itemize}
 \item Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
 %
-\item Add the statements $\ASSERT{i \ge 0}; \ASSERT{i+j  > \length(x)}$ to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, \length(x) - i)$.
+\item Add the statements 
+$\ASSERT{i \ge 0}; \ASSERT{i \le \length(x)};\ASSERT{i+j  > \length(x)}$; $\ASSERT{i'  = \length(x)-i}$
+to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')$, where $i'$ is a fresh integer variable.
 %
-\item Add the statement $\ASSERT{i < 0}$ to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y := \varepsilon$.
+\item Add the statement $\ASSERT{i < 0}; \ASSERT{y \in \NFA_\varepsilon}$ to $S$, moreover, remove $y:=\substring(x, i, j)$ from $S$, where $\NFA_\varepsilon$ is the NFA defining the language $\{\varepsilon\}$.
 \end{itemize}
 
 
@@ -168,9 +187,9 @@ Let $\{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y 
 Let $j \in [s]$ and $R(\CEFA_j)=(r_{j,1}, \cdots, r_{j, \ell_j})$. Then from Proposition~\ref{prop:pre-image}, 
 a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $((\cB^{(1)}_{j, j'}, \cdots, \cB^{(l)}_{j, j'})_{j' \in [m_j]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$, where we write
 \[
-R(\cB^{(j'')}_{j, j'})=\left((r')^{(j'',1)}_{j, j'}, \cdots, (r')_{j, j'}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
+R(\cB^{(j'')}_{j, j'})=\left((r')^{(j'',1)}_{j}, \cdots, (r')_{j}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
 \]
-for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j, j'}, \cdots, (r')_{j, j'}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced.
+for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j}, \cdots, (r')_{j}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j}, \cdots, (r')_{j}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced, moreover, $R(\cB^{(j'')}_{j, j'_1})=R(\cB^{(j'')}_{j, j'_2})$ for distinct $j'_1,j'_2 \in [m_j]$.
 %
 
 Remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$, as well as all the statements $\ASSERT{y \in \CEFA_1}$, $\cdots$, $\ASSERT{y \in \CEFA_s}$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 

@@ -1,77 +1,139 @@
 %!TEX root = main.tex
 
+We have implemented the decision procedure on top of the string solver OSTRICH \cite{CHL+19}, resulting into a new solver OSTRICH+. OSTRICH is based on the SMT solver Princess and .
+The pseudo-code is in Algorithm~\ref{alg:dfs}.
 
 
-the pseudo-code
+%the pseudo-code
 
 \begin{algorithm}[htbp]
 \SetKw{Continue}{continue}
   \small
-  \KwIn{$active, passive$: sets of CEFA constraints, 
+  \KwIn{$active, passive$: sets of CEFA constraints,  $arith$: set of arithmetic constraints,
 %    $x \in L$,
-    $funApps$: acyclic set of assignment statements, $LA$: set of LIA constraints. }
-  \KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise;\newline
+    $funApps$: acyclic set of assignment statements. }
+  \KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise.\newline
    }
 
   \Begin{
     \eIf{$\mathit{active} = \emptyset$}{
-      \tcc{use symbolic model checker {NuXmv} to check whether regex constraints are consistent with Linear Integer Constraints}
-      \Return{$symbolicCheckSat(passive, LA)$;} 
+      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
+      \Return{$\mathit{symbolicCheckSat}(passive, arith)$;} 
     }{
-      choose a CEFA constraint $x \in \CEFA$ in $active$\;
-      \tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\CEFA$ under $f$}
-      \eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$
-        in $funApps$}{
-%        $\mathit{funApps} \leftarrow \mathit{funApps} \backslash \{x := f(y_1, \ldots, y_r)\}  $\;
-%        \eIf{ $x$ is string varible}
-%        {
-%	choose all constraint $x\in L$ in $\mathit{active}$\;
-        compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = ((\CEFA_1^{(j)}, \cdots, \CEFA_l^{(j)})_{j \in [n]}, preLA)$\;
-        $active \leftarrow active \setminus \{x \in \CEFA\}$; $passive \leftarrow passive \cup \{x \in \CEFA\}$\;
-%         }{
-%         \tcc{$x$ is integer varible}
-%          compute the pre-image $f^{-1}(x) = \bigcup_{i=1}^n (L_1^{(i)} \times \cdots \times L_r^{(i)}, preLA^{(i)} ) $\;
-%          }
-    
-        \For{$i \leftarrow 1$ \KwTo $n$}{
-          $newCEFA \leftarrow
-          \{y_1 \in \CEFA_1^{(j)}, \ldots, y_l \in \CEFA_l^{(j)}\} $\;
-          $ newLA \leftarrow LA \wedge preLA$\;
-          \eIf{$active \cup passive \cup newCEFA$ is inconsistent}{
-            \Return{unsat};
-          }{
-          \Switch{$checkSat(active
-            \cup newCEFA,\;
-          passive,\;
-          funApps,\;
-           newLA )$}{
-          \uCase{$sat$}{
-            \Return{$sat$};
-          }
-          \Case{$unsat$}{
-            \Continue\tcc*{backtrack}
-          }
-          }
-        }}
-        \Return{unsat}; 
-      }{
-%       \tcc{funApps is null }
-        \Return{$checkSat(active \backslash \{x\in \CEFA\} ,\;
-          passive \cup \{x\in \CEFA\},\;
-          funApps,\;
-           LA)$;}
-      }
-%      , and
-%      the function application~$x = f(\bar y)$ in $\mathit{funApps}$\;
-%      $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in L\}$\;
-%      $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in L\}$\;
-    }
-  }
-
+    	\For{each partition $\mathcal{I}_1, \mathcal{I}_2,\mathcal{I}_3,\mathcal{I}_4,\mathcal{I}_5$ of the set of $\indexof_v(x, i)$ in $arith$ and \newline
+	\hspace*{4mm} each partition $\mathcal{J}_1, \mathcal{J}_2, \mathcal{J}_3$ of the set of $y:=\substring(x, i, j)$ in $funApps$ 
+	}
+	{
+		\tcc{Case splits for semantics of $\indexof$ and $\substring$}
+		$\mathit{indexofCaseSplit}(\mathcal{I}_1, \mathcal{I}_2,\mathcal{I}_3,\mathcal{I}_4,\mathcal{I}_5)$; $\mathit{substringCaseSplit}(\mathcal{J}_1, \mathcal{J}_2,\mathcal{J}_3)$\; 
+		\For{each $\length(x)$ occurring in $arith$}
+		{
+			choose a fresh integer variable $i$\;
+			$active \leftarrow active \cup \{x \in \CEFA_{\rm len}[i/r_1]\}$\; 
+			$arith\leftarrow arith[i/\length(x)]$;
+		}
+		\For{each $\indexof_v(x,i)$ occurring in $arith$}
+		{
+			choose fresh integer variables $i_1,i_2$\;
+			$active \leftarrow active \cup \{x \in \CEFA_{\indexof_v}[i_1/r_1,i_2/r_2]\}$; $arith\leftarrow arith[i_2/\indexof_v(x,i)] \wedge i=i_1$;
+		} 		
+   		choose a CEFA constraint $x \in \CEFA$ in $active$ with $R(\CEFA)=(r_1,\cdots,r_k)$\;
+		\eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$ in $funApps$ with \newline
+		\hspace*{4mm} $\vec{i_j}=(i_{j,1},\cdots, i_{j, k_j})$ for $j \in [l]$
+		}
+		{
+%		      	\tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\Lang(\CEFA)$ under $f$}
+			compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = \left((\CEFA^{(1)}_{j}, \cdots, \CEFA^{(l)}_{j})_{j \in [n]}, \vec{t}\right)$ where \newline 
+			 $R(\CEFA^{(j')}_{j})=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
+		        $active \leftarrow active \setminus \{x \in \CEFA\}$; $passive \leftarrow passive \cup \{x \in \CEFA\}$\;    
+		        \For{$j \leftarrow 1$ \KwTo $n$}{
+          			$active \leftarrow active \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
+          			$ arith \leftarrow arith \wedge \bigwedge_{j' \in [l], j'' \in [k_{j'}]} i_{j',j''} = (r')^{(j', j'')} \wedge \bigwedge_{j' \in [k]} r_{j'} = t_{j'}$\;
+          			\eIf{$active \cup passive$ is inconsistent}{
+            				\Return{unsat};
+          			}
+				{
+			          \Switch{$\mathit{checkSat}(active, passive, arith, funApps)$}{
+					\uCase{$sat$}
+						{\Return{$sat$};}
+				        \Case{$unsat$}
+				        		{\Continue\tcc*{backtrack}}
+          				}
+        				}
+			}
+        			\Return{unsat}; 
+      	}
+      	{
+        	\Return{$\mathit{checkSat}(active \backslash \{x\in \CEFA\}, passive \cup \{x\in \CEFA\}, arith, funApps)$;}
+      	}
+	} 
+}
+}
   \caption{Recursive function~$\mathit{checkSat}$
-    for Step IV and Step V of the decision procedure \label{alg:dfs}}
+    for Step II-V \label{alg:dfs} of the decision procedure}
 \end{algorithm}
 
+
+%%%%% Case splits of semantics %%%%
+%%%%% Case splits of semantics %%%%
+\hide{
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{ }
+  \KwResult{ }
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_1$}
+		{
+			$arith \leftarrow arith[\indexof_v(x, 0)/\indexof_v(x,i)] \wedge i < 0$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_2$}
+		{
+			$active \leftarrow active \cup \{x \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i < 0$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_3$}
+		{
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge \length(x)$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_4$}
+		{
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x)$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_5$}
+		{
+			choose fresh variables $y$ and $j$\;
+			$active \leftarrow active \cup \{y \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
+			 $funApps \leftarrow funApps \cup \{y:=\substring(x, i, j)\}$\;
+		}		
+\caption{$\mathit{indexofCaseSplit}$}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{ }
+  \KwResult{ }
+  		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
+		{
+			 $arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
+		}
+		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_2$}
+		{
+			 choose a fresh integer variable $i'$\;
+			 $arith \leftarrow arith \wedge i \ge 0 \wedge i \le \length(x) \wedge i+j > \length(x) \wedge i' = \length(x)-i$\;
+			 $funApps \leftarrow funApps[y:=\substring(x, i, i')/y:=\substring(x, i, j)]$\;
+		}
+		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_3$}
+		{
+			 $arith \leftarrow arith \wedge i < 0$\;
+			 $active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
+			 $funApps \leftarrow funApps \setminus \{y:=\substring(x, i, j)\}$\;		 
+		}
+\caption{$\mathit{substringCaseSplit}$}
+\end{algorithm}
+}
+%%%%% Case splits of semantics %%%%
+%%%%% Case splits of semantics %%%%
 
 Written in Scala.
 

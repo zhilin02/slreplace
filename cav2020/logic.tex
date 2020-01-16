@@ -61,7 +61,7 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 %
 \item The integer term $\length(x)$ denotes the length of $x$. 
 %
-\item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. For instance, $\indexof_{ab}(aaba, 1) = 1$ and $\indexof_{ab}(aaba, 2)=-1$.
+\item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. Note that if $i<0$, then $\indexof_v(x, i)$ returns $\indexof_v(x, 0)$, and if $i \ge \length(x)$, then $\indexof_v(x, i)$ returns $-1$. For instance, $\indexof_{ab}(aaba, -1) = 1$, $\indexof_{ab}(aaba, 1) = 1$, $\indexof_{ab}(aaba, 2)=-1$, and $\indexof_{ab}(aaba, 4)=-1$.
 \end{itemize}
 
 \begin{example}\label{exmp:running}
