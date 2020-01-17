@@ -110,6 +110,8 @@ The fourth benchmark suite {\kaluzabench} is the well-known Kaluza benchmark sui
 
 The experiments are executed on a virtual machine with the CPU \zhilin{xxx} and 2GB main memory, with the timeout period set as 30 seconds. The experimental results are summarised in Table~\ref{tab-experiment}.
 
+{\zthreetrau} does not support replace/replaceall.
+
 %From the experimental results, we can see that \ostrich+ is the only solver that 
 
 
@@ -122,25 +124,25 @@ The experiments are executed on a virtual machine with the CPU \zhilin{xxx} and 
 \hline
 & &  \cvc & \zthree & \trauplus & \zthreetrau & \ostrich+\\
 \hline
-\multirow{4}{*}{\transducerbench+(91)} & \cellcolor{Gray} sat &  \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray}\\
+\multirow{4}{*}{\transducerbench+(91)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray} & \cellcolor{Gray}$-$ & \cellcolor{Gray}\\
 \cline{2-7}
- & unsat &  &  &  & &\\
+ & unsat &$-$  &$-$ &  &$-$ &\\
 \cline{2-7}
- & \cellcolor{Gray}  timeout & \cellcolor{Gray} & \cellcolor{Gray} &  \cellcolor{Gray} &\cellcolor{Gray} &\cellcolor{Gray} \\
+ & \cellcolor{Gray}  timeout & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ &  \cellcolor{Gray} &\cellcolor{Gray}$-$ &\cellcolor{Gray} \\
 \cline{2-7}
- & error/unknown &    &  &  & &\\
+ & error/unknown &$-$    &$-$  &  &$-$ &\\
 \hline
-\multirow{4}{*}{\slogbenchr(3391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}1309 & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} 0 & \cellcolor{Gray} \\
+\multirow{4}{*}{\slogbenchr(3391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}1195 & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray}$-$ & \cellcolor{Gray} \\
 \cline{2-7}
- & unsat & 2082 &   &  & 1900 &\\
+ & unsat & 255 &   &  &$-$ &\\
 \cline{2-7}
- & \cellcolor{Gray}  timeout & \cellcolor{Gray}0 &  \cellcolor{Gray} & \cellcolor{Gray} &\cellcolor{Gray} 1491 &\cellcolor{Gray} \\
+ & \cellcolor{Gray}  timeout & \cellcolor{Gray}1971 &  \cellcolor{Gray} & \cellcolor{Gray} &\cellcolor{Gray}$-$ &\cellcolor{Gray} \\
 \cline{2-7}
- & error/unknown &0  &    &  & 0 &\\
+ & error/unknown &0  &    &  &$-$ &\\
 \hline
-\multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray} 43 & \cellcolor{Gray}$-$ & \cellcolor{Gray} & \cellcolor{Gray}$-$  & \cellcolor{Gray}\\
+\multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray} 47 & \cellcolor{Gray}$-$ & \cellcolor{Gray} & \cellcolor{Gray}$-$  & \cellcolor{Gray}\\
 \cline{2-7}
- & unsat & 7 &$-$   &  &$-$ &\\
+ & unsat & 3 &$-$   &  &$-$ &\\
 \cline{2-7}
  & \cellcolor{Gray}  timeout & \cellcolor{Gray} 70 & \cellcolor{Gray}$-$ & \cellcolor{Gray} &\cellcolor{Gray}$-$  &\cellcolor{Gray} \\
 \cline{2-7}
