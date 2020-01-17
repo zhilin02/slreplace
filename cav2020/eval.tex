@@ -86,12 +86,12 @@ The first benchmark suite {\transducerbench+} is derived from the {\transducerbe
 %
 %\end{description}
 
-The second benchmark suite {\slogbench} is adapted from the SLOG benchmark suite used by the SLOG tool~\cite{fang-yu-circuits} and contains 3,511 instances \zhilin{the number to be checked}. 
+The second benchmark suite {\slogbench} is adapted from the SLOG benchmark suite used by the SLOG tool~\cite{fang-yu-circuits} and contains 3,511 instances. 
 %The SLOG are derived from the security analysis of real web applications and contain 1-211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).
 Since the SLOG benchmark suite does not contain the integer data type,
 we obtain the {\slogbench} suite by choosing for each SLOG benchmark instance an output string variable\footnote{A string variable is called the output variable if it occurs in the left-hand side of an assignment statement, but does not appear in the right-hand sides of the assignment statements.}, say $x$, and add the statement $\ASSERT{2\ \indexof_{a}(x, 0) < \length(x)}$ for some $a \in \Sigma$.
 % and $c \in \Nat$ with $c > 1$.
-We further split the {\slogbench} benchmark suite into two sub-suites \slogbenchr\ and \slogbenchra, which comprises 3,391 instances \zhilin{the number to be checked} and 120 instances \zhilin{the number to be checked} respectively. In addition to the aforementioned $\indexof$ and $\length$ functions, both  \slogbenchr\ and \slogbenchra\ use regular constraints and concatenation, the difference is in that {\slogbenchr} uses the $\replace$ function (replacing the first occurrence), while {\slogbenchra} uses the $\replaceall$ function (replacing all occurrences).
+We further split the {\slogbench} benchmark suite into two sub-suites \slogbenchr\ and \slogbenchra, which comprises 3,391 instances and 120 instances respectively. In addition to the aforementioned $\indexof$ and $\length$ functions, both  \slogbenchr\ and \slogbenchra\ benchmarks use regular constraints and concatenation, the difference is in that {\slogbenchr} benchmarks use the $\replace$ function (replacing the first occurrence), while {\slogbenchra} benchmarks use the $\replaceall$ function (replacing all occurrences).
 
 %Each use conjunction, disjunction, regular constraints, and concatenation.
 %The \slogbenchr\ sub-suite contains 3,391 instances \zhilin{the number to be checked}, while \slogbenchra\ sub-suite contains 120 instances \zhilin{the number to be checked}.
@@ -130,21 +130,21 @@ The experiments are executed on a virtual machine with the CPU \zhilin{xxx} and 
 \cline{2-7}
  & error/unknown &    &  &  & &\\
 \hline
-\multirow{4}{*}{\slogbenchr(3391)} & \cellcolor{Gray} sat &  \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} \\
+\multirow{4}{*}{\slogbenchr(3391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}1309 & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} 0 & \cellcolor{Gray} \\
 \cline{2-7}
- & unsat &  &   &  & &\\
+ & unsat & 2082 &   &  & 1900 &\\
 \cline{2-7}
- & \cellcolor{Gray}  timeout & \cellcolor{Gray} &  \cellcolor{Gray} & \cellcolor{Gray} &\cellcolor{Gray} &\cellcolor{Gray} \\
+ & \cellcolor{Gray}  timeout & \cellcolor{Gray}0 &  \cellcolor{Gray} & \cellcolor{Gray} &\cellcolor{Gray} 1491 &\cellcolor{Gray} \\
 \cline{2-7}
- & error/unknown &  &    &  & &\\
+ & error/unknown &0  &    &  & 0 &\\
 \hline
-\multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray}\\
+\multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray} 43 & \cellcolor{Gray}$-$ & \cellcolor{Gray} & \cellcolor{Gray}$-$  & \cellcolor{Gray}\\
 \cline{2-7}
- & unsat &  &   &  & &\\
+ & unsat & 7 &$-$   &  &$-$ &\\
 \cline{2-7}
- & \cellcolor{Gray}  timeout & \cellcolor{Gray}  & \cellcolor{Gray} & \cellcolor{Gray} &\cellcolor{Gray} &\cellcolor{Gray} \\
+ & \cellcolor{Gray}  timeout & \cellcolor{Gray} 70 & \cellcolor{Gray}$-$ & \cellcolor{Gray} &\cellcolor{Gray}$-$  &\cellcolor{Gray} \\
 \cline{2-7}
- & error/unknown &  &  &  & &\\
+ & error/unknown & 0  &$-$  &  &$-$ &\\
 \hline
 \multirow{4}{*}{\pyextdbench(5569)} & \cellcolor{Gray} sat & \cellcolor{Gray} 4224 & \cellcolor{Gray} 4068 &  \cellcolor{Gray} & \cellcolor{Gray} 4266 & \cellcolor{Gray}\\
 \cline{2-7}
@@ -178,7 +178,7 @@ The experiments are executed on a virtual machine with the CPU \zhilin{xxx} and 
 \cline{2-7}
  & error/unknown & 0 &  0 &    & 0 &\\
 \hline
-\multirow{2}{*}{Total(xxx)} & \cellcolor{Gray} solved & \cellcolor{Gray}  & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray}\\
+\multirow{2}{*}{Total(76,307)} & \cellcolor{Gray} solved & \cellcolor{Gray}  & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray} & \cellcolor{Gray}\\
 \cline{2-7}
  & \cellcolor{Gray}  unsolved & \cellcolor{Gray} &  \cellcolor{Gray} & \cellcolor{Gray} &\cellcolor{Gray} &\cellcolor{Gray} \\
 \hline
