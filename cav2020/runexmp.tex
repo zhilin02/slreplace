@@ -17,6 +17,7 @@ function urlXssSanitise(url)
     else if(sharppos >= 0)
     {   prothostpath = url.substr(0, sharppos);
         querfrag = url.substr(sharppos); }
+    else prothostpath = url;
     querfrag = querfrag.replace(/<script>|javascript:/g, '');
     url = prothostpath.concat(querfrag);
     return url;
