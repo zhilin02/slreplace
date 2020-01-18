@@ -1,18 +1,15 @@
 %!TEX root = main.tex
 
 %\zhilin{this paragraph is copied from POPL'19 paper should be adapted.} 
-This paper concerns strings and integers, two fundamental data type
-%Strings are a fundamental data type 
-in virtually all programming languages.
-%Their generic nature can, however, lead to 
+This paper is concerned with strings and integers, two fundamental data type in virtually all programming languages.
 String-manipulating programs are notoriously subtle and their potential bugs %Many subtle programming bugs are caused by , some with 
 may bring severe security consequences, a typical example of which is cross-site scripting
 (XSS), which is among the OWASP Top 10 Application Security Risks
-\cite{owasp17}. Integer  %data type 
-comes naturally with string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
+\cite{owasp17}. Integer comes naturally with string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
 Typically, mainstream programming languages provide, apart from standard string functions such as concatenation and $\replaceall$, %string functions involving the integer data type, e.g. 
-functions such as $\length$, $\indexof$, and $\substring$ which can convert strings to integers and vice verse. %, are also widely used in string-manipulating programs. 
-They are indeed heavily utilized in practice, for instance, it was reported \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$ (or variants thereof) comprise over 80\% of string functions in some JavaScript applications (notably more frequently used than concatenation). Undoubtedly, the introduction of integers exacerbates the intricacy of string-manipulating programs, which call for a unified framework to improve their quality. 
+functions like $\length$, $\indexof$, and $\substring$, which can convert strings to integers and vice verse. %, are also widely used in string-manipulating programs. 
+These functions are indeed heavily utilized in practice, for instance, it was reported \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$ (or variants thereof) comprise over 80\% of string functions in some JavaScript applications (notably more frequent than concatenation). Undoubtedly, the introduction of integers exacerbates the intricacy of string-manipulating programs, which call for a unified 
+framework to reason about them. 
 
 
 %This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
@@ -22,19 +19,18 @@ They are indeed heavily utilized in practice, for instance, it was reported \cit
 
 %in programs it , typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
 
-One effective
-automatic analysis and testing method for identifying subtle programming errors is based on \emph{symbolic execution}.
+One effective automatic analysis and testing method for identifying subtle programming errors is based on \emph{symbolic execution}.
 %\cite{king76} and combinations with dynamic analysis
 %called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
-See \cite{symbex-survey} for an excellent survey. 
+(See \cite{symbex-survey} for an excellent survey. )
 %Unlike purely random testing,
 %which runs only \emph{concrete} program executions on different
 %inputs, the techniques of symbolic execution 
-This technique analyzes static paths
-(also called symbolic executions) through the program under consideration. %software system under test.
+In a nutshell, this technique analyzes static paths
+(aka. symbolic executions) through the program being considered. %software system under test.
 Such a path can be viewed as a constraint $\varphi$ (over
-appropriate data domains) and the hope is that a fast
-solver is available for checking the satisfiability of $\varphi$ (i.e. to check
+appropriate data domains) and the hope is that a fast (constraint)
+solver is available for checking the satisfiability of $\varphi$ (i.e., to check
 the \emph{feasibility} of the static path), which can be used for generating
 inputs that lead to certain parts of the program or an erroneous behavior.
 
@@ -51,15 +47,17 @@ inputs that lead to certain parts of the program or an erroneous behavior.
 %%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Reasoning about strings and integers is challenging. For instance, it is still a major open problem whether the theory of concatenation (arguably the simplest string operation) with length constraints (arguably the most common constraint regarding the integer data type) is decidable \cite{Vijay-length}. Even worse, even the slightest extensions of the theory (e.g. with letter counting  and
-string-number conversion) would render the theory undecidable \cite{buchi,GB16}. A further evidence is that, although a great deal of research has shown that one can support reasoning about rather complex string operations without breaking decidability by imposing syntactic restrictions on the constraints (e.g., \cite{CCH+18,CHL+19}; cf. related work for a brief survey), adding length constraints would immediately lead to undecidability \cite{CCH+18}. At the same time, the classes of constraints that are required in practice sometimes require solving techniques which are not necessarily complete. %string operations that are not covered by decidable string constraint languages.
+Reasoning about strings and integers is challenging and not well-understood. For instance, it is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length functions (arguably the most common string-number function) is decidable \cite{Vijay-length}. It is easy to end up with undecidability: even the slightest extension of the theory (e.g. with letter counting % and
+%string-number conversion) 
+would render the theory undecidable \cite{buchi,GB16}. A further evidence is that, although a great deal of research has shown that one can support reasoning about rather complex string operations without breaking decidability by imposing syntactic restrictions on the constraints (e.g., \cite{CCH+18,CHL+19}; cf. related work for a brief survey), adding length constraints would immediately lead to undecidability \cite{CCH+18}. At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. %string operations that are not covered by decidable string constraint languages.
 %
-Indeed, a vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str3}, Trau \cite{Abdulla17} (as well as its variants {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}),  ABC \cite{ABC}, and SLENT \cite{WC+18} do support simultaneous reasoning about strings and integers.
+Indeed, a vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str3}, Trau \cite{Abdulla17} (as well as its variants {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}),  ABC \cite{ABC}, and SLENT \cite{WC+18} do support  reasoning about both strings and integers.
 %Nevertheless, solving string constraints involving the integer data type is far from trivial and actually undecidable in general \cite{buchi,CCH+18}. Therefore, all the aforementioned string constraint solvers
 They however inevitably  resort to heuristics without completeness guarantees. 
 
 
-Decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), however, as argued in \cite{CHL+19}, are desirable, since on the one hand, they are appealing from a scientific point of view, and on the other hand, they provide a kind of robustness guarantee upon which a practical solver could further improve and optimise.
+As argued in \cite{CHL+19}, decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), are highly desirable. In a nutshell, there are at least two reasons: (1) they are intriguing in theory; and  %appealing %from a scientific point of view, and on the other hand, 
+(2) they provide a kind of robustness guarantee upon which a practical solver could further improve and optimise.
 
 %\zhilin{this paragraph is copied from the popl paper} Despite the excellent performance of some of these solvers on several existing benchmarks, there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that string constraint solving is a research area in its infancy with an insufficient range of benchmarking examples to convince us that if a string solver works well on existing benchmarks, it will also work well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon which a practical solver could further improve and optimise.
 
