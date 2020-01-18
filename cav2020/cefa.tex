@@ -20,7 +20,7 @@ A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delt
 %
 \item $\delta$ is the transition relation which is a finite set of tuples $(q, a, q', \eta)$ where $q, q' \in Q$, $a \in \Sigma$, and %$\eta: R \rightarrow \intnum$ 
 $\eta: R \rightarrow \Int$
-is a cost register update function. \zhilin{I restore to integers, since an integer cost register can be encoded by two monotonic registers.}\\
+is a cost register update function. \\
 For convenience, we usually write $(q, a, q', \eta) \in \Delta$ as $q \xrightarrow{a, \eta} q'$.
 \end{itemize}
 %
@@ -50,8 +50,9 @@ We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA
 accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
 The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
 
-For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^* \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
-In the sequel, we will exemplify the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single letter. 
+For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^*, n \le \indexof_v(w, n) < |w| \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
+Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics of $\indexof_v$, for instance, $\indexof_v(w, n) = -1$ if $v$ does not occur after the position $n$ in $w$.
+In the sequel, we will exemplify the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single letter.  
 
 \begin{example}[CEFA for $\indexof_a$]\label{exm:indexof}
 Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
@@ -69,7 +70,6 @@ Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r
 \item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
 \end{itemize}
 Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
-\tl{do I need to worry about that the return value could be -1, if $a$ does not appear at all?}\zhilin{this corner case should be dealt by the decision procedure, instead of the CEFA, but we had better add a sentence to clarify this.}
 \end{example}
 
 
