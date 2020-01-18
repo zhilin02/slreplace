@@ -69,10 +69,10 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 The program $S$ corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Example~\ref{exmp:running} is an {\slint} program, if its syntax is slightly adapted. In particular, {\tt url1=url.trim()} in $S$ is transformed into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and 
 {\tt
 %\begin{minted}{javascript}
-querfrag2 = querfrag1.replace(/<script>|javascript:/g, '');
+querfrag2 = querfrag1.replace(/<script>|javascript:/g, '')
 %\end{minted}
 }
-is changed into the statement ${\tt querfrag2}:=\replaceall_{e,\varepsilon}({\tt querfrag1})$, where $e$ is the regular expression {\tt $<$script$>$+javascript:}.
+is changed into the statement ${\tt querfrag2}:=\replaceall_{e,\varepsilon}({\tt querfrag1})$, where $e$ is the regular expression {\tt $<$script$>$+javascript:} (where $+$ is the alternation).
 %\[
 %\begin{array}{l}
 %y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
