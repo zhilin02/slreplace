@@ -64,23 +64,22 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 \item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. Note that if $i<0$, then $\indexof_v(x, i)$ returns $\indexof_v(x, 0)$, and if $i \ge \length(x)$, then $\indexof_v(x, i)$ returns $-1$. For instance, $\indexof_{ab}(aaba, -1) = 1$, $\indexof_{ab}(aaba, 1) = 1$, $\indexof_{ab}(aaba, 2)=-1$, and $\indexof_{ab}(aaba, 4)=-1$.
 \end{itemize}
 
-\begin{example}\label{exmp:running}
-\zhilin{adjust to the running example in the introduction}
-The program $S$
+\begin{example}\label{exmp:logic}
+%\zhilin{adjust to the running example in the introduction}
+The program $S$ corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Example~\ref{exmp:running} is an {\slint} program, if its syntax is slightly adapted. In particular, {\tt url1=url.trim()} in $S$ is transformed into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and 
+{\tt
+%\begin{minted}{javascript}
+querfrag2 = querfrag1.replace(/<script>|javascript:/g, '');
+%\end{minted}
+}
+is changed into the statement ${\tt querfrag2}:=\replaceall_{e,\varepsilon}({\tt querfrag1})$, where $e$ is the regular expression {\tt $<$script$>$+javascript:}.
 %\[
 %\begin{array}{l}
-%y := \substring(x, 0, \indexof_{b}(x, 0)); \ASSERT{y \in \NFA_{a^+}}; \\
-%z:= \substring(x, \indexof_b(x,0),\length(x) - \indexof_b(x,0)); \\
-%\ASSERT{z \in \NFA_{b^+}}; \ASSERT{\length(y) = \length(z)}
+%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+%\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{"("}(x,0) < \indexof_{")"}(x,0)}
 %\end{array}
 %\] 
-\[
-\begin{array}{l}
-y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
-\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{"("}(x,0) < \indexof_{")"}(x,0)}
-\end{array}
-\] 
-is in {\slint}, where $\Sigma \setminus a$ (where $a \in \{(,)\}$) is the regular expression $(+b)_{b \in \Sigma \setminus \{a\}}$. Intuitively the program states that $x$ contains the same number of occurrences of ``('' and ``)''; and the first occurrence of ``('' is before the first occurrence of ``)''.
+%is in {\slint}, where $\Sigma \setminus a$ (where $a \in \{(,)\}$) is the regular expression $(+b)_{b \in \Sigma \setminus \{a\}}$. Intuitively the program states that $x$ contains the same number of occurrences of ``('' and ``)''; and the first occurrence of ``('' is before the first occurrence of ``)''.
 \end{example}
 
 
