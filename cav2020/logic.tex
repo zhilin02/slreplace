@@ -69,7 +69,7 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 After adapting the syntax of the program corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Example~\ref{exmp:running}, we get the following {\slint} program $S$,
 \[ 
 \begin{array}{l}
-    \mathtt{prothostpath := x1; querfrag := x1}; \ASSERT{\mathtt{x1} \in \NFA_\varepsilon};\\
+    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon};\\
     \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \ASSERT{\mathtt{qmarkpos} = \indexof_?(\mathtt{url1},0)};\\
     \ASSERT{\mathtt{sharppos} = \indexof_{\#}(\mathtt{url1}, 0)}; \ASSERT{\mathtt{qmarkpos} >= 0};\\ 
     \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
