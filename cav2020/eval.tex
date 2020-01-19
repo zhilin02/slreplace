@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range of benchmarks. The solvers we considered include {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str}, and two latest variants of Trau (i.e., {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}). \tl{argue why abc/slent is excluded.}
+We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range of benchmarks.  We will discuss the benchmarks in Section~\ref{sec:bench}, then describe the details of the experiments as well as the experiment results in Section~\ref{sec:exp-res}.
 % and SLENT \cite{WC+18}. 
 
  %
@@ -20,7 +20,7 @@ We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range o
 %GitHub6.  
 
 
-\subsection{Benchmarks}
+\subsection{Benchmarks}\label{sec:bench}
  
 %In
 %particular, we compared  with CVC4 1.6 \cite{}, SLOTH \cite{},
@@ -107,15 +107,27 @@ The fourth benchmark suite {\kaluzabench} is the well-known Kaluza benchmark sui
 
 
 
-\subsection{Experiment results}
+\subsection{Experiments}\label{sec:exp-res}
 
-The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8, with the timeout period set as 30 seconds. The experimental results are summarised in Table~\ref{tab-experiment}.
+We compare {\ostrich}+ with {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau}, on the aforementioned benchmark suites. In the beginning, we also planned to compare {\ostrich}+ with two other solvers, namely {\trauplus} \cite{AbdullaA+19} and {\slent} \cite{WC+18}, but finally gave up, with some justifications of this decision explained below. 
+\begin{itemize}
+\item {\trauplus} integrates {\trau} with {\sloth} in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, we failed to run {\trau+} (even after some hard work), possibly due to the fact that {\trau} requires two versions of Z3 to run.
+%,  though we were able to compile the source code of \trauplus.  
+After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
+%
+\item {\slent} uses an input format called laut which is different from the widely used smtlib2 format. Therefore, it is hard to compare {\ostrich}+ with {\slent} on {\kaluzabench} and {\pyexbench} benchmark suites. Moreover, {\transducerbench}+ is beyond the scope of {\slent} since it is incapable of dealing with finite transducers.
+\end{itemize}
+
+The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8, with the timeout period set as 30 seconds. The experiment results are summarised in Table~\ref{tab-experiment}.
 
 {\zthreetrau} does not support replace/replaceall.
 
-sloth does not deal with integer constraints, so we choose not to compare
 
-Trau+: unable to run. It is an integration of Sloth and Trau.
+
+
+observation: 1. ostrich+ is the only tool that is capable of solving transducer+ benchmarks. 2. ostrich+ is good at solving unsatisfiable benchmarks, for instance, replaceall, replace, pyextd, pyexz3
+
+
 
 %From the experimental results, we can see that \ostrich+ is the only solver that 
 
@@ -137,14 +149,6 @@ Benchmark suite & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+\\
 \cline{2-6} 
  & wrong &$-$  & $-$  &$-$ &0 \\
 \hline
-\multirow{4}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray}$-$ & \cellcolor{Gray}584 \\
-\cline{2-6}
- & unsat & \bf{2,082} & 2,066  &$-$ &\bf{2,082}\\
-\cline{2-6}
- &\cellcolor{Gray}  u.k. / t.o. / e.x. & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
-\cline{2-6}
- & wrong &0 & 0  &$-$ &0\\
-\hline
 \multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{104}  & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$  &98 \cellcolor{Gray}\\
 \cline{2-6}
  & unsat &11  &$-$  &$-$ &\bf{12}\\
@@ -152,6 +156,14 @@ Benchmark suite & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+\\
  &\cellcolor{Gray} u.k. / t.o. / e.x. & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
 \cline{2-6}
  & wrong &0 &$-$ &$-$  &0 \\
+\hline
+\multirow{4}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray}$-$ & \cellcolor{Gray}584 \\
+\cline{2-6}
+ & unsat & \bf{2,082} & 2,066  &$-$ &\bf{2,082}\\
+\cline{2-6}
+ &\cellcolor{Gray}  u.k. / t.o. / e.x. & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
+\cline{2-6}
+ & wrong &0 & 0  &$-$ &0\\
 \hline
 \multirow{4}{*}{\pyextdbench(5,569)} & \cellcolor{Gray} sat & \cellcolor{Gray}4,224 & \cellcolor{Gray}4,068 &  \cellcolor{Gray} \bf{4,266} & \cellcolor{Gray}4,141\\
 \cline{2-6}
