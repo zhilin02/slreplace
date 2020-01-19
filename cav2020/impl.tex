@@ -53,11 +53,13 @@ However, our preliminary experiments show that this approach suffers from scalab
 the state explosion when computing products of CEFAs.  %We did implement this approach in the beginning. However, some preliminary experiments showed that this approach is not scalable. Therefore, 
 In the implementation of the function $\mathit{CheckCefaLIASat}$ in Algorithm~\ref{alg:dfs},  we %finally choose 
 opt to utilise the symbolic model checker nuXmv \cite{nuxmv} to mitigate the state explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of solving the model checking problem for both finite and infinite state systems. Our technique is to encode the {\lasat} problem as instances of the model checking problem which can  be solved by %and then call 
-nuXmv. Since  {\lasat} is a problem for quantifier-free LIA formulas and CEFAs that contain integer variables, the {\lasat} problem actually corresponds to the problem of model checking \emph{infinite state systems}. In the following, we use a simple example to illustrate how to encode the instances of  the {\lasat} problem into the inputs of nuXmv.
-
-\begin{example}
-Encoding of {\lasat} into nuXmv.
-\end{example}
+nuXmv. Since  {\lasat} is a problem for quantifier-free LIA formulas and CEFAs that contain integer variables, the {\lasat} problem actually corresponds to the problem of model checking \emph{infinite state systems}. 
+%
+%In the following, we use a simple example to illustrate how to encode the instances of  the {\lasat} problem into the inputs of nuXmv.
+%
+%\begin{example}
+%Encoding of {\lasat} into nuXmv.
+%\end{example}
 
 
 \begin{algorithm}[tbp]
