@@ -95,7 +95,7 @@ Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 Let $S$  be a {\slint} program. %We show how to decide the path feasibility of $S$. 
-Without loss of generality, we assume that for every occurrence of assignments of the form $y:= \substring(x, t_1, t_2)$, it holds that $t_1$ and $t_2$ are integer variables. This is not really a restriction, since if in $y:= \substring(x, t_1, t_2)$, $t_1$(resp. $t_2$) is not an integer variable, then we introduce a fresh integer variable $i$ (resp. $j$), replace $t_1$ by $i$ (resp. replace $t_2$ by $j$), and add $\ASSERT{i=t_1}$ (resp. $\ASSERT{j = t_2}$) in $S$.
+Without loss of generality, we assume that for every occurrence of assignments of the form $y:= \substring(x, t_1, t_2)$, it holds that $t_1$ and $t_2$ are integer variables. This is not really a restriction, since, for instance, if in $y:= \substring(x, t_1, t_2)$, neither $t_1$ nor $t_2$ is an integer variable, then we introduce fresh integer variables $i$ and $j$, replace $t_1, t_2$ by $i,j$ respectively, and add $\ASSERT{i=t_1};\ASSERT{j = t_2}$ in $S$.
 We present a decision procedure for the path feasibility problem of $S$ which is divided into five steps. %is nondeterministic and divided into three steps. 
 %\begin{description}
 %\item[Step I: Preprocessing.] 
@@ -116,7 +116,7 @@ Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\c
 
 \smallskip
 
-For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following to do.
+For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following to do (corresponding to the semantics of $\indexof_v$ in Section~\ref{sec:logic}).
 \begin{itemize}
 \item Add $\ASSERT{i < 0}$ to $S$, replace $\indexof_v(x,i)$ with $\indexof_v(x,0)$ in $S$. 
 %
@@ -139,7 +139,7 @@ to $S$, where $y$ is a fresh string variable, $j$ is a fresh integer variable, a
 
 %Nondeterministically choose a subset of $\Theta$ of the assignment statements of the form $y:=\substring(x, i, j)$ in $S$, and 
 %
-For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following to do.
+For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following to do (corresponding to the semantics of $\substring$ in Section~\ref{sec:logic}).
 \begin{itemize}
 \item Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
 %
@@ -162,7 +162,7 @@ to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')
 
 For each term $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
 
-For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)\zhilin{The full construction is in the appendix}
+For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)
 
 %
 %\end{enumerate}
@@ -170,14 +170,14 @@ For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer v
 %\item 
 
 \medskip
-\noindent {\bf Step IV: Removing the assignment statements}.
+\noindent {\bf Step IV: Removing the assignment statements backwards}.
 
 \smallskip
 
 Repeat the following procedure until $S$ contains no assignment statements.
 %
 \begin{quote}
-Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the last assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$ is a string function. 
+Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the \emph{last} assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$ is a string function and $\vec{i_j}= (i_{j,1}, \cdots, i_{j, k_j})$ for each $j \in [l]$.
 %\tl{as we are considering functional transducers, shall we change to $... \rightarrow \Sigma^*$; if decided, step ii will be updated as the product would be unnecessary}%from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
 \\
 Let $\{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y \in \CEFA_j}$ occurs in $S$ for every $j \in [s]$. 
@@ -185,11 +185,11 @@ Let $\{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y 
 %\footnote{Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$,  $R(\CEFA_s)$ are mutually disjoint.} 
 %with $R(\CEFA) = (r_1, \cdots, r_{k_0})$. 
 Let $j \in [s]$ and $R(\CEFA_j)=(r_{j,1}, \cdots, r_{j, \ell_j})$. Then from Proposition~\ref{prop:pre-image}, 
-a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $((\cB^{(1)}_{j, j'}, \cdots, \cB^{(l)}_{j, j'})_{j' \in [m_j]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$, where we write
+a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $\left((\cB^{(1)}_{j, j'}, \cdots, \cB^{(l)}_{j, j'})_{j' \in [m_j]}, \vec{t}\right)$, can be effectively computed from $\NFA$ and $f$, where we write
 \[
 R(\cB^{(j'')}_{j, j'})=\left((r')^{(j'',1)}_{j}, \cdots, (r')_{j}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
 \]
-for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j}, \cdots, (r')_{j}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j}, \cdots, (r')_{j}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced, moreover, $R(\cB^{(j'')}_{j, j'_1})=R(\cB^{(j'')}_{j, j'_2})$ for distinct $j'_1,j'_2 \in [m_j]$.
+for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j}, \cdots, (r')_{j}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j}, \cdots, (r')_{j}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced, moreover, $R\left(\cB^{(j'')}_{j, j'_1}\right)=R\left(\cB^{(j'')}_{j, j'_2}\right)$ for distinct $j'_1,j'_2 \in [m_j]$.
 %
 
 Remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$, as well as all the statements $\ASSERT{y \in \CEFA_1}$, $\cdots$, $\ASSERT{y \in \CEFA_s}$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 
