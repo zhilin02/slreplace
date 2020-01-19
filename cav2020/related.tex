@@ -21,7 +21,7 @@ The discussion will mainly focus on (1) theoretical results in terms of decidabi
 \noindent\textbf{Theoretical results.}
 The research on the theory of strings with concatenation %has a long history, largely 
 was motivated by %. This research programme builds on
-the question of solving satisfiability of word equations (i.e., equations containing concatenation of string constants and variables). Makanin showed decidability \cite{Makanin}, but the upper bound was only improved to PSPACE about 25 years later \cite{P04}   %using a word compression technique. 
+the question of solving satisfiability of word equations (i.e., equations containing concatenation of string constants and variables). Makanin showed decidability \cite{Makanin}, but the upper bound was only improved to PSPACE about 25 years later \cite{P04},    %using a word compression technique. 
 a simpler algorithm of which was given recently \cite{J17}. %using the recompression technique. 
 The best lower bound for this problem is still NP, and closing this complexity gap is a long-standing open problem. %Decidability
 %
@@ -42,17 +42,16 @@ them to become undecidable \cite{LB16}. For instance, when finite state transduc
 
 Hence,  recent research endeavors %years have seen the possibility of recovering 
 to recover decidability of some string constraint languages with multiple string operations, while retaining applicability for constraints that
-arise in practical symbolic execution applications. This is mainly done by imposing syntactic restrictions along the way in which string equality can be
-used in the constraints. This includes acyclicity \cite{Abdulla14,BFL13}, solved form \cite{Vijay-length}, and straight-line \cite{LB16,HJLRV18,CCH+18}.
-Particularly related to the present work, the straight-line logic of \cite{LB16}  unified the earlier logics by allowing concatenation, regular constraints, rational
+arise in practical symbolic execution applications. This is mainly done by imposing syntactic restrictions along the way in which string equality can be used in the constraints. This includes acyclicity \cite{Abdulla14,BFL13}, solved form \cite{Vijay-length}, and straight-line \cite{LB16,HJLRV18,CCH+18}.
+Particularly related to the present work, the straight-line logic \cite{LB16}  unified the earlier logics by allowing concatenation, regular constraints, rational
 transductions. %, and length and letter-counting functions. 
 It was further extended %pointed out by 
 %that this logic cannot express the 
-by supporting a more general form of replaceAll functions with the replacement string provided as a
-variable \cite{CCH+18} where it is shown that a new straight-line logic (with the more general replaceAll function and
-concatenation) is decidable.  Furthermore two general semantic conditions are identified  \cite{CHL+19}  which together ensure the decidability of path
-feasibility. In particular, the semantic conditions  are satisfied by a multitude of string operations
-including concatenation, one-way and two-way finite-state transducers, replaceAll functions
+by a more general form of replaceAll functions with the replacement string provided as a
+\emph{variable} \cite{CCH+18} where it is shown that the new straight-line logic %(with the more general replaceAll function and concatenation) 
+is decidable.  Furthermore, two general semantic conditions are identified  \cite{CHL+19}  which together entail the decidability of path
+feasibility. In particular, they are satisfied by a multitude of string operations
+including concatenation, one-way and two-way finite-state transducers, (general) replaceAll functions
 % (where the
 %replacement string could contain variables), 
 string-reverse functions, regular-expression matching, etc. 
@@ -99,13 +98,14 @@ string-reverse functions, regular-expression matching, etc.
  
 %String data types have a close relationship with integer data types. Perhaps in its simplest form, 
 %length constraints have been  studied in the context of string constraint solving, though much less is known comparing
-As mentioned before, integer constraints, manly in the form of length constraints has been considered as well, but is certainly less developed.  %to the pure string counterparts. For instance, 
+%As mentioned before, 
+Integer constraints, mainly in the form of length constraints, have been considered as well, but their theory is certainly less developed.  %to the pure string counterparts. For instance, 
 (As an example, it is still a major open problem whether the theory of concatenation with length constraints is decidable \cite{Vijay-length}.)
 %, though  several extensions of this 
 %theory are undecidable (e.g. with letter counting \cite{buchi} and
 %string-number conversion \cite{GB16}). 
 %
-In parallel with the  line of allowing more complex string operations but imposing syntactic restrictions, length constraints, as well as some variants, have been considered  For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
+In parallel with the research line of allowing more complex string operations but imposing syntactic restrictions, length constraints, as well as some variants, have been considered as well.  For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
 %added to the subclass of $\strline[\replaceall]$ where the pattern/replacement 
 %are constants, while preserving decidability. In contrast, 
 %if we allow variables on the replacement parameters of formulas, 
@@ -201,8 +201,7 @@ This result shows that the replaceall functions must not use variables in the re
 %For these reasons, 
 %There is a large amount of work %on heuristics for 
 %developing 
-Many practical (often incomplete) string solvers have been developed. A exhaustiveness list  includes earlier work \cite{BTV09,RVG12} which integrates 
-%string constraint solving 
+Many practical (often incomplete) string solvers have been developed. A non-exhaustive list  includes earlier work \cite{BTV09,RVG12} which integrated string constraint solving 
 with respective dynamic symbolic execution engines, Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3}, {\cvc}~\cite{cvc4}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Trau/{\zthreetrau}/{\trauplus} \cite{AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}, 
 %
 SLOG \cite{fang-yu-circuits}/SLENT \cite{WC+18}, Norn~\cite{Abdulla14}, SLOTH \cite{HJLRV18}, {\ostrich} \cite{CHL+19}
@@ -213,10 +212,16 @@ SLOG \cite{fang-yu-circuits}/SLENT \cite{WC+18}, Norn~\cite{Abdulla14}, SLOTH \c
 %
 %We can classify this large body of practical string constraint solvers into 
 
-A large body of these tools provide support for complex string operations, but only offer relatively limited support for integer constraints (for instance, typically  only the length function or simple variant thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g. \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
+A large body of these tools provide support for complex string operations, but only offer relatively limited support for integer constraints (e.g., only the length function or simple variants thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g., \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
 Focusing on semi-algorithms also allows highly expressive (but undecidable) 
 string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}; sometimes hybrid constraint solving procedures based on, for instance, 
-ant colony optimization meta-heuristic \cite{ThomeSBB17} are utilized. 
+ant colony optimization meta-heuristic \cite{ThomeSBB17} is utilized.  
+%
+Recently, the study of decidability of string constraints has also resulted in automata-theoretic algorithms that are amenable to implementation. For instance, the tool Norm supports solving  acyclic logic with concatenation, regular constraints, and length constraints \cite{Abdulla14}; %SLOG \cite{fang-yu-circuits},  SLENT \cite{WC+18}, 
+SLOTH \cite{HJLRV18} and {\ostrich} \cite{CHL+19} support straight-line logic with finite transducers (or
+replaceall), concatenation, and regular constraints, but currently no support for even the length constraints. %The gap is filled by 
+The current work builds on the solver {\ostrich}, but significantly extends its power of handling integer related constraints %, 
+implementing  solving techniques for the most expressive \emph{decidable} string constraints involving both strings and integers. %but focuses on integer constraints which were unavailable. 
 
 %Despite the excellent performance of some of these solvers on several existing benchmarks, a potential risk is that these heuristic based approaches may not be generalized well to further practical cases. After all,  string constraint solving is still a research area in its infancy. One implication is that the currently insufficient range of benchmarking may not be representative in the growing number of application of string constraints in, e.g., program verification and security analysis. 
 
@@ -256,33 +261,22 @@ ant colony optimization meta-heuristic \cite{ThomeSBB17} are utilized.
 %on which the solver fails when used stand-alone (46 more solved
 %cases for Z3-str2, and 11 more for CVC4), while still keeping the
 %execution time affordable in practice
-
-
+%
+%
 %Trau \cite{Abdulla17} integrates SMT
 %solvers with the CEGAR framework using flat automata to over
 %and under approximation the solution set.
 %Our work particularly aims to support integer constraints arising from symbolic execution.  
 %\cite{ReynoldsWBBLT17}
 %Efficient reasoning about strings is essential to a growing number of security and verification applications. We describe satisfiability checking techniques in an extended theory of strings that includes operators commonly occurring in these applications, such as   𝖼𝗈𝗇𝗍𝖺𝗂𝗇𝗌,𝗂𝗇𝖽𝖾𝗑_𝗈𝖿  and   𝗋𝖾𝗉𝗅𝖺𝖼𝖾 . We introduce a novel context-dependent simplification technique that improves the scalability of string solvers on challenging constraints coming from real-world problems. Our evaluation shows that an implementation of these techniques in the SMT solver cvc4 significantly outperforms state-of-the-art string solvers on benchmarks generated using PyEx, a symbolic execution engine for Python programs. Using a test suite sampled from four popular Python packages, we show that PyEx uses only   41%  of the runtime when coupled with cvc4 than when coupled with cvc4’s closest competitor while achieving comparable program coverage.
-
-
  
 %Some incomplete heuristics were developed that could work in practice,
-
-
-
-
-
- 
- %This is one reason why 
+%This is one reason why 
 %Some string solving practitioners opted to support more string
 % operations and settle with incomplete solvers (e.g. with no guarantee of termination) that could
 % still solve some constraints that arise in practice. 
  
- 
-Recently, the study of decidability of string constraints has also resulted in automata-theoretic algorithms that are amenable to implementation. For instance, the tool Norm supports solving  acyclic logic with concatenation, regular constraints, and length constraints \cite{Abdulla14}; %SLOG \cite{fang-yu-circuits},  SLENT \cite{WC+18}, 
-SLOTH \cite{HJLRV18} and {\ostrich} \cite{CHL+19} support straight-line logic with finite transducers (or
- replaceall), concatenation, and regular constraints, but no support for even the length constraints. The current work builds on the solver {\ostrich}, but focuses on integer constraints which were unavailable. 
+
  
  
  
