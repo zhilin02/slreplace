@@ -74,12 +74,12 @@ After adapting the syntax of the program corresponding to the ``if'' branch of {
     \ASSERT{\mathtt{sharppos} = \indexof_{\#}(\mathtt{url1}, 0)}; \ASSERT{\mathtt{qmarkpos} >= 0};\\ 
     \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
    \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, \length(\mathtt{url1}) - \mathtt{qmarkpos});\\
-    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>+javascript:},\ \varepsilon}(\mathtt{querfrag1});\\
+    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
     \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2};\\
-    \ASSERT{\mathtt{querfrag2} \in \NFA_{\mathtt{<script>+javascript:}}}
+    \ASSERT{\mathtt{querfrag2} \in \NFA_{\mathtt{<script>}}}
 \end{array}
 \]
-where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and $\NFA_{\mathtt{<script>+javascript:}}$ is the NFA defining $\{\mbox{\tt <script>, javascript:}\}$. 
+where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and $\NFA_{\mathtt{<script>}}$ is the NFA defining $\{\mbox{\tt <script>}\}$. 
 %
 %
 %In particular, {\tt qmarkpos = url1.indexof('?')} in $S$ is transformed into $\ASSERT{{\tt qmarkpos = \indexof_{?}(url1,0)}}$, and {\tt url1=url.trim()} is adapted into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, moreover,  
