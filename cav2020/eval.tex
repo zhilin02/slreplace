@@ -104,38 +104,9 @@ The fourth benchmark suite {\kaluzabench} is the well-known Kaluza benchmark sui
 {\kaluzabench} contains 47,284 instances, which use regular constraints, concatenation, and $\length$ function.
 
 
-
-
-
-\subsection{Experiments}\label{sec:exp-res}
-
-We compare {\ostrich}+ with {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau}, on the aforementioned benchmark suites. In the beginning, we also planned to compare {\ostrich}+ with two other solvers, namely {\trauplus} \cite{AbdullaA+19} and {\slent} \cite{WC+18}, but finally gave up, with some justifications of this decision explained below. 
-\begin{itemize}
-\item {\trauplus} integrates {\trau} with {\sloth} in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, we failed to run {\trau+} (even after some hard work), possibly due to the fact that {\trau} requires two versions of Z3 to run.
-%,  though we were able to compile the source code of \trauplus.  
-After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
-%
-\item {\slent} uses an input format called laut which is different from the widely used smtlib2 format. Therefore, it is hard to compare {\ostrich}+ with {\slent} on {\kaluzabench} and {\pyexbench} benchmark suites. Moreover, {\transducerbench}+ is beyond the scope of {\slent} since it is incapable of dealing with finite transducers.
-\end{itemize}
-
-The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8, with the timeout period set as 30 seconds. The experiment results are summarised in Table~\ref{tab-experiment}.
-
-{\zthreetrau} does not support replace/replaceall.
-
-
-
-
-observation: 1. ostrich+ is the only tool that is capable of solving transducer+ benchmarks. 2. ostrich+ is good at solving unsatisfiable benchmarks, for instance, replaceall, replace, pyextd, pyexz3
-
-
-
-%From the experimental results, we can see that \ostrich+ is the only solver that 
-
-
-
 \definecolor{Gray}{gray}{0.9}
 %\newcolumntype{g}{>{\columncolor{Gray}}c}
-\begin{table}[htbp]
+\begin{table}[tbp]
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -206,3 +177,46 @@ Benchmark suite & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+\\
 \caption{Experiment results: u.k.(unknown), t.o.(timeout), e.x.(exception).}
 \label{tab-experiment}
 \end{table}%
+
+
+\subsection{Experiments}\label{sec:exp-res}
+
+We compare {\ostrich}+ with {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau}, on the aforementioned benchmark suites. We do not compare with {\ostrich} since {\ostrich} basically focuses on pure string constraints not involving the integer data type, while the majority of the benchmarks considered in this paper contain integer arithmetic constraints. 
+In the beginning, we also planned to compare {\ostrich}+ with two other solvers, namely {\trauplus} \cite{AbdullaA+19} and {\slent} \cite{WC+18}, but finally gave up, with some justifications of this decision explained below. 
+\begin{itemize}
+\item {\trauplus} integrates {\trau} with {\sloth} in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, we failed to run {\trau+} (even after some hard work), possibly due to the fact that {\trau} requires two versions of Z3 to run.
+%,  though we were able to compile the source code of \trauplus.  
+After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
+%
+\item {\slent} uses an input format called laut which is different from the widely used smtlib2 format. Therefore, it is hard to compare {\ostrich}+ with {\slent} on {\kaluzabench} and {\pyexbench} benchmark suites. Moreover, {\transducerbench}+ is beyond the scope of {\slent} since it is incapable of dealing with finite transducers.
+\end{itemize}
+
+The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8, with the timeout period set as 30 seconds. The experiment results are summarised in Table~\ref{tab-experiment}.
+
+For the {\transducerbench}+ benchmark suite, {\ostrich}+ can solve \emph{all} the 94 instances, moreover, it is \emph{the only solver} that is able to deal with this benchmark suite.
+
+For the {\slogbenchra} benchmark suite, {\ostrich}+ and {\cvc} are \emph{very close} since on the one hand, {\ostrich}+ solves 98 satisfiable instances, slightly less than 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). The {\slogbenchra} benchmark suite is beyond the scope of {\zthree} and {\zthreetrau}, since they do not support $\replaceall$.
+
+For the {\slogbenchr} benchmark suite, {\ostrich}+ and {\cvc} are the best to solve the unsatisfiable instances (2,082), and {\zthree} solves slightly less (2,066),  
+while {\cvc} is the best to solve the satisfiable instances (1,309). The {\slogbenchr} benchmark is beyond the scope of {\zthreetrau}, as it does not support $\replace$.
+
+For the {\pyextdbench} benchmark suite, each of the four solvers is able to solve more than 95\% of the benchmark instances and their performances are close, with {\zthreetrau} the best, followed by {\cvc}, then {\zthree}, and finally {\ostrich}+.  
+
+For the {\pyexztbench} benchmark suite, {\zthreetrau} is the best, solving almost all instances, except 17 of them. {\cvc} and {\zthree} is ranked in the second and third place. The performance of {\ostrich}+ on this benchmark suite is not very impressive, only solving around 80\% instances.
+
+For the {\pyexzzbench} benchmark suite, \zhilin{to be done}
+
+For the {\kaluzabench} benchmark suite, {\cvc} performs the best since it solves almost all the instances, except 6 of them. {\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. The performance of {\ostrich}+ is not that satisfactory on this suite and it  solves  around 80\%  instances, which, as a matter of fact, is consist with the observation for {\ostrich} in \cite{CHL+19} that about 20\% {\kaluzabench} instances cannot be written as programs in the SSA form, thus out of the scope of {\ostrich} as well as {\ostrich}+.
+
+Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experiment results in Table~\ref{tab-experiment}.
+\begin{itemize}
+\item {\ostrich}+ is \emph{the only string solver that is capable of solving string constraints involving finite transducers and integer constraints}. In particular, it is the only string solver that is able to verify the idempotence, duality, commutativity, and equivalence of HTML sanitisation operations.
+%
+\item {\ostrich}+ is \emph{better at solving the unsatisfiable benchmark instances}. It solves the most instances on both {\slogbenchra} and {\slogbenchr} benchmark suites. Moreover, the number of unsatisfiable instances of {\pyexbench} resp. {\kaluzabench} solved by {\ostrich}+ is much closer to that of the best solver, compared to the number of solved satisfiable instances.   \zhilin{to be double checked later}
+\end{itemize}
+
+
+%From the experimental results, we can see that \ostrich+ is the only solver that 
+
+
+
