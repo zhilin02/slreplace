@@ -66,7 +66,7 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 
 \begin{example}\label{exmp:logic}
 %\zhilin{adjust to the running example in the introduction}
-The program $S$ corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Example~\ref{exmp:running} is an {\slint} program, if its syntax is slightly adapted. In particular, {\tt url1=url.trim()} in $S$ is transformed into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and 
+The program $S$ corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Example~\ref{exmp:running} is an {\slint} program, if its syntax is slightly adapted. In particular, {\tt qmarkpos = url1.indexof('?')} in $S$ is transformed into $\ASSERT{{\tt qmarkpos = \indexof_{?}(url1,0)}}$, and {\tt url1=url.trim()} is adapted into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, moreover,  
 {\tt
 %\begin{minted}{javascript}
 querfrag2 = querfrag1.replace(/<script>|javascript:/g, '')
