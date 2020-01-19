@@ -54,24 +54,31 @@ is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such tha
 are mutually distinct and freshly introduced.) %\tl{$r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are actually introduced above?}
 
 
-\begin{example}\label{exm:pre-image}
-Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, (r_1), \delta, I, F)$. Since the concatenation function $\concat$  is  from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ (note that in this case $l=2$, $k_0=1$, and $k_j=0$ for $j\in [l]$) and 
-\[\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2} \cup L_{3,1} \times L_{3,2} \cup L_{4,1} \times L_{4,2} \cup L_{5,1} \times L_{5,2},\]
-such that
+\begin{example}[$\substring^{-1}_R(L)$]\label{exm:pre-image}
+Let $\Sigma = \{a\}$ and $L = \{(w, |w|) \mid w \in \Lang((aa)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, \{q_0\}, \{q_0\})$ with $Q=\{q_0,q_1\}$, $R=(r_1)$ and $\delta = \{(q_0, a, q_1), (q_1, a, q_0)\}$. Since $\substring$  is  from $\Sigma^* \times \Int^2$ to $\Sigma^*$, $\substring^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under $\substring$, is the pair $(\cR, t)$, where $t=r^{(1)}_1$ (note that in this case $l=1$, $k_0=1$, and $k_1=2$) and 
+%
+$$\cR = \{(w, n_1, n_2, n_2) \mid w \in \Lang(a^*), n_1 \ge 0, n_2 \ge 0, n_1+n_2 \le |w|, n_2 \mbox{ is even}\},$$ 
+%
+which is represented by $(\CEFA', t)$ such that $\CEFA'= (Q', \Sigma, R', \delta', I', F')$, where 
 \begin{itemize}
-\item $L_{1,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{1,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$,
-%
-\item $L_{2,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{2,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((aa)^*b(bb)^*)\}$,
-%
-\item $L_{3,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang(a(aa)^*)\}$ and $L_{3,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(a(aa)^*b(bb)^*)\}$,
-%
-\item $L_{4,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*b(bb)^*)\}$ and $L_{4,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((bb)^*)\}$,
-%
-\item $L_{5,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*(bb)^*)\}$ and $L_{5,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$.
+\item $Q' = Q \times \{p_0, p_1, p_2\}$, (Intuitively, $p_0$, $p_1$, and $p_2$ denote that the current position is before the starting position, between the starting position and ending position, and after the ending position of the substring respectively.) 
+\item $R'= \left(r'_{1,1}, r'_{1,2}, r^{(1)}_1 \right)$, 
+\item $I' =\{(q_0,p_0)\}$, $F'=\{(q_0, p_2), (q_0, p_0)\}$, and 
+\item $\delta'$ is  
+\[
+\left\{
+\begin{array}{l}
+(q_0, p_0) \xrightarrow{a, \eta_1} (q_0, p_0), (q_0, p_0) \xrightarrow{a, \eta_2} (q_1, p_1), (q_1, p_1) \xrightarrow{a, \eta_2} (q_0, p_1), \\
+(q_0, p_1) \xrightarrow{a, \eta_2} (q_1, p_1), (q_1, p_1) \xrightarrow{a, \eta_2} (q_0, p_2), (q_0, p_2) \xrightarrow{a, \eta_3} (q_0, p_2)
+\end{array}
+\right\},
+\] 
+where $\eta_1(r'_{1,1})=1$, $\eta_1(r'_{1,2})=0$, $\eta_1(r^{(1)}_1)=0$, $\eta_2(r'_{1,1})=0$, $\eta_2(r'_{1,2})=1$, and $\eta_2(r^{(1)}_1)=1$, $\eta_3(r'_{1,1})=0$, $\eta_3(r'_{1,2})=0$, and $\eta_3(r^{(1)}_1)=0$.
 \end{itemize}
-
-It is easy to see that $\cR$ is a CERR. Thus $\concat^{-1}_R(L)$ is CERR-definable.
+%
+Therefore, $\substring^{-1}_R(L)$ is CERR-definable.
 \end{example}
+
 
 It turns out that for each string function $f$ in {\slint}, the cost-enriched pre-images of CERLs under $f$ are CERR-definable.
 
@@ -271,54 +278,66 @@ In Step IV, for each input string variable $x$ in $S$, at most exponentially man
 
 
 \begin{example}
-Consider the program $S$ in Example~\ref{exmp:running},
-\[
-\begin{array}{l}
-y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
-\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
-\end{array}
-\] 
+Consider the program $S$ in Example~\ref{exmp:running}.
+%\[
+%\begin{array}{l}
+%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+%\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
+%\end{array}
+%\] 
 We show how to decide the path feasibility of $S$. 
 \begin{description}
 \item[Step I.]   Vacous since $S$ contains only atomic asserations already. %neither disjunction nor conjunction.
 %
-\item[Step II.] Nondeterministically choose $\mathcal{I} = \emptyset$.  
+\item[Step II.] Nondeterministically choose to replace $\indexof_\#(\mathtt{url1}, 0)$ with $-1$ and add $\ASSERT{\mathtt{url1} \in \NFA_{\overline{\Sigma^*\#\Sigma^*}}}$ to $S$.  
 %
-\item[Step III.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce fresh variables $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting in  the program 
-\[
+\item[Step III.] Replace $\length(\mathtt{url1})$ with $i'_1$ and add $\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}$ to $S$, moreover, replace $\indexof_?(\mathtt{url1}, 0)$ with $i'_3$ and add $\ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}$ to $S$, where $i'_1, i'_2, i'_3$ are fresh integer variables. Then we get the following program (still denoted by $S$), 
+\[ 
 \begin{array}{l}
-y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
-\ASSERT{i_1 = i_2}; \ASSERT{ j_2 < j'_2};\\
-\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}; \ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]};\\
-\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]};  \\
-\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}.
+    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+    \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
+    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}};  \\
+    \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}; \\
+    \ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}.
 \end{array}
-\] 
+\]
 %
-\item[Step IV.] Recall that $\CEFA_{\rm len}=(\{q_0\}, \Sigma, (r_1), \delta_{\rm len}, \{q_0\}, \{q_0\})$, where $\delta_{\rm len} = \{(q_0, a, q_0, \eta) \mid a \in \Sigma, \eta(r_1)=1\}$. Moreover, let $\NFT_{\replaceall_{\Sigma \setminus (, \varepsilon}} = (\{p_0\}, \Sigma, \delta_{\replaceall_{\Sigma \setminus (, \varepsilon}}, \{p_0\}, \{p_0\})$, where $\delta_{\replaceall_{\Sigma \setminus (, \varepsilon}} = \{(p_0, a, p_0, a), (p_0, (, p_0, \varepsilon) \mid a \in \Sigma \setminus \{(\}\}$. Then a CEFA representation of $(\replaceall_{\Sigma \setminus (, \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_2/r_1]))$ is 
-%
-\[\CEFA' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_2), \delta', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_2)\right),\]
-%
-where $\delta'$ comprises the tuples $((p_0,q_0), (, (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{(\}$, $\eta_1(i^{(1)}_2)=1$, and $\eta_0(i^{(1)}_2)=0$. 
-
-Remove  $z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x)$ and $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$ from the program and add the statement $\ASSERT{i_2=i^{(1)}_2};\ASSERT{x \in \CEFA'}$. 
-
-Similarly, a CEFA representation of $(\replaceall_{\Sigma \setminus ), \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_1/r_1]))$ is  
-\[\CEFA'' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_1), \delta'', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_1)\right),\]
-%
-where $\delta''$ comprises the tuples $((p_0,q_0), ), (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{)\}$, $\eta_1(i^{(1)}_1)=1$, and $\eta_0(i^{(1)}_1)=0$. 
-
-Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$ from the program and add the statement $\ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}$, resulting in the following program,
-\[
+\item[Step IV.] Since there is no CEFA constraints for $\mathtt{url2}$, removing the last assignment statement of $S$, i.e. $\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}$, is easy and in this case we add no statements to $S$. After this, $\mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1})$ becomes the last assignment statement. Suppose $\NFA'=(Q', \Sigma, \delta', I', F')$ is an NFA representing $(\replaceall_{\mathtt{<script>},\ \varepsilon})^{-1}_\emptyset(\Lang(\NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}))$, namely, the pre-image of $\Lang(\NFA_{\Sigma^*\mathtt{<script>}\Sigma^*})$ under $\replaceall_{\mathtt{<script>},\ \varepsilon}$. Then we remove this assignment statement and add $\ASSERT{\mathtt{querfrag1 \in \NFA'}}$, resulting into the following program
+\[ 
 \begin{array}{l}
-%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
-\ASSERT{i_1 = i_2}; \ASSERT{ j_2 < j'_2};\\
-%\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}; \ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]};\\
-\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]};  \\
-\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]};\\
-\ASSERT{i_2=i^{(1)}_2}; \ASSERT{x \in \CEFA'}; \ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}.
+    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+    \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+%    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
+%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}};  
+    \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+    \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+    \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'}.
 \end{array}
-\] 
+\]
+
+From Example~\ref{exm:pre-image}, we know that $\substring^{-1}_\emptyset(\Lang(\NFA'))$ can be represented by some CEFA $\cB=(Q'', R'', \delta'', I'', F'')$ with $Q''= Q' \times \{p_0,p_1,p_2\}$ and $R''=(r'_{1,1}, r'_{1,2})$ (where $r'_{1,1}$ and $r'_{1,2}$ are fresh integer variables). Then we remove $\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos})$, add $\ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1}= qmarkpos}}; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}$, and get the following program
+\[ 
+\begin{array}{l}
+    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+    \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+%   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+%    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
+%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}};  
+    \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+    \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+    \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'};\\
+    \ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1} = qmarkpos} }; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}.
+\end{array}
+\]
+We can continue the process until the problem contains no assignment statement.
 %
 \item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
 \end{description}
@@ -351,14 +370,41 @@ Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \i
 
 
 
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+\hide{
+\begin{example}\label{exm:pre-image}
+Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, R=(r_1), \delta, I, F)$. Since the concatenation function $\concat$  is  from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ (note that in this case $l=2$, $k_0=1$, and $k_j=0$ for $j\in [l]$) and 
+\[\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2} \cup L_{3,1} \times L_{3,2} \cup L_{4,1} \times L_{4,2} \cup L_{5,1} \times L_{5,2},\]
+such that
+\begin{itemize}
+\item $L_{1,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{1,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$,
+%
+\item $L_{2,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{2,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((aa)^*b(bb)^*)\}$,
+%
+\item $L_{3,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang(a(aa)^*)\}$ and $L_{3,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(a(aa)^*b(bb)^*)\}$,
+%
+\item $L_{4,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*b(bb)^*)\}$ and $L_{4,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((bb)^*)\}$,
+%
+\item $L_{5,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*(bb)^*)\}$ and $L_{5,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$.
+\end{itemize}
+%
+It is easy to see that $\cR$ is a CERR. Thus $\concat^{-1}_R(L)$ is CERR-definable.
+\end{example}
+}
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+
+
+
 
 %%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
-
+\hide{
 \begin{example}
-Consider the program $S$ in Example~\ref{exmp:running},
+Consider the program $S$ in Example~\ref{exmp:running}.
 \[
 \begin{array}{l}
 y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
@@ -411,8 +457,7 @@ Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \i
 \end{description}
 
 \end{example}
-
-
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

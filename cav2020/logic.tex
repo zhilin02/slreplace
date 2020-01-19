@@ -71,15 +71,14 @@ After adapting the syntax of the program corresponding to the ``if'' branch of {
 \begin{array}{l}
     \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon};\\
     \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \ASSERT{\mathtt{qmarkpos} = \indexof_?(\mathtt{url1},0)};\\
-    \ASSERT{\mathtt{sharppos} = \indexof_{\#}(\mathtt{url1}, 0)}; \ASSERT{\mathtt{qmarkpos} >= 0};\\ 
+    \ASSERT{\mathtt{sharppos} = \indexof_{\#}(\mathtt{url1}, 0)}; \ASSERT{\mathtt{qmarkpos} \ge 0};\\ 
     \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
    \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, \length(\mathtt{url1}) - \mathtt{qmarkpos});\\
     \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
-    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2};\\
-    \ASSERT{\mathtt{querfrag2} \in \NFA_{\mathtt{<script>}}}
+    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2};\ASSERT{\mathtt{querfrag2} \in \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}}
 \end{array}
 \]
-where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and $\NFA_{\mathtt{<script>}}$ is the NFA defining $\{\mbox{\tt <script>}\}$. 
+where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and $ \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}$ is the NFA defining $\{w\mbox{\tt <script>} w' \mid w, w' \in \Sigma^*\}$. 
 %
 %
 %In particular, {\tt qmarkpos = url1.indexof('?')} in $S$ is transformed into $\ASSERT{{\tt qmarkpos = \indexof_{?}(url1,0)}}$, and {\tt url1=url.trim()} is adapted into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, moreover,  
