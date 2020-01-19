@@ -74,7 +74,7 @@ We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range o
 
 We consider the following four sets of benchmarks.
 
-The first benchmark suite {\transducerbench+} is derived from the {\transducerbench} benchmark suite of {\ostrich} \cite{CHL+19}.  The {\transducerbench} suite involves seven transducers: toUpper (replacing all lowercase letters with their uppercase ones) and its dual toLower, htmlEscape \cite{htmlEscape} and its dual htmlUnescape, escapeString \cite{escapeString}, addslashes \cite{addslashes}, and trim \cite{trim}. These transducers are collected from Strangers \cite{YABI14} and SLOTH \cite{HJLRV18}. The {\transducerbench+} suite is generated from these transducers by encoding idempotence (given $\NFT$, whether $\forall x.\ \NFT(\NFT(x)) = \NFT(x)$), duality (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = x$), commutativity (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = \NFT_1(\NFT_2(x))$), and equivalence (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_1(x) = \NFT_2(x)$) problems\footnote{These problems have been investigated for transducers in \cite{BEK}.} into the path feasibility of {\slint} programs. For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$). In total, we get 91 instances for the {\transducerbench+} benchmark suite. 
+The first benchmark suite {\transducerbench+} is derived from the {\transducerbench} benchmark suite of {\ostrich} \cite{CHL+19}.  The {\transducerbench} suite involves seven transducers: toUpper (replacing all lowercase letters with their uppercase ones) and its dual toLower, htmlEscape \cite{htmlEscape} and its dual htmlUnescape, escapeString \cite{escapeString}, addslashes \cite{addslashes}, and trim \cite{trim}. These transducers are collected from Strangers \cite{YABI14} and SLOTH \cite{HJLRV18}. The {\transducerbench+} suite is generated from these transducers by encoding idempotence (given $\NFT$, whether $\forall x.\ \NFT(\NFT(x)) = \NFT(x)$), duality (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = x$), commutativity (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = \NFT_1(\NFT_2(x))$), and equivalence (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_1(x) = \NFT_2(x)$) problems\footnote{These problems have been investigated for transducers in \cite{BEK}.} into the path feasibility of {\slint} programs. For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$). Moreover, we also include into {\transducerbench+} three {\slint} programs generated from the {\tt urlXssSanitise} function in Example~\ref{exmp:running}, where the transducer $\NFT_{\rm trim}$ is used. In total, we get 94 instances for the {\transducerbench+} benchmark suite. 
 %\begin{description}
 %\item[Idempotence.] For each FFT $\NFT$,  we encode the non-idempotence of $\NFT$, namely deciding whether $\exists x.\ \NFT(\NFT(x)) \neq \NFT(x)$, into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$).
 %
@@ -109,7 +109,7 @@ The fourth benchmark suite {\kaluzabench} is the well-known Kaluza benchmark sui
 
 \subsection{Experiment results}
 
-The experiments are executed on a virtual machine with the CPU \zhilin{xxx} and 2GB main memory, with the timeout period set as 30 seconds. The experimental results are summarised in Table~\ref{tab-experiment}.
+The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, with the timeout period set as 30 seconds. The experimental results are summarised in Table~\ref{tab-experiment}.
 
 {\zthreetrau} does not support replace/replaceall.
 
@@ -125,11 +125,11 @@ The experiments are executed on a virtual machine with the CPU \zhilin{xxx} and 
 \hline
 & &  \cvc & \zthree & \sloth & \zthreetrau & \ostrich+\\
 \hline
-\multirow{4}{*}{\transducerbench+(91)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}\\
+\multirow{4}{*}{\transducerbench+(94)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}\bf{85}\\
 \cline{2-7}
- & unsat &$-$  &$-$ &$-$  &$-$ &\\
+ & unsat &$-$  &$-$ &$-$  &$-$ &\bf{9}\\
 \cline{2-7}
- & \cellcolor{Gray}  u.k. / t.o. / e.x.  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$ &\cellcolor{Gray}\\
+ & \cellcolor{Gray}  u.k. / t.o. / e.x.  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$ &\cellcolor{Gray}0\\
 \cline{2-7} 
  & wrong &$-$  & $-$ &$-$  &$-$ &0 \\
 \hline
