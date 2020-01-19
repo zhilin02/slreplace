@@ -109,9 +109,13 @@ The fourth benchmark suite {\kaluzabench} is the well-known Kaluza benchmark sui
 
 \subsection{Experiment results}
 
-The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, with the timeout period set as 30 seconds. The experimental results are summarised in Table~\ref{tab-experiment}.
+The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8, with the timeout period set as 30 seconds. The experimental results are summarised in Table~\ref{tab-experiment}.
 
 {\zthreetrau} does not support replace/replaceall.
+
+sloth does not deal with integer constraints, so we choose not to compare
+
+Trau+: unable to run. It is an integration of Sloth and Trau.
 
 %From the experimental results, we can see that \ostrich+ is the only solver that 
 
@@ -121,69 +125,69 @@ The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.
 %\newcolumntype{g}{>{\columncolor{Gray}}c}
 \begin{table}[htbp]
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-& &  \cvc & \zthree & \sloth & \zthreetrau & \ostrich+\\
+Benchmark suite & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+\\
 \hline
-\multirow{4}{*}{\transducerbench+(94)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}\bf{85}\\
-\cline{2-7}
- & unsat &$-$  &$-$ &$-$  &$-$ &\bf{9}\\
-\cline{2-7}
- & \cellcolor{Gray}  u.k. / t.o. / e.x.  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$ &\cellcolor{Gray}0\\
-\cline{2-7} 
- & wrong &$-$  & $-$ &$-$  &$-$ &0 \\
+\multirow{4}{*}{\transducerbench+(94)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}\bf{85}\\
+\cline{2-6}
+ & unsat &$-$  &$-$ &$-$ &\bf{9}\\
+\cline{2-6}
+ & \cellcolor{Gray}  u.k. / t.o. / e.x.  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}0\\
+\cline{2-6} 
+ & wrong &$-$  & $-$  &$-$ &0 \\
 \hline
-\multirow{4}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray} & \cellcolor{Gray}$-$ & \cellcolor{Gray}584 \\
-\cline{2-7}
- & unsat & \bf{2,082} & 2,066  &  &$-$ &\bf{2,082}\\
-\cline{2-7}
- &\cellcolor{Gray}  u.k. / t.o. / e.x. & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray} & \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
-\cline{2-7}
- & wrong &0 & 0  & &$-$ &0\\
+\multirow{4}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray}$-$ & \cellcolor{Gray}584 \\
+\cline{2-6}
+ & unsat & \bf{2,082} & 2,066  &$-$ &\bf{2,082}\\
+\cline{2-6}
+ &\cellcolor{Gray}  u.k. / t.o. / e.x. & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
+\cline{2-6}
+ & wrong &0 & 0  &$-$ &0\\
 \hline
-\multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{104}  & \cellcolor{Gray}$-$ & \cellcolor{Gray} & \cellcolor{Gray}$-$  &98 \cellcolor{Gray}\\
-\cline{2-7}
- & unsat &11  &$-$  &  &$-$ &\bf{12}\\
-\cline{2-7}
- &\cellcolor{Gray} u.k. / t.o. / e.x. & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}  &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
-\cline{2-7}
- & wrong &0 &$-$ &0 &$-$  &0 \\
+\multirow{4}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{104}  & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$  &98 \cellcolor{Gray}\\
+\cline{2-6}
+ & unsat &11  &$-$  &$-$ &\bf{12}\\
+\cline{2-6}
+ &\cellcolor{Gray} u.k. / t.o. / e.x. & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
+\cline{2-6}
+ & wrong &0 &$-$ &$-$  &0 \\
 \hline
-\multirow{4}{*}{\pyextdbench(5,569)} & \cellcolor{Gray} sat & \cellcolor{Gray} 4,224 & \cellcolor{Gray} 4,068 &  \cellcolor{Gray} & \cellcolor{Gray} \bf{4,266} & \cellcolor{Gray}4,141\\
-\cline{2-7}
- & unsat & 1,284 & 1,289 &    & \bf{1,295} &1,203\\
-\cline{2-7}
- &\cellcolor{Gray} u.k. / t.o. / e.x. &\cellcolor{Gray}0 &\cellcolor{Gray} 212   & \cellcolor{Gray} &\cellcolor{Gray}0 &\cellcolor{Gray}225\\
-\cline{2-7}
- &wrong &0 & 0 & &  0 &0 \\
+\multirow{4}{*}{\pyextdbench(5,569)} & \cellcolor{Gray} sat & \cellcolor{Gray}4,224 & \cellcolor{Gray}4,068 &  \cellcolor{Gray} \bf{4,266} & \cellcolor{Gray}4,141\\
+\cline{2-6}
+ & unsat & 1,284 & 1,289 & \bf{1,295} &1,203\\
+\cline{2-6}
+ &\cellcolor{Gray} u.k. / t.o. / e.x. &\cellcolor{Gray}61 &\cellcolor{Gray}212   &\cellcolor{Gray}8 &\cellcolor{Gray}225\\
+\cline{2-6}
+ &wrong &0 & 0 &  0 &0 \\
 \hline
-\multirow{4}{*}{\pyexztbench(8,414)} & \cellcolor{Gray} sat & \cellcolor{Gray} 6,346 & \cellcolor{Gray} 6,040 & \cellcolor{Gray} & \cellcolor{Gray}\bf{7,003} & \cellcolor{Gray}5,489\\
-\cline{2-7}
- & unsat & 1,358  & 1,370 &    &\bf{1,394} &1,239\\
-\cline{2-7}
- & \cellcolor{Gray}u.k. / t.o. / e.x. &\cellcolor{Gray}710 &\cellcolor{Gray}1,004   & \cellcolor{Gray} &\cellcolor{Gray} 17 &\cellcolor{Gray}1,686\\
-\cline{2-7}
- & wrong & 0 &0 &  & 0 &0 \\
+\multirow{4}{*}{\pyexztbench(8,414)} & \cellcolor{Gray} sat & \cellcolor{Gray}6,346 & \cellcolor{Gray}6,040 & \cellcolor{Gray}\bf{7,003} & \cellcolor{Gray}5,489\\
+\cline{2-6}
+ & unsat & 1,358  & 1,370  &\bf{1,394} &1,239\\
+\cline{2-6}
+ & \cellcolor{Gray}u.k. / t.o. / e.x. &\cellcolor{Gray}710 &\cellcolor{Gray}1,004 &\cellcolor{Gray} 17 &\cellcolor{Gray}1,686\\
+\cline{2-6}
+ & wrong & 0 &0 & 0 &0 \\
 \hline
-\multirow{4}{*}{\pyexzzbench(11,438)} & \cellcolor{Gray} sat & \cellcolor{Gray} 10,078 & \cellcolor{Gray} 8,804 & \cellcolor{Gray} & \cellcolor{Gray} \bf{10,129} & \cellcolor{Gray}\\
-\cline{2-7}
- & unsat & 1,204 & 1,207 &  &   \bf{1,222} &\\
-\cline{2-7}
- &\cellcolor{Gray}  u.k. / t.o. / e.x. &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} & \cellcolor{Gray} 87 &\cellcolor{Gray} \\
-\cline{2-7}
- & wrong &  0 & 0 &  & 0& \\
+\multirow{4}{*}{\pyexzzbench(11,438)} & \cellcolor{Gray} sat & \cellcolor{Gray} 10,078 & \cellcolor{Gray} 8,804 & \cellcolor{Gray} \bf{10,129} & \cellcolor{Gray}\\
+\cline{2-6}
+ & unsat & 1,204 & 1,207  &   \bf{1,222} &\\
+\cline{2-6}
+ &\cellcolor{Gray}  u.k. / t.o. / e.x. &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} 87 &\cellcolor{Gray} \\
+\cline{2-6}
+ & wrong &  0 & 0 & 0& \\
 \hline
-\multirow{4}{*}{\kaluzabench(47,284)} & \cellcolor{Gray} sat &  \cellcolor{Gray} \bf{35,264} & \cellcolor{Gray} 33,438 & \cellcolor{Gray} & \cellcolor{Gray} 34,769 & \cellcolor{Gray}\\
-\cline{2-7}
- & unsat & \bf{12,014} &  11,799 &    &\bf{12,014}  &\\
-\cline{2-7}
- &\cellcolor{Gray} u.k. / t.o. / e.x. &\cellcolor{Gray}6 & \cellcolor{Gray}2,047 &  \cellcolor{Gray}   &\cellcolor{Gray}507 &\cellcolor{Gray} \\
-\cline{2-7}
- & wrong &  0 & 0 &  &0 & \\
+\multirow{4}{*}{\kaluzabench(47,284)} & \cellcolor{Gray} sat &  \cellcolor{Gray} \bf{35,264} & \cellcolor{Gray} 33,438 & \cellcolor{Gray} 34,769 & \cellcolor{Gray}27,962\\
+\cline{2-6}
+ & unsat & \bf{12,014} &  11,799  &\bf{12,014}  &9,058\\
+\cline{2-6}
+ &\cellcolor{Gray} u.k. / t.o. / e.x. &\cellcolor{Gray}6 & \cellcolor{Gray}2,047  &\cellcolor{Gray}501 &\cellcolor{Gray}10,264 \\
+\cline{2-6}
+ & wrong &  0 & 0 &0 &0 \\
 \hline
-\multirow{2}{*}{Total(76,307)} & \cellcolor{Gray} solved & \cellcolor{Gray}  & \cellcolor{Gray}70,959 & \cellcolor{Gray} & \cellcolor{Gray}72,092 & \cellcolor{Gray}\\
-\cline{2-7}
- &  unsolved &  & 5,348 &  & 4,215 &  \\
+\multirow{2}{*}{Total(76,310)} & \cellcolor{Gray} solved & \cellcolor{Gray}\bf{75,278}  & \cellcolor{Gray}70,959 & \cellcolor{Gray}72,092 & \cellcolor{Gray}\\
+\cline{2-6}
+ &  unsolved &1,032  & 5,351  & 4,218 &  \\
 \hline
 \end{tabular}
 \end{center}
