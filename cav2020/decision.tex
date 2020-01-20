@@ -298,23 +298,23 @@ We show how to decide the path feasibility of $S$.
     \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
     \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
    \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
-    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
-    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}};  \\
+    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  \\
     \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}; \\
     \ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}.
 \end{array}
 \]
 %
-\item[Step IV.] Since there is no CEFA constraints for $\mathtt{url2}$, removing the last assignment statement of $S$, i.e. $\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}$, is easy and in this case we add no statements to $S$. After this, $\mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1})$ becomes the last assignment statement. Suppose $\NFA'=(Q', \Sigma, \delta', I', F')$ is an NFA representing $(\replaceall_{\mathtt{<script>},\ \varepsilon})^{-1}_\emptyset(\Lang(\NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}))$, namely, the pre-image of $\Lang(\NFA_{\Sigma^*\mathtt{<script>}\Sigma^*})$ under $\replaceall_{\mathtt{<script>},\ \varepsilon}$. Then we remove this assignment statement and add $\ASSERT{\mathtt{querfrag1 \in \NFA'}}$, resulting into the following program
+\item[Step IV.] Since there is no CEFA constraints for $\mathtt{url2}$, removing the last assignment statement of $S$, i.e. $\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}$, is easy and in this case we add no statements to $S$. After this, $\mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1})$ becomes the last assignment statement. Suppose $\NFA'=(Q', \Sigma, \delta', I', F')$ is an NFA representing $(\replaceall_{\mathtt{script},\ \varepsilon})^{-1}_\emptyset(\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*}))$, namely, the pre-image of $\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*})$ under $\replaceall_{\mathtt{script},\ \varepsilon}$. Then we remove this assignment statement and add $\ASSERT{\mathtt{querfrag1 \in \NFA'}}$, resulting into the following program
 \[ 
 \begin{array}{l}
     \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
     \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
     \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
    \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
-%    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
+%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
 %    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
-    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}};  
+    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
     \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
     \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
     \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'}.
@@ -328,9 +328,9 @@ From Example~\ref{exm:pre-image}, we know that $\substring^{-1}_\emptyset(\Lang(
     \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
     \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
 %   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
-%    \mathtt{querfrag2} := \replaceall_{\mathtt{<script>},\ \varepsilon}(\mathtt{querfrag1});\\
+%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
 %    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
-    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{<script>}\Sigma^*}};  
+    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
     \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
     \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
     \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'};\\

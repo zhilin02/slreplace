@@ -2,7 +2,7 @@
 
 \begin{example}\label{exmp:running}
 We use the following JavaScript program to demonstrate the use of string functions coupled with integer data type.
-The program defines a function {\urlxsssanitise} (the input parameter url specifying an URL). A typical URL consists of a hierarchical sequence of components referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.js?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.js}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). Note that either query or fragment could be empty in an URL. The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks}, a type of cross-site-scripting (XSS) attacks, by filtering out the dangerous substring ``\url{<script>}'' from the input URL. URL reflection attacks  do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.js?name=<script>alert('xss!');</script>}''.
+The program defines a function {\urlxsssanitise} (the input parameter url specifying an URL). A typical URL consists of a hierarchical sequence of components referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.html?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.html}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). Note that either query or fragment could be empty in an URL. The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks}, a type of cross-site-scripting (XSS) attacks, by filtering out the dangerous substring ``\url{script}'' from the input URL. URL reflection attacks  do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.html?name=<script>alert('xss!');</script>}''.
 %\begin{example}
 {\small
 \begin{minted}[linenos]{javascript}
@@ -18,7 +18,7 @@ function urlXssSanitise(url)
     {   prothostpath = url.substr(0, sharppos);
         querfrag = url.substr(sharppos); }
     else prothostpath = url;
-    querfrag = querfrag.replace(/<script>/g, '');
+    querfrag = querfrag.replace(/script/g, '');
     url = prothostpath.concat(querfrag);
     return url;
 }
@@ -31,7 +31,7 @@ Note that {\urlxsssanitise} uses JavaScript string functions including the sanit
 % \in [\backslash w | \backslash x2E]^*$
 %We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
 
-The program analysis is to ascertain whether {\urlxsssanitise} indeed works, namely, after applying {\urlxsssanitise} on the input URL, ``\url{<script>}'' does disappear.  This problem can be reduced to checking whether there is an execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains occurrences of ``\url{<script>}''. For instance, assuming  the "if" branch is executed, %first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to 
+The program analysis is to ascertain whether {\urlxsssanitise} indeed works, namely, after applying {\urlxsssanitise} on the input URL, ``\url{script}'' does disappear.  This problem can be reduced to checking whether there is an execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains occurrences of ``\url{script}''. For instance, assuming  the "if" branch is executed, %first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to 
 we will need to solve the path feasibility of the following JavaScript program in the single static assignment (SSA) form,
 
 {\small
@@ -41,7 +41,7 @@ we will need to solve the path feasibility of the following JavaScript program i
     sharppos = url1.indexof('#'); assert(qmarkpos >= 0); 
     prothostpath1 = url1.substr(0, qmarkpos);
     querfrag1 = url1.substr(qmarkpos);
-    querfrag2 = querfrag1.replace(/<script>/g, '');
+    querfrag2 = querfrag1.replace(/script/g, '');
     url2 = prothostpath1.concat(querfrag2);
     assert(/<script>/.test(querfrag2))
 \end{minted}
