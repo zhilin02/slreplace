@@ -46,11 +46,15 @@ inputs that lead to certain parts of the program or an erroneous behavior.
 %%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Reasoning about strings and integers is challenging and not well-understood. For instance, it is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length functions (arguably the most common string-number function) is decidable \cite{Vijay-length}. It is easy to end up with undecidability: even the slightest extension of the theory (e.g. with letter counting % and
-%string-number conversion) 
-would render the theory undecidable \cite{buchi,GB16}. A further evidence is that, although a great deal of research has shown that one can support reasoning about rather complex string operations without breaking decidability by imposing syntactic restrictions on the constraints (e.g., \cite{CCH+18,CHL+19}; cf. related work for a brief survey), adding length constraints would immediately lead to undecidability \cite{CCH+18}. At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. %string operations that are not covered by decidable string constraint languages.
+Reasoning about strings and integers is challenging and not well-understood. 
+%It is easy to end up with undecidability: even the slightest extension of this theory (e.g. the theory with concatenation and letter counting)  would render the theory undecidable \cite{buchi,GB16}. 
+The problem is undecidable in general,  for instance, the string theory with concatenation and letter counting functions is undecidable \cite{buchi}. 
+A further evidence is that, although a great deal of research has shown that one can support reasoning about rather complex string operations without breaking decidability by imposing proper restrictions on the form of the constraints (e.g., \cite{CCH+18,CHL+19}; cf. related work for a brief survey), adding length constraints would immediately lead to undecidability \cite{CCH+18}. Moreover, it is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length function (arguably the most common string-number conversion) is decidable \cite{Vijay-length}. 
 %
-Indeed, a vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str3}, Trau \cite{Abdulla17} (as well as its variants {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}),  ABC \cite{ABC}, and SLENT \cite{WC+18} do support  reasoning about both strings and integers.
+%At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. 
+As a result, a vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str3}, Trau \cite{Abdulla17} (as well as its variants {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}),  
+%ABC \cite{ABC}, and SLENT \cite{WC+18}, 
+resort to heuristics without completeness guarantees to support reasoning about both strings and integers.
 %Nevertheless, solving string constraints involving the integer data type is far from trivial and actually undecidable in general \cite{buchi,CCH+18}. Therefore, all the aforementioned string constraint solvers
 They however inevitably  resort to heuristics without completeness guarantees. 
 
