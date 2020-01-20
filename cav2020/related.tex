@@ -19,10 +19,18 @@ The discussion will mainly focus on (1) theoretical results in terms of decidabi
 
 \smallskip 
 \noindent\textbf{Theoretical results.}
+Due to the space limit, we mainly focus on the results for string constraints involving the integer data type.
+
+
+
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+\hide{
 The research on the theory of strings with concatenation %has a long history, largely 
 was motivated by %. This research programme builds on
 the question of solving satisfiability of word equations (i.e., equations containing concatenation of string constants and variables). Makanin showed decidability \cite{Makanin}, but the upper bound was only improved to PSPACE about 25 years later \cite{P04},    %using a word compression technique. 
-a simpler algorithm of which was given recently \cite{J17}. %using the recompression technique. 
+a simpler algorithm of which was given recently \cite{Jez17}. %using the recompression technique. 
 The best lower bound for this problem is still NP, and closing this complexity gap is a long-standing open problem. %Decidability
 %
 The PSPACE upper bound stands %can be retained 
@@ -30,17 +38,15 @@ in the presence of regular constraints (e.g., see \cite{Schulz}).
 %Even further, the existential theory
 %of concatenation with regular constraints was shown to be decidable using the technique of \cite{buchi}.
 %
-In practice, it is common for a string-manipulating program to contain multiple operations (e.g., finite-state transductions) which may be well beyond concatenation, which has motivated research on more expressive string constraint languages.   %, and so a path feasibility solver nonetheless needs to be able to
+In practice, it is common for a string-manipulating program to contain multiple operations (e.g., $\replaceall$) that may be well beyond concatenation, which has motivated research on more expressive string constraint languages.   %, and so a path feasibility solver nonetheless needs to be able to
 %handle them. 
 Unfortunately, it takes very little for %a string constraint language 
-them to become undecidable \cite{LB16}. For instance, when finite state transductions are allowed, checking a simple formula of the form $\exists x.R(x, x)$ for a given rational transduction $R$, can easily encode the Post Correspondence Problem, and therefore is undecidable.
+them to become undecidable \cite{LB16}. For instance, when finite transducers are allowed, checking the satisfiability of a simple formula of the form $\NFT(x, x)$ for a given finite transducer $\NFT$, can easily encode the Post Correspondence Problem, and therefore is undecidable.
 %When applying string constraint solving to analysis of string manipulating programs, one common practice is to use dynamic symbolic execution, which would result in constraints with complex operations which are well beyond concatenation. In the last few decades much research suggests that
 %
 %Despite the undecidability of allowing various operations in string constraints,
 %
 %Fortunately, 
-
-\cite{GB16}
 
 Hence,  recent research endeavors %years have seen the possibility of recovering 
 to recover decidability of some string constraint languages with multiple string operations, while retaining applicability for constraints that
@@ -59,6 +65,23 @@ including concatenation, one-way and two-way finite-state transducers, (general)
 string-reverse functions, regular-expression matching, etc. 
 %and some
 %(restricted) forms of letter-counting/length functions. 
+}
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+
+\cite{Vijay-length}: solved form of word equations plus length: decidable 
+
+\cite{GB16}: undecidability of string theory with concatenation, linear arithmetic with length, and string-number conversion, 
+
+\cite{LB16}: straight-line fragment of concatenation, transducers, and linear arithmetic over length and letter-counting functions, $\indexof$, and $\charat$: decidable.
+
+\cite{LeH18,LinM18}: decidable fragments of quadratic word equations, length, and regular constraints.
+
+\cite{CCH+18}: undecidability of straight-line fragment of the general replaceall plus any of length, or $\indexof$, or $\charat$
+
+
+
 
 
 %, which was never studied in the context of verification and program analysis. Chen et al.
