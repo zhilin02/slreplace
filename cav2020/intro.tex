@@ -1,36 +1,31 @@
 %!TEX root = main.tex
 
-%\zhilin{this paragraph is copied from POPL'19 paper should be adapted.} 
+
 This paper is concerned with strings and integers, two fundamental data types in virtually all programming languages.
 String-manipulating programs are notoriously subtle and their potential bugs %Many subtle programming bugs are caused by , some with 
-may bring severe security consequences, a typical example of which is cross-site scripting
+may bring severe security consequences. A typical example is cross-site scripting
 (XSS), which is among the OWASP Top 10 Application Security Risks
-\cite{owasp17}. Integer occurs naturally and richly in string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
-Typically, mainstream programming languages provide, apart from standard string functions such as concatenation, $\replace$ and $\replaceall$, %string functions involving the integer data type, e.g. 
-functions like $\length$, $\indexof$, and $\substring$, which can convert strings to integers and vice versa. %, are also widely used in string-manipulating programs. 
-These functions are indeed heavily utilised in practice, for instance, it was reported \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$ (or variants thereof) comprise over 80\% of occurrences of string functions in 18 popular JavaScript applications (notably more frequent than concatenation). Undoubtedly, the introduction of integers exacerbates the intricacy of string-manipulating programs, which calls for a unified framework to reason about them. 
-
-
-%This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
-
-
+\cite{owasp17}. Integer occurs naturally and extensively in string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
+Typically, mainstream programming languages provide, apart from standard string functions (e.g., concatenation, $\replace$ and $\replaceall$), %string functions involving the integer data type, e.g. 
+functions such as $\length$, $\indexof$, and $\substring$, which can convert strings to integers and vice versa. %, are also widely used in string-manipulating programs. 
+These functions are indeed heavily utilised in practice, for instance, it was reported \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$ (or variants thereof) comprise over 80\% of string function occurrences in 18 popular JavaScript applications (notably more frequent than concatenation). Undoubtedly, the introduction of integers exacerbates the intricacy of string-manipulating programs, which calls for a unified framework to reason about them. 
 
 
 %in programs it , typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
 
-One effective automatic analysis and testing method for identifying subtle programming errors is based on \emph{symbolic execution}.
+One effective automatic analysis and testing method for identifying subtle programming errors is based on symbolic execution.
 %\cite{king76} and combinations with dynamic analysis
 %called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
-(See \cite{symbex-survey} for an excellent survey. )
+(See \cite{symbex-survey} for an excellent survey.)
 %Unlike purely random testing,
 %which runs only \emph{concrete} program executions on different
 %inputs, the techniques of symbolic execution 
 In a nutshell, this technique analyzes static paths
 (a.k.a. symbolic executions) through the program being considered. %software system under test.
 Such a path can be viewed as a constraint $\varphi$ (over
-appropriate data domains) and the hope is that a fast (constraint)
+appropriate data domains) and one expects a fast (constraint)
 solver is available for checking the satisfiability of $\varphi$ (i.e., to check
-the \emph{feasibility} of the static path), which can be used for generating
+the \emph{feasibility} of the static path), which can be used for, e.g.,  generating
 inputs that lead to certain parts of the program or an erroneous behavior.
 
 

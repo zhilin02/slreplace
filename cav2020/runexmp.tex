@@ -1,8 +1,8 @@
 %!TEX root = main.tex
 
 \begin{example}\label{exmp:running}
-We use the following JavaScript program to demonstrate the use of string functions coupled with integer data type as well as path feasibility of string-manipulating programs.
-The program defines a function {\urlxsssanitise} (the input parameter url specifying an URL). A typical URL consists of a hierarchical sequence of components referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.html?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.html}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). Note that either query or fragment could be empty in an URL. The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks} \cite{url-reflect}, by filtering out the dangerous substring ``\url{script}'' from the query and fragment components of the input URL. URL reflection attacks is a type of cross-site-scripting (XSS) attacks that do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.html?name=<script>alert('xss!');</script>}''.
+The following JavaScript program demonstrates the use of string functions coupled with integer data type as well as path feasibility of string-manipulating programs.
+The program defines a function {\urlxsssanitise} (the input parameter url specifying an URL). A typical URL consists of a hierarchical sequence of components commonly referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.html?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.html}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). (Note that either query or fragment could be empty in an URL.) The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks} \cite{url-reflect}, by filtering out the dangerous substring ``\url{script}'' from the query and fragment components of  the input URL. URL reflection attacks are a type of cross-site-scripting (XSS) attacks that do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.html?name=<script>alert('xss!');</script>}''.
 %\begin{example}
 {\small
 \begin{minted}[linenos]{javascript}
@@ -26,16 +26,16 @@ function urlXssSanitise(url)
 }
 %\end{example}
 %
-Note that {\urlxsssanitise} uses JavaScript the sanitisation operation $\sf trim$ that removes whitespace from both ends of a string, which can be conveniently modelled by finite-state transducers, and the two string functions involving integer data type, namely, $\sf indexof$ and $\sf substr$ (called $\indexof$ and $\substring$ in this paper), as well as concatenation and $\sf replace$ (with the g, global, flag, called $\replaceall$ in this paper). 
+\noindent Note that {\urlxsssanitise} uses the JavaScript sanitisation operation $\sf trim$ that removes whitespace from both ends of a string, which can be conveniently modeled by finite-state transducers. Two string functions involving integer data type, namely, $\sf indexof$ and $\sf substr$ ($\indexof$ and $\substring$ in this paper), as well as concatenation and $\sf replace$ (with the 'g'--global--flag, called $\replaceall$ in this paper), are present. 
 
 %$\footnote{$\sf replace$ with the g flag in Javascript corresponds to the $\replaceall$ function in this paper.}
 
 % \in [\backslash w | \backslash x2E]^*$
 %We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
 
-The program analysis is to ascertain whether {\urlxsssanitise} indeed works, namely, after applying {\urlxsssanitise} on the input URL, ``\url{script}'' does disappear.  This problem can be reduced to checking whether there is an execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains occurrences of ``\url{script}''. For instance, assuming  the "if" branch is executed, %first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to 
+The program analysis is to ascertain whether {\urlxsssanitise} indeed works, namely, after applying {\urlxsssanitise} to the input URL, ``\url{script}'' does disappear.  This problem can be reduced to checking whether there is an execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains occurrences of ``\url{script}''. For instance, assuming  the "if" branch is executed, %first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to 
 we will need to solve the path feasibility of the following JavaScript program in the single static assignment (SSA) form,
-
+%
 {\small
 \begin{minted}{javascript}
     prothostpath =''; querfrag = '';
@@ -48,5 +48,5 @@ we will need to solve the path feasibility of the following JavaScript program i
     assert(/script/.test(querfrag2))
 \end{minted}
 }
-where the $\ASSERT{cond}$ statement checks that the condition $cond$ is satisfied. \qed
+\noindent where the $\ASSERT{cond}$ statement checks that the condition $cond$ is satisfied. As one will see later, this can be directly encoded in our constraint language (cf.\ Section~\ref{sec:logic}) and handled by the decision procedure (cf. Section~\ref{sec:dec}).  \qed
 \end{example}
