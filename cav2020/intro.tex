@@ -41,19 +41,21 @@ inputs that lead to certain parts of the program or an erroneous behavior.
 %%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
 
 
-Reasoning about strings and integers is challenging and not well-understood. 
+Reasoning about strings and integers is important and challenging, but is not well-studied. 
 %It is easy to end up with undecidability: even the slightest extension of this theory (e.g. the theory with concatenation and letter counting)  would render the theory undecidable \cite{buchi,GB16}. 
 The problem is undecidable in general,  for instance, the string theory with concatenation and letter counting functions is undecidable \cite{buchi}. 
-A further evidence is that, although a great deal of research has shown that one can support reasoning about rather complex string operations without breaking decidability by imposing proper restrictions on the form of the constraints (e.g., \cite{CCH+18,CHL+19}; cf. related work for a brief survey), adding length constraints would immediately lead to undecidability \cite{CCH+18}. Moreover, it is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length function (arguably the most common string-number conversion) is decidable \cite{Vijay-length}. 
+Even worse, although a great deal of research has shown that it is viable to reason about rather complex string operations without breaking decidability by %imposing proper 
+restricting the form of constraints (e.g., \cite{CCH+18,CHL+19}; cf. related work for a brief survey), adding length constraints would immediately lead to undecidability \cite{CCH+18}. Moreover, it is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length function (arguably the most common string-number conversion) is decidable \cite{Vijay-length}. 
 %
 %At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. 
-As a result, a vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str3}, Trau \cite{Abdulla17} (as well as its variants {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}),  
+As a result, a vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str3}, Trau \cite{Abdulla17} (or its variants {\trauplus} \cite{AbdullaA+19} and {\zthreetrau} \cite{Z3-trau}),  
 %ABC \cite{ABC}, and SLENT \cite{WC+18}, 
 resort to heuristics without completeness guarantees to support reasoning about both strings and integers.
 %Nevertheless, solving string constraints involving the integer data type is far from trivial and actually undecidable in general \cite{buchi,CCH+18}. Therefore, all the aforementioned string constraint solvers
 %They however inevitably  resort to heuristics without completeness guarantees. 
 
-Nevertheless, as already argued in \cite{CHL+19}, despite the excellent performance of some of these solvers on some existing benchmark suites, decision procedures for string constraints with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), are still highly desirable. In a nutshell, there are at least two reasons: (1) they are \emph{theoretically intriguing} as they can deepen our understanding and increase our knowledge of the problem; and  %appealing %from a scientific point of view, and on the other hand, 
+Nevertheless, as already argued in \cite{CHL+19}, despite the excellent performance of some of these solvers on some existing benchmark suites, decision procedures for string constraints with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), are still highly desirable. In a nutshell, there are at least two reasons: (1) they are \emph{theoretically intriguing} as a rich fragment of first-order theory of strings not least; %to deepen our understanding and increase our knowledge of the problem; 
+and  %appealing %from a scientific point of view, and on the other hand, 
 (2) they can be \emph{practically appealing} since they could potentially achieve a good balance between precision and scalability, if they are amenable to implementation. 
 %they can provide a kind of robustness guarantees upon which a string constraint solver could further improve and optimise.if they are amenable to implementation, 
 
