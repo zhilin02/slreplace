@@ -1,19 +1,18 @@
 %!TEX root = main.tex
 
-Strings are widely used in programs, especially in Web applications written by, e.g., JavaScript, PHP, and Python. The integer data type occurs naturally in string-manipulating programs, typically being used to refer to lengths of, or positions in, strings. 
+Strings are widely used in programs, especially in Web applications written in, e.g., JavaScript, PHP, and Python. Integer data type occurs naturally in string-manipulating programs, used to refer to lengths of, or positions in, strings. 
 %For instance, the inputs or outputs of widely used string operations including length, substring, and indexof involve the integer data type.
-Analysis and testing of string-manipulating programs can be formulated as the path feasibility problem %(a.k.a. satisfiability) 
-by symbolic execution, which is to decide whether,  
+Analysis and testing of string-manipulating programs can be formulated as the path feasibility problem, which is to decide whether,  
 %a given execution path is feasible, namely, 
 for a given execution path, there exists an assignment to the inputs that yields a successful execution along the path. 
-Symbolic execution of string-manipulating programs relies on string constraint solvers to resolve  path feasibility.
+Symbolic execution of string-manipulating programs relies on string constraint solvers to determine  path feasibility.
 %, which plays a central role in the static analysis and verification, e.g. symbolic execution, of programs. 
 %Path feasibility problem of string-manipulating programs is very challenging and undecidable in general, especially when involving the integer data type. 
 %Aiming at solving the path feasibility of string-manipulating programs in practice, 
 %on the one hand, most of the 
 Although state-of-the-art string constraint solvers usually provide supports for both string and integer data types,   
  %strong support of complex string operations, in conjunction with limited support of integer data type. 
-they are largely benchmark-oriented and mainly resort to heuristics without completeness guarantees. \\ %, partially because it is a generally undecidable problem. \\
+they mainly resort to heuristics without completeness guarantees. \\ %, partially because it is a generally undecidable problem. \\
 %
 In this paper, we propose a decision procedure 
 %of the path feasibility problem 
@@ -29,6 +28,6 @@ is built on top of a recent solver OSTRICH,
 %, which focuses on string constraints without integer data type, 
 giving rise to OSTRICH+.
 %, which is based on a recent solver OSTRICH which could not tackle integer data types. 
-We utilise a wide range of benchmarks to evaluate the performance of OSTRICH+. The experiment results show that OSTRICH+ is the first string constraint solver capable of tackling finite transducers and integer constraints, whilst
+We evaluate the performance of OSTRICH+ on  a wide range of existing and new benchmarks. The experiment results show that OSTRICH+ is the first string constraint solver capable of tackling finite transducers and integer constraints, whilst
 %analysing properties (e.g. idempotence) of HTML sanitizers (e.g. htmlEscape) 
 its performance is comparable with some of the best state-of-the-art string constraint solvers.
