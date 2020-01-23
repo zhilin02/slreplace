@@ -70,18 +70,10 @@ string-reverse functions, regular-expression matching, etc.
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 
-In \cite{Vijay-length}, Ganesh et al. showed that a solved form of word equations with length and show decidable 
+Recall that the decidability of the string theory of word equations and linear arithmetic with the length function is a long-standing open problem. In \cite{Vijay-length}, Ganesh et al. showed that if the word equations are in a solved form, then the satisfiability of this string theory becomes decidable. On the other hand, Ganesh and Berzish proved that the satisfiability problem becomes undecidable if the string theory is extended with the string-number conversion \cite{GB16}. Moreover, Lin and Majumdar, as well as Loc and He, have investigated decidable fragments of the string theory of quadratic word equations, linear arithmetic with the length function, and regular constraints \cite{LinM18,LeH18}.
 
-\cite{GB16}: undecidability of string theory with concatenation, linear arithmetic with length, and string-number conversion, 
-
-\cite{LB16}: straight-line fragment of concatenation, transducers, and linear arithmetic over length and letter-counting functions, $\indexof$, and $\charat$: decidable.
-
-\cite{LeH18,LinM18}: decidable fragments of quadratic word equations, length, and regular constraints.
-
-\cite{CCH+18}: undecidability of straight-line fragment of the general replaceall plus any of length, or $\indexof$, or $\charat$
-
-
-
+Recently, researchers have also explored the decidability of string theories with more complex string operations and integer data type. Lin and Barcelo showed that the straight-line string logic with concatenation, finite transducers, and regular constraints, is decidable, even when extended with length, letter-counting functions, as well as $\indexof$ and $\charat$ functions \cite{LB16}. On the other hand, Chen et al. showed that although the straight-line string logic with the general form of $\replaceall$ (where the replacement parameter can be string variables) is decidable, it will become undecidable when extended with any of length, or $\indexof$, or $\charat$ function \cite{CCH+18}. 
+This result implies that the $\replaceall$ function considered in this paper must not be in the general form, namely, it should avoid string variables in the replacement string, in order to stay inside the decidability boundary. 
 
 
 %, which was never studied in the context of verification and program analysis. Chen et al.
@@ -124,21 +116,21 @@ In \cite{Vijay-length}, Ganesh et al. showed that a solved form of word equation
 %String data types have a close relationship with integer data types. Perhaps in its simplest form, 
 %length constraints have been  studied in the context of string constraint solving, though much less is known comparing
 %As mentioned before, 
-Integer constraints, mainly in the form of length constraints, have been considered as well, but their theory is certainly less developed.  %to the pure string counterparts. For instance, 
-(As an example, it is still a major open problem whether the theory of concatenation with length constraints is decidable \cite{Vijay-length}.)
+%Integer constraints, mainly in the form of length constraints, have been considered as well, but their theory is certainly less developed.  %to the pure string counterparts. For instance, 
+%(As an example, it is still a major open problem whether the theory of concatenation with length constraints is decidable \cite{Vijay-length}.)
 %, though  several extensions of this 
 %theory are undecidable (e.g. with letter counting \cite{buchi} and
 %string-number conversion \cite{GB16}). 
 %
-In parallel with the research line of allowing more complex string operations but imposing syntactic restrictions, length constraints, as well as some variants, have been considered as well.  For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
+%In parallel with the research line of allowing more complex string operations but imposing syntactic restrictions, length constraints, as well as some variants, have been considered as well.  For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
 %added to the subclass of $\strline[\replaceall]$ where the pattern/replacement 
 %are constants, while preserving decidability. In contrast, 
 %if we allow variables on the replacement parameters of formulas, 
-if one insists decidability of path feasibility, the length constraint cannot co-exist with the general form of replaceAll functions because otherwise Hilbert's 10th problem could have been encoded \cite{CCH+18}. %as it was done in \cite{CHL+18}, %in $\strline[\replaceall]$,
+%if one insists decidability of path feasibility, the length constraint cannot co-exist with the general form of replaceAll functions because otherwise Hilbert's 10th problem could have been encoded \cite{CCH+18}. %as it was done in \cite{CHL+18}, %in $\strline[\replaceall]$,
 %we can easily encode the  with length (integer) 
 %constraints. In other words, path feasibility becomes undecidable . 
 %In light of this, to retain decidable,  
-This result shows that the replaceall functions must not use variables in the replacement string in the string constraint language considered in the current paper. 
+%This result shows that the replaceall functions must not use variables in the replacement string in the string constraint language considered in the current paper. 
 %is significantly more expressive regarding the integer data types than the length constraints. 
 %
 %Several decidable restrictions, however,
@@ -227,9 +219,9 @@ This result shows that the replaceall functions must not use variables in the re
 %There is a large amount of work %on heuristics for 
 %developing 
 Many practical (often incomplete) string solvers have been developed. A non-exhaustive list  includes earlier work \cite{BTV09,RVG12} which integrated string constraint solving 
-with respective dynamic symbolic execution engines, Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3}, {\cvc}~\cite{cvc4,ReynoldsWBBLT17}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Trau/{\zthreetrau}/{\trauplus} \cite{AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}, 
+with respective dynamic symbolic execution engines, Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Sushi~\cite{sushi}, Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3}, {\cvc}~\cite{cvc4,ReynoldsWBBLT17}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Trau/{\zthreetrau}/{\trauplus} \cite{AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}, 
 %
-SLOG \cite{fang-yu-circuits}/\slent \cite{WC+18}, Norn~\cite{Abdulla14}, {\sloth}\cite{HJLRV18}, {\ostrich} \cite{CHL+19}
+SLOG \cite{fang-yu-circuits}, {\slent} \cite{WC+18}, Norn~\cite{Abdulla14}, {\sloth} \cite{HJLRV18}, and {\ostrich} \cite{CHL+19}.
  %Pex.  
 %
 %
