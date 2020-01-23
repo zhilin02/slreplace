@@ -15,14 +15,15 @@
 
 \paragraph*{Related work.}
 The discussion will mainly focus on (1) theoretical results in terms of decidability; %practical (but generally incomplete) approaches used in string solvers.   
-(2) practical (but generally incomplete) string solvers.  %and  heuristics and implementation.
+(2) practical (but generally incomplete) string solvers.  We restrict our attention to the results and solvers for string constraints involving the integer data type.
+%and  heuristics and implementation.
 
 \smallskip 
 \noindent\textbf{Theoretical results.}
-We mainly focus on the results for string constraints involving the integer data type.
-
-
-
+%We mainly focus on the results for string constraints involving the integer data type.
+%
+%
+%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
@@ -69,7 +70,7 @@ string-reverse functions, regular-expression matching, etc.
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
-
+%
 Recall that the decidability of the string theory of word equations and linear arithmetic with the length function is a long-standing open problem. In \cite{Vijay-length}, Ganesh et al. showed that if the word equations are in a solved form, then the satisfiability of this string theory becomes decidable. On the other hand, Ganesh and Berzish proved that the satisfiability problem becomes undecidable if the string theory is extended with the string-number conversion \cite{GB16}. Moreover, Lin and Majumdar, as well as Loc and He, have investigated decidable fragments of the string theory of quadratic word equations, linear arithmetic with the length function, and regular constraints \cite{LinM18,LeH18}.
 
 Recently, researchers have also explored the decidability of string theories with more complex string operations and integer data type. Lin and Barcelo showed that the straight-line string logic with concatenation, finite transducers, and regular constraints, is decidable, even when extended with length, letter-counting functions, as well as $\indexof$ and $\charat$ functions \cite{LB16}. On the other hand, Chen et al. showed that although the straight-line string logic with the general form of $\replaceall$ (where the replacement parameter can be string variables) is decidable, it will become undecidable when extended with any of length, or $\indexof$, or $\charat$ function \cite{CCH+18}. 
@@ -218,17 +219,25 @@ This result implies that the $\replaceall$ function considered in this paper mus
 %For these reasons, 
 %There is a large amount of work %on heuristics for 
 %developing 
-Many practical (often incomplete) string solvers have been developed. A non-exhaustive list  includes earlier work \cite{BTV09,RVG12} which integrated string constraint solving 
-with respective dynamic symbolic execution engines, Saner \cite{Saner08}, Kaluza~\cite{Berkeley-JavaScript}, Hampi~\cite{HAMPI},  Sushi~\cite{sushi}, Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3}, {\cvc}~\cite{cvc4,ReynoldsWBBLT17}, Stranger~\cite{YABI14,Stranger},  S3 and S3P~\cite{S3,TCJ16}, ACO-Solver \cite{ThomeSBB17}, FAT~\cite{Abdulla17}, Trau/{\zthreetrau}/{\trauplus} \cite{AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}, 
-%
-SLOG \cite{fang-yu-circuits}, {\slent} \cite{WC+18}, Norn~\cite{Abdulla14}, {\sloth} \cite{HJLRV18}, and {\ostrich} \cite{CHL+19}.
- %Pex.  
-%
-%
-% A large amount of recent work develops practical string solvers
-%
-%We can classify this large body of practical string constraint solvers into 
+Many practical (often incomplete) string constraint solvers have been developed, where various heuristics are used to deal with strings and integers. 
+%A non-exhaustive list includes 
+%earlier work \cite{BTV09,RVG12} which integrated string constraint solving 
+%with respective dynamic symbolic execution engines, Saner \cite{Saner08}, 
 
+The solvers Kaluza~\cite{Berkeley-JavaScript} and Hampi~\cite{HAMPI}  bound the lengths of strings and reduce the problem to the satisfiability of boolean formulas or formulae in the theory of bit vectors. Sushi~\cite{sushi} and Stranger~\cite{YABI14,Stranger} use finite automata to over approximate sets of values of string variables. Moreover, SLOG and {\slent}  use symbolic approaches to enhance the scalability of the string constraint solving process \cite{fang-yu-circuits,WC+18}. In contrast, Trau as well as its variants {\zthreetrau} and {\trauplus} utilises flat automata to under approximate sets of values of string variables \cite{Abdulla17,AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}.
+%
+Instead of using automata, Z3-str/Z3-str2/Z3-str3~\cite{Z3-str,Z3-str2,Z3-str3} and {\cvc}~\cite{cvc4,ReynoldsWBBLT17} apply rewrite or algebraic rules to solve the string constraints.
+%
+Furthermore, S3 and S3P reply on recursive definitions to represent string functions and constraints, which are then unfolded during the constraint solving process \cite{S3,TCJ16}.
+%
+Finally, ACO-Solver combined the ant colony optimisation meta-heuristic with automata-based string constraint solvers Sushi~\cite{sushi},  in order to support reasoning about complex string operations related to XSS vulnerabilities \cite{ThomeSBB17}.
+%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+\hide{
 A large body of these tools provide support for complex string operations, but only offer relatively limited support for integer constraints (e.g., only the length function or simple variants thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g., \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
 Focusing on semi-algorithms also allows highly expressive (but undecidable) 
 string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}; sometimes hybrid constraint solving procedures based on, for instance, 
@@ -238,7 +247,13 @@ Recently, the study of decidability of string constraints has also resulted in a
 {\sloth} \cite{HJLRV18} and {\ostrich} \cite{CHL+19} support straight-line logic with finite transducers (or
 replaceall), concatenation, and regular constraints, but currently no support for even the length constraints. %The gap is filled by 
 The current work builds on the solver {\ostrich}, but significantly extends its power of handling integer related constraints %, 
-implementing  solving techniques for the most expressive \emph{decidable} string constraints involving both strings and integers. %but focuses on integer constraints which were unavailable. 
+implementing  solving techniques for the most expressive \emph{decidable} string constraints involving both strings and integers. 
+}
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+
+%but focuses on integer constraints which were unavailable. 
 
 %Despite the excellent performance of some of these solvers on several existing benchmarks, a potential risk is that these heuristic based approaches may not be generalized well to further practical cases. After all,  string constraint solving is still a research area in its infancy. One implication is that the currently insufficient range of benchmarking may not be representative in the growing number of application of string constraints in, e.g., program verification and security analysis. 
 
