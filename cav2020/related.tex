@@ -15,7 +15,7 @@
 
 \paragraph*{Related work.}
 The discussion will mainly focus on (1) theoretical results in terms of decidability; %practical (but generally incomplete) approaches used in string solvers.   
-(2) practical (but generally incomplete) string solvers.  We restrict our attention to the results and solvers for string constraints involving the integer data type.
+(2) practical (but generally incomplete) string solvers.  We restrict our attention to the results and solvers for string constraints involving integer data type.
 %and  heuristics and implementation.
 
 \smallskip 
@@ -71,10 +71,14 @@ string-reverse functions, regular-expression matching, etc.
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
 %
-Recall that the decidability of the string theory of word equations and linear arithmetic with the length function is a long-standing open problem. In \cite{Vijay-length}, Ganesh et al. showed that if the word equations are in a solved form, then the satisfiability of this string theory becomes decidable. On the other hand, Ganesh and Berzish proved that the satisfiability problem becomes undecidable if the string theory is extended with the string-number conversion \cite{GB16}. Moreover, Lin and Majumdar, as well as Loc and He, have investigated decidable fragments of the string theory of quadratic word equations, linear arithmetic with the length function, and regular constraints \cite{LinM18,LeH18}.
+Recall that the decidability of string theory of concatenation %word equations 
+and linear arithmetic in length functions is a long-standing open problem. Ganesh et al. \cite{Vijay-length} showed that if the word equations are in a solved form, then the satisfiability of this string theory becomes decidable. On the other hand, Ganesh and Berzish proved that the satisfiability problem becomes undecidable if the string theory is extended with the string-number conversion \cite{GB16}. Moreover, Lin and Majumdar, as well as Loc and He, have investigated decidable fragments of %the string theory of 
+quadratic word equations, linear arithmetic with the length function, and regular constraints \cite{LinM18,LeH18}.
 
-Recently, researchers have also explored the decidability of string theories with more complex string operations and integer data type. Lin and Barcelo showed that the straight-line string logic with concatenation, finite transducers, and regular constraints, is decidable, even when extended with length, letter-counting functions, as well as $\indexof$ and $\charat$ functions \cite{LB16}. \zhilin{say a few more words about its relationship with this paper} 
-On the other hand, Chen et al. showed that although the straight-line string logic with the general form of $\replaceall$ (where the replacement parameter can be string variables) is decidable, it will become undecidable when extended with any of length, or $\indexof$, or $\charat$ function \cite{CCH+18}. 
+Recently, researchers have also explored the decidability of string theories with more complex string operations and integer data type. Lin and Barcelo showed that the straight-line string logic with concatenation, finite transducers, and regular constraints, is decidable, even when extended with length, letter-counting functions, as well as $\indexof$ and $\charat$ functions \cite{LB16}. 
+\zhilin{say a few more words about its relationship with this paper} \tl{trial, please improve}
+This fragment is subsumed by our language. Moreover, the decision procedure in \cite{LB16} is based on a ``global" construction of automata, which is rather difficult to implement (as far as we know, there is no implementation of the procedure therein); in contrast, our decision procedure takes a ``local" approach for step-by-step backward computation of pre-images, which is vital for implementation. 
+On the other hand, Chen et al. showed that although the straight-line string logic with the general form of $\replaceall$ (where the replacement parameter can be string variables) is decidable, it will become undecidable when extended with any of the length, $\indexof$, $\charat$ functions \cite{CCH+18}. 
 This result implies that the $\replaceall$ function considered in this paper must not be in the general form, namely, it should avoid string variables in the replacement string, in order to stay inside the decidability boundary. 
 
 
