@@ -182,7 +182,77 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 	%
 \end{proof}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Example of {\tt urlXssSanitise(url)} for the decision procedure} \label{app:urlexample}
+
+\begin{example}
+	Consider the program $S$ associated with {\tt urlXssSanitise(url)} in Section~\ref{sec:intro}. % Example~\ref{exmp:running}.
+	%\[
+	%\begin{array}{l}
+	%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+	%\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
+	%\end{array}
+	%\] 
+	We show how to decide its path feasibility. % of $S$. 
+	\begin{description}
+		\item[Step I.]   Vacuous since $S$ contains only atomic assertions already. %neither disjunction nor conjunction.
+		%
+		\item[Step II.] Nondeterministically choose to replace $\indexof_\#(\mathtt{url1}, 0)$ with $-1$ and add $\ASSERT{\mathtt{url1} \in \NFA_{\overline{\Sigma^*\#\Sigma^*}}}$ to $S$.  
+		%
+		\item[Step III.] Replace $\length(\mathtt{url1})$ with $i'_1$ and add $\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}$ to $S$, moreover, replace $\indexof_?(\mathtt{url1}, 0)$ with $i'_3$ and add $\ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}$ to $S$, where $i'_1, i'_2, i'_3$ are fresh integer variables. Then we get the following program (still denoted by $S$), 
+		\[ 
+		\begin{array}{l}
+		\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+		\ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+		\mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+		\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+		\mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+		\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  \\
+		\ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}; \\
+		\ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}.
+		\end{array}
+		\]
+		%
+		\item[Step IV.] Since there is no CEFA constraints for $\mathtt{url2}$, removing the last assignment statement of $S$, i.e. $\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}$, is easy and in this case we add no statements to $S$. After this, $\mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1})$ becomes the last assignment statement. Suppose $\NFA'=(Q', \Sigma, \delta', I', F')$ is an NFA representing $(\replaceall_{\mathtt{script},\ \varepsilon})^{-1}_\emptyset(\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*}))$, namely, the pre-image of $\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*})$ under $\replaceall_{\mathtt{script},\ \varepsilon}$. Then we remove this assignment statement and add $\ASSERT{\mathtt{querfrag1 \in \NFA'}}$, resulting into the following program
+		\[ 
+		\begin{array}{l}
+		\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+		\ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+		\mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+		\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+		%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+		%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+		\ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
+		\ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'}.
+		\end{array}
+		\]
+		
+		From Example~\ref{exm:pre-image}, we know that $\substring^{-1}_\emptyset(\Lang(\NFA'))$ can be represented by some CEFA $\cB=(Q'', R'', \delta'', I'', F'')$ with $Q''= Q' \times \{p_0,p_1,p_2\}$ and $R''=(r'_{1,1}, r'_{1,2})$ (where $r'_{1,1}$ and $r'_{1,2}$ are fresh integer variables). Then we remove $\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos})$, add $\ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1}= qmarkpos}}; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}$, and get the following program
+		\[ 
+		\begin{array}{l}
+		\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+		\ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+		\mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+		%   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+		%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+		%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+		\ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
+		\ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'};\\
+		\ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1} = qmarkpos} }; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}.
+		\end{array}
+		\]
+		We can continue the process until the problem contains no assignment statement.
+		%
+		\item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
+	\end{description}
+\end{example}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Proof of Proposition~\ref{prop:la-sat-cefa-inter}}\label{app:sat-cefa}
  
 \noindent{\bf Proposition~\ref{prop:la-sat-cefa-inter}}.
