@@ -157,9 +157,6 @@ to $S$, moreover, replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')
 \item Add the statement $\ASSERT{i < 0}; \ASSERT{y \in \NFA_\varepsilon}$ to $S$, moreover, remove $y:=\substring(x, i, j)$ from $S$, where $\NFA_\varepsilon$ is the NFA defining the language $\{\varepsilon\}$.
 \end{itemize}
 
-
-
-
 \medskip
 \noindent {\bf Step III: Removing $\length$ and $\indexof$}.
 
@@ -267,13 +264,16 @@ This {\lasat} problem is decidable and $\pspace$-complete, as stated in the prop
 %	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
 \end{proposition}
 
-The basic idea in the proof of Proposition~\ref{prop:la-sat-cefa-inter} is to compute for each string variable $x \in X$, an existential LIA formula $\varphi_x$ defining the Parikh image of the product of CEFAs in $\Lambda_x$, then solve the satisfiability of $\phi \wedge \bigwedge_{x \in X} \varphi_x$. Nevertheless, computing the product of CEFAs followed by the computation of its Parikh image would require exponential space. To circumvent this exponential space blowup, instead of computing the product of CEFAs in $\Lambda_x$ explicitly,  we \emph{nondeterministically guess on the fly a disjunct of $\varphi_x$ out of the CEFAs in $\Lambda_x$ in polynomial space}, which is doable according to Proposition 16 in \cite{LB16}. A more detailed  proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix~\ref{app:sat-cefa}. \zhilin{polish further.}
+The basic idea in the proof of Proposition~\ref{prop:la-sat-cefa-inter} is to compute for each string variable $x \in X$, an existential LIA formula $\varphi_x$ defining the Parikh image of the product of the CEFAs in $\Lambda_x$, then solve the satisfiability of $\phi \wedge \bigwedge_{x \in X} \varphi_x$. Nevertheless, computing the product of CEFAs followed by the computation of its Parikh image would require exponential space. To circumvent this exponential space blowup, %instead of computing the product of CEFAs in $\Lambda_x$ explicitly, 
+we \emph{nondeterministically guess on the fly a disjunct of $\varphi_x$ out of the CEFAs in $\Lambda_x$ in polynomial space}, %which is doable according to 
+following Proposition 16 in \cite{LB16}. 
+%A more detailed  proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix~\ref{app:sat-cefa}. 
+%\zhilin{polish further.}
 
 %From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
 
-
 \paragraph*{Complexity analysis of the decision procedure.} Step I and Step II can be done in nondeterministic linear time. Step III can be done in linear time. %The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during 
-In Step IV, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step IV can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step V can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ according to Savitch's theorem \cite{complexity-book}. \tl{to be checked later}
+In Step IV, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step IV can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step V can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ by Savitch's theorem \cite{complexity-book}. %\tl{to be checked later}
 %then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, 
 
 %\tl{to put in a different place later} 
