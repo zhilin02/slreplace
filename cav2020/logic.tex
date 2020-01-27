@@ -107,7 +107,7 @@ $x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real 
 
 
 \begin{remark}
-The function $\replaceall_{e,u}$ can be seen as a special case of FFT, although the transformation into the equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
+The function $\replaceall_{e,u}$ can be seen as a special case of FFT, but the transformation to an equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
 \end{remark}
 
 To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as the following {\slint} program (denoted by $S_{x \neq y}$)
@@ -124,7 +124,8 @@ where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp.
 
 %The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
 
-\paragraph*{Path feasibility problem.} Given a {\slint} program $S$, decide whether there are valuations of input variables so that $S$ can execute to the end.
+\noindent
+\textbf{Path feasibility problem.} Given a {\slint} program $S$, decide whether there are valuations of input variables so that $S$ can execute to the end.
 
 %\medskip
 %
