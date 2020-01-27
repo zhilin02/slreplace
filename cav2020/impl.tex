@@ -8,32 +8,32 @@
 	\KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
 		%    $x \in L$,
 		$\mathit{funApps}$: acyclic set of assignment statements. }
-	\KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise.\newline
+	\KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
 	}
 	%  \Begin{
-	\For{each partition $(\mathcal{I}_l)_{l \in [5]}$ of the set of $\indexof_v(x, i)$ in $arith$ and \newline
+	\For{each partition $(\mathcal{I}_l)_{l \in [5]}$ of the set of $\indexof_v(x, i)$ in $\mathit{arith}$ and \newline
 		\hspace*{4mm} each partition $(\mathcal{J}_l)_{l \in [3]}$ of the set of $y:=\substring(x, i, j)$ in $\mathit{funApps}$ 
 	}
 	{
 		\tcc{Case splits for semantics of $\indexof$ and $\substring$}
-		$(active, arith, \mathit{funApps}) = \mathit{indexofCaseSplit}(active, arith, \mathit{funApps}, (\mathcal{I}_l)_{l \in [5]})$\; 
-		$(active, arith, \mathit{funApps})= \mathit{substringCaseSplit}(active, arith, \mathit{funApps}, (\mathcal{J}_l)_{l \in [3]})$\; 
-		\For{each $\length(x)$ occurring in $arith$}
+		$(\mathit{active}, \mathit{arith}, \mathit{funApps}) = \mathit{indexofCaseSplit}(\mathit{active}, \mathit{arith}, \mathit{funApps}, (\mathcal{I}_l)_{l \in [5]})$\; 
+		$(\mathit{active}, \mathit{arith}, \mathit{funApps})= \mathit{substringCaseSplit}(\mathit{active}, \mathit{arith}, \mathit{funApps}, (\mathcal{J}_l)_{l \in [3]})$\; 
+		\For{each $\length(x)$ occurring in $\mathit{arith}$}
 		{
 			choose a fresh integer variable $i$\;
-			$active \leftarrow active \cup \{x \in \CEFA_{\rm len}[i/r_1]\}$; $arith\leftarrow arith[i/\length(x)]$;
+			$\mathit{active} \leftarrow \mathit{active} \cup \{x \in \CEFA_{\rm len}[i/r_1]\}$; $\mathit{arith}\leftarrow \mathit{arith}[i/\length(x)]$;
 		}
-		\For{each $\indexof_v(x,i)$ occurring in $arith$}
+		\For{each $\indexof_v(x,i)$ occurring in $\mathit{arith}$}
 		{
 			choose fresh integer variables $i_1,i_2$\;
-			$active \leftarrow active \cup \{x \in \CEFA_{\indexof_v}[i_1/r_1,i_2/r_2]\}$; $arith\leftarrow arith[i_2/\indexof_v(x,i)] \wedge i=i_1$;
+			$\mathit{active} \leftarrow \mathit{active} \cup \{x \in \CEFA_{\indexof_v}[i_1/r_1,i_2/r_2]\}$; $\mathit{arith}\leftarrow \mathit{arith}[i_2/\indexof_v(x,i)] \wedge i=i_1$;
 		}
-		\If{$\mathit{BackDfsExp}(active, \emptyset, arith, \mathit{funApps})$}
+		\If{$\mathit{BackDfsExp}(\mathit{active}, \emptyset, \mathit{arith}, \mathit{funApps})$}
 		{
 			\Return{$sat$};}
 		%		{\Continue;}
 	}
-	\Return $unsat$; 		
+	\Return $\mathit{unsat}$; 		
 	%}
 	\caption{Function $\mathit{checkSat}$
 		for Step II-III} \label{alg:checksat} 
@@ -55,17 +55,17 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 \begin{algorithm}[tbp]
 \SetKw{Continue}{continue}
   \small
-  \KwIn{$active, passive$: sets of CEFA constraints,  $arith$: arithmetic constraint,
+  \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraint,
 %    $x \in L$,
     $\mathit{funApps}$: acyclic set of assignment statements. }
-  \KwResult{$sat$ if the input constraints are satisfiable, and $unsat$ otherwise.\newline
+  \KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
    }
 
 %  \Begin{
     \eIf{$\mathit{active} = \emptyset$}{
 %      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
-      \tcc{Check whether the LIA constraint $arith$ is satisfiable with respect to the CEFA constraints in $passive$ (i.e. Step V).}
-      \Return{$\mathit{CheckCefaLIASat}(passive, arith)$;} 
+      \tcc{Check whether the LIA constraint $\mathit{arith}$ is satisfiable with respect to the CEFA constraints in $\mathit{passive}$ (i.e. Step V).}
+      \Return{$\mathit{CheckCefaLIASat}(\mathit{passive}, \mathit{arith})$;} 
     }{
    	choose a CEFA constraint $x \in \CEFA$ in $active$ with $R(\CEFA)=(r_1,\cdots,r_k)$\;
 	\eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$ in $\mathit{funApps}$ with \newline
@@ -75,24 +75,24 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 %	      	\tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\Lang(\CEFA)$ under $f$}
 		compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = \left((\CEFA^{(1)}_{j}, \cdots, \CEFA^{(l)}_{j})_{j \in [n]}, \vec{t}\right)$ where \newline 
 		 $R(\CEFA^{(j')}_{j})=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
-	        $active \leftarrow active \setminus \{x \in \CEFA\}$; $passive \leftarrow passive \cup \{x \in \CEFA\}$\;    
+	        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in \CEFA\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in \CEFA\}$\;    
 	        \For{$j \leftarrow 1$ \KwTo $n$}{
-        		$active \leftarrow active \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
-        		$ arith \leftarrow arith \wedge \bigwedge_{j' \in [l], j'' \in [k_{j'}]} i_{j',j''} = (r')^{(j', j'')} \wedge \bigwedge_{j' \in [k]} r_{j'} = t_{j'}$\;
-        		\eIf{$active \cup passive$ is inconsistent}{\Continue \tcc*{backtrack}}
+        		$\mathit{active} \leftarrow \mathit{active} \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
+        		$\mathit{arith} \leftarrow \mathit{arith} \wedge \bigwedge_{j' \in [l], j'' \in [k_{j'}]} i_{j',j''} = (r')^{(j', j'')} \wedge \bigwedge_{j' \in [k]} r_{j'} = t_{j'}$\;
+        		\eIf{$\mathit{active} \cup \mathit{passive}$ is inconsistent}{\Continue \tcc*{backtrack}}
 		{
-		          \Switch{$\mathit{BackDfsExp}(active, passive, arith, \mathit{funApps})$}{
+		          \Switch{$\mathit{BackDfsExp}(\mathit{active}, \mathit{passive}, \mathit{arith}, \mathit{funApps})$}{
 				\lCase{$sat$}
-					{\Return{$sat$}}
-				\Case{$unsat$}
+					{\Return{$\mathit{sat}$}}
+				\Case{$\mathit{unsat}$}
 					{\Continue \tcc*{backtrack}}
           			}
         		}
 	}
-        	\Return{unsat}; 
+        	\Return{$\mathit{unsat}$}; 
       	}
       	{
-        	\Return{$\mathit{BackDfsExp}(active \backslash \{x\in \CEFA\}, passive \cup \{x\in \CEFA\}, arith, \mathit{funApps})$;}
+        	\Return{$\mathit{BackDfsExp}(\mathit{active} \backslash \{x\in \CEFA\}, \mathit{passive} \cup \{x\in \CEFA\}, \mathit{arith}, \mathit{funApps})$;}
       	}
 	} 
 %}
@@ -103,10 +103,10 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 
 
 \paragraph*{Optimisations for solving the {\lasat} problem.} From Proposition~\ref{prop:la-sat-cefa-inter}, a natural approach to solve the {\lasat} problem is to compute an existential LIA formula defining the Parikh image of products of CEFAs, and then use off-the-shelf SMT solvers (e.g. CVC4 or Z3) to decide the satisfiability of the existential LIA formula. %Nevertheless, 
-However, our preliminary experiments show that this approach suffers from scalability issue, in particular, %faces 
-the state explosion when computing products of CEFAs.  %We did implement this approach in the beginning. However, some preliminary experiments showed that this approach is not scalable. Therefore, 
+However, our preliminary experiments show that this approach suffers from a scalability issue, in particular, %faces 
+the state-space explosion when computing products of CEFAs.  %We did implement this approach in the beginning. However, some preliminary experiments showed that this approach is not scalable. Therefore, 
 In the implementation of the function $\mathit{CheckCefaLIASat}$ in Algorithm~\ref{alg:dfs},  we %finally choose 
-opt to utilise the symbolic model checker nuXmv \cite{nuxmv} to mitigate the state explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of solving the model checking problem for both finite and infinite state systems. Our technique is to encode the {\lasat} problem as instances of the model checking problem which can  be solved by %and then call 
+opt to utilise the symbolic model checker nuXmv \cite{nuxmv} to mitigate the state-space explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of solving the model checking problem for both finite and infinite state systems. Our technique is to encode the {\lasat} problem as instances of the model checking problem which can  be solved by %and then call 
 nuXmv. Since  {\lasat} is a problem for quantifier-free LIA formulas and CEFAs that contain integer variables, the {\lasat} problem actually corresponds to the problem of model checking \emph{infinite state systems}. 
 %
 %In the following, we use a simple example to illustrate how to encode the instances of  the {\lasat} problem into the inputs of nuXmv.
