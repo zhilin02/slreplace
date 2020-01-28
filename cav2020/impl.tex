@@ -48,11 +48,7 @@ splitting the disjunctions (or unions) in the cost-enriched recognisable pre-ima
 The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$. (The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix~\ref{app:case-split-semantics}.) Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
 
 
-
-
-
-
-\begin{algorithm}[tbp]
+\begin{algorithm}%[tbp]
 \SetKw{Continue}{continue}
   \small
   \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraint,
@@ -60,7 +56,7 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
     $\mathit{funApps}$: acyclic set of assignment statements. }
   \KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
    }
-
+%
 %  \Begin{
     \eIf{$\mathit{active} = \emptyset$}{
 %      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
@@ -98,9 +94,12 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 %}
   \caption{Function~$\mathit{BackDfsExp}$ for Step IV (depth-first exploration)}\label{alg:dfs}
 \end{algorithm}
+%\vspace{-5cm}
+
 %%%%%%% the pseudo-code
 %%%%%%% the pseudo-code
 
+%\vspace{-mm}
 
 \paragraph*{Optimisations for solving the {\lasat} problem.} From Proposition~\ref{prop:la-sat-cefa-inter}, a natural approach to solve the {\lasat} problem is to compute an existential LIA formula defining the Parikh image of products of CEFAs, and then use off-the-shelf SMT solvers (e.g. CVC4 or Z3) to decide the satisfiability of the existential LIA formula. %Nevertheless, 
 However, our preliminary experiments show that this approach suffers from a scalability issue, in particular, %faces 
