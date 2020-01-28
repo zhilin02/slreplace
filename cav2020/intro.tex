@@ -1,7 +1,7 @@
 %!TEX root = main.tex
 
 
-This paper is concerned with strings and integers, two fundamental data types in virtually all programming languages.
+This paper is concerned with strings and integers, two fundamental data-types in virtually all programming languages.
 String-manipulating programs are notoriously subtle, and their potential bugs %Many subtle programming bugs are caused by , some with
 may bring severe security consequences. A typical example is cross-site scripting
 (XSS), which is among the OWASP Top 10 Application Security Risks~\cite{owasp17}.
@@ -47,25 +47,24 @@ restricting the form of constraints (e.g.,~\cite{CCH+18,CHL+19}; cf.\ related wo
 %
 %At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. 
 %
-Although there have been some recent results on decision procedures for string constraints involving the integer data type, for instance~\cite{Vijay-length,LeH18,LinM18,LB16}, the theories considered in those approaches are usually quite restricted and do not reflect the constraints that occur in applications well. Overall, much more research is needed to
+Although there have been some recent results on decision procedures for string constraints involving the integer data-type, for instance~\cite{Vijay-length,LeH18,LinM18,LB16}, the theories considered in those approaches are usually quite restricted and do not reflect the constraints that occur in applications well. Overall, much more research is needed to
 better understand the decidability of theories combining strings and integers.
 
 On a more practical level, this leads to a situation where the vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str3}, Trau~\cite{Abdulla17} (or its variants {\trauplus}~\cite{AbdullaA+19} and {\zthreetrau}~\cite{Z3-trau}),
 %ABC \cite{ABC}, and SLENT \cite{WC+18}, 
 resort to heuristics without completeness guarantees to support
-reasoning about the combination strings and integers. Such solvers
+reasoning about the combination of strings and integers. Such solvers
 often show excellent performance in applications and on existing
 benchmark suites, but heuristics tend to be brittle and difficult to
 predict; for instance, sometimes innocent syntactic modifications of
-constraints can cause solvers to diverge and not terminate. There is
-also still a mismatch between the string operations supported by
+constraints can cause solvers to diverge and not to terminate. There is still a gap between the string operations supported by
 solvers, and the operations occurring in applications; for instance,
 operations like \textsf{replaceAll} and escape/unescape-transformations
 occur extremely frequently in programs, but are currently not handled well
 by many solvers. 
-The \emph{grand challenge} in string solving is to
-identify fragments, and develop algorithms, that cover the constraints
-occurring in \emph{applications,} while preserving \emph{decidability} and
+The \emph{grand challenge} in string constraint solving is to
+identify fragments and develop algorithms, that cover the constraints
+occurring in \emph{applications}, while preserving \emph{decidability} and
 admitting \emph{efficient implementations.}
 
 
@@ -89,7 +88,7 @@ admitting \emph{efficient implementations.}
 %\emph{provide completeness guarantees} and %on the other hand, 
 %\emph{admit efficient implementation}.
 
-\paragraph*{Contribution.} The main contribution of this paper is a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure is automata-theoretic and utilises a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which we call \emph{cost-enriched finite automata} (CEFA). The crux of the decision procedure is to compute the backward images of CEFAs under string functions,  in the same flavour as \cite{CHL+19} for string constraints \emph{without} the integer data type. Such an approach %inherits its elegance by 
+\paragraph*{Contribution.} The main contribution of this paper is a decision procedure for an expressive class of string constraints involving the integer data-type, which includes not only concatenation, $\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure is automata-theoretic and utilises a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which we call \emph{cost-enriched finite automata} (CEFA). The crux of the decision procedure is to compute the backward images of CEFAs under string functions,  in the same flavour as \cite{CHL+19} for string constraints \emph{without} the integer data type. Such an approach %inherits its elegance by 
 is able to treat %the aforementioned seemly 
 a wide range of string functions in a generic, and yet simple, way. To the best of our knowledge, the class of string constraints considered in this paper is currently the most expressive string theory involving the integer data type known to enjoy a decision procedure.
 %\emph{the first decision procedure for string constraints that supports the string functions} $\substring$, $\length$, and $\indexof$, as well as concatenation, $\replaceall$, and finite transducers. \zhilin{improve latter}
