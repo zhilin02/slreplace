@@ -57,7 +57,7 @@ A \emph{nondeterministic finite automaton} (NFA) $\NFA$ is a tuple $(Q, \Sigma, 
 A \emph{run} of $\NFA$ on a string $w = a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1} q_1 \cdots q_{n-1} \xrightarrow{a_n} q_n$ with $q_0 \in I$. The run is \emph{accepting} if $q_n \in F$.
 A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\NFA$ if $I \cap F \neq \emptyset$. The language defined by $\NFA$, denoted by $\Lang(\NFA)$, is the set of strings accepted by $\NFA$. An NFA $\NFA$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one state $q' \in Q$ such that $(q, a, q') \in \delta$.
 
-\paragraph*{Recognizable relations.} Intuitively, a \emph{recognisable relation} is simply a finite union of Cartesian products of regular languages. Formally, an $\arity$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_\arity$ where $L^{(i)}_j$ is regular for each $j\in [\arity]$. A \emph{representation} of a recognisable relation $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_\arity$ is $(\NFA^{(i)}_1, \ldots, \NFA^{(i)}_\arity)_{1 \le i \le n}$ such that each $\NFA^{(i)}_j$ is an NFA with $\Lang(\NFA^{(i)}_j)=L^{(i)}_j$. The tuples $(\NFA^{(i)}_1, \ldots, \NFA^{(i)}_\arity)$ are called the \emph{disjuncts} of the representation and the NFAs $\NFA^{(i)}_j$ are called the \emph{atoms} of the representation.
+\paragraph*{Recognisable relations.} Intuitively, a \emph{recognisable relation} is simply a finite union of Cartesian products of regular languages. Formally, an $\arity$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_\arity$ where $L^{(i)}_j$ is regular for each $j\in [\arity]$. A \emph{representation} of a recognisable relation $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_\arity$ is $(\NFA^{(i)}_1, \ldots, \NFA^{(i)}_\arity)_{1 \le i \le n}$ such that each $\NFA^{(i)}_j$ is an NFA with $\Lang(\NFA^{(i)}_j)=L^{(i)}_j$. The tuples $(\NFA^{(i)}_1, \ldots, \NFA^{(i)}_\arity)$ are called the \emph{disjuncts} of the representation and the NFAs $\NFA^{(i)}_j$ are called the \emph{atoms} of the representation.
 
 
 
@@ -80,9 +80,9 @@ In this paper, we are mainly interested in \emph{functional} transducers (FFT), 
 
 %We remark that an FT usually defines a relation.
 
-\medskip
+\smallskip
 
-In this paper, we consider logics involving two data types, i.e., the string data type and the integer data type. We will use $u, v, \dots$ to denote string constants,  $c, d,\dots$ to denote integer constants, $x, y, \dots$ to denote string variables, and $i, j, \dots$ to denote  integer variables.
+In this paper, we consider logics involving two data-types, i.e., the string data-type and the integer data-type. We will use $u, v, \dots$ to denote string constants,  $c, d,\dots$ to denote integer constants, $x, y, \dots$ to denote string variables, and $i, j, \dots$ to denote  integer variables.
 
 
 \paragraph*{Linear integer arithmetic.}  A linear integer arithmetic (abbreviated as LIA, essentially Presburger) formula $\phi$ is defined by the following rules
