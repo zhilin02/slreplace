@@ -5,7 +5,7 @@
 \begin{algorithm}[tbp]
 	\SetKw{Continue}{continue}
 	\small
-	\KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+	\KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraints,
 		%    $x \in L$,
 		$\mathit{funApps}$: acyclic set of assignment statements. }
 	\KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
@@ -39,18 +39,18 @@
 		for Step II-III} \label{alg:checksat} 
 \end{algorithm}
 
-We have implemented the decision procedure based on the recent string solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and is based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces NFAs in OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite-state transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  
+We have implemented the decision procedure based on the recent string solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite-state transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  
 
 %Similarly to OSTRICH, 
 OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
 splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$.
-The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively. (The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix, Section~\ref{app:case-split-semantics}.) Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
+The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.\philipp{I believe we need to comment on the partitions $(\mathcal{I}_l)_{l \in [5]}$ here; at least I don't really understand this notation, and the meaning of the partitions.} (The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix, Section~\ref{app:case-split-semantics}.) Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
 
 
 \begin{algorithm}%[tbp]
 \SetKw{Continue}{continue}
   \small
-  \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraint,
+  \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraints,
 %    $x \in L$,
     $\mathit{funApps}$: acyclic set of assignment statements. }
   \KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
@@ -104,7 +104,7 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 However, our preliminary experiments show that this approach suffers from a scalability issue, in particular, %faces 
 the state-space explosion when computing products of CEFAs.  %We did implement this approach in the beginning. However, some preliminary experiments showed that this approach is not scalable. Therefore, 
 In the implementation of the function $\mathit{CheckCefaLIASat}$ in Algorithm~\ref{alg:dfs},  we %finally choose 
-opt to utilise the symbolic model checker nuXmv \cite{nuxmv} to mitigate the state-space explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of solving the model checking problem for both finite and infinite state systems. Our technique is to encode the {\lasat} problem as instances of the model checking problem which can  be solved by %and then call 
+opt to utilise the symbolic model checker nuXmv \cite{nuxmv} to mitigate the state-space explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of analysing both finite and infinite state systems. Our technique is to encode {\lasat} as an instance of the model checking problem, which can  be solved by %and then call 
 nuXmv. Since  {\lasat} is a problem for quantifier-free LIA formulas and CEFAs that contain integer variables, the {\lasat} problem actually corresponds to the problem of model checking \emph{infinite state systems}. 
 %
 %In the following, we use a simple example to illustrate how to encode the instances of  the {\lasat} problem into the inputs of nuXmv.
