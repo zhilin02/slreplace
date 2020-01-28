@@ -1,11 +1,11 @@
 %!TEX root = main.tex
 
 
-This paper is concerned with strings and integers, two fundamental data-types in virtually all programming languages.
+%This paper concerns strings and integers, two fundamental data-types in virtually all programming languages.
 String-manipulating programs are notoriously subtle, and their potential bugs %Many subtle programming bugs are caused by , some with
 may bring severe security consequences. A typical example is cross-site scripting
 (XSS), which is among the OWASP Top 10 Application Security Risks~\cite{owasp17}.
-Integer data-types occur naturally and extensively in string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
+Integer data type occurs naturally and extensively in string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
 %
 An effective and increasingly popular method for identifying bugs, including XSS, is symbolic execution~\cite{symbex-survey}.
 % and combinations with dynamic analysis
@@ -42,13 +42,31 @@ These functions are indeed heavily utilised in practice; for instance, it was re
 
 When combining strings and integers, decidability can easily be lost; 
  for instance, the string theory with concatenation and letter counting functions is undecidable~\cite{buchi}.
+\OMIT{
 Although a great deal of research has shown that it is viable to reason about rather complex string operations without breaking decidability by %imposing proper 
-restricting the form of constraints (e.g.,~\cite{CCH+18,CHL+19}; cf.\ related work for a brief survey), adding length constraints would immediately lead to undecidability~\cite{CCH+18}. It is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length function (arguably the most common string-number conversion) is decidable~\cite{Vijay-length}. 
+restricting the form of constraints (e.g.,~\cite{CCH+18,CHL+19}; cf.\ related work for a brief survey), adding length constraints would immediately lead to undecidability~\cite{CCH+18}. 
+}
+It is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length function 
+(arguably the most common string-number function) is 
+decidable~\cite{Vijay-length}. 
+One promising approach to retain decidability is to enforce a syntactic
+restriction to the constraints including \emph{solved forms}
+\cite{Vijay-length}, acyclicity \cite{BFL13,Abdulla14,AbdullaA+19}, and 
+straight-line fragment \cite{LB16,CCH+18,CHL+19,HJLRV18}. On the one hand,
+such a restriction could lead to decidability of string constraint solving with 
+complex string
+constraints (not only concatenation, but also transducers), and integer
+constraints (letter-counting, length constraints, IndexOf, etc.), e.g., see
+\cite{LB16}. On the other hand, there is a lot of evidence (e.g. from 
+benchmarking) that sufficiently many practical string constraints could satisfy 
+such syntactic restrictions.
 %
 %At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. 
 %
+\OMIT{
 Although there have been some recent results on decision procedures for string constraints involving the integer data-type, for instance~\cite{Vijay-length,LeH18,LinM18,LB16}, the theories considered in those approaches are usually quite restricted and do not reflect the constraints that occur in applications well. Overall, much more research is needed to
 better understand the decidability of theories combining strings and integers.
+}
 
 On a more practical level, this leads to a situation where the vast majority of  state-of-the-art string constraint solvers, e.g., {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str3}, Trau~\cite{Abdulla17} (or its variants {\trauplus}~\cite{AbdullaA+19} and {\zthreetrau}~\cite{Z3-trau}),
 %ABC \cite{ABC}, and SLENT \cite{WC+18}, 
