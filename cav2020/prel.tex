@@ -1,13 +1,14 @@
 %!TEX root = main.tex
 
-We write $\Nat$ and $\Int$ for the set of natural and integer numbers respectively. For $n \in \Nat$ with $n \ge 1$, we use $[n]$ to denote $\{1, \cdots, n\}$. Moreover, for $m,n \in \Nat$ with $m \le n$, we use $[m, n]$ to denote $\{ i \in \Nat \mid m \le i \le n \}$. Throughout the paper, we use $\Sigma$ to denote a finite alphabet which is usually ranged over by $a,b,\cdots$.
+We write $\Nat$ and $\Int$ for the sets of natural and integer numbers, respectively. For $n \in \Nat$ with $n \ge 1$, $[n]$ denotes $\{1, \ldots, n\}$; for $m,n \in \Nat$ with $m \le n$,  $[m, n]$ denotes $\{ i \in \Nat \mid m \le i \le n \}$. Throughout the paper, $\Sigma$ is a finite alphabet, and $a,b,\ldots$ range over letters.
 
 Let $\eta_1: X \rightarrow Z$ and $\eta_2: Y \rightarrow Z$ be two functions such that $X \cap Y = \emptyset$. We use $\eta_1 \cup \eta_2$ to denote the function $\eta: X \cup Y \rightarrow Z$ such that for each $\alpha \in X \cup Y$, $\eta(\alpha) = \eta_1(\alpha)$  if $\alpha \in X$, and $\eta(\alpha) = \eta_2(\alpha)$ otherwise. 
 
 \paragraph*{Strings, languages, and transductions.}
-A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$. An empty string is usually denoted by $\varepsilon$. We will use $u, v, w, \cdots$ to denote strings. We write $\Sigma^*$ (resp. $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$.
+A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$,
+denoted by $u, v, w, \ldots$. An empty string is denoted by $\varepsilon$.  We write $\Sigma^*$ (resp., $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$.
 
-Let $u$ be a string over $\Sigma$. We use $|u|$ to denote the length of $|u|$, namely, the number of occurrences of elements of $\Sigma$ in $u$. In particular, $|\varepsilon|=0$. Moreover, for $a \in \Sigma$, let $|u|_a$ denote the number of occurrences of $a$ in $u$. 
+Let $u$ be a string over $\Sigma$. We use $|u|$ to denote the number of letters in $u$. In particular, $|\varepsilon|=0$. Moreover, for $a \in \Sigma$, let $|u|_a$ denote the number of occurrences of $a$ in $u$. 
 Assume $u=a_0\cdots a_{n-1}$ is nonempty and $i<j \in [0,n-1]$. %Then a \emph{position} of $u$ is a number $i \in [|u|]$ (Note that the first position is $1$, instead of  0). In addition, 
 We let $u[i]$ denote $a_i$ and $u[i,j]$ for the substring %of $u$ starting from $i$ and ending with $j$ (i.e., 
 $a_i\cdots a_j$. 
@@ -19,17 +20,14 @@ we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
 If $u=a_0 \cdots a_{n-1}$ is nonempty, then we use $u^{(r)}$ to denote the \emph{reverse} of $u$, that is, $u^{(r)}= a_{n-1 }\cdots a_0$. %\tl{$u^r$ check later for consistency}
 
 
-A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$.  
-We will use $L_1, L_2, \dots$ to denote languages. For two languages $L_1$ and $L_2$, let $L_1 \cup L_2$ denote the union of $L_1$ and $L_2$, and $L_1 \cdot L_2$ denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. 
-For a language $L$ and $n \in \Nat$, we define $L^n$, the \emph{iteration} of $L$ for $n$ times, inductively as follows: $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote an arbitrary number of iterations of $L$, that is, $L^* = \bigcup \limits_{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup \limits_{n \in \Nat \setminus \{0\}} L^n$. 
+A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$, denoted by  $L_1, L_2, \dots$. For two languages $L_1$ and $L_2$, let $L_1 \cdot L_2$ denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. 
+For a language $L$ and $n \in \Nat$, we define the \emph{iteration} $L^n$ of $L$  inductively by $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote an arbitrary number of iterations of $L$, that is, $L^* = \bigcup _{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup _{n \in \Nat \setminus \{0\}} L^n$. 
 
-A \emph{transduction} over $\Sigma$ is a binary relation over $\Sigma^*$, namely, a subset of $\Sigma^* \times \Sigma^*$. We will use $T_1, T_2,\cdots$ to denote transductions. For two transductions $T_1$ and $T_2$, we will use $T_1 \cdot T_2$ to denote the \emph{composition} of $T_1$ and $T_2$, namely, $T_1 \cdot T_2 = \{(u, w) \in \Sigma^* \times \Sigma^* \mid \emph{there exists } v \in \Sigma^* \mbox{ s.t. } (u,v) \in T_1 \mbox{ and } (v,w) \in T_2\}$.
+A \emph{transduction} over $\Sigma$ is a binary relation over $\Sigma^*$, namely, a subset of $\Sigma^* \times \Sigma^*$. We will use $T_1, T_2,\ldots$ to denote transductions. For two transductions $T_1$ and $T_2$, we will use $T_1 \cdot T_2$ to denote the \emph{composition} of $T_1$ and $T_2$, namely, $T_1 \cdot T_2 = \{(u, w) \in \Sigma^* \times \Sigma^* \mid \emph{there exists } v \in \Sigma^* \mbox{ s.t. } (u,v) \in T_1 \mbox{ and } (v,w) \in T_2\}$.
 
 \paragraph*{Regular languages.}
-A language $L$ is \emph{regular} if it can be defined by a regular expression or equivalently by a nondeterministic finite automaton.  
-%\paragraph*{Regular expressions.}
-
-Regular expressions $\regexp$ are defined by the following rules,
+A language $L$ is \emph{regular} if it can be defined by a regular expression, or equivalently by a finite automaton.  
+Regular expressions $\regexp$ are defined by:
 %
 	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid e + e \mid e \concat e \mid e^*, \mbox{ where } a \in \Sigma. \]
 %
@@ -96,4 +94,4 @@ t & ::=  & i \mid c \mid ct \mid t + t, \mbox{ where } c \in \Int, \\
 \]
 The \emph{size} of an LIA formula $\phi$, denoted by $|\phi|$, is defined as the number of symbols in $\phi$.
 Let $\phi$ be an LIA formula and $i$ be a variable occurring in $\phi$. Then an occurrence of $i$ in $\phi$ is said to be \emph{free}  if the occurrence is not under the scope of $\exists i$. A formula $\phi$ is \emph{quantifier-free} if it does not contain quantifiers. The semantics of LIA formulas is standard and its definition is omitted here.
-For a quantifier-free LIA formula $\phi$ that contains the free variables $i_1, \cdots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\cM(\phi) = \left\{(n_1, \cdots , n_k) \in \Int^k \mid \phi[n_1/i_1, \cdots, n_k/i_k] \mbox{ is evaluated to } true\right\}$, where $\phi[n_1/i_1, \cdots, n_k/i_k]$ is the formula obtained from $\phi$ by simultaneously replacing $i_1,\cdots, i_k$ with $n_1,\cdots, n_k$. An \emph{existential} LIA formula is a LIA formula where all the existential quantifiers are under the scope of an even number of negation symbols.
+For a quantifier-free LIA formula $\phi$ that contains the free variables $i_1, \ldots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\cM(\phi) = \left\{(n_1, \ldots , n_k) \in \Int^k \mid \phi[n_1/i_1, \ldots, n_k/i_k] \mbox{ is evaluated to } true\right\}$, where $\phi[n_1/i_1, \ldots, n_k/i_k]$ is the formula obtained from $\phi$ by simultaneously replacing $i_1,\ldots, i_k$ with $n_1,\ldots, n_k$. An \emph{existential} LIA formula is a LIA formula where all the existential quantifiers are under the scope of an even number of negation symbols.
