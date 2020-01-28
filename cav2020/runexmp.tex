@@ -1,7 +1,7 @@
 %!TEX root = main.tex
 
 %\begin{example}\label{exmp:running}
-\section{Running example.}
+\section{Running example}
 We use the following JavaScript program as the running example of this paper,
 %which demonstrates the use of string functions coupled with integer data type as well as path feasibility of string-manipulating programs.
 which defines a function {\urlxsssanitise} (the input parameter {\sf url} specifying a URL). A typical URL consists of a hierarchical sequence of components commonly referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.html?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.html}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). (Note that both the query and the fragment could be empty in a URL.) The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks} \cite{url-reflect}, by filtering out the dangerous substring ``\url{script}'' from the query and fragment components of  the input URL. URL reflection attacks are a type of cross-site-scripting (XSS) attacks that do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.html?name=<script>alert('xss!');</script>}''.
