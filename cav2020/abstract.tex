@@ -1,11 +1,11 @@
 %!TEX root = main.tex
 
-Strings are widely used in programs, especially in Web applications written in, e.g., JavaScript, PHP, and Python. The integer data type occurs naturally in string-manipulating programs, used to refer to lengths of, or positions in, strings. 
+Strings are widely used in programs, especially in Web applications. Incorrectly handled string manipulation is a frequent cause of security vulnerabilities, which makes analysis and verification of string-manipulating programs an important security goal. Unfortunately, problems involving strings are hard to analyse, and to make matters worse, such programs often combine operations on strings with integer data types, used to refer to lengths of, or positions in, strings.
+
+A common approach for program verification is to symbolically execute a program under analysis, and rely on a constraint solver to solve path feasability constraints arising from operations in the program. A solution to the path feasibility problem finds an assignment to inputs (if any) that would yield a successful execution along a given path, such as one leading to an unauthorised execution of code.
+
 %For instance, the inputs or outputs of widely used string operations including length, substring, and indexof involve the integer data type.
-Analysis and testing of string-manipulating programs can be formulated as the path feasibility problem, which is to decide whether,  
 %a given execution path is feasible, namely, 
-for a given execution path, there exists an assignment to the inputs that yields a successful execution along the path. 
-Symbolic execution of string-manipulating programs relies on string constraint solvers to determine  path feasibility.
 %, which plays a central role in the static analysis and verification, e.g. symbolic execution, of programs. 
 %Path feasibility problem of string-manipulating programs is very challenging and undecidable in general, especially when involving the integer data type. 
 %Aiming at solving the path feasibility of string-manipulating programs in practice, 
