@@ -1,11 +1,21 @@
 %!TEX root = main.tex
 
-Strings are widely used in programs, especially in Web applications written in, e.g., JavaScript, PHP, and Python. The integer data-type occurs naturally in string-manipulating programs, used to refer to lengths of, or positions in, strings. 
+Strings are widely used in programs, especially in web applications.
+ %written in, e.g., JavaScript, PHP, and Python. The 
+Integer data type occurs naturally in string-manipulating programs, and is
+frequently used to refer to lengths of, or positions in, strings. 
 %For instance, the inputs or outputs of widely used string operations including length, substring, and indexof involve the integer data type.
-Analysis and testing of string-manipulating programs can be formulated as the path feasibility problem, which is to decide whether,  
+Analysis and testing of string-manipulating programs can be formulated as the 
+path feasibility problem:
 %a given execution path is feasible, namely, 
-for a given execution path, there exists an assignment to the inputs that yields a successful execution along the path. 
-Symbolic execution of string-manipulating programs relies on string constraint solvers to determine  path feasibility.
+given a symbolic execution path, does there exist an assignment to the inputs 
+that yields a concrete execution that realizes this path?
+Such a problem can naturally be reformulated as a string constraint solving
+problem.
+%Symbolic execution of string-manipulating programs 
+%This problem can naturally be reformulated as a string constraint solving
+%problem. 
+%relies on string constraint solvers to determine  path feasibility.
 %, which plays a central role in the static analysis and verification, e.g. symbolic execution, of programs. 
 %Path feasibility problem of string-manipulating programs is very challenging and undecidable in general, especially when involving the integer data type. 
 %Aiming at solving the path feasibility of string-manipulating programs in practice, 
@@ -17,17 +27,21 @@ they mainly resort to heuristics without completeness guarantees. \\ %, partiall
 In this paper, we propose a decision procedure 
 %of the path feasibility problem 
 for a class of string-manipulating programs
-which includes  not only a wide range of complex string operations such as concatenation, replaceAll, reverse, and finite transducers, but also those involving the integer data-type such as length, indexof, and substring. To the best of our knowledge, this represents one of the most expressive string constraint languages that is currently known to be decidable.  Our decision procedure is automata-theoretic and based on a variant of cost register automata (Alur et al. LICS 2013). 
+which includes  not only a wide range of complex string operations such as concatenation, replaceAll, reverse, and finite transducers, but also those involving the integer data-type such as length, indexof, and substring. To the best of our knowledge, this represents one of the most expressive string constraint languages that is currently known to be decidable.  Our decision procedure is based on 
+a variant of cost register automata (Alur et al. LICS 2013). 
 %To the best of our knowledge, %this is %the first time that 
 %the first (complete) decision procedure which covers the most expressive string constraint language %have been achieved for the path feasibility problem of such an expressive class of string-manipulating programs. Furthermore, 
 %Different from most string constraint solving techniques which provide completeness guarantees, 
 %Distinguished features of 
-It is simple, generic, and, most importantly, amenable to implementation, which 
+%It is simple, generic, and, most importantly, amenable to implementation, which 
 %We implement the decision procedure on top of OSTRICH, resulting into a new solver called 
-is built on top of a recent solver OSTRICH,
+%is built on top of a recent solver OSTRICH,
 %, which focuses on string constraints without integer data type, 
-giving rise to OSTRICH+.
+%giving rise to OSTRICH+.
 %, which is based on a recent solver OSTRICH which could not tackle integer data types. 
-We evaluate the performance of OSTRICH+ on  a wide range of existing and new benchmarks. The experimental results show that OSTRICH+ is the first string decision procedure capable of tackling finite transducers and integer constraints, whilst
+We provide an implementation of our tool $\Tool$.
+We evaluate the performance of $\Tool$ on  a wide range of existing and new 
+benchmarks. The experimental results show that $\Tool$ is the first string 
+decision procedure capable of tackling finite transducers and integer constraints, whilst
 %analysing properties (e.g. idempotence) of HTML sanitizers (e.g. htmlEscape) 
-its performance is comparable with some of the best state-of-the-art string constraint solvers.
+its performance is comparable with the state-of-the-art string constraint solvers.
