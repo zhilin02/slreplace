@@ -72,15 +72,38 @@ We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range o
 %positions. The benchmarks contain 3-7 string variables and 3-9 atomic constraints.
 % 
 
-We consider the following four sets of benchmarks.
+We consider the following four sets of benchmarks, all in SMT-LIB~2 format.
 
-The first benchmark suite {\transducerbench+} is derived from the {\transducerbench} benchmark suite of {\ostrich} \cite{CHL+19}.  The {\transducerbench} suite involves seven transducers: toUpper (replacing all lowercase letters with their uppercase ones) and its dual toLower, htmlEscape \cite{htmlEscape} and its dual htmlUnescape, escapeString \cite{escapeString}, addslashes \cite{addslashes}, and trim \cite{trim}. These transducers are collected from Stranger \cite{YABI14} and SLOTH \cite{HJLRV18}, which address strings only. To build up the {\transducerbench+} suite, %is generated from these transducers by 
-we encode five desirable properties of transducers, which have been studied in security \cite{BEK}, into our constraint language {\slint}. The encoding we provide makes use of $\charat$ and $\length$. These properties include: idempotence (given $\NFT$, whether $\forall x.\ \NFT(\NFT(x)) = \NFT(x)$), duality (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = x$), commutativity (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = \NFT_1(\NFT_2(x))$), and equivalence (given $\NFT_1$ and $\NFT_2$, whether $\forall x.\ \NFT_1(x) = \NFT_2(x)$).
+\paragraph*{\transducerbench+}
+
+is derived from the {\transducerbench} benchmark suite of {\ostrich}
+\cite{CHL+19}.  The {\transducerbench} suite involves seven
+transducers: toUpper (replacing all lowercase letters with their
+uppercase ones) and its dual toLower, htmlEscape \cite{htmlEscape} and
+its dual htmlUnescape, escapeString \cite{escapeString}, addslashes
+\cite{addslashes}, and trim \cite{trim}. These transducers are
+collected from Stranger \cite{YABI14} and SLOTH
+\cite{HJLRV18}. Initially none of the benchmarks involved integers. In
+{\transducerbench+}, we encode five security-relevant properties of
+transducers~\cite{BEK}, with the help of the functions~$\charat$ and
+$\length$. These properties include:
+\begin{itemize}
+\item idempotence: given $\NFT$, whether
+  $\forall x.\ \NFT(\NFT(x)) = \NFT(x)$;
+\item duality: given $\NFT_1$ and
+  $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = x$;
+\item commutativity: given $\NFT_1$ and $\NFT_2$, whether
+  $\forall x.\ \NFT_2(\NFT_1(x)) = \NFT_1(\NFT_2(x))$;
+\item equivalence: given $\NFT_1$ and $\NFT_2$, whether
+  $\forall x.\ \NFT_1(x) = \NFT_2(x)$.
+\end{itemize}
+
 %
 %\footnote{These problems have been investigated for transducers in \cite{BEK}.} 
 %into the path feasibility of {\slint} programs. 
-For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$). Moreover, we also include in {\transducerbench+} three {\slint} programs generated from the {\tt urlXssSanitise} function in Section~\ref{sec:intro}, %Example~\ref{exmp:running}, 
-where the transducer $\NFT_{\rm trim}$ is used. In total, we obtain 94 instances for the {\transducerbench+} benchmark suite. 
+For instance, we encode non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$). We also include in {\transducerbench+} three {\slint} programs generated from the {\tt urlXssSanitise} function in Section~\ref{sec:intro}, %Example~\ref{exmp:running}, 
+where the transducer $\NFT_{\rm trim}$ is used. 
+%In total, we obtain 94 instances for the {\transducerbench+} benchmark suite. 
 %\begin{description}
 %\item[Idempotence.] For each FFT $\NFT$,  we encode the non-idempotence of $\NFT$, namely deciding whether $\exists x.\ \NFT(\NFT(x)) \neq \NFT(x)$, into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$).
 %
@@ -92,24 +115,30 @@ where the transducer $\NFT_{\rm trim}$ is used. In total, we obtain 94 instances
 %
 %\end{description}
 
-The second benchmark suite {\slogbench} is adapted from the SLOG benchmark suite used by the SLOG tool~\cite{fang-yu-circuits} and contains 3,511 instances. 
+\paragraph*{\slogbench}
+
+ is adapted from the SLOG benchmark suite used by the SLOG tool~\cite{fang-yu-circuits}, containing 3,511~instances about strings only.
 %The SLOG are derived from the security analysis of real web applications and contain 1-211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).
-Note that the SLOG benchmark suite addresses strings only. We  obtain the {\slogbench} suite by choosing a string variable $x$ for each instance,
+%Note that the SLOG benchmark suite addresses strings only. 
+We  obtain  {\slogbench}  by choosing a string variable $x$ for each instance,
 %SLOG benchmark instance ,
 %\footnote{A string variable is called the output variable if it occurs in the left-hand side of an assignment statement, but does not appear in the right-hand sides of the assignment statements.} 
 %say $x$, 
-and add the statement $\ASSERT{\length(x) < 2\ \indexof_{a}(x, 0)}$ for some $a \in \Sigma$.
+and adding the statement $\ASSERT{\length(x) < 2 \wedge \indexof_{a}(x, 0)}$ for some $a \in \Sigma$.
 % and $c \in \Nat$ with $c > 1$.
-Following \cite{CHL+19} We further split the {\slogbench} benchmark suite into two sub-suites \slogbenchr\ and \slogbenchra, which comprises 3,391 instances and 120 instances respectively. In addition to the aforementioned $\indexof$ and $\length$ functions, both  \slogbenchr\ and \slogbenchra\ benchmarks use regular constraints and concatenation, the difference is in that {\slogbenchr} benchmarks use the $\replace$ function (replacing the first occurrence), while {\slogbenchra} benchmarks use the $\replaceall$ function (replacing all occurrences).
+As in \cite{CHL+19}, we  split  {\slogbench}  into  \slogbenchr\ and \slogbenchra, which comprise 3,391 and 120 instances, respectively. In addition to the aforementioned $\indexof$ and $\length$ functions, the benchmarks use regular constraints and concatenation;  {\slogbenchr} also contains the $\replace$ function (replacing the first occurrence), while {\slogbenchra}  uses the $\replaceall$ function (replacing all occurrences).
 
 %Each use conjunction, disjunction, regular constraints, and concatenation.
 %The \slogbenchr\ sub-suite contains 3,391 instances \zhilin{the number to be checked}, while \slogbenchra\ sub-suite contains 120 instances \zhilin{the number to be checked}.
 
-The third benchmark suite  {\pyexbench} suite \cite{ReynoldsWBBLT17} comprises 25,421 instances. 
-This suite is derived from the PyEx tool, a symbolic execution engine for Python programs. The {\pyexbench} suite was generated by the CVC4 group from four popular Python packages, i.e., httplib2, pip, pymongo, and requests. These instances use regular constraints, concatenation, $\length$, $\substring$, and $\indexof$ functions. Following \cite{ReynoldsWBBLT17}, the {\pyexbench} suite is further divided into the three parts: {\pyextdbench},  {\pyexztbench} and {\pyexzzbench}, comprising 5,569, 8,414 and 11438  instances respectively. 
+\paragraph*{\pyexbench~\cite{ReynoldsWBBLT17}}
 
-The fourth benchmark suite {\kaluzabench}~\cite{Berkeley-JavaScript}  is standard in the literature, %the well-known Kaluza benchmark suite {\kaluzabench} 
-containing 47,284 instances, which use regular constraints, concatenation, and the $\length$ function.
+contains 25,421 instances  derived by the PyEx tool, a symbolic execution engine for Python programs. The {\pyexbench} suite was generated by the CVC4 group from four popular Python packages: httplib2, pip, pymongo, and requests. These instances use regular constraints, concatenation, $\length$, $\substring$, and $\indexof$ functions. Following \cite{ReynoldsWBBLT17}, the {\pyexbench} suite is further divided into the three parts: {\pyextdbench},  {\pyexztbench} and {\pyexzzbench}, comprising 5,569, 8,414 and 11438  instances, respectively. 
+
+\paragraph*{\kaluzabench~\cite{Berkeley-JavaScript}}
+
+is the most well-known set of string benchmarks in the literature, and
+contains 47,284 problems with regular constraints, concatenation, and the $\length$ function.
 
 
 \definecolor{Gray}{gray}{0.9}
@@ -193,7 +222,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \subsection{Experiments}\label{sec:exp-res}
 
 We evaluate {\ostrich}+, together with {\cvc} \cite{cvc4}, {\zthree} \cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau} on the aforementioned benchmark suites. 
-The experiments are executed on a virtual machine with Inter Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. In general, we are interested in the performance of the solvers on satisfiable and unsatisfiable instances respectively, which are measure by the number of solvable instances  when each instance is given by a timeout period. In our experiments, it is set as 30 seconds. %\tl{to be updated}
+The experiments are executed on a virtual machine with Intel Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. In general, we are interested in the performance of the solvers on satisfiable and unsatisfiable instances respectively, which are measure by the number of solvable instances  when each instance is given by a timeout period. In our experiments, it is set as 30 seconds. %\tl{to be updated}
 
 Our evaluation focuses on integer constraints, which represent the major strength of {\ostrich}+ over its forerunner. In the literature, there two additional solvers, i.e., {\slent} and  {\trauplus} which can deal with integer constraints, but are not included in comparison.  We exclude {\slent} because it uses an input format called laut which is different from the widely used smtlib2 format. Therefore, %it is hard to compare {\ostrich}+ with 
 {\slent} cannot run on {\kaluzabench} and {\pyexbench}, and {\transducerbench}+ is beyond the scope of {\slent}.  
