@@ -123,17 +123,17 @@ Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\c
 
 \smallskip
 
-For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following options (which correspond to the semantics of $\indexof_v$ in Section~\ref{sec:logic}).
+For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following five options (which correspond to the semantics of $\indexof_v$ in Section~\ref{sec:logic}).
 \begin{itemize}
-\item Add $\ASSERT{i < 0}$ to $S$, and replace $\indexof_v(x,i)$ with $\indexof_v(x,0)$ in $S$. 
+\item[(1)] Add $\ASSERT{i < 0}$ to $S$, and replace $\indexof_v(x,i)$ with $\indexof_v(x,0)$ in $S$. 
 %
-\item Add $\ASSERT{i < 0};\ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
+\item[(2)] Add $\ASSERT{i < 0};\ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
 %
-\item Add $\ASSERT{i \ge \length(x)}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
+\item[(3)] Add $\ASSERT{i \ge \length(x)}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
 %
-\item Add $\ASSERT{i \ge 0}; \ASSERT{i < \length(x)}$ to $S$.
+\item[(4)] Add $\ASSERT{i \ge 0}; \ASSERT{i < \length(x)}$ to $S$.
 %
-\item Add 
+\item[(5)] Add 
 %
 $$
 \begin{array}{l}
@@ -146,15 +146,15 @@ to $S$, where $y$ is a fresh string variable, $j$ is a fresh integer variable, a
 
 %Nondeterministically choose a subset of $\Theta$ of the assignment statements of the form $y:=\substring(x, i, j)$ in $S$, and 
 %
-For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following options (which correspond to the semantics of $\substring$ in Section~\ref{sec:logic}).
+For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following three options (which correspond to the semantics of $\substring$ in Section~\ref{sec:logic}).
 \begin{itemize}
-\item Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
+\item[(1)] Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
 %
-\item Add the statements 
+\item[(2)] Add the statements 
 $\ASSERT{i \ge 0}; \ASSERT{i \le \length(x)};\ASSERT{i+j  > \length(x)}$; $\ASSERT{i'  = \length(x)-i}$
 to $S$, and replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')$, where $i'$ is a fresh integer variable.
 %
-\item Add the statement $\ASSERT{i < 0}; \ASSERT{y \in \NFA_\varepsilon}$ to $S$, and  remove $y:=\substring(x, i, j)$ from $S$, where $\NFA_\varepsilon$ is the NFA defining the language $\{\varepsilon\}$.
+\item[(3)] Add the statement $\ASSERT{i < 0}; \ASSERT{y \in \NFA_\varepsilon}$ to $S$, and  remove $y:=\substring(x, i, j)$ from $S$, where $\NFA_\varepsilon$ is the NFA defining the language $\{\varepsilon\}$.
 \end{itemize}
 
 \medskip
