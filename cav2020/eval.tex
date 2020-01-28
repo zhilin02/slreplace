@@ -217,20 +217,32 @@ For {\trauplus} which integrates {\trau} with {\sloth} to deal with both finite 
 
 Table~\ref{tab-experiment} summarizes the experimental results, where '--' means that the tool is not applicable to the benchmark, 'u.k. / t.o. / e.x.' means time out, \tl{maybe replace 'u.k. / t.o. / e.x.' as inconclusive?} 'sat' and 'unsat' denote instances which are satisfiable and unsatisfiable (note that the ground-truth are known and have been verified \tl{check this}  
 
-Our findings are as follows: (1) {\ostrich}+ can solve  \emph{all} the 94 instances from the {\transducerbench}+ benchmark suite, which, in our evaluation, is the only solver that is able to deal with this benchmark suite. (2) For the {\slogbenchra} benchmark suite, {\ostrich}+ and {\cvc} are \emph{very close} since on the one hand, {\ostrich}+ solves 98 satisfiable instances, slightly less than 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). The {\slogbenchra} benchmark suite is beyond the scope of {\zthree} and {\zthreetrau}, since they do not support $\replaceall$.
+The findings are as follows:  {\ostrich}+ can solve all the 94 instances from the {\transducerbench}+ benchmark suite, which, in our evaluation, is the only solver that is able to deal with this benchmark suite. 
+
+For the {\slogbenchra} benchmark suite, {\ostrich}+ and {\cvc} are very close: {\ostrich}+ solves 98 satisfiable instances, slightly less than the 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). Note that the {\slogbenchra} benchmark suite is beyond the scope of {\zthree} and {\zthreetrau} which do not support $\replaceall$.
 
 For the {\slogbenchr} benchmark suite, {\ostrich}+ and {\cvc} are the best to solve the unsatisfiable instances (2,082), and {\zthree} solves slightly less (2,066),  
-while {\cvc} is the best to solve the satisfiable instances (1,309). The {\slogbenchr} benchmark is beyond the scope of {\zthreetrau}, as it does not support $\replace$.
+while {\cvc} is the best to solve the satisfiable instances (1,309). The {\slogbenchr} benchmark is beyond the scope of {\zthreetrau} which does not support $\replace$.
 
 For the {\pyextdbench} benchmark suite, each of the four solvers is able to solve more than 95\% of the benchmark instances and their performances are close, with {\zthreetrau} the best, followed by {\cvc}, then {\zthree}, and finally {\ostrich}+.  
 
-For the {\pyexztbench} benchmark suite, {\zthreetrau} is the best, solving almost all instances, except 17 of them. {\cvc} and {\zthree} is ranked in the second and third place. The performance of {\ostrich}+ on this benchmark suite is not very impressive, only solving around 80\% instances.
+For the {\pyexztbench} benchmark suite, {\zthreetrau} is the best, solving almost all instances. %, except 17 of them. 
+{\cvc} and {\zthree} are ranked in the second and third place. The performance of {\ostrich}+ on this benchmark suite is not very impressive, only solving around 80\% instances.
 
-For the {\pyexzzbench} benchmark suite, \zhilin{to be done}
+For the {\pyexzzbench} benchmark suite, %\zhilin{to be done}
+{\zthreetrau} again is the best, which is followed closely by {\cvc}. %solving almost all instances. %, except 17 of them. 
+%{\cvc} and {\zthree} are ranked in the second and third place. 
+The performance of {\ostrich}+ and {\zthree} are level, but are 10\% worse than  {\zthreetrau} and {\cvc}. %on this benchmark suite is not very impressive, only solving around 80\% instances.
 
-For the {\kaluzabench} benchmark suite, {\cvc} performs the best since it solves almost all the instances, except 6 of them. {\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. The performance of {\ostrich}+ is not that satisfactory on this suite and it  solves  around 80\%  instances, which is consistent with the observation for {\ostrich} in \cite{CHL+19} that about 20\% {\kaluzabench} instances cannot be written as programs in the SSA form, thus out of the scope of {\ostrich} as well as {\ostrich}+.
+For the {\kaluzabench} benchmark suite, {\cvc} performs the best since it solves almost all the instances. %, except 6 of them. 
+{\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. 
+%The performance of 
+{\ostrich}+ %is not that satisfactory on this suite and it  
+solves  around 80\%  instances. The main reason is that about 20\% {\kaluzabench} instances cannot be written as programs in the SSA form, thus cannot be handled by%out of the scope of 
+{\ostrich} or {\ostrich}+. This  is consistent with the observation for {\ostrich} \cite{CHL+19} .
 
-Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experimental results in Table~\ref{tab-experiment}.
+%Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experimental results in Table~\ref{tab-experiment}.
+In summary, 
 \begin{itemize}
 \item {\ostrich}+ is \emph{the only string solver that is capable of solving string constraints involving finite transducers and integer constraints}. In particular, it is the only string solver that is able to verify the idempotence, duality, commutativity, and equivalence of HTML sanitisation operations.
 %
