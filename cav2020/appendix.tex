@@ -259,12 +259,14 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 \emph{The {\lasat} problem is $\pspace$-complete.}
 	
 \begin{proof}
-	Let $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ be a family of CEFAs  each of which carries a vector of registers $R_i^j$ and  $\phi$ be a quantifier-free LIA formula such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. 
+The lower bound follows from the {\pspace}-hardness of the intersection problem of NFAs. 
+
+For the upper bound, let $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ be a family of CEFAs  each of which carries a vector of registers $R_i^j$ and  $\phi$ be a quantifier-free LIA formula such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. 
 %Deciding whether  there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
 
-At first, we observe that we can focus on the CEFAs where the cost registers are monotone in the sense that their values are non-decreasing, in other words, they can only be updated with natural number constants. This observation is justified by the following reduction.
+At first, we observe that we can focus on \emph{monotonic CEFAs} where the cost registers are monotone in the sense that their values are non-decreasing, in other words, they can only be updated with natural number constants. This observation is justified by the following reduction.
 
-For each register $r \in R^i_j$, introduce two registers $r^+, r^-$. Let $(R^i_j)^{\pm}$ denote the vector of registers by replacing each $r \in R^i_j$ with $(r^+, r^-)$. Intuitively,  for each $r \in R^i_j$, the updates of $r$ in $\CEFA_i^{j} $ are split into the non-negative ones and negative ones, with the former stored in $r^+$ and the latter in $r^-$. Suppose $(R')^{\pm} = \bigcup_{i,j} (R_i^j)^{\pm}$. Then we construct CEFAs $(\cB_i^{j})_{i \in I, j \in J_i}$ and an LIA formula $\phi^\pm$ such that
+For each register $r \in R^i_j$, introduce two registers $r^+, r^-$. Let $(R^i_j)^{\pm}$ denote the vector of registers by replacing each $r \in R^i_j$ with $(r^+, r^-)$. Intuitively,  for each $r \in R^i_j$, the updates of $r$ in $\CEFA_i^{j} $ are split into the non-negative ones and negative ones, with the former stored in $r^+$ and the latter in $r^-$. Suppose $(R')^{\pm} = \bigcup_{i,j} (R_i^j)^{\pm}$. Then we construct monotonic CEFAs $(\cB_i^{j})_{i \in I, j \in J_i}$ and an LIA formula $\phi^\pm$ such that
 \begin{quote}
 	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ 
 	\begin{center} if and only if \end{center}
@@ -278,17 +280,39 @@ In addition, $\phi^\pm$ is obtained from $\phi$ by replacing each $r \in R'$ wit
 
 \smallskip
 
-It remains to prove the following result.
+It remains to prove the {\lasat} problem for monotonic CEFAs is in {\pspace}, namely,
 \begin{quote}
-Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint,  and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$, moreover, for each transition $(q, a, q', \eta)$ of $ \CEFA_i^{j}$ and each $r \in R_i^j$, we have $\eta(r) \ge 0$. Deciding whether  
-	there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is PSPACE-complete.
+given a family of monotonic CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint,  and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$, deciding whether  there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is in {\pspace}.
 \end{quote}
 
-%\zhilin{@Anthony, please write your proof here.} Use Proposition 16 in \cite{LB16}.
 
+We use Proposition 16 in \cite{LB16} to show the result. Proposition 16 in \cite{LB16} is about monotonic counter machines, which can be seen as monotonic CEFAs where each transition contain no alphabet symbol, moreover, $\eta(r) \in \{0,1\}$ for the update function $\eta$ therein.
 
-Given a family of CEFAs $\{\CEFA_i\}$, a quantifier-free LIA formula $\varphi$, and a number $n$ in binary, checking whether there exists a string $w$ of length $n$ accepted by each $\CEFA_i$ whose Parikh image satisfies $\varphi$ can be done in PSPACE. In Proposition 16 in \cite{LB16}, it was shown that if a CEFA $\CEFA$ accepts a string $w$ whose Parikh image satisfies $\varphi$, then there is such a string $w$ of length at most polynomial in $|\CEFA|$, exponential in the number of counters, and exponential in $|\varphi|$. So, if we let A as the product of {Ai}, then we have a witness of size exponential in the number of CEFAs, the number of counters, and $|\varphi|$. This gives the desired bound.
+For each $i\in I$ and $j\in J_i$, let $(\CEFA')_i^j$ be the monotonic counter machine obtained from $\CEFA_i^{j}$ by the following two-step procedure:
+\begin{enumerate}
+\item {[Remove the alphabet symbols]}: Remove alphabet symbols $a$ in each transition $(q, a, q', \eta)$ of $\CEFA_i^{j}$.
+%
+\item {[From binary encoding to unary encoding]}: Replace each transition $(q, q', \eta)$ such that $\ell = \max_{r \in R_i^j} \eta(r) > 1$ with a sequence of transitions $(q, p_1,\eta'_1), \cdots, (p_{\ell-1}, p_\ell, \eta'_\ell)$, where $p_1, \cdots,p_r$ are the freshly introduced states, moreover, $\eta'_j(r) = 1$ if $\eta(r) \ge j$, and $\eta'_j(r)=0$ otherwise. 
+\end{enumerate}
+
+According to Proposition 16 in \cite{LB16}, we have the following, 
+\begin{quote}
+Given a family of monotonic counter machines $\{ \cC_i \}_{i\in I}$ each of which carries a vector of counters $R_i$ and a quantifier-free LIA formula $\phi$ such that $ R_i$ are pairwise disjoint,  and the variables of $\phi$ are from $R'=\bigcup_{i} R_i$. If there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i)) \in \Lang(\cC_{i})$ for every $i \in I$, then there are desired $\theta$ and $(w_i)_{i \in I}$ such that for each $i \in I$ and $r \in R_i$, $\theta(r)$ is at most polynomial in the number of states in $\cC_i $, exponential in $|R_i|$, and exponential in $|\phi|$.
+\end{quote}
+For each $i \in I$, let $\cC_i$ be the product of monotonic counter machines $(\CEFA')_i^j$ for $j \in J_i$. 
+From the fact that the number of states of $(\CEFA')_i^j$ is at most the product of the number of transitions of $\CEFA_i^j$ and $B_{\CEFA_i^j}$ (where $B_{\CEFA_i^j}$ denotes the maximum natural number constants $\eta(r)$ in $\CEFA_i^j$), we deduce the following,
+\begin{quote}
+if there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_i^j)$ for every $i \in I$ and $j \in J_i$, then there are desired $\theta$ and $(w_i)_{i \in I}$ such that for each $r \in \bigcup_{j \in J_i} R^j_i$, $\theta(r)$ is at most polynomial in the product of the number of transitions in $\CEFA_i^j$ and $B_{\CEFA_i^j}$ for $j \in J_i$, exponential in $\left|\bigcup_{j \in J_i} R^j_i \right|$, and exponential in $|\phi|$.
+\end{quote}
+
+Therefore, one can nondeterministically guess the strings $(w_i)_{i \in I}$, and for each $i \in I$ and $j \in J_i$, simulate the runs of CEFAs $\CEFA_i^j$ on $w_i$, in polynomial space, since  the values of all the registers can be assumed to be at most exponential, thus their binary encodings can be stored in polynomial space. From Savitch's theorem \cite{complexity-book}, we conclude that the {\lasat} problem for monotonic CEFAs is in {\pspace}.
 \end{proof}
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}\label{app:case-split-semantics}
 
