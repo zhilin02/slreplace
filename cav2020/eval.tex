@@ -1,8 +1,8 @@
 %!TEX root = main.tex
 
-%We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range of benchmarks.  
-%We will discuss the benchmarks in Section~\ref{sec:bench}, then describe the details of the experiments as well as the experimental results in Section~\ref{sec:exp-res}.
-% and SLENT \cite{WC+18}. 
+We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range of benchmarks.  
+We will discuss the benchmarks in Section~\ref{sec:bench}, then describe the details of the experiments as well as the experimental results in Section~\ref{sec:exp-res}.
+%and SLENT \cite{WC+18}. 
 
  %
 %OSTRICH implements the optimised
@@ -225,7 +225,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Experimental results on different benchmarks suites.  '--' means that the tool is not applicable to the benchmark suite, and 'inconclusive' means that a tool gave up, timed out, or crashed.}
+\caption{Experimental results on different benchmark suites.  '--' means that the tool is not applicable to the benchmark suite, and 'inconclusive' means that a tool gave up, timed out, or crashed.}
 \label{tab-experiment}
 \end{table}%
 
@@ -312,18 +312,15 @@ solves  around 80\%  instances. The main reason is that about 20\% {\kaluzabench
 \fi
 
 In summary, we can observe that \ostrich+ is competitive with other
-solvers, while also able to handle benchmarks that are beyond the
-scope of other tools due to the combination of string operations (and
-in particular transducer applications) and integer
+solvers, while is also able to handle benchmarks that are beyond the
+scope of the other tools due to the combination of string operations (in particular transducer applications) and integer
 constraints. Interestingly, the experiments show that \ostrich+, at
 least in its current state, is better at solving unsatisfiable
 problems than satisfiable problems; this might be an artefact of the
 use of nuXmv for analysing products of CEFAs. We expect that further
 optimisation of our algorithm will lead to additional performance
 improvements. For instance, a natural optimisation that is not yet
-included in our implementation is to use standard automata methods,
-like in \ostrich\ and as opposed to CEFAs, for simpler problems like
-the \kaluzabench\ benchmarks.
+included in our implementation is to use standard finite automata like in \ostrich, as opposed to CEFAs, for simpler problems such as the \kaluzabench\ benchmarks.
 
 \iffalse
 %Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experimental results in Table~\ref{tab-experiment}.
