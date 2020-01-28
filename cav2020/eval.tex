@@ -140,7 +140,7 @@ contains 25,421 instances  derived by the PyEx tool, a symbolic execution engine
 \paragraph*{\kaluzabench~\cite{Berkeley-JavaScript}}
 
 is the most well-known set of string benchmarks in the literature, and
-contains 47,284 problems with regular constraints, concatenation, and the $\length$ function.
+contains 47,284 problems with regular constraints, concatenation, and the $\length$ function. The 47,284 benchmarks include 28,032 satisfiable and 9,058 unsatisfiable problems in SSA form.
 
 
 \definecolor{Gray}{gray}{0.9}
@@ -156,7 +156,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat &$-$  &$-$ &$-$ &\bf{4}\\
 \cline{2-6}
- & \cellcolor{Gray}  u.k. / t.o. / e.x.  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}6\\
+ & \cellcolor{Gray}  inconclusive  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}6\\
 %\cline{2-6} 
 % & wrong &$-$  & $-$  &$-$ &0 \\
 \hline
@@ -165,7 +165,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat &11  &$-$  &$-$ &\bf{12}\\
 \cline{2-6}
- &\cellcolor{Gray} u.k. / t.o. / e.x. & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
+ &\cellcolor{Gray} inconclusive & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
 %\cline{2-6}
 % & wrong &0 &$-$ &$-$  &0 \\
 \hline
@@ -173,7 +173,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat & \bf{2,082} & 2,066  &$-$ &\bf{2,082}\\
 \cline{2-6}
- &\cellcolor{Gray}  u.k. / t.o. / e.x. & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
+ &\cellcolor{Gray}  inconclusive & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
 %\cline{2-6}
 % & wrong &0 & 0  &$-$ &0\\
 \hline
@@ -181,7 +181,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat & 1,284 & 1,289 & \bf{1,295} &1,203\\
 \cline{2-6}
- &\cellcolor{Gray} u.k. / t.o. / e.x. &\cellcolor{Gray}61 &\cellcolor{Gray}212   &\cellcolor{Gray}8 &\cellcolor{Gray}225\\
+ &\cellcolor{Gray} inconclusive &\cellcolor{Gray}61 &\cellcolor{Gray}212   &\cellcolor{Gray}8 &\cellcolor{Gray}225\\
 %\cline{2-6}
 % &wrong &0 & 0 &  0 &0 \\
 \hline
@@ -190,7 +190,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat & 1,358  & 1,370  &\bf{1,394} &1,239\\
 \cline{2-6}
- & \cellcolor{Gray}u.k. / t.o. / e.x. &\cellcolor{Gray}710 &\cellcolor{Gray}1,004 &\cellcolor{Gray} 17 &\cellcolor{Gray}1,686\\
+ & \cellcolor{Gray}inconclusive &\cellcolor{Gray}710 &\cellcolor{Gray}1,004 &\cellcolor{Gray} 17 &\cellcolor{Gray}1,686\\
 %\cline{2-6}
 % & wrong & 0 &0 & 0 &0 \\
 \hline
@@ -198,7 +198,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat & 1,204 & 1,207  &   \bf{1,222} &868\\
 \cline{2-6}
- &\cellcolor{Gray}  u.k. / t.o. / e.x. &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} 87 &\cellcolor{Gray}1,537 \\
+ &\cellcolor{Gray}  inconclusive &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} 87 &\cellcolor{Gray}1,537 \\
 %\cline{2-6}
 % & wrong &  0 & 0 & 0&0 \\
 \hline
@@ -206,7 +206,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \cline{2-6}
  & unsat & \bf{12,014} &  11,799  &\bf{12,014}  &9,058\\
 \cline{2-6}
- &\cellcolor{Gray} u.k. / t.o. / e.x. &\cellcolor{Gray}6 & \cellcolor{Gray}2,047  &\cellcolor{Gray}501 &\cellcolor{Gray}10,264 \\
+ &\cellcolor{Gray} inconclusive &\cellcolor{Gray}6 & \cellcolor{Gray}2,047  &\cellcolor{Gray}501 &\cellcolor{Gray}10,264 \\
 %\cline{2-6}
 % & wrong &  0 & 0 &0 &0 \\
 \hline 
@@ -216,7 +216,7 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \hline
 \end{tabular}
 \end{center}
-\caption{Experimental results: u.k.(unknown), t.o.(timeout), e.x.(exception).}
+\caption{Experimental results on different benchmarks suites.  '--' means that the tool is not applicable to the benchmark suite, and 'inconclusive' means that a tool gave up, timed out, or crashed.}
 \label{tab-experiment}
 \end{table}%
 
@@ -224,7 +224,9 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
 \subsection{Experiments}\label{sec:exp-res}
 
 We compare {\ostrich}+ to {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau}. 
-The experiments are executed on a virtual machine with Intel Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. We use a timeout of 30~seconds, and report the number of satisfiable and unsatisfiable problems solved by each of the systems.
+The experiments are executed on an Intel Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. We use a timeout of 30~seconds (wall-clock time), and report the number of satisfiable and unsatisfiable problems solved by each of the systems.
+Table~\ref{tab-experiment} summarizes the experimental results. We did not observe incorrect answers by any tool.
+% (note that the ground-truth are known and have been verified \tl{check this}  
 
 There are two additional state-of-the-art solvers we do not include in
 the evaluation, {\slent} and {\trauplus}.  We exclude
@@ -252,16 +254,29 @@ to obtain a working version of {\trauplus} by the deadline, possibly because {\t
 %\item {\slent} uses an input format called laut which is different from the widely used smtlib2 format. Therefore, it is hard to compare {\ostrich}+ with {\slent} on {\kaluzabench} and {\pyexbench} benchmark suites. Moreover, {\transducerbench}+ is beyond the scope of {\slent} since it is incapable of dealing with finite transducers.
 %\end{itemize}
 
-Table~\ref{tab-experiment} summarizes the experimental results, where '--' means that the tool is not applicable to the benchmark, 'u.k. / t.o. / e.x.' means time out, \tl{maybe replace 'u.k. / t.o. / e.x.' as inconclusive?} 'sat' and 'unsat' denote instances which are satisfiable and unsatisfiable. We did not observe incorrect answers by any tool.
-% (note that the ground-truth are known and have been verified \tl{check this}  
 
-  {\ostrich}+ could solve all the 94 instances from  {\transducerbench}+, which, in our evaluation, is the only solver that is able to deal with this benchmark suite. 
+{\ostrich}+ is the only tool applicable to the problems in
+{\transducerbench}+. With a timeout of 30s, \ostrich+ can solve 88 of
+the benchmarks, but this number rises to 94 when using a bigger
+timeout of 600s. Given the complexity of those benchmarks, this is an
+encouraging result.
 
-For  {\slogbenchra}, {\ostrich}+ and {\cvc} are very close: {\ostrich}+ solves 98 satisfiable instances, slightly less than the 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). Note that the {\slogbenchra} benchmark suite is beyond the scope of {\zthree} and {\zthreetrau} which do not support $\replaceall$.
+On {\slogbenchra}, {\ostrich}+ and {\cvc} are very close: {\ostrich}+ solves 98 satisfiable instances, slightly less than the 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). The suite is beyond the scope of {\zthree} and {\zthreetrau}, which do not support $\replaceall$.
 
-For {\slogbenchr}, {\ostrich}+ and {\cvc} are the best to solve the unsatisfiable instances (2,082), and {\zthree} solves slightly less (2,066),  
-while {\cvc} is the best to solve the satisfiable instances (1,309). The {\slogbenchr} benchmark is beyond the scope of {\zthreetrau} which does not support $\replace$.
+On {\slogbenchr}, {\ostrich}+, {\cvc}, and {\zthree} solve a similar
+number of unsatisfiable problems, while {\cvc} solves the largest
+number of satisfiable instances (1,309). The {\slogbenchr} benchmark
+is beyond the scope of {\zthreetrau} which does not support
+$\replace$.
 
+On the three \pyexbench\ suites, {\zthreetrau} consistently solves the
+biggest number of problems, by some margin. \ostrich+ solves a similar
+number of problems as \zthree. Interpreting the results, however, it
+has to be taken into account that \pyexbench\ also includes problems
+that are not in SSA form, and therefore beyond the scope of
+\ostrich+. \philipp{how many?}
+
+\iffalse
 For {\pyextdbench}, each of the four solvers is able to solve more than 95\% of the benchmark instances and their performances are close, with {\zthreetrau} the best, followed by {\cvc}, then {\zthree}, and finally {\ostrich}+.  
 
 For {\pyexztbench}, {\zthreetrau} is the best, solving almost all instances. %, except 17 of them. 
@@ -271,14 +286,37 @@ For {\pyexzzbench}, %\zhilin{to be done}
 {\zthreetrau} again is the best, which is followed closely by {\cvc}. %solving almost all instances. %, except 17 of them. 
 %{\cvc} and {\zthree} are ranked in the second and third place. 
 The performance of {\ostrich}+ and {\zthree} are level, but are 10\% worse than  {\zthreetrau} and {\cvc}. %on this benchmark suite is not very impressive, only solving around 80\% instances.
+\fi
 
-For {\kaluzabench}, {\cvc} performs the best since it solves almost all the instances. %, except 6 of them. 
+The {\kaluzabench} problems can be solved most effectively by {\cvc}.
+\ostrich+ can solve almost all of the 28,032 satisfiable
+problems in SSA form, and all 9,058 unsatisfiable problems in SSA
+form. This is consistent with the results in  \cite{CHL+19} for
+{\ostrich}.
+
+\iffalse
 {\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. 
 %The performance of 
 {\ostrich}+ %is not that satisfactory on this suite and it  
 solves  around 80\%  instances. The main reason is that about 20\% {\kaluzabench} instances cannot be written as programs in the SSA form, thus cannot be handled by%out of the scope of 
-{\ostrich} or {\ostrich}+. This  is consistent with the observation for {\ostrich} \cite{CHL+19} .
+{\ostrich} or {\ostrich}+. This  is consistent with the observation for {\ostrich} \cite{CHL+19}.
+\fi
 
+In summary, we can observe that \ostrich+ is competitive with other
+solvers, while also able to handle benchmarks that are beyond the
+scope of other tools due to the combination of string operations (and
+in particular transducer applications) and integer
+constraints. Interestingly, the experiments show that \ostrich+, at
+least in its current state, is better at solving unsatisfiable
+problems than satisfiable problems; this might be an artefact of the
+use of nuXmv for analysing products of CEFAs. We expect that further
+optimisation of our algorithm will lead to additional performance
+improvements. For instance, a natural optimisation that is not yet
+included in our implementation is to use standard automata methods,
+like in \ostrich\ and as opposed to CEFAs, for simpler problems like
+the \kaluzabench\ benchmarks.
+
+\iffalse
 %Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experimental results in Table~\ref{tab-experiment}.
 In summary, 
 %\begin{itemize}
@@ -289,6 +327,7 @@ In summary,
 
 %\end{itemize}
 Admittedly, {\ostrich}+ has not exceeded other mature solvers when dealing with relatively simple string operations. However, considering that it implemented a ()complete) decision procedure (while others rely on heuristics) and its strength in dealing with complex string operations and integer constraints, we may conclude that {\ostrich}+ is competitive, and has much potential to improve when heuristics are introduced to deal with  satisfiable  instances more efficiently. 
+\fi
 
 %From the experimental results, we can see that \ostrich+ is the only solver that 
 
