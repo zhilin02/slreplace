@@ -284,11 +284,11 @@ Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carr
 	there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is PSPACE-complete.
 \end{quote}
 
-\zhilin{@Anthony, please write your proof here.} Use Proposition 16 in \cite{LB16}.
+%\zhilin{@Anthony, please write your proof here.} Use Proposition 16 in \cite{LB16}.
+
+
+Given a family of CEFAs $\{\CEFA_i\}$, a quantifier-free LIA formula $\varphi$, and a number $n$ in binary, checking whether there exists a string $w$ of length $n$ accepted by each $\CEFA_i$ whose Parikh image satisfies $\varphi$ can be done in PSPACE. In Proposition 16 in \cite{LB16}, it was shown that if a CEFA $\CEFA$ accepts a string $w$ whose Parikh image satisfies $\varphi$, then there is such a string $w$ of length at most polynomial in $|\CEFA|$, exponential in the number of counters, and exponential in $|\varphi|$. So, if we let A as the product of {Ai}, then we have a witness of size exponential in the number of CEFAs, the number of counters, and $|\varphi|$. This gives the desired bound.
 \end{proof}
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}\label{app:case-split-semantics}
 
