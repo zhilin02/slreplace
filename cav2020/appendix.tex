@@ -240,7 +240,7 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 		if there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_i^j)$ for every $i \in I$ and $j \in J_i$, then there are desired $\theta$ and $(w_i)_{i \in I}$ such that for each $r \in \bigcup_{j \in J_i} R^j_i$, $\theta(r)$ is at most polynomial in the product of the number of transitions in $\CEFA_i^j$ and $B_{\CEFA_i^j}$ for $j \in J_i$, exponential in $\left|\bigcup_{j \in J_i} R^j_i \right|$, and exponential in $|\phi|$.
 	\end{quote}
 	
-	Therefore, one can nondeterministically guess the strings $(w_i)_{i \in I}$, and ,for each $i \in I$ and $j \in J_i$, simulate the runs of CEFAs $\CEFA_i^j$ on $w_i$ in polynomial space, since  the values of all the registers can be assumed to be at most exponential, and thus their binary encodings can be stored in polynomial space. From Savitch's theorem \cite{complexity-book}, we conclude that the {\lasat} problem for monotonic CEFAs is in {\pspace}.
+	Since the values of all the registers can be assumed to be at most exponential, and thus their binary encodings can be stored in polynomial space, one can nondeterministically guess the strings $(w_i)_{i \in I}$, and for each $i \in I$ and $j \in J_i$, simulate the runs of CEFAs $\CEFA_i^j$ on $w_i$, and finally evaluate $\phi$ with the register values after all $\CEFA_{i}^{j}$ accept, in polynomial space. From Savitch's theorem \cite{complexity-book}, we conclude that the {\lasat} problem for monotonic CEFAs is in {\pspace}.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
