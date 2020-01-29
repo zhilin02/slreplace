@@ -1,25 +1,10 @@
 %!TEX root = main.tex
 
-We have compared {\ostrich}+ with the state-of-the-art solvers on a wide range of benchmarks.  
+We have compared {\ostrich}+ with some of the state-of-the-art solvers on a wide range of benchmarks.  
 We  discuss the benchmarks in Section~\ref{sec:bench} and %describe the details of the experiments as well as 
 present the experimental results in Section~\ref{sec:exp-res}.
 %and SLENT \cite{WC+18}. 
 
- %
-%OSTRICH implements the optimised
-%decision procedure for string functions as described in Section 5.1 (i.e. using distributivity of regular
-%constraints across pre-images of functions) and has built-in support for concatenation, reverse, FFT,
-%and replaceAll. Moreover, since the optimisation only requires that string operations are functional,
-%we can also support additional functions that satisfy RegInvRel, such as replacee which replaces
-%only the first (leftmost and longest) match of a regular expression. OSTRICH is extensible and new
-%string functions can be added quite simply (Section 6.3).
-%Our implementation adds a new theory solver for conjunctive formulas representing path
-%feasibility problems to Princess (Section 6.1). This means that we support disjunction as well as
-%conjunction in formulas, as long as every conjunction of literals fed to the theory solver corresponds
-%to a path feasibility problem. OSTRICH also implements a number of optimisations to efficiently
-%compute pre-images of relevant functions (Section 6.2). OSTRICH is entirely written in Scala and is
-%open-source. We report on our experiments with OSTRICH in Section 6.4. The tool is available on
-%GitHub6.  
 
 
 \subsection{Benchmarks}\label{sec:bench}
@@ -74,8 +59,7 @@ present the experimental results in Section~\ref{sec:exp-res}.
 %positions. The benchmarks contain 3-7 string variables and 3-9 atomic constraints.
 % 
 
-Our evaluation focuses on problems that combine string with integer
-constraints.  For this, we consider the following four sets of
+Our evaluation focuses on problems that combine string with integer constraints.  To this end, we consider the following four sets of
 benchmarks, all in SMT-LIB~2 format.
 
 %\paragraph*{
@@ -106,7 +90,7 @@ $\length$:
 %
 %\footnote{These problems have been investigated for transducers in \cite{BEK}.} 
 %into the path feasibility of {\slint} programs. 
-For instance, we encode non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$). We also include in {\transducerbench+} three {\slint} programs generated from the {\tt urlXssSanitise} function in Section~\ref{sec:intro}, %Example~\ref{exmp:running}, 
+For instance, we encode non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$). We also include in {\transducerbench+} three {\slint} programs generated from the {\tt urlXssSanitise} function in Section~\ref{exmp:running}, 
 where the transducer $\NFT_{\rm trim}$ is used. 
 %In total, we obtain 94 instances for the {\transducerbench+} benchmark suite. 
 %\begin{description}
