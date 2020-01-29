@@ -31,11 +31,11 @@ The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is
 The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of each transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here  the integer constants in $\CEFA$ are encoded in binary.
 
 \begin{remark}
-CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to monotonic counter machines \cite{LB16}. The main difference is that CEFAs discard guards in transitions and allow integers in cost updates, while monotonic counter machines allow guards in transitions but restrict the cost updates to being monotonic, i.e. $0,1$ only. Moreover, we explicitly define CEFAs as language acceptors for  cost-enriched languages.
+CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to monotonic counter machines \cite{LB16}. The main difference is that CEFAs discard guards in transitions and allow binary-encoded integers in cost updates, while monotonic counter machines allow guards in transitions but restrict the cost updates to being monotonic and unary, i.e. $0,1$ only. Moreover, we explicitly define CEFAs as language acceptors for  cost-enriched languages.
 \end{remark}
 
 \begin{example}[CEFA for $\length$]\label{exm:len}
-The string function $\length$ can be captured by CEFA. For any NFA $\NFA=(Q, \Sigma,  \delta, I, F)$, it is not difficult to see that the cost-enriched language $\{(w, \length(w)) \mid w\in \Lang(\NFA)\}$ is accepted by a CEFA, i.e., 
+The string function $\length$ can be captured by CEFAs. For any NFA $\NFA=(Q, \Sigma,  \delta, I, F)$, it is not difficult to see that the cost-enriched language $\{(w, \length(w)) \mid w\in \Lang(\NFA)\}$ is accepted by a CEFA, i.e., 
 $(Q, \Sigma, (r_1), \delta', I, F)$  %$Q =I=F= \{q_0\}$, $R=(r_1)$, and 
 such that for each $(q, a, q')\in \delta$, we let $(q, a, q', \eta)\in \delta'$, where $\eta(r_1) = 1$. 
 
@@ -46,8 +46,8 @@ For later use, we identify a special $\CEFA_{\rm len}= (\{q_0\}, \Sigma, (r_1), 
 %\tl{it is a bit vague; you mean for any RE $e$,  is a cerl?}
 \end{example}
 
-We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
-accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
+We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFAs as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
+accepting $\left\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \right\}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
 The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
 
 For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^*, n \le \indexof_v(w, n) < |w| \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
@@ -79,7 +79,7 @@ $R_1$ and $R_2$ are treated as sets), the product of $\CEFA_1$ and $\CEFA_2$, de
 
 For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. %Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.
 %Moreover, for a CEFA $\NFA$ and 
-Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ with $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for $j \in [k]$. 
+Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ is a vector of mutually distinct integer variables such that $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for $j \in [k]$. 
 
 \smallskip
 

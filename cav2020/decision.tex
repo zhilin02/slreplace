@@ -30,7 +30,7 @@ we consider string functions $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \tim
 Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$ is a string function, $L \subseteq \Sigma^* \times \Int^{k_0}$ is a CERL defined by a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$ with $R= (r_1, \cdots, r_{k_0})$. Then the $R$-cost-enriched pre-image of $L$ under $f$, denoted by $f^{-1}_R(L)$, is a pair $(\cR, \vec{t})$ such that 
 \begin{itemize}
 \item $\cR \subseteq (\Sigma^* \times \Int^{k_1 + k_0}) \times \cdots \times (\Sigma^* \times \Int^{k_l + k_0})$;
-\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\{r^{(1)}_i, \cdots, r^{(l)}_i\}$ which are fresh cost registers and are disjoint from $R$ in $\CEFA$;
+\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\left\{r^{(1)}_i, \cdots, r^{(l)}_i\right\}$ which are fresh cost registers and are disjoint from $R$ in $\CEFA$;
 
 %[intuitively, each cost register $r_i$ is split into $l$ cost registers $r^{(1)}_i, \cdots,r^{(l)}_i$, one for each string input parameter, and $t_i$ tells how to compute $r_i$ from $r^{(1)}_i, \cdots,r^{(l)}_i$]
 \item $L$ is equal to the language comprising the $k_0$-cost-enriched strings
@@ -47,10 +47,10 @@ where $\vec{c_j} \in \Int^{k_j}$, $\vec{d_j} = (d^{(j)}_{1}, \cdots, d^{(j)}_{k_
 The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. 
 \end{definition}
 
-Definition~\ref{def:preimage} is essentially a semantic definition of the pre-images. For the decision procedure, one desires an effective representation of $(\cR, \vec{t})$ in terms of CEFAs. Namely,
+Definition~\ref{def:preimage} is essentially a semantic definition of the pre-images. For the decision procedure, one desires an effective representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ in terms of CEFAs. Namely,
 a CEFA representation of %a CERR-definable $f^{-1}_R(L)=
-$(\cR, \vec{t})$ (where $t_j$ is over $\{r^{(1)}_j, \cdots, r^{(l)}_j\}$ for $j\in [k_0]$)
-is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0})$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}$ %, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ 
+$(\cR, \vec{t})$ (where $t_j$ is over $\left\{r^{(1)}_j, \cdots, r^{(l)}_j\right\}$ for $j\in [k_0]$)
+is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=\left(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0}\right)$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}$ %, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ 
 are mutually distinct and freshly introduced.) %\tl{$r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are actually introduced above?}
 
 
@@ -63,7 +63,7 @@ which is represented by $(\CEFA', t)$ such that $\CEFA'= (Q', \Sigma, R', \delta
 \begin{itemize}
 \item $Q' = Q \times \{p_0, p_1, p_2\}$, (Intuitively, $p_0$, $p_1$, and $p_2$ denote that the current position is before the starting position, between the starting position and ending position, and after the ending position of the substring respectively.) 
 \item $R'= \left(r'_{1,1}, r'_{1,2}, r^{(1)}_1 \right)$, 
-\item $I' =\{(q_0,p_0)\}$, $F'=\{(q_0, p_2), (q_0, p_0)\}$, and 
+\item $I' =\{(q_0,p_0)\}$, $F'=\{(q_0, p_2), (q_0, p_0)\}$ (where $(q_0, p_0)$ is used to accept the $3$-cost-enriched strings $(w, n_1, 0, 0)$ with $0 \le n_1 \le |w|$), and 
 \item $\delta'$ is  
 \[
 \left\{
@@ -80,7 +80,7 @@ Therefore, $\substring^{-1}_R(L)$ is CERR-definable.
 \end{example}
 
 
-It turns out that for each string function $f$ in {\slint}, the cost-enriched pre-images of CERLs under $f$ are CERR-definable.
+It turns out that for each string function $f$ in the assignment statements of {\slint}, the cost-enriched pre-images of CERLs under $f$ are CERR-definable.
 
 \begin{proposition}\label{prop:pre-image}
 Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string function $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
@@ -113,7 +113,7 @@ We present a decision procedure for the path feasibility problem of $S$ which is
 \noindent {\bf Step I: Reducing to atomic asserations.}%Removing $\vee$ and $\wedge$}.
 
 \smallskip
-Note first that in our language, each asseration is a Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}).  
+Note first that in our language, each assertion is a positive Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}).  
 Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
 
 Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constains atomic asserations only. 
@@ -189,9 +189,9 @@ Let $\{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y 
 %\footnote{Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$,  $R(\CEFA_s)$ are mutually disjoint.} 
 %with $R(\CEFA) = (r_1, \cdots, r_{k_0})$. 
 Let $j \in [s]$ and $R(\CEFA_j)=(r_{j,1}, \cdots, r_{j, \ell_j})$. Then from Proposition~\ref{prop:pre-image}, 
-a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $\left((\cB^{(1)}_{j, j'}, \cdots, \cB^{(l)}_{j, j'})_{j' \in [m_j]}, \vec{t}\right)$, can be effectively computed from $\NFA$ and $f$, where we write
+a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $\left(\left(\cB^{(1)}_{j, j'}, \cdots, \cB^{(l)}_{j, j'}\right)_{j' \in [m_j]}, \vec{t}\right)$, can be effectively computed from $\NFA$ and $f$, where we write
 \[
-R(\cB^{(j'')}_{j, j'})=\left((r')^{(j'',1)}_{j}, \cdots, (r')_{j}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
+R\left(\cB^{(j'')}_{j, j'}\right)=\left((r')^{(j'',1)}_{j}, \cdots, (r')_{j}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
 \]
 for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j}, \cdots, (r')_{j}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j}, \cdots, (r')_{j}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced, moreover, $R\left(\cB^{(j'')}_{j, j'_1}\right)=R\left(\cB^{(j'')}_{j, j'_2}\right)$ for distinct $j'_1,j'_2 \in [m_j]$.
 %
@@ -226,7 +226,7 @@ S_{j, \vec{t}} \equiv \ASSERT{r_{j, 1} = t_1}; \cdots, \ASSERT{r_{j, \ell_j} = t
 \smallskip
 
 In this step, $S$ %is a {\slint} program containing 
-contains only assertions of the form $\ASSERT{x \in \CEFA}$ and  $\ASSERT{t_1\ o\ t_2}$  where $\CEFA$ are CEFAs and $t_1, t_2$ are linear integer terms. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
+contains no assignment statements and only assertions of the form $\ASSERT{x \in \CEFA}$ and  $\ASSERT{t_1\ o\ t_2}$  where $\CEFA$ are CEFAs and $t_1, t_2$ are linear integer terms. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
 %
 Let $X$ denote the set of string variables occurring in $S$.
 For each $x \in X$, let $\Lambda_x=\{\CEFA_{x}^1, \cdots, \CEFA_{x}^{s_x}\}$ denote the set of CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. 
@@ -265,7 +265,7 @@ This {\lasat} problem is decidable and $\pspace$-complete:
 \end{proposition}
 
 A natural idea for the proof for Proposition~\ref{prop:la-sat-cefa-inter} is to compute, for each string variable $x \in X$, an existential LIA formula $\phi_x$ defining the Parikh image of the product of the CEFAs in $\Lambda_x$, and then to solve the satisfiability of $\phi \wedge \bigwedge_{x \in X} \phi_x$. Nevertheless, computing the product of CEFAs followed by the computation of its Parikh image would require exponential space. To circumvent this exponential space blowup, %instead of computing the product of CEFAs in $\Lambda_x$ explicitly, 
-we utilise Proposition 16 in \cite{LB16} to show a small model property for the {\lasat} problem: If a model of  {\lasat}, specifically, an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$, exists, then $\theta$ can be assumed to satisfy that for each $x \in X$ and $r \in R_x=\bigcup_{j \in [s_x]} R(\CEFA_{x}^{j})$, $\theta(r)$ is at most exponential in the size of $\CEFA_{x}^{j}$ for $j \in [s_x]$ and $|\phi|$. Since the binary encodings of $\theta(r)$ can be stored in polynomial space, one can \emph{nondeterministically} guess the strings $(w_x)_{x \in X}$, simulate the runs of $\CEFA_{x}^{j}$ on $w_x$, and finally evaluate $\phi$ with the register values after all $\CEFA_{x}^{j}$ accept, in polynomial space. A proof of the proposition can be found in Appendix, Section~\ref{app:sat-cefa}. %which is doable according to 
+we utilise Proposition 16 in \cite{LB16} to show a small model property for the {\lasat} problem: If a model of  {\lasat}, specifically, an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$, exists, then $\theta$ can be assumed to satisfy that for each $x \in X$ and $r \in R_x=\bigcup_{j \in [s_x]} R(\CEFA_{x}^{j})$, $\theta(r)$ is at most exponential in the size of $\CEFA_{x}^{j}$ for $j \in [s_x]$ and $|\phi|$. Since the binary encodings of $\theta(r)$ can be stored in polynomial space, one can \emph{nondeterministically} guess the strings $(w_x)_{x \in X}$, simulate the runs of $\CEFA_{x}^{j}$ on $w_x$, and finally evaluate $\phi$ over the register values after all CEFAs $\CEFA_{x}^{j}$ accept, in polynomial space. A proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix, Section~\ref{app:sat-cefa}. %which is doable according to 
 %A more detailed  proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix~\ref{app:sat-cefa}. 
 %\zhilin{polish further.}
 
@@ -277,10 +277,10 @@ In Step IV, for each input string variable $x$ in $S$, at most exponentially man
 
 %\tl{to put in a different place later} 
 \begin{remark}
-	In this paper, we focus on functional transducers (cf.\ Section~\ref{sec:prel}). Our decision procedure is applicable to general transducers as well with minor adaptation. However, the EXPSPACE complexity upper-bound does not hold any more, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional transducers $f$.  
+	In this paper, we focus on functional finite transducers (cf.\ Section~\ref{sec:prel}). Our decision procedure is applicable to general finite transducers as well with minor adaptation. However, the $\expspace$ complexity upper-bound does not hold any more, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional finite transducers $f$.  
 \end{remark}
 
-An example to demonstrate the decision procedure applied to the program associated with {\tt urlXssSanitise(url)} in Section~\ref{exmp:running} is provided in the Appendix, Section~\ref{app:urlexample}.
+An example to demonstrate the decision procedure applied to the program in Example~\ref{exmp:logic} is provided in the Appendix, Section~\ref{app:urlexample}.
 
 %\begin{example}
 %Consider the program $S$ associated with {\tt urlXssSanitise(url)} in Section~\ref{sec:intro}. % Example~\ref{exmp:running}.
