@@ -45,8 +45,9 @@ We have implemented the decision procedure based on the recent string solver OST
 %Similarly to OSTRICH, 
 OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
 splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$.
-The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.\philipp{I believe we need to comment on the partitions $(\mathcal{I}_l)_{l \in [5]}$ here; at least I don't really understand this notation, and the meaning of the partitions.} 
-\tl{I add a comment; not sure whether it helps though}\zhilin{Fine with me.}
+The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.
+%\philipp{I believe we need to comment on the partitions $(\mathcal{I}_l)_{l \in [5]}$ here; at least I don't really understand this notation, and the meaning of the partitions.} 
+%\tl{I add a comment; not sure whether it helps though}\zhilin{Fine with me.}
 %
 (The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix, Section~\ref{app:case-split-semantics}.) Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
 
