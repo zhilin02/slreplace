@@ -40,7 +40,7 @@
 		for Step II-III} \label{alg:checksat} 
 \end{algorithm}
 
-We have implemented the decision procedure based on the recent string solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite-state transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  
+We have implemented the decision procedure based on the recent string constraint solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  
 
 %Similarly to OSTRICH, 
 OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
@@ -74,7 +74,7 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 	{
 %	      	\tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\Lang(\CEFA)$ under $f$}
 		compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = \left((\CEFA^{(1)}_{j}, \cdots, \CEFA^{(l)}_{j})_{j \in [n]}, \vec{t}\right)$ where \newline 
-		 $R(\CEFA^{(j')}_{j})=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
+		 $R\left(\CEFA^{(j')}_{j}\right)=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
 	        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in \CEFA\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in \CEFA\}$\;    
 	        \For{$j \leftarrow 1$ \KwTo $n$}{
         		$\mathit{active} \leftarrow \mathit{active} \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
