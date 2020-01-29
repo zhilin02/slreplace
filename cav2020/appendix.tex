@@ -4,7 +4,7 @@
 \section{Construction of $\CEFA_{\indexof_v}$} \label{appendix:cefa_indexof}
 
 In this section, we show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA. Technically, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
-accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
+accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
 
 %The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
 For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string. 
