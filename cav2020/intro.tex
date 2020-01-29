@@ -70,7 +70,7 @@ better understand the decidability of theories combining strings and integers.
 }
 
 Approaches to building practical string solvers could essentially be classified
-into two. Firstly, one could support as much constraints as possible, but 
+into two. Firstly, one could support as many constraints as possible, but 
 primarily resort to heuristics not
 offering any completeness/termination guarantee. This is understandable since, as
 mentioned above, the problem involving both string and integer data types is in 
@@ -99,15 +99,15 @@ Some solvers belong to this category including Norn \cite{Abdulla14}, SLOTH
 \cite{HJLRV18}, and OSTRICH \cite{CHL+19}. 
 The aforementioned decidability result of \cite{LB16} unfortunately does not
 immediately lead to an implementable decision procedure.
-The fragment without complex string operations (e.g. replaceAll and
-transducers) can be handled quite well by Norn. The fragment without length
+The fragment \emph{without} complex string operations (e.g. replaceAll and
+transducers, but length constraints) can be handled quite well by Norn. The fragment \emph{without} length
 constraints (but replaceAll and transducers)
 %constraints but not complex string operations like replaceAll and transducers,
 can be handled effectively by OSTRICH and SLOTH. 
 In fact, most existing solvers that belong to the first category do not support
 complex string operations like replaceAll and transducers as well.
 This motivates the following challenging and timely problem: \emph{provide an
-effective decision procedure that supports string/integer data type, as well
+effective decision procedure that supports string and integer data type, as well
 as complex string operations, with a completeness guarantee}.
 
 %At the moment, 
