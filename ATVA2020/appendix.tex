@@ -1,0 +1,441 @@
+%!TEX root = main.tex
+
+
+\section{Construction of $\CEFA_{\indexof_v}$} \label{appendix:cefa_indexof}
+
+In this section, we show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA. Technically, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
+accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
+
+%The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
+For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string. 
+Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
+\begin{itemize}
+\item $\pi'_1 = \top$ iff $b = a_1$, 
+%
+\item for each $i \in [n-2]$, $\pi'_{i+1} = \top$ iff $\pi_{i} = \top$ and $b = a_{i+1}$. 
+\end{itemize}
+Let $WP_v$ denote the set of window profiles of string positions w.r.t. $v$. From the result in \cite{CCH+18}, we know that $|WP_v| \le |v|$. 
+%Then the set of window profiles of $v$, denoted by $WP_v$, is computed by setting $WP_0 := \{\bot^{n-1}\}$ and iterating the following procedure, until $WP_i = WP_{i+1}$:
+%\[WP_{i+1}:=WP_i \cup \{\uwp(\vec{\pi}, b) \mid \vec{\pi} \in WP_i, b \in \Sigma\}.\] 
+%Therefore, the aforementioned iteration terminates in at most $|v|$ steps.\\
+%
+%
+
+Suppose $v = a_1 \cdots a_n$ with $n \ge 2$. 
+Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \delta, I, F)$, such that 
+\begin{itemize}
+\item $Q = \{q_0, q_1\} \cup WP_v \cup WP_v \times [n]$, 
+\item $R=(r_1, r_2)$ (where $r_1,r_2$ represent the input and output positions of $\indexof_v$ respectively), 
+\item $I=\{q_0\}$, 
+\item $F=\{q_1\}$, and 
+\item $\delta$ comprises 
+\begin{itemize}
+\item the tuples $(q_0, a, q_0, \eta)$ such that $a \in \Sigma$, $\eta(r_1)=1$, and $\eta(r_2) = 1$,
+%
+\item the tuples $(q_0, a, \vec{\pi}, \eta)$ such that $a \in \Sigma$, $\vec{\pi} = \theta \bot^{n-2}$ where $\theta  = \top$ iff $a = a_1$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$ (recall that the first position of a string is $0$),
+% 
+\item the tuples  $(\vec{\pi}, a, \uwp(\vec{\pi}, a), \eta)$ such that $\vec{\pi} \in WP_u$, $a \in \Sigma$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 1$,
+%
+\item the tuples $(\vec{\pi}, a, (\uwp(\vec{\pi}, a), 1), \eta)$ such that $\vec{\pi} \in WP_u$, $a = a_1$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 1$,
+%
+\item the tuples $((\vec{\pi}, i),  a, (\uwp(\vec{\pi}, a), i+1), \eta)$ such that $\vec{\pi} \in WP_u$, $i \in [n-2]$, $a = a_{i+1}$, $\pi_{n-1} = \bot$ or $a \neq a_{n}$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$,
+%
+\item the tuples $((\vec{\pi}, n-1),  a, q_1, \eta)$ such that $\vec{\pi} \in WP_u$, $a = a_{n}$, $\eta(r_1) =0$, and $\eta(r_2)= 0$,
+%
+\item the tuples  $(q_1, a, q_1, \eta)$ such that $a \in \Sigma$, $\eta(r_1) = 0$, and $\eta(r_2)= 0$.
+\end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Proof of Proposition~\ref{prop:pre-image}}\label{app:pre-image}
+
+
+\noindent {\bf Proposition~\ref{prop:pre-image}}.
+\emph{Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string function $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
+\begin{itemize}
+\item a CEFA representation of $\concat^{-1}_R(L)$ can be computed in time $\bigO(|\CEFA|^2)$, 
+%
+\item a CEFA representation of $\reverse^{-1}_R(L)$ (resp. $\substring^{-1}_R(L)$) can be computed in time $\bigO(|\CEFA|)$,
+%
+\item a CEFA representation of  $(\Tran(\NFT))^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|\NFT|$,
+%
+\item a CEFA representation of  $(\replaceall_{e,u})^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|e|$ and $|u|$.
+\end{itemize}
+}
+
+\begin{proof}
+	Let $\CEFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots, r_k)$. We show how to construct a CEFA representation of $f^{-1}_R(L)$ for each function $f$ in {\slint}.
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\paragraph*{$\concat^{-1}_R(L)$.}
+	%
+	A CEFA representation of $\concat^{-1}_R(L)$ is given by $((\CEFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$, where 
+	\begin{itemize}
+		\item $\CEFA_{I, q}=(Q, \Sigma, R^{(1)}, \delta^{(1)}, I, \{q\})$ and  $\CEFA_{q, F}=(Q, \Sigma, R^{(2)}, \delta^{(2)}, \{q\}, F)$ such that 
+		\begin{itemize}
+			\item $R^{(1)} = (r^{(1)}_1, \cdots, r^{(1)}_k)$, $R^{(2)} = (r^{(2)}_1, \cdots, r^{(2)}_k)$, 
+			\item $\delta^{(1)}$ comprises the tuples $(q, a, q', \eta')$ satisfying that there exists $\eta$ such that $(q, a, q', \eta) \in \delta$ and for each $j \in [k]$, and $\eta'(r^{(1)}_j)=\eta(r_j)$,  similarly for $\delta^{(2)}$,
+		\end{itemize}
+		\item and $\vec{t} = (r^{(1)}_1 + r^{(2)}_1, \cdots, r^{(1)}_k + r^{(2)}_k)$.
+	\end{itemize}
+	Note that the size of $((\CEFA_{I, q}, \NFA_{q, F})_{q \in Q}, \vec{t})$ is $\bigO(|\CEFA|^2)$.
+	%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%
+	\paragraph*{$\reverse^{-1}_R(L)$.} 
+	%
+	A CEFA representation of $\reverse^{-1}_R(L)$ is given by $(\CEFA^{(r)}, \vec{t})$, where 
+	\begin{itemize}
+		\item $\CEFA^{(r)}=(Q, \Sigma, R^{(1)}, \delta', F, I)$ such that 
+		\begin{itemize}
+			\item $R^{(1)}=(r^{(1)}_1,\cdots,r^{(1)}_k)$, and 
+			\item $\delta'$ comprises the tuples $(q', a, q, \eta')$ satisfying that there exists $\eta$ such that $(q, a, q', \eta) \in \delta$, and $\eta'(r^{(1)}_i) = \eta(r_i)$ for each $i \in [k]$,
+		\end{itemize}
+		%
+		\item and $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$. 
+	\end{itemize}
+	Note that $\Lang(\CEFA^{(r)}) = \{(w^{(r)}, \vec{n}) \mid (w, \vec{n}) \in \Lang(\CEFA)\}$, and the size of $(\CEFA^{(r)}, \vec{t})$ is $\bigO(|\CEFA|)$.
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\paragraph*{$\substring^{-1}_R(L)$.}
+	A CEFA representation of $\substring^{-1}_R(L)$ is given by $(\cB, \vec{t})$, where 
+	\begin{itemize}
+		\item $\cB = (Q', \Sigma, R', \delta', I', F')$ such that 
+		\begin{itemize}
+			\item $Q' = Q \times \{p_0, p_1, p_2\}$, (intuitively, $p_0$, $p_1$, and $p_2$ denote that the current position is before the starting position, between the starting position and ending position, and after the ending position respectively)
+			%
+			\item $R' = \left(r'_{1,1}, r'_{1,2}, r^{(1)}_1,\cdots, r^{(1)}_k \right)$, (intuitively, $r'_{1,1}$ denotes the starting position, and $r'_{1,2}$ denotes the length of the substring)
+			%
+			\item $I'=I \times \{p_0\}$, $F'=F' \times \{p_2\} \cup (I \cap F) \times \{p_0\}$,
+			%
+			\item and $\delta'$ comprises 
+			\begin{itemize}
+				\item the tuples $((q, p_0), a, (q, p_0), \eta')$ such that $q \in I$, $a \in \Sigma$, and $\eta'$ satisfies that $\eta'(r'_{1,1})= 1$, and $\eta'(r'_{1,2}) = 0$, and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, 
+				%
+				\item the tuples $((q, p_0), a, (q', p_1), \eta')$ such that $q \in I$ and there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, moreover, $\eta'(r'_{1,1})=0$ (recall that the positions of strings start at $0$), $\eta'(r'_{1,2}) = 1$, and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,
+				%
+				\item the tuples $((q, p_0), a, (q', p_2), \eta')$ such that $q \in I$ and there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, moreover, $q' \in F$, and $\eta'(r'_{1,1})=0$ (recall that the positions of strings start at $0$), $\eta'(r'_{1,2}) = 1$, and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,  
+				%
+				\item the tuples $((q, p_1), a, (q', p_1), \eta')$ such that there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, $\eta'(r'_{1,1}) = 0$, and $\eta'(r'_{1,2}) = 1$, and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,
+				%
+				\item the tuples $((q, p_1), a, (q', p_2), \eta')$ such that $q' \in F$, and there exists $\eta$ satisfying that $(q, a, q', \eta) \in \delta$, moreover, $\eta'(r'_{1,1}) = 0$, $\eta'(r'_{1,2}) = 1$, and $\eta'(r^{(1)}_j)=\eta(r_j)$ for each $j \in [k]$,
+				%
+				%\item the tuples $((q, p_1), a, (q, p_2), \eta')$ such that $q \in F$ and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$, $\eta'(r'_1) = 0$, and $\eta'(r'_2) = 1$,
+				%
+				\item the tuples $((q, p_2), a, (q, p_2), \eta')$ such that $q \in F$, $\eta'(r'_{1,1}) = 0$, and $\eta'(r'_{1,2}) = 0$, and $\eta'(r^{(1)}_j)=0$ for each $j \in [k]$,
+				%
+			\end{itemize}
+		\end{itemize}
+		\item $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$.
+	\end{itemize}
+	Note that the size of $(\cB, \vec{t})$ is $\bigO(|\CEFA|)$.
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%
+	%
+	\paragraph*{$(\Tran(\NFT))^{-1}_R(L)$.}
+	%
+	Suppose $\NFT = (Q', \Sigma, \delta', I', F')$. Then a CEFA representation of $(\Tran(\NFT))^{-1}_R(L)$ is given by 
+	$(\cB, \vec{t})$, where 
+	\begin{itemize}
+		\item $\cB$ simulates the run of $\NFT$ on the input string, meanwhile, it simulates the run of $\CEFA$ on the output string of $\NFT$, formally, $\cB= (Q' \times Q, \Sigma, R^{(1)}, \delta'', I' \times I, F' \times F)$ such that 
+		\begin{itemize}
+			\item $R^{(1)}  = (r^{(1)}_1, \cdots, r^{(1)}_k)$, and
+			\item $\delta''$ comprises the tuples $((q'_1, q_1), a, (q'_2, q_2), \eta')$ satisfying one of the following conditions,
+			\begin{itemize}
+				\item there exist $u = a_1 \cdots a_n \in \Sigma^+$ and a transition sequence $p_0 \xrightarrow[\delta]{a_1, \eta_1} p_2 \cdots p_{n-1} \xrightarrow[\delta]{a_n, \eta_n} p_{n}$ in $\CEFA$ such that $(q'_1, a, q'_2, u) \in \delta'$, $p_0 = q_1$, $p_{n}= q_2$, and for each $j \in [k]$,  $\eta'(r^{(1)}_j) = \eta_1(r_j) + \cdots + \eta_n(r_j)$,
+				%
+				\item $(q'_1, a, q'_2, \varepsilon) \in \delta'$, $q_1 = q_2$, and $\eta'(r^{(1)}_j) =0$ for each $j \in [k]$,
+			\end{itemize}
+		\end{itemize}
+		%
+		\item $\vec{t}=(r^{(1)}_1, \cdots, r^{(1)}_k)$.
+	\end{itemize}
+	Note that the number of transitions of $\cB$ can be exponential in the worst case, since it summarises the updates of cost registers of $\CEFA$ on the output strings of the transitions of $\NFT$. More precisely,  let
+	\begin{itemize}
+		\item $\ell$ be the maximum length of the output strings of transitions of $\NFT$, 
+		\item $N$ be the maximum number of transitions between a given pair of states of $\CEFA$, and
+		\item  $C$ be the maximum absolute value of the integer constants occurring in $\CEFA$,
+	\end{itemize}
+	then $|\delta''|$, the cardinality of $\delta''$, is bounded by $|\delta'| \times |Q|^2 \times N^\ell $, and the integer constants occurring in each transition of $\delta''$ are bounded by $\ell C$. Therefore, 
+	the size of $(\cB, \vec{t})$ is 
+	\[
+	\bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)).
+	\] 
+	Since $|\delta'|, \ell \le |\NFT|$, $|Q|, N, k \le |\CEFA|$, and $C \le 2^{|\CEFA|}$, we deduce that the size of $(\cB, \vec{t})$ is 
+	$
+	\bigO( |\NFT| \times  |\CEFA|^2 \times |\CEFA|^{|\NFT|} \times |\CEFA|^2 \log_2(|\NFT|))= |\CEFA|^{\bigO(|\NFT|)} |\NFT| \log_2(|\NFT|).$
+	%
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\paragraph*{$(\replaceall_{e,u})^{-1}_R(L)$.}
+	%
+	From the result in \cite{CCH+18}, we know that  a NFT $\NFT_{e,u}=(Q', \Sigma, \delta', I', F')$ can be constructed to capture $\replaceall_{e,u}$.  Moreover, 
+	\begin{itemize}
+		\item $|Q'|$, as well as $|\delta'|$, is $2^{\bigO(|e|)}$,
+		\item $\ell$, the maximum length of the output strings of transitions of $\NFT_{e,u}$, is $|u|$.
+	\end{itemize}
+	Then a CEFA representation of $(\replaceall_{e,u})^{-1}_R(L)$ can be constructed as that of $(\Tran(\NFT_{e,u}))^{-1}_R(L)$.
+	Let $N$ denote the maximum number of transitions between a given pair of states of $\CEFA$, and $C$ be the maximum absolute value of the integer constants occurring in $\CEFA$, which is bounded by $2^{|\CEFA|}$. Then the CEFA representation of $(\replaceall_{e,u})^{-1}_R(L)$ is of size 
+	\[
+	\bigO(|\delta'| \times |Q|^2 \times N^\ell \times k \log_2 (\ell C)) = 2^{\bigO(|e|)} |\CEFA|^2 |\CEFA|^{|u|} |\CEFA|^2 \log_2 |u|=2^{\bigO(|e|)} |\CEFA|^{\bigO(|u|)}.
+	\]
+	%
+	according to the aforementioned discussion for NFTs.
+	% 
+	%
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Proof of Proposition~\ref{prop:la-sat-cefa-inter}}\label{app:sat-cefa}
+
+\noindent{\bf Proposition~\ref{prop:la-sat-cefa-inter}}.
+\emph{The {\lasat} problem is $\pspace$-complete.}
+
+\begin{proof}
+	The lower bound follows from the {\pspace}-hardness of the intersection problem of NFAs. 
+	
+	For the upper bound, let $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ be a family of CEFAs  each of which carries a vector of registers $R_i^j$ and  $\phi$ be a quantifier-free LIA formula such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R':=\bigcup_{i,j} R_i^j$. 
+	%Deciding whether  there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
+	
+	First, we observe that we can focus on \emph{monotonic CEFAs} where the cost registers are monotone in the sense that their values are non-decreasing during the course of execution. In other words, they can only be updated with natural number (as opposed to general integer) constants. This observation is justified by the following reduction.
+	
+	For each register $r \in R^i_j$, we introduce two registers $r^+, r^-$. Let $(R^i_j)^{\pm}$ denote the vector of registers by replacing each $r \in R^i_j$ with $(r^+, r^-)$. Intuitively,  for each $r \in R^i_j$, the updates of $r$ in $\CEFA_i^{j} $ are split into non-negative ones and negative ones, with the former stored in $r^+$ and the latter in $r^-$. Suppose $(R')^{\pm} = \bigcup_{i,j} (R_i^j)^{\pm}$. Then we construct monotonic CEFAs $(\cB_i^{j})_{i \in I, j \in J_i}$ and an LIA formula $\phi^\pm$ such that
+	\begin{quote}
+		there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ 
+		\begin{center} if and only if \end{center}
+		there are an assignment function $\theta^\pm: (R')^\pm \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi^\pm[\theta^\pm((R')^\pm)/(R')^\pm]$ holds and $(w_i, \theta^\pm((R_i^j)^\pm)) \in \Lang(\cB_{i}^j)$ for every $i \in I$ and $j \in J_i$.
+	\end{quote}
+	For $i \in I$ and $j \in J_i$, the CEFA $\cB_{i}^j$ is obtained from $\CEFA_{i}^j$ by replacing each transition $(q, a, q', \eta)$ in $\CEFA_i^j$ by the transition $(q, a, q', \eta')$ such that for each $r \in R_j^j$, 
+	\[
+	\eta'(r^+) = \left\{ \begin{array}{l  l}\eta(r), & \mbox{ if } \eta(r) \ge 0 \\ 0 & \mbox{ otherwise} \end{array}\right.,  \eta'(r^-) = \left\{ \begin{array}{l  l} 0, & \mbox{ if } \eta(r) \ge 0 \\ -\eta(r) & \mbox{ otherwise} \end{array}\right..
+	\]
+	In addition, $\phi^\pm$ is obtained from $\phi$ by replacing each $r \in R'$ with $r^+-r^-$.
+	
+	\smallskip
+	
+	It remains to prove the {\lasat} problem for monotonic CEFAs is in {\pspace}, namely,
+	\begin{quote}
+		given a family of \emph{monotonic} CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint,  and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$, deciding whether  there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is in {\pspace}.
+	\end{quote}
+	
+	
+	We use Proposition 16 in \cite{LB16} to show the result. Proposition 16 in \cite{LB16} mainly considered monotonic counter machines, which can be seen as monotonic CEFAs where each transition contains no alphabet symbol, and $\eta(r) \in \{0,1\}$ for the update function $\eta$ therein.
+	
+	For each $i\in I$ and $j\in J_i$, let $(\CEFA')_i^j$ be the monotonic counter machine obtained from $\CEFA_i^{j}$ by the following two-step procedure:
+	\begin{enumerate}
+		\item {[Remove the alphabet symbols]}: Remove alphabet symbols $a$ in each transition $(q, a, q', \eta)$ of $\CEFA_i^{j}$.
+		%
+		\item {[From binary encoding to unary encoding]}: Replace each transition $(q, q', \eta)$ such that $\ell = \max_{r \in R_i^j} \eta(r) > 1$ with a sequence of transitions $(q, p_1,\eta'_1), \cdots, (p_{\ell-1}, q', \eta'_\ell)$, where $p_1, \cdots,p_{\ell-1}$ are the freshly introduced states, moreover, $\eta'_j(r) = 1$ if $\eta(r) \ge j$, and $\eta'_j(r)=0$ otherwise. 
+	\end{enumerate}
+	
+	According to Proposition 16 in \cite{LB16}, we have the following property. 
+	\begin{quote}
+		Given a family of monotonic counter machines $\{ \cC_i \}_{i\in I}$ each of which carries a vector of counters $R_i$ and a quantifier-free LIA formula $\phi$ such that $ R_i$ are pairwise disjoint,  and the variables of $\phi$ are from $R'=\bigcup_{i} R_i$. If there is an assignment function $\theta: R' \rightarrow \Nat$ such that $\phi[\theta(R' )/R']$ holds and $\theta(R_i)$ is a reachable valuation of counters in $\cC_i$ for every $i \in I$, then there are desired $\theta$ such that for each $i \in I$ and $r \in R_i$, $\theta(r)$ is at most polynomial in the number of states in $\cC_i $, exponential in $|R_i|$, and exponential in $|\phi|$.
+	\end{quote}
+	For each $i \in I$, let $\cC_i$ be the product of monotonic counter machines $(\CEFA')_i^j$ for $j \in J_i$. 
+	From the fact that the number of states of $(\CEFA')_i^j$ is at most the product of the number of transitions of $\CEFA_i^j$ and $B_{\CEFA_i^j}$ (where $B_{\CEFA_i^j}$ denotes the maximum natural number constants $\eta(r)$ in $\CEFA_i^j$), we deduce the following,
+	\begin{quote}
+		if there are an assignment function $\theta: R' \rightarrow \Nat$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_i^j)$ for every $i \in I$ and $j \in J_i$, then there are desired $\theta$ and $(w_i)_{i \in I}$ such that for each $i \in I$ and $r \in \bigcup_{j \in J_i} R^j_i$, $\theta(r)$ is at most polynomial in the product of the number of transitions in $\CEFA_i^j$ and $B_{\CEFA_i^j}$ for $j \in J_i$, exponential in $\left|\bigcup_{j \in J_i} R^j_i \right|$, and exponential in $|\phi|$.
+	\end{quote}
+	
+	Since the values of all the registers in $\CEFA_i^j$ for $i \in I$ and $ j \in J_i$ can be assumed to be at most exponential, and thus their binary encodings can be stored in polynomial space, one can nondeterministically guess the strings $(w_i)_{i \in I}$, and for each $i \in I$ and $j \in J_i$, simulate the runs of CEFAs $\CEFA_i^j$ on $w_i$, and finally evaluate $\phi$ with the register values after all $\CEFA_{i}^{j}$ accept, in polynomial space. From Savitch's theorem \cite{complexity-book}, we conclude that the {\lasat} problem for monotonic CEFAs is in {\pspace}. This concludes the proof of the proposition.
+\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Example of {\tt urlXssSanitise(url)} for the decision procedure} \label{app:urlexample}
+
+%\begin{example}
+	Consider the program $S$ associated with {\tt urlXssSanitise(url)} in Section~\ref{exmp:running}.
+	%\[
+	%\begin{array}{l}
+	%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+	%\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
+	%\end{array}
+	%\] 
+	We show how to decide its path feasibility. % of $S$. 
+	\begin{description}
+		\item[Step I.]   Vacuous since $S$ contains only atomic assertions already. %neither disjunction nor conjunction.
+		%
+		\item[Step II.] Nondeterministically choose to replace $\indexof_\#(\mathtt{url1}, 0)$ with $-1$ and add $\ASSERT{\mathtt{url1} \in \NFA_{\overline{\Sigma^*\#\Sigma^*}}}$ to $S$.  
+		%
+		\item[Step III.] Replace $\length(\mathtt{url1})$ with $i'_1$ and add $\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}$ to $S$, moreover, replace $\indexof_?(\mathtt{url1}, 0)$ with $i'_3$ and add $\ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}$ to $S$, where $i'_1, i'_2, i'_3$ are fresh integer variables. Then we get the following program (still denoted by $S$), 
+		\[ 
+		\begin{array}{l}
+		\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+		\ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+		\mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+		\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+		\mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+		\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  \\
+		\ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}; \\
+		\ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}.
+		\end{array}
+		\]
+		%
+		\item[Step IV.] Since there is no CEFA constraints for $\mathtt{url2}$, removing the last assignment statement of $S$, i.e. $\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}$, is easy and in this case we add no statements to $S$. After this, $\mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1})$ becomes the last assignment statement. Suppose $\NFA'=(Q', \Sigma, \delta', I', F')$ is an NFA representing $(\replaceall_{\mathtt{script},\ \varepsilon})^{-1}_\emptyset(\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*}))$, namely, the pre-image of $\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*})$ under $\replaceall_{\mathtt{script},\ \varepsilon}$. Then we remove this assignment statement and add $\ASSERT{\mathtt{querfrag1 \in \NFA'}}$, resulting into the following program
+		\[ 
+		\begin{array}{l}
+		\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+		\ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+		\mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+		\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+		%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+		%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+		\ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
+		\ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'}.
+		\end{array}
+		\]
+		
+		From Example~\ref{exm:pre-image}, we know that $\substring^{-1}_\emptyset(\Lang(\NFA'))$ can be represented by some CEFA $\cB=(Q'', R'', \delta'', I'', F'')$ with $Q''= Q' \times \{p_0,p_1,p_2\}$ and $R''=(r'_{1,1}, r'_{1,2})$ (where $r'_{1,1}$ and $r'_{1,2}$ are fresh integer variables). Then we remove $\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos})$, add $\ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1}= qmarkpos}}; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}$, and get the following program
+		\[ 
+		\begin{array}{l}
+		\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+		\ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+		\mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+		%   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+		%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+		%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+		\ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
+		\ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+		\ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'};\\
+		\ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1} = qmarkpos} }; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}.
+		\end{array}
+		\]
+		We can continue the process until the problem contains no assignment statement.
+		%
+		\item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
+	\end{description}
+%\end{example}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}\label{app:case-split-semantics}
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+    $\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
+  \KwResult{$(active, arith, \mathit{funApps})$\newline}
+  
+\For{each $\indexof_v(x, i) \in \mathcal{I}_1$}
+		{
+			$arith \leftarrow arith[\indexof_v(x, 0)/\indexof_v(x,i)] \wedge i < 0$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_2$}
+		{
+			$active \leftarrow active \cup \{x \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i < 0$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_3$}
+		{
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge \length(x)$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_4$}
+		{
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x)$\;
+		}
+		\For{each $\indexof_v(x, i) \in \mathcal{I}_5$}
+		{
+			choose fresh variables $y$ and $j$\;
+			$active \leftarrow active \cup \{y \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
+			 $\mathit{funApps} \leftarrow \mathit{funApps} \cup \{y:=\substring(x, i, j)\}$\;
+		}		
+\caption{$\mathit{indexofCaseSplit}$ for case splits in the semantics of $\indexof_v$}\label{alg:indexof}
+\end{algorithm}
+
+\vspace{1cm}
+
+\begin{algorithm}[htbp]
+  \small
+  \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+    $\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
+  \KwResult{$(active, arith, \mathit{funApps})$\newline}
+
+  		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
+		{
+			 $arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
+		}
+		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_2$}
+		{
+			 choose a fresh integer variable $i'$\;
+			 $arith \leftarrow arith \wedge i \ge 0 \wedge i \le \length(x) \wedge i+j > \length(x) \wedge i' = \length(x)-i$\;
+			 $\mathit{funApps} \leftarrow \mathit{funApps}[y:=\substring(x, i, i')/y:=\substring(x, i, j)]$\;
+		}
+		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_3$}
+		{
+			 $arith \leftarrow arith \wedge i < 0$\;
+			 $active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
+			 $\mathit{funApps} \leftarrow \mathit{funApps} \setminus \{y:=\substring(x, i, j)\}$\;		 
+		}
+\caption{$\mathit{substringCaseSplit}$  for case splits in the semantics of $\substring$}\label{alg:substring}
+\end{algorithm}
+
+
+
+
+
+%%%%%% The proof of Theorem~\ref{thm-la-sat-cefa} is removed%%%%%%%%%%
+%%%%%% The proof of Theorem~\ref{thm-la-sat-cefa} is removed%%%%%%%%%%
+%%%%%% The proof of Theorem~\ref{thm-la-sat-cefa} is removed%%%%%%%%%%
+%%%%%% The proof of Theorem~\ref{thm-la-sat-cefa} is removed%%%%%%%%%%
+\hide{
+\section{Proof of Theorem~\ref{thm-la-sat-cefa}} \label{appendix:thm-la-sat-cefa}
+
+For a $k$-cost-enriched language $L$, we define 
+\[
+\prjnum(L) = \left\{(n_1, \cdots, n_k) \in \Int^k \mid \mbox{ there exist } w \in \Sigma^*.\ (w,(n_1,\cdots,n_k)) \in L \right\}.
+\]
+
+\begin{lemma}\label{lem-cefa-la}
+	Let $\CEFA=(Q, \Sigma, R, \delta, I, F)$ be a CEFA with $R= (r_1, \cdots,  r_k)$. Then an existential LIA formula $\phi_\CEFA(r_1, \cdots, r_k)$ such that $\cM(\phi_\CEFA)= \prjnum(\Lang(\CEFA))$ can be computed in linear time from $\CEFA$.
+\end{lemma}
+
+\begin{proof}
+	Suppose $\delta = \{\tau_1, \cdots, \tau_l\}$ such that $\tau_j = (q_j, a_j, q'_j, \eta_j)$ and $\eta_j(r_i) =  c_{j,i}$ for every $j \in [l]$ and $i \in [k]$.
+	
+	From the results on NFAs (Theorem~1 in \cite{SSMH04}), we know that for each pair of states $(q, q') \in I \times F$,  an existential LIA formula $\phi_{q,q'}(m_1, \cdots, m_l)$ can be computed in linear time such that $\cM(\phi_{q,q'})$ is the set of Parikh images of the runs of $\NFA$ starting from $q$ and ending at $q'$, where the variables $m_1, \cdots, m_l$ represent the numbers of occurrences of $\tau_1,\cdots, \tau_l$ respectively in the run. 
+	
+	Then the desired existential LIA formula $\phi_\NFA$ is constructed as follows,
+	\[\phi_\NFA(r_1, \cdots, r_k) ::= \bigvee \limits_{(q,q') \in I \times F} \exists m_1 \cdots \exists m_l.\ \left(\varphi_{q,q'}(m_1, \cdots, m_l) \wedge \bigwedge \limits_{i \in [k]} r_i = \sum \limits_{j \in [l]} c_{j,i} m_j \right).\]
+\end{proof}
+
+We are ready to prove Theorem~\ref{thm-la-sat-cefa}.
+\begin{proof}[Proof of Theorem~\ref{thm-la-sat-cefa}]
+	The NP lower bound follows from the fact that the satisfiability problem of existential LIA formulas is NP-complete \cite{BT76,GS78} (see also \cite{Haase18}).
+	
+	For the upper bound, suppose that $\phi$ is a quantifier-free LIA formula and $\CEFA_1,\cdots,\CEFA_m$ are CEFAs such that 
+	\begin{itemize}
+		\item	$\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$  with $R_i = (r_{i, 1}, \cdots, r_{i, k_i})$, for every $i\in [m]$,
+		\item $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+		\item the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$.
+	\end{itemize}
+	From Lemma~\ref{lem-cefa-la}, for every $i \in [m]$, an existential LIA formula $\phi_{\CEFA_i}(r_{i,1}, \cdots, r_{i, k_i})$ such that $\cM(\phi_{\CEFA_i})= \prjnum(\Lang(\CEFA_i))$ can be computed in linear time from $\CEFA_i$.
+	
+	Then the satisfiability of $\phi$ w.r.t. $\CEFA_1,\cdots, \CEFA_m$ is reduced to the satisfiability problem of the  following existential LIA formula
+	\[
+	\phi' \equiv \phi \wedge \bigwedge \limits_{i \in [m]} \phi_{\CEFA_i}(r_{i,1}, \cdots, r_{i, k_i}).
+	\]
+	Since the size of $\phi'$ is linear in the size of $\phi$ and those of $\CEFA_1,\cdots,\CEFA_m$, and the satisfiability problem of existential LIA formulas is NP-complete, we conclude that the satisfiability of $\phi$ w.r.t.  $\CEFA_1,\cdots,\CEFA_m$ can be decided in nondeterministic polynomial time.
+	
+	It remains to prove the correctness of the reduction, namely, $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$ iff $\phi'$ is satisfiable.
+	
+	\smallskip
+	
+	\noindent \emph{``Only if'' direction}. Suppose $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$. Then there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ is evaluated to $true$ and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$. For every $i \in [m]$, from $\cM(\phi_{\CEFA_i})=\prjnum(\Lang(\CEFA_i))$, we know that $\theta(R_i)$ satisfies $\phi_{\CEFA_i}$, namely, $\phi_{\CEFA_i}[\theta(R_i)/R_i]$ is evaluated to $true$. Therefore, the assignment $\theta$ makes $\phi'$ satisfied.
+	
+	\smallskip 
+	
+	\noindent \emph{``If'' direction}. Suppose $\phi'$ is satisfiable. Then there is an assignment $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ such that $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$, $\phi_{\CEFA_1}[\theta(R_1)/R_1]$, $\cdots$, and $\phi_{\CEFA_m}[\theta(R_m)/R_m]$ are all evaluated to $true$. For every $i \in [m]$, from $\cM(\phi_{\CEFA_i})=\prjnum(\Lang(\CEFA_i))$,  we know that there is a string $w_i$ such that $(w_i, \theta(R_i)) \in \Lang(\CEFA_i)$. From Definition~\ref{def-la-sat-cefa}, we conclude that $\phi$ is satisfiable w.r.t. $\CEFA_1,\cdots, \CEFA_m$.
+\end{proof}
+}
+%%%%%% The proof of Theorem~\ref{thm-la-sat-cefa} is removed%%%%%%%%%%
+%%%%%% The proof of Theorem~\ref{thm-la-sat-cefa} is removed%%%%%%%%%%
+

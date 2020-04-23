@@ -1,0 +1,425 @@
+%!TEX root = main.tex
+
+%related work
+%
+%SLENT: \cite{WC+18}
+%
+%CVC4: \cite{cvc4}
+%
+%TRAU, Z3-TRAU, TRAU+: \cite{Abdulla17,AbdullaA+19}
+%
+%Z3-STR: \cite{Z3-str}
+%
+%OSTRICH: \cite{CHL+19}
+ 
+
+\paragraph*{Related work.}
+The discussion will mainly focus on (1) theoretical results in terms of decidability; %practical (but generally incomplete) approaches used in string solvers.   
+and (2) practical (but generally incomplete) string solvers.  We restrict our attention to the results and solvers for string constraints involving the integer data type.
+%and  heuristics and implementation.
+
+\smallskip 
+\noindent\textbf{Theoretical results.}
+%We mainly focus on the results for string constraints involving the integer data type.
+%
+%
+%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+\hide{
+The research on the theory of strings with concatenation %has a long history, largely 
+was motivated by %. This research programme builds on
+the question of solving satisfiability of word equations (i.e., equations containing concatenation of string constants and variables). Makanin showed decidability \cite{Makanin}, but the upper bound was only improved to PSPACE about 25 years later \cite{P04},    %using a word compression technique. 
+a simpler algorithm of which was given recently \cite{Jez17}. %using the recompression technique. 
+The best lower bound for this problem is still NP, and closing this complexity gap is a long-standing open problem. %Decidability
+%
+The PSPACE upper bound stands %can be retained 
+in the presence of regular constraints (e.g., see \cite{Schulz}). 
+%Even further, the existential theory
+%of concatenation with regular constraints was shown to be decidable using the technique of \cite{buchi}.
+%
+In practice, it is common for a string-manipulating program to contain multiple operations (e.g., $\replaceall$) that may be well beyond concatenation, which has motivated research on more expressive string constraint languages.   %, and so a path feasibility solver nonetheless needs to be able to
+%handle them. 
+Unfortunately, it takes very little for %a string constraint language 
+them to become undecidable \cite{LB16}. For instance, when finite transducers are allowed, checking the satisfiability of a simple formula of the form $\NFT(x, x)$ for a given finite transducer $\NFT$, can easily encode the Post Correspondence Problem, and therefore is undecidable.
+%When applying string constraint solving to analysis of string manipulating programs, one common practice is to use dynamic symbolic execution, which would result in constraints with complex operations which are well beyond concatenation. In the last few decades much research suggests that
+%
+%Despite the undecidability of allowing various operations in string constraints,
+%
+%Fortunately, 
+
+Hence,  recent research endeavors %years have seen the possibility of recovering 
+to recover decidability of some string constraint languages with multiple string operations, while retaining applicability for constraints that
+arise in practical symbolic execution applications. This is mainly done by imposing syntactic restrictions along the way in which string equality can be used in the constraints. This includes acyclicity \cite{Abdulla14,BFL13}, solved form \cite{Vijay-length}, and straight-line \cite{LB16,HJLRV18,CCH+18}.
+Particularly related to the present work, the straight-line logic \cite{LB16}  unified the earlier logics by allowing concatenation, regular constraints, rational
+transductions. %, and length and letter-counting functions. 
+It was further extended %pointed out by 
+%that this logic cannot express the 
+by a more general form of replaceAll functions with the replacement string provided as a
+\emph{variable} \cite{CCH+18} where it is shown that the new straight-line logic %(with the more general replaceAll function and concatenation) 
+is decidable.  Furthermore, two general semantic conditions are identified  \cite{CHL+19}  which together entail the decidability of path
+feasibility. In particular, they are satisfied by a multitude of string operations
+including concatenation, one-way and two-way finite-state transducers, (general) replaceAll functions
+% (where the
+%replacement string could contain variables), 
+string-reverse functions, regular-expression matching, etc. 
+%and some
+%(restricted) forms of letter-counting/length functions. 
+}
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%%%%%%%%%%%% results for pure strings removed %%%%%%%%%%%%%
+%
+Recall that the decidability of the string theory of concatenation %word equations 
+and linear arithmetic in length functions is a long-standing open problem. Ganesh et al.~\cite{Vijay-length} showed that if the word equations are in a solved form, then the satisfiability of this string theory becomes decidable. On the other hand, Ganesh and Berzish proved that the satisfiability problem becomes undecidable if the string theory is extended with the string-number conversion~\cite{GB16}. Moreover, Lin and Majumdar, as well as Loc and He, have investigated decidable fragments of %the string theory of 
+quadratic word equations, linear arithmetic with the length function, and regular constraints~\cite{LinM18,LeH18}.
+
+Recently, researchers have also explored the decidability of string theories with more complex string operations and the integer data type. Lin and Barcelo showed that the straight-line string logic with concatenation, finite transducers, and regular constraints, is decidable, even when extended with length and letter-counting functions, as well as $\indexof$ and $\charat$ functions~\cite{LB16}. 
+%\zhilin{say a few more words about its relationship with this paper} \tl{trial, please improve}
+This fragment is subsumed by our language. Moreover, the decision procedure in~\cite{LB16} is based on a ``global'' construction of automata, which is rather difficult to implement (as far as we know, there is no implementation of the procedure therein); in contrast, our decision procedure takes a ``local'' approach for step-by-step backward computation of pre-images, which is vital for implementation. 
+However, Chen et al.\ showed that, although the straight-line string logic with the general form of $\replaceall$ (where the replacement parameter can be string variables) is decidable, it would become undecidable when extended with any of the length, $\indexof$, $\charat$ functions~\cite{CCH+18}. 
+This result implies that the $\replaceall$ function considered in this paper must not be in the general form, namely, it should avoid string variables in the replacement string, in order to stay inside the decidability boundary. 
+
+
+%, which was never studied in the context of verification and program analysis. Chen et al.
+%proceeded by showing that a new straight-line logic with the more general replaceAll function and
+%concatenation is decidable, but becomes undecidable when the length function is permitted.
+
+%\cite{CHL+19} In this paper we provide two general semantic conditions which together ensure the decidability of path
+%feasibility: (1) each assertion admits regular monadic decomposition (i.e. is an effectively recognisable relation),
+%and (2) each assignment uses a (possibly nondeterministic) function whose inverse relation preserves regularity.
+%We show that the semantic conditions are expressive since they are satisfied by a multitude of string operations
+%including concatenation, one-way and two-way finite-state transducers, replaceAll functions (where the
+%replacement string could contain variables), string-reverse functions, regular-expression matching, and some
+%(restricted) forms of letter-counting/length functions. The semantic conditions also strictly subsume existing
+%decidable string theories (e.g. straight-line fragments, and acyclic logics), and most existing benchmarks (e.g.
+%most of Kaluza’s, and all of SLOG’s, Stranger’s, and SLOTH’s benchmarks). Our semantic conditions also yield
+%a conceptually simple decision procedure, as well as an extensible architecture of a string solver in that a user
+%may easily incorporate his/her own string functions into the solver by simply providing code for the pre-image
+%computation without worrying about other parts of the solver. Despite these, the semantic conditions are
+%unfortunately too general to provide a fast and complete decision procedure. We provide strong theoretical
+%evidence for this in the form of complexity results. To rectify this problem, we propose two solutions. Our
+%main solution is to allow only partial string functions (i.e., prohibit nondeterminism) in condition (2). This
+%restriction is satisfied in many cases in practice, and yields decision procedures that are effective in both
+%theory and practice. Whenever nondeterministic functions are still needed (e.g. the string function split),
+%our second solution is to provide a syntactic fragment that provides a support of nondeterministic functions,
+%and operations like one-way transducers, replaceAll (with constant replacement string), the string-reverse
+%function, concatenation, and regular-expression matching. We show that this fragment can be reduced to an
+%existing solver SLOTH that exploits fast model checking algorithms like IC3.
+
+
+%These results have been extensively extended recently \cite{LB16, CCH+18, CHL+19}. In particular, 
+%The replace-all operator cannot be expressed by the concatenation operator alone. For 
+%this reason, our decidability of the fragment of $\strline[\replaceall]$ cannot
+%be derived from the results from the theory of concatenation alone.
+
+%Our work is closely related to solving word equations, which are a conjunction of equations of $v=w$, where $v, w$ are concatenation of string constants and variables. The computational complexity of this problem remains unknown, with the best lower and upper bounds being NP and PSPACE respectively. Makanin %refuted a conjecture 
+%showed, perhaps surprisingly, that the problem is decidable \cite{Makanin}, and %Plandowski's  on the decidability and complexity of satisfiability for word equations, i.e., 
+%Plandowski explored an approach of compression and proposed a PSPACE algorithm \cite{P04}.  This is the best bound up to date, though a simpler PSPACE algorithm with smaller space requirement (nondeterministic $O(n \log n)$ space) was proposed by Jez \cite{J16}, based on compression. Very recently, Jez \cite{J17} further improves the complexity to (nondeterministic) $O(n )$, i.e.,  linear space. 
+
+ 
+%String data types have a close relationship with integer data types. Perhaps in its simplest form, 
+%length constraints have been  studied in the context of string constraint solving, though much less is known comparing
+%As mentioned before, 
+%Integer constraints, mainly in the form of length constraints, have been considered as well, but their theory is certainly less developed.  %to the pure string counterparts. For instance, 
+%(As an example, it is still a major open problem whether the theory of concatenation with length constraints is decidable \cite{Vijay-length}.)
+%, though  several extensions of this 
+%theory are undecidable (e.g. with letter counting \cite{buchi} and
+%string-number conversion \cite{GB16}). 
+%
+%In parallel with the research line of allowing more complex string operations but imposing syntactic restrictions, length constraints, as well as some variants, have been considered as well.  For instance, the straight-line logic of \cite{LB16} can be extended length and letter-counting functions while preserving decidability. However,  %it was shown in \cite{LB16} that the length constraints (in fact, letter-counting) can be
+%added to the subclass of $\strline[\replaceall]$ where the pattern/replacement 
+%are constants, while preserving decidability. In contrast, 
+%if we allow variables on the replacement parameters of formulas, 
+%if one insists decidability of path feasibility, the length constraint cannot co-exist with the general form of replaceAll functions because otherwise Hilbert's 10th problem could have been encoded \cite{CCH+18}. %as it was done in \cite{CHL+18}, %in $\strline[\replaceall]$,
+%we can easily encode the  with length (integer) 
+%constraints. In other words, path feasibility becomes undecidable . 
+%In light of this, to retain decidable,  
+%This result shows that the replaceall functions must not use variables in the replacement string in the string constraint language considered in the current paper. 
+%is significantly more expressive regarding the integer data types than the length constraints. 
+%
+%Several decidable restrictions, however,
+%have been proposed including solved form \cite{Vijay-length} and acyclicity 
+%\cite{Abdulla14}, both of which (like straight-line constraint) impose 
+%syntactic restrictions on the way in which string equality can be
+%used in the constraints.
+
+%
+%%\emph{Length constraints} --- i.e. an assertion 
+%%$\varphi(\Len(x_1),\ldots,\Len(x_n))$, where $\varphi$ is a Presburger formula
+%%and $\Len(x_i)$ is an integer variable interpreted as the length of the string
+%%$x_i$ --- have been studied in the context of string solving. 
+%
+%
+%It was shown in \cite{LB16} the decidability of path 
+%feasibility for symbolic
+%executions allowing \FT{} and concatenation in the 
+%assignments, and regular constraints, and length constraints 
+%in the assertions. If we allow the functions
+%$\replaceall_p(sub,rep)$ in the assignments (instead of
+%\FT{}/concatenation) and length constraints as assertions, path
+%feasibility becomes undecidable \cite{CCHLW18}. This also implies undecidability
+%of allowing length constraints in our constraint language with parametric
+%transducers. 
+
+
+
+%Fortunately, decidability can be easily recovered in some
+%cases. One such case is when the length constraints $\varphi$ has only
+%one string variable $x_1$, e.g., $\Len(x_1) > 7$. In this case,
+%$\varphi(\Len(x_1))$ can be turned into a regular constraint $x_1 \in L$ for
+%some $L$. [This is because the set of integer solutions is effectively
+%a finite union of arithmetic progressions $\bigcup_{i=1}^n (a_i + b_i\N)$
+%(where $a_i + b_i\N := \{ a_i + b_in : n \in \N\}$), and each 
+%$\Len(x_i) \in (a_i + b_i\N)$ is equivalent to the regular constraint 
+%$x_i \in \ialphabet^{a_i} (\ialphabet^{b_i})^*$.]
+
+%In fact, this undecidability holds even if we use the unary
+%alphabet $\Sigma = \{a\}$, and that the pattern string is
+%always fixed to the letter $a$.
+
+%Solving word equation was an intriguing problem since the beginning of computer science, investigated
+%initially due to its ties to Hilbert’s 10th problem. Initially it was conjectured that this
+%problem is undecidable, which was disproved by Makanin [10]. At the beginning little attention
+%was given to computational complexity of Makanin’s algorithm and the problem itself; these questions
+%were reinvestigated in the ’90 [6, 18, 9], culminating in the EXPSPACE implementation of
+%Makanin’s algorithm by Gutiérrez [5].
+
+
+%
+%The $\replaceall$ function can be seen as a special, yet expressive, string transformation function, aka string transducer. From this viewpoint, the closest work is~\cite{LB16}, which we discuss extensively in the introduction. Here, we discuss two further 
+%%the $\replaceall$ function is also related to two 
+%recent transducer models: streaming string transducers \cite{AC10} and symbolic transducers \cite{symbolic-transducer}. 
+%
+%A streaming string transducer is a finite state machine where  a finite set of string variables are used to store the intermediate results for output. The $\replaceall(x, e, y)$ term can be modelled by an extension of streaming string transducers \emph{with parameters}, that is, a streaming string transducer which reads an input string (interpreted as the value of $x$), uses $y$ as a free string variable which is presumed to be read-only, and updates a string variable $z$, which stores the computation result, by a string term which may involve $y$. Nevertheless, to the best of our knowledge, this extension of streaming string transducers has not been investigated so far. 
+%
+%Symbolic transducers are an extension of Mealy machine to infinite alphabets by using a variable $cur$ to represent the symbol in the current position, and replacing the input and output letters in transitions with unary predicates $\varphi(cur)$ and terms involving $cur$ respectively. Symbolic transducers can model $\replaceall$ functions \emph{when the third parameter is a constant}. Inspired by symbolic transducers, it is perhaps an interesting future work to consider an extension of the $\replaceall$ function by allowing predicates as patterns. %to sequences of numerical values. 
+%For instance, one may consider the term $\replaceall(x, cur \equiv 0 \bmod 2, y)$ which replaces every even number in $x$ with $y$. %This, however, is not addressed in the current paper. 
+%
+%Finally, the $\replaceall$ function is related to Array Folds Logic introduced by Daca et al \cite{DHK16}. The authors considered an extension of the quantifier-free theory of integer arrays with counting. The main feature of the logic is the \emph{fold} terms, borrowed from the folding concept in functional programming languages. Intuitively, a fold term applies a function to every element of the array to compute an output. If strings are treated as arrays over a finite domain (the alphabet), the $\replaceall$ function can be seen as a fold term. Nevertheless, the $\replaceall$ function goes beyond the fold terms considered in \cite{DHK16}, since it outputs a string (an array), instead of an integer. Therefore, the results in \cite{DHK16} cannot be applied to our setting.
+%============================================================
+\smallskip
+\noindent
+\textbf{Practical solvers.}
+%=============================================================
+%Among them, only Stranger, S3, and S3P support $\replaceall$.  String solvers that support concatenations and the replace-all operator are available. \cite{BTV09,TCJ14,YABI14,S3}
+%
+%\cite{BTV09} considered an efficient finite model finding method for string constraints. They develop a two-tier finite model finding procedure. First, an integer abstraction of string constraints are passed to an SMT (Satisfiability Modulo Theories) solver. The abstraction is either unsatisfiable, or the solver produces a model that fixes lengths of enough strings to reduce the entire problem to be finite domain. The resulting fixed-length string constraints are then solved in a second phase. 
+%
+%In the Stranger tool, %Verifying string manipulating programs is a crucial problem in computer security. String operations are used extensively within web applications to manipulate user input, and their erroneous use is the most common cause of security vulnerabilities in web applications. We 
+%an automata-based approach was provided for symbolic analysis of PHP programs, where two different semantics $\replaceall$ were considered, namely, the leftmost and longest matching as well as the leftmost and shortest matching. Nevertheless, they focused on the abstract-interpretation based analysis of PHP programs and provided an \emph{over-approximation} of all the possible values of the string variables at each program point. Therefore, their string constraint solving algorithm is \emph{not} an exact decision procedure. In contrast, we provided a decision procedure for the straight-line fragment with the rather general $\replaceall$ function, where the pattern parameter can be arbitrary regular expressions and the replacement parameter can be variables. In the latter case,  we consider the leftmost and longest semantics mainly for simplicity, and the decision procedure can be adapted to the leftmost and shortest semantics easily.
+%
+%
+%The S3 and S3P tools also support the $\replaceall$ function, where some
+%progressive searching strategies were provided to deal with the non-termination
+%problem caused by the recursively defined string operations (of which 
+%$\replaceall$ is a special case). Nevertheless, the solvers are 
+%incomplete as reasoning about unbounded strings defined recursively is in 
+%general an undecidable problem.
+% 
+%Theoretical algorithms  (e.g. Makanin's algorithm \cite{Makanin}) typically do not directly lead to  practical solvers. At the same time, the classes of constraints that are required in practice sometimes require string operations that are not covered by decidable string constraint languages.
+ %(e.g.~length constraints, replaceall, 
+ %transducers, etc.). 
+%For these reasons, 
+%There is a large amount of work %on heuristics for 
+%developing 
+Many practical (often incomplete) string constraint solvers have been developed, where various heuristics are used to deal with strings and integers. 
+%A non-exhaustive list includes 
+%earlier work \cite{BTV09,RVG12} which integrated string constraint solving 
+%with respective dynamic symbolic execution engines, Saner \cite{Saner08}, 
+
+The solvers Kaluza~\cite{Berkeley-JavaScript} and Hampi~\cite{HAMPI}  bound the lengths of strings and reduce the problem to the satisfiability of boolean formulas or formulae in the theory of bit vectors. Sushi~\cite{sushi} and Stranger~\cite{YABI14,Stranger} use finite automata to over approximate sets of values of string variables. Moreover, SLOG and {\slent}  use symbolic approaches to enhance the scalability of the string constraint solving process \cite{fang-yu-circuits,WC+18}. In contrast, Trau as well as its variants {\zthreetrau} and {\trauplus} utilise flat automata to under-approximate sets of values of string variables \cite{Abdulla17,AbdullaACDHRR18-trau,AbdullaA+19,Z3-trau}.
+%
+Instead of using automata, Z3/Z3-str/Z3-str2/Z3-str3~\cite{BTV09,Z3,Z3-str,Z3-str2,Z3-str3} and {\cvc}~\cite{cvc4,ReynoldsWBBLT17} apply rewrite or algebraic rules to solve the string constraints.
+%
+Furthermore, S3 and S3P rely on recursive definitions to represent string functions and constraints, which are then unfolded during the constraint solving process \cite{S3,TCJ16}.
+%
+Finally, ACO-Solver combined the ant colony optimisation meta-heuristic with automata-based string constraint solvers Sushi~\cite{sushi},  in order to support reasoning about complex string operations related to XSS vulnerabilities \cite{ThomeSBB17}.
+%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+\hide{
+A large body of these tools provide support for complex string operations, but only offer relatively limited support for integer constraints (e.g., only the length function or simple variants thereof). Moreover, most of them rely heavily on heuristics which are short of theoretical guarantees. Some practical heuristics include bounding string lengths (e.g., \cite{HAMPI,Berkeley-JavaScript,BTV09}),  induction, overapproximations \cite{Stranger,YABI14}, interpolation \cite{Abdulla14}, and flat automata \cite{Abdulla17}, context-dependent simplification \cite{ReynoldsWBBLT17}, to name a few. 
+Focusing on semi-algorithms also allows highly expressive (but undecidable) 
+string  constraint languages, e.g., recursively defined functions \cite{S3,TCJ16}; sometimes hybrid constraint solving procedures based on, for instance, 
+ant colony optimization meta-heuristic \cite{ThomeSBB17} is utilized.  
+%
+Recently, the study of decidability of string constraints has also resulted in automata-theoretic algorithms that are amenable to implementation. For instance, the tool Norm supports solving  acyclic logic with concatenation, regular constraints, and length constraints \cite{Abdulla14}; %SLOG \cite{fang-yu-circuits},  SLENT \cite{WC+18}, 
+{\sloth} \cite{HJLRV18} and {\ostrich} \cite{CHL+19} support straight-line logic with finite transducers (or
+replaceall), concatenation, and regular constraints, but currently no support for even the length constraints. %The gap is filled by 
+The current work builds on the solver {\ostrich}, but significantly extends its power of handling integer related constraints %, 
+implementing  solving techniques for the most expressive \emph{decidable} string constraints involving both strings and integers. 
+}
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+%%%%%%%%%%%%%%%%%%%%%%%% the original practical solver related work by taolue 
+
+%but focuses on integer constraints which were unavailable. 
+
+%Despite the excellent performance of some of these solvers on several existing benchmarks, a potential risk is that these heuristic based approaches may not be generalized well to further practical cases. After all,  string constraint solving is still a research area in its infancy. One implication is that the currently insufficient range of benchmarking may not be representative in the growing number of application of string constraints in, e.g., program verification and security analysis. 
+
+%there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g.,
+%in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that
+%string constraint solving is a research area in its infancy with an insufficient range of benchmarking
+%examples to convince us that if a string solver works well on existing benchmarks, it will also work
+%well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon
+%which a practical solver could further improve and optimise.
+
+
+%Constraint solving is an essential technique for
+%detecting vulnerabilities in programs, since it can reason about
+%input sanitization and validation operations performed on user
+%inputs. However, real-world programs typically contain complex
+%string operations that challenge vulnerability detection. State-ofthe-art string constraint solvers support only a limited set of
+%string operations and fail when they encounter an unsupported
+%one; this leads to limited effectiveness in finding vulnerabilities.
+%In this paper we propose a search-driven constraint solving
+%technique that complements the support for complex string
+%operations provided by any existing string constraint solver. Our
+%technique uses a hybrid constraint solving procedure based on the
+%Ant Colony Optimization meta-heuristic. The idea is to execute
+%it as a fallback mechanism, only when a solver encounters a
+%constraint containing an operation that it does not support.
+%We have implemented the proposed search-driven constraint
+%solving technique in the ACO-Solver tool, which we have evaluated
+%in the context of injection and XSS vulnerability detection
+%for Java Web applications. 
+%We have assessed the benefits and
+%costs of combining the proposed technique with two state-ofthe-art constraint solvers (Z3-str2 and CVC4). The experimental
+%results, based on a benchmark with 104 constraints derived from
+%nine realistic Web applications, show that our approach, when
+%combined in a state-of-the-art solver, significantly improves the
+%number of detected vulnerabilities (from 4.7% to 71.9% for Z3-
+%str2, from 85.9% to 100.0% for CVC4), and solves several cases
+%on which the solver fails when used stand-alone (46 more solved
+%cases for Z3-str2, and 11 more for CVC4), while still keeping the
+%execution time affordable in practice
+%
+%
+%Trau \cite{Abdulla17} integrates SMT
+%solvers with the CEGAR framework using flat automata to over
+%and under approximation the solution set.
+%Our work particularly aims to support integer constraints arising from symbolic execution.  
+%\cite{ReynoldsWBBLT17}
+%Efficient reasoning about strings is essential to a growing number of security and verification applications. We describe satisfiability checking techniques in an extended theory of strings that includes operators commonly occurring in these applications, such as   𝖼𝗈𝗇𝗍𝖺𝗂𝗇𝗌,𝗂𝗇𝖽𝖾𝗑_𝗈𝖿  and   𝗋𝖾𝗉𝗅𝖺𝖼𝖾 . We introduce a novel context-dependent simplification technique that improves the scalability of string solvers on challenging constraints coming from real-world problems. Our evaluation shows that an implementation of these techniques in the SMT solver cvc4 significantly outperforms state-of-the-art string solvers on benchmarks generated using PyEx, a symbolic execution engine for Python programs. Using a test suite sampled from four popular Python packages, we show that PyEx uses only   41%  of the runtime when coupled with cvc4 than when coupled with cvc4’s closest competitor while achieving comparable program coverage.
+ 
+%Some incomplete heuristics were developed that could work in practice,
+%This is one reason why 
+%Some string solving practitioners opted to support more string
+% operations and settle with incomplete solvers (e.g. with no guarantee of termination) that could
+% still solve some constraints that arise in practice. 
+ 
+
+ 
+ 
+ 
+% For example, the tool S3  \cite{S3,TCJ16} supports general
+%recursively-defined predicates and uses a number of incomplete heuristics to detect unsatisfiable
+%constraints. As another example, the tool Stranger \cite{Stranger,YABI14}
+%supports concatenation,
+%replaceAll (but with both pattern and replacement strings being constants), and regular constraints,
+%and performs widening (i.e. an overapproximation) when a concatenation operator is seen in the
+%analysis. 
+
+%Despite the excellent performance of some of these solvers on several existing benchmarks,
+%there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g.,
+%in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that
+%string constraint solving is a research area in its infancy with an insufficient range of benchmarking
+%examples to convince us that if a string solver works well on existing benchmarks, it will also work
+%well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon
+%which a practical solver could further improve and optimise.
+ 
+%============== benchmarks ========================= 
+%We also mention some interesting benchmarks that are available for string constraints. The first one is Kaluza benchmarks \cite{Berkeley-JavaScript}, which contain
+%string constraints with concatenation, regular constraints, and length constraints. It was shown in \cite{Vijay-length} that almost all the constraints are already in \emph{solved form} (in particular, also straight-line). Some of these length constraints are also expressible as regular constraints.
+%%
+%The second is SLOG benchmarks \cite{fang-yu-circuits}, which contain string constraints with concatenation, a restricted class of replaceall similar to what are considered in the current paper \tl{check this later}, and regular constraints. 
+%%
+%The third is SLOTH benchmarks \cite{HJLRV18}, which contains string constraints with concatenation, finite transducers, and regular constraints. 
+%% 
+%The fourth is OSTRICH benchmarks \cite{CHL+19}, which contains Transducer
+%%
+%%The first set of benchmarks we call Transducer. It combines the benchmark
+%%sets of Stranger [Yu et al. 2010] and the mutation XSS benchmarks of [Lin and Barceló 2016]. The
+%%first (sub-)set appeared in [Holík et al. 2018] and contains instances manually derived from PHP
+%%programs taken from the website of Stranger [Yu et al. 2010].
+%%
+%The fifth is {\pyexbench} suite from \cite{ReynoldsWBBLT17}, This suite is derived from PyEx, a symbolic executor for Python programs. The {\pyexbench} suite was generated by the CVC4 group on four popular Python packages: httplib2, pip, pymongo, and requests. These instances use regular constraints, concatenation, $\length$, $\substring$, and $\indexof$ functions. 
+%
+%
+%Moreover, the {\pyexbench} suite is further divided into the three sub-suites: {\pyextdbench} comprising \zhilin{xxx} instances, {\pyexztbench} comprising \zhilin{xxx} instances, and {\pyexzzbench} comprising \zhilin{xxx} instances.
+ %related work
+ %
+% SLENT: \cite{WC+18}
+% Strings with length constraints are prominent in software security analysis. Recent endeavors have made significant progress in developing constraint solvers for strings and integers. Most prior methods are based on deduction with inference rules or analysis using automata. The former may be inefficient when the constraints involve complex string manipulations such as language replacement; the latter may not be easily extended to handle length constraints and may be inadequate for counterexample generation due to approximation. Inspired by recent work on string analysis with logic circuit representation, we propose a new method for solving string with length constraints by an implicit representation of automata with length encoding. The length-encoded automata are of infinite states and can represent languages beyond regular expressions. By converting string and length constraints into a dependency graph of manipulations over length-encoded automata, a symbolic model checker for infinite state systems can be leveraged as an engine for the analysis of string and length constraints. Experiments show that our method has its unique capability of handling complex string and length constraints not solvable by existing methods.
+% %
+ %CVC4: \cite{cvc4}
+ %
+ 
+ %
+ %Z3-STR: \cite{Z3-str}
+ %
+ %: \cite{CHL+19}
+ 
+% \begin{tabular}{|c|c|c|}
+% 	Tool                         &                  Benchmark                 &               Support \\
+% 	\hline
+% 	SLOG                     &                  SLOG                         &\\
+% 	SLENT                    &                  SLOG                         &\\
+% 	Trau \\
+% 	
+% \end{tabular}
+ 
+
+ 
+ %=============================================================
+
+ %None of these techniques, however,
+ %would immediately lead to a fast string solver for string constraints with 
+ %parametric transducers as primitive operations.
+ %(e.g. global representations
+ %of solutions employed in \cite{HJLRV18} will not work for parametric
+ %transducers). 
+ 
+% We leave the development of practical heuristics for our more expressive 
+% constraint language for future work.
+ 
+% \OMIT{
+% 	The development of theory and implementation of string solvers of course
+% 	has to go hand in hand with the development of string constraint benchmarks.
+% }
+
+
+ %Most of these benchmarking examples are expressible in our
+% decidable constraint language.
+% \OMIT{
+% 	In this paper, we have described an application of
+% 	string constraints for modelling string functions required for context-sensitive
+% 	auto-sanitisation web templating \cite{SSS11}. An immediate future research 
+% 	direction is to develop string constraint benchmarks based on this application.
+% }
+% 
+ %Some of these techniques utilise the power of
+ %alternating automata (over bitvectors)
+
+%The semantic conditions also strictly subsume existing
+%decidable string theories (e.g. straight-line fragments, and acyclic logics), and most existing benchmarks (e.g.
+%most of Kaluza’s, and all of SLOG’s, Stranger’s, and SLOTH’s benchmarks). Our semantic conditions also yield
+%a conceptually simple decision procedure, as well as an extensible architecture of a string solver in that a user
+%may easily incorporate his/her own string functions into the solver by simply providing code for the pre-image
+%computation without worrying about other parts of the solver. Despite these, the semantic conditions are
+%unfortunately too general to provide a fast and complete decision procedure. We provide strong theoretical
+%evidence for this in the form of complexity results. To rectify this problem, we propose two solutions. Our
+%main solution is to allow only partial string functions (i.e., prohibit nondeterminism) in condition (2). This
+%restriction is satisfied in many cases in practice, and yields decision procedures that are effective in both
+%theory and practice. Whenever nondeterministic functions are still needed (e.g. the string function split),
+%our second solution is to provide a syntactic fragment that provides a support of nondeterministic functions,
+%and operations like one-way transducers, replaceAll (with constant replacement string), the string-reverse
+%function, concatenation, and regular-expression matching. We show that this fragment can be reduced to an
+%existing solver SLOTH that exploits fast model checking algorithms like IC3.
+
+

@@ -1,0 +1,268 @@
+%!TEX root = main.tex
+
+We consider symbolic execution of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules, 
+%
+\[
+\begin{array}{l c l}
+S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=\NFT(y) \mid \\
+& & x := \substring(y, t_1, t_2)  \mid \ASSERT{\varphi}  \mid S;S, \\
+\varphi &::= & x \in \NFA \mid t_1\ o\ t_2 \mid \varphi \vee \varphi \mid \varphi \wedge \varphi,
+\end{array}
+\]
+where $e$ is a regular expression over $\Sigma$, $u \in \Sigma^*$, $\NFT$ is an FFT,  $\NFA$ is an NFA, $o \in \{=, \neq, \ge, \le, >, <\}$, and $t_1,t_2$ are integer terms defined by the following rules,
+\[
+t  ::= i \mid c \mid \length(x) \mid \indexof_v(x, i) \mid  ct  \mid t + t, \mbox{ where } c \in \Int, v \in \Sigma^+.
+\]
+%
+%\[
+%\begin{array}{l c l}
+%t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
+%S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=\NFT(y) \mid \\
+%& & x := \substring(y, t_1, t_2)  \mid S;S, \\
+%A_r & ::= & x \in \NFA \mid A_r \wedge A_r,\\
+%A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,\\
+%A & ::= &   A_r \wedge A_i,
+%\end{array}
+%\]
+We require that the string-manipulating programs are in {\bf single static assignment (SSA) form}. Note that SSA form imposes restrictions only on the assignment statements, but not on the assertions. %conditional statements. 
+%\tl{what does conditional statement mean? you mean assertions?}\zhilin{yes, I mean assertions. But actually they are not assertions we usually talk about, they are more like the conditions in the if-the-else statement.}
+A string variable $x$ in an {\slint} program $S$ is called an \emph{input string variable} of $S$ if it does not appear on the left-hand side of the assignment statements of $S$. A variable in $S$ is called an \emph{input variable}  if it is either an input string variable or an integer variable.
+
+\paragraph*{Semantics.}
+The semantics of {\slint} is explained as follows. %mostly%self-explanatory, 
+%if we know the semantics of the string-manipulating functions in {\slint}, 
+%defined below. \tl{the semantics is not quite formal, so we may just **explain** them}
+\begin{itemize}
+\item The assignment $x:=y \cdot z$ denotes that $x$ is the concatenation of two strings $y$ and $z$.
+
+\item The assignment $x:=\replaceall_{e,u}(y)$ denotes that $x$ is the string obtained by replacing all occurrences of $e$ in $y$ with $u$, where the \emph{leftmost and longest} matching of $e$ is used. For instance, $\replaceall_{(ab)^+,c}(aababaab) =ac \cdot \replaceall_{(ab)^+,c}(aab)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by $e$ does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCH+18} for the formal semantics of the $\replaceall$ function.
+%
+\item The assignment $x:=\reverse(y)$ denotes that $x$ is the reverse of $y$.
+%
+\item The assignment $x:=\NFT(y)$ denotes that $(y,x) \in \Tran(\NFT)$. %$x$ is an output of some accepting run of $\NFT$ on $y$.
+%
+\item The assignment $x:=\substring(y, t_1, t_2)$ denotes that $x$ is equal to the return value of $\substring(y, t_1, t_2)$, where 
+
+\[ \substring(y, t_1, t_2)=
+\begin{cases}
+\epsilon & \mbox{if }t_1<0\vee t_1 \ge |y| \vee t_2=0 \\
+y[t_1, \min\{t_1+t_2-1, |y|-1\}] & o/w
+\end{cases}
+\]
+ %the substring of $y$ that begins at the position $t_1$ and extends to the length $t_2$. 
+%$\substring(y, t_1, t_2)$ returns the empty string,  if $t_1$ is negative or $t_1$ is greater than or equal to the length of $y$, otherwise, if $t_2=0$, then it returns the empty string, otherwise, it returns the substring of $y$ from the position $t_1$ to the position $t_1+t_2-1$ (or to the last letter of $y$ if the length of $y$ is strictly less than $t_1+t_2$).  
+For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\varepsilon$, $\substring(abaab, 3,2)=ab$, and $\substring(abaab, 3,3)=ab$.
+%\tl{check the starting position}
+%Note here we require that $t_2 \ge 0$. 
+%
+\item The conditional statement $\ASSERT{x \in \NFA}$ denotes that $x$ belongs to $\Lang(\NFA)$.
+%
+\item The conditional statement $\ASSERT{t_1 \ o\ t_2}$ denotes that the value of $t_1$ is equal to (not equal to, \dots) that of $t_2$, if $o\in \{ =, \neq, \geq, >, \leq, < \}$.
+%
+\item The integer term $\length(x)$ denotes the length of $x$. 
+%
+\item The function $\indexof_v(x, i)$ returns the starting position of the first occurrence of $v$ in $x$ after the position $i$, if such an occurrence exists, and $-1$ otherwise. Note that if $i<0$, then $\indexof_v(x, i)$ returns $\indexof_v(x, 0)$, and if $i \ge \length(x)$, then $\indexof_v(x, i)$ returns $-1$. For instance, $\indexof_{ab}(aaba, -1) = 1$, $\indexof_{ab}(aaba, 1) = 1$, $\indexof_{ab}(aaba, 2)=-1$, and $\indexof_{ab}(aaba, 4)=-1$.
+\end{itemize}
+
+\begin{example}\label{exmp:logic}
+%\zhilin{adjust to the running example in the introduction}
+After adapting the syntax of the program corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Section~\ref{exmp:running}, we get the following {\slint} program,
+\[ 
+\begin{array}{l}
+    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon};\\
+    \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \ASSERT{\mathtt{qmarkpos} = \indexof_?(\mathtt{url1},0)};\\
+    \ASSERT{\mathtt{sharppos} = \indexof_{\#}(\mathtt{url1}, 0)}; \ASSERT{\mathtt{qmarkpos} \ge 0};\\ 
+    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, \length(\mathtt{url1}) - \mathtt{qmarkpos});\\
+    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2};\ASSERT{\mathtt{querfrag2} \in \NFA_{\Sigma^*\mathtt{script}\Sigma^*}}
+\end{array}
+\]
+where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and $ \NFA_{\Sigma^*\mathtt{script}\Sigma^*}$ is the NFA defining $\{w\mbox{\tt script} w' \mid w, w' \in \Sigma^*\}$. 
+%
+%
+%In particular, {\tt qmarkpos = url1.indexof('?')} in $S$ is transformed into $\ASSERT{{\tt qmarkpos = \indexof_{?}(url1,0)}}$, and {\tt url1=url.trim()} is adapted into ${\tt url1}:=\NFT_{\rm trim}({\tt url})$, where $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, moreover,  
+%{\tt
+%\begin{minted}{javascript}
+%querfrag2 = querfrag1.replace(/<script>|javascript:/g, '')
+%\end{minted}
+%}
+%is changed into the statement ${\tt querfrag2}:=\replaceall_{e,\varepsilon}({\tt querfrag1})$, where $e$ is the regular expression {\tt $<$script$>$+javascript:} (where $+$ is the alternation).
+%\[
+%\begin{array}{l}
+%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+%\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{"("}(x,0) < \indexof_{")"}(x,0)}
+%\end{array}
+%\] 
+%is in {\slint}, where $\Sigma \setminus a$ (where $a \in \{(,)\}$) is the regular expression $(+b)_{b \in \Sigma \setminus \{a\}}$. Intuitively the program states that $x$ contains the same number of occurrences of ``('' and ``)''; and the first occurrence of ``('' is before the first occurrence of ``)''.
+\end{example}
+
+
+\begin{remark}
+Note that %to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and 
+for simplicity, strictly speaking, string constants are not allowed in the assignments. %therein. 
+For instance, %string variables, instead of string constants, are required to appear as the string parameters of $\reverse$. This is not a real restriction, since 
+$x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real restriction because it can be written as $x:=\reverse(y); \ASSERT{y \in \NFA_{abc}}$, where $y$ is a fresh variable and $\NFA_{abc}$ is the NFA which accepts ``$abc$''  only.
+\end{remark}
+
+
+\begin{remark}
+The function $\replaceall_{e,u}$ can be seen as a special case of FFT, but the transformation to an equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
+\end{remark}
+
+To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as the following {\slint} program (denoted by $S_{x \neq y}$)
+\[
+\begin{array}{l}
+z_1:=\charat(x,i); z_2 := \charat(y,i); \\
+\ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
+\end{array}
+\] 
+where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA accepting $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or otherwise, there exists some position where the characters of the two strings are different.
+ 
+
+
+
+%The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
+
+\noindent
+\textbf{Path feasibility problem.} Given a {\slint} program $S$, decide whether there are valuations of input variables so that $S$ can execute to the end.
+
+%\medskip
+%
+%In the sequel, we are going to design a decision procedure for the path feasibility problem of {\slint} programs. We will first lay down the theoretical foundations of the decision procedure in the next section, where the concepts of regular languages and recognisable relations are extended.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% The original abstract logic definition %%%%%%%%%%%%
+%%%%%%%%%%% The original abstract logic definition %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hide{
+The string logic {\slint} defined by the following rules% satisfies the two semantic conditions,
+\[
+\begin{array}{l c l}
+t  &::=& i \mid c \mid \length(x) \mid \indexof_u(x, i) \mid  ct  \mid t + t,   \\
+S &::= &  x:= y \concat z \mid x:= \replaceall_{e,u}(y) \mid   x:=\reverse(y) \mid x:=T(y) \mid \\
+& & x := \substring(y, t_1, t_2)  \mid S;S, \\
+A & ::= &   A_r \wedge A_i,\\
+A_r & ::= & x \in \NFA \mid A_r \wedge A_r,\\
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i,
+\end{array}
+\]
+where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+
+We consider two types of functions, string functions that return strings and integer functions that return integers. Specifically, we consider 
+\begin{itemize}
+\item string functions $f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $f$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^{\Sigma^*}$, and
+\item  integer functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $g$ is of the arity $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^\intnum$.
+\end{itemize} 
+Note that $f$ and $g$ can be nondeterministic.
+%\subsection{The abstract version}
+
+We consider string constraints where the formulae are of the form $S \wedge A$ defined by the following rules,
+\[
+\begin{array}{l c l}
+t  &::=& i \mid c \mid  g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid ct \mid t + t,   \\
+S &::= &  x:=f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid S;S, \\
+A_r & ::= & x \in \NFA  \mid A_r \wedge A_r, \\
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i \mid A_i \vee A_i,\\
+A & ::= &   A_r \wedge A_i, 
+\end{array}
+\]
+where $f$ is a string function and $g$ is an integer function, $\vec{t_j} = t_{j,1}, \cdots, t_{j, n_j}$ for each $j \in [k]$, $\NFA$ is a finite-state automaton, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+
+The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
+\[
+\begin{array}{l c l}
+A & ::= &   A_r \wedge A_i, \\
+A_r & ::= & x \in \NFA \mid A_r \wedge A_r,\\
+A_i & ::= & t\ o\ t \mid A_i \wedge A_i  \mid A_i \vee A_i
+\end{array}
+\]
+where  $u \in \Sigma^+$, $e$ is a regular expression, $T$ is a finite-state transducer, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+\tl{decide later whether $\replaceall_{e,u}(y)$ is needed here.}
+
+%%%%%%%%%%%%%%%  Temporally commented out %%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{The abstract version}
+
+%We consider two types of functions, string functions that return strings and integer functions that return integers. Specifically, we consider 
+%\begin{itemize}
+%	\item string functions $f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $f$ is of the signature $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^{\Sigma^*}$, and
+%	\item  integer functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, where $g$ is of the signature $\Sigma^* \times \intnum^{n_1} \times \cdots \times \Sigma^* \times \intnum^{n_k} \rightarrow 2^\intnum$.
+%\end{itemize} 
+%Note that $f$ and $g$ can be nondeterministic.
+%
+%We consider string constraints where the formulae are of the form $S \wedge A$ defined by the following rules,
+%\[
+%\begin{array}{l c l}
+%t  &::=& i \mid c \mid  g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid ct \mid t + t,   \\
+%S &::= &  x:=f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k}) \mid S;S, \\
+%A_r & ::= & x \in \NFA  \mid A_r \wedge A_r, \\
+%A_i & ::= & t\ o\ t \mid A_i \wedge A_i \mid A_i \vee A_i,\\
+%A & ::= &   A_r \wedge A_i, 
+%\end{array}
+%\]
+%where $f$ is a string function and $g$ is an integer function, $\vec{t_j} = t_{j,1}, \cdots, t_{j, n_j}$ for each $j \in [k]$, $\NFA$ is a finite-state automaton, and $o \in \{=, \neq, \ge, \le, >, <\}$.
+%%%%%%%%%%%%%%%  Temporally commented out %%%%%%%%%%%%%%%%%%%%%%%
+
+%The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, 
+We assume that {\bf  string constraints %{\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that 
+$S$ are in single static assignment (SSA) form}.  %Note that in {\slint}, the straight-line restriction 
+Note that it is applied  to $S$ only while it is remitted from the integer constraints in $A_i$. 
+%which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
+%Intuitively speaking, the integer constraints in $S \wedge A$ are split into the integer assignments in $S$ where the right-hand side is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ and the constraints $t\ o\ t$ in $A$ where the integer functions $g$ do not occur.
+%\begin{itemize}
+%\item $S$ is in single static assignment (SSA) form,
+%\item all the assignments $i: = t$ in $S$ satisfy that either $t$ is of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, or $t$ contains no occurrences of the functions of the form $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$, namely, $t$ is an integer term built from integer variables and constants ,
+%
+%\item $A$ contains no occurrences of the functions $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$,
+%
+%\item all the string variables in $A$ also occur in $S$.
+%\end{itemize} 
+
+\begin{example}
+The formula $x:= y \concat z \wedge y := \substring(y', \indexof(x, c), j)  \wedge y' \in (ab)^* \wedge z \in a^* c b^* \wedge   j = 2 \indexof(x, c)$ belongs to \slint.
+\end{example}
+
+
+\subsection{Semantics}
+
+The semantics of  {\slint}  is largely self-explanatory. In particular, $\length(x)$ returns the length of string $x$, $\indexof_u(x, i)$ returns the first index of $u$ in $x$ after $i$. 
+
+$\substring(y, t_1, t_2)$ returns the string of $y$ between $t_1$ and $t_2$. 
+
+Intuitively, $\substring(x_1, i, j)$ returns the substring of $x_1$ starting from the position $i$ and ending at the position $j$ (assuming that $i  < j$), with the letter at the position $j$ excluded.
+
+tbc...
+
+%The replaceAll function encompasses two parameters: the first parameter is the subject string, and the second parameter is the replacement
+%string whereas $u$ the
+%second parameter is a pattern that is a regular expression, . For the semantics of replaceAll function, in particular when the pattern is a regular expression,
+%we adopt the leftmost and longest matching. For instance, replaceAll(aababaab, (ab)+, c) = ac ·
+%replaceAll(aab, (ab)+, c) = acac, since the leftmost and longest matching of (ab)+ in aababaab is
+%abab. Herewe require that the language defined by the pattern parameter does not contain the empty
+%string, in order to avoid the troublesome definition of the semantics of the matching of the empty
+%string. We refer the reader to [Chen et al. 2018] for the formal semantics of the replaceAll function.
+%To be consistent with the notations in this paper, for each regular expression e, we define the string
+%function replaceAlle : Σ∗ × Σ∗ → Σ∗ such that for u,v ∈ Σ∗, replaceAlle (u,v) = replaceAll(u, e,v),
+%and we write replaceAll(x, e,y) as replaceAlle (x,y).
+
+In the next section, we specify the semantic conditions for {\slint} in order to achieve decision procedures. For this purpose, we need the concepts of cost-enriched regular languages and recognisable relations. 
+
+%\section{The semantic conditions}
+}

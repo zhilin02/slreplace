@@ -1,0 +1,553 @@
+%!TEX root = main.tex
+
+%In this section, we show the main result of this paper. 
+
+%\begin{theorem}\label{thm-main}
+%The path feasibility of {\slint} programs is $\expspace$-complete.  
+%\end{theorem}
+%%
+%The lower bound of Theorem~\ref{thm-main} follows from Theorem~5 in \cite{LB16}, where the satisfiability of straight-line sting constraints with concatenation and finite transducers is shown to be the $\expspace$-complete.
+%
+%For the upper bound, we will design a decision procedure for the path feasibility problem of {\slint} programs, based on the concepts of CERLs and CERRs introduced Section~\ref{sec:cefa}.
+%\zhilin{I think we can use Proposition 16 in \cite{LB16} to get the expspace upper bound. But to use this result, we need restrict CEFA to monotonic counter automata.}
+
+In this section, we present a decision procedure for the path feasibility problem of {\slint}. A distinguished feature of the decision procedure is that it conducts backward computation which is local and can be done in a modular way. To support this, we extend  a regular language with quantitative information of the strings in the language, giving rise to cost-enriched regular languages and corresponding finite automata (Section \ref{sect:ce}). The crux of the decision procedure is thus to %we will 
+show that the %cost-enriched 
+pre-images of cost-enriched regular languages under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$) are representable by so called cost-enriched recognisable relations (Section \ref{sect:pre}). The overall decision procedure is presented in Section~\ref{sec:dc}, supplied by additional complexity analysis and examples. 
+
+\input{cefa.tex}
+
+%Before presenting the decision procedure, we introduce an additional concept, i.e., cost-enriched pre-images of CERLs under string operations. Moreover, 
+
+\subsection{Pre-images of CERLs under string operations} \label{sect:pre}
+
+To unify the presentation of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
+we consider string functions $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$. (If there is no integer input parameter, then $k_1,\cdots,k_l$ are zero.)  
+%where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. 
+%Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
+
+\begin{definition}[Cost-enriched pre-images of CERLs] \label{def:preimage}
+Suppose that $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$ is a string function, $L \subseteq \Sigma^* \times \Int^{k_0}$ is a CERL defined by a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$ with $R= (r_1, \cdots, r_{k_0})$. Then the $R$-cost-enriched pre-image of $L$ under $f$, denoted by $f^{-1}_R(L)$, is a pair $(\cR, \vec{t})$ such that 
+\begin{itemize}
+\item $\cR \subseteq (\Sigma^* \times \Int^{k_1 + k_0}) \times \cdots \times (\Sigma^* \times \Int^{k_l + k_0})$;
+\item $\vec{t} = (t_1, \cdots ,t_{k_0})$ is a vector of linear integer terms where for each $i \in [k_0]$, $t_i$ is a term whose variables are from $\left\{r^{(1)}_i, \cdots, r^{(l)}_i\right\}$ which are fresh cost registers and are disjoint from $R$ in $\CEFA$;
+
+%[intuitively, each cost register $r_i$ is split into $l$ cost registers $r^{(1)}_i, \cdots,r^{(l)}_i$, one for each string input parameter, and $t_i$ tells how to compute $r_i$ from $r^{(1)}_i, \cdots,r^{(l)}_i$]
+\item $L$ is equal to the language comprising the $k_0$-cost-enriched strings
+%
+\[\left(w_0, t_1\left[d^{(1)}_{1}/r^{(1)}_1, \cdots, d^{(l)}_{1}/r^{(l)}_1\right], \cdots, t_{k_0}\left[d^{(1)}_{k_0}/r^{(1)}_{k_0}, \cdots, d^{(l)}_{k_0}/r^{(l)}_{k_0}\right]
+\right), \]
+%
+such that 
+\[w_0 = f\left((w_1, \vec{c_1}), \cdots, (w_l, \vec{c_l}\right)) \mbox{ for some } ((w_1, (\vec{c_1}, \vec{d_1})), \cdots, (w_l, (\vec{c_l}, \vec{d_l}))) \in \cR,\]
+where $\vec{c_j} \in \Int^{k_j}$, $\vec{d_j} = (d^{(j)}_{1}, \cdots, d^{(j)}_{k_0}) \in \Int^{k_0}$ for $j\in [l]$.
+%
+%$\vec{c_1} \in \Int^{k_1}$, $\cdots$, $\vec{c_l} \in \Int^{k_l}$, $\vec{d_1} = (d^{(1)}_{1}, \cdots, d^{(1)}_{k_0}) \in \Int^{k_0}$, $\cdots$, and $\vec{d_l} = (d^{(l)}_{1},\cdots, d^{(l)}_{k_0}) \in \Int^{k_0}$.
+\end{itemize}
+The $R$-cost-enriched pre-image of $L$ under $f$, say $f^{-1}_R(L)=(\cR, \vec{t})$, is said to be CERR-definable if $\cR$ is a CERR. 
+\end{definition}
+
+Definition~\ref{def:preimage} is essentially a semantic definition of the pre-images. For the decision procedure, one desires an effective representation of a CERR-definable $f^{-1}_R(L)=(\cR, \vec{t})$ in terms of CEFAs. Namely,
+a CEFA representation of %a CERR-definable $f^{-1}_R(L)=
+$(\cR, \vec{t})$ (where $t_j$ is over $\left\{r^{(1)}_j, \cdots, r^{(l)}_j\right\}$ for $j\in [k_0]$)
+is a tuple $((\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}, \vec{t})$ such that $(\CEFA_{i,1}, \cdots, \CEFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$, where $R(\CEFA_{i,j})=\left(r'_{j,1}, \cdots, r'_{j,k_j}, r^{(j)}_1, \cdots,r^{(j)}_{k_0}\right)$ for each $i \in [n]$ and $j \in [l]$. (The cost registers $r'_{1,1}, \cdots, r'_{1,k_1},\cdots, r'_{l,1}, \cdots, r'_{l,k_l}$ %, r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ 
+are mutually distinct and freshly introduced.) %\tl{$r^{(1)}_1, \cdots,r^{(1)}_{k_0}, \cdots, r^{(l)}_1, \cdots,r^{(l)}_{k_0}$ are actually introduced above?}
+
+
+\begin{example}[$\substring^{-1}_R(L)$]\label{exm:pre-image}
+Let $\Sigma = \{a\}$ and $L = \{(w, |w|) \mid w \in \Lang((aa)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, \{q_0\}, \{q_0\})$ with $Q=\{q_0,q_1\}$, $R=(r_1)$ and $\delta = \{(q_0, a, q_1), (q_1, a, q_0)\}$. Since $\substring$  is  from $\Sigma^* \times \Int^2$ to $\Sigma^*$, $\substring^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under $\substring$, is the pair $(\cR, t)$, where $t=r^{(1)}_1$ (note that in this case $l=1$, $k_0=1$, and $k_1=2$) and 
+%
+$$\cR = \{(w, n_1, n_2, n_2) \mid w \in \Lang(a^*), n_1 \ge 0, n_2 \ge 0, n_1+n_2 \le |w|, n_2 \mbox{ is even}\},$$ 
+%
+which is represented by $(\CEFA', t)$ such that $\CEFA'= (Q', \Sigma, R', \delta', I', F')$, where 
+\begin{itemize}
+\item $Q' = Q \times \{p_0, p_1, p_2\}$, (Intuitively, $p_0$, $p_1$, and $p_2$ denote that the current position is before the starting position, between the starting position and ending position, and after the ending position of the substring respectively.) 
+\item $R'= \left(r'_{1,1}, r'_{1,2}, r^{(1)}_1 \right)$, 
+\item $I' =\{(q_0,p_0)\}$, $F'=\{(q_0, p_2), (q_0, p_0)\}$ (where $(q_0, p_0)$ is used to accept the $3$-cost-enriched strings $(w, n_1, 0, 0)$ with $0 \le n_1 \le |w|$), and 
+\item $\delta'$ is  
+\[
+\left\{
+\begin{array}{l}
+(q_0, p_0) \xrightarrow{a, \eta_1} (q_0, p_0), (q_0, p_0) \xrightarrow{a, \eta_2} (q_1, p_1), (q_1, p_1) \xrightarrow{a, \eta_2} (q_0, p_1), \\
+(q_0, p_1) \xrightarrow{a, \eta_2} (q_1, p_1), (q_1, p_1) \xrightarrow{a, \eta_2} (q_0, p_2), (q_0, p_2) \xrightarrow{a, \eta_3} (q_0, p_2)
+\end{array}
+\right\},
+\] 
+where $\eta_1(r'_{1,1})=1$, $\eta_1(r'_{1,2})=0$, $\eta_1(r^{(1)}_1)=0$, $\eta_2(r'_{1,1})=0$, $\eta_2(r'_{1,2})=1$, and $\eta_2(r^{(1)}_1)=1$, $\eta_3(r'_{1,1})=0$, $\eta_3(r'_{1,2})=0$, and $\eta_3(r^{(1)}_1)=0$.
+\end{itemize}
+%
+Therefore, $\substring^{-1}_R(L)$ is CERR-definable.
+\end{example}
+
+
+It turns out that for each string function $f$ in the assignment statements of {\slint}, the cost-enriched pre-images of CERLs under $f$ are CERR-definable.
+
+\begin{proposition}\label{prop:pre-image}
+Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then for each string function $f$ ranging over $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$, $f^{-1}_R(L)$ is CERR-definable. In addition,
+\begin{itemize}
+\item a CEFA representation of $\concat^{-1}_R(L)$ can be computed in time $\bigO(|\CEFA|^2)$, 
+%
+\item a CEFA representation of $\reverse^{-1}_R(L)$ (resp. $\substring^{-1}_R(L)$) can be computed in time $\bigO(|\CEFA|)$,
+%
+\item a CEFA representation of  $(\Tran(\NFT))^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|\NFT|$,
+%
+\item a CEFA representation of  $(\replaceall_{e,u})^{-1}_R(L)$ can be computed in time polynomial in $|\CEFA|$ and exponential in $|e|$ and $|u|$.
+\end{itemize}
+\end{proposition}
+
+The proof of Proposition~\ref{prop:pre-image} is given in Appendix, Section~\ref{app:pre-image}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Decision Procedure}\label{sec:dc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+Let $S$  be a {\slint} program. %We show how to decide the path feasibility of $S$. 
+Without loss of generality, we assume that for every occurrence of assignments of the form $y:= \substring(x, t_1, t_2)$, it holds that $t_1$ and $t_2$ are integer variables. This is not really a restriction, since, for instance, if in $y:= \substring(x, t_1, t_2)$, neither $t_1$ nor $t_2$ is an integer variable, then we introduce fresh integer variables $i$ and $j$, replace $t_1, t_2$ by $i,j$ respectively, and add $\ASSERT{i=t_1};\ASSERT{j = t_2}$ in $S$.
+We present a decision procedure for the path feasibility problem of $S$ which is divided into five steps. %is nondeterministic and divided into three steps. 
+%\begin{description}
+%\item[Step I: Preprocessing.] 
+%
+%\item 
+
+\medskip
+\noindent {\bf Step I: Reducing to atomic asserations.}%Removing $\vee$ and $\wedge$}.
+
+\smallskip
+Note first that in our language, each assertion is a positive Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}).  
+Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
+
+Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constains atomic asserations only. 
+
+\medskip 
+\noindent {\bf Step II: Dealing with the case splits in the semantics of $\indexof_v$ and $\substring$.}%Removing $\vee$ and $\wedge$}.
+
+\smallskip
+
+For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following five options (which correspond to the semantics of $\indexof_v$ in Section~\ref{sec:logic}).
+\begin{itemize}
+\item[(1)] Add $\ASSERT{i < 0}$ to $S$, and replace $\indexof_v(x,i)$ with $\indexof_v(x,0)$ in $S$. 
+%
+\item[(2)] Add $\ASSERT{i < 0};\ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
+%
+\item[(3)] Add $\ASSERT{i \ge \length(x)}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
+%
+\item[(4)] Add $\ASSERT{i \ge 0}; \ASSERT{i < \length(x)}$ to $S$.
+%
+\item[(5)] Add 
+%
+$$
+\begin{array}{l}
+\ASSERT{i \ge 0}; \ASSERT{i < \length(x)}; \ASSERT{j=\length(x)-i}; \\
+\ \ \ \ y:=\substring(x, i, j); \ASSERT{y \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}
+\end{array}
+$$ 
+to $S$, where $y$ is a fresh string variable, $j$ is a fresh integer variable, and $\NFA_{\overline{\Sigma^*v\Sigma^*}}$ is an NFA defining the language $\{w \in \Sigma^*\mid v \mbox{ does not occur as a substring in } w\}$. Replace $\indexof_v(x, i)$ with $-1$ in $S$.
+\end{itemize}
+
+%Nondeterministically choose a subset of $\Theta$ of the assignment statements of the form $y:=\substring(x, i, j)$ in $S$, and 
+%
+For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following three options (which correspond to the semantics of $\substring$ in Section~\ref{sec:logic}).
+\begin{itemize}
+\item[(1)] Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
+%
+\item[(2)] Add the statements 
+$\ASSERT{i \ge 0}; \ASSERT{i \le \length(x)};\ASSERT{i+j  > \length(x)}$; $\ASSERT{i'  = \length(x)-i}$
+to $S$, and replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')$, where $i'$ is a fresh integer variable.
+%
+\item[(3)] Add the statement $\ASSERT{i < 0}; \ASSERT{y \in \NFA_\varepsilon}$ to $S$, and  remove $y:=\substring(x, i, j)$ from $S$, where $\NFA_\varepsilon$ is the NFA defining the language $\{\varepsilon\}$.
+\end{itemize}
+
+\medskip
+\noindent {\bf Step III: Removing $\length$ and $\indexof$}.
+
+\smallskip
+
+%Repeat the following procedure until there are no occurrences of $\indexof$.
+
+For each term $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
+
+For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)
+
+%
+%\end{enumerate}
+%
+%\item 
+
+\medskip
+\noindent {\bf Step IV: Removing the assignment statements backwards}.
+
+\smallskip
+
+Repeat the following procedure until $S$ contains no assignment statements.
+%
+\begin{quote}
+Suppose $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$ is the \emph{last} assignment of $S$, where $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$ is a string function and $\vec{i_j}= (i_{j,1}, \cdots, i_{j, k_j})$ for each $j \in [l]$.
+%\tl{as we are considering functional transducers, shall we change to $... \rightarrow \Sigma^*$; if decided, step ii will be updated as the product would be unnecessary}%from $\concat$, $\replaceall_{e,u}$, $\reverse$, $\NFT$, and $\substring$.
+\\
+Let $\{\CEFA_1, \cdots, \CEFA_s\}$ be the set of all CEFAs such that $\ASSERT{y \in \CEFA_j}$ occurs in $S$ for every $j \in [s]$. 
+%Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$
+%\footnote{Since the cost registers of CEFAs are always freshly introduced, it holds that $R(\CEFA_1)$, $\cdots$,  $R(\CEFA_s)$ are mutually disjoint.} 
+%with $R(\CEFA) = (r_1, \cdots, r_{k_0})$. 
+Let $j \in [s]$ and $R(\CEFA_j)=(r_{j,1}, \cdots, r_{j, \ell_j})$. Then from Proposition~\ref{prop:pre-image}, 
+a CEFA representation of $f^{-1}_{R(\CEFA_j)}(\Lang(\CEFA_j))$, say $\left(\left(\cB^{(1)}_{j, j'}, \cdots, \cB^{(l)}_{j, j'}\right)_{j' \in [m_j]}, \vec{t}\right)$, can be effectively computed from $\NFA$ and $f$, where we write
+\[
+R\left(\cB^{(j'')}_{j, j'}\right)=\left((r')^{(j'',1)}_{j}, \cdots, (r')_{j}^{(j'',k_{j''})}, r^{(j'')}_{j, 1}, \cdots,r^{(j'')}_{j, \ell_j} \right)
+\]
+for each $j' \in [m_j]$ and $j'' \in [l]$, and $\vec{t}=(t_1,\cdots, t_{\ell_j})$. Note that the cost registers $(r')^{(1,1)}_{j}, \cdots, (r')_{j}^{(1,k_1)}, \cdots, (r')^{(l,1)}_{j}, \cdots, (r')_{j}^{(l,k_l)}, r^{(1)}_{j, 1}, \cdots,r^{(1)}_{j, \ell_j}, \cdots, r^{(l)}_{j, 1}, \cdots,r^{(l)}_{j, \ell_j}$ are mutually distinct and freshly introduced, moreover, $R\left(\cB^{(j'')}_{j, j'_1}\right)=R\left(\cB^{(j'')}_{j, j'_2}\right)$ for distinct $j'_1,j'_2 \in [m_j]$.
+%
+
+Remove $y := f(x_1, \vec{i_1}, \cdots, x_l, \vec{i_l})$, as well as all the statements $\ASSERT{y \in \CEFA_1}$, $\cdots$, $\ASSERT{y \in \CEFA_s}$ from $S$. For every $j \in [s]$, nondeterministically choose $j' \in [m_j]$, and add the following statements to $S$, 
+%
+\[
+\begin{array}{l}
+\ASSERT{x_1 \in \cB^{(1)}_{j, j'}};\ \cdots;\ \ASSERT{x_l \in \cB^{(l)}_{j, j'}}; S_{j, j', \vec{i_1}, \cdots, \vec{i_l}}; S_{j, \vec{t}}\\
+\end{array}
+\]
+where 
+\[
+\begin{array}{l c c}
+S_{j, j', \vec{i_1}, \cdots, \vec{i_l}} & \equiv & \ASSERT{i_{1,1} = (r')^{(1,1)}_{j, j'}}; \cdots; \ASSERT{i_{1,k_1} = (r')^{(1,k_1)}_{j, j'}};\\
+& & \cdots\\
+ & & \ASSERT{i_{l,1} = (r')^{(l,1)}_{j, j'}}; \cdots; \ASSERT{i_{l,k_l} = (r')^{(l,k_l)}_{j, j'}}
+\end{array}
+\]
+and
+\[
+\begin{array}{l}
+S_{j, \vec{t}} \equiv \ASSERT{r_{j, 1} = t_1}; \cdots, \ASSERT{r_{j, \ell_j} = t_{\ell_j}}.
+\end{array}
+\]
+%
+\end{quote}
+
+\medskip
+\noindent{\bf Step V: Final satisfiability checking.}%Solving the {\lasat} problem}.
+
+\smallskip
+
+In this step, $S$ %is a {\slint} program containing 
+contains no assignment statements and only assertions of the form $\ASSERT{x \in \CEFA}$ and  $\ASSERT{t_1\ o\ t_2}$  where $\CEFA$ are CEFAs and $t_1, t_2$ are linear integer terms. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
+%
+Let $X$ denote the set of string variables occurring in $S$.
+For each $x \in X$, let $\Lambda_x=\{\CEFA_{x}^1, \cdots, \CEFA_{x}^{s_x}\}$ denote the set of CEFAs $\CEFA$ such that $\ASSERT{x \in \CEFA}$ appears in $S$. 
+%$R_x$ be the vector of cost registers obtained by concatenating $R(\CEFA_{x,1})$, $\cdots$, and $R(\CEFA_{x,s_x})$. 
+Moreover, let $\phi$ denote the conjunction of all the LIA formulas $t_1\ o\ t_2$ occurring in $S$. It is straightforward to observe that $\phi$ is over %the set of integer variables 
+$R'=\bigcup_{x\in X, j \in [s_x]}R(\CEFA_{x}^{j})$. Then the path feasibility of $S$ is reduced to \emph{the satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem)} which is defined as 
+\begin{quote}
+deciding whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+	%The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
+%	
+%	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
+%	$R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+%	the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
+whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
+there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[\theta(R')/R']$ holds and $(w_x, \theta(R(\CEFA_{x}^{j}))) \in \Lang(\CEFA_{x}^{j})$ for every $x \in X$ and $j \in [s_x]$.
+\end{quote}
+This {\lasat} problem is decidable and $\pspace$-complete:
+%\end{definition}
+
+%\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
+%	The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
+%	
+%	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
+%  $R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
+% the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
+% 
+%Decide whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
+%there are an assignment function $\theta: \bigcup \limits_{i \in [m]} R_i \rightarrow \Int$ and strings $w_1, \cdots, w_m$  
+%	such that  $\phi[(\theta(R_i)/R_i)_{i \in [m]}]$ hold and $(w_i, \theta(R_i)) \in \Lang(\NFA_i)$ for every $i \in [m]$.
+%\end{definition}
+
+\begin{proposition}\label{prop:la-sat-cefa-inter}
+{\lasat} is $\pspace$-complete.
+%	Given a family of CEFAs $\{ \CEFA_i^{j} \}_{i\in I,j\in J_i}$ each of which carries a vector of registers $R_i^j$ and a quantifier-free LIA formula $\phi$ such that  $ R_i^{j} $ are pairwise disjoint and the variables of $\phi$ are from $R'=\bigcup_{i,j} R_i^j$. Deciding whether  %such that the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$,  and here are 
+%	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
+\end{proposition}
+
+A natural idea for the proof for Proposition~\ref{prop:la-sat-cefa-inter} is to compute, for each string variable $x \in X$, an existential LIA formula $\phi_x$ defining the Parikh image of the product of the CEFAs in $\Lambda_x$, and then to solve the satisfiability of $\phi \wedge \bigwedge_{x \in X} \phi_x$. Nevertheless, computing the product of CEFAs followed by the computation of its Parikh image would require exponential space. To circumvent this exponential space blowup, %instead of computing the product of CEFAs in $\Lambda_x$ explicitly, 
+we utilise Proposition 16 in \cite{LB16} to show a small model property for the {\lasat} problem: If a model of  {\lasat}, specifically, an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$, exists, then $\theta$ can be assumed to satisfy that for each $x \in X$ and $r \in R_x=\bigcup_{j \in [s_x]} R(\CEFA_{x}^{j})$, $\theta(r)$ is at most exponential in the size of $\CEFA_{x}^{j}$ for $j \in [s_x]$ and $|\phi|$. Since the binary encodings of $\theta(r)$ can be stored in polynomial space, one can \emph{nondeterministically} guess the strings $(w_x)_{x \in X}$, simulate the runs of $\CEFA_{x}^{j}$ on $w_x$, and finally evaluate $\phi$ over the register values after all CEFAs $\CEFA_{x}^{j}$ accept, in polynomial space. A proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix, Section~\ref{app:sat-cefa}. %which is doable according to 
+%A more detailed  proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix~\ref{app:sat-cefa}. 
+%\zhilin{polish further.}
+
+%From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
+
+\paragraph*{Complexity analysis of the decision procedure.} Step I and Step II can be done in nondeterministic linear time. Step III can be done in linear time. %The complexity analysis of Step II is similar to that in \cite{CHL+19}. Roughly speaking, during 
+In Step IV, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step IV can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step V can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ by Savitch's theorem \cite{complexity-book}. %\tl{to be checked later}
+%then solve the {\lasat} problem. Since the product CEFA for each input string variable is of size at most doubly exponential, 
+
+%\tl{to put in a different place later} 
+\begin{remark}
+	In this paper, we focus on functional finite transducers (cf.\ Section~\ref{sec:prel}). Our decision procedure is applicable to general finite transducers as well with minor adaptation. However, the $\expspace$ complexity upper-bound does not hold any more, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional finite transducers $f$.  
+\end{remark}
+
+An example to demonstrate the decision procedure applied to the program in Example~\ref{exmp:logic} is provided in the Appendix, Section~\ref{app:urlexample}.
+
+%\begin{example}
+%Consider the program $S$ associated with {\tt urlXssSanitise(url)} in Section~\ref{sec:intro}. % Example~\ref{exmp:running}.
+%%\[
+%%\begin{array}{l}
+%%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+%%\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
+%%\end{array}
+%%\] 
+%We show how to decide its path feasibility. % of $S$. 
+%\begin{description}
+%\item[Step I.]   Vacuous since $S$ contains only atomic assertions already. %neither disjunction nor conjunction.
+%%
+%\item[Step II.] Nondeterministically choose to replace $\indexof_\#(\mathtt{url1}, 0)$ with $-1$ and add $\ASSERT{\mathtt{url1} \in \NFA_{\overline{\Sigma^*\#\Sigma^*}}}$ to $S$.  
+%%
+%\item[Step III.] Replace $\length(\mathtt{url1})$ with $i'_1$ and add $\ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}$ to $S$, moreover, replace $\indexof_?(\mathtt{url1}, 0)$ with $i'_3$ and add $\ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}$ to $S$, where $i'_1, i'_2, i'_3$ are fresh integer variables. Then we get the following program (still denoted by $S$), 
+%\[ 
+%\begin{array}{l}
+%    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+%    \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+%    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+%   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  \\
+%    \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]}; \\
+%    \ASSERT{0= i'_2}; \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]}.
+%\end{array}
+%\]
+%%
+%\item[Step IV.] Since there is no CEFA constraints for $\mathtt{url2}$, removing the last assignment statement of $S$, i.e. $\mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}$, is easy and in this case we add no statements to $S$. After this, $\mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1})$ becomes the last assignment statement. Suppose $\NFA'=(Q', \Sigma, \delta', I', F')$ is an NFA representing $(\replaceall_{\mathtt{script},\ \varepsilon})^{-1}_\emptyset(\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*}))$, namely, the pre-image of $\Lang(\NFA_{\Sigma^*\mathtt{script}\Sigma^*})$ under $\replaceall_{\mathtt{script},\ \varepsilon}$. Then we remove this assignment statement and add $\ASSERT{\mathtt{querfrag1 \in \NFA'}}$, resulting into the following program
+%\[ 
+%\begin{array}{l}
+%    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+%    \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+%    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+%   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+%%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+%%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+%    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
+%    \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+%    \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+%    \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'}.
+%\end{array}
+%\]
+%
+%From Example~\ref{exm:pre-image}, we know that $\substring^{-1}_\emptyset(\Lang(\NFA'))$ can be represented by some CEFA $\cB=(Q'', R'', \delta'', I'', F'')$ with $Q''= Q' \times \{p_0,p_1,p_2\}$ and $R''=(r'_{1,1}, r'_{1,2})$ (where $r'_{1,1}$ and $r'_{1,2}$ are fresh integer variables). Then we remove $\mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos})$, add $\ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1}= qmarkpos}}; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}$, and get the following program
+%\[ 
+%\begin{array}{l}
+%    \ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon}; \mathtt{url1} := \NFT_{\rm trim}(\mathtt{url}); \\
+%    \ASSERT{\mathtt{qmarkpos} = i'_3}; \ASSERT{\mathtt{sharppos} =-1 }; \ASSERT{\mathtt{qmarkpos} \ge 0}; \\ 
+%    \mathtt{prothostpath1} := \substring(\mathtt{url1}, 0, \mathtt{qmarkpos});\\
+%%   \mathtt{querfrag1} := \substring(\mathtt{url1, qmarkpos}, i'_1 - \mathtt{qmarkpos});\\
+%%    \mathtt{querfrag2} := \replaceall_{\mathtt{script},\ \varepsilon}(\mathtt{querfrag1});\\
+%%    \mathtt{url2} := \mathtt{prothostpath1} \concat \mathtt{querfrag2}; 
+%    \ASSERT{\mathtt{querfrag2} \in  \NFA_{\Sigma^*\mathtt{script}\Sigma^*}};  
+%    \ASSERT{\mathtt{url1} \in  \NFA_{\overline{\Sigma^*\#\Sigma^*}}}; \\
+%    \ASSERT{\mathtt{url1} \in \CEFA_{\rm len}[i'_1/r_1]};  \ASSERT{0= i'_2}; \\
+%    \ASSERT{\mathtt{url1} \in \CEFA_{\indexof}[i'_2/r_1, i'_3/r_2]};  \ASSERT{\mathtt{querfrag1} \in \NFA'};\\
+%    \ASSERT{\mathtt{url1} \in \cB};\ASSERT{\mathtt{r'_{1,1} = qmarkpos} }; \ASSERT{r'_{1,2}=i'_1 - \mathtt{qmarkpos}}.
+%\end{array}
+%\]
+%We can continue the process until the problem contains no assignment statement.
+%%
+%\item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
+%\end{description}
+%\end{example}
+
+%and the {\lasat} problem is $\np$-complete according to  Theorem~\ref{thm-la-sat-cefa}, we deduce that Step III can be fulfilled in  nondeterministic doubly exponential time. Therefore, we conclude that the path feasibility problem is in 2$\nexptime$. \zhilin{The complexity analysis is for deterministic string operations.}
+
+
+
+%\paragraph*{Functional string operations.}
+%We would like to remark that if all the string operations $f$ in $S$ are \emph{deterministic}, then the product of  the CEFAs in $\rho$ can be avoided and the pre-image can be computed \emph{distributively} for every CEFA in $\rho$. \zhilin{I think we should only present the decision procedure for deterministic string operations, since this is the case for {\slint}.}
+
+%\subsection{Satisfiability of Linear Integer Arithmetic Formula with respect to CEFAs}
+
+%In the sequel, we consider a decision problem for CEFAs which will be used for the decision procedure of the path feasibility problem for {\slint} in the next section.
+
+
+%Note that in Definition~\ref{def-la-sat-cefa}, registers in $\NFA_i$'s may intersect. 
+
+%\begin{example}
+%	Let $\phi \equiv r_1 = r_2$ and $\CEFA_{1,1}, \CEFA_{1,2}$ be two CEFAs in Example~\ref{exm:CERR} defining $L_{1,1}, L_{1,2}$ respectively. (Recall that $R(\CEFA_{1,1})=(r_1)$ and $R(\CEFA_{1,2})=(r_2)$.) Then it is easy to see that $\phi$ is unsatisfiable w.r.t. $\CEFA_{1,1}$ and $\CEFA_{1,2}$, since for each $(w_1, n_1) \in L_{1,1}$, $n_1$ must be even, while for each $(w_2, n_2) \in L_{1,2}$, $n_2$ must be odd. Hence $n_1$ and $n_2$ cannot be equal.
+%\end{example}
+
+%\begin{theorem}\label{thm-la-sat-cefa}
+%	The {\lasat} problem is NP-complete.
+%\end{theorem}
+%The proof is given in Appendix, Section~\ref{appendix:thm-la-sat-cefa}.
+
+
+
+
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+\hide{
+\begin{example}\label{exm:pre-image}
+Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, R=(r_1), \delta, I, F)$. Since the concatenation function $\concat$  is  from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ (note that in this case $l=2$, $k_0=1$, and $k_j=0$ for $j\in [l]$) and 
+\[\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2} \cup L_{3,1} \times L_{3,2} \cup L_{4,1} \times L_{4,2} \cup L_{5,1} \times L_{5,2},\]
+such that
+\begin{itemize}
+\item $L_{1,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{1,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$,
+%
+\item $L_{2,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{2,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((aa)^*b(bb)^*)\}$,
+%
+\item $L_{3,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang(a(aa)^*)\}$ and $L_{3,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(a(aa)^*b(bb)^*)\}$,
+%
+\item $L_{4,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*b(bb)^*)\}$ and $L_{4,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((bb)^*)\}$,
+%
+\item $L_{5,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*(bb)^*)\}$ and $L_{5,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$.
+\end{itemize}
+%
+It is easy to see that $\cR$ is a CERR. Thus $\concat^{-1}_R(L)$ is CERR-definable.
+\end{example}
+}
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+%%%%%%%%pre-image of concatenation: removed%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%The original example for the decision procedure%%%%%%%%%%%%%
+\hide{
+\begin{example}
+Consider the program $S$ in Example~\ref{exmp:running}.
+\[
+\begin{array}{l}
+y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{\length(y) = \length(z)}; \ASSERT{\indexof_{(}(x,0) < \indexof_{)}(x,0)}.
+\end{array}
+\] 
+We show how to decide the path feasibility of $S$. 
+\begin{description}
+\item[Step I.]   Vacous since $S$ contains only atomic asserations already. %neither disjunction nor conjunction.
+%
+\item[Step II.] Nondeterministically choose $\mathcal{I} = \emptyset$.  
+%
+\item[Step III.] From the fact that $R(\CEFA_{\rm len})=(r_1)$ and $R(\CEFA_{\indexof_v})=(r_1,r_2)$, we introduce fresh variables $i_1$ for $\length(y)$, $i_2$ for $\length(z)$, $j_1, j_2$ for $\indexof_{(}(x,0)$, and $j'_1,j'_2$ for $\indexof_{)}(x,0)$. Then replace $\length(y)$ with $i_1$, $\length(z)$ with $i_2$, $\indexof_{(}(x,0)$ with $j_2$, $\indexof_{)}(x,0)$ with $j'_2$ respectively. Moreover, add the statements $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$, $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$, $\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]}$, and $\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}$, resulting in  the program 
+\[
+\begin{array}{l}
+y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{i_1 = i_2}; \ASSERT{ j_2 < j'_2};\\
+\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}; \ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]};\\
+\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]};  \\
+\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]}.
+\end{array}
+\] 
+%
+\item[Step IV.] Recall that $\CEFA_{\rm len}=(\{q_0\}, \Sigma, (r_1), \delta_{\rm len}, \{q_0\}, \{q_0\})$, where $\delta_{\rm len} = \{(q_0, a, q_0, \eta) \mid a \in \Sigma, \eta(r_1)=1\}$. Moreover, let $\NFT_{\replaceall_{\Sigma \setminus (, \varepsilon}} = (\{p_0\}, \Sigma, \delta_{\replaceall_{\Sigma \setminus (, \varepsilon}}, \{p_0\}, \{p_0\})$, where $\delta_{\replaceall_{\Sigma \setminus (, \varepsilon}} = \{(p_0, a, p_0, a), (p_0, (, p_0, \varepsilon) \mid a \in \Sigma \setminus \{(\}\}$. Then a CEFA representation of $(\replaceall_{\Sigma \setminus (, \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_2/r_1]))$ is 
+%
+\[\CEFA' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_2), \delta', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_2)\right),\]
+%
+where $\delta'$ comprises the tuples $((p_0,q_0), (, (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{(\}$, $\eta_1(i^{(1)}_2)=1$, and $\eta_0(i^{(1)}_2)=0$. 
+
+Remove  $z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x)$ and $\ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]}$ from the program and add the statement $\ASSERT{i_2=i^{(1)}_2};\ASSERT{x \in \CEFA'}$. 
+
+Similarly, a CEFA representation of $(\replaceall_{\Sigma \setminus ), \varepsilon})^{-1}_{(i_2)}(\Lang(\CEFA_{\rm len}[i_1/r_1]))$ is  
+\[\CEFA'' = \left((\{(p_0, q_0)\}, \Sigma, (i^{(1)}_1), \delta'', \{(p_0, q_0)\}, \{(p_0, q_0)\}), (i^{(1)}_1)\right),\]
+%
+where $\delta''$ comprises the tuples $((p_0,q_0), ), (p_0,q_0), \eta_1)$ and $((p_0,q_0), a, (p_0,q_0), \eta_0)$ such that $a \in \Sigma \setminus \{)\}$, $\eta_1(i^{(1)}_1)=1$, and $\eta_0(i^{(1)}_1)=0$. 
+
+Remove  $y:= \replaceall_{\Sigma \setminus ), \varepsilon}(x)$ and $\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}$ from the program and add the statement $\ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}$, resulting in the following program,
+\[
+\begin{array}{l}
+%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
+\ASSERT{i_1 = i_2}; \ASSERT{ j_2 < j'_2};\\
+%\ASSERT{y \in \CEFA_{\rm len}[i_1/r_1]}; \ASSERT{z \in \CEFA_{\rm len}[i_2/r_1]};\\
+\ASSERT{j_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{(}}[j_1/r_1, j_2/r_2]};  \\
+\ASSERT{j'_1 = 0}; \ASSERT{x \in \CEFA_{\indexof_{)}}[j'_1/r_1, j'_2/r_2]};\\
+\ASSERT{i_2=i^{(1)}_2}; \ASSERT{x \in \CEFA'}; \ASSERT{i_1=i^{(1)}_1}; \ASSERT{x \in \CEFA''}.
+\end{array}
+\] 
+%
+\item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
+\end{description}
+
+\end{example}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%CERR linear integer functions removed%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hide{
+\begin{definition}[CERR linear integer functions]
+An integer function $g: \Sigma^* \times \Int^{k_1} \times \Sigma^* \times \Int^{k_l} \rightarrow 2^\Int$ is  \emph{linear} if there is a pair $(\cR, t)$ such that $\cR \subseteq \Sigma^* \times \Int^{k_1+1} \times \Sigma^* \times \Int^{k_l+1}$ is a CERR and $t$ a linear integer term over $r^{(1)}, \cdots, r^{(l)}$ such that for all $\vec{c_1} \in \Int^{k_1}, \cdots, \vec{c_l} \in \Int^{k_l}$, and $d_1, \cdots, d_l \in \Int$, it holds that $(w_1, (\vec{c_1}, d_1), \cdots, w_l, (\vec{c_l}, d_l)) \in \cR$ iff $t[d_1/r^{(1)}, \cdots, d_l/r^{(l)}] \in g(w_1, \vec{c_1}, \cdots, w_l, \vec{c_l})$.  
+
+For a CERR linear integer function $g$ witnessed by the pair $(\cR, t)$, a CEFA representation of $g$ is a tuple $((\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}, t)$, where $(\NFA_{i,1}, \cdots, \NFA_{i, l})_{i \in [n]}$ is a CEFA representation of $\cR$.
+
+\end{definition}
+
+\begin{example}
+The string functions $\length$ and $\indexof_u$ are CERR linear integer functions, whose CEFA representations can be found in Section~\ref{sec-cslint}.
+\end{example}
+
+Suppose $A = A_r \wedge A_i$, where $A_r$ is a conjunction of atomic formulae of the form $x \in \NFA$, and $A_i$ is linear arithmetic formula (containing no integer functions). By computing the product construction of CEFAs, $A_r$ can be rewritten as $x_1 \in \NFA_1 \wedge \cdots \wedge x_n \in \NFA_n$, where $x_1,\cdots, x_n$ are mutually distinct. Therefore, the path feasibility of $S \wedge A$ is exactly the satisfiability of $A_i$ w.r.t. the CEFAs $\NFA_1, \cdots, \NFA_n$. From Theorem~\ref{thm-incra-la-sat}, we conclude that the path feasibility of  {\slint} is decidable.
+
+
+
+
+Without loss of generality, we assume that string functions only apply to string variables.
+
+
+Let $S':=S$ and $A':=A$. Moreover, let $A'':= \ltrue$. Then execute the following procedure to (partially) flatten the integer terms.
+\begin{description}
+\item[Step 1.] Recursively apply the following transformation until $S' \wedge A'$ contains no more occurrences of integer functions: Select an occurrence of integer functions, say $g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$, such that 
+%it is a \emph{proper} subterm of the other integer term and 
+{\it none} of $\vec{t_1}, \cdots, \vec{t_k}$ contains occurrences of integer functions, introduce a fresh integer variable $i$, let $S' \wedge A'$ be the formula obtained by replacing $g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$ with $i$, moreover, let $A'':= A'' \wedge i = g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$.
+%
+\item[Step 2.] It comprises the following two substeps. 
+\begin{enumerate}
+\item For each occurrence of string functions in $S'$, say $f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$, suppose $\vec{t_j} = (t_{j,1}, \cdots, t_{j, l_j})$ for each $j \in [k]$, introduce fresh integer variables $i_{j, j'}$ for $j \in [k]$ and $j' \in [l_j]$, replace $f(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$ with $f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ in $S'$, where $\vec{i_j} = (i_{j,1}, \cdots, i_{j, l_j})$ for each $j \in [k]$, and let $A':=A' \wedge \bigwedge \limits_{j \in [k], j' \in [l_j]} i_{j, j'} = t_{j, j'}$. 
+\item For each occurrence of integer functions in $A''$, say $g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$, suppose $\vec{t_j} = (t_{j,1}, \cdots, t_{j, l_j})$ for each $j \in [k]$, introduce fresh integer variables $i_{j, j'}$ for $j \in [k]$ and $j' \in [l_j]$, replace $g(x_1, \vec{t_1}, \cdots, x_k, \vec{t_k})$ with $g(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ in $A''$, where $\vec{i_j} = (i_{j,1}, \cdots, i_{j, l_j})$ for each $j \in [k]$, and let $A':=A' \wedge \bigwedge \limits_{j \in [k], j' \in [l_j]} i_{j, j'} = t_{j, j'}$. 
+\end{enumerate}
+%
+\item[Step 3.] Let $S:=S'$ and $A:=A'' \wedge A' $.
+\end{description}
+The aforementioned flattening procedure is a bit technical, for simplicity, we may assume that the integer terms are fully flattened, including the arithmetic operations.
+
+Note that after the aforementioned flattening procedure, the resulting formula $S \wedge A$ satisfies the following property: 
+\begin{quote}
+The integer terms in all the occurrences of string and integer functions  are integer variables, moreover, each integer variable occurs at most once in these string and integer functions.  \hfill ($*$)
+\end{quote}
+Therefore, in the sequel, we assume that $S \wedge A$ satisfies the property ($*$).
+
+\begin{theorem}\label{thm-sl-int-dec}
+Path feasibility of {\slint} satisfying the semantic conditions is decidable.
+\end{theorem}
+
+\begin{proof}
+In the following, we extend the generic decision procedure in \cite{CHL+19}, where NFA is replaced by CEFA.
+
+Let $S \wedge A$ be an {\slint} formula (satisfying the property ($*$)).
+
+For each occurrence of $i = g(x_1, \vec{i'_1}, \cdots, x_k, \vec{i'_k})$ in $A$ with $g$ an integer function, apply the following nondeterministic transformation to $A$: 
+\begin{quote}
+According to the 1st semantic condition, $g$ is a CERR linear integer function and a CEFA representation of $g$, say $((\NFA_{j,1}, \cdots, \NFA_{j, k})_{j \in [m]}, t)$, can be computed effectively from $g$. Consider $((\NFA'_{j,1}, \cdots, \NFA'_{j, k})_{j \in [m]}, t')$, where $\NFA'_{j,1}=\NFA_{j,1}[\vec{i'_1}/R(\NFA_{j,1})]$, $\cdots$, $\NFA'_{j,k}=\NFA_{j,k}[\vec{i'_k}/R(\NFA_{j,k})]$, and $t' = t[i^{(1)}/r^{(1)}, \cdots, i^{(k)}/r^{(k)}]$.
+Nondeterministically choose $j \in [m]$, and replace $i = g(x_1, \vec{i'_1}, \cdots, x_k, \vec{i'_k})$ by $x_1 \in \NFA'_{j,1} \wedge \cdots \wedge x_k \in \NFA'_{j,k} \wedge i = t'$ in $A$.
+\end{quote}
+Note that after this transformation, $S \wedge A$ contains no occurrences of integer functions, moreover, as a result of the property ($*$), for every variable $x$, all the CEFAs to which $x$ belongs satisfy that their sets of registers are  mutually disjoint.
+
+Then repeat the following procedure until $S$ becomes empty.
+%
+\begin{quote}
+Suppose $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ is the last assignment of $S$. 
+\\
+Let $\rho := \{\NFA_1, \cdots, \NFA_s\}$ be the set of all CEFAs such that $y \in \NFA_j$ occurs in $A$ for each $j \in [s]$. Construct $\NFA = \NFA_1 \times \cdots \times \NFA_s$ (Recall that the sets of registers of $\NFA_1$, $\cdots$, $\NFA_s$ are mutually disjoint). Let  the vector of registers in $\NFA$ be $R = (r'_1, \cdots, r'_n)$. Then according to the 2nd semantic condition, 
+a CEFA representation of the $R$-cost enriched pre-image of $\Lang(\NFA)$ under $f$, say $((\cB_{j, 1}, \cdots, \cB_{j, k})_{j \in [\ell]}, \vec{t})$, can be effectively computed from $\NFA$ and $f$. Consider $((\cB'_{j, 1}, \cdots, \cB'_{j, k})_{j \in [\ell]}, \vec{t'})$, where $\cB'_{j, 1} = \cB_{j, 1}[\vec{i_1}/R(\cB_{j,1}), \vec{(r')^{(1)}}/\vec{r^{(1)}}]$, $\cdots$, $\cB'_{j,k}=\cB_{j,k}[\vec{i_k}/R(\cB_{j,k}), \vec{(r')^{(k)}}/\vec{r^{(k)}}]$ (with $\vec{r^{(1)}}= (r^{1}_1, \cdots, r^{(1)}_n)$, similarly for $\vec{r^{(2)}}$ and so on), and $\vec{t'} = \vec{t}[\vec{r'_1}/\vec{r_1}, \cdots, \vec{r'_n}/\vec{r_n}]$ (with $\vec{r_1} = (r^{(1)}_1, \cdots, r^{(k)}_1)$, similarly for $\vec{r^{(2)}}$ and so on). 
+\\
+Nondeterministically choose $j \in [\ell]$ and let 
+$$A:= A \wedge x_1 \in \cB'_{j, 1} \wedge \cdots \wedge x_k \in \cB'_{j, k}  \wedge \bigwedge \limits_{j' \in [n]} r'_{j'} = t'_{j'}.$$
+%
+Remove $y := f(x_1, \vec{i_1}, \cdots, x_k, \vec{i_k})$ from $S$.
+\end{quote}
+
+We would like to remark that if all the string functions $f$ in $S \wedge A$ are \emph{deterministic}, then the product of CEFAs before the pre-image computation can be avoided and the pre-image can be computed \emph{distributively} for CEFAs in $\rho$.
+
+In the end, we get a formula $S \wedge A$ where $S$ is empty. Suppose $A = A_r \wedge A_i$, where $A_r$ is a conjunction of atomic formulae of the form $x \in \NFA$, and $A_i$ is linear arithmetic formula (containing no integer functions). By computing the product construction of CEFAs, $A_r$ can be rewritten as $x_1 \in \NFA_1 \wedge \cdots \wedge x_n \in \NFA_n$, where $x_1,\cdots, x_n$ are mutually distinct. Therefore, the path feasibility of $S \wedge A$ is exactly the satisfiability of $A_i$ w.r.t. the CEFAs $\NFA_1, \cdots, \NFA_n$. From Theorem~\ref{thm-incra-la-sat}, we conclude that the path feasibility of  {\slint} is decidable.
+\qed
+\end{proof}
+
+\begin{corollary}
+Path feasibility of {\cslint} is decidable.
+\end{corollary}
+}

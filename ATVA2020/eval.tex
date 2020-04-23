@@ -1,0 +1,326 @@
+%!TEX root = main.tex
+
+We have compared {\ostrich}+ with some of the state-of-the-art solvers on a wide range of benchmarks.  
+We  discuss the benchmarks in Section~\ref{sec:bench} and %describe the details of the experiments as well as 
+present the experimental results in Section~\ref{sec:exp-res}.
+%and SLENT \cite{WC+18}. 
+
+
+
+\subsection{Benchmarks}\label{sec:bench}
+ 
+%In
+%particular, we compared  with CVC4 1.6 \cite{}, SLOTH \cite{},
+%and Z3 configured to use the Z3-str3 string solver \cite{}. 
+
+%We considered several sets
+%of benchmarks which are described in the next sub-section. The results are given in Section 6.4.2.
+%
+%
+%In [Holík et al. 2018] SLOTH was compared with S3P [Trinh et al. 2016] where inconsistent
+%behaviour was reported. We contacted the S3P authors who report that the current code is unsupported;
+%moreover, S3P is being integrated with Z3. Hence, we do not compare with this tool.
+%
+%
+%The first set of benchmarks we call \textbf{Transducer}. It combines the benchmark
+%sets of Stranger [Yu et al. 2010] and the mutation XSS benchmarks of [Lin and Barceló 2016]. The
+%first (sub-)set appeared in [Holík et al. 2018] and contains instances manually derived from PHP
+%programs taken from the website of Stranger [Yu et al. 2010]. It contains 10 formulae (5 sat, 5
+%unsat) each testing for the absence of the vulnerability pattern .*<script.* in the program output.
+%These formulae contain between 7 and 42 variables, with an average of 21. The number of atomic
+%constraints ranges between 7 and 38 and averages 18. These examples use disjunction, conjunction,
+%regular constraints, and concatenation, replaceAll. They also contain several one-way functional
+%transducers (defined in SMTLIB in [Holík et al. 2018]) encoding functions such as addslashes and
+%trim used by the programs. Note that transducers have been known for some time to be a good
+%framework for specifying sanitisers and browser transductions (e.g., see the works by Minamide,
+%Veanes, Saxena, and others [D’Antoni and Veanes 2013; Hooimeijer et al. 2011; Minamide 2005;
+%Weinberger et al. 2011]), and a library of transducer specifications for such functions is available
+%(e.g. see the language BEK [Hooimeijer et al. 2011]).
+%
+%The second (sub-)set was used by [Holík et al. 2018; Lin and Barceló 2016] and consists of 8
+%formulae taken from [Kern 2014; Lin and Barceló 2016]. These examples explore mutation XSS
+%vulnerabilities in JavaScript programs. They contain between 9 and 12 variables, averaging 9.75, and
+%9-13 atomic constraints, with an average of 10.5. They use conjunctions, regular constraints, concatenation,
+%replaceAll, and transducers providing functions such as htmlEscape and escapeString.
+%Our next set of benchmarks, SLOG, came from the SLOG tool [Wang et al. 2016] and consist of
+%3,392 instances. They are derived from the security analysis of real web applications and contain 1-
+%211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).We split these benchmarks
+%into two sets SLOG (replace) and SLOG (replaceall). Each use conjunction, disjunction, regular
+%constraints, and concatenation. The set SLOG (replace) contains 3,391 instances and uses replace.
+%SLOG (replaceall) contains 120 instances using the replaceAll operation.
+%
+%
+%Our next set of benchmarks Kaluza is the well-known set of Kaluza benchmarks [Saxena et al.
+%2010] restricted to those instances which satisfy our semantic conditions (roughly 80\% of the
+%benchmarks). Kaluza contains concatenation, regular constraints, and length constraints, most of
+%which admit regular monadic decomposition. There are 37,090 such benchmarks (28 032 sat).
+%We also considered the benchmark set of [Chen 2018a,b]. This contains 42 hand-crafted benchmarks
+%using regular constraints, concatenation, and replaceAll with variables in both argument
+%positions. The benchmarks contain 3-7 string variables and 3-9 atomic constraints.
+% 
+
+Our evaluation focuses on problems that combine string with integer constraints.  To this end, we consider the following four sets of
+benchmarks, all in SMT-LIB~2 format.
+
+%\paragraph*{
+\smallskip
+\noindent \transducerbench+
+is derived from the {\transducerbench} benchmark suite of {\ostrich}
+\cite{CHL+19}.  The {\transducerbench} suite involves seven
+transducers: toUpper (replacing all lowercase letters with their
+uppercase ones) and its dual toLower, htmlEscape \cite{htmlEscape} and
+its dual htmlUnescape, escapeString \cite{escapeString}, addslashes
+\cite{addslashes}, and trim \cite{trim}. These transducers are
+collected from Stranger \cite{YABI14} and SLOTH
+\cite{HJLRV18}. Initially none of the benchmarks involved integers. In
+{\transducerbench+}, we encode four security-relevant properties of
+transducers~\cite{BEK}, with the help of the functions~$\charat$ and
+$\length$:
+\begin{itemize}
+\item idempotence: given $\NFT$, whether
+  $\forall x.\ \NFT(\NFT(x)) = \NFT(x)$;
+\item duality: given $\NFT_1$ and
+  $\NFT_2$, whether $\forall x.\ \NFT_2(\NFT_1(x)) = x$;
+\item commutativity: given $\NFT_1$ and $\NFT_2$, whether
+  $\forall x.\ \NFT_2(\NFT_1(x)) = \NFT_1(\NFT_2(x))$;
+\item equivalence: given $\NFT_1$ and $\NFT_2$, whether
+  $\forall x.\ \NFT_1(x) = \NFT_2(x)$.
+\end{itemize}
+
+%
+%\footnote{These problems have been investigated for transducers in \cite{BEK}.} 
+%into the path feasibility of {\slint} programs. 
+For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$ (see Section~\ref{sec:logic} for its details). We also include in {\transducerbench+} three instances generated from the running example in Section~\ref{exmp:running}, 
+where $\NFT_{\rm trim}$ is used. 
+In total, we obtain 94 instances for the {\transducerbench+} suite. 
+%\begin{description}
+%\item[Idempotence.] For each FFT $\NFT$,  we encode the non-idempotence of $\NFT$, namely deciding whether $\exists x.\ \NFT(\NFT(x)) \neq \NFT(x)$, into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$).
+%
+%\item[Duality.] For each pair of distinct FFTs $\NFT_1$ and $\NFT_2$, we encode the non-duality of $\NFT_1$ and $\NFT_2$, namely deciding whether $\exists x.\ \NFT_2(\NFT_1(x)) \neq x$, into the path feasibility of the {\slint} program $y:=\NFT_1(x); z: = \NFT_2(y); S_{x \neq z}$.
+%
+%\item[Commutativity.] For each pair of distinct FFTs $\NFT_1$ and $\NFT_2$, we encode the non-commutativity of $\NFT_1$ and $\NFT_2$, namely deciding whether $\exists x.\ \NFT_2(\NFT_1(x)) \neq \NFT_1(\NFT_2(x))$, into the path feasibility of the {\slint} program $y:=\NFT_1(x); z: = \NFT_2(y); y':= \NFT_2(x); z': = \NFT_1(y'); S_{z \neq z'}$.
+%
+%\item[Equivalence.] For each pair of distinct FFTs $\NFT_1$ and $\NFT_2$, we encode the non-equivalence of $\NFT_1$ and $\NFT_2$, namely deciding whether $\exists x.\ \NFT_1(x) \neq \NFT_2(x)$, into the path feasibility of the {\slint} program $y:=\NFT_1(x); z: = \NFT_2(x); S_{y \neq z}$.
+%
+%\end{description}
+
+\smallskip
+\noindent{\slogbench} is adapted from the SLOG benchmark suite%used by the SLOG tool
+~\cite{fang-yu-circuits}, containing 3,511~instances about strings only.
+%The SLOG are derived from the security analysis of real web applications and contain 1-211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).
+%Note that the SLOG benchmark suite addresses strings only. 
+We  obtain  {\slogbench}  by choosing a string variable $x$ for each instance,
+%SLOG benchmark instance ,
+%\footnote{A string variable is called the output variable if it occurs in the left-hand side of an assignment statement, but does not appear in the right-hand sides of the assignment statements.} 
+%say $x$, 
+and adding the statement $\ASSERT{\length(x) < 2\ \indexof_{a}(x, 0)}$ for some $a \in \Sigma$.
+% and $c \in \Nat$ with $c > 1$.
+As in \cite{CHL+19}, we  split  {\slogbench}  into  \slogbenchr\ and \slogbenchra,  comprising 3,391 and 120 instances respectively. In addition to %the aforementioned 
+the $\indexof$ and $\length$ functions, the benchmarks use regular constraints and concatenation;  {\slogbenchr} also contains the $\replace$ function (replacing the first occurrence), while {\slogbenchra}  uses the $\replaceall$ function (replacing all occurrences).
+
+%Each use conjunction, disjunction, regular constraints, and concatenation.
+%The \slogbenchr\ sub-suite contains 3,391 instances \zhilin{the number to be checked}, while \slogbenchra\ sub-suite contains 120 instances \zhilin{the number to be checked}.
+
+\smallskip
+\noindent \pyexbench~\cite{ReynoldsWBBLT17} 
+contains 25,421 instances  derived by the PyEx tool, a symbolic execution engine for Python programs. The {\pyexbench} suite was generated by the CVC4 group from four popular Python packages: httplib2, pip, pymongo, and requests. These instances use regular constraints, concatenation, $\length$, $\substring$, and $\indexof$ functions. Following \cite{ReynoldsWBBLT17}, the {\pyexbench} suite is further divided into three parts: {\pyextdbench},  {\pyexztbench} and {\pyexzzbench}, comprising 5,569, 8,414 and 11,438  instances, respectively. 
+
+\smallskip
+\noindent\kaluzabench~\cite{Berkeley-JavaScript}
+%
+is the most well-known  benchmark suite in  literature, 
+containing 47,284 instances with regular constraints, concatenation, and the $\length$ function. The 47,284 benchmarks include 28,032 satisfiable and 9,058 unsatisfiable problems in SSA form.
+
+
+\definecolor{Gray}{gray}{0.9}
+%\newcolumntype{g}{>{\columncolor{Gray}}c}
+\begin{table}[tbp]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
+\hline
+\hline
+\multirow{3}{*}{\transducerbench+(94)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}\bf{84}\\
+\cline{2-6}
+ & unsat &$-$  &$-$ &$-$ &\bf{4}\\
+\cline{2-6}
+ & \cellcolor{Gray}  inconclusive  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}6\\
+%\cline{2-6} 
+% & wrong &$-$  & $-$  &$-$ &0 \\
+\hline
+\hline
+\multirow{3}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{104}  & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$  &98 \cellcolor{Gray}\\
+\cline{2-6}
+ & unsat &11  &$-$  &$-$ &\bf{12}\\
+\cline{2-6}
+ &\cellcolor{Gray} inconclusive & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
+%\cline{2-6}
+% & wrong &0 &$-$ &$-$  &0 \\
+\hline
+\hline
+\multirow{3}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray}$-$ & \cellcolor{Gray}584 \\
+\cline{2-6}
+ & unsat & \bf{2,082} & 2,066  &$-$ &\bf{2,082}\\
+\cline{2-6}
+ &\cellcolor{Gray}  inconclusive & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
+%\cline{2-6}
+% & wrong &0 & 0  &$-$ &0\\
+\hline
+\hline
+\multirow{3}{*}{\pyextdbench(5,569)} & \cellcolor{Gray} sat & \cellcolor{Gray}4,224 & \cellcolor{Gray}4,068 &  \cellcolor{Gray} \bf{4,266} & \cellcolor{Gray}4,141\\
+\cline{2-6}
+ & unsat & 1,284 & 1,289 & \bf{1,295} &1,203\\
+\cline{2-6}
+ &\cellcolor{Gray} inconclusive &\cellcolor{Gray}61 &\cellcolor{Gray}212   &\cellcolor{Gray}8 &\cellcolor{Gray}225\\
+%\cline{2-6}
+% &wrong &0 & 0 &  0 &0 \\
+\hline
+\hline
+\multirow{3}{*}{\pyexztbench(8,414)} & \cellcolor{Gray} sat & \cellcolor{Gray}6,346 & \cellcolor{Gray}6,040 & \cellcolor{Gray}\bf{7,003} & \cellcolor{Gray}5,489\\
+\cline{2-6}
+ & unsat & 1,358  & 1,370  &\bf{1,394} &1,239\\
+\cline{2-6}
+ & \cellcolor{Gray}inconclusive &\cellcolor{Gray}710 &\cellcolor{Gray}1,004 &\cellcolor{Gray} 17 &\cellcolor{Gray}1,686\\
+%\cline{2-6}
+% & wrong & 0 &0 & 0 &0 \\
+\hline
+\hline
+\multirow{3}{*}{\pyexzzbench(11,438)} & \cellcolor{Gray} sat & \cellcolor{Gray} 10,078 & \cellcolor{Gray} 8,804 & \cellcolor{Gray} \bf{10,129} & \cellcolor{Gray}9,033\\
+\cline{2-6}
+ & unsat & 1,204 & 1,207  &   \bf{1,222} &868\\
+\cline{2-6}
+ &\cellcolor{Gray}  inconclusive &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} 87 &\cellcolor{Gray}1,537 \\
+%\cline{2-6}
+% & wrong &  0 & 0 & 0&0 \\
+\hline
+\hline
+\multirow{3}{*}{\kaluzabench (47,284)} & \cellcolor{Gray} sat &  \cellcolor{Gray} \bf{35,264} & \cellcolor{Gray} 33,438 & \cellcolor{Gray} 34,769 & \cellcolor{Gray}27,962\\
+\cline{2-6}
+ & unsat & \bf{12,014} &  11,799  &\bf{12,014}  &9,058\\
+\cline{2-6}
+ &\cellcolor{Gray} inconclusive &\cellcolor{Gray}6 & \cellcolor{Gray}2,047  &\cellcolor{Gray}501 &\cellcolor{Gray}10,264 \\
+%\cline{2-6}
+% & wrong &  0 & 0 &0 &0 \\
+\hline 
+\hline
+\multirow{2}{*}{Total(76,310)} & \cellcolor{Gray} solved & \cellcolor{Gray}\bf{75,278}  & \cellcolor{Gray}70,959 & \cellcolor{Gray}72,092 & \cellcolor{Gray}61,857\\
+\cline{2-6}
+ &  unsolved &1,032  & 5,351  & 4,218 &14,453  \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Experimental results on different benchmark suites.  '--' means that the tool is not applicable to the benchmark suite, and 'inconclusive' means that a tool gave up, timed out, or crashed.}
+\label{tab-experiment}\vspace{-6mm}
+\end{table}%
+
+
+\subsection{Experiments}\label{sec:exp-res}
+
+We compare {\ostrich}+ to {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau}. 
+The experiments are executed on a computer with an Intel Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. We use a timeout of 30~seconds (wall-clock time), and report the number of satisfiable and unsatisfiable problems solved by each of the systems.
+Table~\ref{tab-experiment} summarises the experimental results. We did not observe incorrect answers by any tool.
+% (note that the ground-truth are known and have been verified \tl{check this}  
+
+There are two additional state-of-the-art solvers  {\slent} and {\trauplus} which were not included in
+the evaluation. We exclude
+{\slent}~\cite{DBLP:conf/kbse/WangCYJ18} because it uses its own input
+format laut, which is different from the SMT-LIB~2 format used for our
+benchmarks; also, {\transducerbench+} is beyond the scope of {\slent}.
+%
+{\trauplus}~\cite{AbdullaA+19}  integrates {\trau} with {\sloth} to deal with both finite transducers and integer constraints. We were unfortunately unable
+to obtain a working version of {\trauplus} by the deadline, possibly because {\trau} requires two separate versions of Z3 to run. In addition, the algorithm~\cite{AbdullaA+19} focuses on length-preserving transducers, which means that {\transducerbench}+ is beyond the scope of \trauplus.
+
+%  We also believe that {\transducerbench}+ is actually beyond the scope of {\trauplus} since   {\trau} and {\sloth} are rather separated in in {\trauplus}, namely, {\sloth} is used to deal with finite transducers and {\trau} is used to handle integer constraints. For instances from {\transducerbench}+, the two types of constraints are tightly coupled. The approach adopted by {\trauplus} cannot handle these constraints. %, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
+
+
+%Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, 
+%We failed to run {\trau+}  possibly due to the fact that {\trau} requires two versions of Z3 to run. Moreover, although {\trauplus} integrates {\trau} with {\sloth},  %in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. 
+%%,  though we were able to compile the source code of \trauplus.  
+%After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers. % since it is incapable of dealing with finite transducers.
+%We do not compare with {\ostrich} since {\ostrich} basically focuses on pure string constraints not involving the integer data type, while the majority of the benchmarks considered in this paper contain integer arithmetic constraints. 
+%In the beginning, we also planned to compare {\ostrich}+ with two other solvers, namely {\trauplus} \cite{AbdullaA+19} and {\slent} \cite{WC+18}, but finally gave up, with some justifications of this decision explained below. 
+%\begin{itemize}
+%\item {\trauplus} integrates {\trau} with {\sloth} in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, we failed to run {\trau+} (even after some hard work), possibly due to the fact that {\trau} requires two versions of Z3 to run.
+%%,  though we were able to compile the source code of \trauplus.  
+%After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
+%%
+%\item {\slent} uses an input format called laut which is different from the widely used smtlib2 format. Therefore, it is hard to compare {\ostrich}+ with {\slent} on {\kaluzabench} and {\pyexbench} benchmark suites. Moreover, {\transducerbench}+ is beyond the scope of {\slent} since it is incapable of dealing with finite transducers.
+%\end{itemize}
+
+
+{\ostrich}+ is the only tool applicable to the problems in
+{\transducerbench}+. With a timeout of 30s, \ostrich+ can solve 88 of
+the benchmarks, but this number rises to 94 when using a longer
+timeout of 600s. Given the complexity of those benchmarks, this is an
+encouraging result.
+
+On {\slogbenchra}, {\ostrich}+ and {\cvc} are very close: {\ostrich}+ solves 98 satisfiable instances, slightly less than the 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). The suite is beyond the scope of {\zthree} and {\zthreetrau}, which do not support $\replaceall$.
+
+On {\slogbenchr}, {\ostrich}+, {\cvc}, and {\zthree} solve a similar
+number of unsatisfiable problems, while {\cvc} solves the largest
+number of satisfiable instances (1,309). The  suite %{\slogbenchr} benchmark
+is beyond the scope of {\zthreetrau} which does not support
+$\replace$.
+
+On the three \pyexbench\ suites, {\zthreetrau} consistently solves the
+largest number of instances by some margin. \ostrich+ solves a similar
+number of instances as \zthree. Interpreting the results, however, it
+has to be taken into account that \pyexbench\  includes 1,334  instances
+that are \emph{not} in SSA form, which are beyond the scope of
+\ostrich+.
+
+\iffalse
+For {\pyextdbench}, each of the four solvers is able to solve more than 95\% of the benchmark instances and their performances are close, with {\zthreetrau} the best, followed by {\cvc}, then {\zthree}, and finally {\ostrich}+.  
+
+For {\pyexztbench}, {\zthreetrau} is the best, solving almost all instances. %, except 17 of them. 
+{\cvc} and {\zthree} are ranked in the second and third place. The performance of {\ostrich}+ on this benchmark suite is not very impressive, only solving around 80\% instances.
+
+For {\pyexzzbench}, %\zhilin{to be done}
+{\zthreetrau} again is the best, which is followed closely by {\cvc}. %solving almost all instances. %, except 17 of them. 
+%{\cvc} and {\zthree} are ranked in the second and third place. 
+The performance of {\ostrich}+ and {\zthree} are level, but are 10\% worse than  {\zthreetrau} and {\cvc}. %on this benchmark suite is not very impressive, only solving around 80\% instances.
+\fi
+
+The {\kaluzabench} problems can be solved most effectively by {\cvc}.
+\ostrich+ can solve almost all of the 28,032 satisfiable
+problems in SSA form, and all 9,058 unsatisfiable problems in SSA
+form. This is consistent with the results in  \cite{CHL+19} for
+{\ostrich}.
+
+\iffalse
+{\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. 
+%The performance of 
+{\ostrich}+ %is not that satisfactory on this suite and it  
+solves  around 80\%  instances. The main reason is that about 20\% {\kaluzabench} instances cannot be written as programs in the SSA form, thus cannot be handled by%out of the scope of 
+{\ostrich} or {\ostrich}+. This  is consistent with the observation for {\ostrich} \cite{CHL+19}.
+\fi
+
+In summary, we can observe that \ostrich+ is competitive with other
+solvers, while it is also able to handle benchmarks that are beyond the
+scope of the other tools due to the combination of string functions (in particular transducers) and integer
+constraints. Interestingly, the experiments show that \ostrich+, at
+least in its current state, is better at solving unsatisfiable
+problems than satisfiable problems; this might be an artefact of the
+use of nuXmv for analysing products of CEFAs. We expect that further
+optimisation of our algorithm will lead to additional performance
+improvements. For instance, a natural optimisation that is not yet
+included in our implementation is to use standard finite automata like in \ostrich, as opposed to CEFAs, for simpler problems such as the \kaluzabench\ benchmarks.
+
+\iffalse
+%Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experimental results in Table~\ref{tab-experiment}.
+In summary, 
+%\begin{itemize}
+%\item 
+{\ostrich}+ is the only string solver that is capable of solving string constraints involving both finite transducers and integer constraints. In particular, it is the only string solver that is able to verify idempotence, duality, commutativity, and equivalence of HTML sanitisation operations.
+%
+{\ostrich}+ is generally better at solving unsatisfiable benchmark instances. It solves the most instances on both {\slogbenchra} and {\slogbenchr} benchmark suites. Moreover, the number of the unsatisfiable instances of {\pyexbench} resp. {\kaluzabench} solved by {\ostrich}+ is close to that of the best solver. %, compared to the number of solved satisfiable instances.   \zhilin{to be double checked later}
+
+%\end{itemize}
+Admittedly, {\ostrich}+ has not exceeded other mature solvers when dealing with relatively simple string operations. However, considering that it implemented a ()complete) decision procedure (while others rely on heuristics) and its strength in dealing with complex string operations and integer constraints, we may conclude that {\ostrich}+ is competitive, and has much potential to improve when heuristics are introduced to deal with  satisfiable  instances more efficiently. 
+\fi
+
+%From the experimental results, we can see that \ostrich+ is the only solver that 
+
+
+

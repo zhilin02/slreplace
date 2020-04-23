@@ -1,0 +1,161 @@
+%!TEX root = main.tex
+
+%%%%%%% the pseudo-code
+%%%%%%% the pseudo-code
+\begin{algorithm}[tbp]
+	\SetKw{Continue}{continue}
+	\small
+	\KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraints,
+		%    $x \in L$,
+		$\mathit{funApps}$: acyclic set of assignment statements. }
+	\KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
+	}
+	%  \Begin{
+	\For{each partition $(\mathcal{I}_l)_{l \in [5]}$ of the set of $\indexof_v(x, i)$ in $\mathit{arith}$ and \newline
+		\hspace*{4mm} each partition $(\mathcal{J}_l)_{l \in [3]}$ of the set of $\substring(x, i, j)$ in $\mathit{funApps}$ 
+		\tcc{the partitions refer to (1)-(5) for $\indexof_v(x, i)$ and (1)-(3) for $\substring(x, i, j)$ in Step II of Section~\ref{sec:dc}}
+	}
+	{
+		\tcc{Case splits for semantics of $\indexof$ and $\substring$}
+		$(\mathit{active}, \mathit{arith}, \mathit{funApps}) = \mathit{indexofCaseSplit}(\mathit{active}, \mathit{arith}, \mathit{funApps}, (\mathcal{I}_l)_{l \in [5]})$\; 
+		$(\mathit{active}, \mathit{arith}, \mathit{funApps})= \mathit{substringCaseSplit}(\mathit{active}, \mathit{arith}, \mathit{funApps}, (\mathcal{J}_l)_{l \in [3]})$\; 
+		\For{each $\length(x)$ occurring in $\mathit{arith}$}
+		{
+			choose a fresh integer variable $i$\;
+			$\mathit{active} \leftarrow \mathit{active} \cup \{x \in \CEFA_{\rm len}[i/r_1]\}$; $\mathit{arith}\leftarrow \mathit{arith}[i/\length(x)]$;
+		}
+		\For{each $\indexof_v(x,i)$ occurring in $\mathit{arith}$}
+		{
+			choose fresh integer variables $i_1,i_2$\;
+			$\mathit{active} \leftarrow \mathit{active} \cup \{x \in \CEFA_{\indexof_v}[i_1/r_1,i_2/r_2]\}$; $\mathit{arith}\leftarrow \mathit{arith}[i_2/\indexof_v(x,i)] \wedge i=i_1$;
+		}
+		\If{$\mathit{BackDfsExp}(\mathit{active}, \emptyset, \mathit{arith}, \mathit{funApps})$}
+		{
+			\Return{$sat$};}
+		%		{\Continue;}
+	}
+	\Return $\mathit{unsat}$; 		
+	%}
+	\caption{Function $\mathit{checkSat}$
+		for Step II-III} \label{alg:checksat} 
+\end{algorithm}
+
+We have implemented the decision procedure based on the recent string constraint solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  
+
+%Similarly to OSTRICH, 
+OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
+splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$.
+The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.
+%\philipp{I believe we need to comment on the partitions $(\mathcal{I}_l)_{l \in [5]}$ here; at least I don't really understand this notation, and the meaning of the partitions.} 
+%\tl{I add a comment; not sure whether it helps though}\zhilin{Fine with me.}
+%
+(The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix, Section~\ref{app:case-split-semantics}.) Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
+
+
+\begin{algorithm}%[tbp]
+\SetKw{Continue}{continue}
+  \small
+  \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraints,
+%    $x \in L$,
+    $\mathit{funApps}$: acyclic set of assignment statements. }
+  \KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
+   }
+%
+%  \Begin{
+    \eIf{$\mathit{active} = \emptyset$}{
+%      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
+      \tcc{Check whether the LIA constraint $\mathit{arith}$ is satisfiable with respect to the CEFA constraints in $\mathit{passive}$ (i.e. Step V).}
+      \Return{$\mathit{CheckCefaLIASat}(\mathit{passive}, \mathit{arith})$;} 
+    }{
+   	choose a CEFA constraint $x \in \CEFA$ in $active$ with $R(\CEFA)=(r_1,\cdots,r_k)$\;
+	\eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$ in $\mathit{funApps}$ with \newline
+	\hspace*{4mm} $\vec{i_j}=(i_{j,1},\cdots, i_{j, k_j})$ for $j \in [l]$
+	}
+	{
+%	      	\tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\Lang(\CEFA)$ under $f$}
+		compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = \left((\CEFA^{(1)}_{j}, \cdots, \CEFA^{(l)}_{j})_{j \in [n]}, \vec{t}\right)$ where \newline 
+		 $R\left(\CEFA^{(j')}_{j}\right)=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
+	        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in \CEFA\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in \CEFA\}$\;    
+	        \For{$j \leftarrow 1$ \KwTo $n$}{
+        		$\mathit{active} \leftarrow \mathit{active} \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
+        		$\mathit{arith} \leftarrow \mathit{arith} \wedge \bigwedge_{j' \in [l], j'' \in [k_{j'}]} i_{j',j''} = (r')^{(j', j'')} \wedge \bigwedge_{j' \in [k]} r_{j'} = t_{j'}$\;
+        		\eIf{$\mathit{active} \cup \mathit{passive}$ is inconsistent}{\Continue \tcc*{backtrack}}
+		{
+		          \Switch{$\mathit{BackDfsExp}(\mathit{active}, \mathit{passive}, \mathit{arith}, \mathit{funApps})$}{
+				\lCase{$sat$}
+					{\Return{$\mathit{sat}$}}
+				\Case{$\mathit{unsat}$}
+					{\Continue \tcc*{backtrack}}
+          			}
+        		}
+	}
+        	\Return{$\mathit{unsat}$}; 
+      	}
+      	{
+        	\Return{$\mathit{BackDfsExp}(\mathit{active} \backslash \{x\in \CEFA\}, \mathit{passive} \cup \{x\in \CEFA\}, \mathit{arith}, \mathit{funApps})$;}
+      	}
+	} 
+%}
+  \caption{Function~$\mathit{BackDfsExp}$ for Step IV (depth-first exploration)}\label{alg:dfs}
+\end{algorithm}
+%\vspace{-5cm}
+
+%%%%%%% the pseudo-code
+%%%%%%% the pseudo-code
+
+%\vspace{-mm}
+
+\paragraph*{Optimisations for solving the {\lasat} problem.} From Proposition~\ref{prop:la-sat-cefa-inter}, a natural approach to solve the {\lasat} problem is to compute an existential LIA formula defining the Parikh image of products of CEFAs, and then use off-the-shelf SMT solvers (e.g. CVC4 or Z3) to decide the satisfiability of the existential LIA formula. %Nevertheless, 
+However, our preliminary experiments show that this approach suffers from a scalability issue, in particular, %faces 
+the state-space explosion when computing products of CEFAs.  %We did implement this approach in the beginning. However, some preliminary experiments showed that this approach is not scalable. Therefore, 
+In the implementation of the function $\mathit{CheckCefaLIASat}$ in Algorithm~\ref{alg:dfs},  we %finally choose 
+opt to utilise the symbolic model checker nuXmv \cite{nuxmv} to mitigate the state-space explosion during the computation of products of CEFAs. The nuXmv tool is a well-known symbolic model checker that is capable of analysing both finite and infinite state systems. Our technique is to encode {\lasat} as an instance of the model checking problem, which can  be solved by %and then call 
+nuXmv. Since  {\lasat} is a problem for quantifier-free LIA formulas and CEFAs that contain integer variables, the {\lasat} problem actually corresponds to the problem of model checking \emph{infinite state systems}. 
+%
+%In the following, we use a simple example to illustrate how to encode the instances of  the {\lasat} problem into the inputs of nuXmv.
+%
+%\begin{example}
+%Encoding of {\lasat} into nuXmv.
+%\end{example}
+
+
+%%%%% Case splits of semantics %%%%
+%%%%% Case splits of semantics %%%%
+
+%reduce the number of registers
+%\begin{itemize}
+%\item $\substring(x, 0, i)$, $\indexof_v(x, 0)$, remove the input register,
+%
+%\item CEFAs without registers: product + minimization 
+%
+%CEFAs with one register updated with $+1$: product + minimization
+%
+%Other CEFAs: no optimization
+%\end{itemize}
+
+
+%The main bottleneck of the decision procedure is 
+%
+%$prefixOf(x, u), suffixOf(x,u), contains(x, u)$: transformed into regular constraints
+%
+%using nuxmv to avoid state explosion of the product operation.
+%
+%introduction to nuxmv
+%
+%introduction to the encoding into nuxmv instances
+%
+%\begin{example}
+%An example for the nuxmv encoding.
+%\end{example}
+%
+%start two threads, one guessing sat, another one guessing unsat, run concurrently
+%
+%three strategies: 
+%
+%product + parikh image
+%
+%product + nuxmv
+%
+%nuxmv
+
+
