@@ -1,5 +1,7 @@
 %!TEX root = main.tex
 
+In this paper, we consider logics involving two data-types, i.e., the string data-type and the integer data-type. We will use $u, v, \dots$ to denote string constants,  $c, d,\dots$ to denote integer constants, $x, y, \dots$ to denote string variables, and $i, j, \dots$ to denote  integer variables.
+
 We consider symbolic execution of string-manipulating programs with numeric conditions (abbreviated as {\slint}), defined by the following rules, 
 %
 \[
@@ -98,28 +100,30 @@ where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}
 \end{example}
 
 
-\begin{remark}
-Note that %to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and 
-for simplicity, strictly speaking, string constants are not allowed in the assignments. %therein. 
-For instance, %string variables, instead of string constants, are required to appear as the string parameters of $\reverse$. This is not a real restriction, since 
-$x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real restriction because it can be written as $x:=\reverse(y); \ASSERT{y \in \NFA_{abc}}$, where $y$ is a fresh variable and $\NFA_{abc}$ is the NFA which accepts ``$abc$''  only.
-\end{remark}
-
-
-\begin{remark}
-The function $\replaceall_{e,u}$ can be seen as a special case of FFT, but the transformation to an equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
-\end{remark}
-
-To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as the following {\slint} program (denoted by $S_{x \neq y}$)
-\[
-\begin{array}{l}
-z_1:=\charat(x,i); z_2 := \charat(y,i); \\
-\ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
-\end{array}
-\] 
-where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA accepting $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or otherwise, there exists some position where the characters of the two strings are different.
- 
-
+%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\begin{remark}
+%Note that %to ease the notation, we allow only variables in the string parameters of string operations in {\slint}, and 
+%for simplicity, strictly speaking, string constants are not allowed in the assignments. %therein. 
+%For instance, %string variables, instead of string constants, are required to appear as the string parameters of $\reverse$. This is not a real restriction, since 
+%$x:=\reverse({\mbox``}abc\mbox{''})$ is disallowed. However, this is not a real restriction because it can be written as $x:=\reverse(y); \ASSERT{y \in \NFA_{abc}}$, where $y$ is a fresh variable and $\NFA_{abc}$ is the NFA which accepts ``$abc$''  only.
+%\end{remark}
+%
+%
+%\begin{remark}
+%The function $\replaceall_{e,u}$ can be seen as a special case of FFT, but the transformation to an equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
+%\end{remark}
+%
+%To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as the following {\slint} program (denoted by $S_{x \neq y}$)
+%\[
+%\begin{array}{l}
+%z_1:=\charat(x,i); z_2 := \charat(y,i); \\
+%\ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
+%\end{array}
+%\] 
+%where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA accepting $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or otherwise, there exists some position where the characters of the two strings are different.
+% 
+%
 
 
 %The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
