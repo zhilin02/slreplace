@@ -1,23 +1,121 @@
 %!TEX root = main.tex
 
-%In this section, we show the main result of this paper. 
+In this section, we present a decision procedure for the path feasibility problem of {\slint}. A distinguished feature of the decision procedure is that it conducts backward computation which is local and can be done in a modular way. To support this, we extend  a regular language with quantitative information of the strings in the language, giving rise to cost-enriched regular languages and corresponding finite automata (Section \ref{sect:ce}). The crux of the decision procedure is thus to show that the  pre-images of cost-enriched regular languages under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$) are representable by so called cost-enriched recognisable relations (Section \ref{sect:pre}). The overall decision procedure is presented in Section~\ref{sec:dc}, supplied by additional complexity analysis and examples. 
 
-%\begin{theorem}\label{thm-main}
-%The path feasibility of {\slint} programs is $\expspace$-complete.  
-%\end{theorem}
-%%
-%The lower bound of Theorem~\ref{thm-main} follows from Theorem~5 in \cite{LB16}, where the satisfiability of straight-line sting constraints with concatenation and finite transducers is shown to be the $\expspace$-complete.
-%
-%For the upper bound, we will design a decision procedure for the path feasibility problem of {\slint} programs, based on the concepts of CERLs and CERRs introduced Section~\ref{sec:cefa}.
-%\zhilin{I think we can use Proposition 16 in \cite{LB16} to get the expspace upper bound. But to use this result, we need restrict CEFA to monotonic counter automata.}
+\subsection{Cost-Enriched Regular Languages and Recognisable Relations} \label{sect:ce}
 
-In this section, we present a decision procedure for the path feasibility problem of {\slint}. A distinguished feature of the decision procedure is that it conducts backward computation which is local and can be done in a modular way. To support this, we extend  a regular language with quantitative information of the strings in the language, giving rise to cost-enriched regular languages and corresponding finite automata (Section \ref{sect:ce}). The crux of the decision procedure is thus to %we will 
-show that the %cost-enriched 
-pre-images of cost-enriched regular languages under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$) are representable by so called cost-enriched recognisable relations (Section \ref{sect:pre}). The overall decision procedure is presented in Section~\ref{sec:dc}, supplied by additional complexity analysis and examples. 
+Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. For our purpose, we identify a ``regular" fragment of cost-enriched languages as follows.  
 
-\input{cefa.tex}
+\begin{definition}[Cost-enriched regular languages]
+	Let $k \in \Nat$ with $k > 0$. A $k$-cost-enriched language is \emph{regular} (abbreviated as CERL) if it can be accepted by a \emph{cost-enriched finite automaton}. 
+	
+	A cost-enriched finite automaton (CEFA) $\CEFA$ is a tuple $(Q, \Sigma, R, \delta, I, F)$ where 
+	\begin{itemize}
+		\item $Q, \Sigma, I, F$ are defined as in NFAs, 
+		%
+		\item $R=(r_1, \cdots, r_k)$ is a vector of (mutually distinct) \emph{cost registers}, 
+		%
+		\item $\delta$ is the transition relation which is a finite set of tuples $(q, a, q', \eta)$ where $q, q' \in Q$, $a \in \Sigma$, and %$\eta: R \rightarrow \intnum$ 
+		$\eta: R \rightarrow \Int$
+		is a cost register update function. \\
+		For convenience, we usually write $(q, a, q', \eta) \in \Delta$ as $q \xrightarrow{a, \eta} q'$.
+	\end{itemize}
+	%
+	A \emph{run} of $\CEFA$ on a $k$-cost-enriched string $(a_1 \cdots a_m, (n_1, \cdots,n_k))$ is a  transition sequence $q_0 \xrightarrow{a_1, \eta_1} q_1 \cdots q_{m-1} \xrightarrow{a_m, \eta_m} q_m$ such that $q_0 \in I$ and $n_i = \sum \limits_{1\leq j\leq m}\eta_j(r_i)$ for each $i \in [k]$ (Note that the initial values of cost registers are zero). The run is \emph{accepting} if $q_m \in F$. A $k$-cost-enriched string $(w, (n_1, \cdots,n_k))$ is accepted by $\CEFA$ if there is an accepting run of $\CEFA$ on $(w, (n_1, \cdots,n_k))$. In particular, $(\varepsilon, n)$ is accepted by $\CEFA$ if $n=0$ and $I\cap F \neq \emptyset$.
+	The $k$-cost-enriched language defined by $\CEFA$, denoted by $\Lang(\CEFA)$, is the set of $k$-cost-enriched strings accepted by $\CEFA$. 
+	%A cost-enriched language $L \subseteq \Sigma^* \times \intnum^k$ is called a cost-enriched regular language (CERL) if there is a CEFA $\NFA$ such that $L = \Lang(\NFA)$.
+\end{definition}
+The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CEFA|$, is defined as the sum of the sizes of its transitions, where the size of each transition $(q, a, q', \eta)$ is $\sum \limits_{r \in R} \lceil \log_2 (|\eta(r)|) \rceil +3$. Note here  the integer constants in $\CEFA$ are encoded in binary.
 
-%Before presenting the decision procedure, we introduce an additional concept, i.e., cost-enriched pre-images of CERLs under string operations. Moreover, 
+\begin{remark}
+	CEFAs can be seen as a variant of Cost Register Automata \cite{RLJ+13}, by admitting nondeterminism and discarding partial final cost functions. CEFAs are also closely related to monotonic counter machines \cite{LB16}. The main difference is that CEFAs discard guards in transitions and allow binary-encoded integers in cost updates, while monotonic counter machines allow guards in transitions but restrict the cost updates to being monotonic and unary, i.e. $0,1$ only. Moreover, we explicitly define CEFAs as language acceptors for  cost-enriched languages.
+\end{remark}
+
+\begin{example}[CEFA for $\length$]\label{exm:len}
+	The string function $\length$ can be captured by CEFAs. For any NFA $\NFA=(Q, \Sigma,  \delta, I, F)$, it is not difficult to see that the cost-enriched language $\{(w, \length(w)) \mid w\in \Lang(\NFA)\}$ is accepted by a CEFA, i.e., 
+	$(Q, \Sigma, (r_1), \delta', I, F)$  %$Q =I=F= \{q_0\}$, $R=(r_1)$, and 
+	such that for each $(q, a, q')\in \delta$, we let $(q, a, q', \eta)\in \delta'$, where $\eta(r_1) = 1$. 
+	
+	For later use, we identify a special $\CEFA_{\rm len}= (\{q_0\}, \Sigma, (r_1), \{(q_0, a, q_0, \eta) \mid \eta(r_1) = 1\}, \{q_0\}, \{q_0\})$. In other words, $\CEFA_{\rm len}$ accepts $\{(w, \length(w)) \mid w\in \Sigma^*\}$.
+	%
+	%
+	%to denote the CEFA $(Q, \Sigma, (r_1), \delta', I, F)$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$, specifically, $\NFA_{\rm len} = (\{q_0\}, \Sigma, (r_1), \{(q_0, a, q_0, \eta) \mid \eta(r_1) = 1\}, \{q_0\}, \{q_0\})$.
+	%\tl{it is a bit vague; you mean for any RE $e$,  is a cerl?}
+\end{example}
+
+We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFAs as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
+accepting $\left\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \right\}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
+The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
+
+For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^*, n \le \indexof_v(w, n) < |w| \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
+Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics of $\indexof_v$, for instance, $\indexof_v(w, n) = -1$ if $v$ does not occur after the position $n$ in $w$.
+In the sequel, we will give an example of the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single letter.  
+
+\begin{example}[CEFA for $\indexof_a$]\label{exm:indexof}
+	Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
+	\begin{itemize}
+		\item $(q_0, b, q_0, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=1$, $\eta(r_2)=1$,
+		%
+		\item $(q_0, b, q_1, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2) = 1$,
+		%
+		\item $(q_0, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2) = 0$,
+		%
+		\item $(q_1, b, q_1, \eta)$ such that $b \in \Sigma \setminus \{a\}$, $\eta(r_1)=0$, $\eta(r_2)=1$,
+		%
+		\item $(q_1, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2)=0$,
+		%
+		\item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
+	\end{itemize}
+	Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
+\end{example}
+
+
+Given two CEFAs $\CEFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\CEFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where %the notation is abused a bit, viewing 
+$R_1$ and $R_2$ are treated as sets), the product of $\CEFA_1$ and $\CEFA_2$, denoted by $\CEFA_1 \times \CEFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
+
+
+For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. %Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.
+%Moreover, for a CEFA $\NFA$ and 
+Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ is a vector of mutually distinct integer variables such that $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for $j \in [k]$. 
+
+\smallskip
+
+%Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A  $(k_1,\cdots, k_l)$-cost-enriched relation $\cR$ is a subset of $(\Sigma^* \times \intnum^{k_1}) \times \cdots (\Sigma^* \times \intnum^{k_l})$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}[Cost-enriched recognisable relations]
+	Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A cost-enriched recognisable relation (CERR)  $\cR \subseteq (\Sigma^* \times \intnum^{k_1}) \times \cdots  \times (\Sigma^* \times \intnum^{k_l})$ is a finite union of products of CERLs. Formally,
+	$\cR = \bigcup \limits_{i=1}^n L_{i,1 } \times \cdots \times L_{i, l}$, 
+	where for every $j \in [l]$, $L_{i,j} \subseteq \Sigma^* \times \intnum^{k_j}$ is a CERL. 
+	A CEFA representation of $\cR$ is a collection of CEFA tuples $(\CEFA_{i,1}, \cdots, \CEFA_{i,l})_{i \in [n]}$ such that $\Lang(\CEFA_{i,j}) = L_{i,j}$ for every $i \in [n]$ and $j \in [l]$.
+\end{definition}
+
+\begin{example}\label{exm:CERR}
+	The relation 
+	\[\cR=\left\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\right\}\] 
+	is a CERR since 
+	$\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2}$, where $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$, $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$, and $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$.
+	%\begin{itemize}
+	%\item $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, 
+	%\item $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$ , 
+	%\item $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$,  and
+	%\item $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$. 
+	%\end{itemize}
+	Note that $L_{i,j}$ for $i,j\in[2]$ are CERLs, with corresponding CEFAs $\CEFA_{i,j}$ by  Example~\ref{exm:len}. It follows that %Moreover, 
+	$(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ gives a CEFA representation of $\cR$. %, where 
+	%\tl{to be simplified.}
+	%\begin{itemize}
+	%\item  $\CEFA_{1,1} = (\{p_0, p_1\}, \{a,b\}, (r_{1}), \delta_{1,1}, \{p_0\}, \{p_0\})$ defines $L_{1,1}$, such that $\delta_{1,1}= \{(p_0, a, p_1,\eta_1)$, $(p_1, a, p_0, \eta_1)\}$, with $\eta_1(r_{1})=1$,
+	%%
+	%\item $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{1,2}, \{q_0\}, \{q_1\})$ defines $L_{1,2}$, such that $\delta_{1,2}=\{(q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$,
+	%%
+	%\item $\CEFA_{2,1} = (\{p_0, p_1,p_2, p_3\}, \{a,b\}, (r_{1}), \delta_{2,1}, \{p_0\}, \{p_2\})$ defines $L_{2,1}$, such that $\delta_{2,1} = \{(p_0, a, p_1, \eta_1), (p_1, a, p_2, \eta_1), (p_2, a, p_3, \eta_1), (p_3, a, p_2, \eta_1)\}$, with $\eta_1(r_{1})=1$, and
+	%%
+	%\item $\CEFA_{2,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{2,2}, \{q_1\})$ defines $L_{2,2}$, such that $\delta_{2,2}= (q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$.
+	%\end{itemize}
+\end{example}
+
+ 
 
 \subsection{Pre-images of CERLs under string operations} \label{sect:pre}
 
