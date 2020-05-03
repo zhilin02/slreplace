@@ -49,25 +49,27 @@ The construction is slightly technical and can be found in Appendix, Section~\re
 
 For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^*, n \le \indexof_v(w, n) < |w| \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
 Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics of $\indexof_v$, for instance, $\indexof_v(w, n) = -1$ if $v$ does not occur after the position $n$ in $w$.
-In the sequel, we will give an example of the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single letter.  
 
-\begin{example}[CEFA for $\indexof_a$]\label{exm:indexof}
-	Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
-	\begin{itemize}
-		\item $(q_0, b, q_0, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=1$, $\eta(r_2)=1$,
-		%
-		\item $(q_0, b, q_1, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2) = 1$,
-		%
-		\item $(q_0, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2) = 0$,
-		%
-		\item $(q_1, b, q_1, \eta)$ such that $b \in \Sigma \setminus \{a\}$, $\eta(r_1)=0$, $\eta(r_2)=1$,
-		%
-		\item $(q_1, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2)=0$,
-		%
-		\item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
-	\end{itemize}
-	Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
-\end{example}
+%coimmented for space
+%In the sequel, we will give an example of the construction of $\CEFA_{\indexof_v}$ for the special case that $v$ is a single letter.  
+%
+%\begin{example}[CEFA for $\indexof_a$]\label{exm:indexof}
+%	Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
+%	\begin{itemize}
+%		\item $(q_0, b, q_0, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=1$, $\eta(r_2)=1$,
+%		%
+%		\item $(q_0, b, q_1, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2) = 1$,
+%		%
+%		\item $(q_0, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2) = 0$,
+%		%
+%		\item $(q_1, b, q_1, \eta)$ such that $b \in \Sigma \setminus \{a\}$, $\eta(r_1)=0$, $\eta(r_2)=1$,
+%		%
+%		\item $(q_1, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2)=0$,
+%		%
+%		\item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
+%	\end{itemize}
+%	Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
+%\end{example}
 
 
 Given two CEFAs $\CEFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\CEFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where %the notation is abused a bit, viewing 
@@ -78,7 +80,7 @@ For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occ
 %Moreover, for a CEFA $\NFA$ and 
 Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\cdots, i_k)$ is a vector of mutually distinct integer variables such that $R(\NFA) \cap \vec{i} = \emptyset$. We use $\CEFA[\vec{i}/R(\CEFA)]$ to denote the CEFA obtained from $\CEFA$ by simultaneously replacing $r_j$ with $i_j$ for $j \in [k]$. 
 
-\smallskip
+%\smallskip
 
 %Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A  $(k_1,\cdots, k_l)$-cost-enriched relation $\cR$ is a subset of $(\Sigma^* \times \intnum^{k_1}) \times \cdots (\Sigma^* \times \intnum^{k_l})$.
 
@@ -90,30 +92,30 @@ Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\
 	A CEFA representation of $\cR$ is a collection of CEFA tuples $(\CEFA_{i,1}, \cdots, \CEFA_{i,l})_{i \in [n]}$ such that $\Lang(\CEFA_{i,j}) = L_{i,j}$ for every $i \in [n]$ and $j \in [l]$.
 \end{definition}
 
-\begin{example}\label{exm:CERR}
-	The relation 
-	\[\cR=\left\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\right\}\] 
-	is a CERR since 
-	$\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2}$, where $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$, $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$, and $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$.
-	%\begin{itemize}
-	%\item $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, 
-	%\item $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$ , 
-	%\item $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$,  and
-	%\item $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$. 
-	%\end{itemize}
-	Note that $L_{i,j}$ for $i,j\in[2]$ are CERLs, with corresponding CEFAs $\CEFA_{i,j}$ by  Example~\ref{exm:len}. It follows that %Moreover, 
-	$(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ gives a CEFA representation of $\cR$. %, where 
-	%\tl{to be simplified.}
-	%\begin{itemize}
-	%\item  $\CEFA_{1,1} = (\{p_0, p_1\}, \{a,b\}, (r_{1}), \delta_{1,1}, \{p_0\}, \{p_0\})$ defines $L_{1,1}$, such that $\delta_{1,1}= \{(p_0, a, p_1,\eta_1)$, $(p_1, a, p_0, \eta_1)\}$, with $\eta_1(r_{1})=1$,
-	%%
-	%\item $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{1,2}, \{q_0\}, \{q_1\})$ defines $L_{1,2}$, such that $\delta_{1,2}=\{(q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$,
-	%%
-	%\item $\CEFA_{2,1} = (\{p_0, p_1,p_2, p_3\}, \{a,b\}, (r_{1}), \delta_{2,1}, \{p_0\}, \{p_2\})$ defines $L_{2,1}$, such that $\delta_{2,1} = \{(p_0, a, p_1, \eta_1), (p_1, a, p_2, \eta_1), (p_2, a, p_3, \eta_1), (p_3, a, p_2, \eta_1)\}$, with $\eta_1(r_{1})=1$, and
-	%%
-	%\item $\CEFA_{2,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{2,2}, \{q_1\})$ defines $L_{2,2}$, such that $\delta_{2,2}= (q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$.
-	%\end{itemize}
-\end{example}
+%\begin{example}\label{exm:CERR}
+%	The relation 
+%	\[\cR=\left\{((w_1, |w_1|), (w_2, |w_2|)) \mid  w_1 \in \Lang((aa)^*), w_2 \in \Lang(b(bb)^*), |w_1|+|w_2| \ge 2\right\}\] 
+%	is a CERR since 
+%	$\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2}$, where $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$, $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$, and $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$.
+%	%\begin{itemize}
+%	%\item $L_{1,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$, 
+%	%\item $L_{1,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(bbb(bb)^*)\}$ , 
+%	%\item $L_{2,1}=\{(w_1, |w_1|) \mid w_1 \in \Lang(aa(aa)^*)\}$,  and
+%	%\item $L_{2,2}=\{(w_2, |w_2|) \mid  w_2 \in \Lang(b(bb)^*)\}$. 
+%	%\end{itemize}
+%	Note that $L_{i,j}$ for $i,j\in[2]$ are CERLs, with corresponding CEFAs $\CEFA_{i,j}$ by  Example~\ref{exm:len}. It follows that %Moreover, 
+%	$(\CEFA_{i,1}, \CEFA_{i,2})_{i \in [2]}$ gives a CEFA representation of $\cR$. %, where 
+%	%\tl{to be simplified.}
+%	%\begin{itemize}
+%	%\item  $\CEFA_{1,1} = (\{p_0, p_1\}, \{a,b\}, (r_{1}), \delta_{1,1}, \{p_0\}, \{p_0\})$ defines $L_{1,1}$, such that $\delta_{1,1}= \{(p_0, a, p_1,\eta_1)$, $(p_1, a, p_0, \eta_1)\}$, with $\eta_1(r_{1})=1$,
+%	%%
+%	%\item $\CEFA_{1,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{1,2}, \{q_0\}, \{q_1\})$ defines $L_{1,2}$, such that $\delta_{1,2}=\{(q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$,
+%	%%
+%	%\item $\CEFA_{2,1} = (\{p_0, p_1,p_2, p_3\}, \{a,b\}, (r_{1}), \delta_{2,1}, \{p_0\}, \{p_2\})$ defines $L_{2,1}$, such that $\delta_{2,1} = \{(p_0, a, p_1, \eta_1), (p_1, a, p_2, \eta_1), (p_2, a, p_3, \eta_1), (p_3, a, p_2, \eta_1)\}$, with $\eta_1(r_{1})=1$, and
+%	%%
+%	%\item $\CEFA_{2,2}=(\{q_0,q_1,q_2\}, \{a,b\}, (r_{2}), \delta_{2,2}, \{q_1\})$ defines $L_{2,2}$, such that $\delta_{2,2}= (q_0, b, q_1,\eta_2), (q_1, b, q_2, \eta_2), (q_2, b, q_1,\eta_2)\}$, with $\eta_2(r_{2})=1$.
+%	%\end{itemize}
+%\end{example}
 
  
 
