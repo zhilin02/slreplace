@@ -341,7 +341,9 @@ deciding whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely,  
 whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
 there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[\theta(R')/R']$ holds and $(w_x, \theta(R(\CEFA_{x}^{j}))) \in \Lang(\CEFA_{x}^{j})$ for every $x \in X$ and $j \in [s_x]$.
 \end{quote}
-This {\lasat} problem is decidable and $\pspace$-complete:
+This {\lasat} problem is decidable and $\pspace$-complete;
+%A proof of Proposition~\ref{prop:la-sat-cefa-inter} 
+The proof can be found in Appendix, Section~\ref{app:sat-cefa}.  
 %\end{definition}
 
 %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
@@ -362,12 +364,11 @@ This {\lasat} problem is decidable and $\pspace$-complete:
 %	there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_i)_{i \in I}$ such that  $\phi[\theta(R' )/R']$ holds and $(w_i, \theta(R_i^j)) \in \Lang(\CEFA_{i}^j)$ for every $i \in I$ and $j \in J_i$ is $\pspace$-complete. 
 \end{proposition}
 
-A natural idea for the proof for Proposition~\ref{prop:la-sat-cefa-inter} is to compute, for each string variable $x \in X$, an existential LIA formula $\phi_x$ defining the Parikh image of the product of the CEFAs in $\Lambda_x$, and then to solve the satisfiability of $\phi \wedge \bigwedge_{x \in X} \phi_x$. Nevertheless, computing the product of CEFAs followed by the computation of its Parikh image would require exponential space. To circumvent this exponential space blowup, %instead of computing the product of CEFAs in $\Lambda_x$ explicitly, 
-we utilise Proposition 16 in \cite{LB16} to show a small model property for the {\lasat} problem: If a model of  {\lasat}, specifically, an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$, exists, then $\theta$ can be assumed to satisfy that for each $x \in X$ and $r \in R_x=\bigcup_{j \in [s_x]} R(\CEFA_{x}^{j})$, $\theta(r)$ is at most exponential in the size of $\CEFA_{x}^{j}$ for $j \in [s_x]$ and $|\phi|$. Since the binary encodings of $\theta(r)$ can be stored in polynomial space, one can \emph{nondeterministically} guess the strings $(w_x)_{x \in X}$, simulate the runs of $\CEFA_{x}^{j}$ on $w_x$, and finally evaluate $\phi$ over the register values after all CEFAs $\CEFA_{x}^{j}$ accept, in polynomial space. A proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix, Section~\ref{app:sat-cefa}. %which is doable according to 
-%A more detailed  proof of Proposition~\ref{prop:la-sat-cefa-inter} can be found in Appendix~\ref{app:sat-cefa}. 
-%\zhilin{polish further.}
+%%%%%% commented for space %%%%%%%%%%%%%%%
+%A natural idea for the proof for Proposition~\ref{prop:la-sat-cefa-inter} is to compute, for each string variable $x \in X$, an existential LIA formula $\phi_x$ defining the Parikh image of the product of the CEFAs in $\Lambda_x$, and then to solve the satisfiability of $\phi \wedge \bigwedge_{x \in X} \phi_x$. Nevertheless, computing the product of CEFAs followed by the computation of its Parikh image would require exponential space. To circumvent this exponential space blowup, %instead of computing the product of CEFAs in $\Lambda_x$ explicitly, 
+%we utilise Proposition 16 in \cite{LB16} to show a small model property for the {\lasat} problem: If a model of  {\lasat}, specifically, an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$, exists, then $\theta$ can be assumed to satisfy that for each $x \in X$ and $r \in R_x=\bigcup_{j \in [s_x]} R(\CEFA_{x}^{j})$, $\theta(r)$ is at most exponential in the size of $\CEFA_{x}^{j}$ for $j \in [s_x]$ and $|\phi|$. Since the binary encodings of $\theta(r)$ can be stored in polynomial space, one can \emph{nondeterministically} guess the strings $(w_x)_{x \in X}$, simulate the runs of $\CEFA_{x}^{j}$ on $w_x$, and finally evaluate $\phi$ over the register values after all CEFAs $\CEFA_{x}^{j}$ accept, in polynomial space. 
+%%%%%% commented for space %%%%%%%%%%%%%%%
 
-%From Theorem~\ref{thm-la-sat-cefa}, we know that there is a nondeterministic polynomial time algorithm to solve this problem.
 \smallskip
 \noindent\emph{Complexity analysis of the decision procedure.} Step I and Step II can be done in nondeterministic linear time. Step III can be done in linear time. In Step IV, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step IV can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step V can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ by Savitch's theorem \cite{complexity-book}.  
  
@@ -375,7 +376,7 @@ we utilise Proposition 16 in \cite{LB16} to show a small model property for the 
 	In this paper, we focus on functional finite transducers (cf.\ Section~\ref{sec:prel}). Our decision procedure is applicable to general finite transducers as well with minor adaptation. However, the $\expspace$ complexity upper-bound does not hold any more, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional finite transducers $f$.  
 \end{remark}
 
-An example to demonstrate the decision procedure applied to the program in Example~\ref{exmp:logic} is provided in the Appendix, Section~\ref{app:urlexample}.
+%An example to demonstrate the decision procedure applied to the program in Example~\ref{exmp:logic} is provided in the Appendix, Section~\ref{app:urlexample}.
 
 %\begin{example}
 %Consider the program $S$ associated with {\tt urlXssSanitise(url)} in Section~\ref{sec:intro}. % Example~\ref{exmp:running}.

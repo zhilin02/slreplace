@@ -40,16 +40,18 @@
 		for Step II-III} \label{alg:checksat} 
 \end{algorithm}
 
-We have implemented the decision procedure based on the recent string constraint solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  
 
-%Similarly to OSTRICH, 
+
+
 OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
-splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$.
-The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec} is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.
+splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$. The pseudo-code of Step II-III of the decision procedure %in Section~\ref{sec:dec} 
+is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.
 %\philipp{I believe we need to comment on the partitions $(\mathcal{I}_l)_{l \in [5]}$ here; at least I don't really understand this notation, and the meaning of the partitions.} 
 %\tl{I add a comment; not sure whether it helps though}\zhilin{Fine with me.}
 %
-(The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix, Section~\ref{app:case-split-semantics}.) Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
+%(The details of $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ can be found in Appendix, Section~\ref{app:case-split-semantics}.) 
+%
+Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
 
 
 \begin{algorithm}%[tbp]
@@ -104,6 +106,70 @@ The pseudo-code of Step II-III of the decision procedure in Section~\ref{sec:dec
 %%%%%%% the pseudo-code
 
 %\vspace{-mm}
+
+
+
+\begin{algorithm}[htbp]
+	\small
+	\KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+		$\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
+	\KwResult{$(active, arith, \mathit{funApps})$\newline}
+	
+	\For{each $\indexof_v(x, i) \in \mathcal{I}_1$}
+	{
+		$arith \leftarrow arith[\indexof_v(x, 0)/\indexof_v(x,i)] \wedge i < 0$\;
+	}
+	\For{each $\indexof_v(x, i) \in \mathcal{I}_2$}
+	{
+		$active \leftarrow active \cup \{x \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+		$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i < 0$\;
+	}
+	\For{each $\indexof_v(x, i) \in \mathcal{I}_3$}
+	{
+		$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge \length(x)$\;
+	}
+	\For{each $\indexof_v(x, i) \in \mathcal{I}_4$}
+	{
+		$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x)$\;
+	}
+	\For{each $\indexof_v(x, i) \in \mathcal{I}_5$}
+	{
+		choose fresh variables $y$ and $j$\;
+		$active \leftarrow active \cup \{y \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
+		$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
+		$\mathit{funApps} \leftarrow \mathit{funApps} \cup \{y:=\substring(x, i, j)\}$\;
+	}		
+	\caption{$\mathit{indexofCaseSplit}$ for case splits in the semantics of $\indexof_v$}\label{alg:indexof}
+\end{algorithm}
+
+%\vspace{1cm}
+
+\begin{algorithm}[htbp]
+	\small
+	\KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
+		$\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
+	\KwResult{$(active, arith, \mathit{funApps})$\newline}
+	
+	\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
+	{
+		$arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
+	}
+	\For{each $y:=\substring(x, i, j) \in \mathcal{J}_2$}
+	{
+		choose a fresh integer variable $i'$\;
+		$arith \leftarrow arith \wedge i \ge 0 \wedge i \le \length(x) \wedge i+j > \length(x) \wedge i' = \length(x)-i$\;
+		$\mathit{funApps} \leftarrow \mathit{funApps}[y:=\substring(x, i, i')/y:=\substring(x, i, j)]$\;
+	}
+	\For{each $y:=\substring(x, i, j) \in \mathcal{J}_3$}
+	{
+		$arith \leftarrow arith \wedge i < 0$\;
+		$active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
+		$\mathit{funApps} \leftarrow \mathit{funApps} \setminus \{y:=\substring(x, i, j)\}$\;		 
+	}
+	\caption{$\mathit{substringCaseSplit}$  for case splits in the semantics of $\substring$}\label{alg:substring}
+\end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph*{Optimisations for solving the {\lasat} problem.} From Proposition~\ref{prop:la-sat-cefa-inter}, a natural approach to solve the {\lasat} problem is to compute an existential LIA formula defining the Parikh image of products of CEFAs, and then use off-the-shelf SMT solvers (e.g. CVC4 or Z3) to decide the satisfiability of the existential LIA formula. %Nevertheless, 
 However, our preliminary experiments show that this approach suffers from a scalability issue, in particular, %faces 

@@ -21,23 +21,16 @@
 
 \section{Construction of $\CEFA_{\indexof_v}$} \label{appendix:cefa_indexof}
 
-In this section, we show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA. Technically, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
-accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
+In this section, we show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA. Technically, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \}$. 
 
 %The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
-For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string. 
-Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
+For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string.  Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
 \begin{itemize}
 \item $\pi'_1 = \top$ iff $b = a_1$, 
 %
 \item for each $i \in [n-2]$, $\pi'_{i+1} = \top$ iff $\pi_{i} = \top$ and $b = a_{i+1}$. 
 \end{itemize}
 Let $WP_v$ denote the set of window profiles of string positions w.r.t. $v$. From the result in \cite{CCH+18}, we know that $|WP_v| \le |v|$. 
-%Then the set of window profiles of $v$, denoted by $WP_v$, is computed by setting $WP_0 := \{\bot^{n-1}\}$ and iterating the following procedure, until $WP_i = WP_{i+1}$:
-%\[WP_{i+1}:=WP_i \cup \{\uwp(\vec{\pi}, b) \mid \vec{\pi} \in WP_i, b \in \Sigma\}.\] 
-%Therefore, the aforementioned iteration terminates in at most $|v|$ steps.\\
-%
-%
 
 Suppose $v = a_1 \cdots a_n$ with $n \ge 2$. 
 Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \delta, I, F)$, such that 
@@ -263,8 +256,7 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Example of {\tt urlXssSanitise(url)} %for the decision procedure
-} \label{app:urlexample}
+\section{A comprehensive example {\tt urlXssSanitise(url)}} \label{app:urlexample} \label{exmp:running}
 
 
 %\section{Running example}
@@ -272,7 +264,7 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 %\input{runexmp.tex}
 
 %\section{Running example} 
-\label{exmp:running}
+
 We use the following JavaScript program as the running example,
 %which demonstrates the use of string functions coupled with integer data type as well as path feasibility of string-manipulating programs.
 which defines a function {\urlxsssanitise} for sanitising URLs. A typical URL consists of a hierarchical sequence of components commonly referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.html?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.html}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). Both the query and the fragment could be empty in a URL. The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks} \cite{url-reflect}, by filtering out the dangerous substring ``\url{script}'' from the query and fragment components of  the input URL. URL reflection attacks are a type of cross-site-scripting (XSS) attacks that do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.html?name=<script>alert('xss!');</script>}''.
@@ -333,9 +325,11 @@ $\indexof$  and $\substring$, which is beyond the scope of other existing decisi
 %\qed
 %\end{example}
 
-
-\begin{example}\label{exmp:logic}
-	After adapting the syntax of the program corresponding to the ``if'' branch of {\tt urlXssSanitise(url)} in Section~\ref{exmp:running}, we get the following {\slint} program,
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{example}\label{exmp:logic}
+\subsection{Formulation in  {\slint}}
+	After adapting the syntax of the program corresponding to the ``if'' branch of {\tt urlXssSanitise(url)},  %in Section~\ref{exmp:running},
+	we obtain the following {\slint} program,
 	\[ 
 	\begin{array}{l}
 	\ASSERT{\mathtt{prothostpath} \in \NFA_\varepsilon}; \ASSERT{\mathtt{querfrag} \in \NFA_\varepsilon};\\
@@ -348,10 +342,14 @@ $\indexof$  and $\substring$, which is beyond the scope of other existing decisi
 	\end{array}
 	\]
 	where $\NFA_\varepsilon$ is the NFA defining $\{\varepsilon\}$, $\NFT_{\rm trim}$ is an NFT to model the sanitisation operation {\tt trim()}, and $ \NFA_{\Sigma^*\mathtt{script}\Sigma^*}$ is the NFA defining $\{w\mbox{\tt script} w' \mid w, w' \in \Sigma^*\}$. 
-\end{example}
+%\end{example}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Decision procedure}
 %\begin{example}
-	Consider the program $S$ associated with {\tt urlXssSanitise(url)} in Section~\ref{exmp:running}.
+	Consider the program $S$ associated with {\tt urlXssSanitise(url)}. % in Section~\ref{exmp:running}.
 	%\[
 	%\begin{array}{l}
 	%y := \replaceall_{\Sigma \setminus ), \varepsilon}(x); z:= \replaceall_{\Sigma \setminus (, \varepsilon}(x);\\
@@ -417,71 +415,13 @@ $\indexof$  and $\substring$, which is beyond the scope of other existing decisi
 %\end{example}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Implementation}
+\section{Implementation} \label{appendix:impl}
 %
 \input{impl.tex}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Algorithms for case splits in the semantics of $\indexof_v$ and $\substring$}\label{app:case-split-semantics}
 
-\begin{algorithm}[htbp]
-  \small
-  \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
-    $\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
-  \KwResult{$(active, arith, \mathit{funApps})$\newline}
-  
-\For{each $\indexof_v(x, i) \in \mathcal{I}_1$}
-		{
-			$arith \leftarrow arith[\indexof_v(x, 0)/\indexof_v(x,i)] \wedge i < 0$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_2$}
-		{
-			$active \leftarrow active \cup \{x \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i < 0$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_3$}
-		{
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge \length(x)$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_4$}
-		{
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x)$\;
-		}
-		\For{each $\indexof_v(x, i) \in \mathcal{I}_5$}
-		{
-			choose fresh variables $y$ and $j$\;
-			$active \leftarrow active \cup \{y \in \NFA_{\overline{\Sigma^* v \Sigma^*}}\}$\;
-			$arith \leftarrow arith[-1/\indexof_v(x,i)] \wedge i \ge 0 \wedge i < \length(x) \wedge j = \length(x)-i$\;
-			 $\mathit{funApps} \leftarrow \mathit{funApps} \cup \{y:=\substring(x, i, j)\}$\;
-		}		
-\caption{$\mathit{indexofCaseSplit}$ for case splits in the semantics of $\indexof_v$}\label{alg:indexof}
-\end{algorithm}
 
-\vspace{1cm}
-
-\begin{algorithm}[htbp]
-  \small
-  \KwIn{$active$: set of CEFA constraints,  $arith$: arithmetic constraint,
-    $\mathit{funApps}$: acyclic set of assignment statements, and $(\mathcal{I}_l)_{l \in [5]}$: subsets of $\indexof_v(x,i)$ string terms}
-  \KwResult{$(active, arith, \mathit{funApps})$\newline}
-
-  		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_1$}
-		{
-			 $arith \leftarrow arith \wedge i \ge 0 \wedge i+j \le \length(x)$;
-		}
-		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_2$}
-		{
-			 choose a fresh integer variable $i'$\;
-			 $arith \leftarrow arith \wedge i \ge 0 \wedge i \le \length(x) \wedge i+j > \length(x) \wedge i' = \length(x)-i$\;
-			 $\mathit{funApps} \leftarrow \mathit{funApps}[y:=\substring(x, i, i')/y:=\substring(x, i, j)]$\;
-		}
-		\For{each $y:=\substring(x, i, j) \in \mathcal{J}_3$}
-		{
-			 $arith \leftarrow arith \wedge i < 0$\;
-			 $active \leftarrow active \cup \{y \in \NFA_\varepsilon\}$\;
-			 $\mathit{funApps} \leftarrow \mathit{funApps} \setminus \{y:=\substring(x, i, j)\}$\;		 
-		}
-\caption{$\mathit{substringCaseSplit}$  for case splits in the semantics of $\substring$}\label{alg:substring}
-\end{algorithm}
 
 
 

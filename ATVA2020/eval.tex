@@ -1,5 +1,7 @@
 %!TEX root = main.tex
 
+We have implemented the decision procedure presented in the preceding section based on the recent string constraint solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  More details can be found in Appendix, Section~\ref{appendix:impl}.
+
 We have compared {\ostrich}+ with some of the state-of-the-art solvers on a wide range of benchmarks.  
 We  discuss the benchmarks in Section~\ref{sec:bench} and %describe the details of the experiments as well as 
 present the experimental results in Section~\ref{sec:exp-res}.
