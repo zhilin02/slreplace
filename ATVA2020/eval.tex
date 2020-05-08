@@ -138,77 +138,77 @@ containing 47,284 instances with regular constraints, concatenation, and the $\l
 %\newcolumntype{g}{>{\columncolor{Gray}}c}
 \begin{table}[tbp]
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|*{6}{c|}}
 \hline
-Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich+ \\
+Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich & \ostrich/Norn & \ostrich+ \\
 \hline
 \hline
-\multirow{3}{*}{\transducerbench+(94)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}\bf{84}\\
-\cline{2-6}
- & unsat &$-$  &$-$ &$-$ &\bf{4}\\
-\cline{2-6}
- & \cellcolor{Gray}  inconclusive  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &\cellcolor{Gray}6\\
-%\cline{2-6} 
+\multirow{3}{*}{\transducerbench+(94)} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}? & \cellcolor{Gray}? & \cellcolor{Gray}\bf{84}\\
+\cline{2-8}
+ & unsat &$-$  &$-$ &$-$ & ? & ? &\bf{4}\\
+\cline{2-8}
+ & \cellcolor{Gray}  inconclusive  &\cellcolor{Gray}$-$    &\cellcolor{Gray}$-$  &\cellcolor{Gray}$-$  &  \cellcolor{Gray}? &  \cellcolor{Gray}? &\cellcolor{Gray}6\\
+%\cline{2-8} 
 % & wrong &$-$  & $-$  &$-$ &0 \\
 \hline
 \hline
-\multirow{3}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{104}  & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$  &98 \cellcolor{Gray}\\
-\cline{2-6}
- & unsat &11  &$-$  &$-$ &\bf{12}\\
-\cline{2-6}
- &\cellcolor{Gray} inconclusive & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ &\cellcolor{Gray}10\\
-%\cline{2-6}
+\multirow{3}{*}{\slogbenchra(120)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{104}  & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$  & \cellcolor{Gray}? & \cellcolor{Gray}? &98 \cellcolor{Gray}\\
+\cline{2-8}
+ & unsat &11  &$-$  &$-$ & ? & ? &\bf{12}\\
+\cline{2-8}
+ &\cellcolor{Gray} inconclusive & \cellcolor{Gray}5  &\cellcolor{Gray}$-$ &\cellcolor{Gray}$-$ & \cellcolor{Gray}? & \cellcolor{Gray}? &\cellcolor{Gray}10\\
+%\cline{2-8}
 % & wrong &0 &$-$ &$-$  &0 \\
 \hline
 \hline
-\multirow{3}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray}$-$ & \cellcolor{Gray}584 \\
-\cline{2-6}
- & unsat & \bf{2,082} & 2,066  &$-$ &\bf{2,082}\\
-\cline{2-6}
- &\cellcolor{Gray}  inconclusive & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ &\cellcolor{Gray}725\\
-%\cline{2-6}
+\multirow{3}{*}{\slogbenchr(3,391)} & \cellcolor{Gray} sat &  \cellcolor{Gray}\bf{1,309} & \cellcolor{Gray}878 & \cellcolor{Gray}$-$ & \cellcolor{Gray}? & \cellcolor{Gray}? & \cellcolor{Gray}584 \\
+\cline{2-8}
+ & unsat & \bf{2,082} & 2,066  &$-$ &? & ? &\bf{2,082}\\
+\cline{2-8}
+ &\cellcolor{Gray}  inconclusive & \cellcolor{Gray}0  &  \cellcolor{Gray}447   &  \cellcolor{Gray}$-$ & \cellcolor{Gray}? & \cellcolor{Gray}? &\cellcolor{Gray}725\\
+%\cline{2-8}
 % & wrong &0 & 0  &$-$ &0\\
 \hline
 \hline
-\multirow{3}{*}{\pyextdbench(5,569)} & \cellcolor{Gray} sat & \cellcolor{Gray}4,224 & \cellcolor{Gray}4,068 &  \cellcolor{Gray} \bf{4,266} & \cellcolor{Gray}4,141\\
-\cline{2-6}
- & unsat & 1,284 & 1,289 & \bf{1,295} &1,203\\
-\cline{2-6}
- &\cellcolor{Gray} inconclusive &\cellcolor{Gray}61 &\cellcolor{Gray}212   &\cellcolor{Gray}8 &\cellcolor{Gray}225\\
-%\cline{2-6}
+\multirow{3}{*}{\pyextdbench(5,569)} & \cellcolor{Gray} sat & \cellcolor{Gray}4,224 & \cellcolor{Gray}4,068 &  \cellcolor{Gray} \bf{4,266} & \cellcolor{Gray}68 & \cellcolor{Gray}96 & \cellcolor{Gray}4,141\\
+\cline{2-8}
+ & unsat & 1,284 & 1,289 & \bf{1,295} & 95 & 93 &1,203\\
+\cline{2-8}
+ &\cellcolor{Gray} inconclusive &\cellcolor{Gray}61 &\cellcolor{Gray}212   &\cellcolor{Gray}8 & \cellcolor{Gray}? & \cellcolor{Gray}? &\cellcolor{Gray}225\\
+%\cline{2-8}
 % &wrong &0 & 0 &  0 &0 \\
 \hline
 \hline
-\multirow{3}{*}{\pyexztbench(8,414)} & \cellcolor{Gray} sat & \cellcolor{Gray}6,346 & \cellcolor{Gray}6,040 & \cellcolor{Gray}\bf{7,003} & \cellcolor{Gray}5,489\\
-\cline{2-6}
- & unsat & 1,358  & 1,370  &\bf{1,394} &1,239\\
-\cline{2-6}
- & \cellcolor{Gray}inconclusive &\cellcolor{Gray}710 &\cellcolor{Gray}1,004 &\cellcolor{Gray} 17 &\cellcolor{Gray}1,686\\
-%\cline{2-6}
+\multirow{3}{*}{\pyexztbench(8,414)} & \cellcolor{Gray} sat & \cellcolor{Gray}6,346 & \cellcolor{Gray}6,040 & \cellcolor{Gray}\bf{7,003} & \cellcolor{Gray}76 & \cellcolor{Gray}100 & \cellcolor{Gray}5,489\\
+\cline{2-8}
+ & unsat & 1,358  & 1,370  &\bf{1,394} & 61 & 53 &1,239\\
+\cline{2-8}
+ & \cellcolor{Gray}inconclusive &\cellcolor{Gray}710 &\cellcolor{Gray}1,004 &\cellcolor{Gray} 17 & \cellcolor{Gray}? & \cellcolor{Gray}? &\cellcolor{Gray}1,686\\
+%\cline{2-8}
 % & wrong & 0 &0 & 0 &0 \\
 \hline
 \hline
-\multirow{3}{*}{\pyexzzbench(11,438)} & \cellcolor{Gray} sat & \cellcolor{Gray} 10,078 & \cellcolor{Gray} 8,804 & \cellcolor{Gray} \bf{10,129} & \cellcolor{Gray}9,033\\
-\cline{2-6}
- & unsat & 1,204 & 1,207  &   \bf{1,222} &868\\
-\cline{2-6}
- &\cellcolor{Gray}  inconclusive &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} 87 &\cellcolor{Gray}1,537 \\
-%\cline{2-6}
+\multirow{3}{*}{\pyexzzbench(11,438)} & \cellcolor{Gray} sat & \cellcolor{Gray} 10,078 & \cellcolor{Gray} 8,804 & \cellcolor{Gray} \bf{10,129} & \cellcolor{Gray}71 & \cellcolor{Gray}98 & \cellcolor{Gray}9,033\\
+\cline{2-8}
+ & unsat & 1,204 & 1,207  &   \bf{1,222} & 91 & 61 &868\\
+\cline{2-8}
+ &\cellcolor{Gray}  inconclusive &\cellcolor{Gray}156 & \cellcolor{Gray}1,427  &  \cellcolor{Gray} 87 & \cellcolor{Gray}? & \cellcolor{Gray}? &\cellcolor{Gray}1,537 \\
+%\cline{2-8}
 % & wrong &  0 & 0 & 0&0 \\
 \hline
 \hline
-\multirow{3}{*}{\kaluzabench (47,284)} & \cellcolor{Gray} sat &  \cellcolor{Gray} \bf{35,264} & \cellcolor{Gray} 33,438 & \cellcolor{Gray} 34,769 & \cellcolor{Gray}27,962\\
-\cline{2-6}
- & unsat & \bf{12,014} &  11,799  &\bf{12,014}  &9,058\\
-\cline{2-6}
- &\cellcolor{Gray} inconclusive &\cellcolor{Gray}6 & \cellcolor{Gray}2,047  &\cellcolor{Gray}501 &\cellcolor{Gray}10,264 \\
-%\cline{2-6}
+\multirow{3}{*}{\kaluzabench (47,284)} & \cellcolor{Gray} sat &  \cellcolor{Gray} \bf{35,264} & \cellcolor{Gray} 33,438 & \cellcolor{Gray} 34,769 & \cellcolor{Gray}23,397 & \cellcolor{Gray}28,522 & \cellcolor{Gray}27,962\\
+\cline{2-8}
+ & unsat & \bf{12,014} &  11,799  &\bf{12,014}  & 10,445 & 10,445 &9,058\\
+\cline{2-8}
+ &\cellcolor{Gray} inconclusive &\cellcolor{Gray}6 & \cellcolor{Gray}2,047  &\cellcolor{Gray}501 & \cellcolor{Gray}13,442 & \cellcolor{Gray}8,317 &\cellcolor{Gray}10,264 \\
+%\cline{2-8}
 % & wrong &  0 & 0 &0 &0 \\
 \hline 
 \hline
-\multirow{2}{*}{Total(76,310)} & \cellcolor{Gray} solved & \cellcolor{Gray}\bf{75,278}  & \cellcolor{Gray}70,959 & \cellcolor{Gray}72,092 & \cellcolor{Gray}61,857\\
-\cline{2-6}
- &  unsolved &1,032  & 5,351  & 4,218 &14,453  \\
+\multirow{2}{*}{Total(76,310)} & \cellcolor{Gray} solved & \cellcolor{Gray}\bf{75,278}  & \cellcolor{Gray}70,959 & \cellcolor{Gray}72,092 & \cellcolor{Gray}? & \cellcolor{Gray}? & \cellcolor{Gray}61,857\\
+\cline{2-8}
+ &  unsolved &1,032  & 5,351  & 4,218 & ? & ? &14,453  \\
 \hline
 \end{tabular}
 \end{center}
@@ -326,3 +326,8 @@ Admittedly, {\ostrich}+ has not exceeded other mature solvers when dealing with 
 
 
 
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End: 
