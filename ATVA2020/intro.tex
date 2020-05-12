@@ -122,8 +122,7 @@ This motivates the following problem:
 \emph{provide a decision procedure that supports both string and integer data type, with completeness guarantee and admitting efficient implementation}.
 
 \anthony{need to say why extending these with length is non-trivial}
-We argue that this problem is highly challenging.
-A deeper examination into the algorithms used by OSTRICH and SLOTH reveals that,
+This problem is highly challenging. A deeper examination into the algorithms used by OSTRICH and SLOTH reveals that,
 unlike the case for Norn, it would not be straightforward to extend OSTRICH and 
 SLOTH with length constraints. First and foremost, the complexity of the
 fragment used by Norn (i.e. without transducers and $\replaceall$) is solvable
@@ -131,24 +130,22 @@ in exponential time, even in the presence of length constraints. This is not
 the case for the straight-line fragments with transducers/replaceall, which 
 require at least double exponential time (regardless of the length constraints).
 This unfortunately manifests itself in the size of symbolic representations of 
-the solutions. SLOTH \cite{HJLRV18} computes a ``global'' 
-representation of all
-solutions as (alternating) finite transducers. Dealing with length requires one
-to compute the Parikh images of these transducers \cite{LB16}, which would 
+the solutions. SLOTH \cite{HJLRV18} computes a ``global''  representation of all
+solutions as (alternating) finite transducers. Dealing with length requires to compute the Parikh images of these transducers \cite{LB16}, which would 
 result in a
-quantifier-free integer linear arithmetic formula of double exponential size 
-(e.g. \cite{VSS05}), which would give us a triply-exponential-time algorithm.
-Lin and Barcelo \cite{LB16} provided an double-exponential upper bound on the 
+quantifier-free integer linear arithmetic formula of double exponential size, %(e.g. \cite{VSS05}), 
+hence a triply-exponential-time algorithm.
+Lin and Barcelo \cite{LB16} provided a double-exponential upper bound on the 
 length of the strings in the solution, and show that the double
 exponential-time theoretical complexity could be retained. This, however, does
 not result in a practical algorithm since it requires all strings of double
 exponential size to be enumerated. OSTRICH \cite{CHL+19} took a ``local''
 step-by-step backward pre-image computation, which is more scalable than
 the global approach adopted by SLOTH and results in a highly competitive solver.
-It uses \emph{recognizable relations} (a finite union of regular constraints)
+It uses \emph{recognisable relations} (i.e., a finite union of regular constraints)
 as symbolic representations. Unfortunately, extending this approach to length
 constraints is also not obvious since length constraints break the independence
-between the different variables in the recognizable relations.
+between the different variables in the recognisable relations.
 %\emph{provide an
 %efficient decision procedure that supports string and integer data type, as well
 %as complex string operations, with a completeness guarantee}.
