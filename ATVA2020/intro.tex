@@ -79,7 +79,8 @@ better understand the decidability of theories combining strings and integers.
 Approaches to building practical string solvers could essentially be classified
 into two categories. Firstly, one could support as many constraints as possible, but 
 primarily resort to heuristics, 
-offering no completeness/termination guarantee. This is understandable since, as
+offering no completeness/termination guarantee. This is a realistic approach 
+since, as
 mentioned above, the problem involving both string and integer data types is in 
 general undecidable. Many solvers
 belong to this category, e.g., 
@@ -104,9 +105,12 @@ The second approach is to develop solvers for decidable fragments
 supporting both strings and integers (e.g. %the fragments of
 \cite{Vijay-length,BFL13,Abdulla14,AbdullaA+19,LB16,CCH+18,CHL+19,HJLRV18}). 
 Solvers in this category include Norn \cite{Abdulla14}, SLOTH
-\cite{HJLRV18}, and OSTRICH \cite{CHL+19}. Unfortunately
-theoretical decidability result of \cite{LB16}  does not
-easily lead to an implementation (as far as we know, there has not been any implementation of the procedure therein yet).
+\cite{HJLRV18}, and OSTRICH \cite{CHL+19}. 
+%Unfortunately
+%Even though the fragment
+%theoretical decidability result of \cite{LB16}  does not
+%easily lead to an implementation. 
+%(as far as we know, there has not been any implementation of the procedure therein yet).
 The fragment \emph{without} complex string operations (e.g. $\replaceall$ and
 finite transducers, but $\length$) can be handled quite well by Norn. The fragment \emph{without} length
 constraints (but $\replaceall$ and finite transducers)
@@ -114,9 +118,37 @@ constraints (but $\replaceall$ and finite transducers)
 can be handled effectively by OSTRICH and SLOTH. 
 Moreover, most existing solvers that belong to the first category do not support
 complex string operations like $\replaceall$ and finite transducers as well.
-This motivates the following challenging and timely task: 
+This motivates the following problem: 
 \emph{provide a decision procedure that supports both string and integer data type, with completeness guarantee and admitting efficient implementation}.
 
+\anthony{need to say why extending these with length is non-trivial}
+We argue that this problem is highly challenging.
+A deeper examination into the algorithms used by OSTRICH and SLOTH reveals that,
+unlike the case for Norn, it would not be straightforward to extend OSTRICH and 
+SLOTH with length constraints. First and foremost, the complexity of the
+fragment used by Norn (i.e. without transducers and $\replaceall$) is solvable
+in exponential time, even in the presence of length constraints. This is not
+the case for the straight-line fragments with transducers/replaceall, which 
+require at least double exponential time (regardless of the length constraints).
+This unfortunately manifests itself in the size of symbolic representations of 
+the solutions. SLOTH \cite{HJLRV18} computes a ``global'' 
+representation of all
+solutions as (alternating) finite transducers. Dealing with length requires one
+to compute the Parikh images of these transducers \cite{LB16}, which would 
+result in a
+quantifier-free integer linear arithmetic formula of double exponential size 
+(e.g. \cite{VSS05}), which would give us a triply-exponential-time algorithm.
+Lin and Barcelo \cite{LB16} provided an double-exponential upper bound on the 
+length of the strings in the solution, and show that the double
+exponential-time theoretical complexity could be retained. This, however, does
+not result in a practical algorithm since it requires all strings of double
+exponential size to be enumerated. OSTRICH \cite{CHL+19} took a ``local''
+step-by-step backward pre-image computation, which is more scalable than
+the global approach adopted by SLOTH and results in a highly competitive solver.
+It uses \emph{recognizable relations} (a finite union of regular constraints)
+as symbolic representations. Unfortunately, extending this approach to length
+constraints is also not obvious since length constraints break the independence
+between the different variables in the recognizable relations.
 %\emph{provide an
 %efficient decision procedure that supports string and integer data type, as well
 %as complex string operations, with a completeness guarantee}.
@@ -167,7 +199,18 @@ is able to treat %the aforementioned seemly
 a wide range of string functions in a generic, and yet simple, way. 
 
 To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
-Moreover, compared to the decision procedure in~\cite{LB16} which is based on a ``global'' automata construction, our decision procedure takes a ``local'' approach for step-by-step backward computation of pre-images of CEFAs, enabling an easier implementation. 
+\anthony{add something here perhaps}
+\OMIT{
+Moreover, 
+our decision procedure takes a ``local'' approach for step-by-step backward 
+computation of pre-images of CEFAs, which extends the framework of {\ostrich}
+solver \cite{CHL+19}.
+
+compared to the ``global'' approach in~\cite{LB16} which is based on enumerating
+all strings up to a double exponential length (which does not lead to an
+efficient implementation), 
+}
+
 
 %\emph{the first decision procedure for string constraints that supports the string functions} $\substring$, $\length$, and $\indexof$, as well as concatenation, $\replaceall$, and finite transducers. \zhilin{improve latter}
 
