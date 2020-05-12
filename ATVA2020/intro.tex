@@ -123,7 +123,7 @@ This motivates the following problem:
 
 %\anthony{need to say why extending these with length is non-trivial}
 We argue that this problem is highly challenging.
-A deeper examination into the algorithms used by OSTRICH and SLOTH reveals that,
+A deeper examination of the algorithms used by OSTRICH and SLOTH reveals that,
 unlike the case for Norn, it would \emph{not} be straightforward to extend OSTRICH and 
 SLOTH with integer constraints. First and foremost, the complexity of the
 fragment used by Norn (i.e. without transducers and $\replaceall$) is solvable
@@ -134,22 +134,22 @@ This unfortunately manifests itself in the size of symbolic representations of
 the solutions. SLOTH \cite{HJLRV18} computes 
 %a ``global'' 
 a representation of all
-solutions ``eagerly'' as (alternating) finite transducers. Dealing with integer data type requires one
+solutions ``eagerly'' as (alternating) finite transducers. Dealing with integer data type requires  
 to compute the Parikh images of these transducers \cite{LB16}, which would 
 result in a
-quantifier-free linear integer arithmetic formula (LIA for short) of double exponential size, thus giving us a triply-exponential-time algorithm, since LIA formulas are solved in exponential time  (see e.g. \cite{VSS05}).
-Lin and Barcelo \cite{LB16} provided a double-exponential upper bound on the 
+quantifier-free linear integer arithmetic formula (LIA for short) of double exponential size, thus giving us a triple exponential time algorithm, since LIA formulas are solved in exponential time  (see e.g. \cite{VSS05}).
+Lin and Barcelo \cite{LB16} provided a double exponential upper bound in the 
 length of the strings in the solution, and show that the double
-exponential-time theoretical complexity could be retained. This, however, does
+exponential time theoretical complexity could be retained. This, however, does
 not result in a practical algorithm since it requires all strings of double
 exponential size to be enumerated. OSTRICH \cite{CHL+19} adopted a ``lazy'' approach and computed the pre-images of regular languages step by step,
 %step by step, 
 which is more scalable than
 the ``eager'' approach adopted by SLOTH and results in a highly competitive solver.
-It uses \emph{recognizable relations} (a finite union of products of regular languages)
+It uses \emph{recognisable relations} (a finite union of products of regular languages)
 as symbolic representations. Nevertheless, extending this approach to integer
 constraints is not obvious since integer constraints break the independence
-between the different string variables in the recognizable relations.
+between different string variables in the recognisable relations.
 %\emph{provide an
 %efficient decision procedure that supports string and integer data type, as well
 %as complex string operations, with a completeness guarantee}.
@@ -196,15 +196,16 @@ admitting \emph{efficient implementations.}
 %\emph{admit efficient implementation}.
 
 \noindent\emph{Contribution.} The main contribution of this paper is a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilizes a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. 
-\zhilin{add several sentences here, describing the idea of CEFAs} 
-Intuitively, each CEFA records the connections between a string variable and the integer variables attached to it, and symbolically represents the set of solutions of these variables. With CEFAs, the concept of recognizable relations is then naturally extended. The integer constraints, on the other hand, are \emph{put alongside CEFAs, instead of as parts of CEFAs}, consequently preserving the independence of string variables in recognizable relations. 
-The crux of the decision procedure is to compute the backward images of CEFAs under string functions, in the same flavor as OSTRICH for string constraints \emph{without} the integer data type \cite{CHL+19}. 
+%\zhilin{add several sentences here, describing the idea of CEFAs} 
+Intuitively, each CEFA records the connection between a string variable and its associated integer variables, and represents solutions of these variables in the constraints symbolically. With CEFAs, the concept of recognisable relations is then naturally extended to accommodate integers. The integer constraints, however, are detached from CEFAs rather than being part of CEFAs. This allows to preserve the independence of string variables in the  recognisable relation. 
+The crux of the decision procedure is to compute the backward images of CEFAs under string functions, in the same flavour as OSTRICH for string constraints \emph{without} the integer data type \cite{CHL+19}. 
 %, thus preserving the virtues of the ``lazy'' approach of OSTRICH.
 Such an approach %inherits its elegance by 
 is able to treat %the aforementioned seemly 
 a wide range of string functions in a generic, and yet simple, way. 
-
-To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
+%
+To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. 
+%In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
 %\anthony{add something here perhaps}
 %
 \OMIT{
