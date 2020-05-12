@@ -298,18 +298,21 @@ The performance of {\ostrich}+ and {\zthree} are level, but are 10\% worse than 
 \fi
 
 The {\kaluzabench} problems can be solved most effectively by {\cvc}.
-\ostrich+ can solve almost all of the 28,032 satisfiable
-problems in SSA form, and all 9,058 unsatisfiable problems in SSA
-form. This is consistent with the results in  \cite{CHL+19} for
-{\ostrich}.
+\ostrich+ can solve almost all of the around 80\% of the benchmarks
+that are in SSA form, however.
+%
+%\ostrich+ can solve almost all of the 28,032 satisfiable
+%problems in SSA form, and all 9,058 unsatisfiable problems in SSA
+%form. This is consistent with the results in  \cite{CHL+19} for
+%{\ostrich}.
 
-\ostrich+ consistently outperforms \ostrichi\ and \ostrichii, with the
-exception of \kaluzabench, where \ostrichii\ can handle all problems
-in SSA form. For \ostrichi, this is to be expected because most
-benchmarks contain integer functions. For \ostrichii, it turns out
-that the encoding of $\indexof$, $\substring$, and $\charat$ as word
-equations usually leads to problems that are not in SSA form, and
-therefore beyond the scope of \ostrich.
+\ostrich+ consistently outperforms \ostrichi\ and \ostrichii\ in this
+evaluation, with the exception of the \kaluzabench\ benchmarks. For
+\ostrichi, this is to be expected because most benchmarks considered
+here contain integer functions. For \ostrichii, it turns out that the
+encoding of $\indexof$, $\substring$, and $\charat$ as word equations
+usually leads to problems that are not in SSA form, and therefore are
+beyond the scope of \ostrich.
 
 \iffalse
 {\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. 
@@ -320,15 +323,19 @@ solves  around 80\%  instances. The main reason is that about 20\% {\kaluzabench
 \fi
 
 In summary, we can observe that \ostrich+ is competitive with other
-solvers, while it is also able to handle benchmarks that are beyond the
-scope of the other tools due to the combination of string functions (in particular transducers) and integer
+solvers, while it is also able to handle benchmarks that are beyond
+the scope of the other tools due to the combination of string
+functions (in particular transducers) and integer
 constraints. Interestingly, the experiments show that \ostrich+, at
 least in its current state, is better at solving unsatisfiable
 problems than satisfiable problems; this might be an artefact of the
 use of nuXmv for analysing products of CEFAs. We expect that further
 optimisation of our algorithm will lead to additional performance
 improvements. For instance, a natural optimisation that is not yet
-included in our implementation is to use standard finite automata like in \ostrich, as opposed to CEFAs, for simpler problems such as the \kaluzabench\ benchmarks.
+included in our implementation is to use standard finite automata like
+in \ostrich, as opposed to CEFAs, for simpler problems such as the
+\kaluzabench\ benchmarks. Such a combination of automata
+representations is mostly an engineering effort.
 
 \iffalse
 %Last but not least, we would like to summarise and highlight some facts and observations about {\ostrich}+  according to the experimental results in Table~\ref{tab-experiment}.
