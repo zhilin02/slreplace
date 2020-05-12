@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-We have implemented the decision procedure presented in the preceding section based on the recent string constraint solver OSTRICH \cite{CHL+19}, resulting in a new solver OSTRICH+. OSTRICH is  written in Scala and based on the SMT solver Princess \cite{princess08}. OSTRICH+ reuses the parser of Princess, but replaces the NFAs from OSTRICH with CEFAs. Correspondingly, in OSTRICH+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. OSTRICH+ also implements CEFA constructions for $\length$ and $\indexof$.  More details can be found in Appendix, Section~\ref{appendix:impl}.
+We have implemented the decision procedure presented in the preceding section based on the recent string constraint solver \ostrich~\cite{CHL+19}, resulting in a new solver \ostrich+. \ostrich\ is  written in Scala and based on the SMT solver Princess \cite{princess08}. \ostrich+ reuses the parser of Princess, but replaces the NFAs from \ostrich\ with CEFAs. Correspondingly, in \ostrich+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. \ostrich+ also implements CEFA constructions for $\length$ and $\indexof$.  More details can be found in Appendix, Section~\ref{appendix:impl}.
 
 We have compared {\ostrich}+ with some of the state-of-the-art solvers on a wide range of benchmarks.  
 We  discuss the benchmarks in Section~\ref{sec:bench} and %describe the details of the experiments as well as 
@@ -133,6 +133,8 @@ contains 25,421 instances  derived by the PyEx tool, a symbolic execution engine
 is the most well-known  benchmark suite in  literature, 
 containing 47,284 instances with regular constraints, concatenation, and the $\length$ function. The 47,284 benchmarks include 28,032 satisfiable and 9,058 unsatisfiable problems in SSA form.
 
+\newcommand{\ostrichi}{\ostrich$^{(1)}$}
+\newcommand{\ostrichii}{\ostrich$^{(2)}$}
 
 \definecolor{Gray}{gray}{0.9}
 %\newcolumntype{g}{>{\columncolor{Gray}}c}
@@ -141,7 +143,7 @@ containing 47,284 instances with regular constraints, concatenation, and the $\l
 \begin{center}
 \begin{tabular}{|c|c|*{6}{c|}}
 \hline
-Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich1 & \ostrich2 & \ostrich+ \\
+Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrichi & \ostrichii & \ostrich+ \\
 \hline
 \hline
 \summary{\transducerbench+}{94} & \cellcolor{Gray} sat &  \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}$-$ & \cellcolor{Gray}0 & \cellcolor{Gray}0 & \cellcolor{Gray}\bf{84}\\
@@ -220,7 +222,15 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrich1 & \ostrich2 & \o
 
 \subsection{Experiments}\label{sec:exp-res}
 
-We compare {\ostrich}+ to {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str}, and {\zthreetrau} \cite{Z3-trau}. 
+We compare {\ostrich}+ to {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str},
+and {\zthreetrau} \cite{Z3-trau}, as well as two configurations of
+\ostrich~\cite{CHL+19} with standard NFAs. Configuration \ostrichi\ is
+a direct implementation of the algorithm in \cite{CHL+19}, and does
+not support integer functions. In \ostrichii\ we integrated support
+for the $\length$ function as in Norn~\cite{Abdulla14}, based on the
+computation of length abstractions of regular languages, and handle
+$\indexof$, $\substring$, and $\charat$ via an encoding to equations.
+%
 The experiments are executed on a computer with an Intel Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. We use a timeout of 30~seconds (wall-clock time), and report the number of satisfiable and unsatisfiable problems solved by each of the systems.
 Table~\ref{tab-experiment} summarises the experimental results. We did not observe incorrect answers by any tool.
 % (note that the ground-truth are known and have been verified \tl{check this}  
@@ -252,11 +262,13 @@ to obtain a working version of {\trauplus} by the deadline, possibly because {\t
 %\end{itemize}
 
 
-{\ostrich}+ is the only tool applicable to the problems in
-{\transducerbench}+. With a timeout of 30s, \ostrich+ can solve 88 of
-the benchmarks, but this number rises to 94 when using a longer
-timeout of 600s. Given the complexity of those benchmarks, this is an
-encouraging result.
+{\ostrich}+ and \ostrich\ are the only tools applicable to the
+problems in {\transducerbench}+. With a timeout of 30s, \ostrich+ can
+solve 88 of the benchmarks, but this number rises to 94 when using a
+longer timeout of 600s. Given the complexity of those benchmarks, this
+is an encouraging result. \ostrich\ can only solve one of the
+benchmarks, because the encoding of $\charat$ in the benchmarks using
+equations almost always leads to problems that are not in SSA form.
 
 On {\slogbenchra}, {\ostrich}+ and {\cvc} are very close: {\ostrich}+ solves 98 satisfiable instances, slightly less than the 104 instances solved by {\cvc}, while {\ostrich}+ solves one more unsatisfiable instance than {\cvc} (12 versus 11). The suite is beyond the scope of {\zthree} and {\zthreetrau}, which do not support $\replaceall$.
 
@@ -290,6 +302,14 @@ The {\kaluzabench} problems can be solved most effectively by {\cvc}.
 problems in SSA form, and all 9,058 unsatisfiable problems in SSA
 form. This is consistent with the results in  \cite{CHL+19} for
 {\ostrich}.
+
+\ostrich+ consistently outperforms \ostrichi\ and \ostrichii, with the
+exception of \kaluzabench, where \ostrichii\ can handle all problems
+in SSA form. For \ostrichi, this is to be expected because most
+benchmarks contain integer functions. For \ostrichii, it turns out
+that the encoding of $\indexof$, $\substring$, and $\charat$ as word
+equations usually leads to problems that are not in SSA form, and
+therefore beyond the scope of \ostrich.
 
 \iffalse
 {\zthreetrau} solves slightly less instances, but solves the same number of unsatisfiable instances as {\cvc}. {\zthree} is the third on the {\kaluzabench} suite. 
