@@ -121,7 +121,7 @@ complex string operations like $\replaceall$ and finite transducers as well.
 This motivates the following problem: 
 \emph{provide a decision procedure that supports both string and integer data type, with completeness guarantee and admitting efficient implementation}.
 
-\anthony{need to say why extending these with length is non-trivial}
+%\anthony{need to say why extending these with length is non-trivial}
 This problem is highly challenging. A deeper examination into the algorithms used by OSTRICH and SLOTH reveals that,
 unlike the case for Norn, it would not be straightforward to extend OSTRICH and 
 SLOTH with length constraints. First and foremost, the complexity of the
@@ -194,9 +194,12 @@ admitting \emph{efficient implementations.}
 \noindent\emph{Contribution.} The main contribution of this paper is a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilises a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. The crux of the decision procedure is to compute the backward images of CEFAs under string functions,  in the same flavour as \cite{CHL+19} for string constraints \emph{without} the integer data type. Such an approach %inherits its elegance by 
 is able to treat %the aforementioned seemly 
 a wide range of string functions in a generic, and yet simple, way. 
+%
+To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. 
 
-To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
-\anthony{add something here perhaps}
+%In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
+%\anthony{add something here perhaps}
+
 \OMIT{
 Moreover, 
 our decision procedure takes a ``local'' approach for step-by-step backward 

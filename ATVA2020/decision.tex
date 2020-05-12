@@ -2,6 +2,7 @@
 
 In this section, we present a decision procedure for the path feasibility problem of {\slint}. A distinguished feature of the decision procedure is that it conducts backward computation which is local and can be done in a modular way. To support this, we extend  a regular language with quantitative information of the strings in the language, giving rise to cost-enriched regular languages and corresponding finite automata (Section \ref{sect:ce}). The crux of the decision procedure is thus to show that the  pre-images of cost-enriched regular languages under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$) are representable by so called cost-enriched recognisable relations (Section \ref{sect:pre}). The overall decision procedure is presented in Section~\ref{sec:dc}, supplied by additional complexity analysis and examples. 
 
+\vspace{-4mm}
 \subsection{Cost-Enriched Regular Languages and Recognisable Relations} \label{sect:ce}
 
 Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. For our purpose, we identify a ``regular" fragment of cost-enriched languages as follows.  
@@ -118,7 +119,7 @@ Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\
 %\end{example}
 
  
-
+\vspace{-5mm}
 \subsection{Pre-images of CERLs under string operations} \label{sect:pre}
 
 To unify the presentation of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
