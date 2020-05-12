@@ -37,7 +37,7 @@ The semantics of {\slint} is explained as follows. %mostly%self-explanatory,
 \begin{itemize}
 \item The assignment $x:=y \cdot z$ denotes that $x$ is the concatenation of two strings $y$ and $z$.
 
-\item The assignment $x:=\replaceall_{e,u}(y)$ denotes that $x$ is the string obtained by replacing all occurrences of $e$ in $y$ with $u$, where the \emph{leftmost and longest} matching of $e$ is used. For instance, $\replaceall_{(ab)^+,c}(aababaab) =ac \cdot \replaceall_{(ab)^+,c}(aab)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by $e$ does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCH+18} for the formal semantics of the $\replaceall$ function.
+\item The assignment $x:=\replaceall_{e,u}(y)$ denotes that $x$ is the string obtained by replacing all occurrences of $e$ in $y$ with $u$, where the \emph{leftmost and longest} matching of $e$ is used. For instance, $\replaceall_{(ab)^+,c}(aababaab) =ac \cdot \replaceall_{(ab)^+,c}(aab)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by $e$ does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string.  The formal semantics of the $\replaceall$ function can be found in \cite{CCH+18}.
 %
 \item The assignment $x:=\reverse(y)$ denotes that $x$ is the reverse of $y$.
 %
@@ -131,7 +131,7 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 %The logic {\slint} is defined as straight-line fragment of the aforementioned string constraints, specifically, {\slint} is defined as the collection of the formulae $S \wedge A$ satisfying that {\bf $S$ is in single static assignment (SSA) form}.  Note that in {\slint}, the straight-line restriction is applied only on $S$, which contains only the assignments to string variables (but not integer variables). No restrictions are put on the integer constraints in $A_i$.
 
 \noindent
-\textbf{Path feasibility problem.} Given a {\slint} program $S$, decide whether there are valuations of input variables so that $S$ can execute to the end.
+\textbf{Path feasibility problem.} Given an {\slint} program $S$, decide whether there are valuations of the input variables so that $S$ can execute to the end.
 
 %\medskip
 %

@@ -21,8 +21,28 @@
 
 \section{Construction of $\CEFA_{\indexof_v}$} \label{appendix:cefa_indexof}
 
-In this section, we show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA. Technically, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \}$. 
+In this section, we show that the function $\indexof_v(\cdot, \cdot)$ can be captured by CEFA. 
+%
+We start with the simple example for $v=a$.
+\begin{example}[CEFA for $\indexof_a$] %\label{exm:indexof}
+	Let $a \in \Sigma$. Then  $\CEFA_{\indexof_a} = (\{(q_0, q_1, q_2)\}, \Sigma, (r_1,r_2), \delta_{\indexof_a}, \{q_0\}, \{q_2\})$, where $\delta_{\indexof_a}$ comprises the tuples
+	\begin{itemize}
+		\item $(q_0, b, q_0, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=1$, $\eta(r_2)=1$,
+		%
+		\item $(q_0, b, q_1, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2) = 1$,
+		%
+		\item $(q_0, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2) = 0$,
+		%
+		\item $(q_1, b, q_1, \eta)$ such that $b \in \Sigma \setminus \{a\}$, $\eta(r_1)=0$, $\eta(r_2)=1$,
+		%
+		\item $(q_1, a, q_2, \eta)$ such that $\eta(r_1)=0$, $\eta(r_2)=0$,
+		%
+		\item $(q_2, b, q_2, \eta)$ such that $b \in \Sigma$, $\eta(r_1)=0$, $\eta(r_2)=0$.
+	\end{itemize}
+	Intuitively, $r_1$ corresponds to the starting position $i$ of $\indexof_a(x, i)$, $r_2$ corresponds to the output of $\indexof_a(x, i)$, $q_0$ specifies that the current position is before $i$, $q_1$ specifies that the current position is after $i$, while $a$ has not occurred yet, and $q_2$ specifies that $a$ has occurred after $i$. 
+\end{example}
 
+Technically, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA accepting $\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \}$. 
 %The construction is slightly technical and can be found in Appendix, Section~\ref{appendix:cefa_indexof}.
 For this purpose, we need a concept of window profiles of  string positions w.r.t. $v$, which are elements of $\{\bot, \top\}^{n-1}$. The window profiles facilitate recognising the first occurrence of $v$ in the input string.  Intuitively, given a string $u$, the window profile of a position $i$ in $u$ w.r.t. $v$ encodes the matchings of prefixes of $v$ to the suffixes of $u[0,i]$ (see \cite{CCH+18} for the details). For $\pi = \pi_1 \cdots \pi_{n-1} \in \{\bot, \top\}^{n-1}$ and $b \in \Sigma$, we use $\uwp(\vec{\pi}, b)$ to represent the window profile updated from $\pi$ after reading the letter $b$, specifically, $\uwp(\vec{\pi}, b) = \vec{\pi'}$ such that  
 \begin{itemize}

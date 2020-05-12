@@ -2,7 +2,7 @@
 
 In this section, we present a decision procedure for the path feasibility problem of {\slint}. A distinguished feature of the decision procedure is that it conducts backward computation which is local and can be done in a modular way. To support this, we extend  a regular language with quantitative information of the strings in the language, giving rise to cost-enriched regular languages and corresponding finite automata (Section \ref{sect:ce}). The crux of the decision procedure is thus to show that the  pre-images of cost-enriched regular languages under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$) are representable by so called cost-enriched recognisable relations (Section \ref{sect:pre}). The overall decision procedure is presented in Section~\ref{sec:dc}, supplied by additional complexity analysis and examples. 
 
-\vspace{-4mm}
+\vspace{-3mm}
 \subsection{Cost-Enriched Regular Languages and Recognisable Relations} \label{sect:ce}
 
 Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. For our purpose, we identify a ``regular" fragment of cost-enriched languages as follows.  
@@ -119,7 +119,7 @@ Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\
 %\end{example}
 
  
-\vspace{-5mm}
+\vspace{-4mm}
 \subsection{Pre-images of CERLs under string operations} \label{sect:pre}
 
 To unify the presentation, %of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
@@ -198,11 +198,12 @@ Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then
 
 The proof of Proposition~\ref{prop:pre-image} is given in Appendix, Section~\ref{app:pre-image}.
 
+\vspace{-2mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{The Decision Procedure}\label{sec:dc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-Let $S$  be a {\slint} program. %We show how to decide the path feasibility of $S$. 
+Let $S$  be an {\slint} program. %We show how to decide the path feasibility of $S$. 
 Without loss of generality, we assume that for every occurrence of assignments of the form $y:= \substring(x, t_1, t_2)$, it holds that $t_1$ and $t_2$ are integer variables. This is not really a restriction, since, for instance, if in $y:= \substring(x, t_1, t_2)$, neither $t_1$ nor $t_2$ is an integer variable, then we introduce fresh integer variables $i$ and $j$, replace $t_1, t_2$ by $i,j$ respectively, and add $\ASSERT{i=t_1};\ASSERT{j = t_2}$ in $S$.
 We present a decision procedure for the path feasibility problem of $S$ which is divided into five steps. %is nondeterministic and divided into three steps. 
 %\begin{description}
@@ -211,13 +212,13 @@ We present a decision procedure for the path feasibility problem of $S$ which is
 %\item 
 
 \medskip
-\noindent {\bf Step I: Reducing to atomic asserations.}%Removing $\vee$ and $\wedge$}.
+\noindent {\bf Step I: Reducing to atomic assertions.}%Removing $\vee$ and $\wedge$}.
 
 \smallskip
 Note first that in our language, each assertion is a positive Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}).  
 Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
 
-Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constains atomic asserations only. 
+Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constrains atomic assertions only. 
 
 \medskip 
 \noindent {\bf Step II: Dealing with the case splits in the semantics of $\indexof_v$ and $\substring$.}%Removing $\vee$ and $\wedge$}.
@@ -228,7 +229,7 @@ For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically
 \begin{itemize}
 \item[(1)] Add $\ASSERT{i < 0}$ to $S$, and replace $\indexof_v(x,i)$ with $\indexof_v(x,0)$ in $S$. 
 %
-\item[(2)] Add $\ASSERT{i < 0};\ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
+\item[(2)] Add $\ASSERT{i < 0};\ASSERT{x \in \NFA_{\overline{\Sigma^*v\Sigma^*}}}$ to $S$; replace $\indexof_v(x,i)$ with $-1$ in $S$.
 %
 \item[(3)] Add $\ASSERT{i \ge \length(x)}$ to $S$, and replace $\indexof_v(x,i)$ with $-1$ in $S$.
 %
@@ -267,7 +268,8 @@ to $S$, and replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')$, whe
 
 For each term $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
 
-For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)
+For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  (See Appendix, Section~\ref{appendix:cefa_indexof} for the construction of $\CEFA_{\rm \indexof_v}$.) 
+%(See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)
 
 %
 %\end{enumerate}
