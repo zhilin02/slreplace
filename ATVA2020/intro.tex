@@ -85,7 +85,7 @@ mentioned above, the problem involving both string and integer data types is in
 general undecidable. Many solvers
 belong to this category, e.g., 
 {\cvc}~\cite{cvc4}, Z3 \cite{BTV09,Z3}, {\zthree}~\cite{Z3-str3}, S3(P) \cite{S3,TCJ16},
-Trau~\cite{Abdulla17} (or its variants {\trauplus}~\cite{AbdullaA+19} and {\zthreetrau}~\cite{Z3-trau}), ABC \cite{ABC}, and \slent~\cite{WC+18}; cf.\ related work.
+Trau~\cite{Abdulla17} (or its variants {\trauplus}~\cite{AbdullaA+19} and {\zthreetrau}~\cite{Z3-trau}), ABC \cite{ABC}, and \slent~\cite{WC+18}.
 %\anthony{I think we should mention more here ...}
 %
 %On a more practical level, 
@@ -119,36 +119,37 @@ can be handled effectively by OSTRICH and SLOTH.
 Moreover, most existing solvers that belong to the first category do not support
 complex string operations like $\replaceall$ and finite transducers as well.
 This motivates the following problem: 
-\emph{provide a decision procedure that supports both string and integer data type, with completeness guarantee and admitting efficient implementation}.
+\emph{provide a decision procedure that supports both string and integer data type, with completeness guarantee and meanwhile admitting efficient implementation}.
 
-\anthony{need to say why extending these with length is non-trivial}
+%\anthony{need to say why extending these with length is non-trivial}
 We argue that this problem is highly challenging.
 A deeper examination into the algorithms used by OSTRICH and SLOTH reveals that,
-unlike the case for Norn, it would not be straightforward to extend OSTRICH and 
-SLOTH with length constraints. First and foremost, the complexity of the
+unlike the case for Norn, it would \emph{not} be straightforward to extend OSTRICH and 
+SLOTH with integer constraints. First and foremost, the complexity of the
 fragment used by Norn (i.e. without transducers and $\replaceall$) is solvable
-in exponential time, even in the presence of length constraints. This is not
-the case for the straight-line fragments with transducers/replaceall, which 
-require at least double exponential time (regardless of the length constraints).
+in exponential time, even in the presence of integer constraints. This is not
+the case for the straight-line fragments with transducers/$\replaceall$, which 
+require at least double exponential time (regardless of the integer constraints).
 This unfortunately manifests itself in the size of symbolic representations of 
-the solutions. SLOTH \cite{HJLRV18} computes a ``global'' 
-representation of all
-solutions as (alternating) finite transducers. Dealing with length requires one
+the solutions. SLOTH \cite{HJLRV18} computes 
+%a ``global'' 
+a representation of all
+solutions ``eagerly'' as (alternating) finite transducers. Dealing with integer data type requires one
 to compute the Parikh images of these transducers \cite{LB16}, which would 
 result in a
-quantifier-free integer linear arithmetic formula of double exponential size 
-(e.g. \cite{VSS05}), which would give us a triply-exponential-time algorithm.
-Lin and Barcelo \cite{LB16} provided an double-exponential upper bound on the 
+quantifier-free linear integer arithmetic formula (LIA for short) of double exponential size, thus giving us a triply-exponential-time algorithm, since LIA formulas are solved in exponential time  (see e.g. \cite{VSS05}).
+Lin and Barcelo \cite{LB16} provided a double-exponential upper bound on the 
 length of the strings in the solution, and show that the double
 exponential-time theoretical complexity could be retained. This, however, does
 not result in a practical algorithm since it requires all strings of double
-exponential size to be enumerated. OSTRICH \cite{CHL+19} took a ``local''
-step-by-step backward pre-image computation, which is more scalable than
-the global approach adopted by SLOTH and results in a highly competitive solver.
-It uses \emph{recognizable relations} (a finite union of regular constraints)
-as symbolic representations. Unfortunately, extending this approach to length
-constraints is also not obvious since length constraints break the independence
-between the different variables in the recognizable relations.
+exponential size to be enumerated. OSTRICH \cite{CHL+19} adopted a ``lazy'' approach and computed the pre-images of regular languages step by step,
+%step by step, 
+which is more scalable than
+the ``eager'' approach adopted by SLOTH and results in a highly competitive solver.
+It uses \emph{recognizable relations} (a finite union of products of regular languages)
+as symbolic representations. Nevertheless, extending this approach to integer
+constraints is not obvious since integer constraints break the independence
+between the different string variables in the recognizable relations.
 %\emph{provide an
 %efficient decision procedure that supports string and integer data type, as well
 %as complex string operations, with a completeness guarantee}.
@@ -194,12 +195,16 @@ admitting \emph{efficient implementations.}
 %\emph{provide completeness guarantees} and %on the other hand, 
 %\emph{admit efficient implementation}.
 
-\noindent\emph{Contribution.} The main contribution of this paper is a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilises a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. The crux of the decision procedure is to compute the backward images of CEFAs under string functions,  in the same flavour as \cite{CHL+19} for string constraints \emph{without} the integer data type. Such an approach %inherits its elegance by 
+\noindent\emph{Contribution.} The main contribution of this paper is a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilizes a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. \zhilin{add several sentences here, describing the idea of CEFAs} Intuitively, each CEFA records the connections between a string variable and the integer variables attached to it, and symbolically represents the set of solutions of these variables. With CEFAs, the concept of recognizable relations is then naturally extended. The integer constraints, on the other hand, are \emph{put alongside CEFAs, instead of as parts of CEFAs}, consequently preserving the independence of string variables in recognizable relations. 
+The crux of the decision procedure is to compute the backward images of CEFAs under string functions, in the same flavor as OSTRICH for string constraints \emph{without} the integer data type \cite{CHL+19}. 
+%, thus preserving the virtues of the ``lazy'' approach of OSTRICH.
+Such an approach %inherits its elegance by 
 is able to treat %the aforementioned seemly 
 a wide range of string functions in a generic, and yet simple, way. 
 
 To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
-\anthony{add something here perhaps}
+%\anthony{add something here perhaps}
+%
 \OMIT{
 Moreover, 
 our decision procedure takes a ``local'' approach for step-by-step backward 
@@ -222,8 +227,10 @@ the recent {\ostrich} solver \cite{CHL+19},  resulting in {\ostrich}+.  We perfo
 The results show that  %{\ostrich}+ achieves a nice balance between expressiveness and efficiency in the sense that 
 1) {\ostrich}+ so far is the only string constraint solver capable of dealing with finite transducers and integer constraints, and 2) its overall performance is comparable with the best state-of-the-art string constraint solvers (e.g. {\cvc} and {\zthreetrau}) which are short of completeness guarantees. 
 
+\hide{
 \smallskip
 \input{related}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
