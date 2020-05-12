@@ -2,6 +2,7 @@
 
 In this section, we present a decision procedure for the path feasibility problem of {\slint}. A distinguished feature of the decision procedure is that it conducts backward computation which is local and can be done in a modular way. To support this, we extend  a regular language with quantitative information of the strings in the language, giving rise to cost-enriched regular languages and corresponding finite automata (Section \ref{sect:ce}). The crux of the decision procedure is thus to show that the  pre-images of cost-enriched regular languages under the string operations in {\slint} (i.e., concatenation $\concat$, $\replaceall_{e,u}$, $\reverse$, FFTs $\NFT$, and $\substring$) are representable by so called cost-enriched recognisable relations (Section \ref{sect:pre}). The overall decision procedure is presented in Section~\ref{sec:dc}, supplied by additional complexity analysis and examples. 
 
+\vspace{-4mm}
 \subsection{Cost-Enriched Regular Languages and Recognisable Relations} \label{sect:ce}
 
 Let $k \in \Nat$ with $k > 0$. A \emph{$k$-cost-enriched string} is $(w, (n_1, \cdots, n_k))$ where $w$ is a string and $n_i \in \intnum$ for all $i \in [k]$. A \emph{$k$-cost-enriched language} $L$ is a subset of $\Sigma^* \times \intnum^k$. For our purpose, we identify a ``regular" fragment of cost-enriched languages as follows.  
@@ -72,8 +73,8 @@ Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics 
 %\end{example}
 
 
-Given two CEFAs $\CEFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\CEFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$ (where %the notation is abused a bit, viewing 
-$R_1$ and $R_2$ are treated as sets), the product of $\CEFA_1$ and $\CEFA_2$, denoted by $\CEFA_1 \times \CEFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
+Given two CEFAs $\CEFA_1 = ( Q_1, \Sigma, R_1, \delta_1, I_1, F_1)$ and $\CEFA_2 = (Q_2, \Sigma, \delta_2, R_2, I_2, F_2)$ with $R_1 \cap R_2 = \emptyset$, %(where %the notation is abused a bit, viewing  $R_1$ and $R_2$ are treated as sets), 
+the product of $\CEFA_1$ and $\CEFA_2$, denoted by $\CEFA_1 \times \CEFA_2$, is defined as $(Q_1 \times Q_2, \Sigma, R_1 \cup R_2, \delta, I_1 \times I_2, F_1 \times F_2)$, where $\delta$ comprises the tuples $((q_1, q_2), \sigma, (q'_1, q'_2), \eta)$ such that $(q_1, \sigma, q'_1, \eta_1) \in \delta_1$, $(q_2, \sigma, q'_2, \eta_2) \in \delta_2$, and $\eta = \eta_1\cup \eta_2$.  %for some $\eta_1, \eta_2$.
 
 
 For a CEFA $\CEFA$, we use $R(\CEFA)$ to denote the vector of cost registers occurring in $\CEFA$. %Note that cost registers of $\CEFA$ are simply integer variables to store costs in $\CEFA$.
@@ -118,10 +119,10 @@ Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\
 %\end{example}
 
  
-
+\vspace{-5mm}
 \subsection{Pre-images of CERLs under string operations} \label{sect:pre}
 
-To unify the presentation of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
+To unify the presentation, %of the decision procedure, %in this section, we usually keep the string operations abstract by only mentioning the input and output data types, namely, 
 we consider string functions $f: (\Sigma^* \times \Int^{k_1}) \times \cdots \times (\Sigma^* \times \Int^{k_l}) \rightarrow \Sigma^*$. (If there is no integer input parameter, then $k_1,\cdots,k_l$ are zero.)  
 %where each integer input parameter (if there is any) is assumed to be affiliated to a unique string input parameter. 
 %Note that  in general $f$ can be nondeterministic, namely, on one input, $f$ may output several  strings.
