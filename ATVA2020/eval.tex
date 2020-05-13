@@ -100,7 +100,8 @@ $\length$:
 %
 %\footnote{These problems have been investigated for transducers in \cite{BEK}.} 
 %into the path feasibility of {\slint} programs. 
-For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$ (see Appendix~\ref{appendix:slint-prog-ineq} for its details). We also include in {\transducerbench+} three instances generated from the running example in Section~\ref{exmp:running}, 
+For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$ (see Appendix~\ref{appendix:slint-prog-ineq} for the details). We also include in {\transducerbench+} three instances %generated from the running example in Section~\ref{exmp:running}, 
+generated from a program to sanitize URLs against XSS attacks (see Appendix~\ref{exmp:running} for the details), 
 where $\NFT_{\rm trim}$ is used. 
 In total, we obtain 94 instances for the {\transducerbench+} suite. 
 %\begin{description}
@@ -232,12 +233,12 @@ Benchmark & Output &  \cvc & \zthree &  \zthreetrau & \ostrichi & \ostrichii & \
 
 We compare {\ostrich}+ to {\cvc}~\cite{cvc4}, {\zthree}~\cite{Z3-str},
 and {\zthreetrau} \cite{Z3-trau}, as well as two configurations of
-\ostrich~\cite{CHL+19} with standard NFAs. Configuration \ostrichi\ is
+\ostrich~\cite{CHL+19} with standard NFAs. The configuration \ostrichi\ is
 a direct implementation of the algorithm in \cite{CHL+19}, and does
 not support integer functions. In \ostrichii, we integrated support
 for the $\length$ function as in Norn~\cite{Abdulla14}, based on the
 computation of length abstractions of regular languages, and handle
-$\indexof$, $\substring$, and $\charat$ via an encoding to equations.
+$\indexof$, $\substring$, and $\charat$ via an encoding to word equations.
 %
 The experiments are executed on a computer with an Intel Xeon Silver 4210 2.20GHz and 2.19GHz CPU (2-core) and 8GB main memory, running 64bit Ubuntu 18.04 LTS OS and Java 1.8. We use a timeout of 30~seconds (wall-clock time), and report the number of satisfiable and unsatisfiable problems solved by each of the systems. Table~\ref{tab-experiment} summarises the experimental results. We did not observe incorrect answers by any tool.
 % (note that the ground-truth are known and have been verified \tl{check this}  
@@ -247,7 +248,7 @@ the evaluation. We exclude {\slent}~\cite{WC+18} because it uses its own input f
 benchmarks; also, {\transducerbench+} is beyond the scope of {\slent}.
 %
 {\trauplus}~\cite{AbdullaA+19}  integrates {\trau} with {\sloth} to deal with both finite transducers and integer constraints. We were unfortunately unable
-to obtain a working version of {\trauplus} by the deadline, possibly because {\trau} requires two separate versions of Z3 to run. In addition, the algorithm~\cite{AbdullaA+19} focuses on length-preserving transducers, which means that {\transducerbench}+ is beyond the scope of \trauplus.
+to obtain a working version of {\trauplus} by the deadline, possibly because {\trau} requires two separate versions of Z3 to run. In addition, the algorithm in~\cite{AbdullaA+19} focuses on length-preserving transducers, which means that {\transducerbench}+ is beyond the scope of \trauplus.
 
 %  We also believe that {\transducerbench}+ is actually beyond the scope of {\trauplus} since   {\trau} and {\sloth} are rather separated in in {\trauplus}, namely, {\sloth} is used to deal with finite transducers and {\trau} is used to handle integer constraints. For instances from {\transducerbench}+, the two types of constraints are tightly coupled. The approach adopted by {\trauplus} cannot handle these constraints. %, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
 
