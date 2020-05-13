@@ -45,7 +45,7 @@
 
 OSTRICH+ performs a depth-first exploration of the search tree resulting from repeatedly
 splitting the disjunctions (or unions) in the cost-enriched recognisable pre-images of CERLs under string functions, as well as the case splits in the semantics of $\indexof$ and $\substring$. The pseudo-code of Step II-III of the decision procedure %in Section~\ref{sec:dec} 
-is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ and $\mathit{substringCaseSplit}$ for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.
+is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, which calls two functions $\mathit{indexofCaseSplit}$ in Algorithm~\ref{alg:indexof} and $\mathit{substringCaseSplit}$ in Algorithm~\ref{alg:substring} for the case splits in the semantics of $\indexof_v$ and $\substring$ respectively.
 %\philipp{I believe we need to comment on the partitions $(\mathcal{I}_l)_{l \in [5]}$ here; at least I don't really understand this notation, and the meaning of the partitions.} 
 %\tl{I add a comment; not sure whether it helps though}\zhilin{Fine with me.}
 %
@@ -53,54 +53,6 @@ is given by  the function $\mathit{checkSat}$ in Algorithm~\ref{alg:checksat}, w
 %
 Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$ in Algorithm~\ref{alg:dfs} for the depth-first exploration (Step IV of the decision procedure), which in turn calls a function $\mathit{CheckCefaLIASat}$ to solve the {\lasat} problem (Step V). Note that Step I of the decision procedure is handled by the DPLL(T) procedure in Princess and is omitted here. 
 
-
-\begin{algorithm}%[tbp]
-\SetKw{Continue}{continue}
-  \small
-  \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraints,
-%    $x \in L$,
-    $\mathit{funApps}$: acyclic set of assignment statements. }
-  \KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
-   }
-%
-%  \Begin{
-    \eIf{$\mathit{active} = \emptyset$}{
-%      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
-      \tcc{Check whether the LIA constraint $\mathit{arith}$ is satisfiable with respect to the CEFA constraints in $\mathit{passive}$ (i.e. Step V).}
-      \Return{$\mathit{CheckCefaLIASat}(\mathit{passive}, \mathit{arith})$;} 
-    }{
-   	choose a CEFA constraint $x \in \CEFA$ in $active$ with $R(\CEFA)=(r_1,\cdots,r_k)$\;
-	\eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$ in $\mathit{funApps}$ with \newline
-	\hspace*{4mm} $\vec{i_j}=(i_{j,1},\cdots, i_{j, k_j})$ for $j \in [l]$
-	}
-	{
-%	      	\tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\Lang(\CEFA)$ under $f$}
-		compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = \left((\CEFA^{(1)}_{j}, \cdots, \CEFA^{(l)}_{j})_{j \in [n]}, \vec{t}\right)$ where \newline 
-		 $R\left(\CEFA^{(j')}_{j}\right)=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
-	        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in \CEFA\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in \CEFA\}$\;    
-	        \For{$j \leftarrow 1$ \KwTo $n$}{
-        		$\mathit{active} \leftarrow \mathit{active} \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
-        		$\mathit{arith} \leftarrow \mathit{arith} \wedge \bigwedge_{j' \in [l], j'' \in [k_{j'}]} i_{j',j''} = (r')^{(j', j'')} \wedge \bigwedge_{j' \in [k]} r_{j'} = t_{j'}$\;
-        		\eIf{$\mathit{active} \cup \mathit{passive}$ is inconsistent}{\Continue \tcc*{backtrack}}
-		{
-		          \Switch{$\mathit{BackDfsExp}(\mathit{active}, \mathit{passive}, \mathit{arith}, \mathit{funApps})$}{
-				\lCase{$sat$}
-					{\Return{$\mathit{sat}$}}
-				\Case{$\mathit{unsat}$}
-					{\Continue \tcc*{backtrack}}
-          			}
-        		}
-	}
-        	\Return{$\mathit{unsat}$}; 
-      	}
-      	{
-        	\Return{$\mathit{BackDfsExp}(\mathit{active} \backslash \{x\in \CEFA\}, \mathit{passive} \cup \{x\in \CEFA\}, \mathit{arith}, \mathit{funApps})$;}
-      	}
-	} 
-%}
-  \caption{Function~$\mathit{BackDfsExp}$ for Step IV (depth-first exploration)}\label{alg:dfs}
-\end{algorithm}
-%\vspace{-5cm}
 
 %%%%%%% the pseudo-code
 %%%%%%% the pseudo-code
@@ -168,6 +120,54 @@ Moreover,  $\mathit{checkSat}$ calls a recursive function  $\mathit{BackDfsExp}$
 	}
 	\caption{$\mathit{substringCaseSplit}$  for case splits in the semantics of $\substring$}\label{alg:substring}
 \end{algorithm}
+
+\begin{algorithm}%[tbp]
+\SetKw{Continue}{continue}
+  \small
+  \KwIn{$\mathit{active}, \mathit{passive}$: sets of CEFA constraints,  $\mathit{arith}$: arithmetic constraints,
+%    $x \in L$,
+    $\mathit{funApps}$: acyclic set of assignment statements. }
+  \KwResult{$\mathit{sat}$ if the input constraints are satisfiable, and $\mathit{unsat}$ otherwise.\newline
+   }
+%
+%  \Begin{
+    \eIf{$\mathit{active} = \emptyset$}{
+%      \tcc{use symbolic model checker {NuXmv} to check whether CEFA constraints are consistent with arithemtic Constraints}
+      \tcc{Check whether the LIA constraint $\mathit{arith}$ is satisfiable with respect to the CEFA constraints in $\mathit{passive}$ (i.e. Step V).}
+      \Return{$\mathit{CheckCefaLIASat}(\mathit{passive}, \mathit{arith})$;} 
+    }{
+   	choose a CEFA constraint $x \in \CEFA$ in $active$ with $R(\CEFA)=(r_1,\cdots,r_k)$\;
+	\eIf{there is an assignment~$x := f(y_1, \vec{i_1}, \ldots, y_l,\vec{i_l})$ defining $x$ in $\mathit{funApps}$ with \newline
+	\hspace*{4mm} $\vec{i_j}=(i_{j,1},\cdots, i_{j, k_j})$ for $j \in [l]$
+	}
+	{
+%	      	\tcc{Compute the $R(\CEFA)$-cost enriched pre-image of $\Lang(\CEFA)$ under $f$}
+		compute $f^{-1}_{R(\CEFA)}(\Lang(\CEFA)) = \left((\CEFA^{(1)}_{j}, \cdots, \CEFA^{(l)}_{j})_{j \in [n]}, \vec{t}\right)$ where \newline 
+		 $R\left(\CEFA^{(j')}_{j}\right)=\left((r')^{(j', 1)}, \cdots,(r')^{(j', k_{j'})}, r^{(j')}_1,\cdots, r^{(j')}_k \right)$ for $j \in [n]$ and $j' \in [l]$\;
+	        $\mathit{active} \leftarrow \mathit{active} \setminus \{x \in \CEFA\}$; $\mathit{passive} \leftarrow \mathit{passive} \cup \{x \in \CEFA\}$\;    
+	        \For{$j \leftarrow 1$ \KwTo $n$}{
+        		$\mathit{active} \leftarrow \mathit{active} \cup \{y_1 \in \CEFA^{(1)}_{j}, \ldots, y_l \in \CEFA^{(l)}_{j}\} $\;
+        		$\mathit{arith} \leftarrow \mathit{arith} \wedge \bigwedge_{j' \in [l], j'' \in [k_{j'}]} i_{j',j''} = (r')^{(j', j'')} \wedge \bigwedge_{j' \in [k]} r_{j'} = t_{j'}$\;
+        		\eIf{$\mathit{active} \cup \mathit{passive}$ is inconsistent}{\Continue \tcc*{backtrack}}
+		{
+		          \Switch{$\mathit{BackDfsExp}(\mathit{active}, \mathit{passive}, \mathit{arith}, \mathit{funApps})$}{
+				\lCase{$sat$}
+					{\Return{$\mathit{sat}$}}
+				\Case{$\mathit{unsat}$}
+					{\Continue \tcc*{backtrack}}
+          			}
+        		}
+	}
+        	\Return{$\mathit{unsat}$}; 
+      	}
+      	{
+        	\Return{$\mathit{BackDfsExp}(\mathit{active} \backslash \{x\in \CEFA\}, \mathit{passive} \cup \{x\in \CEFA\}, \mathit{arith}, \mathit{funApps})$;}
+      	}
+	} 
+%}
+  \caption{Function~$\mathit{BackDfsExp}$ for Step IV (depth-first exploration)}\label{alg:dfs}
+\end{algorithm}
+%\vspace{-5cm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
