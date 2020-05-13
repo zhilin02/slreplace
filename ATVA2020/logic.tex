@@ -116,14 +116,16 @@ For instance, $\substring(abaab, -1,1)=\varepsilon$, $\substring(abaab, 3,0)=\va
 %The function $\replaceall_{e,u}$ can be seen as a special case of FFT, but the transformation to an equivalent FFT $\NFT_{\replaceall_{e,u}}$ may incur an exponential blowup \cite{CCH+18}.
 %\end{remark}
 %
-%To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as the following {\slint} program (denoted by $S_{x \neq y}$)
-%\[
-%\begin{array}{l}
-%z_1:=\charat(x,i); z_2 := \charat(y,i); \\
-%\ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
-%\end{array}
-%\] 
-%where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA accepting $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or otherwise, there exists some position where the characters of the two strings are different.
+\hide{
+To exemplify the expressiveness of our language, we note that the function $\charat(x, i)$ which returns $x[i]$ (i.e., the character of $x$ at the position $i$) can be seen as a special case of $\substring$, namely $\charat(x, i) \equiv \substring(x, i, 1)$. Furthermore, string inequality $x \neq y$ can be expressed as the following {\slint} program (denoted by $S_{x \neq y}$)
+\[
+\begin{array}{l}
+z_1:=\charat(x,i); z_2 := \charat(y,i); \\
+\ASSERT{\length(x) \neq \length(y) \vee \bigvee_{a \in \Sigma} (z_1 \in \NFA_a \wedge z_2 \in \NFA_{\Sigma \setminus a})},
+\end{array}
+\] 
+where $z_1,z_2$ are two freshly introduced string variables, and $\NFA_a$ (resp. $\NFA_{\Sigma \setminus a}$) is the NFA accepting $\{a\}$ (resp. $\Sigma \setminus \{a\}$). Intuitively, two strings are different if their lengths are different or otherwise, there exists some position where the characters of the two strings are different.
+}
 % 
 %
 
