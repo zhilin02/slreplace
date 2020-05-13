@@ -230,6 +230,7 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 	%
 \end{proof}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Proof of Proposition~\ref{prop:la-sat-cefa-inter}}\label{app:sat-cefa}
 
@@ -285,6 +286,7 @@ Then $\indexof_v$ is captured by the CEFA $\CEFA_{\indexof_v}=(Q, \Sigma, R, \de
 	
 	Since the values of all the registers in $\CEFA_i^j$ for $i \in I$ and $ j \in J_i$ can be assumed to be at most exponential, and thus their binary encodings can be stored in polynomial space, one can nondeterministically guess the strings $(w_i)_{i \in I}$, and for each $i \in I$ and $j \in J_i$, simulate the runs of CEFAs $\CEFA_i^j$ on $w_i$, and finally evaluate $\phi$ with the register values after all $\CEFA_{i}^{j}$ accept, in polynomial space. From Savitch's theorem \cite{complexity-book}, we conclude that the {\lasat} problem for monotonic CEFAs is in {\pspace}. This concludes the proof of the proposition.
 \end{proof}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -380,7 +382,7 @@ $\indexof$  and $\substring$, which is beyond the scope of other existing decisi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{The decision procedure}
+\subsection{An illustration of the decision procedure}
 %\begin{example}
 	Consider the program $S$ associated with {\tt urlXssSanitise(url)}. % in Section~\ref{exmp:running}.
 	%\[
@@ -446,6 +448,8 @@ $\indexof$  and $\substring$, which is beyond the scope of other existing decisi
 		\item[Step V.]  Straightforward by utilising Proposition~\ref{prop:la-sat-cefa-inter}. 
 	\end{description}
 %\end{example}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation} \label{appendix:impl}
