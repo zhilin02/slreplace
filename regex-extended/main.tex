@@ -1,0 +1,268 @@
+\documentclass{article}
+\usepackage[british]{babel}
+\usepackage{amsmath,amssymb,theorem}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\colons}{\,:\,}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newtheorem{definition}{Definition}
+{\theorembodyfont{\rmfamily}\newtheorem{note}{Note}}
+{\theorembodyfont{\rmfamily}\newtheorem{remark}{Remark}}
+\newtheorem{theorem}{Theorem}
+%%%%%%%%%% End TeXmacs macros
+
+\begin{document}
+
+\title{NSST constraints}
+
+\maketitle
+
+\begin{definition}[Streaming String Transducer]
+  An NSST{\cite{filiotCopyfulStreamingString2017}} is a tuple $T = (Q, \Sigma,
+  \Gamma, X, E, q_0, F)$, where $\Sigma \tmop{and} \Gamma$ are input and
+  output alphabet respectively, $X$ is a finite set of variables, and $Q$ a
+  finite set of states. $E \subseteq Q \times \Sigma \times Q \times S$ is the
+  transition function where S is the set of substitution s:$X \rightarrow (X
+  \cup \Gamma)^{\ast}$, and F is a partial function from Q to $(X \cup
+  \Gamma)^{\ast}$.
+  
+  Like FA, a successful run of T on $w = \sigma_1 \ldots \sigma_n$ is the
+  sequence of states $q_0 \xrightarrow{\sigma_1 / s_1} q_1
+  \xrightarrow{\sigma_2 / s_2} \ldots \xrightarrow{\sigma_n / s_n} q_n$ where
+  $(q_i, \sigma_{i + 1}, q_{i + 1}, s_{i + 1}) \in E$ and $F (q_n)$ is
+  defined. The output of a run of T is defined as $\tmop{Out} (r) =
+  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
+  $s_{\varepsilon}$ is the empty substitution which maps all variables to
+  $\varepsilon$.
+  
+  For word w, the output of w by T is the set $T (w) = \{ \tmop{Out} (r) |r
+  \tmop{is} a \tmop{successful} \tmop{run} \tmop{of} T \tmop{on} w \}$.
+\end{definition}
+
+\begin{theorem}[PreImage]
+  Given NSST $T = (Q_T, \Sigma, \Sigma', \Gamma, E, q_{0, T}, F_T)$ and NFA $M
+  = (Q_M, \Sigma', \delta_M, q_{0, M}, F_M)$, there is an NFA $N = (Q_N,
+  \Sigma, \delta_N, q_{0, N}, F_N)$, such that for all word w on $\Sigma$, $w
+  \in L (N)$ if and only if there is a word $w' \in T (w)$ such that $w' \in L
+  (M)$. N is computable from T and M.
+\end{theorem}
+
+We omit the correctness proof for now, but give a construction of N:
+
+\
+
+Let $Q_N = Q_T \times P (Q_M)^{Q_M \times \Gamma}$, thus the state of N is
+denoted by a pair $(q, \rho)$ where q is a state of T and $\rho \in Q_M \times
+\Gamma \rightarrow P (Q_M)$ is the simulation function. The initial state of N
+is $(q_{0, T}, \rho_{\varepsilon})$ where $\rho_{\varepsilon} (q, x) = \{ q
+\}$ for all state q and variable x.
+
+For a state $q \in Q_M$, a simulation function $\rho$, and a string $w \in
+(\Gamma \cup \Sigma')^{\ast}$, we recursively define the \tmtextit{evaluation}
+of w on q and $\rho$, denoted by $U (q, \rho, w)$ as
+\[ U (q, \rho, w) = \left\{ \begin{array}{ll}
+     \delta_M^{\ast} (U (q, \rho, w'), a) & w = w' a \wedge a \in \Sigma'\\
+     \bigcup_{q' \in U (q, \rho, w')} \rho (q', a) & w = w' a \wedge a \in
+     \Gamma\\
+     \{ q \} & w = \varepsilon
+   \end{array} \right. \]
+For all substitution $s \in \Gamma \rightarrow (\Gamma \cup \Sigma')^{\ast}$,
+the simulation function $\rho$ \tmtextit{updated} by s, denoted by $R (\rho,
+s)$, is another simulation function defined as follows:
+\[ R (\rho, s) (q, x) = U (q, \rho, s (x)) \]
+Now, consider the transition function of N. For all state $(q, \rho) \in Q_N$,
+if $(q, a, q', s) \in E$ for some character a and substitution s, then:
+\[ ((q, \rho), a, (q', R (\rho, s))) \in \delta_N \]
+At last, the terminal state set $F_N$ contains all the states $(q, \rho)$
+which satisfy the following properties:
+\begin{enumerate}
+  \item $F_T (q)$ is defined
+  
+  \item $U (q_{0, M}, \rho, F_T (q)) \cap F_M \neq \emptyset$
+\end{enumerate}
+
+
+\begin{note}[Intuition]
+  The construction above is actually very simple. The automaton N simulates
+  the run of NSST T, together with the \tmtextit{summary} of M when a variable
+  of T in inputed. The construction should be exponential.
+  
+  The construction does not use the so-called \tmtextit{copyless}
+  property{\cite{alurExpressivenessStreamingString2010,alurNondeterministicStreamingString2011}},
+  thus the expressive power of NSST in this context is greater than 2FT.
+\end{note}
+
+\
+
+\begin{definition}[Two way NSST?]
+  The definition of 2NSST is just like 2FT, allowing bidirectional move of
+  NSST's head.
+\end{definition}
+
+\begin{note}
+  \
+  
+  One thing is worth noting about this idea of 2NSST: \tmtextit{the pre-image
+  of 2NSST is still computable}. We just use a 2FA N to simulate the 2NSST, in
+  the same manner of the construction above. We can then transform the 2FA
+  into a one-way FA in exponential time.
+  
+  However, the expressive power of 2NSST is unknown (yet). I highly suspect
+  that 2NSST is equivalent to NSST, since the bidirectional move of head
+  provides the same function as variables, to some extent. Anyway, the
+  expressive power of NSST should be sufficient now.
+\end{note}
+
+\
+
+All the function expressible by 2FT is also expressible by NSST, like
+\tmtextit{split}. Below is an example of what more NSST can express.
+
+\begin{definition}[Regular Expression with capturing group, regex]
+  Suppose $\Gamma$ is some set of variables, x is an element of $\Gamma$. a is
+  a character in $\Sigma$
+  \[ \alpha \colons = \varepsilon |a| \alpha + \alpha | \alpha \circ \alpha |
+     \alpha^{\ast} | (\alpha) \%x \]
+  WLOG, we assume a variable occurs at most once in a regex.
+  
+  the semantics of regex is defined as tuple $(w, w_x, w_y, \ldots)$ where w
+  is the whole string matched, and $w_x$ is the string matched by the
+  capturing group marked by x, etc. A more formal definition involves match
+  trees and recursive definition.
+  See{\cite{campeanuFORMALSTUDYPRACTICAL2003,carleExtendedRegularExpressions2009}}
+\end{definition}
+
+\begin{definition}[ReplaceAll with capturing group and back reference]
+  Consider the constriant $y = \tmop{replaceAll} (x, e, r)$, where e is a
+  regex and $r \in (\Sigma \cup \Gamma)^{\ast}$.
+  
+  The semantics of replaceAll in this form is like the original
+  one{\cite{chenWhatDecidableString2018}}, with leftmost and longest match of
+  e in x replaced, except that when replacing, every variable in r is
+  substituted by the string captured by the corresponding capturing group in
+  e.
+  
+  A more formal definition should be proposed in the future.
+\end{definition}
+
+\begin{note}
+  \
+  
+  The capturing process might not be unique, though. For example, $(a^+) \%x
+  (a^+) \%y$ matches any string $a^n$ with n greater than 1, but the match
+  over string 'aaa' has two possibilities ('aa' for x, or 'a' for x).
+  
+  Thus, this form of replaceAll becomes nondeterministic.
+\end{note}
+
+\
+
+\begin{remark}
+  Given e and r, we could use NSST to model this function.
+\end{remark}
+
+Again, we give a construction of NSST, but omit the proof:
+
+\
+
+Suppose A=$(Q, F, \delta, \Sigma, q_0)$ is the NFA constructed by Glushkov
+method on e. Here, $Q = \{ q_0, q_1, \ldots, q_n \}$. Each state other than
+$q_0$ corresponds to an occurrence of character in e.
+
+For every subexpression v of e, by the definition of Glushkov construction,
+there must be a subgraph of A which corresponds to v. Use A(v) to denote the
+subgraph. For a state q of A, define $\Gamma (q) = \{ x \in \Gamma |v
+\tmop{is} a \tmop{capturing} \tmop{group} \tmop{of} x \tmop{in} e \wedge q \in
+A (v) \}$, in other words, $\Gamma (q)$ is the set of variables which should
+be updated when entering q.
+
+Furthermore, for a subexpression v, we use Start(v) and End(v) to denote the
+starting and ending states of A(v) (see the definition of Glushkov
+construction).
+
+\
+
+Let NSST $T = (Q', \Sigma, \Sigma, \{ \tmop{acc} \} \cup \Gamma, E, q_0',
+F')$, we construct T using a similar method as parsing
+automata{\cite{chenWhatDecidableString2018}}. The initial state is $(\{ q_0
+\}, \tmop{left}, \emptyset)$.
+\begin{itemize}
+  \item The transition within \tmtextit{left} mode is just the same as the
+  original parsing automata. The substitution is s(acc)=acc.a and s(x)=x for
+  every x other than acc, where a is the input character in this step.
+  
+  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$, and $a \in \Sigma$.
+  If $\delta (S, a) \cap F = \emptyset$, $\delta^{\ast} (\rho, a) \cap F =
+  \emptyset$ and $\delta (q_0, a) \nsubseteq \delta (S, a) \cup \delta^{\ast}
+  (\rho, a)$, then for every $q' \in \delta (q_0, a)$, we have
+  \[ ((\rho \{ q_0 \}, \tmop{left}, S), a, (\{ q' \}, \tmop{long}, \delta (S,
+     a) \cup \delta^{\ast} (\rho, a)), s) \in E \]
+  where s is the substitution defined as: s(x) = x.a for every x in $\Gamma
+  (q')$, and s(y)=y for every other variable y.
+  
+  \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
+  $\delta (S, a) \cap F = \emptyset$, and \ $\delta (q, a) \nsubseteq \delta
+  (S, a)$, then for every $q' \in \delta (q_0, a)$, we have
+  \[ ((\{ q \}, \tmop{long}, S), a, (\{ q' \}, \tmop{long}, \delta (S, a)), s)
+     \in E \]
+  where s is defined as follows:
+  
+  Suppose $V = \{ v|v \tmop{is} a \tmop{Kleene} \tmop{star} \tmop{in} e \wedge
+  q \in \tmop{End} (v) \wedge q' \in \tmop{Start} (v) \}$. Let P be the set of
+  all variables captured in V. For all variable x in the set $\Gamma (q')
+  \backslash P$, s(x)=acc.a. For all variable y in the set $P\backslash \Gamma
+  (q')$, $s (x) = \varepsilon$. For all variable z in the set $P \cap \Gamma
+  (q')$, s(z)=a. All the other variables do not change.
+  
+  \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
+  $\delta (S, a) \cap F = \emptyset$ and $\delta (q, a) \cap F \neq
+  \emptyset$, then for every state $q' \in \delta (q, a) \cap F$, we have
+  \[ ((\{ q \}, \tmop{long}, S), a, (\{ q_0 \}, \tmop{left}, \delta (S, a)
+     \cup q'), s) \in E \]
+  where s is defined as: $s (\tmop{acc}) = \tmop{acc} .a_1 .a_2 \ldots a_n$,
+  where $r = a_1 \ldots a_n$. $s (x) = \varepsilon$ for every other variable
+  x.
+\end{itemize}
+The output function $F'$ is simple: $F' (q) = \tmop{acc} \quad \tmop{iff}
+\quad q = (-, \tmop{left}, -) $.
+
+\
+
+\begin{thebibliography}{1}
+  \bibitem[1]{alurExpressivenessStreamingString2010}Rajeev Alur  and  Pavol
+  {\v C}ern{\'y}. {\newblock}Expressiveness of streaming string transducers.
+  {\newblock}Page  12.{\newblock}
+  
+  \bibitem[2]{alurNondeterministicStreamingString2011}Rajeev Alur  and 
+  Jyotirmoy~V.~Deshmukh. {\newblock}Nondeterministic Streaming String
+  Transducers. {\newblock}In  Luca Aceto, Monika Henzinger, and  Ji{\v r}{\'i}
+  Sgall, editors, \tmtextit{Automata, Languages and Programming},  volume 
+  6756  of \tmtextit{Lecture Notes in Computer Science},  pages  1--20.
+  Springer Berlin Heidelberg.{\newblock}
+  
+  \bibitem[3]{campeanuFORMALSTUDYPRACTICAL2003}Cezar C{\^a}mpeanu, Kai
+  Salomaa, and  Sheng Yu. {\newblock}A FORMAL STUDY OF PRACTICAL REGULAR
+  EXPRESSIONS. {\newblock}14(06):1007--1018.{\newblock}
+  
+  \bibitem[4]{carleExtendedRegularExpressions2009}Benjamin Carle  and  Paliath
+  Narendran. {\newblock}On Extended Regular Expressions. {\newblock}In 
+  Adrian~Horia Dediu, Armand~Mihai Ionescu, and  Carlos Mart{\'i}n-Vide,
+  editors, \tmtextit{Language and Automata Theory and Applications},  volume 
+  5457  of \tmtextit{Lecture Notes in Computer Science},  pages  279--289.
+  Springer Berlin Heidelberg.{\newblock}
+  
+  \bibitem[5]{chenWhatDecidableString2018}Taolue Chen, Yan Chen, Matthew
+  Hague, Anthony~W.~Lin, and  Zhilin Wu. {\newblock}What is decidable about
+  string constraints with the ReplaceAll function.
+  {\newblock}2:3--1.{\newblock}
+  
+  \bibitem[6]{filiotCopyfulStreamingString2017}Emmanuel Filiot  and 
+  Pierre-Alain Reynier. {\newblock}Copyful Streaming String Transducers.
+  {\newblock}In  Matthew Hague  and  Igor Potapov, editors,
+  \tmtextit{Reachability Problems},  volume  10506  of \tmtextit{Lecture Notes
+  in Computer Science},  pages  75--86. Springer International
+  Publishing.{\newblock}
+\end{thebibliography}
+
+\end{document}
