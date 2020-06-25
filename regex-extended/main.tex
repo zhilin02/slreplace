@@ -73,9 +73,14 @@
 %{\theorembodyfont{\rmfamily}\newtheorem{note}{Note}}
 %{\theorembodyfont{\rmfamily}\newtheorem{remark}{Remark}}
 \newtheorem{theorem}{Theorem}
-\newtheorem{note}{Note}
+%\newtheorem{note}{Note}
 \newtheorem{remark}{Remark}
+\newcommand\NSST{{\sf NSST}}
+\newcommand\refexp{{\sf REF}}
+\newcommand\ssym{{\sf Start}}
+\newcommand\esym{{\sf End}}
 %%%%%%%%%% End TeXmacs macros
+
 
 
 
@@ -91,7 +96,7 @@
 \begin{document}
 
 %% Title information
-\title{Solving String Constraints with \\ Practical Regular Expressions}
+\title{Solving String Constraints with Practical Regular Expressions}
 
 
 
@@ -171,17 +176,40 @@ Text of abstract \ldots.
 %% environment and commands, and keywords command.
 \maketitle
 
-\newcommand\NSST{{\sf NSST}}
-
-\newcommand\refexp{{\sf REF}}
-
-
 
 \section{Introduction}
 
 Streaming String Transducers: \cite{FR17}
 
 \section{Prelimiaries}
+
+
+\begin{definition}[Finite-state automata] \label{def:nfa}
+	A \emph{(nondeterministic) finite-state automaton}
+	(\FA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
+	(\ialphabet, \controls, q_0, \finals, \transrel)$ where 
+	$\controls$ is a finite set of 
+	states, $q_0\in \controls$ is
+	the initial state, $\finals\subseteq \controls$ is a set of final states, and 
+	$\transrel\subseteq \controls \times 
+	\ialphabet \times  \controls$ is the
+	transition relation. 
+\end{definition}
+
+For an input string $w = a_1 \dots a_n$, a \emph{run} of $\Aut$ on $w$
+%(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
+is a sequence of states $q_0,\ldots, q_n$ such that $(q_{j-1}, a_{j}, q_{j}) \in
+\transrel$  for every $j \in [n]$.
+The run is said to be \defn{accepting} if $q_n \in \finals$.
+A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
+$\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ iff $q_0 \in F$. The set of strings accepted by $\Aut$ is denoted by $\Lang(\Aut)$,
+a.k.a., the language \defn{recognised} by $\Aut$.
+%Since we deal with computational complexity in the sequel, we define
+The \defn{size} $|\Aut|$ of $\Aut$ is defined to be $|\controls|$; we will
+use this when we discuss computational complexity.
+
+For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
+
 
 \begin{definition}[Streaming String Transducer]
   A nondeterministic streaming string transducer (\NSST) is a tuple $T = (Q, \Sigma, X, E, q_0, F)$, where $Q$ is a finite set of states, $\Sigma$ is both the input alphabet and the output alphabet, $X$ is a finite set of variables, $E \subseteq Q \times \Sigma \times Q \times S$ is a finite set of
@@ -201,7 +229,9 @@ Streaming String Transducers: \cite{FR17}
 %  $\varepsilon$.
   
 The set of outputs of $T$ on a string $w$, denoted by $T(w)$, is defined as $\{ T_r(w) | r
-\mbox{ is a successful run of } T \mbox{ on } w \}$.
+\mbox{ is a successful run of } T \mbox{ on } w \}$. For an \NSST{} $T$, we use $\cR_T$ to denote the string relation $\{(w, w') \mid w' \in T(w)\}$.
+
+For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$, denoted by $R^{-1}(L)$, as $\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$. 
 
 Note that in the definition of \NSST{}s, we do \emph{not} put the  \emph{copyless} restriction on them.
 
@@ -225,19 +255,20 @@ Moreover, for convenience, we use $\regexp[\sf CG]$ to denote the subclass of $\
 %We define the set of reference expressions as follows: 
 
 
-%\begin{definition}[The constraint language $\strline$]%
+\begin{definition}[The constraint language $\strline$]%
 The constraint language $\strline$ is defined by the following rules,
 \[
 \begin{array}{l c l}
 S &::= &  z:= x\ \concat\ y \ |\ z := \replaceall_{e_1, e_2}(x) \ | \  y := \reverse(x) \ |\ \\
-& &  y := \Transducer(x)\ |\  \text{$\ASSERT{R(\vec{x})}$}\ |\ S; S\
+& &  y := \Transducer(x)\ |\  \text{$\ASSERT{x \in e'}$}\ |\ S; S\
 \label{eq:SL}
 %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
 \end{array}
 \]
-where $\concat$ is the string concatenation operation which concatenates two strings, $e_1 \in \regexp[\sf CG]$ and $e_2 \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
-$\reverse$ is the string function which reverses a string, $\Transducer$ is a \NSST{},  and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
-
+where $\concat$ is the string concatenation operation which concatenates two strings, $e_1 \in \regexp[\sf CG]$, $e_2 \in \refexp$, $e' \in \regexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+$\reverse$ is the string function which reverses a string, and $\Transducer$ is an \NSST{}.  
+%and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
+\end{definition}
 
 It is evident that the $\reverse$ function is subsumed by \NSST{}s.
 
@@ -245,68 +276,61 @@ It is evident that the $\reverse$ function is subsumed by \NSST{}s.
 \section{Decision procedures}
 
 
-\subsection{Regex with capturing groups}
+\subsection{Regular expressions with capturing groups}
 
-\subsection{Regex with capturing groups and back references}
+semantics captured by prioritized transducers, \cite{BM17}.
+
+\subsection{Regular expressions with capturing groups and back references}
+
+$\strline$ is in general undecidable, as a result of the back references.
+
+\zhilin{Decidable fragments? Could we assume that the assertions $\ASSERT{x \in e'}$ where $e'$ contains back references are only for the input variables ?}
 
 \subsection{$\replaceall$ with capturing groups and references}
 
-
-\begin{theorem}[PreImage]
-  Given NSST $T = (Q_T, \Sigma, \Sigma', \Gamma, E, q_{0, T}, F_T)$ and NFA $M
-  = (Q_M, \Sigma', \delta_M, q_{0, M}, F_M)$, there is an NFA $N = (Q_N,
-  \Sigma, \delta_N, q_{0, N}, F_N)$, such that for all word w on $\Sigma$, $w
-  \in L (N)$ if and only if there is a word $w' \in T (w)$ such that $w' \in L
-  (M)$. N is computable from T and M.
+\begin{theorem}[Pre-image of \NSST{}]
+  Given an \NSST{} $T = (Q_T, \Sigma$, $X, E, q_{0, T}, F_T)$ and \FA{} $A
+  = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute in exponential time an \FA{} $B = (Q_B,
+  \Sigma, \delta_B, q_{0, B}, F_B)$ such that $\Lang(B) = \cR^{-1}_T(L)$. 
 \end{theorem}
 
-We omit the correctness proof for now, but give a construction of N:
+%We omit the correctness proof for now, but give a construction of N:
+%
+%\
+\begin{proof}
+Intuitively, $B$ simulates the run of $T$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$.
 
-\
+Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X}$, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon})$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho), a, (q', \rho'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
+\begin{itemize}
+\item $(q, a, q', s) \in \delta_T$, 
+\item and $\rho'$ is obtained from $\rho$ and $s$ as follows: for each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
+%
+%$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
+\end{itemize}
 
-Let $Q_N = Q_T \times P (Q_M)^{Q_M \times \Gamma}$, thus the state of N is
-denoted by a pair $(q, \rho)$ where q is a state of T and $\rho \in Q_M \times
-\Gamma \rightarrow P (Q_M)$ is the simulation function. The initial state of N
-is $(q_{0, T}, \rho_{\varepsilon})$ where $\rho_{\varepsilon} (q, x) = \{ q
-\}$ for all state q and variable x.
-
-For a state $q \in Q_M$, a simulation function $\rho$, and a string $w \in
-(\Gamma \cup \Sigma')^{\ast}$, we recursively define the \tmtextit{evaluation}
-of w on q and $\rho$, denoted by $U (q, \rho, w)$ as
-\[ U (q, \rho, w) = \left\{ \begin{array}{ll}
-     \delta_M^{\ast} (U (q, \rho, w'), a) & w = w' a \wedge a \in \Sigma'\\
-     \bigcup_{q' \in U (q, \rho, w')} \rho (q', a) & w = w' a \wedge a \in
-     \Gamma\\
-     \{ q \} & w = \varepsilon
-   \end{array} \right. \]
-For all substitution $s \in \Gamma \rightarrow (\Gamma \cup \Sigma')^{\ast}$,
-the simulation function $\rho$ \tmtextit{updated} by s, denoted by $R (\rho,
-s)$, is another simulation function defined as follows:
-\[ R (\rho, s) (q, x) = U (q, \rho, s (x)) \]
-Now, consider the transition function of N. For all state $(q, \rho) \in Q_N$,
-if $(q, a, q', s) \in E$ for some character a and substitution s, then:
-\[ ((q, \rho), a, (q', R (\rho, s))) \in \delta_N \]
-At last, the terminal state set $F_N$ contains all the states $(q, \rho)$
-which satisfy the following properties:
+Moreover, $F_B$ is the set of states $(q, \rho) \in Q_B$
+such that
 \begin{enumerate}
-  \item $F_T (q)$ is defined
+  \item $F_T (q)$ is defined,
   
-  \item $U (q_{0, M}, \rho, F_T (q)) \cap F_M \neq \emptyset$
+  \item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise, 
+let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
 \end{enumerate}
+\end{proof}
 
+\begin{remark}
+%  The construction above is actually very simple. The automaton N simulates
+%  the run of NSST T, together with the \tmtextit{summary} of M when a variable
+%  of T in inputed. The construction should be exponential.
+%  
+  The construction does not utilize the so-called \tmtextit{copyless}
+  property in {\cite{AC10,AD11}},
+  thus the construction works for \emph{copyful} \NSST{} used in this paper.
+\end{remark}
 
-\begin{note}[Intuition]
-  The construction above is actually very simple. The automaton N simulates
-  the run of NSST T, together with the \tmtextit{summary} of M when a variable
-  of T in inputed. The construction should be exponential.
-  
-  The construction does not use the so-called \tmtextit{copyless}
-  property{\cite{AC10,AD11}},
-  thus the expressive power of NSST in this context is greater than 2FT.
-\end{note}
-
-\
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \begin{definition}[Two way NSST?]
   The definition of 2NSST is just like 2FT, allowing bidirectional move of
   NSST's head.
@@ -326,118 +350,107 @@ which satisfy the following properties:
   expressive power of NSST should be sufficient now.
 \end{note}
 
-\
-
 All the function expressible by 2FT is also expressible by NSST, like
 \tmtextit{split}. Below is an example of what more NSST can express.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{definition}[Regular Expression with capturing group, regex]
-  Suppose $\Gamma$ is some set of variables, x is an element of $\Gamma$. a is
-  a character in $\Sigma$
-  \[ \alpha \colons = \varepsilon |a| \alpha + \alpha | \alpha \circ \alpha |
-     \alpha^{\ast} | (\alpha) \%x \]
-  WLOG, we assume a variable occurs at most once in a regex.
+%\begin{definition}[Regular Expression with capturing group, regex]
+%  Suppose $\Gamma$ is some set of variables, x is an element of $\Gamma$. a is
+%  a character in $\Sigma$
+%  \[ \alpha \colons = \varepsilon |a| \alpha + \alpha | \alpha \circ \alpha |
+%     \alpha^{\ast} | (\alpha) \%x \]
+%  WLOG, we assume a variable occurs at most once in a regex.
   
-  the semantics of regex is defined as tuple $(w, w_x, w_y, \ldots)$ where w
-  is the whole string matched, and $w_x$ is the string matched by the
-  capturing group marked by x, etc. A more formal definition involves match
-  trees and recursive definition.
-  See{\cite{CSY03,CN09}}
+%  the semantics of regex is defined as tuple $(w, w_x, w_y, \ldots)$ where w
+%  is the whole string matched, and $w_x$ is the string matched by the
+%  capturing group marked by x, etc. A more formal definition involves match
+%  trees and recursive definition.
+%  See{\cite{CSY03,CN09}}
+%\end{definition}
+
+\begin{definition}[Semantics of $\replaceall_{e_1, e_2}$]
+  Consider the constriant $y = \replaceall_{e_1, e_2}(x)$, where $e_1 \in \regexp[\sf CG]$ and $e_2 \in \refexp$.
+  
+The semantics of $\replaceall_{e_1, e_2}$ is  similar to that in {\cite{CCH+18}}, where the leftmost and longest matching of
+  $e_1$ in $x$ is considered, with the difference that here the replacement string is obtained from a matching of $e_1$ by replacing every reference $\$ n$ in $e_2$ with the string matched by the subexpression corresponding to the $n$-th capturing group.
+%  
+\zhilin{A more formal definition should be added in the future.}
 \end{definition}
-
-\begin{definition}[ReplaceAll with capturing group and back reference]
-  Consider the constriant $y = \tmop{replaceAll} (x, e, r)$, where e is a
-  regex and $r \in (\Sigma \cup \Gamma)^{\ast}$.
-  
-  The semantics of replaceAll in this form is like the original
-  one{\cite{CCH+18}}, with leftmost and longest match of
-  e in x replaced, except that when replacing, every variable in r is
-  substituted by the string captured by the corresponding capturing group in
-  e.
-  
-  A more formal definition should be proposed in the future.
-\end{definition}
-
-\begin{note}
-  \
-  
-  The capturing process might not be unique, though. For example, $(a^+) \%x
-  (a^+) \%y$ matches any string $a^n$ with n greater than 1, but the match
-  over string 'aaa' has two possibilities ('aa' for x, or 'a' for x).
-  
-  Thus, this form of replaceAll becomes nondeterministic.
-\end{note}
-
-\
 
 \begin{remark}
-  Given e and r, we could use NSST to model this function.
+  In the aforementioned definition of the semantics of $\replaceall_{e_1,e_2}(x)$, even though the matching of $e_1$ in $x$ is deterministic since the leftmost and longest matching is considered, the matchings of the subexpressions may not be deterministic. For instance, although the leftmost and longest matching of $e_1 = (a^+) 
+  (a^+) $ in $a^3b$ is $a^3$, the matching of the first and the second capturing group could be either $aa$ and $a$, or $a$ and $aa$.
+  
+Therefore, the semantics of $\replaceall_{e_1,e_2}(x)$ can be seen as an approximation of that used in programming languages, e.g. Javascript, which can be seen as a tradeoff. \zhilin{this tradeoff should be justified}
 \end{remark}
 
-Again, we give a construction of NSST, but omit the proof:
+\zhilin{Could we unify prioritized transducers and streaming transducers to capture faithfully the semantics of $\replaceall_{e_1,e_2}(x)$ ?}
 
-\
+\begin{theorem}
+  For each $e_1 \in \regexp[\sf CG]$ and $e_2 \in \refexp$, $\replaceall_{e_1, e_2}$ can be modeled by a $\NSST${} $T_{e_1,e_2}$.
+\end{theorem}
 
-Suppose A=$(Q, F, \delta, \Sigma, q_0)$ is the NFA constructed by Glushkov
-method on e. Here, $Q = \{ q_0, q_1, \ldots, q_n \}$. Each state other than
-$q_0$ corresponds to an occurrence of character in e.
+\begin{proof}
+Suppose that $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton \cite{Gluskov61} constructed from $e_1 \in \regexp[\sf CG]$. From the Glushkov
+construction, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$. For instance, if $e_1 = (a (ab)^*)^*$, then we consider the marked regular expression $(a_1 (a_2 b_3)^*)^*$, and let $Q = \{q_0, a_1, a_2, b_3\}$, $F = \{q_0, a_1, b_3\}$, and $\delta = \{(q_0, a, a_1), (a_1, a, a_2)$, $(a_1, a, a_1), (a_2, b, b_3), (b_3, a, a_2), (b_3, a, a_1)\}$. 
+%Each state other than $q_0$ corresponds to an occurrence of character in e.
 
-For every subexpression v of e, by the definition of Glushkov construction,
-there must be a subgraph of A which corresponds to v. Use A(v) to denote the
-subgraph. For a state q of A, define $\Gamma (q) = \{ x \in \Gamma |v
-\tmop{is} a \tmop{capturing} \tmop{group} \tmop{of} x \tmop{in} e \wedge q \in
-A (v) \}$, in other words, $\Gamma (q)$ is the set of variables which should
-be updated when entering q.
+For each subexpression $e'$ of $e_1$, let us use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$.
+For every subexpression $e'$ of $e_1$, from the Glushkov construction,
+there must be a unique subgraph of $A_{e_1}$ corresponding to $e'$, denoted by $A_{e_1}[e']$. For instance, if $e_1 = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e_1}[a(ab)^*]$ is the subgraph of $A_{e_1}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
+For each state $a_i$ of $A_{e_1}$, define $C(a_i)$  as the set $\{ e' \in C_{e_1} \mid a_i \mbox{ is a vertex in }
+A_{e_1}[e']\}$. Intuitively, $C(a_i)$ represents the set of subexpressions in $C_{e_1}$ whose values should be updated when entering the state $a_i$ in $A_{e_1}$. Moreover, for each $e' \in C_{e_1}$, we use $\ssym(e')$ (resp. $\esym(e')$) to denote the set of marked symbols that can be matched to the first  (resp. last) symbol of a string matching $e'$. For instance, let $e' = a(ab)^*$, then $\ssym(e') = \{a_1\}$ and $\esym(e') = \{a_1, b_3\}$. 
+%other words, $\Gamma (q)$ is the set of variables which should
+%be updated when entering q.
 
-Furthermore, for a subexpression v, we use Start(v) and End(v) to denote the
-starting and ending states of A(v) (see the definition of Glushkov
-construction).
-
-\
-
-Let NSST $T = (Q', \Sigma, \Sigma, \{ \tmop{acc} \} \cup \Gamma, E, q_0',
-F')$, we construct T using a similar method as parsing
-automata{\cite{chenWhatDecidableString2018}}. The initial state is $(\{ q_0
-\}, \tmop{left}, \emptyset)$.
+For each $e' \in C_{e_1}$, we introduce a string variable $x_{e'}$. Moreover, we introduce another string variable $x_{res}$ to denote the result of $\replaceall_{e_1,e_2}$. Let $X$ denote the set of these string variables.
+Then we construct the \NSST{} $T_{e_1,e_2} = (Q', \Sigma, X, E, q_0', F')$, by using the idea of parsing automata in \cite{CCH+18} as follows: At first, $q'_0= (\{ q_0
+\}, \tmop{left}, \emptyset)$. The set of transition rules $E$ is defined by the following rules.
 \begin{itemize}
-  \item The transition within \tmtextit{left} mode is just the same as the
-  original parsing automata. The substitution is s(acc)=acc.a and s(x)=x for
-  every x other than acc, where a is the input character in this step.
+  \item The transitions within the \emph{left} mode are the same as the
+   parsing automata in \cite{CCH+18}, augmented with the assignment function $s$ such that $s(x_{res}) = res \concat a$ and $s(x_{e'})=x_{e'}$ for
+  every $e' \in C_{e_1}$, where $a$ is the input character.
   
-  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$, and $a \in \Sigma$.
+  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$ and $a \in \Sigma$.
   If $\delta (S, a) \cap F = \emptyset$, $\delta^{\ast} (\rho, a) \cap F =
   \emptyset$ and $\delta (q_0, a) \nsubseteq \delta (S, a) \cup \delta^{\ast}
-  (\rho, a)$, then for every $q' \in \delta (q_0, a)$, we have
+  (\rho, a)$, then for every $q' \in \delta (q_0, a) \setminus (\delta (S, a) \cup \delta^{\ast}(\rho, a))$, we have
   \[ ((\rho \{ q_0 \}, \tmop{left}, S), a, (\{ q' \}, \tmop{long}, \delta (S,
      a) \cup \delta^{\ast} (\rho, a)), s) \in E \]
-  where s is the substitution defined as: s(x) = x.a for every x in $\Gamma
-  (q')$, and s(y)=y for every other variable y.
+  where $s$ is the assignment function defined as follows: $s(x_{e'}) = a$ for every $e'  \in C(q')$, and $s(y)=y$ for every other string variable $y \in X$.
   
   \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
   $\delta (S, a) \cap F = \emptyset$, and \ $\delta (q, a) \nsubseteq \delta
-  (S, a)$, then for every $q' \in \delta (q_0, a)$, we have
+  (S, a)$, then for every $q' \in \delta (q, a) \setminus \delta(S, a)$, we have
   \[ ((\{ q \}, \tmop{long}, S), a, (\{ q' \}, \tmop{long}, \delta (S, a)), s)
      \in E \]
-  where s is defined as follows:
+  where $s$ is defined as follows:
   
-  Suppose $V = \{ v|v \tmop{is} a \tmop{Kleene} \tmop{star} \tmop{in} e \wedge
-  q \in \tmop{End} (v) \wedge q' \in \tmop{Start} (v) \}$. Let P be the set of
-  all variables captured in V. For all variable x in the set $\Gamma (q')
-  \backslash P$, s(x)=acc.a. For all variable y in the set $P\backslash \Gamma
-  (q')$, $s (x) = \varepsilon$. For all variable z in the set $P \cap \Gamma
-  (q')$, s(z)=a. All the other variables do not change.
+  Suppose $\Theta = \{e' \mid e' = e''^*  \wedge
+  q \in \esym(e'') \wedge q' \in \ssym(e'') \}$ and $C_{\Theta}$ denotes the set of $x_{e''}$ such that $e'' \in C_{e'}$ for some $e' \in \Theta$.
+Then 
+\begin{itemize}
+\item for each $y \in C_{\Theta} \cap C(q')$, $s(y) =  a$,
+%
+\item for each $y \in C_{\Theta} \setminus C(q')$, $s(y) = \varepsilon$, 
+%
+\item for each $y \in C(q') \setminus C_\Theta$, $s(y) = y \concat a$,
+%
+\item for each $y \in X \setminus (C_\Theta \cup C(q'))$, $s(y)= y$.
+\end{itemize}
   
   \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
   $\delta (S, a) \cap F = \emptyset$ and $\delta (q, a) \cap F \neq
   \emptyset$, then for every state $q' \in \delta (q, a) \cap F$, we have
   \[ ((\{ q \}, \tmop{long}, S), a, (\{ q_0 \}, \tmop{left}, \delta (S, a)
      \cup q'), s) \in E \]
-  where s is defined as: $s (\tmop{acc}) = \tmop{acc} .a_1 .a_2 \ldots a_n$,
-  where $r = a_1 \ldots a_n$. $s (x) = \varepsilon$ for every other variable
-  x.
+  where $s$ is defined as follows: $s (x_{res}) = x_{res}  \concat b_1   \ldots  b_n$ such that $e_2 = a_1 \ldots a_n$, and for each $i \in [n]$, if $a_i  \in \Sigma$, then $b_i = a_i$, otherwise, $a_i = \$ j$ for some $j$, let $e' \in C_{e_1}$ be the subexpression corresponding to the $j$-th capturing group of $e_1$, then $b_i = x_{e'}$. Moreover, $s(y) = \varepsilon$ for every other variable
+  $y \in X$.
 \end{itemize}
-The output function $F'$ is simple: $F' (q) = \tmop{acc} \quad \tmop{iff}
-\quad q = (-, \tmop{left}, -) $.
+The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}, -) $.
+\end{proof}
 
 %% Acknowledgments
 \begin{acks}                            %% acks environment is optional
@@ -446,15 +459,12 @@ The output function $F'$ is simple: $F' (q) = \tmop{acc} \quad \tmop{iff}
   %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
   %% acknowledge financial support and will be used by metadata
   %% extraction tools.
-  This material is based upon work supported by the
-  \grantsponsor{GS100000001}{National Science
-    Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
-  No.~\grantnum{GS100000001}{nnnnnnn} and Grant
-  No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
-  conclusions or recommendations expressed in this material are those
-  of the author and do not necessarily reflect the views of the
-  National Science Foundation.
+xxx
 \end{acks}
+
+\section{Implementation}
+
+\section{Experiments}
 
 
 %% Bibliography
