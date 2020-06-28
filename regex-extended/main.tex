@@ -181,38 +181,44 @@ Text of abstract \ldots.
 
 Streaming String Transducers: \cite{FR17}
 
-\section{Prelimiaries}
+\section{Preliminaries}
+
+$\Int^+$ is the set of integers. 
 
 \begin{definition}[Streaming String Transducer]
-  A nondeterministic streaming string transducer (\NSST) is a tuple $T = (Q, \Sigma, X, E, q_0, F)$, where $Q$ is a finite set of states, $\Sigma$ is both the input alphabet and the output alphabet, $X$ is a finite set of variables, $E \subseteq Q \times \Sigma \times Q \times S$ is a finite set of
-  transition rules where $S$ is the set of assignment functions, namely functions from $X$ to $(X
+  A nondeterministic streaming string transducer (\NSST) is a tuple $T = (Q, \Sigma, X, E, q_0, F)$, where $Q$ is a finite set of states, $\Sigma$ is both the input alphabet and the output alphabet, $X$ is a finite set of string variables, $E \subseteq Q \times \Sigma \times Q \times S$ is a finite set of
+  transition rules where $S$ is a set of assignment functions from $X$ to $(X
   \cup \Sigma)^{\ast}$, and $F$ is the output function, which is a partial function from $Q$ to $(X \cup
   \Sigma)^{\ast}$.
   \end{definition}
   
   A run $r$ of $T$ on a string $w = \sigma_1 \ldots \sigma_n$ is $q_0 \xrightarrow{\sigma_1 / s_1} q_1
   \xrightarrow{\sigma_2 / s_2} \ldots \xrightarrow{\sigma_n / s_n} q_n$ such that
-  $(q_i, \sigma_{i + 1}, q_{i + 1}, s_{i + 1}) \in E$ for every $i: 1 \le i < n$. A run $r$ is \emph{successful} if $F(q_n)$ is
-  defined. The output of a run $r$ of $T$ on $w$, denoted by $T_r(w)$, is defined as $\pi_n(F(q_n))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for each $i: 1 \le i \le n$ and $x \in X$. Note that here we abuse the notation in $\pi_n(F(q_n))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
+  $(q_i, \sigma_{i + 1}, q_{i + 1}, s_{i + 1}) \in E$ for $1 \le i < n$. A run $r$ is \emph{successful} if $F(q_n)$ is
+  defined. 
+  %
+  The output of a run $r$ of $T$ on $w$, denoted by $T_r(w)$, is defined as $\pi_n(F(q_n))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le n$ and $x \in X$. Note that here we abuse the notation in $\pi_n(F(q_n))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
   
 %  $\tmop{Out} (r) =
 %  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
 %  $s_{\varepsilon}$ is the empty substitution which maps all variables to
 %  $\varepsilon$.
   
-The set of outputs of $T$ on a string $w$, denoted by $T(w)$, is defined as $\{ T_r(w) | r
+The set of outputs of $T$ on a string $w$, denoted by $T(w)$, is defined as $\{ T_r(w) \mid  r
 \mbox{ is a successful run of } T \mbox{ on } w \}$.
 
-Note that in the definition of \NSST{}s, we do \emph{not} put the  \emph{copyless} restriction on them.
+Note that in the definition of \NSST, there is no \emph{copyless} restriction.
 
 \section{The string logic}
 
 
 A regular expression with capturing group is defined as follows.
 
-\begin{definition}[Regular expressions $\regexp$ with capturing groups and back references]
+\begin{definition}[Regular expressions  with capturing groups and back references $\regexp$]
 	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid \$n \mid e + e \mid e \concat e \mid e^* \mid (e), \mbox{ where } a \in \Sigma, n \in \Int^+. \]
-	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. We use the abbreviation $e^+ \equiv e \concat e^*$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we use the abbreviations $\Gamma \equiv a_1 + \cdots + a_k$ and $\Gamma^\ast \equiv (a_1 + \cdots + a_k)^\ast$. 
+%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. 
+%We use the abbreviation 
+$e^+$ abbreviates $e \concat e^*$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma \equiv a_1 + \cdots + a_k$ and $\Gamma^\ast \equiv (a_1 + \cdots + a_k)^\ast$. 
 \end{definition}
 \zhilin{some sanity conditions should be put to make the semantics of $\$ n$ well-defined.}
 
