@@ -1,0 +1,124 @@
+%!TEX root = main.tex
+
+We write $\Nat$ and $\Int$ for the sets of natural and integer numbers, respectively. For $n \in \Nat$ with $n \ge 1$, $[n]$ denotes $\{1, \ldots, n\}$; for $m,n \in \Nat$ with $m \le n$,  $[m, n]$ denotes $\{ i \in \Nat \mid m \le i \le n \}$. Throughout the paper, $\Sigma$ is a finite alphabet, ranged over by $a,b,\ldots$.  
+
+%Let $\eta_1: X \rightarrow Z$ and $\eta_2: Y \rightarrow Z$ be two functions such that $X \cap Y = \emptyset$. We use $\eta_1 \cup \eta_2$ to denote the function $\eta: X \cup Y \rightarrow Z$ such that for each $\alpha \in X \cup Y$, $\eta(\alpha) = \eta_1(\alpha)$  if $\alpha \in X$, and $\eta(\alpha) = \eta_2(\alpha)$ otherwise. 
+\smallskip
+\noindent \emph{Strings, languages, and transductions.}
+A string over $\Sigma$ is a (possibly empty) sequence of elements from $\Sigma$,
+denoted by $u, v, w, \ldots$. An empty string is denoted by $\varepsilon$.  We write $\Sigma^*$ (resp., $\Sigma^+$) for the set of all (resp. nonempty) strings over $\Sigma$.
+%Let 
+For a string $u$, we use $|u|$ to denote the number of letters in $u$. In particular, $|\varepsilon|=0$. Moreover, for $a \in \Sigma$, let $|u|_a$ denote the number of occurrences of $a$ in $u$. 
+Assume $u=a_0\cdots a_{n-1}$ is nonempty and $i<j \in [0,n-1]$. %Then a \emph{position} of $u$ is a number $i \in [|u|]$ (Note that the first position is $1$, instead of  0). In addition, 
+We let $u[i]$ denote $a_i$ and $u[i,j]$ for the substring %of $u$ starting from $i$ and ending with $j$ (i.e., 
+$a_i\cdots a_j$. 
+%\tl{check later for consistency}\zhilin{the indices start from 0, to be consistent with the semantics of substring and indexof}\zhilin{i do use it in section 4}
+
+Let $u, v$ be two strings. We use $u \cdot v$ to denote the \emph{concatenation} of $u$ and $v$.
+%, that is, the string $w$ such that $|w|= |u| + |v|$ and for each $i \in [0, |u|-1]$, $w[i]= u[i]$, and for each $i \in [0,|v|-1]$, $w[|u|+i]=v[i]$. 
+The string $u$ is said to be a \emph{prefix} of $v$ if $v = u \cdot v'$ for some string $v'$.
+In addition, if $u \neq v$, then $u$ is said to be a \emph{strict} prefix of $v$. 
+%
+If %$u$ is a prefix of $v$, that is, 
+$v = u \cdot v'$ for some string $v'$, then 
+we use $u^{-1} v$ to denote $v'$. In particular, $\varepsilon^{-1} v = v$.
+If $u=a_0 \cdots a_{n-1}$ is nonempty, then we use $u^{(r)}$ to denote the \emph{reverse} of $u$, that is, $u^{(r)}= a_{n-1 }\cdots a_0$. %\tl{$u^r$ check later for consistency}
+
+
+%A \emph{language} over $\Sigma$ is a subset of $\Sigma^*$, denoted by  $L_1, L_2, \dots$. For two languages $L_1$ and $L_2$, let $L_1 \cdot L_2$ denote the concatenation of $L_1$ and $L_2$, that is, the language $\{u_1 \cdot u_2 \mid u_1 \in L_1, u_2 \in L_2\}$. 
+%For a language $L$ and $n \in \Nat$, we define the \emph{iteration} $L^n$ of $L$  inductively by $L^0=\{\varepsilon\}$ and $L^{n} =L \cdot L^{n-1}$ for $n > 0$. We also use $L^*$ to denote an arbitrary number of iterations of $L$, that is, $L^* = \bigcup _{n \in \Nat} L^n$. Moreover, let $L^+ = \bigcup _{n \in \Nat \setminus \{0\}} L^n$. 
+
+A \emph{transduction} over $\Sigma$ is a binary relation over $\Sigma^*$, namely, a subset of $\Sigma^* \times \Sigma^*$. We will use $T_1, T_2,\ldots$ to denote transductions. For two transductions $T_1$ and $T_2$, we will use $T_1 \cdot T_2$ to denote the \emph{composition} of $T_1$ and $T_2$, namely, $T_1 \cdot T_2 = \{(u, w) \in \Sigma^* \times \Sigma^* \mid \emph{there exists } v \in \Sigma^* \mbox{ s.t. } (u,v) \in T_1 \mbox{ and } (v,w) \in T_2\}$.
+
+
+
+%\paragraph*{Regular languages.}
+%A language $L$ is \emph{regular} if it can be defined by a regular expression, or equivalently by a finite automaton.  
+%Regular expressions $\regexp$ are defined by:
+%%
+%	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid e + e \mid e \concat e \mid e^*, \mbox{ where } a \in \Sigma. \]
+%%
+%Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. We use the abbreviation $e^+ \equiv e \concat e^*$. Moreover, for $\Gamma = \{a_1, \ldots, a_n\}\subseteq \Sigma$, we use the abbreviations $\Gamma \equiv a_1 + \cdots + a_n$ and $\Gamma^\ast \equiv (a_1 + \cdots + a_n)^\ast$. 
+%
+%We define $\Ll(e)$ to be the language defined by $e$, that is, the set of strings that match $e$, inductively as follows: $\Ll(\emptyset) =\emptyset$,
+%%\begin{itemize}
+%%\item 
+%$\Ll(\varepsilon) =\{\varepsilon\}$,
+%%
+%%\item 
+%$\Ll(a)= \{a\}$,
+%%
+%%\item 
+%$\Ll(e_1 + e_2) = \Ll(e_1) \cup \Ll(e_2)$,
+%%
+%%\item 
+%$\Ll(e_1 \concat e_2) = \Ll(e_1) \cdot \Ll(e_2)$,
+%%
+%%\item 
+%$\Ll(e_1^*)=(\Ll(e_1))^*$.
+%%\end{itemize}
+%In addition, we use $|e|$ to denote the number of symbols occurring in $e$.
+%
+%A \emph{nondeterministic finite automaton} (NFA) $\NFA$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, a, q') \in \delta$ as $q \xrightarrow[\delta]{a} q'$. Moreover, when $\delta$ is clear from context, we omit $\delta$ in $q \xrightarrow[\delta]{a} q'$ and write $q \xrightarrow{a} q'$. The \emph{size} of an NFA $\NFA$, denoted by $|\NFA|$, is defined as the number of transitions of $\NFA$.
+%%
+%A \emph{run} of $\NFA$ on a string $w = a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1} q_1 \cdots q_{n-1} \xrightarrow{a_n} q_n$ with $q_0 \in I$. The run is \emph{accepting} if $q_n \in F$.
+%A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\NFA$ if $I \cap F \neq \emptyset$. The language defined by $\NFA$, denoted by $\Lang(\NFA)$, is the set of strings accepted by $\NFA$. An NFA $\NFA$ is said to be \emph{deterministic} if $I$ is a singleton, moreover, for every $q \in Q$ and $a \in \Sigma$, there is at most one state $q' \in Q$ such that $(q, a, q') \in \delta$.
+
+\smallskip
+\noindent \emph{Recognisable relations.} 
+We assume familiarity with standard regular language. Recall that a regular language $L$ can be represented by a regular expression $e\in \regexp$ whereby we usually write $ L=\Ll(e)$. %or equivalenced by a nondeterministic finite automaton (NFA) $\NFA$ whereby we usually write $ L=\Ll(e)=\Lang(\NFA)$.
+
+Intuitively, a \emph{recognisable relation} is simply a finite union of Cartesian products of regular languages. Formally, an $\arity$-ary relation $R\subseteq \Sigma^*\times \cdots\times \Sigma^*$ is \emph{recognisable} if $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_\arity$ where $L^{(i)}_j$ is regular for each $j\in [\arity]$. A \emph{representation} of a recognisable relation $R=\bigcup_{i=1}^n L^{(i)}_1\times \cdots\times L^{(i)}_\arity$ is $(\NFA^{(i)}_1, \ldots, \NFA^{(i)}_\arity)_{1 \le i \le n}$ such that each $\NFA^{(i)}_j$ is an NFA with $\Lang(\NFA^{(i)}_j)=L^{(i)}_j$. The tuples $(\NFA^{(i)}_1, \ldots, \NFA^{(i)}_\arity)$ are called the \emph{disjuncts} of the representation and the NFAs $\NFA^{(i)}_j$ are called the \emph{atoms} of the representation.
+
+
+
+%\paragraph*{Automata models.} 
+
+ 
+%Fix a finite \emph{alphabet} $\Sigma$. Elements in $\Sigma^*$ are called \emph{strings}. Let $\varepsilon$ denote the empty string and  $\Sigma^+ = \Sigma^* \setminus \{\varepsilon\}$. We will use $a,b,\ldots$ to denote letters from $\Sigma$ and $u, v, w, \ldots$ to denote strings from $\Sigma^*$. For a string $u \in \Sigma^*$, let $|u|$ denote the \emph{length} of $u$ (in particular, $|\varepsilon|=0$), moreover, 
+
+%Let $w=a_1\cdots a_n$ be a string. The reverse of $w$, denoted by $w^{(r)}$, is $a_n \cdots a_1$. 
+
+
+%\paragraph*{Finite transducers.} 
+\smallskip
+\noindent \emph{Automata models.} 
+A \emph{(nondeterministic) finite automaton} (NFA)  is a tuple $\NFA=(Q, \Sigma, \delta, I, F)$, where $Q$ is a finite set of states, $\Sigma$ is a finite alphabet, $\delta \subseteq Q \times \Sigma \times Q$ is the transition relation, $I,F \subseteq Q$ are the set of initial and final states respectively. For readability, we write a transition $(q, a, q') \in \delta$ as $q \xrightarrow[\delta]{a} q'$ (or simply $q \xrightarrow{a} q'$). %Moreover, when $\delta$ is clear from context, we omit $\delta$ in $q \xrightarrow[\delta]{a} q'$ and write $q \xrightarrow{a} q'$. 
+The \emph{size} of an NFA $\NFA$, denoted by $|\NFA|$, is defined as the number of transitions of $\NFA$.
+%
+A \emph{run} of $\NFA$ on a string $w = a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1} q_1 \cdots q_{n-1} \xrightarrow{a_n} q_n$ with $q_0 \in I$. The run is \emph{accepting} if $q_n \in F$.
+A string $w$ is accepted by an NFA $\NFA$ if there is an accepting run of $\NFA$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\NFA$ if $I \cap F \neq \emptyset$. The language of $\NFA$, denoted by $\Lang(\NFA)$, is the set of strings accepted by $\NFA$. 
+%
+An NFA $\NFA$ is said to be \emph{deterministic} if $I$ is a singleton and, for every $q \in Q$ and $a \in \Sigma$, there is at most one state $q' \in Q$ such that $(q, a, q') \in \delta$.
+%
+It is well-known that finite automata capture regular languages precisely. 
+
+
+A \emph{nondeterministic finite transducer} (NFT) $\NFT$ is an extension of NFA with outputs. Formally, an NFT $\NFT$ is a tuple $(Q, \Sigma, \delta, I, F)$, where $Q, \Sigma, I, F$ are as in NFA and the transition relation $\delta$ is a finite subset of $Q \times \Sigma \times Q \times \Sigma^*$. Similarly to NFA, for readability, we write a transition $(q, a, q', u) \in \delta$ as $q \xrightarrow[\delta]{a, u} q'$ or $q \xrightarrow{a, u} q'$. The \emph{size} of an NFT $\NFT$, denoted by $|\NFT|$, is defined as the sum of the sizes of the transitions of $\NFT$, where the size of a transition $q \xrightarrow{a, u} q'$ is defined as $|u|+3$.
+%
+A run of $\NFT$ over a string $w=a_1 \cdots a_n$ is a sequence of transitions $q_0 \xrightarrow{a_1, u_1} q_1 \cdots q_{n-1} \xrightarrow{a_n, u_n} q_n$ with $q_0 \in I$. The run is accepting if $q_n \in F$. The string $u_1 \cdots u_n$ is called the output of the run. The transduction defined by $\NFT$, denoted by $\Tran(\NFT)$, is the set of string pairs $(w, u)$ such that there is an accepting run of $T$ on $w$, with the output $u$. An NFT $\NFT$ is said to be \emph{deterministic} if $I$ is a singleton, and, for every $q \in Q$ and $a \in \Sigma$  there is at most one pair $(q', u) \in Q \times \Sigma^*$ such that $(q, a, q', u) \in \delta$.
+%
+In this paper, we are primarily interested in \emph{functional} finite transducers (FFT), i.e., finite transducers that define functions instead of relations. (For instance, deterministic finite transducers are always functional.)
+
+%\tl{to put in a different place later} Note that our decision procedure is applicable to general transducers as well, however, the EXPSPACE complexity bound is not, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional transducers $f$.  
+
+%We remark that an FT usually defines a relation.
+
+%\smallskip
+
+%In this paper, we consider logics involving two data-types, i.e., the string data-type and the integer data-type. We will use $u, v, \dots$ to denote string constants,  $c, d,\dots$ to denote integer constants, $x, y, \dots$ to denote string variables, and $i, j, \dots$ to denote  integer variables.
+
+We will also use standard  quantifier-free/existential \emph{linear integer arithmetic} (LIA) formulae, which are typically ranged over by $\phi, \varphi$, etc. %, which is essentially Presburger 
+
+%
+%%\paragraph*{Linear integer arithmetic.} 
+% A linear integer arithmetic (abbreviated as LIA, essentially Presburger) formula $\phi$ is defined by the following rules
+%\[
+%\begin{array}{l c l}
+%t & ::=  & i \mid c \mid ct \mid t + t, \mbox{ where } c \in \Int, \\
+%\phi &::= & t \ o \ t \mid \neg \phi \mid \phi \vee \phi \mid \exists i.\ \phi, \mbox{ where } o \in \{=, \neq, \le, \ge, <, >\}.
+%\end{array}
+%\]
+%The \emph{size} of an LIA formula $\phi$, denoted by $|\phi|$, is defined as the number of symbols in $\phi$.
+%Let $\phi$ be an LIA formula and $i$ be a variable occurring in $\phi$. Then an occurrence of $i$ in $\phi$ is said to be \emph{free}  if the occurrence is not under the scope of $\exists i$. A formula $\phi$ is \emph{quantifier-free} if it does not contain quantifiers. The semantics of LIA formulas is standard and its definition is omitted here.
+%For a quantifier-free LIA formula $\phi$ that contains the free variables $i_1, \ldots, i_k$, we use $\cM(\phi)$ to denote the set of models of $\phi$, namely, $\cM(\phi) = \left\{(n_1, \ldots , n_k) \in \Int^k \mid \phi[n_1/i_1, \ldots, n_k/i_k] \mbox{ is evaluated to } true\right\}$, where $\phi[n_1/i_1, \ldots, n_k/i_k]$ is the formula obtained from $\phi$ by simultaneously replacing $i_1,\ldots, i_k$ with $n_1,\ldots, n_k$. An \emph{existential} LIA formula is a LIA formula where all the existential quantifiers are under the scope of an even number of negation symbols.

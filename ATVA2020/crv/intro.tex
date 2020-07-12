@@ -1,0 +1,247 @@
+%!TEX root = main.tex
+
+
+%This paper concerns strings and integers, two fundamental data-types in virtually all programming languages.
+String-manipulating programs are notoriously subtle, and their potential bugs %Many subtle programming bugs are caused by , some with
+may bring severe security consequences. A typical example is cross-site scripting
+(XSS), which is among the OWASP Top 10 Application Security Risks~\cite{owasp17}.
+Integer data type occurs naturally and extensively in string-manipulating programs. %For instance, access to lengths or positions of strings is frequently needed. 
+%
+An effective and increasingly popular method for identifying bugs, including XSS, is symbolic execution~\cite{symbex-survey}.
+% and combinations with dynamic analysis
+%called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
+%(See~\cite{symbex-survey} for an excellent survey.)
+%Unlike purely random testing,
+%which runs only \emph{concrete} program executions on different
+%inputs, the techniques of symbolic execution 
+In a nutshell, this technique analyses static paths
+ through the program being considered.
+Each of these paths can be viewed as a constraint~$\varphi$ over
+appropriate data domains, and symbolic execution tools
+demand fast constraint
+solvers to check the satisfiability of $\varphi$. Such constraint
+solvers need to support all %native 
+data-type operations occurring in
+a program.
+% (i.e., to check
+%the \emph{feasibility} of the static path), which can be used for, e.g.,  generating
+%inputs that lead to certain parts of the program or an erroneous behavior.
+
+
+Typically, mainstream programming languages provide standard string functions such as concatenation, $\replace$, and $\replaceall$. Moreover, Web programming languages usually provide complex string operations (e.g. htmlEscape and trim), which are conveniently modelled as finite transducers, to sanitise malicious user inputs \cite{BEK}. 
+%These sanitization operations can be conveniently modeled by finite transducers. 
+Nevertheless, apart from these operations involving only the string data type, functions such as $\length$, $\indexof$, and $\substring$, which can convert strings to integers and vice versa, are also heavily used in practice; for instance, it was reported~\cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and variants thereof, comprise over 80\% of string function occurrences in 18 popular JavaScript applications, notably outnumbering concatenation. The introduction of integers exacerbates the intricacy of string-manipulating programs, and poses new theoretical and practical challenges in solver development. 
+
+%Typically, mainstream programming languages provide, apart from standard string functions (e.g., concatenation, $\replace$ and $\replaceall$), %string functions involving the integer data type, e.g. 
+%functions such as $\length$, $\indexof$, and $\substring$, which can convert strings to integers and vice versa. %, are also widely used in string-manipulating programs. 
+%These functions are indeed heavily used in practice; for instance, it was reported~\cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and variants thereof, comprise over 80\% of string function occurrences in 18 popular JavaScript applications, notably outnumbering concatenation. The introduction of integers exacerbates the intricacy of string-manipulating programs, and poses new theoretical and practical challenges in solver development. 
+
+
+%in programs it , typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
+
+
+
+%$\length: \Sigma^* \rightarrow \Int$ (where $\Sigma$ is the alphabet and $\Sigma^*$ is the set of strings over $\Sigma$), $\substring: \Sigma^* \times \Int \times \Int \rightarrow \Sigma^*$, and $\indexof: \Sigma^* \times \Int \rightarrow \Int$.
+
+%Reasoning about strings and integers is important and challenging, but is not well-studied. 
+%It is easy to end up with undecidability: even the slightest extension of this theory (e.g. the theory with concatenation and letter counting)  would render the theory undecidable \cite{buchi,GB16}. 
+
+When combining strings and integers, decidability can easily be lost; 
+ for instance, the string theory with concatenation and letter counting
+functions is undecidable~\cite{buchi,Manea-RP}.
+\OMIT{
+Although a great deal of research has shown that it is viable to reason about rather complex string operations without breaking decidability by %imposing proper 
+restricting the form of constraints (e.g.,~\cite{CCH+18,CHL+19}; cf.\ related work for a brief survey), adding length constraints would immediately lead to undecidability~\cite{CCH+18}. 
+}
+Remarkably, it is still a major open problem whether the string theory with concatenation (arguably the simplest string operation) and length function 
+(arguably the most common string-number function) is 
+decidable~\cite{Vijay-length}. 
+One promising approach to retain decidability is to enforce a syntactic
+restriction to the constraints. In the  literature, these restriction  include solved forms
+\cite{Vijay-length}, acyclicity \cite{BFL13,Abdulla14,AbdullaA+19}, and 
+straight-line fragment (aka programs in single static assignment form) \cite{LB16,CCH+18,CHL+19,HJLRV18}. On the one hand,
+such a restriction has led to decidability of string constraint solving with 
+complex string
+operations (not only concatenation, but also finite transducers) and integer
+operations (letter-counting, $\length$, $\indexof$, etc.); see, e.g., 
+\cite{LB16}. On the other hand, there is a lot of evidence (e.g. from 
+benchmark) that %sufficiently 
+many practical string constraints do satisfy 
+such syntactic restrictions.
+%
+%At the same time, the classes of constraints that are required in practice sometimes demand solving techniques which are not necessarily complete. 
+%
+\OMIT{
+Although there have been some recent results on decision procedures for string constraints involving the integer data-type, for instance~\cite{Vijay-length,LeH18,LinM18,LB16}, the theories considered in those approaches are usually quite restricted and do not reflect the constraints that occur in applications well. Overall, much more research is needed to
+better understand the decidability of theories combining strings and integers.
+}
+
+Approaches to building practical string solvers could essentially be classified
+into two categories. Firstly, one could support as many constraints as possible, but 
+primarily resort to heuristics, 
+offering no completeness/termination guarantee. This is a realistic approach 
+since, as
+mentioned above, the problem involving both string and integer data types is in 
+general undecidable. Many solvers
+belong to this category, e.g., 
+{\cvc}~\cite{cvc4}, Z3 \cite{BTV09,Z3}, {\zthree}~\cite{Z3-str3}, S3(P) \cite{S3,TCJ16},
+Trau~\cite{Abdulla17} (or its variants {\trauplus}~\cite{AbdullaA+19} and {\zthreetrau}~\cite{Z3-trau}), ABC \cite{ABC}, and \slent~\cite{WC+18}.
+%\anthony{I think we should mention more here ...}
+%
+%On a more practical level, 
+%
+%this leads to a situation where the vast majority of  state-of-the-art string constraint solvers, e.g., 
+%resort to heuristics without completeness guarantees to support
+%reasoning about the combination of strings and integers. 
+\OMIT{
+Such solvers
+often show excellent performance in applications and on existing
+benchmark suites, but 
+}
+Completeness guarantees are, however, valuable since %it is well-known that 
+the 
+performance of heuristics can be difficult to predict.
+The second approach is to develop solvers for decidable fragments
+supporting both strings and integers (e.g. %the fragments of
+\cite{Vijay-length,BFL13,Abdulla14,AbdullaA+19,LB16,CCH+18,CHL+19,HJLRV18}). 
+Solvers in this category include Norn \cite{Abdulla14}, SLOTH
+\cite{HJLRV18}, and OSTRICH \cite{CHL+19}. 
+%Unfortunately
+%Even though the fragment
+%theoretical decidability result of \cite{LB16}  does not
+%easily lead to an implementation. 
+%(as far as we know, there has not been any implementation of the procedure therein yet).
+The fragment \emph{without} complex string operations (e.g. $\replaceall$ and
+finite transducers, but $\length$) can be handled quite well by Norn. The fragment \emph{without} length
+constraints (but $\replaceall$ and finite transducers)
+%constraints but not complex string operations like replaceAll and transducers,
+can be handled effectively by OSTRICH and SLOTH. 
+Moreover, most existing solvers that belong to the first category do not support
+complex string operations like $\replaceall$ and finite transducers as well.
+This motivates the following problem: 
+\emph{provide a decision procedure that supports both string and integer data type, with completeness guarantee and meanwhile admitting efficient implementation}.
+
+%\anthony{need to say why extending these with length is non-trivial}
+We argue that this problem is highly challenging.
+A deeper examination of the algorithms used by OSTRICH and SLOTH reveals that,
+unlike the case for Norn, it would \emph{not} be straightforward to extend OSTRICH and 
+SLOTH with integer constraints. First and foremost, the complexity of the
+fragment used by Norn (i.e. without transducers and $\replaceall$) is solvable
+in exponential time, even in the presence of integer constraints. This is not
+the case for the straight-line fragments with transducers/$\replaceall$, which 
+require at least double exponential time (regardless of the integer constraints).
+This unfortunately manifests itself in the size of symbolic representations of 
+the solutions. SLOTH \cite{HJLRV18} computes 
+%a ``global'' 
+a representation of all
+solutions ``eagerly'' as (alternating) finite transducers. Dealing with integer data type requires  
+to compute the Parikh images of these transducers \cite{LB16}, which would 
+result in a
+quantifier-free linear integer arithmetic formula (LIA for short) of double exponential size, thus giving us a triple exponential time algorithm, since LIA formulas are solved in exponential time  (see e.g. \cite{VSS05}).
+Lin and Barcelo \cite{LB16} provided a double exponential upper bound in the 
+length of the strings in the solution, and showed that the double
+exponential time theoretical complexity could be retained. This, however, does
+not result in a practical algorithm since it requires all strings of double
+exponential size to be enumerated. OSTRICH \cite{CHL+19} adopted a ``lazy'' approach and computed the pre-images of regular languages step by step,
+%step by step, 
+which is more scalable than
+the ``eager'' approach adopted by SLOTH and results in a highly competitive solver.
+It uses \emph{recognisable relations} (a finite union of products of regular languages)
+as symbolic representations. Nevertheless, extending this approach to integer
+constraints is not obvious since integer constraints break the independence
+between different string variables in the recognisable relations.
+%\emph{provide an
+%efficient decision procedure that supports string and integer data type, as well
+%as complex string operations, with a completeness guarantee}.
+
+
+%At the moment, 
+%The best way to summarize the current
+%situation is 
+%There are competitive solvers
+%belonging to either category, but one
+%; for instance, sometimes innocent syntactic modifications of
+%constraints can cause solvers to diverge and not to terminate. 
+\OMIT{
+There is still a gap between the string operations supported by
+solvers, and the operations occurring in applications; for instance,
+operations like \textsf{replaceAll} and escape/unescape-transformations
+occur extremely frequently in programs, but are currently not handled well
+by many solvers. 
+The \emph{grand challenge} in string constraint solving is to
+identify fragments and develop algorithms, that cover the constraints
+occurring in \emph{applications}, while preserving \emph{decidability} and
+admitting \emph{efficient implementations.}
+}
+
+
+%Nevertheless, solving string constraints involving the integer data type is far from trivial and actually undecidable in general \cite{buchi,CCH+18}. Therefore, all the aforementioned string constraint solvers
+%They however inevitably  resort to heuristics without completeness guarantees. 
+
+%Nevertheless, as already argued in~\cite{CHL+19}, despite the excellent performance of some of these solvers on some existing benchmark suites, decision procedures for string constraints with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), are still highly desirable. 
+
+%In a nutshell, there are at least two reasons: (1) they are \emph{theoretically intriguing} as this is essentially to delimit the (un)decidability boundary for the first-order theory of strings not least; and   
+%(2) they are \emph{practically appealing} since they could potentially strike a good balance between precision and scalability, if they could be made an efficient implementation. 
+
+%are amenable to implementation. 
+%they can provide a kind of robustness guarantees upon which a string constraint solver could further improve and optimise.if they are amenable to implementation, 
+
+%\zhilin{this paragraph is copied from the popl paper} Despite the excellent performance of some of these solvers on several existing benchmarks, there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that string constraint solving is a research area in its infancy with an insufficient range of benchmarking examples to convince us that if a string solver works well on existing benchmarks, it will also work well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon which a practical solver could further improve and optimise.
+
+%(concatenation, length and regular constraints) 
+%We tackle this issue 
+
+%In contrast, in this paper we aim to develop decision procedures for string constraints involving the integer data type, which %, on the one hand, 
+%\emph{provide completeness guarantees} and %on the other hand, 
+%\emph{admit efficient implementation}.
+
+\noindent\emph{Contribution.} %The main contribution of this paper is 
+We provide a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilizes a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. 
+%\zhilin{add several sentences here, describing the idea of CEFAs} 
+Intuitively, each CEFA records the connection between a string variable and its associated integer variables.
+%, and represents solutions of the string variable in the constraints symbolically
+With CEFAs, the concept of recognisable relations is then naturally extended to accommodate integers. The integer constraints, however, are detached from CEFAs rather than being part of CEFAs. This allows to preserve the independence of string variables in the recognisable relation. 
+The crux of the decision procedure is to compute the backward images of CEFAs under string functions, where each cost register (integer variable) might be split into several ones, thus extending but still in the same flavour as OSTRICH for string constraints \emph{without} the integer data type \cite{CHL+19}. 
+%, thus preserving the virtues of the ``lazy'' approach of OSTRICH.
+Such an approach %inherits its elegance by 
+is able to treat %the aforementioned seemly 
+a wide range of string functions in a generic, and yet simple, way. 
+%
+To the best of our knowledge, the class of string constraints considered in this paper is currently one of the most expressive string theories involving the integer data type known to enjoy a decision procedure. 
+%In particular, it is strictly more expressive than that in \cite{LB16}, where $\reverse$ and $\substring$ are missing. 
+%\anthony{add something here perhaps}
+%
+\OMIT{
+Moreover, 
+our decision procedure takes a ``local'' approach for step-by-step backward 
+computation of pre-images of CEFAs, which extends the framework of {\ostrich}
+solver \cite{CHL+19}.
+
+compared to the ``global'' approach in~\cite{LB16} which is based on enumerating
+all strings up to a double exponential length (which does not lead to an
+efficient implementation), 
+}
+%\emph{the first decision procedure for string constraints that supports the string functions} $\substring$, $\length$, and $\indexof$, as well as concatenation, $\replaceall$, and finite transducers. \zhilin{improve latter}
+
+%Perhaps more importantly, 
+%
+We implement the decision procedure based on %an extension of 
+the recent {\ostrich} solver \cite{CHL+19},  resulting in {\ostrich}+.  We perform experiments on a wide range of benchmark suites, including those where both $\replace$/$\replaceall$/finite transducers and $\length$/$\indexof$/$\substring$ occur, as well as the well-known benchmarks {\kaluzabench} and {\pyexbench}.
+%, to evaluate the performance of {\ostrich}+. 
+The results show that  %{\ostrich}+ achieves a nice balance between expressiveness and efficiency in the sense that 
+1) {\ostrich}+ so far is the only string constraint solver capable of dealing with finite transducers and integer constraints, and 2) its overall performance is comparable with the best state-of-the-art string constraint solvers (e.g. {\cvc} and {\zthreetrau}) which are short of completeness guarantees. 
+
+\hide{
+\smallskip
+\input{related}
+}
+
+The rest of the paper is structured as follows: Section~\ref{sec:prel} introduces the preliminaries. Section~\ref{sec:logic} defines the class of string-manipulating programs with integer data type. Section~\ref{sec:dec} presents the decision procedure. Section~\ref{sec:eva} presents the benchmarks and experiments for the evaluation. The paper is concluded in Section~\ref{sec:conc}. Missing proofs, implementation details and further examples can be found in the appendix.   
+
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%\input{runexmp.tex}
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% The running example %%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,62 @@
+%!TEX root = main.tex
+ 
+\section{Running example} \label{exmp:running}
+We use the following JavaScript program as the running example,
+%which demonstrates the use of string functions coupled with integer data type as well as path feasibility of string-manipulating programs.
+which defines a function {\urlxsssanitise} for sanitising URLs. A typical URL consists of a hierarchical sequence of components commonly referred to as protocol, host, path, query, and fragment. For instance, in ``\url{http://www.example.com/some/abc.html?name=john#print}'', the protocol is ``{\tt http}'', the host is ``{\tt www.example.com}'', the path is ``{\tt /some/abc.html}'', the query is ``{\tt name=john}'' (preceded by $?$), and the fragment is ``{\tt print}'' (preceded by $\#$). Both the query and the fragment could be empty in a URL. The aim of {\urlxsssanitise} is to mitigate \emph{URL reflection attacks} \cite{url-reflect}, by filtering out the dangerous substring ``\url{script}'' from the query and fragment components of  the input URL. URL reflection attacks are a type of cross-site-scripting (XSS) attacks that do not rely on saving malicious code in database, but rather on hiding it in the query or fragment component of URLs, e.g., ``\url{http://www.example.com/some/abc.html?name=<script>alert('xss!');</script>}''.
+
+%\begin{example}
+{\small
+\begin{minted}[linenos]{javascript}
+function urlXssSanitise(url) {
+    var prothostpath='', querfrag = '';
+    url = url.trim();
+    var qmarkpos = url.indexof('?'), sharppos = url.indexof('#');
+    if(qmarkpos >= 0) 
+    {   prothostpath = url.substr(0, qmarkpos);
+        querfrag = url.substr(qmarkpos); }
+    else if(sharppos >= 0)
+    {   prothostpath = url.substr(0, sharppos);
+        querfrag = url.substr(sharppos); }
+    else prothostpath = url;
+    querfrag = querfrag.replace(/script/g, '');
+    url = prothostpath.concat(querfrag);
+    return url;
+}
+\end{minted}
+}
+%\end{example}
+
+\noindent Note that {\urlxsssanitise} uses the JavaScript sanitisation operation $\sf trim$ that removes whitespace from both ends of a string, which can be conveniently modelled by finite-state transducers. Two string functions involving the integer data type, namely, $\sf indexof$ and $\sf substr$ ($\indexof$ and $\substring$ in this paper), as well as concatenation and $\sf replace$ (with the `g'---global---flag, called $\replaceall$ in this paper), are present. 
+
+%$\footnote{$\sf replace$ with the g flag in Javascript corresponds to the $\replaceall$ function in this paper.}
+
+% \in [\backslash w | \backslash x2E]^*$
+%We expect that the returned value of the ``host'' variable contains only the alphanumeric symbols as well as the dot symbol, but actually this is not the case. This question can be reduced to solving the path feasibility problem of the following program of the SSA (single static assignment) form.
+
+The program analysis is to ascertain whether {\urlxsssanitise} indeed works, namely, after applying {\urlxsssanitise} to the input URL, ``\url{script}'' does not appear.  This problem can be reduced to checking whether there is an execution path of {\urlxsssanitise} that produces an output such that its query or fragment component contains occurrences of ``\url{script}''. For instance, assuming  the ``if'' branch is executed, %first execution path of {\urlxsssanitise} is chosen, then the problem is reduced to 
+we will need to solve the path feasibility of the following JavaScript program in single static assignment (SSA) form,
+
+{\small
+\begin{minted}{javascript}
+    prothostpath =''; querfrag = '';
+    url1 = url.trim(); qmarkpos = url1.indexof('?');
+    sharppos = url1.indexof('#'); assert(qmarkpos >= 0); 
+    prothostpath1 = url1.substr(0, qmarkpos);
+    querfrag1 = url1.substr(qmarkpos);
+    querfrag2 = querfrag1.replace(/script/g, '');
+    url2 = prothostpath1.concat(querfrag2);
+    assert(/script/.test(querfrag2))
+\end{minted}
+}
+
+\vspace*{-0.5ex}
+\noindent where the $\ASSERT{cond}$ statement checks that the condition $cond$ is satisfied. As one will see later, this can be directly encoded in our constraint language (cf.\ Section~\ref{sec:logic}) and handled by the decision procedure (cf. Section~\ref{sec:dec}). 
+%Back to Example~\ref{exmp:running}, 
+Our solver  {\ostrich}+ can solve the path feasibility of the aforementioned 
+SSA program in several seconds. This is far from trivial since %the program contains not only 
+the solver needs to tackle complex string functions such as {\tt trim()} (modelled as finite transducers) and {\tt replaceAll}, %but also those involving the integer data type, namely 
+as well as %$\length$, 
+$\indexof$  and $\substring$, which is beyond the scope of other existing decision procedures.  
+%\qed
+%\end{example}
