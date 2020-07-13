@@ -23,9 +23,6 @@ solvers to check the satisfiability of $\varphi$. Such constraint
 solvers need to support all %native 
 data-type operations occurring in
 a program.
-% (i.e., to check
-%the \emph{feasibility} of the static path), which can be used for, e.g.,  generating
-%inputs that lead to certain parts of the program or an erroneous behavior.
 
 
 Typically, mainstream programming languages provide standard string functions such as concatenation, $\replace$, and $\replaceall$. Moreover, Web programming languages usually provide complex string operations (e.g. htmlEscape and trim), which are conveniently modelled as finite transducers, to sanitise malicious user inputs \cite{BEK}. 
@@ -39,9 +36,6 @@ Nevertheless, apart from these operations involving only the string data type, f
 
 %in programs it , typically in the form of lengths or positions of strings. Besides the classical string functions e.g. concatenation $\concat$ and $\replaceall$, string functions involving the integer data type, e.g. $\length$, $\indexof$, and $\substring$, are also widely used in string-manipulating programs. For instance, it was reported in \cite{Berkeley-JavaScript} that $\length$, $\indexof$, $\substring$, and their variants, occupy more than 80 percent of string function occurrences in their subject Javascript applications (even much more frequently used than concatenation). This motivates \emph{string constraint solvers that reason about strings and integers simultaneously}. 
 
-
-
-%$\length: \Sigma^* \rightarrow \Int$ (where $\Sigma$ is the alphabet and $\Sigma^*$ is the set of strings over $\Sigma$), $\substring: \Sigma^* \times \Int \times \Int \rightarrow \Sigma^*$, and $\indexof: \Sigma^* \times \Int \rightarrow \Int$.
 
 %Reasoning about strings and integers is important and challenging, but is not well-studied. 
 %It is easy to end up with undecidability: even the slightest extension of this theory (e.g. the theory with concatenation and letter counting)  would render the theory undecidable \cite{buchi,GB16}. 
@@ -174,29 +168,7 @@ occurring in \emph{applications}, while preserving \emph{decidability} and
 admitting \emph{efficient implementations.}
 }
 
-
-%Nevertheless, solving string constraints involving the integer data type is far from trivial and actually undecidable in general \cite{buchi,CCH+18}. Therefore, all the aforementioned string constraint solvers
-%They however inevitably  resort to heuristics without completeness guarantees. 
-
-%Nevertheless, as already argued in~\cite{CHL+19}, despite the excellent performance of some of these solvers on some existing benchmark suites, decision procedures for string constraints with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis), are still highly desirable. 
-
-%In a nutshell, there are at least two reasons: (1) they are \emph{theoretically intriguing} as this is essentially to delimit the (un)decidability boundary for the first-order theory of strings not least; and   
-%(2) they are \emph{practically appealing} since they could potentially strike a good balance between precision and scalability, if they could be made an efficient implementation. 
-
-%are amenable to implementation. 
-%they can provide a kind of robustness guarantees upon which a string constraint solver could further improve and optimise.if they are amenable to implementation, 
-
-%\zhilin{this paragraph is copied from the popl paper} Despite the excellent performance of some of these solvers on several existing benchmarks, there are good reasons for designing decision procedures with stronger theoretical guarantees, e.g., in the form of decidability (perhaps accompanied by a complexity analysis). One such reason is that string constraint solving is a research area in its infancy with an insufficient range of benchmarking examples to convince us that if a string solver works well on existing benchmarks, it will also work well on future benchmarks. A theoretical result provides a kind of robustness guarantee upon which a practical solver could further improve and optimise.
-
-%(concatenation, length and regular constraints) 
-%We tackle this issue 
-
-%In contrast, in this paper we aim to develop decision procedures for string constraints involving the integer data type, which %, on the one hand, 
-%\emph{provide completeness guarantees} and %on the other hand, 
-%\emph{admit efficient implementation}.
-
-\noindent\emph{Contribution.} %The main contribution of this paper is 
-We provide a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilizes a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. 
+\noindent\emph{Contribution.} We provide a decision procedure for an expressive class of string constraints involving the integer data type, which includes not only concatenation, $\replace$/$\replaceall$, $\reverse$, finite transducers, and regular constraints, but also $\length$, $\indexof$ and $\substring$. The decision procedure utilizes a variant of cost-register automata introduced by Alur et al. \cite{RLJ+13}, which are called \emph{cost-enriched finite automata} (CEFA) for convenience. 
 %\zhilin{add several sentences here, describing the idea of CEFAs} 
 Intuitively, each CEFA records the connection between a string variable and its associated integer variables.
 %, and represents solutions of the string variable in the constraints symbolically
@@ -221,12 +193,8 @@ compared to the ``global'' approach in~\cite{LB16} which is based on enumerating
 all strings up to a double exponential length (which does not lead to an
 efficient implementation), 
 }
-%\emph{the first decision procedure for string constraints that supports the string functions} $\substring$, $\length$, and $\indexof$, as well as concatenation, $\replaceall$, and finite transducers. \zhilin{improve latter}
 
-%Perhaps more importantly, 
-%
-We implement the decision procedure based on %an extension of 
-the recent {\ostrich} solver \cite{CHL+19},  resulting in {\ostrich}+.  We perform experiments on a wide range of benchmark suites, including those where both $\replace$/$\replaceall$/finite transducers and $\length$/$\indexof$/$\substring$ occur, as well as the well-known benchmarks {\kaluzabench} and {\pyexbench}.
+We implement the decision procedure based on  the recent {\ostrich} solver \cite{CHL+19},  resulting in {\ostrich}+.  We perform experiments on a wide range of benchmark suites, including those where both $\replace$/$\replaceall$/finite transducers and $\length$/$\indexof$/$\substring$ occur, as well as the well-known benchmarks {\kaluzabench} and {\pyexbench}.
 %, to evaluate the performance of {\ostrich}+. 
 The results show that  %{\ostrich}+ achieves a nice balance between expressiveness and efficiency in the sense that 
 1) {\ostrich}+ so far is the only string constraint solver capable of dealing with finite transducers and integer constraints, and 2) its overall performance is comparable with the best state-of-the-art string constraint solvers (e.g. {\cvc} and {\zthreetrau}) which are short of completeness guarantees. 
