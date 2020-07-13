@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-We have implemented the decision procedure presented in the preceding section based on the recent string constraint solver \ostrich~\cite{CHL+19}, resulting in a new solver \ostrich+. \ostrich\ is  written in Scala and based on the SMT solver Princess \cite{princess08}. \ostrich+ reuses the parser of Princess, but replaces the NFAs from \ostrich\ with CEFAs. Correspondingly, in \ostrich+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. \ostrich+ also implements CEFA constructions for $\length$ and $\indexof$.  More details can be found in Appendix~\ref{appendix:impl}.
+We have implemented the decision procedure presented in the preceding section based on the recent string constraint solver \ostrich~\cite{CHL+19}, resulting in a new solver \ostrich+. \ostrich\ is  written in Scala and based on the SMT solver Princess \cite{princess08}. \ostrich+ reuses the parser of Princess, but replaces the NFAs from \ostrich\ with CEFAs. Correspondingly, in \ostrich+, the pre-image  computation for concatenation, $\replaceall$, $\reverse$, and finite transducers is reimplemented, and a new pre-image operator for $\substring$ is added. \ostrich+ also implements CEFA constructions for $\length$ and $\indexof$.  \iftoggle{full}{More details can be found in Appendix~\ref{appendix:impl}}{More details can be found in the full version~\cite{atva20-full}}.
 
 We have compared {\ostrich}+ with some of the state-of-the-art solvers on a wide range of benchmarks.  
 We  discuss the benchmarks in Section~\ref{sec:bench} and %describe the details of the experiments as well as 
@@ -10,57 +10,6 @@ present the experimental results in Section~\ref{sec:exp-res}.
 
 \vspace{-3mm}
 \subsection{Benchmarks}\label{sec:bench}
- 
-%In
-%particular, we compared  with CVC4 1.6 \cite{}, SLOTH \cite{},
-%and Z3 configured to use the Z3-str3 string solver \cite{}. 
-
-%We considered several sets
-%of benchmarks which are described in the next sub-section. The results are given in Section 6.4.2.
-%
-%
-%In [Holík et al. 2018] SLOTH was compared with S3P [Trinh et al. 2016] where inconsistent
-%behaviour was reported. We contacted the S3P authors who report that the current code is unsupported;
-%moreover, S3P is being integrated with Z3. Hence, we do not compare with this tool.
-%
-%
-%The first set of benchmarks we call \textbf{Transducer}. It combines the benchmark
-%sets of Stranger [Yu et al. 2010] and the mutation XSS benchmarks of [Lin and Barceló 2016]. The
-%first (sub-)set appeared in [Holík et al. 2018] and contains instances manually derived from PHP
-%programs taken from the website of Stranger [Yu et al. 2010]. It contains 10 formulae (5 sat, 5
-%unsat) each testing for the absence of the vulnerability pattern .*<script.* in the program output.
-%These formulae contain between 7 and 42 variables, with an average of 21. The number of atomic
-%constraints ranges between 7 and 38 and averages 18. These examples use disjunction, conjunction,
-%regular constraints, and concatenation, replaceAll. They also contain several one-way functional
-%transducers (defined in SMTLIB in [Holík et al. 2018]) encoding functions such as addslashes and
-%trim used by the programs. Note that transducers have been known for some time to be a good
-%framework for specifying sanitisers and browser transductions (e.g., see the works by Minamide,
-%Veanes, Saxena, and others [D’Antoni and Veanes 2013; Hooimeijer et al. 2011; Minamide 2005;
-%Weinberger et al. 2011]), and a library of transducer specifications for such functions is available
-%(e.g. see the language BEK [Hooimeijer et al. 2011]).
-%
-%The second (sub-)set was used by [Holík et al. 2018; Lin and Barceló 2016] and consists of 8
-%formulae taken from [Kern 2014; Lin and Barceló 2016]. These examples explore mutation XSS
-%vulnerabilities in JavaScript programs. They contain between 9 and 12 variables, averaging 9.75, and
-%9-13 atomic constraints, with an average of 10.5. They use conjunctions, regular constraints, concatenation,
-%replaceAll, and transducers providing functions such as htmlEscape and escapeString.
-%Our next set of benchmarks, SLOG, came from the SLOG tool [Wang et al. 2016] and consist of
-%3,392 instances. They are derived from the security analysis of real web applications and contain 1-
-%211 string variables (average 6.5) and 1-182 atomic formula (average 5.8).We split these benchmarks
-%into two sets SLOG (replace) and SLOG (replaceall). Each use conjunction, disjunction, regular
-%constraints, and concatenation. The set SLOG (replace) contains 3,391 instances and uses replace.
-%SLOG (replaceall) contains 120 instances using the replaceAll operation.
-%
-%
-%Our next set of benchmarks Kaluza is the well-known set of Kaluza benchmarks [Saxena et al.
-%2010] restricted to those instances which satisfy our semantic conditions (roughly 80\% of the
-%benchmarks). Kaluza contains concatenation, regular constraints, and length constraints, most of
-%which admit regular monadic decomposition. There are 37,090 such benchmarks (28 032 sat).
-%We also considered the benchmark set of [Chen 2018a,b]. This contains 42 hand-crafted benchmarks
-%using regular constraints, concatenation, and replaceAll with variables in both argument
-%positions. The benchmarks contain 3-7 string variables and 3-9 atomic constraints.
-% 
-
 Our evaluation focuses on problems that combine string with integer constraints.  To this end, we consider the following four sets of
 benchmarks, all in SMT-LIB~2 format.
 
@@ -100,20 +49,12 @@ $\length$:
 %
 %\footnote{These problems have been investigated for transducers in \cite{BEK}.} 
 %into the path feasibility of {\slint} programs. 
-For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$ (see Appendix~\ref{appendix:slint-prog-ineq} for the details). We also include in {\transducerbench+} three instances %generated from the running example in Section~\ref{exmp:running}, 
-generated from a program to sanitize URLs against XSS attacks (see Appendix~\ref{exmp:running} for the details), 
+For instance, we encode the non-idempotence of $\NFT$ into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$ (see 
+\iftoggle{full}{Appendix~\ref{appendix:slint-prog-ineq} for the details}{the full version \cite{atva20-full} for the details}
+). We also include in {\transducerbench+} three instances %generated from the running example in Section~\ref{exmp:running}, 
+generated from a program to sanitize URLs against XSS attacks (see \iftoggle{full}{Appendix~\ref{exmp:running} for the details}{the full version \cite{atva20-full} for the details}), 
 where $\NFT_{\rm trim}$ is used. 
 In total, we obtain 94 instances for the {\transducerbench+} suite. 
-%\begin{description}
-%\item[Idempotence.] For each FFT $\NFT$,  we encode the non-idempotence of $\NFT$, namely deciding whether $\exists x.\ \NFT(\NFT(x)) \neq \NFT(x)$, into the path feasibility of the {\slint} program $y:=\NFT(x); z:=\NFT(y); S_{y \neq z}$, where $y$ and $z$ are two fresh string variables, and $S_{y \neq z}$ is the {\slint} program encoding $y \neq z$, which uses $\length$ and $\charat$ (see Section~\ref{sec:logic} for the details of $S_{y \neq z}$).
-%
-%\item[Duality.] For each pair of distinct FFTs $\NFT_1$ and $\NFT_2$, we encode the non-duality of $\NFT_1$ and $\NFT_2$, namely deciding whether $\exists x.\ \NFT_2(\NFT_1(x)) \neq x$, into the path feasibility of the {\slint} program $y:=\NFT_1(x); z: = \NFT_2(y); S_{x \neq z}$.
-%
-%\item[Commutativity.] For each pair of distinct FFTs $\NFT_1$ and $\NFT_2$, we encode the non-commutativity of $\NFT_1$ and $\NFT_2$, namely deciding whether $\exists x.\ \NFT_2(\NFT_1(x)) \neq \NFT_1(\NFT_2(x))$, into the path feasibility of the {\slint} program $y:=\NFT_1(x); z: = \NFT_2(y); y':= \NFT_2(x); z': = \NFT_1(y'); S_{z \neq z'}$.
-%
-%\item[Equivalence.] For each pair of distinct FFTs $\NFT_1$ and $\NFT_2$, we encode the non-equivalence of $\NFT_1$ and $\NFT_2$, namely deciding whether $\exists x.\ \NFT_1(x) \neq \NFT_2(x)$, into the path feasibility of the {\slint} program $y:=\NFT_1(x); z: = \NFT_2(x); S_{y \neq z}$.
-%
-%\end{description}
 
 \smallskip
 \noindent{\slogbench} is adapted from the SLOG benchmark suite%used by the SLOG tool
@@ -128,9 +69,6 @@ and adding the statement $\ASSERT{\length(x) < 2\ \indexof_{a}(x, 0)}$ for some 
 % and $c \in \Nat$ with $c > 1$.
 As in \cite{CHL+19}, we  split  {\slogbench}  into  \slogbenchr\ and \slogbenchra,  comprising 3,391 and 120 instances respectively. In addition to %the aforementioned 
 the $\indexof$ and $\length$ functions, the benchmarks use regular constraints and concatenation;  {\slogbenchr} also contains the $\replace$ function (replacing the first occurrence), while {\slogbenchra}  uses the $\replaceall$ function (replacing all occurrences).
-
-%Each use conjunction, disjunction, regular constraints, and concatenation.
-%The \slogbenchr\ sub-suite contains 3,391 instances \zhilin{the number to be checked}, while \slogbenchra\ sub-suite contains 120 instances \zhilin{the number to be checked}.
 
 \smallskip
 \noindent \pyexbench~\cite{ReynoldsWBBLT17} 
@@ -249,25 +187,7 @@ benchmarks; also, {\transducerbench+} is beyond the scope of {\slent}.
 %
 {\trauplus}~\cite{AbdullaA+19}  integrates {\trau} with {\sloth} to deal with both finite transducers and integer constraints. We were unfortunately unable
 to obtain a working version of {\trauplus}, possibly because {\trau} requires two separate versions of Z3 to run. In addition, the algorithm in~\cite{AbdullaA+19} focuses on length-preserving transducers, which means that {\transducerbench}+ is beyond the scope of \trauplus.
-
-%  We also believe that {\transducerbench}+ is actually beyond the scope of {\trauplus} since   {\trau} and {\sloth} are rather separated in in {\trauplus}, namely, {\sloth} is used to deal with finite transducers and {\trau} is used to handle integer constraints. For instances from {\transducerbench}+, the two types of constraints are tightly coupled. The approach adopted by {\trauplus} cannot handle these constraints. %, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
-
-
-%Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, 
-%We failed to run {\trau+}  possibly due to the fact that {\trau} requires two versions of Z3 to run. Moreover, although {\trauplus} integrates {\trau} with {\sloth},  %in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. 
-%%,  though we were able to compile the source code of \trauplus.  
-%After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers. % since it is incapable of dealing with finite transducers.
-%We do not compare with {\ostrich} since {\ostrich} basically focuses on pure string constraints not involving the integer data type, while the majority of the benchmarks considered in this paper contain integer arithmetic constraints. 
-%In the beginning, we also planned to compare {\ostrich}+ with two other solvers, namely {\trauplus} \cite{AbdullaA+19} and {\slent} \cite{WC+18}, but finally gave up, with some justifications of this decision explained below. 
-%\begin{itemize}
-%\item {\trauplus} integrates {\trau} with {\sloth} in order to deal with both finite transducers (including the $\replaceall$ function) and integer constraints. Therefore, at the first sight, we had better compare {\ostrich}+ with {\trau+} on the {\transducerbench}+ benchmark suite. Nevertheless, we failed to run {\trau+} (even after some hard work), possibly due to the fact that {\trau} requires two versions of Z3 to run.
-%%,  though we were able to compile the source code of \trauplus.  
-%After some deeper analysis, we realised that {\transducerbench}+ benchmark suite is actually beyond the scope of {\trauplus} since {\trauplus} integrates {\trau} with {\sloth} in a shallow and largely separated way in the sense that it uses {\sloth} to deal with finite transducers and {\trau} to handle integer constraints, while {\sloth} is unable to solve integer constraints and {\trau}  is incapable of dealing with finite transducers.
-%%
-%\item {\slent} uses an input format called laut which is different from the widely used smtlib2 format. Therefore, it is hard to compare {\ostrich}+ with {\slent} on {\kaluzabench} and {\pyexbench} benchmark suites. Moreover, {\transducerbench}+ is beyond the scope of {\slent} since it is incapable of dealing with finite transducers.
-%\end{itemize}
-
-
+ 
 {\ostrich}+ and \ostrich\ are the only tools applicable to the
 problems in {\transducerbench}+. With a timeout of 30s, \ostrich+ can
 solve 88 of the benchmarks, but this number rises to 94 when using a

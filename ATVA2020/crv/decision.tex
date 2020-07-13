@@ -46,7 +46,11 @@ The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CE
 
 We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by a CEFA as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
 $\CEFA_{\indexof_v}$ accepting $\left\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA), n \le \indexof_v(w, n) < |w| \right\}$. %$R(\CEFA')=(r_1,r_2)$ and $\Lang(\CEFA')=\{(w, (n, \indexof_v(w, n)))\mid w\in \Lang(\NFA) \}$. 
-The construction is slightly technical and can be found in Appendix~\ref{appendix:cefa_indexof}. Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics of $\indexof_v$, for instance, $\indexof_v(w, n) = -1$ if $v$ does not occur after the position $n$ in $w$.
+The construction is slightly technical and can be found in \iftoggle{full}{Appendix~\ref{appendix:cefa_indexof}}{the full version \cite{atva20-full}}.
+
+
+
+Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics of $\indexof_v$, for instance, $\indexof_v(w, n) = -1$ if $v$ does not occur after the position $n$ in $w$.
 
 %For convenience, we use $\CEFA_{\indexof_v}$ which accepts $\{(w, (n, \indexof_v(w, n)))\mid w\in \Sigma^*, n \le \indexof_v(w, n) < |w| \}$. %to denote the constructed CEFA $\CEFA'$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$. 
 %Note that $\CEFA_{\indexof_v}$ does not model the corner cases in the semantics of $\indexof_v$, for instance, $\indexof_v(w, n) = -1$ if $v$ does not occur after the position $n$ in $w$.
@@ -196,7 +200,7 @@ Let $L$ be a CERL defined by a CEFA $\CEFA = (Q, \Sigma, R, \delta, I, F)$. Then
 \end{itemize}
 \end{proposition}
 
-The proof of Proposition~\ref{prop:pre-image} is given in Appendix~\ref{app:pre-image}.
+The proof of Proposition~\ref{prop:pre-image} is given in \iftoggle{full}{Appendix~\ref{app:pre-image}}{the full version \cite{atva20-full}}.
 
 \vspace{-2mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -269,7 +273,8 @@ to $S$, and replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')$, whe
 For each term $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable $i$, replace every occurrence of $\length(x)$ by $i$, and add the statement $\ASSERT{x \in \CEFA_{\rm len}[i/r_1]}$ to $S$. (See Example~\ref{exm:len} for the definition of $\CEFA_{\rm len}$.)  
 
 For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  
-%(See Appendix, Section~\ref{appendix:cefa_indexof} for the construction of $\CEFA_{\rm \indexof_v}$.) 
+% to be removed
+%(See \iftoggle{full}{Appendix, Section~\ref{appendix:cefa_indexof}}{the full version \cite{atva20-full}} for the construction of $\CEFA_{\rm \indexof_v}$.) 
 %(See Example~\ref{exm:indexof} for an illustration of $\CEFA_{\rm \indexof_v}$.)
 
 %
@@ -349,7 +354,7 @@ there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x
 \end{quote}
 This {\lasat} problem is decidable and $\pspace$-complete;
 %A proof of Proposition~\ref{prop:la-sat-cefa-inter} 
-The proof can be found in Appendix~\ref{app:sat-cefa}.  
+The proof can be found in \iftoggle{full}{Appendix~\ref{app:sat-cefa}}{the full version \cite{atva20-full}}.
 %\end{definition}
 
 %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
@@ -375,7 +380,7 @@ The proof can be found in Appendix~\ref{app:sat-cefa}.
 %we utilise Proposition 16 in \cite{LB16} to show a small model property for the {\lasat} problem: If a model of  {\lasat}, specifically, an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$, exists, then $\theta$ can be assumed to satisfy that for each $x \in X$ and $r \in R_x=\bigcup_{j \in [s_x]} R(\CEFA_{x}^{j})$, $\theta(r)$ is at most exponential in the size of $\CEFA_{x}^{j}$ for $j \in [s_x]$ and $|\phi|$. Since the binary encodings of $\theta(r)$ can be stored in polynomial space, one can \emph{nondeterministically} guess the strings $(w_x)_{x \in X}$, simulate the runs of $\CEFA_{x}^{j}$ on $w_x$, and finally evaluate $\phi$ over the register values after all CEFAs $\CEFA_{x}^{j}$ accept, in polynomial space. 
 %%%%%% commented for space %%%%%%%%%%%%%%%
 %
-An example for illustrating the decision procedure can be found in Appendix~\ref{app:urlexample}.
+An example for illustrating the decision procedure can be found in \iftoggle{full}{Appendix~\ref{app:urlexample}}{the full version \cite{atva20-full}}.
 
 
 \smallskip
