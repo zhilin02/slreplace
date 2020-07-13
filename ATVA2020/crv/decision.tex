@@ -38,10 +38,6 @@ The \emph{size} of a CEFA $\CEFA=(Q, \Sigma, R, \delta, I, F)$, denoted by $|\CE
 	such that for each $(q, a, q')\in \delta$, we let $(q, a, q', \eta)\in \delta'$, where $\eta(r_1) = 1$. 
 	
 	For later use, we identify a special $\CEFA_{\rm len}= (\{q_0\}, \Sigma, (r_1), \{(q_0, a, q_0, \eta) \mid \eta(r_1) = 1\}, \{q_0\}, \{q_0\})$. In other words, $\CEFA_{\rm len}$ accepts $\{(w, \length(w)) \mid w\in \Sigma^*\}$.
-	%
-	%
-	%to denote the CEFA $(Q, \Sigma, (r_1), \delta', I, F)$ for the special NFA $\NFA$ such that $\Lang(\NFA)=\Sigma^*$, specifically, $\NFA_{\rm len} = (\{q_0\}, \Sigma, (r_1), \{(q_0, a, q_0, \eta) \mid \eta(r_1) = 1\}, \{q_0\}, \{q_0\})$.
-	%\tl{it is a bit vague; you mean for any RE $e$,  is a cerl?}
 \end{example}
 
 We can show that the function $\indexof_v(\cdot, \cdot)$ can be captured by a CEFA as well, in the sense that, for any NFA $\NFA$ and constant string $v$, we can construct a CEFA %$\CEFA'$ such that 
@@ -89,7 +85,7 @@ Suppose $\CEFA$ is  CEFA with $R(\CEFA)=(r_1,\cdots, r_k)$ and $\vec{i} = (i_1,\
 
 %Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A  $(k_1,\cdots, k_l)$-cost-enriched relation $\cR$ is a subset of $(\Sigma^* \times \intnum^{k_1}) \times \cdots (\Sigma^* \times \intnum^{k_l})$.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \begin{definition}[Cost-enriched recognisable relations]
 	Let $(k_1,\cdots, k_l) \in \Nat^l$ with $k_j > 0$ for every $j \in [l]$. A cost-enriched recognisable relation (CERR)  $\cR \subseteq (\Sigma^* \times \intnum^{k_1}) \times \cdots  \times (\Sigma^* \times \intnum^{k_l})$ is a finite union of products of CERLs. Formally,
 	$\cR = \bigcup \limits_{i=1}^n L_{i,1 } \times \cdots \times L_{i, l}$, 
@@ -210,24 +206,19 @@ The proof of Proposition~\ref{prop:pre-image} is given in \iftoggle{full}{Append
 Let $S$  be an {\slint} program. %We show how to decide the path feasibility of $S$. 
 Without loss of generality, we assume that for every occurrence of assignments of the form $y:= \substring(x, t_1, t_2)$, it holds that $t_1$ and $t_2$ are integer variables. This is not really a restriction, since, for instance, if in $y:= \substring(x, t_1, t_2)$, neither $t_1$ nor $t_2$ is an integer variable, then we introduce fresh integer variables $i$ and $j$, replace $t_1, t_2$ by $i,j$ respectively, and add $\ASSERT{i=t_1};\ASSERT{j = t_2}$ in $S$.
 We present a decision procedure for the path feasibility problem of $S$ which is divided into five steps. %is nondeterministic and divided into three steps. 
-%\begin{description}
-%\item[Step I: Preprocessing.] 
-%
-%\item 
-
-\medskip
+ 
+\smallskip
 \noindent {\bf Step I: Reducing to atomic assertions.}%Removing $\vee$ and $\wedge$}.
 
-\smallskip
-Note first that in our language, each assertion is a positive Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}).  
-Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
+%\smallskip
+Note first that in our language, each assertion is a positive Boolean combination of atomic formulas of the form $x\in \CEFA$ or $t_1\ o\ t_2$ (cf. Section~\ref{sec:logic}). Nondeterministically choose, for each assertion $\ASSERT{\varphi}$ of $S$, a set of atomic formulas $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ such that $\varphi$ holds when atomic formulas in $\Phi_\varphi$ are true.  %therein, say $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$, so that $\eta_{\Phi}$, the Boolean valuation associated with $\Phi$, satisfies $\varphi$, where $\eta_{\Phi}$ assigns $\ltrue$ to $\alpha_1,\cdots, \alpha_n$ and $\lfalse$ to the other atomic formulas in $\varphi$. 
 
 Then each assertion $\ASSERT{\varphi}$ in $S$ with $\Phi_\varphi = \{\alpha_1,\cdots,\alpha_n\}$ is replaced by $\ASSERT{\alpha_1}; \cdots; \ASSERT{\alpha_n}$, and thus $S$ constrains atomic assertions only. 
 
-\medskip 
+\smallskip 
 \noindent {\bf Step II: Dealing with the case splits in the semantics of $\indexof_v$ and $\substring$.}%Removing $\vee$ and $\wedge$}.
 
-\smallskip
+%\smallskip
 
 For each integer term of the form $\indexof_v(x,i)$ in $S$, nondeterministically choose one of the following five options (which correspond to the semantics of $\indexof_v$ in Section~\ref{sec:logic}).
 \begin{itemize}
@@ -250,9 +241,7 @@ $$
 to $S$, where $y$ is a fresh string variable, $j$ is a fresh integer variable, and $\NFA_{\overline{\Sigma^*v\Sigma^*}}$ is an NFA defining the language $\{w \in \Sigma^*\mid v \mbox{ does not occur as a substring in } w\}$. Replace $\indexof_v(x, i)$ with $-1$ in $S$.
 \end{itemize}
 
-%Nondeterministically choose a subset of $\Theta$ of the assignment statements of the form $y:=\substring(x, i, j)$ in $S$, and 
-%
-For each assignment $y:=\substring(x, i, j)$ in $S$, nondeterministically choose one of the following three options (which correspond to the semantics of $\substring$ in Section~\ref{sec:logic}).
+For each assignment $y:=\substring(x, i, j)$, nondeterministically choose one of the following three options (which correspond to the semantics of $\substring$ in Section~\ref{sec:logic}).
 \begin{itemize}
 \item[(1)] Add the statements $\ASSERT{i \ge 0}; \ASSERT{i + j \le \length(x)}$ to $S$. 
 %
@@ -263,10 +252,10 @@ to $S$, and replace $y:=\substring(x, i, j)$ with $y:=\substring(x, i, i')$, whe
 \item[(3)] Add the statement $\ASSERT{i < 0}; \ASSERT{y \in \NFA_\varepsilon}$ to $S$, and  remove $y:=\substring(x, i, j)$ from $S$, where $\NFA_\varepsilon$ is the NFA defining the language $\{\varepsilon\}$.
 \end{itemize}
 
-\medskip
+\smallskip
 \noindent {\bf Step III: Removing $\length$ and $\indexof$}.
 
-\smallskip
+%\smallskip
 
 %Repeat the following procedure until there are no occurrences of $\indexof$.
 
@@ -274,10 +263,10 @@ For each term $\length(x)$ in $S$, we introduce a \emph{fresh} integer variable 
 
 For each term $\indexof_v(x, i)$ occurring in $S$, introduce two fresh integer variables $i_1$ and $i_2$, replace every occurrence of $\indexof_v(x, i)$ by $i_2$, and add the statements $\ASSERT{i=i_1}; \ASSERT{x \in \CEFA_{\indexof_v}[i_1/r_1, i_2/r_2]}$ to $S$.  
 
- \medskip
+ \smallskip
 \noindent {\bf Step IV: Removing the assignment statements backwards}.
 
-\smallskip
+%\smallskip
 
 Repeat the following procedure until $S$ contains no assignment statements.
 %
@@ -321,10 +310,10 @@ S_{j, \vec{t}} \equiv \ASSERT{r_{j, 1} = t_1}; \cdots, \ASSERT{r_{j, \ell_j} = t
 %
 \end{quote}
 
-\medskip
-\noindent{\bf Step V: Final satisfiability checking.}%Solving the {\lasat} problem}.
-
 \smallskip
+\noindent{\bf Step V: Final satisfiability checking.} 
+
+%\smallskip
 
 In this step, $S$ %is a {\slint} program containing 
 contains no assignment statements and only assertions of the form $\ASSERT{x \in \CEFA}$ and  $\ASSERT{t_1\ o\ t_2}$  where $\CEFA$ are CEFAs and $t_1, t_2$ are linear integer terms. %no assignment statements and all the integer terms are linear integer arithmetic terms. 
@@ -335,14 +324,8 @@ For each $x \in X$, let $\Lambda_x=\{\CEFA_{x}^1, \cdots, \CEFA_{x}^{s_x}\}$ den
 Moreover, let $\phi$ denote the conjunction of all the LIA formulas $t_1\ o\ t_2$ occurring in $S$. It is straightforward to observe that $\phi$ is over %the set of integer variables 
 $R'=\bigcup_{x\in X, j \in [s_x]}R(\CEFA_{x}^{j})$. Then the path feasibility of $S$ is reduced to \emph{the satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem)} which is defined as 
 \begin{quote}
-deciding whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely,  %\begin{definition}[{\lasat} Problem]\label{def-la-sat-cefa}
-	%The satisfiability problem of LIA formulas w.r.t. CEFAs (abbreviated as {\lasat} problem) is defined as follows.
-%	
-%	\textbf{Input}: a given quantifier-free LIA formula $\phi$ and CEFAs $\CEFA_1,\cdots,\CEFA_m$, such that $\CEFA_i=(Q_i, \Sigma, R_i, \delta_i, I_i, F_i)$ for every $i\in [m]$, 
-%	$R_i \cap R_j = \emptyset$ for every $1 \le i < j \le m$, and
-%	the free variables of $\phi$ are from $\bigcup_{i\in [m]} R_i$, 
-whether %$\phi$ is satisfiable w.r.t. $\CEFA_1, \cdots, \CEFA_m$, namely, whether 
-there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[\theta(R')/R']$ holds and $(w_x, \theta(R(\CEFA_{x}^{j}))) \in \Lang(\CEFA_{x}^{j})$ for every $x \in X$ and $j \in [s_x]$.
+deciding whether $\phi$ is satisfiable w.r.t. $(\Lambda_x)_{x \in X}$, namely, 
+whether there are an assignment function $\theta: R' \rightarrow \Int$ and strings $(w_x)_{x \in X}$ such that  $\phi[\theta(R')/R']$ holds and $(w_x, \theta(R(\CEFA_{x}^{j}))) \in \Lang(\CEFA_{x}^{j})$ for every $x \in X$ and $j \in [s_x]$.
 \end{quote}
 This {\lasat} problem is decidable and $\pspace$-complete;
 %A proof of Proposition~\ref{prop:la-sat-cefa-inter} 
@@ -374,42 +357,9 @@ The proof can be found in \iftoggle{full}{Appendix~\ref{app:sat-cefa}}{the full 
 %
 An example to illustrate the decision procedure can be found in \iftoggle{full}{Appendix~\ref{app:urlexample}}{the full version \cite{atva20-full}}.
 
-
 \smallskip
 \noindent\emph{Complexity analysis of the decision procedure.} Step I and Step II can be done in nondeterministic linear time. Step III can be done in linear time. In Step IV, for each input string variable $x$ in $S$, at most exponentially many CEFAs can be generated for $x$, each of which is of at most exponential size. Therefore, Step IV can be done in nondeterministic exponential space. By Proposition~\ref{prop:la-sat-cefa-inter}, Step V can be done in exponential space. Therefore, we conclude that the path feasibility problem of {\slint} programs is in $\nexpspace$, thus in $\expspace$ by Savitch's theorem \cite{complexity-book}.  
  
 \begin{remark}
 	In this paper, we focus on functional finite transducers (cf.\ Section~\ref{sec:prel}). Our decision procedure is applicable to general finite transducers as well with minor adaptation. However, the $\expspace$ complexity upper-bound does not hold any more, because the distributive property $f^{-1}(L_1\cap L_2)= f^{-1}(L_1)\cap f^{-1}(L_2)$ for regular languages $L_1, L_2$ only holds for functional finite transducers $f$.  
 \end{remark}
-
- 
-
- 
-
-
-%%%%%%%%pre-image of concatenation: removed%%%%%%%%
-%%%%%%%%pre-image of concatenation: removed%%%%%%%%
-%\hide{
-%\begin{example}\label{exm:pre-image}
-%Let $L = \{(w, |w|) \mid w \in \Lang((aa)^*b(bb)^*) \}$. Evidently $L$  is a CERL defined by a CEFA $\CEFA = (Q, \{a,b\}, R=(r_1), \delta, I, F)$. Since the concatenation function $\concat$  is  from $\Sigma^* \times \Sigma^*$ to $\Sigma^*$, $\concat^{-1}_R(L)$, the $R$-cost-enriched pre-image of $L$ under concatenation $\concat$, is the pair $(\cR, t)$, where $t=r^{(1)}_1+r^{(2)}_1$ (note that in this case $l=2$, $k_0=1$, and $k_j=0$ for $j\in [l]$) and 
-%\[\cR = L_{1,1} \times L_{1,2} \cup L_{2,1} \times L_{2,2} \cup L_{3,1} \times L_{3,2} \cup L_{4,1} \times L_{4,2} \cup L_{5,1} \times L_{5,2},\]
-%such that
-%\begin{itemize}
-%\item $L_{1,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{1,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$,
-%%
-%\item $L_{2,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*)\}$ and $L_{2,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((aa)^*b(bb)^*)\}$,
-%%
-%\item $L_{3,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang(a(aa)^*)\}$ and $L_{3,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(a(aa)^*b(bb)^*)\}$,
-%%
-%\item $L_{4,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*b(bb)^*)\}$ and $L_{4,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang((bb)^*)\}$,
-%%
-%\item $L_{5,1} = \{(w_1, |w_1|) \mid w_1 \in \Lang((aa)^*(bb)^*)\}$ and $L_{5,2} = \{(w_2, |w_2|) \mid w_2 \in \Lang(b(bb)^*)\}$.
-%\end{itemize}
-%%
-%It is easy to see that $\cR$ is a CERR. Thus $\concat^{-1}_R(L)$ is CERR-definable.
-%\end{example}
-%}
-%%%%%%%%pre-image of concatenation: removed%%%%%%%%
-%%%%%%%%pre-image of concatenation: removed%%%%%%%%
-
- 
