@@ -80,6 +80,12 @@
 \newcommand\refexp{{\sf REF}}
 \newcommand\ssym{{\sf Start}}
 \newcommand\esym{{\sf End}}
+
+\newcommand\pnfa{\mathcal{N}}
+\newcommand\psst{\mathcal{T}}
+
+\newcommand\pat{\mathsf{pat}}
+\newcommand\rep{\mathsf{rep}}
 %%%%%%%%%% End TeXmacs macros
 
 
@@ -109,7 +115,7 @@
 \affiliation{
 %  \position{}
 %  \department{}              %% \department is recommended
-  \institution{Birkbeck, University of London}            %% \institution is required
+  \institution{University of Surrey}            %% \institution is required
 %  \streetaddress{Street1 Address1}
 %  \city{London}
 %  \state{UK}
@@ -184,7 +190,7 @@ Streaming String Transducers: \cite{FR17}
 
 \section{Preliminaries}
 
-$\Int^+$ is the set of integers. 
+$\Int^+$ is the set of positive integers. $\nat$ is the set of natural numbers. $[n]:=\{1, \cdots, n\}$. 
 
 \begin{definition}[Finite-state automata] \label{def:nfa}
 	A \emph{(nondeterministic) finite-state automaton}
@@ -198,9 +204,9 @@ $\Int^+$ is the set of integers.
 	transition relation. 
 \end{definition}
 
-For an input string $w = a_1 \dots a_n$, a \emph{run} of $\Aut$ on $w$
+For an input string $w=a_1 \dots a_n$, a \emph{run} of $\Aut$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
-is a sequence of states $q_0,\ldots, q_n$ such that $(q_{j-1}, a_{j}, q_{j}) \in
+is a sequence of states $q_0, \ldots, q_n$ such that $(q_{j-1}, a_{j}, q_{j}) \in
 \transrel$  for every $j \in [n]$.
 The run is said to be \defn{accepting} if $q_n \in \finals$.
 A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
@@ -212,51 +218,44 @@ use this when we discuss computational complexity.
 
 For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
 
-  For any set Q, let $\bar{Q} = \{ (q_0 q_1 \ldots q_n) \mid n \in N \wedge
-  \forall i \in [n], q_i \in Q \wedge \forall i \in [n], \forall j \in [n], i
-  \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\bar{Q}$ is the set of
-  non-repetitive sequence of elements of Q.
-  Note that the sequence is at most
-  $| Q |$ elements long.
+For any set $Q$, let $\overline{Q} = \{ (q_1, \ldots, q_n) \mid n \in \nat \wedge \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i
+  \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of
+sequences of non-repetitive elements from $Q$. Note that the length of each sequence from $\bar{Q}$ is bounded by 
+  $| Q |$.
   
-  For some sequence $P = (q_0 \ldots q_n) \in \bar{Q}$ and some element $q \in
-  Q$, we use the ordinary set-theoretic notation $q \in P$ to denote that
+For some sequence $P = (q_0 \ldots q_n) \in \bar{Q}$ and  $q \in Q$, we write $q \in P$ to denote that
   $\exists i \in [n], q = q_i$.
 
 \begin{definition}[Prioritized Finite-state automata]
-  A prioritized finite-state automata (pNFA) over a finite alphabet $\Sigma$ is a tuple N=$(Q, \Sigma, \delta, q_0, F)$ where $\delta \in Q
-  \times \Sigma \rightarrow \bar{Q}$. The definition of $Q, q_0$ and $F$ is the same as ordinary NFA.
-  
+  A prioritized finite-state automata (pNFA) over a finite alphabet $\Sigma$ is a tuple $\pnfa=(Q, \Sigma, \delta, q_0, F)$ where $\delta \in Q
+  \times \Sigma \rightarrow \overline{Q}$. The definition of $Q, q_0$ and $F$ is the same as ordinary NFA.
 \end{definition}
 
-  A run of N is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where
-  $q_m \in F$ and for any $i \in [m], q_i \in \delta (q_{i - 1}, \sigma_i)$.
-  For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =
-  q_0 \sigma_1 q_1' \ldots \sigma_m q_m'$, we say p is of higher priority than
-  $p'$, iff $p \neq p'$ and for the first index j such that $q_j \neq q_j'$,
+A run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where $q_m \in F$ and for any $i \in [m], q_i \in \delta (q_{i - 1}, \sigma_i)$.
+  For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =
+  q_0 \sigma_1 q_1' \ldots \sigma_m q_m'$ on $w = \sigma_1 \ldots \sigma_m$, we say that $p$ is of higher priority than
+  $p'$ if $p \neq p'$, and for the first index $j$ such that $q_j \neq q_j'$,
   $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
   
-  The accepting run of N on w is the most prioritized run on it. The language of pNFA N is the set of
-  string which has an accepting run.
+  The accepting run of $\pnfa$ on $w$ is the one with highest priority. The language of pNFA $\pnfa$ is the set of
+  strings which have an accepting run.
   
 \begin{definition}[Prioritized Streaming String Transducer]
-  A prioritized streaming string transducer (PSST) is a tuple $T = (Q, \Sigma, X, E, \delta, q_0, F)$, where $\Sigma$ is
-  the input and output alphabet, $X$ a finite set of variables, and $Q$ a
-  finite set of states. E is a partial function from $Q \times \Sigma \times
+A prioritized streaming string transducer (PSST) is a tuple $\psst = (Q, \Sigma, X, E, \delta, q_0, F)$, where $Q$ a
+finite set of states, $\Sigma$ is the input and output alphabet, and $X$ a finite set of variables. $E$ is a partial function from $Q \times \Sigma \times
   Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$, i.e. the set of assignment,
-  $\delta \in Q \times \Sigma \rightarrow \bar{Q}$ and F is a partial function
-  from Q to $(X \cup \Sigma)^{\ast}$.
+  $\delta \in Q \times \Sigma \rightarrow \overline{Q}$ and $F$ is a partial function
+  from $Q$ to $(X \cup \Sigma)^{\ast}$.
   
 \end{definition}
 
-  A run of T is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$,
-  where $F (q_m)$ is defined, and for any $i \in [m], q_i \in \delta (q_{i -
-  1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_0 \sigma_1
+  A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$,
+  where $F (q_m)$ is defined, and for each $i \in [m], q_i \in \delta (q_{i-1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_0 \sigma_1
   s_1' \ldots \sigma_m s_m' q_m'$, we say p is of higher priority than
   $p'$, iff $p \neq p'$ and for the first index j such that $q_j \neq q_j'$,
   $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
   
-  The accepting run of T on input w is the most prioritized run on it. The output of T on w, denoted by $T(w)$, is defined as $\pi_m(F(q_m))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation in $\pi_m(F(q_m))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
+  The accepting run of $\psst$ on input $w$ is the most prioritized run on it. The output of T on w, denoted by $T(w)$, is defined as $\pi_m(F(q_m))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation in $\pi_m(F(q_m))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
   
 %  $\tmop{Out} (r) =
 %  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
@@ -272,42 +271,51 @@ For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \S
 \section{The string logic}
 
 
-A regular expression with capturing group is defined as follows.
+A regular expression (with capturing group and back reference) is defined as follows.
 
-\begin{definition}[Regular expressions  with capturing groups and back references $\regexp$]
-	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid \$n \mid e + e \mid e \concat e \mid e^* \mid (e), \mbox{ where } a \in \Sigma, n \in \Int^+. \]
+\begin{definition}[Regular expressions with capturing group and back reference $\regexp$]
+	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid \$n \mid e + e \mid e \concat e \mid e^* \mid (e)  , \]
+where $a \in \Sigma, n \in \Int^+$. 
 %	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. 
 %We use the abbreviation 
 $e^+$ abbreviates $e \concat e^*$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma \equiv a_1 + \cdots + a_k$ and $\Gamma^\ast \equiv (a_1 + \cdots + a_k)^\ast$. 
 \end{definition}
 \zhilin{some sanity conditions should be put to make the semantics of $\$ n$ well-defined.}
 
-Note that the standard regular expressions are those defined by the aforementioned rules with $\$ n$ and $(e)$ removed.
-Moreover, for convenience, we use $\regexp[\sf CG]$ to denote the subclass of $\regexp$ where the rule $\$ n$ is removed. We also use $\refexp$ to denote the set of reference expressions, namely, the expressions defined by the rules $e \eqdef \varepsilon \mid a \mid \$n \mid e \concat e$.
-
+Note that standard regular expressions are those without $\$ n$ or $(e)$.
+%
+Moreover, we use $\regexp[\sf CG]$ to denote the fragment of $\regexp$  excluding $\$ n$, and $\refexp$ to denote expressions generated by $e \eqdef \varepsilon \mid a \mid \$n \mid e \concat e$.
+\tl{define the semantics here?}
 
 %We will use $\$ 1, \$2, \cdots$ to denote the references to capturing groups in regular expressions.
 
 %We define the set of reference expressions as follows: 
 
 
-\begin{definition}[The constraint language $\strline$]%
-The constraint language $\strline$ is defined by the following rules,
+\begin{definition}[The constraint language $\strline$] 
+The constraint language $\strline$ is defined by
 \[
 \begin{array}{l c l}
-S &::= &  z:= x\ \concat\ y \ |\ z := \replaceall_{e_1, e_2}(x) \ | \  y := \reverse(x) \ |\ \\
-& &  y := \Transducer(x)\ |\  \text{$\ASSERT{x \in e'}$}\ |\ S; S\
+S &::= &  z:= x\ \concat\ y \mid z := \replaceall_{\pat, \rep}(x)   \mid \\ 
+& &  y := \reverse(x) \mid y := \Transducer(x)\ |\  \text{$\ASSERT{x \in e}$}\ |\ S; S\
 \label{eq:SL}
 %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
 \end{array}
 \]
-where $\concat$ is the string concatenation operation which concatenates two strings, $e_1 \in \regexp[\sf CG]$, $e_2 \in \refexp$, $e' \in \regexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+where $\concat$ is the string concatenation operation which concatenates two strings, $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, $e \in \regexp$, %$\replaceall$ is the replace-all function to be defined shortly,
 $\reverse$ is the string function which reverses a string, and $\Transducer$ is a \PSST.  
 %and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
 \end{definition}
 \zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
+\tl{maybe just use NSST to replace pSST?}
 
 It is evident that the $\reverse$ function is subsumed by \PSST{}s.
+
+\subsection{Undecidability: Regular expressions with capturing groups and back references}
+
+$\strline$ is in general undecidable, as a result of the back references.
+
+\zhilin{Decidable fragments? Could we assume that the assertions $\ASSERT{x \in e'}$ where $e'$ contains back references are only for the input variables ?}
 
 
 \section{Decision procedures}
@@ -319,31 +327,25 @@ It is evident that the $\reverse$ function is subsumed by \PSST{}s.
 semantics captured by prioritized transducers, \cite{BM17}.
 
 \zhilei{A formal semantics of matching should be added}
+\tl{move this to the semantics part?}
 
 \subsection{Construction of pNFA from regular expression}
 \label{pNFA_cons}
 
 \zhilei{I need to draw some pictures of automata here}.
 
-\subsection{Regular expressions with capturing groups and back references}
 
-$\strline$ is in general undecidable, as a result of the back references.
-
-\zhilin{Decidable fragments? Could we assume that the assertions $\ASSERT{x \in e'}$ where $e'$ contains back references are only for the input variables ?}
 
 \subsection{$\replaceall$ with capturing groups and references}
 
 \begin{theorem}[Pre-image of \PSST{}]
-  Given a \PSST{} $T = (Q_T, \Sigma$, $X, E, \delta_T, q_{0, T}, F_T)$ and \FA{} $A
+  Given a \PSST{} $\psst = (Q_T, \Sigma$, $X, E, \delta_T, q_{0, T}, F_T)$ and \FA{} $A
   = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute in exponential time an \FA{} $B = (Q_B,
-  \Sigma, \delta_B, q_{0, B}, F_B)$ such that $\Lang(B) = \cR^{-1}_T(L)$. 
+  \Sigma, \delta_B, q_{0, B}, F_B)$ such that $\Lang(B) = \cR^{-1}_T(L)$, where $L$ is the regular language accepted by $A$. 
 \end{theorem}
-
-%We omit the correctness proof for now, but give a construction of N:
-%
-%\
+ 
 \begin{proof}
-Intuitively, $B$ simulates the run of $T$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$. Moreover, $B$ also simulate runs of $T$ which are more prioritized.
+Intuitively, $B$ simulates the run of $\psst$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$. Moreover, $B$ also simulates runs of $T$ which are more prioritized \tl{??}.
 
 Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho, S), a, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
@@ -373,7 +375,7 @@ let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\
 %  
   The construction does not utilize the so-called \tmtextit{copyless}
   property in {\cite{AC10,AD11}},
-  thus the construction works for \emph{copyful} \PSST{}.
+  thus the construction works for general \PSST{}.
 \end{remark}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -385,8 +387,6 @@ let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\
 \end{definition}
 
 \begin{note}
-  \
-  
   One thing is worth noting about this idea of 2NSST: \tmtextit{the pre-image
   of 2NSST is still computable}. We just use a 2FA N to simulate the 2NSST, in
   the same manner of the construction above. We can then transform the 2FA
@@ -551,21 +551,20 @@ Then
 The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}, -) $.
 \end{proof}
 
-%% Acknowledgments
-\begin{acks}                            %% acks environment is optional
-                                        %% contents suppressed with 'anonymous'
-  %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
-  %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
-  %% acknowledge financial support and will be used by metadata
-  %% extraction tools.
-xxx
-\end{acks}
+
 
 \section{Implementation}
 
 \section{Experiments}
 
-
+%% Acknowledgments
+\begin{acks}                            %% acks environment is optional
+	%% contents suppressed with 'anonymous'
+	%% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
+	%% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
+	%% acknowledge financial support and will be used by metadata
+	%% extraction tools.
+\end{acks}
 %% Bibliography
 \bibliography{string}
 
@@ -573,7 +572,7 @@ xxx
 \appendix
 \section{Appendix}
 
-Text of appendix \ldots
+ 
 
 
 \end{document}
