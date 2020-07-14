@@ -56,7 +56,7 @@
 \newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
 \newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
 \newcommand{\philipp}[1]{\color{magenta} {PR: #1 :PR} \color{black}}
-\newcommand{\zhilei}[1]{\color{green} {PR: #1 :PR} \color{black}}
+\newcommand{\zhilei}[1]{\color{green} {ZLH: #1 :HZL} \color{black}}
 \else
 \newcommand{\anthony}[1]{}
 \newcommand{\zhilin}[1]{}
@@ -76,6 +76,7 @@
 %\newtheorem{note}{Note}
 \newtheorem{remark}{Remark}
 \newcommand\NSST{{\sf NSST}}
+\newcommand\PSST{{\sf PSST}}
 \newcommand\refexp{{\sf REF}}
 \newcommand\ssym{{\sf Start}}
 \newcommand\esym{{\sf End}}
@@ -185,7 +186,6 @@ Streaming String Transducers: \cite{FR17}
 
 $\Int^+$ is the set of integers. 
 
-
 \begin{definition}[Finite-state automata] \label{def:nfa}
 	A \emph{(nondeterministic) finite-state automaton}
 	(\FA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
@@ -212,34 +212,62 @@ use this when we discuss computational complexity.
 
 For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
 
-
-\begin{definition}[Streaming String Transducer]
-  A nondeterministic streaming string transducer (\NSST) is a tuple $T = (Q, \Sigma, X, E, q_0, F)$, where $Q$ is a finite set of states, $\Sigma$ is both the input alphabet and the output alphabet, $X$ is a finite set of string variables, $E \subseteq Q \times \Sigma \times Q \times S$ is a finite set of
-  transition rules where $S$ is a set of assignment functions from $X$ to $(X
-  \cup \Sigma)^{\ast}$, and $F$ is the output function, which is a partial function from $Q$ to $(X \cup
-  \Sigma)^{\ast}$.
-  \end{definition}
+  For any set Q, let $\bar{Q} = \{ (q_0 q_1 \ldots q_n) \mid n \in N \wedge
+  \forall i \in [n], q_i \in Q \wedge \forall i \in [n], \forall j \in [n], i
+  \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\bar{Q}$ is the set of
+  non-repetitive sequence of elements of Q.
+  Note that the sequence is at most
+  $| Q |$ elements long.
   
-  A run $r$ of $T$ on a string $w = \sigma_1 \ldots \sigma_n$ is $q_0 \xrightarrow{\sigma_1 / s_1} q_1
-  \xrightarrow{\sigma_2 / s_2} \ldots \xrightarrow{\sigma_n / s_n} q_n$ such that
-  $(q_i, \sigma_{i + 1}, q_{i + 1}, s_{i + 1}) \in E$ for $1 \le i < n$. A run $r$ is \emph{successful} if $F(q_n)$ is
-  defined. 
-  %
-  The output of a run $r$ of $T$ on $w$, denoted by $T_r(w)$, is defined as $\pi_n(F(q_n))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le n$ and $x \in X$. Note that here we abuse the notation in $\pi_n(F(q_n))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
+  For some sequence $P = (q_0 \ldots q_n) \in \bar{Q}$ and some element $q \in
+  Q$, we use the ordinary set-theoretic notation $q \in P$ to denote that
+  $\exists i \in [n], q = q_i$.
+
+\begin{definition}[Prioritized Finite-state automata]
+  A prioritized finite-state automata (pNFA) over a finite alphabet $\Sigma$ is a tuple N=$(Q, \Sigma, \delta, q_0, F)$ where $\delta \in Q
+  \times \Sigma \rightarrow \bar{Q}$. The definition of $Q, q_0$ and $F$ is the same as ordinary NFA.
+  
+\end{definition}
+
+  A run of N is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where
+  $q_m \in F$ and for any $i \in [m], q_i \in \delta (q_{i - 1}, \sigma_i)$.
+  For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =
+  q_0 \sigma_1 q_1' \ldots \sigma_m q_m'$, we say p is of higher priority than
+  $p'$, iff $p \neq p'$ and for the first index j such that $q_j \neq q_j'$,
+  $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
+  
+  The accepting run of N on w is the most prioritized run on it. The language of pNFA N is the set of
+  string which has an accepting run.
+  
+\begin{definition}[Prioritized Streaming String Transducer]
+  A prioritized streaming string transducer (PSST) is a tuple $T = (Q, \Sigma, X, E, \delta, q_0, F)$, where $\Sigma$ is
+  the input and output alphabet, $X$ a finite set of variables, and $Q$ a
+  finite set of states. E is a partial function from $Q \times \Sigma \times
+  Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$, i.e. the set of assignment,
+  $\delta \in Q \times \Sigma \rightarrow \bar{Q}$ and F is a partial function
+  from Q to $(X \cup \Sigma)^{\ast}$.
+  
+\end{definition}
+
+  A run of T is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$,
+  where $F (q_m)$ is defined, and for any $i \in [m], q_i \in \delta (q_{i -
+  1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_0 \sigma_1
+  s_1' \ldots \sigma_m s_m' q_m'$, we say p is of higher priority than
+  $p'$, iff $p \neq p'$ and for the first index j such that $q_j \neq q_j'$,
+  $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
+  
+  The accepting run of T on input w is the most prioritized run on it. The output of T on w, denoted by $T(w)$, is defined as $\pi_m(F(q_m))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation in $\pi_m(F(q_m))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
   
 %  $\tmop{Out} (r) =
 %  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
 %  $s_{\varepsilon}$ is the empty substitution which maps all variables to
 %  $\varepsilon$.
   
- 
-The set of outputs of $T$ on a string $w$, denoted by $T(w)$, is defined as $\{ T_r(w) \mid r
-\mbox{ is a successful run of } T \mbox{ on } w \}$. For an \NSST{} $T$, we use $\cR_T$ to denote the string relation $\{(w, w') \mid w' \in T(w)\}$.
 
 For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$, denoted by $R^{-1}(L)$, as $\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$. 
  
 
-Note that in the definition of \NSST, there is no \emph{copyless} restriction.
+% Note that in the definition of \NSST, there is no \emph{copyless} restriction.
 
 \section{The string logic}
 
@@ -274,19 +302,28 @@ S &::= &  z:= x\ \concat\ y \ |\ z := \replaceall_{e_1, e_2}(x) \ | \  y := \rev
 \end{array}
 \]
 where $\concat$ is the string concatenation operation which concatenates two strings, $e_1 \in \regexp[\sf CG]$, $e_2 \in \refexp$, $e' \in \regexp$, %$\replaceall$ is the replace-all function to be defined shortly,
-$\reverse$ is the string function which reverses a string, and $\Transducer$ is an \NSST{}.  
+$\reverse$ is the string function which reverses a string, and $\Transducer$ is a \PSST.  
 %and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
 \end{definition}
+\zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
 
-It is evident that the $\reverse$ function is subsumed by \NSST{}s.
+It is evident that the $\reverse$ function is subsumed by \PSST{}s.
 
 
 \section{Decision procedures}
 
 
 \subsection{Regular expressions with capturing groups}
+\label{regex_semantics}
 
 semantics captured by prioritized transducers, \cite{BM17}.
+
+\zhilei{A formal semantics of matching should be added}
+
+\subsection{Construction of pNFA from regular expression}
+\label{pNFA_cons}
+
+\zhilei{I need to draw some pictures of automata here}.
 
 \subsection{Regular expressions with capturing groups and back references}
 
@@ -296,8 +333,8 @@ $\strline$ is in general undecidable, as a result of the back references.
 
 \subsection{$\replaceall$ with capturing groups and references}
 
-\begin{theorem}[Pre-image of \NSST{}]
-  Given an \NSST{} $T = (Q_T, \Sigma$, $X, E, q_{0, T}, F_T)$ and \FA{} $A
+\begin{theorem}[Pre-image of \PSST{}]
+  Given a \PSST{} $T = (Q_T, \Sigma$, $X, E, \delta_T, q_{0, T}, F_T)$ and \FA{} $A
   = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute in exponential time an \FA{} $B = (Q_B,
   \Sigma, \delta_B, q_{0, B}, F_B)$ such that $\Lang(B) = \cR^{-1}_T(L)$. 
 \end{theorem}
@@ -306,20 +343,23 @@ $\strline$ is in general undecidable, as a result of the back references.
 %
 %\
 \begin{proof}
-Intuitively, $B$ simulates the run of $T$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$.
+Intuitively, $B$ simulates the run of $T$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$. Moreover, $B$ also simulate runs of $T$ which are more prioritized.
 
-Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X}$, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon})$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho), a, (q', \rho'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
+Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho, S), a, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
-\item $(q, a, q', s) \in \delta_T$, 
+\item $\delta_T (q, a) = (q_1 \ldots q_i \ldots q_m)$, 
+\item $s = E(q,a,q_i)$.
+\item $S' = \delta_T^{\ast} (S, a) \cup \{ q_1, \ldots, q_{i - 1} \}$, where $\delta_T^{\ast}(S,a) = \{q' \mid \exists q \in S, q' \in \delta_T(q,a)\}$.
 \item and $\rho'$ is obtained from $\rho$ and $s$ as follows: for each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
 
-Moreover, $F_B$ is the set of states $(q, \rho) \in Q_B$
+Moreover, $F_B$ is the set of states $(q, \rho, S) \in Q_B$
 such that
 \begin{enumerate}
   \item $F_T (q)$ is defined,
+  \item For any $q' \in S$, $F_T (q')$ is not defined
   
   \item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise, 
 let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
@@ -333,7 +373,7 @@ let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\
 %  
   The construction does not utilize the so-called \tmtextit{copyless}
   property in {\cite{AC10,AD11}},
-  thus the construction works for \emph{copyful} \NSST{} used in this paper.
+  thus the construction works for \emph{copyful} \PSST{}.
 \end{remark}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -388,24 +428,22 @@ The semantics of $\replaceall_{e_1, e_2}$ is  similar to that in {\cite{CCH+18}}
 \end{definition}
 
 \begin{remark}
-  In the aforementioned definition of the semantics of $\replaceall_{e_1,e_2}(x)$, even though the matching of $e_1$ in $x$ is deterministic since the leftmost and longest matching is considered, the matchings of the subexpressions may not be deterministic. For instance, although the leftmost and longest matching of $e_1 = (a^+) 
-  (a^+) $ in $a^3b$ is $a^3$, the matching of the first and the second capturing group could be either $aa$ and $a$, or $a$ and $aa$.
+  In the aforementioned definition of the semantics of $\replaceall_{e_1,e_2}(x)$, the matching of $e_1$ in $x$ is deterministic since the leftmost and longest matching is considered, and the process of matching the subexpressions is captured by the semantics in \ref{regex_semantics}.
   
-Therefore, the semantics of $\replaceall_{e_1,e_2}(x)$ can be seen as an approximation of that used in programming languages, e.g. Javascript, which can be seen as a tradeoff. \zhilin{this tradeoff should be justified}
+Therefore, the $\replaceall_{e_1,e_2}(x)$ function can be seen as a precise modeling of that used in practical programming languages, e.g. Javascript. \zhilei{might need exemplification}
 \end{remark}
 
-\zhilin{Could we unify prioritized transducers and streaming transducers to capture faithfully the semantics of $\replaceall_{e_1,e_2}(x)$ ?}
 
 \begin{theorem}
-  For each $e_1 \in \regexp[\sf CG]$ and $e_2 \in \refexp$, $\replaceall_{e_1, e_2}$ can be modeled by a $\NSST${} $T_{e_1,e_2}$.
+  For each $e_1 \in \regexp[\sf CG]$ and $e_2 \in \refexp$, $\replaceall_{e_1, e_2}$ can be modeled by a $\PSST${} $T_{e_1,e_2}$.
 \end{theorem}
 
 \begin{proof}
-Suppose that $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton \cite{Gluskov61} constructed from $e_1 \in \regexp[\sf CG]$. From the Glushkov
-construction, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$. For instance, if $e_1 = (a (ab)^*)^*$, then we consider the marked regular expression $(a_1 (a_2 b_3)^*)^*$, and let $Q = \{q_0, a_1, a_2, b_3\}$, $F = \{q_0, a_1, b_3\}$, and $\delta = \{(q_0, a, a_1), (a_1, a, a_2)$, $(a_1, a, a_1), (a_2, b, b_3), (b_3, a, a_2), (b_3, a, a_1)\}$. 
+Suppose that pNFA $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton \cite{Gluskov61} constructed from $e_1 \in \regexp[\sf CG]$ by the modified algorithm in \ref{pNFA_cons}. From the algorithm, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$.
+% For instance, if $e_1 = (a (ab)^*)^*$, then we consider the marked regular expression $(a_1 (a_2 b_3)^*)^*$, and let $Q = \{q_0, a_1, a_2, b_3\}$, $F = \{q_0, a_1, b_3\}$, and $\delta = \{(q_0, a, a_1), (a_1, a, a_2)$, $(a_1, a, a_1), (a_2, b, b_3), (b_3, a, a_2), (b_3, a, a_1)\}$. 
 %Each state other than $q_0$ corresponds to an occurrence of character in e.
 
-For each subexpression $e'$ of $e_1$, let us use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$.
+For each subexpression $e'$ of $e_1$, we use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$.
 For every subexpression $e'$ of $e_1$, from the Glushkov construction,
 there must be a unique subgraph of $A_{e_1}$ corresponding to $e'$, denoted by $A_{e_1}[e']$. For instance, if $e_1 = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e_1}[a(ab)^*]$ is the subgraph of $A_{e_1}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
 For each state $a_i$ of $A_{e_1}$, define $C(a_i)$  as the set $\{ e' \in C_{e_1} \mid a_i \mbox{ is a vertex in }
@@ -414,48 +452,101 @@ A_{e_1}[e']\}$. Intuitively, $C(a_i)$ represents the set of subexpressions in $C
 %be updated when entering q.
 
 For each $e' \in C_{e_1}$, we introduce a string variable $x_{e'}$. Moreover, we introduce another string variable $x_{res}$ to denote the result of $\replaceall_{e_1,e_2}$. Let $X$ denote the set of these string variables.
-Then we construct the \NSST{} $T_{e_1,e_2} = (Q', \Sigma, X, E, q_0', F')$, by using the idea of parsing automata in \cite{CCH+18} as follows: At first, $q'_0= (\{ q_0
-\}, \tmop{left}, \emptyset)$. The set of transition rules $E$ is defined by the following rules.
+
+
+Then we construct the \NSST{} $T_{e_1,e_2} = (Q', \Sigma, X, E, \delta', q_0', F')$, by using the idea of parsing automata in \cite{CCH+18}. Note in the below, we omit the priority of some transitions and simply write $q' \in \delta'(q,a)$ instead of $\delta'(q,a)=(q_1,q_2,\ldots,q_n)$. In this case, the priority is immaterial and any combination will work.
+
+At first, $q'_0= (\{ q_0
+\}, \tmop{left}, \emptyset)$. The set of transition rules $\delta'$ is defined by the following rules.
+
 \begin{itemize}
-  \item The transitions within the \emph{left} mode are the same as the
-   parsing automata in \cite{CCH+18}, augmented with the assignment function $s$ such that $s(x_{res}) = res \concat a$ and $s(x_{e'})=x_{e'}$ for
-  every $e' \in C_{e_1}$, where $a$ is the input character.
+  
+  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$, $a \in \Sigma$,
+  $\delta (S, a) \cap F = \emptyset$ and $\delta^{\ast} (\rho \{ q_0 \}, a) \cap F =
+  \emptyset$, then
+  \[ (\tmop{red} (\delta^{\ast} (\rho \{ q_0 \}, a)) \{ q_0 \}, \tmop{left}, \delta
+     (S, a)) \in \delta' ((\rho \{ q_0 \}, \tmop{left}, S), a) \]
+  and the corresponding assignment is defined as $s(x_{res}) = res \concat a$ and $s(x_{e'})=x_{e'}$ for
+  every $e' \in C_{e_1}$.
   
   \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$ and $a \in \Sigma$.
-  If $\delta (S, a) \cap F = \emptyset$, $\delta^{\ast} (\rho, a) \cap F =
-  \emptyset$ and $\delta (q_0, a) \nsubseteq \delta (S, a) \cup \delta^{\ast}
-  (\rho, a)$, then for every $q' \in \delta (q_0, a) \setminus (\delta (S, a) \cup \delta^{\ast}(\rho, a))$, we have
-  \[ ((\rho \{ q_0 \}, \tmop{left}, S), a, (\{ q' \}, \tmop{long}, \delta (S,
-     a) \cup \delta^{\ast} (\rho, a)), s) \in E \]
-  where $s$ is the assignment function defined as follows: $s(x_{e'}) = a$ for every $e'  \in C(q')$, and $s(y)=y$ for every other string variable $y \in X$.
+  If $\delta (S, a) \cap F = \emptyset$, $\delta^{\ast} (\rho, a) \cap F = \emptyset$
+  and $\delta (q_0, a) \nsubseteq \delta (S, a) \cup \delta^{\ast} (\rho, a)$, then
+  for every $q' \in \delta (q_0, a) \backslash \delta (S, a) \cup \delta^{\ast}
+  (\rho, a)$, we have
+  \[ (\{ q' \}, \tmop{long}, \delta (S, a) \cup \delta^{\ast} (\rho, a)) \in \delta'
+     ((\rho \{ q_0 \}, \tmop{left}, S), a) \]
+  and $s$ is the assignment function defined as follows: $s(x_{e'}) = a$ for every $e'  \in C(q')$, and $s(y)=y$ for every other string variable $y \in X$.
   
-  \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
-  $\delta (S, a) \cap F = \emptyset$, and \ $\delta (q, a) \nsubseteq \delta
-  (S, a)$, then for every $q' \in \delta (q, a) \setminus \delta(S, a)$, we have
-  \[ ((\{ q \}, \tmop{long}, S), a, (\{ q' \}, \tmop{long}, \delta (S, a)), s)
-     \in E \]
-  where $s$ is defined as follows:
+  \item Suppose $(\{ q \}, \tmop{long}, S) \in Q',$ and $a \in \Sigma$. If
+  $\delta (S, a) \cap F = \emptyset$, $\delta (q, a) \nsubseteq \delta (S,
+  a)$, and $\delta (q, a) \backslash \delta (S, a) = \{ q_1, \ldots,
+  q_n \}$, where $\delta (q, a) = \ldots q_i \ldots q_j \ldots$ for all $i < j$,
+  we have $\forall i \in [n]$
+  \[ (\{ q_i \}, \tmop{long}, \delta (S, a)) \in \delta' ((\{ q \},
+     \tmop{long}, S), a) \]
+  and the transition to $(\{ q_i \}, \tmop{long}, \delta (S, a))$ is more prioritized than the transition to
+  $(\{ q_j \}, \tmop{long}, \delta (S, a))$ for all $i < j$. 
+  
+  For any $i \in [n]$, the corresponding assignment $s_i$ is defined as follows:
   
   Suppose $\Theta = \{e' \mid e' = e''^*  \wedge
-  q \in \esym(e'') \wedge q' \in \ssym(e'') \}$ and $C_{\Theta}$ denotes the set of $x_{e''}$ such that $e'' \in C_{e'}$ for some $e' \in \Theta$.
+  q \in \esym(e'') \wedge q_i \in \ssym(e'') \}$ and $C_{\Theta}$ denotes the set of subexpression $e''$ such that $e'' \in C_{e'}$ for some $e' \in \Theta$.
 Then 
 \begin{itemize}
-\item for each $y \in C_{\Theta} \cap C(q')$, $s(y) =  a$,
+\item for each $e \in C_{\Theta} \cap C(q_i)$, $s(x_e) = a$,
 %
-\item for each $y \in C_{\Theta} \setminus C(q')$, $s(y) = \varepsilon$, 
+\item for each $e \in C_{\Theta} \setminus C(q_i)$, $s(x_e) = \varepsilon$, 
 %
-\item for each $y \in C(q') \setminus C_\Theta$, $s(y) = y \concat a$,
+\item for each $e \in C(q_i) \setminus C_\Theta$, $s(x_e) = x_e \concat a$,
 %
-\item for each $y \in X \setminus (C_\Theta \cup C(q'))$, $s(y)= y$.
+\item for each $e \in X \setminus (C_\Theta \cup C(q_i))$, $s(x_e)= x_e$.
+\end{itemize}
+
+    \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
+  $\delta (S, a) \cap F = \emptyset$, and $\delta (q, a) \cap F = \{ q_1,
+  \ldots, q_n \}$, where $\delta (q, a) = \ldots q_i \ldots q_j \ldots$ for all
+  $i < j$, we have $\forall i \in [n]$,
+  \[ (\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \{ q_i \}) \in \delta' ((\{ q
+     \}, \tmop{long}, S), a) \]
+  and the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \{ q_i \})$ is more
+  prioritized than the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \{ q_j \})$
+  for all $i < j$.
+  
+  For every $i \in [n]$, the corresponding assignment $s_i$ is defined as follows:
+  
+  Suppose $\Theta = \{e' \mid e' = e''^*  \wedge
+  q \in \esym(e'') \wedge q_i \in \ssym(e'') \}$ and $C_{\Theta}$ denotes the set of $e''$ such that $e'' \in C_{e'}$ for some $e' \in \Theta$. Then $s (x_{res}) = x_{res}  \concat b_1   \ldots  b_n$ such that $e_2 = a_1 \ldots a_n$, and for each $i \in [n]$, if $a_i  \in \Sigma$, then $b_i = a_i$, otherwise, $a_i = \$ j$ for some $j$, let $e' \in C_{e_1}$ be the subexpression corresponding to the $j$-th capturing group of $e_1$, then:
+  
+  \begin{itemize}
+\item if $e' \in C_{\Theta} \cap C(q_i)$, $b_j = a$,
+%
+\item if $e' \in C_{\Theta} \setminus C(q_i)$, $b_j = \varepsilon$, 
+%
+\item if $e' \in C(q_i) \setminus C_\Theta$, $b_j= x_{e'} \concat a$,
+%
+\item if $e' \in X \setminus (C_\Theta \cup C(q_i))$, $b_j = x_{e'}$.
 \end{itemize}
   
-  \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
-  $\delta (S, a) \cap F = \emptyset$ and $\delta (q, a) \cap F \neq
-  \emptyset$, then for every state $q' \in \delta (q, a) \cap F$, we have
-  \[ ((\{ q \}, \tmop{long}, S), a, (\{ q_0 \}, \tmop{left}, \delta (S, a)
-     \cup q'), s) \in E \]
-  where $s$ is defined as follows: $s (x_{res}) = x_{res}  \concat b_1   \ldots  b_n$ such that $e_2 = a_1 \ldots a_n$, and for each $i \in [n]$, if $a_i  \in \Sigma$, then $b_i = a_i$, otherwise, $a_i = \$ j$ for some $j$, let $e' \in C_{e_1}$ be the subexpression corresponding to the $j$-th capturing group of $e_1$, then $b_i = x_{e'}$. Moreover, $s(y) = \varepsilon$ for every other variable
-  $y \in X$.
+  Moreover, $s(y) = \varepsilon$ for every other variable $y \in X$
+  
+  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$, $a \in \Sigma$,
+  $\delta (S, a) \cap F = \emptyset, \delta^{\ast} (\rho, a) \cap F = \emptyset,
+  \delta (q_0, a) \cap F = \{ q_1, \ldots, q_n \}$ where $\delta (q, a) =
+  \ldots q_i \ldots q_j \ldots$ for all $i < j$. We have for every $i \in [n],$
+  \[ (\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \delta^{\ast} (\rho, a) \cup \{ q_i
+     \}) \in \delta' ((\rho \{ q_0 \}, \tmop{left}, S), a) \]
+  and the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \delta^{\ast} (\rho, a) \cup \{
+  q_i \})$ is more prioritized than the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a)
+  \cup \delta^{\ast} (\rho, a) \cup \{ q_j \})$ for all $i < j$.
+  
+  For every $i \in [n]$, the corresponding assignment $s_i$
+  is defined as:
+  
+  $s (x_{res}) = x_{res}  \concat b_1   \ldots  b_n$ such that $e_2 = a_1 \ldots a_n$, and for each $i \in [n]$, if $a_i  \in \Sigma$, then $b_i = a_i$, otherwise, $a_i = \$ j$ for some $j$, let $e' \in C_{e_1}$ be the subexpression corresponding to the $j$-th capturing group of $e_1$, then if $e' \in C(q_i)$, $b_j = a$, otherwise $b_j = \varepsilon$
+
+  Moreover, $s(y) = \varepsilon$ for every other variable $y \in X$
+  
 \end{itemize}
 The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}, -) $.
 \end{proof}
