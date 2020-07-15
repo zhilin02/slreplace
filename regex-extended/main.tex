@@ -223,7 +223,9 @@ For any set $Q$, let $\overline{Q} = \{ (q_1, \ldots, q_n) \mid n \in \nat \wedg
   \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of
 sequences of non-repetitive elements from $Q$. Note that the length of each sequence from $\bar{Q}$ is bounded by 
   $| Q |$.
-  
+
+% \bar vs. \overline 
+
 For some sequence $P = (q_0 \ldots q_n) \in \bar{Q}$ and  $q \in Q$, we write $q \in P$ to denote that
   $\exists i \in [n], q = q_i$.
 
@@ -328,7 +330,7 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
     \item If $e = e_1 e_2$ or $e_1 + e_2$ then r is a subexpression of $e_1$
     or $e_2$
     
-    \item If $e = e_1^{\ast}$ then r is a subexpression of $e_1$
+    \item If $e = e_1^{\ast}$ or $(e_1)$ then r is a subexpression of $e_1$
   \end{itemize}
   We use $S (e)$ to denote the set of all subexpressions of $e$.
 \end{definition}
@@ -337,10 +339,10 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
 \zhilei{Yes, this looks better}
 
 \begin{definition}[Match Tree]
-  A \tmtextbf{match} of $\regexp[\sf CG]$ e is a finite directed and ordered
-  tree T, whose nodes are elements of $\Sigma^{\ast} \times S (e)$. The root
-  of T is $(w, e)$ for some string w, and for any node $u = (w, \alpha)$ in T,
-  we have:
+  A \tmtextbf{match tree} of $\regexp[\sf CG]$ e is a finite directed and ordered
+  tree T, whose nodes are elements of $\Sigma^{\ast} \times S (e)$. A tree
+  is valid if the root is $(w, e)$ for some string w, and for any node $u =
+  (w, \alpha)$ in T, we have:
   \begin{itemize}
     \item If $\alpha = \alpha_1 \alpha_2$ then u has two children $(w_1,
     \alpha_1)$ and $(w_2, \alpha_2)$ where $w = w_1 w_2$.
@@ -354,15 +356,17 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
     $i \in [k]$, $w_i \neq \varepsilon$, even if $\varepsilon \in L
     (\alpha_1)$.
     
+    \item If $\alpha = (\alpha_1)$ then u has a single child $(w, \alpha_1)$.
+    
     \item If $\alpha = a$ (resp. $\alpha = \varepsilon$) then u is a leaf and
     $w = a$ (resp. $w = \varepsilon$).
   \end{itemize}
  
-  Whenever unambiguous, we will use a node u to represent the whole subtree
-  taking u as root. The notation $C (u)$ refers to all direct children of u
+  Whenever unambiguous, we use a node u to represent the whole subtree
+  where u is the root. The notation $C(T)$ refers to all direct children of the root node of T
   (and thus all direct subtrees).
   
-  We also use $M (e)$ to denote all the matches of $\regexp[\sf CG]$ e.
+  We also use $M (e)$ to denote all the valid match trees of e.
 \end{definition}
 
 \begin{definition}[Semantics of RegExp{[\sf CG]}]
@@ -370,6 +374,9 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
   >_e n$ where $m, n \in M (e)$, by inductive definition on e:
   \begin{itemize}
     \item $e = \varepsilon$ or $e = a$. Then there is only one match.
+    
+    \item $e = (e_1)$. Suppose $C (m) = (w_1, e_1)$ and $C (n) = (w_2, e_1)$,
+    then $m >_e n$ iff $(w_1, e_1) >_{e_1} (w_2, e_1)$.
     
     \item $e = e_1 + e_2$.
     \begin{itemize}
@@ -390,8 +397,10 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
     \neq w_j'$, $(w_j, e_1) >_{e_1} (w_j', e_1)$.
   \end{itemize}
   Let $e \in \regexp[\sf CG]$, and string $w \in L (e)$, then the match of w
-  on e is the supremum of the set $\{ m \in M (e) \mid m = (w, e) \}$.
+  on e, denoted by $m_e (w)$, is the supremum of the set $\{ m \in M (e) \mid m = (w, e) \}$.
 \end{definition}
+
+\zhilei{Give an example here}
 
 \subsection{Undecidability: Regular expressions with capturing groups and back references}
 
