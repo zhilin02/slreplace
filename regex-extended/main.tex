@@ -191,7 +191,7 @@ Streaming String Transducers: \cite{FR17}
 
 \section{Preliminaries}
 
-$\Int^+$ is the set of positive integers. $\nat$ is the set of natural numbers. $[n]:=\{1, \cdots, n\}$. 
+$\Int^+$ is the set of positive integers. $\nat$ is the set of natural numbers. $[n]:=\{1, \ldots, n\}$. 
 
 \begin{definition}[Finite-state automata] \label{def:nfa}
 	A \emph{(nondeterministic) finite-state automaton}
@@ -310,27 +310,19 @@ $\reverse$ is the string function which reverses a string, and $\Transducer$ is 
 %and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
 \end{definition}
 \zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
-\tl{maybe just use NSST to replace pSST?}
+\tl{maybe just use NSST to replace PSST?}
+
+\zhilei{PSST is needed for decision procedure. NSST can be decided too, but the algorithm is very similar, so maybe too tedious to add both }
 
 It is evident that the $\reverse$ function is subsumed by \PSST{}s.
 
-\subsection{Undecidability: Regular expressions with capturing groups and back references}
-
-$\strline$ is in general undecidable, as a result of the back references.
-
-\zhilin{Decidable fragments? Could we assume that the assertions $\ASSERT{x \in e'}$ where $e'$ contains back references are only for the input variables ?}
-
-
-\section{Decision procedures}
-
-
-\subsection{Regular expressions with capturing groups}
+\subsection{A Semantics of \regexp[\sf CG]}
 \label{regex_semantics}
 
-We will use the term 'regular expression' for \regexp[\sf CG] in this section.
+In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
 
 \begin{definition}[Subexpression]
-  For any two regular expressions e and r, we say r is a subexpression of e,
+  For any two $\regexp[\sf CG]$ e and r, we say r is a subexpression of e,
   iff either e=r or
   \begin{itemize}
     \item If $e = e_1 e_2$ or $e_1 + e_2$ then r is a subexpression of $e_1$
@@ -342,8 +334,10 @@ We will use the term 'regular expression' for \regexp[\sf CG] in this section.
 \end{definition}
 
 \tl{move this to the semantics part?}
+\zhilei{Yes, this looks better}
+
 \begin{definition}[Match Tree]
-  A \tmtextbf{match} of regular expression e is a finite directed and ordered
+  A \tmtextbf{match} of $\regexp[\sf CG]$ e is a finite directed and ordered
   tree T, whose nodes are elements of $\Sigma^{\ast} \times S (e)$. The root
   of T is $(w, e)$ for some string w, and for any node $u = (w, \alpha)$ in T,
   we have:
@@ -368,11 +362,11 @@ We will use the term 'regular expression' for \regexp[\sf CG] in this section.
   taking u as root. The notation $C (u)$ refers to all direct children of u
   (and thus all direct subtrees).
   
-  We also use $M (e)$ to denote all the matches of regular expression e.
+  We also use $M (e)$ to denote all the matches of $\regexp[\sf CG]$ e.
 \end{definition}
 
-\begin{definition}[Matching Semantics of RegExp{[\sf CG]}]
-  For any regular expression e, we define a total order on $M (e)$, written $m
+\begin{definition}[Semantics of RegExp{[\sf CG]}]
+  For any $\regexp[\sf CG]$ e, we define a total order on $M (e)$, written $m
   >_e n$ where $m, n \in M (e)$, by inductive definition on e:
   \begin{itemize}
     \item $e = \varepsilon$ or $e = a$. Then there is only one match.
@@ -395,16 +389,23 @@ We will use the term 'regular expression' for \regexp[\sf CG] in this section.
     is a proper prefix of $C (m)$, or for the first index j such that $w_j
     \neq w_j'$, $(w_j, e_1) >_{e_1} (w_j', e_1)$.
   \end{itemize}
-  Let e be a regular expression, and string $w \in L (e)$, then the match of w
+  Let $e \in \regexp[\sf CG]$, and string $w \in L (e)$, then the match of w
   on e is the supremum of the set $\{ m \in M (e) \mid m = (w, e) \}$.
 \end{definition}
+
+\subsection{Undecidability: Regular expressions with capturing groups and back references}
+
+$\strline$ is in general undecidable, as a result of the back references.
+
+\zhilin{Decidable fragments? Could we assume that the assertions $\ASSERT{x \in e'}$ where $e'$ contains back references are only for the input variables ?}
+
+
+\section{Decision procedures}
 
 \subsection{Construction of pNFA from regular expression}
 \label{pNFA_cons}
 
 \zhilei{I need to draw some pictures of automata here}.
-
-
 
 \subsection{$\replaceall$ with capturing groups and references}
 
@@ -415,7 +416,7 @@ We will use the term 'regular expression' for \regexp[\sf CG] in this section.
 \end{theorem}
  
 \begin{proof}
-Intuitively, $B$ simulates the run of $\psst$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$. Moreover, $B$ also simulates runs of $T$ which are more prioritized \tl{??}.
+Intuitively, $B$ simulates the run of $\psst$ on $w$, and records  for each $x \in X$ the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string represented by $x$. Moreover, $B$ also records all the states accessible from a run with higher priority, and ensure the current run is accepted by $\psst$.
 
 Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho, S), a, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
