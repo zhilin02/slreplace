@@ -414,39 +414,72 @@ $\strline$ is in general undecidable, as a result of the back references.
 \subsection{Construction of pNFA from \regexp[\sf CG]}
 \label{pNFA_cons}
 
-For a \regexp[\sf CG] $e$, we define a pNFA $A_e$ by a modified version of
+For any \regexp[\sf CG] e, we define a pNFA $A_e$ by a modified version of
 Glushkov construction\cite{Gluskov61}. The original construction on regular expression
-produces an NFA with no $\varepsilon$-transition, which we denote by $G (e)$.
-Each occurrence of character is first labeled, and then for each subexpression
-$v$ of $e$, the sets $\tmop{Start} (v)$, $\tmop{End} (v)$ and $\tmop{Pair} (v)$
-are computed, which stand for starting, end and consecutive character
-occurrences in v. The state of $G (e)$ comprises $q_0$, a special starting
-state, and all the labeled character occurrences. The transitions of $G (e)$
-depend on the three special sets, the details of which are elaborate and
-omitted here. Refer to \cite{Gluskov61} for a formal definition.
+produces an NFA with no $\varepsilon$-transition, which we denote by $G_e$.
+The state of $G_e$ comprises $q_0$, a special starting state, and $a_i$'s
+where the i-th character occurring in e is $a$. We refer the reader to \cite{Gluskov61} for 
+details of how to construct $G_e$.
 
+The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
+\begin{itemize}
+  \item If $e = \varepsilon$ or $e = a$ or $e = \emptyset$, then $A_e = G_e$.
+  
+  \item If $e = (e_1)$, then $A_e = A_{e_1}$.
+  
+  \item If $e = e_1 + e_2$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1,
+  \Sigma, \delta_1, q_0, F_1)$, $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma,
+  \delta_2, q_0, F_2)$, then $A_e = (\{ q_0 \} \cup Q_1 \cup Q_2, \Sigma,
+  \delta, q_0, F_1 \cup F_2)$, where $\delta$ is defined by following rules:
+  \begin{itemize}
+    \item for any $q \neq q_0$, $a \in \Sigma$ and $q_1 \ldots q_n \in
+    \overline{Q_{_1}} \cup \overline{Q_2}$ such that $\delta_1 (q, a) = q_1
+    \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$, we have $\delta (q, a)
+    = q_1 \ldots q_n$
+    
+    \item for any $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1 \ldots q_n$ and
+    $\delta_2 (q_0, a) = q'_1 \ldots q'_m$, then $\delta (q_0, a) = q_1 \ldots
+    q_n q'_1 \ldots q'_m$
+  \end{itemize}
+  \item If $e = e_1 e_2$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1, \Sigma,
+  \delta_1, q_0, F_1)$, $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma, \delta_2,
+  q_0, F_2)$, then $A_e = (\{ q_0 \} \cup Q_1 \cup Q_2, \Sigma, \delta, q_0,
+  F)$, where $F$ is defined as:
+  \[ F = \left\{ \begin{array}{ll}
+       F_1 \cup F_2 & \varepsilon \in L (e_1) \wedge \varepsilon \in L (e_2)\\
+       F_1 & \varepsilon \nin L (e_1) \wedge \varepsilon \in L (e_2)\\
+       F_2 & \varepsilon \nin L (e_2)
+     \end{array} \right. \]
+  and $\delta$ is defined by following rules:
+  \begin{itemize}
+    \item for any $q \neq q_0$, $a \in \Sigma$ and $q_1 \ldots q_n \in
+    \overline{Q_{_1}} \cup \overline{Q_2}$ such that $\delta_1 (q, a) = q_1
+    \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$, we have $\delta (q, a)
+    = q_1 \ldots q_n$
+    
+    \item for any $a \in \Sigma$, if $\delta_2 (q_0, a) = q_1 \ldots q_n$,
+    then for every $q \in F_1$ we have $\delta (q, a) = q_1 \ldots q_n$
+  \end{itemize}
+  \item If $e = e_1^{\ast}$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1,
+  \Sigma, \delta_1, q_0, F_1)$, then $A_e = (\{ q_0 \} \cup Q_1, \Sigma,
+  \delta, q_0, F)$ where $F = F_1 \cup \{ q_0 \}$ and $\delta$ is defined by
+  following rules:
+  \begin{itemize}
+    \item for any $q \neq q_0$, $a \in \Sigma$ and $q_1 \ldots q_n \in
+    \overline{Q_1}$ such that $\delta_1 (q, a) = q_1 \ldots q_n$, we have
+    $\delta (q, a) = q_1 \ldots q_n$
+    
+    \item for any $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1 \ldots q_n$,
+    then for every $q \in F$ we have $\delta (q, a) = q_1 \ldots q_n$
+  \end{itemize}
+\end{itemize}
 
-The pNFA $A_e$ is obtained by adding priority to $G (e)$, and we define the
-priority recursively on the parse tree of e.
-
-Suppose $G' (e)=G (e) \backslash \{ q_0 \}$. For the
-subexpressions $e_1$ and $e_2$ defined below, let $\tmop{Start} (e_1) = a_1
-\ldots a_n$, $\tmop{End} (e_1) = b_1 \ldots b_m$, $\tmop{Start} (e_2) = c_1 \ldots
-c_p$, and $\tmop{End} (e_2) = d_1 \ldots d_q$, where in $G (e_1)$ and $G (e_2)$, the
-transition from $q_0$ to $a_1$ and $c_1$ is of highest priority, and $a_n$ and
-$c_p$ the lowest.
-
-We illustrate the construction in Figure. \ref{fig:pglushkov}, where a transition with lower
-priority is dotted and thiner. The cases when $e = \varepsilon$, $e = a$ and $e
-= (e_1)$ are routine and thus omitted. Note when $e = e_1 \cdot e_2$, only one
-of totally four circumstances is shown, i.e. $\varepsilon \in L (e_1) \wedge
-\varepsilon \nin L (e_2)$. The construction in other three circumstances is
-similar.
+We illustrate the key transitions of some non-trivial cases of the construction in Figure. \ref{fig:pglushkov}.
 
 \begin{figure*}
  \centering
  \includegraphics{pglushkov_01}
- \caption{pNFA $A_e$ for (a) $e=e_1+e_2$ (b) $e=e_1^{\ast}$ and (c) $e=e_1 \concat e_2$ where $\varepsilon \in \Lang(e_1)$ and $\varepsilon \notin \Lang(e_2)$}
+ \caption{pNFA $A_e$ for (a) $e=e_1+e_2$ (b) $e=e_1^{\ast}$ and (c) $e=e_1 \concat e_2$ where $\varepsilon \in \Lang(e_1)$ and $\varepsilon \notin \Lang(e_2)$. A transition of lower priority is depicted thiner and more densely dotted. }
  \label{fig:pglushkov}
 \end{figure*}
  
