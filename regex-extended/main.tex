@@ -474,7 +474,13 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
   \end{itemize}
 \end{itemize}
 
-We illustrate the key transitions of some non-trivial cases of the construction in Figure. \ref{fig:pglushkov}.
+The key transitions of some non-trivial cases of the construction are illustrated in Figure. \ref{fig:pglushkov}, where we use $A'_e$ to denote the automaton $A_e$ with the state $q_0$ and transitions from it removed.
+
+\begin{remark}
+ An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$, which we denote by $A_{e}[e']$. For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
+\end{remark}
+
+
 
 \zhilei{Here, we should add a theorem stating the semantics defined in \ref{regex_semantics} is precisely captured by $A_e$. The proof goes to appendix.}
 
@@ -591,8 +597,7 @@ Therefore, the $\replaceall_{e_1,e_2}(x)$ function can be seen as a precise mode
 
 Suppose pNFA $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton constructed from $e_1 \in \regexp[\sf CG]$ by the modified algorithm in \ref{pNFA_cons}. From the algorithm, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$.
 
-For each subexpression $e'$ of $e_1$, we use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$, i.e. the set $\{v \in S(e')\mid \exists v'. v=(v')\}$. Also, from the Glushkov construction,
-there must be a subgraph of $A_{e_1}$ corresponding to $e'$, denoted by $A_{e_1}[e']$. Alternatively, $A_{e_1}[e']$ can be seen as the automaton $A_{e'}$ with the state and transitions from $q_0$ removed. For instance, if $e_1 = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e_1}[e']$ is the subgraph of $A_{e_1}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
+For each subexpression $e'$ of $e_1$, we use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$, i.e. the set $\{v \in S(e')\mid \exists v'. v=(v')\}$.
 
 For each state $a_i$ of $A_{e_1}$, we define $C(a_i)$  as the set $\{ e' \in C_{e_1} \mid a_i \mbox{ is a vertex in }
 A_{e_1}[e']\}$. Intuitively, $C(a_i)$ represents the set of subexpressions in $C_{e_1}$ whose values should be updated when entering the state $a_i$ in $A_{e_1}$. 
