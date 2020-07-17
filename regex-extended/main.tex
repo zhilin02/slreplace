@@ -56,7 +56,7 @@
 \newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
 \newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
 \newcommand{\philipp}[1]{\color{magenta} {PR: #1 :PR} \color{black}}
-\newcommand{\zhilei}[1]{\color{green} {ZLH: #1 :HZL} \color{black}}
+\newcommand{\zhilei}[1]{\color{violet} {ZLH: #1 :HZL} \color{black}}
 \else
 \newcommand{\anthony}[1]{}
 \newcommand{\zhilin}[1]{}
@@ -476,6 +476,8 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
 
 We illustrate the key transitions of some non-trivial cases of the construction in Figure. \ref{fig:pglushkov}.
 
+\zhilei{Here, we should add a theorem stating the semantics defined in \ref{regex_semantics} is precisely captured by $A_e$. The proof goes to appendix.}
+
 \begin{figure*}
  \centering
  \includegraphics{pglushkov_01}
@@ -586,22 +588,21 @@ Therefore, the $\replaceall_{e_1,e_2}(x)$ function can be seen as a precise mode
 \end{theorem}
 
 \begin{proof}
-Suppose that pNFA $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton \cite{Gluskov61} constructed from $e_1 \in \regexp[\sf CG]$ by the modified algorithm in \ref{pNFA_cons}. From the algorithm, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$.
-% For instance, if $e_1 = (a (ab)^*)^*$, then we consider the marked regular expression $(a_1 (a_2 b_3)^*)^*$, and let $Q = \{q_0, a_1, a_2, b_3\}$, $F = \{q_0, a_1, b_3\}$, and $\delta = \{(q_0, a, a_1), (a_1, a, a_2)$, $(a_1, a, a_1), (a_2, b, b_3), (b_3, a, a_2), (b_3, a, a_1)\}$. 
-%Each state other than $q_0$ corresponds to an occurrence of character in e.
 
-For each subexpression $e'$ of $e_1$, we use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$.
-For every subexpression $e'$ of $e_1$, from the Glushkov construction,
-there must be a unique subgraph of $A_{e_1}$ corresponding to $e'$, denoted by $A_{e_1}[e']$. For instance, if $e_1 = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e_1}[a(ab)^*]$ is the subgraph of $A_{e_1}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
-For each state $a_i$ of $A_{e_1}$, define $C(a_i)$  as the set $\{ e' \in C_{e_1} \mid a_i \mbox{ is a vertex in }
-A_{e_1}[e']\}$. Intuitively, $C(a_i)$ represents the set of subexpressions in $C_{e_1}$ whose values should be updated when entering the state $a_i$ in $A_{e_1}$. Moreover, for each $e' \in C_{e_1}$, we use $\ssym(e')$ (resp. $\esym(e')$) to denote the set of marked symbols that can be matched to the first  (resp. last) symbol of a string matching $e'$. For instance, let $e' = a(ab)^*$, then $\ssym(e') = \{a_1\}$ and $\esym(e') = \{a_1, b_3\}$. 
-%other words, $\Gamma (q)$ is the set of variables which should
-%be updated when entering q.
+Suppose pNFA $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton constructed from $e_1 \in \regexp[\sf CG]$ by the modified algorithm in \ref{pNFA_cons}. From the algorithm, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$.
 
-For each $e' \in C_{e_1}$, we introduce a string variable $x_{e'}$. Moreover, we introduce another string variable $x_{res}$ to denote the result of $\replaceall_{e_1,e_2}$. Let $X$ denote the set of these string variables.
+For each subexpression $e'$ of $e_1$, we use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$, i.e. the set $\{v \in S(e')\mid \exists v'. v=(v')\}$. Also, from the Glushkov construction,
+there must be a subgraph of $A_{e_1}$ corresponding to $e'$, denoted by $A_{e_1}[e']$. Alternatively, $A_{e_1}[e']$ can be seen as the automaton $A_{e'}$ with the state and transitions from $q_0$ removed. For instance, if $e_1 = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e_1}[e']$ is the subgraph of $A_{e_1}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
+
+For each state $a_i$ of $A_{e_1}$, we define $C(a_i)$  as the set $\{ e' \in C_{e_1} \mid a_i \mbox{ is a vertex in }
+A_{e_1}[e']\}$. Intuitively, $C(a_i)$ represents the set of subexpressions in $C_{e_1}$ whose values should be updated when entering the state $a_i$ in $A_{e_1}$. 
+
+Moreover, for each $e' \in C_{e_1}$, we use $\ssym(e')$ (resp. $\esym(e')$) to denote the set of marked symbols that can be matched to the first  (resp. last) symbol of a string in $\Lang(e')$. For instance, let $e' = a(ab)^*$, then $\ssym(e') = \{a_1\}$ and $\esym(e') = \{a_1, b_3\}$. 
+
+For each $e' \in C_{e_1}$, we introduce a string variable $x_{e'}$. Besides, a special string variable $x_{res}$ is introduced to store, accumulate, and denote the result of $\replaceall_{e_1,e_2}$. Let $X$ denote the set of these string variables.
 
 
-Then we construct the \NSST{} $T_{e_1,e_2} = (Q', \Sigma, X, E, \delta', q_0', F')$, by using the idea of parsing automata in \cite{CCH+18}. Note in the below, we omit the priority of some transitions and simply write $q' \in \delta'(q,a)$ instead of $\delta'(q,a)=(q_1,q_2,\ldots,q_n)$. In this case, the priority is immaterial and any combination will work.
+Then we construct the \PSST{} $T_{e_1,e_2} = (Q', \Sigma, X, E, \delta', q_0', F')$, by using the idea of parsing automata in \cite{CCH+18}. Note in the below, we omit the priority of some transitions and simply write $q' \in \delta'(q,a)$ instead of $\delta'(q,a)=(q_1,q_2,\ldots,q_n)$. In this case, the priority is immaterial and any combination will work.
 
 At first, $q'_0= (\{ q_0
 \}, \tmop{left}, \emptyset)$. The set of transition rules $\delta'$ is defined by the following rules.
