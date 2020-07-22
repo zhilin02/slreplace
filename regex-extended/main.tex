@@ -442,12 +442,13 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
     q_n q'_1 \ldots q'_m$
   \end{itemize}
   \item If $e = e_1 e_2$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1, \Sigma,
-  \delta_1, q_0, F_1)$, $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma, \delta_2,
+  \delta_1, q_0, F_1)$ and $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma, \delta_2,
   q_0, F_2)$, then $A_e = (\{ q_0 \} \cup Q_1 \cup Q_2, \Sigma, \delta, q_0,
   F)$, where $F$ is defined as:
   \[ F = \left\{ \begin{array}{ll}
        F_1 \cup F_2 & \varepsilon \in L (e_1) \wedge \varepsilon \in L (e_2)\\
-       F_1 & \varepsilon \nin L (e_1) \wedge \varepsilon \in L (e_2)\\
+       (F_1 \cup F_2) \backslash \{ q_0 \} & \varepsilon \nin L (e_1) \wedge
+       \varepsilon \in L (e_2)\\
        F_2 & \varepsilon \nin L (e_2)
      \end{array} \right. \]
   and $\delta$ is defined by following rules:
@@ -456,6 +457,9 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
     \overline{Q_{_1}} \cup \overline{Q_2}$ such that $\delta_1 (q, a) = q_1
     \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$, we have $\delta (q, a)
     = q_1 \ldots q_n$
+    
+    \item for any $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1 \ldots q_n$,
+    then we have $\delta (q_0, a) = q_1 \ldots q_n$
     
     \item for any $a \in \Sigma$, if $\delta_2 (q_0, a) = q_1 \ldots q_n$,
     then for every $q \in F_1$ we have $\delta (q, a) = q_1 \ldots q_n$
