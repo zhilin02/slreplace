@@ -480,9 +480,12 @@ The key transitions of some non-trivial cases of the construction are illustrate
  An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$, which we denote by $A_{e}[e']$. For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
 \end{remark}
 
+\begin{theorem}
+ \label{theorem_equiv}
+ For any $\regexp[\sf CG]$ e, the pNFA $A_e$ precisely captures the semantics in \ref{regex_semantics}
+\end{theorem}
 
-
-\zhilei{Here, we should add a theorem stating the semantics defined in \ref{regex_semantics} is precisely captured by $A_e$. The proof goes to appendix.}
+For simplicity, we refer the reader to the appendix for a formal definition and proof.
 
 \begin{figure*}
  \centering
@@ -725,7 +728,39 @@ The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}
 \appendix
 \section{Appendix}
 
- 
+\label{appendix_ref}
 
+\subsection{Theorem.\ref{theorem_equiv}}
+
+The following definitions and theorem formalize the equivalence between a \regexp[\sf CG]
+$e$ and the pNFA $A_e$:
+
+\begin{definition}
+  For any $\regexp[\sf CG]$ e, string $w \in L (e)$ and subexpression $e'$ of
+  e, we find all the nodes labeled by $(w_i, e')$ for some $w_i$ in
+  pre-order traversal of $m_e (w)$, and record all the substring $w_i$'s. We
+  use $M_{e', e} (w)$ to denote the sequence of string $w_1 \ldots w_n$.
+  
+  Let $p = q_0 \sigma_1 q_1 \ldots
+  \sigma_m q_m$ be the accepting run of $A_e$ on w. A consecutive
+  sequence of states $q_i \ldots q_j$ in $p$ is a maximal $e'$-occurrence, if 
+  $\forall k \in [i, j] (q_k \neq q_0 \wedge q_k \in A_{e'}) \wedge q_i \in
+  \tmop{Start} (e') \wedge q_j \in \tmop{End} (e') \wedge i \neq 1 \rightarrow
+  q_{i - 1} \nin A_{e'} \wedge j \neq m \rightarrow q_{j + 1} \nin A_{e'}$. We
+  use $P_{e', e} (w)$ to denote the sequence of disjoint maximal
+  $e'$-occurrence $w_1 \ldots w_n$, in the order they occur in p.
+\end{definition}
+
+ Note that in
+  $A_e$, all states except $q_0$ are a letter, and a maximal $e'$-occurrence
+  can be seen as a string.
+  
+\begin{theorem}
+  For any $\regexp[\sf CG]$ e, subexpression $e'$ of e, and $w \in L (e)$,
+  $M_{e', e} (w) = P_{e', e} (w)$
+\end{theorem}
+
+The theorem can be proved by a routine induction on e, and we omit the
+elaborate details here.
 
 \end{document}
