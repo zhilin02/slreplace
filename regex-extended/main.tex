@@ -370,18 +370,20 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
 \end{definition}
 
 \begin{definition}[Semantics of RegExp{[\sf CG]}]
-  For any $\regexp[\sf CG]$ e, we define a total order on $M (e)$, written $m
-  >_e n$ where $m, n \in M (e)$, by inductive definition on e:
+  \
+  
+  For any $\regexp[\sf CG]$ e, we recursively define a total order on $M (e)$, written $m
+  >_e n$ where $m, n \in M (e)$, as follows:
   \begin{itemize}
-    \item $e = \varepsilon$ or $e = a$. Then there is only one match.
+    \item $e = \varepsilon$ or $e = a$. There is only one match tree, thus the
+    order $>_e$ is empty.
     
     \item $e = (e_1)$. Suppose $C (m) = (w_1, e_1)$ and $C (n) = (w_2, e_1)$,
     then $m >_e n$ iff $(w_1, e_1) >_{e_1} (w_2, e_1)$.
     
     \item $e = e_1 + e_2$.
     \begin{itemize}
-      \item If $C (m) = (w, e_i)$ and $C (n) = (w', e_j)$, where $i \neq j \in
-      \{ 1, 2 \}$,then $m >_e n$.
+      \item If $C (m) = (w, e_1)$ and $C (n) = (w', e_2)$, then $m >_e n$.
       
       \item If $C (m) = (w, e_i)$ and $C (n) = (w', e_i)$, where $i \in \{ 1,
       2 \}$, then $m >_e n$ iff $(w, e_i) >_{e_i} (w', e_i)$.
@@ -396,8 +398,14 @@ In this section, we give one of the many semantics of \regexp[\sf CG], which we 
     is a proper prefix of $C (m)$, or for the first index j such that $w_j
     \neq w_j'$, $(w_j, e_1) >_{e_1} (w_j', e_1)$.
   \end{itemize}
-  Let $e \in \regexp[\sf CG]$, and string $w \in L (e)$, then the match of w
+  
+  Let $e \in \regexp[\sf CG]$, and string $w \in L (e)$, then the accepting match of w
   on e, denoted by $m_e (w)$, is the supremum of the set $\{ m \in M (e) \mid m = (w, e) \}$.
+  
+  For any subexpression $e'$ of e, suppose $(w_1, e') \ldots (w_m, e')$ are
+  all the nodes labeled by $(w', e')$, where $w' \neq \varepsilon$, in the
+  pre-order traversal of $m_e (w)$. Then the match result captured by $e'$, denoted
+  by $m_{e', e} (w)$, is the sequence of substring $w_1 \ldots w_m$.
 \end{definition}
 
 \zhilei{Give an example here}
@@ -478,18 +486,42 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
   \end{itemize}
 \end{itemize}
 
-The key transitions of some non-trivial cases of the construction are illustrated in Figure. \ref{fig:pglushkov}, where we use $A'_e$ to denote the automaton $A_e$ with the state $q_0$ and transitions from it removed.
+The key transitions of some non-trivial cases of the construction are illustrated in Figure.\ref{fig:pglushkov}.
 
-\begin{remark}
- An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$, which we denote by $A_{e}[e']$. For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
-\end{remark}
+ An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$. We denote this subgraph by $A_{e}[e']$. This subgraph can be seen as the automaton obtained by removing from $A_{e'}$ the state $q_0$ and all transitions from it.
+ 
+ For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
+ 
+ Figure.\ref{fig:pglushkov} also illustrates the subgraphs corresponding to direct subexpressions of $e$.
+ 
+The following definition and theorem states the equivalence of the accepting match of a \regexp[\sf CG] $e$ and the accepting run of $A_e$ on the same input string, thus the construction precisely captures the semantics in \ref{regex_semantics}.
+
+\begin{definition}
+  \
+  
+  Let $A_e$ be the pNFA constructed for $e$, and $p = q_0 \sigma_1 q_1 \ldots
+  \sigma_m q_m$ is the accepting run of $A_e$ on string w. For any subexpression $e'$ of $e$, we say a
+  consecutive sequence of states $q_i q_{i + 1} \ldots q_{j - 1} q_j$ in p is
+  a maximal $e'$-match, if $q_i \in \tmop{Start} (e')$, $q_j \in \tmop{End}
+  (e')$, $(q_{i - 1}, \sigma_i, q_i)$ is not a transition in $A_e [e']$, and
+  for any $k \in [i, j]$, $q_k$ is a vertex in $A_e [e']$. Moreover, if $j
+  \neq m$, then $(q_j, \sigma_{j + 1}, q_{j + 1})$ is not a transition in $A_e
+  [e']$.
+  
+  We use $p_{e', e} (w)$ to denote the sequence of disjoint maximal $e'$-match
+  $w_1 \ldots w_n$, in the order they occur in p. Note that in $A_e$, all
+  states except $q_0$ are labeled by a letter, thus a maximal $e'$-match can
+  be seen as a string.
+\end{definition}
+
 
 \begin{theorem}
  \label{theorem_equiv}
- For any $\regexp[\sf CG]$ e, the pNFA $A_e$ precisely captures the semantics in \ref{regex_semantics}
+  For any regular expression e, subexpression $e'$ of e, and $w \in L (e)$,
+  $m_{e', e} (w) = p_{e', e} (w)$
 \end{theorem}
 
-For simplicity, we refer the reader to the appendix for a formal definition and proof.
+For simplicity, we refer the reader to the appendix for proof.
 
 \begin{figure*}
  \centering
@@ -732,39 +764,95 @@ The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}
 \appendix
 \section{Appendix}
 
-\label{appendix_ref}
+\subsection{Proof for Theorem.\ref{theorem_equiv}}
 
-\subsection{Theorem.\ref{theorem_equiv}}
+\label{theorem_equiv_proof}
 
-The following definitions and theorem formalize the equivalence between a \regexp[\sf CG]
-$e$ and the pNFA $A_e$:
-
-\begin{definition}
-  For any $\regexp[\sf CG]$ e, string $w \in L (e)$ and subexpression $e'$ of
-  e, we find all the nodes labeled by $(w_i, e')$ for some $w_i$ in
-  pre-order traversal of $m_e (w)$, and record all the substring $w_i$'s. We
-  use $M_{e', e} (w)$ to denote the sequence of string $w_1 \ldots w_n$.
-  
-  Let $p = q_0 \sigma_1 q_1 \ldots
-  \sigma_m q_m$ be the accepting run of $A_e$ on w. A consecutive
-  sequence of states $q_i \ldots q_j$ in $p$ is a maximal $e'$-occurrence, if 
-  $\forall k \in [i, j] (q_k \neq q_0 \wedge q_k \in A_{e'}) \wedge q_i \in
-  \tmop{Start} (e') \wedge q_j \in \tmop{End} (e') \wedge i \neq 1 \rightarrow
-  q_{i - 1} \nin A_{e'} \wedge j \neq m \rightarrow q_{j + 1} \nin A_{e'}$. We
-  use $P_{e', e} (w)$ to denote the sequence of disjoint maximal
-  $e'$-occurrence $w_1 \ldots w_n$, in the order they occur in p.
-\end{definition}
-
- Note that in
-  $A_e$, all states except $q_0$ are a letter, and a maximal $e'$-occurrence
-  can be seen as a string.
-  
+We restate the theorem here:
 \begin{theorem}
-  For any $\regexp[\sf CG]$ e, subexpression $e'$ of e, and $w \in L (e)$,
-  $M_{e', e} (w) = P_{e', e} (w)$
+  For any regular expression e, subexpression $e'$ of e, and $w \in L (e)$,
+  $m_{e', e} (w) = p_{e', e} (w)$
 \end{theorem}
 
-The theorem can be proved by a routine induction on e, and we omit the
-elaborate details here.
+\begin{proof}
+  \
+  
+  We first observe the fact that when $e' = e$, we have $m_{e', e} (w) =
+  p_{e', e} (w) = w$. Therefore, we suppose $e' \neq e$ in the following
+  argument.
+  
+  We perform induction on $e$:
+  \begin{itemize}
+    \item The base case, when $e = \varepsilon$ or $e = a$, is routine and
+    trivial.
+    
+    \item If $e = (e_1)$, then for any $w \in L (e)$, we have $w \in L (e_1)$,
+    and for any subexpression $e' \neq e$, $e'$ is also a subexpression of
+    $e_1$. By induction, \ $m_{e', e_1} (w) = p_{e', e_1} (w)$. Because $A_e =
+    A_{e_1}$, $p_{e', e_1} (w) = p_{e', e} (w)$. By definition of match tree,
+    we also have $m_{e', e_1} (w) = m_{e', e} (w)$. Thus $m_{e', e} (w) =
+    p_{e', e} (w)$.
+    
+    \item If $e = e_1 + e_2$, then for any $w \in L (e)$, either $w \in L
+    (e_1)$ or $w \in L (e_2)$. Also, any subexpression $e' \neq e$ is a
+    subexpression of either $e_1$ or $e_2$.
+    
+    If $w \in L (e_1)$, then if $e'$ is a subexpression of $e_2$, we have
+    $m_{e', e} (w) = p_{e', e} (w) = \emptyset$, otherwise by induction we
+    have $m_{e', e_1} (w) = p_{e', e_1} (w)$. Suppose $p = q_0 \sigma_1 q_1
+    \ldots \sigma_m q_m$ is the accepting run of $A_{e_1}$, then by definition
+    of $A_e$, we know p is also the accepting run of $A_e$, thus $p_{e', e_1}
+    (w) = p_{e', e} (w)$. By definition of match tree, we have $m_{e', e_1}
+    (w) = m_{e', e} (w)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
+    
+    Similarly, when $w \in L (e_2)$, we also have $m_{e', e} (w) = p_{e', e}
+    (w)$.
+    
+    \item If $e = e_1 e_2$, then for any $w \in L (e)$, suppose $w = w_1 w_2$
+    such that $C (m_e (w)) = (w_1, e_1) (w_2, e_2)$.
+    
+    Assuming $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ is the accepting run
+    of $A_e$ on w, and $w_1 = \sigma_1 \ldots \sigma_i$, $w_2 = \sigma_{i + 1}
+    \ldots \sigma_m$, we know $q_0 \sigma_1 q_1 \ldots \sigma_i q_i$ is the
+    accepting run of $A_{e_1}$ on $w_1$. If not, suppose the accepting run of
+    $A_{e_1}$ on $w_1$ is $q_0 \sigma_1' q_1' \ldots \sigma_i' q_i'$ instead,
+    then by definition of $A_e$, $q_0 \sigma_1' q_1' \ldots \sigma_i' q_i'
+    \sigma_{i + 1} q_{i + 1} \ldots \sigma_m q_m$ is another run of $A_e$ on
+    w, and it is of higher priority than p, which leads to contradiction.
+    Similarly, we know $q_0 \sigma_{i + 1} q_{i + 1} \ldots \sigma_m q_m$ is
+    the accepting run of $A_{e_2}$ on $w_2$.
+    
+    If $e'$ is a subexpression of $e_1$, then by induction, $m_{e', e_1} (w_1)
+    = p_{e', e_1} (w_1)$. By definition of match tree, $e'$ cannot occur in
+    the subtree $(w_2, e_2)$, thus we have $m_{e', e_1} (w_1) = m_{e', e}
+    (w)$. Because the maximal $e'$-matches in p only occur in $q_0 \sigma_1
+    q_1 \ldots \sigma_i q_i$, we also have $p_{e', e_1} (w_1) = p_{e', e}
+    (w)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
+    
+    Similarly when $e'$ is a subexpression of $e_2$, we have $m_{e', e} (w) =
+    p_{e', e} (w)$.
+    
+    \item If $e = e_1^{\ast}$, then for any $w \in L (e)$, if $w =
+    \varepsilon$ it is obvious that $m_{e', e} (w) = p_{e', e} (w) =
+    \emptyset$ for any $e'$. Otherwise, suppose $w = w_1 \ldots w_n$ such that
+    $C (m_e (w)) = (w_1, e_1) \ldots (w_n, e_1)$.
+    
+    Assuming $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ is the accepting run
+    of $A_e$ on w, $w_1 = \sigma_1 \ldots \sigma_{i_1}$, $w_2 = \sigma_{i_1 +
+    1} \ldots \sigma_{i_2}$ .etc, and $w_n = \sigma_{i_{m - 1} + 1} \ldots
+    \sigma_m$, we know $p_k = q_0 \sigma_{i_{k - 1} + 1} q_{i_{k - 1} + 1}
+    \ldots \sigma_{i_{} k} q_{i_k}$ is the accepting run of $A_{e_1}$ on
+    $w_k$. The proof is similar to the one above when $e = e_1 e_2$, and we
+    will omit it for simplicity.
+    
+    For any subexpression $e'$ of $e_1$, by induction, we have $m_{e', e_1}
+    (w_k) = p_{e', e_1} (w_k)$ for all $k \in [n]$. By definition of match
+    tree, we have $m_{e', e} (w) = m_{e', e_1} (w_1) \ldots m_{e', e_1}
+    (w_n)$. Because all the maximal $e'$-matches in p only occur in $p_k$ for
+    some $k \in [n]$ (that is, all the states in a $e'$-matches occur in the
+    same segment of $p$), we also have $p_{e', e} (w) = p_{e', e_1} (w_1)
+    \ldots p_{e', e_1} (w_n)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
+  \end{itemize}
+\end{proof}
 
 \end{document}
