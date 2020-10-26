@@ -1,6 +1,6 @@
 \section{Preliminaries}
 
-$\Int^+$ is the set of positive integers. $\nat$ is the set of natural numbers. $[n]:=\{1, \ldots, n\}$. 
+Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 
 \begin{definition}[Finite-state automata] \label{def:nfa}
 	A \emph{(nondeterministic) finite-state automaton}
@@ -20,32 +20,22 @@ is a sequence of states $q_0, \ldots, q_n$ such that $(q_{j-1}, a_{j}, q_{j}) \i
 \transrel$  for every $j \in [n]$.
 The run is said to be \defn{accepting} if $q_n \in \finals$.
 A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
-$\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ iff $q_0 \in F$. The set of strings accepted by $\Aut$ is denoted by $\Lang(\Aut)$, i.e., the language \defn{recognised} by $\Aut$.
+$\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ if $q_0 \in F$. The set of strings accepted by $\Aut$, i.e., the language \defn{recognised} by $\Aut$, is denoted by $\Lang(\Aut)$.
 %Since we deal with computational complexity in the sequel, we define
-The \defn{size} $|\Aut|$ of $\Aut$ is defined to be $|\controls|$; we will
-use this when we discuss computational complexity.
+The \defn{size} $|\Aut|$ of $\Aut$ is defined to be the cardinality of the set $Q$ of states, which will be 
+used when the computational complexity is concerned.
 
 For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
 
-For a finite set $Q$, let $\overline{Q} = \{ (q_1, \ldots, q_n) \mid n \in \nat \wedge \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i
-  \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of
-sequences of non-repetitive elements from $Q$. Note that the length of each sequence from $\overline{Q}$ is bounded by 
-  $| Q |$.
+For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_n) \mid \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of sequences of non-repetitive elements from $Q$. Note that the length of each sequence from $\overline{Q}$ is bounded by  $| Q |$. For a sequence $P = (q_0 \ldots q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if  $q = q_i$ for some $i \in [n]$. 
 
-% \bar vs. \overline 
-
-For some sequence $P = (q_0 \ldots q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if 
-  $ q = q_i$ for some $i \in [n]$. 
-
+\tl{move this to the section of PSST?}
 \begin{definition}[Prioritized Finite-state automata]
   A \emph{prioritized finite-state automaton} (pNFA) over a finite alphabet $\Sigma$ is a tuple $\pnfa=(Q, \Sigma, \delta, q_0, F)$ where $\delta \in Q
   \times \Sigma \rightarrow \overline{Q}$. The definition of $Q, q_0$ and $F$ is the same as ordinary NFA.
 \end{definition}
 
-A run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where $q_m \in F$ and for any $i \in [m], q_i \in \delta (q_{i - 1}, \sigma_i)$. For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =
-  q_0 \sigma_1 q_1' \ldots \sigma_m q_m'$ on $w = \sigma_1 \ldots \sigma_m$, we say that $p$ is of a higher priority over
-  $p'$ if $p \neq p'$, and for the smallest index $j$ with $q_j \neq q_j'$,
-  $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
+A run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where $q_m \in F$ and for any $i \in [m], q_i \in \delta (q_{i - 1}, \sigma_i)$. For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigma_1 q_1' \ldots \sigma_m q_m'$ on $w = \sigma_1 \ldots \sigma_m$, we say that $p$ is of a higher priority over  $p'$ if $p \neq p'$, and for the smallest index $j$ with $q_j \neq q_j'$, $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$.
   
   The accepting run of $\pnfa$ on $w$ is the one with the highest priority. The language of pNFA $\pnfa$ is the set of
   strings which have an accepting run.
