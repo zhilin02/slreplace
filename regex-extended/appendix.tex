@@ -1,0 +1,90 @@
+\section{Appendix}
+
+\subsection{Proof for Theorem \ref{theorem:regex_pnfa_equiv}}
+
+\label{proof:regex_pnfa_equiv}
+
+We restate the theorem here:
+\begin{theorem}
+  For any regular expression e, subexpression $e'$ of e, and $w \in L (e)$,
+  $m_{e', e} (w) = p_{e', e} (w)$
+\end{theorem}
+
+\begin{proof}
+  We first observe the fact that when $e' = e$, we have $m_{e', e} (w) =
+  p_{e', e} (w) = w$. Therefore, we suppose $e' \neq e$ in the following
+  argument.
+  
+  We perform induction on $e$:
+  \begin{itemize}
+    \item The base case, when $e = \varepsilon$ or $e = a$, is routine and
+    trivial.
+    
+    \item If $e = (e_1)$, then for any $w \in L (e)$, we have $w \in L (e_1)$,
+    and for any subexpression $e' \neq e$, $e'$ is also a subexpression of
+    $e_1$. By induction, \ $m_{e', e_1} (w) = p_{e', e_1} (w)$. Because $A_e =
+    A_{e_1}$, $p_{e', e_1} (w) = p_{e', e} (w)$. By definition of match tree,
+    we also have $m_{e', e_1} (w) = m_{e', e} (w)$. Thus $m_{e', e} (w) =
+    p_{e', e} (w)$.
+    
+    \item If $e = e_1 + e_2$, then for any $w \in L (e)$, either $w \in L
+    (e_1)$ or $w \in L (e_2)$. Also, any subexpression $e' \neq e$ is a
+    subexpression of either $e_1$ or $e_2$.
+    
+    If $w \in L (e_1)$, then if $e'$ is a subexpression of $e_2$, we have
+    $m_{e', e} (w) = p_{e', e} (w) = \emptyset$, otherwise by induction we
+    have $m_{e', e_1} (w) = p_{e', e_1} (w)$. Suppose $p = q_0 \sigma_1 q_1
+    \ldots \sigma_m q_m$ is the accepting run of $A_{e_1}$, then by definition
+    of $A_e$, we know p is also the accepting run of $A_e$, thus $p_{e', e_1}
+    (w) = p_{e', e} (w)$. By definition of match tree, we have $m_{e', e_1}
+    (w) = m_{e', e} (w)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
+    
+    Similarly, when $w \in L (e_2)$, we also have $m_{e', e} (w) = p_{e', e}
+    (w)$.
+    
+    \item If $e = e_1 e_2$, then for any $w \in L (e)$, suppose $w = w_1 w_2$
+    such that $C (m_e (w)) = (w_1, e_1) (w_2, e_2)$.
+    
+    Assuming $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ is the accepting run
+    of $A_e$ on w, and $w_1 = \sigma_1 \ldots \sigma_i$, $w_2 = \sigma_{i + 1}
+    \ldots \sigma_m$, we know $q_0 \sigma_1 q_1 \ldots \sigma_i q_i$ is the
+    accepting run of $A_{e_1}$ on $w_1$. If not, suppose the accepting run of
+    $A_{e_1}$ on $w_1$ is $q_0 \sigma_1' q_1' \ldots \sigma_i' q_i'$ instead,
+    then by definition of $A_e$, another run of $A_e$ on
+    w, $q_0 \sigma_1' q_1' \ldots \sigma_i' q_i'
+    \sigma_{i + 1} q_{i + 1} \ldots \sigma_m q_m$, is of higher priority than p, which leads to contradiction.
+    Similarly, we know $q_0 \sigma_{i + 1} q_{i + 1} \ldots \sigma_m q_m$ is
+    the accepting run of $A_{e_2}$ on $w_2$.
+    
+    If $e'$ is a subexpression of $e_1$, then by induction, $m_{e', e_1} (w_1)
+    = p_{e', e_1} (w_1)$. By definition of match tree, $e'$ cannot occur in
+    the subtree $(w_2, e_2)$, thus we have $m_{e', e_1} (w_1) = m_{e', e}
+    (w)$. Because the maximal $e'$-matches in p only occur in $q_0 \sigma_1
+    q_1 \ldots \sigma_i q_i$, we also have $p_{e', e_1} (w_1) = p_{e', e}
+    (w)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
+    
+    Similarly when $e'$ is a subexpression of $e_2$, we have $m_{e', e} (w) =
+    p_{e', e} (w)$.
+    
+    \item If $e = e_1^{\ast}$, then for any $w \in L (e)$, if $w =
+    \varepsilon$ it is obvious that $m_{e', e} (w) = p_{e', e} (w) =
+    \emptyset$ for any $e'$. Otherwise, suppose $w = w_1 \ldots w_n$ such that
+    $C (m_e (w)) = (w_1, e_1) \ldots (w_n, e_1)$.
+    
+    Assuming $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ is the accepting run
+    of $A_e$ on w, $w_1 = \sigma_1 \ldots \sigma_{i_1}$, $w_2 = \sigma_{i_1 +
+    1} \ldots \sigma_{i_2}$ .etc, and $w_n = \sigma_{i_{m - 1} + 1} \ldots
+    \sigma_m$, we know $p_k = q_0 \sigma_{i_{k - 1} + 1} q_{i_{k - 1} + 1}
+    \ldots \sigma_{i_k} q_{i_k}$ is the accepting run of $A_{e_1}$ on
+    $w_k$. The proof is similar to the one above when $e = e_1 e_2$, and we
+    will omit it for simplicity.
+    
+    For any subexpression $e'$ of $e_1$, by induction, we have $m_{e', e_1}
+    (w_k) = p_{e', e_1} (w_k)$ for all $k \in [n]$. By definition of match
+    tree, we have $m_{e', e} (w) = m_{e', e_1} (w_1) \ldots m_{e', e_1}
+    (w_n)$. Because all the maximal $e'$-matches in p only occur in $p_k$ for
+    some $k \in [n]$ (that is, all the states in a $e'$-matches occur in the
+    same segment of $p$), we also have $p_{e', e} (w) = p_{e', e_1} (w_1)
+    \ldots p_{e', e_1} (w_n)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
+  \end{itemize}
+\end{proof}
