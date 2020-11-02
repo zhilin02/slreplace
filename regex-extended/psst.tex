@@ -1,7 +1,10 @@
 %!TEX root = main.tex
 
-\section{Prioritized Streaming String Transducer}
-\zhilin{Move from preliminary to here}
+\section{Prioritized Streaming String Transducer}  \label{sect:psst}
+%\zhilin{Move from preliminary to here}
+
+In this section, we introduce the mode of Prioritized Streaming String Transducer (PSST). We start with the Prioritized Finite-state automata.
+
 \paragraph{Prioritized Finite-state automata.}
 %
 For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_n) \mid \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of sequences of non-repetitive elements from $Q$. Note that the length of each sequence from $\overline{Q}$ is bounded by  $| Q |$. For a sequence $P = (q_0 \ldots q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if  $q = q_i$ for some $i \in [n]$. 
@@ -17,7 +20,10 @@ A run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where $
   The accepting run of $\pnfa$ on $w$ is the one with the highest priority. The language of pNFA $\pnfa$ is the set of
   strings which have an accepting run.
 
-Below, we introduce  a new class of prioritized transducer \cite{BM17} which combines the expressive power of streaming string transducer \cite{AC10,AD11}.
+\paragraph{Prioritized streaming string transducers.}
+
+We introduce  a new class of transducers which combine prioritized transducers \cite{BM17} %which combines the expressive power of 
+streaming string transducers \cite{AC10,AD11}.
   
 \begin{definition}[Prioritized Streaming String Transducer]
 A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, \Sigma, X, E, \delta, q_0, F)$, where $Q$ a
