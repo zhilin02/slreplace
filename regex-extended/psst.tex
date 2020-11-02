@@ -1,4 +1,22 @@
+%!TEX root = main.tex
+
 \section{Prioritized Streaming String Transducer}
+\zhilin{Move from preliminary to here}
+\paragraph{Prioritized Finite-state automata.}
+%
+For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_n) \mid \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of sequences of non-repetitive elements from $Q$. Note that the length of each sequence from $\overline{Q}$ is bounded by  $| Q |$. For a sequence $P = (q_0 \ldots q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if  $q = q_i$ for some $i \in [n]$. 
+
+
+\begin{definition}[Prioritized Finite-state automata]
+  A \emph{prioritized finite-state automaton} (pNFA) over a finite alphabet $\Sigma$ is a tuple $\pnfa=(Q, \Sigma, \delta, q_0, F)$ where $\delta \in Q
+  \times \Sigma \rightarrow \overline{Q}$. The definition of $Q, q_0$ and $F$ is the same as ordinary NFA.
+\end{definition}
+
+A run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$, where $q_m \in F$ and for any $i \in [m], q_i \in \delta (q_{i - 1}, \sigma_i)$. For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigma_1 q_1' \ldots \sigma_m q_m'$ on $w = \sigma_1 \ldots \sigma_m$, we say that $p$ is of a higher priority over  $p'$ if $p \neq p'$, and for the smallest index $j$ with $q_j \neq q_j'$, $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$.
+  
+  The accepting run of $\pnfa$ on $w$ is the one with the highest priority. The language of pNFA $\pnfa$ is the set of
+  strings which have an accepting run.
+
 Below, we introduce  a new class of prioritized transducer \cite{BM17} which combines the expressive power of streaming string transducer \cite{AC10,AD11}.
   
 \begin{definition}[Prioritized Streaming String Transducer]
