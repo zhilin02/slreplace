@@ -4,6 +4,8 @@
 
 Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 
+We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$. 
+
 \begin{definition}[Finite-state automata] \label{def:nfa}
 	A \emph{(nondeterministic) finite-state automaton}
 	(\FA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
@@ -75,37 +77,40 @@ We use $\regexp[\sf CG]$ to denote the fragment of $\regexp$  excluding $\$ n$, 
   	\end{itemize}
   	We use $S (e)$ to denote the set of all subexpressions of $e$.
   \end{definition}
+
+We are going to define the semantics of $\regexp$, which uses a concept of matches of $e \in \regexp$ to strings $w$ defined in the sequel.
   
-  
-  \begin{definition}[Match Tree]
-  	A \tmtextbf{match tree} of $\regexp[\sf CG]$ $e$ is a finite directed and ordered
-  	tree T, whose nodes are elements of $\Sigma^{\ast} \times S (e)$. A tree
-  	is valid if the root is $(w, e)$ for some string w, and for any node $u =
-  	(w, \alpha)$ in T, we have:
+  \begin{definition}[Match of $\regexp$ to strings]
+  	A \tmtextbf{match} of $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
+  	tree $T$, whose nodes are elements of $\Sigma^{\ast} \times S (e)$ satisfying the following constraints: Its root is $(w, e)$, and for any node $\alpha =
+  	(w', e')$ in $T$, we have:
   	\begin{itemize}
-  		\item If $\alpha = \alpha_1 \alpha_2$ then u has two children $(w_1,
-  		\alpha_1)$ and $(w_2, \alpha_2)$ where $w = w_1 w_2$.
+  		\item If $e' = e'_1 \concat e'_2$, then $\alpha$ has two children $\alpha_1 = (w'_1,
+  		e'_1)$ and $\alpha_2=(w'_2, e'_2)$ where $w' = w'_1 w'_2$.
   		
-  		\item If $\alpha = \alpha_1 + \alpha_2$ then u has a single child $(w,
-  		\alpha_i)$ where $i \in \{ 1, 2 \}$.
+  		\item If $e' = e'_1 + e'_2$, then $\alpha$ has a single child $\alpha_1 = (w',
+  		e'_i)$ where $i \in \{ 1, 2 \}$.
   		
-  		\item If $\alpha = \alpha_1^{\ast}$ then when $w = \varepsilon$, u is a
-  		leaf otherwise there is $k \geqslant 1$ such that u has k children $(w_1,
-  		\alpha_1), \ldots, (w_k, \alpha_1)$ where $w = w_1 \ldots w_k$ and for all
-  		$i \in [k]$, $w_i \neq \varepsilon$, even if $\varepsilon \in L
-  		(\alpha_1)$.
+  		\item If $e' = {e'_1}^{\ast}$, then when $w' = \varepsilon$, $\alpha$ is a
+  		leaf, otherwise there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
+  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
+  		$i \in [k]$, $w'_i \neq \varepsilon$, even if $\varepsilon \in L
+  		(e'_1)$.
   		
-  		\item If $\alpha = (\alpha_1)$ then u has a single child $(w, \alpha_1)$.
+  		\item If $e' = (e'_1)$, then $\alpha$ has a single child $\alpha_1 = (w', e'_1)$.
   		
-  		\item If $\alpha = a$ (resp. $\alpha = \varepsilon$) then u is a leaf and
-  		$w = a$ (resp. $w = \varepsilon$).
+  		\item If $e' = a$ (resp. $e' = \varepsilon$), then $\alpha$ is a leaf and
+  		$w' = a$ (resp. $w' = \varepsilon$).
+		
+		\item If $e' = \$n$, then $\alpha$ is a leaf of $T$, moreover, let $e'' \in S(e)$ be enclosed by the $n$-th pair of parentheses in $e$ and $\beta = (w_1, e_1)$ be the last node preceding $\alpha$ in $T$ such that $e_1 = e''$, according to the left-to-right ordering of the nodes, then $w' = w_1$.
   	\end{itemize}
   	
-  	Whenever unambiguous, we use a node u to represent the whole subtree
-  	where u is the root. The notation $C(T)$ refers to all direct children of the root node of T
+%  	Whenever unambiguous, we use a node u to represent the whole subtree
+ We use $T_\alpha$ to represent the subtree of $T$ rooted at $\alpha$. 
+ % 	where u is the root. 
+	The notation $C(T)$ refers to all direct children of the root node of T
   	(and thus all direct subtrees).
-  	
-  	We also use $M (e)$ to denote all the valid match trees of e.
+  	We also use $M (e)$ to denote all match trees of $e$.
   \end{definition}
   
   \begin{definition}[Semantics of RegExp{[\sf CG]}]
