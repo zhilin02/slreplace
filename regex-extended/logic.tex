@@ -4,65 +4,65 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsection{Prioritized Streaming String Transducer}
-Below, we introduce  a new class of prioritized transducer \cite{BM17} which combines the expressive power of streaming string transducer \cite{AC10,AD11}.
-
-\begin{definition}[Prioritized Streaming String Transducer]
-	A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, \Sigma, X, E, \delta, q_0, F)$, where $Q$ a
-	finite set of states, $\Sigma$ is the input and output alphabet, and $X$ a finite set of variables. $E$ is a partial function from $Q \times \Sigma \times
-	Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$, i.e. the set of assignment,
-	$\delta \in Q \times \Sigma \rightarrow \overline{Q}$ and $F$ is a partial function
-	from $Q$ to $(X \cup \Sigma)^{\ast}$.
-\end{definition}
-
-A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$, where $F (q_m)$ is defined and for each $i \in [m], q_i \in \delta (q_{i-1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_0 \sigma_1
-s_1' \ldots \sigma_m s_m' q_m'$, we say that $p$ is of a higher priority over
-$p'$ if $p \neq p'$ and, for the smallest index $j$ with $q_j \neq q_j'$,
-$\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
-
-The accepting run of $\psst$ on input $w$ is the run of the highest priority. The output of $T$ on w, denoted by $T(w)$, is defined as $\pi_m(F(q_m))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation  $\pi_m(F(q_m))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
-
-%  $\tmop{Out} (r) =
-%  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
-%  $s_{\varepsilon}$ is the empty substitution which maps all variables to
-%  $\varepsilon$.
-
-\begin{definition}[pre-image]
-	For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$ as $R^{-1}(L):=\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$. 
-\end{definition}
-
-\begin{theorem}[pre-image of \PSST{}]
-	\label{theorem:psst_preimage}
-	Given a \PSST{} $\psst = (Q_T, \Sigma$, $X, E, \delta_T, q_{0, T}, F_T)$ and \FA{} $A
-	= (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $B = (Q_B,
-	\Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(B) = \cR^{-1}_T(\Lang(\Aut))$.
-\end{theorem}
-
-\begin{proof}
-	Intuitively, $B$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string stored in $x$. Moreover, $B$ also records all the states accessible from a run with higher priority to ensure the current run is the accepting one of $\psst$.
-	
-	Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho, S), a, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
-	\begin{itemize}
-		\item $\delta_T (q, a) = (q_1 \ldots q_i \ldots q_m)$, 
-		\item $s = E(q,a,q_i)$.
-		\item $S' = \delta_T^{\ast} (S, a) \cup \{ q_1, \ldots, q_{i - 1} \}$, where $\delta_T^{\ast}(S,a) = \{q' \mid \exists q \in S, q' \in \delta_T(q,a)\}$.
-		\item and $\rho'$ is obtained from $\rho$ and $s$ as follows: for each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
-		%
-		%$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
-	\end{itemize}
-	
-	Moreover, $F_B$ is the set of states $(q, \rho, S) \in Q_B$ such that
-	\begin{enumerate}
-		\item $F_T (q)$ is defined,
-		\item For any $q' \in S$, $F_T (q')$ is not defined
-		
-		\item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise, 
-		let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
-	\end{enumerate}
-\end{proof}
-
-Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
-thus it works for general, or \tmtextit{copyful} \PSST{} \cite{FR17}.
+%\subsection{Prioritized Streaming String Transducer}
+%Below, we introduce  a new class of prioritized transducer \cite{BM17} which combines the expressive power of streaming string transducer \cite{AC10,AD11}.
+%
+%\begin{definition}[Prioritized Streaming String Transducer]
+%	A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, \Sigma, X, E, \delta, q_0, F)$, where $Q$ a
+%	finite set of states, $\Sigma$ is the input and output alphabet, and $X$ a finite set of variables. $E$ is a partial function from $Q \times \Sigma \times
+%	Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$, i.e. the set of assignment,
+%	$\delta \in Q \times \Sigma \rightarrow \overline{Q}$ and $F$ is a partial function
+%	from $Q$ to $(X \cup \Sigma)^{\ast}$.
+%\end{definition}
+%
+%A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$, where $F (q_m)$ is defined and for each $i \in [m], q_i \in \delta (q_{i-1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_0 \sigma_1
+%s_1' \ldots \sigma_m s_m' q_m'$, we say that $p$ is of a higher priority over
+%$p'$ if $p \neq p'$ and, for the smallest index $j$ with $q_j \neq q_j'$,
+%$\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
+%
+%The accepting run of $\psst$ on input $w$ is the run of the highest priority. The output of $T$ on w, denoted by $T(w)$, is defined as $\pi_m(F(q_m))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation  $\pi_m(F(q_m))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.  
+%
+%%  $\tmop{Out} (r) =
+%%  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
+%%  $s_{\varepsilon}$ is the empty substitution which maps all variables to
+%%  $\varepsilon$.
+%
+%\begin{definition}[pre-image]
+%	For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$ as $R^{-1}(L):=\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$. 
+%\end{definition}
+%
+%\begin{theorem}[pre-image of \PSST{}]
+%	\label{theorem:psst_preimage}
+%	Given a \PSST{} $\psst = (Q_T, \Sigma$, $X, E, \delta_T, q_{0, T}, F_T)$ and \FA{} $A
+%	= (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $B = (Q_B,
+%	\Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(B) = \cR^{-1}_T(\Lang(\Aut))$.
+%\end{theorem}
+%
+%\begin{proof}
+%	Intuitively, $B$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string stored in $x$. Moreover, $B$ also records all the states accessible from a run with higher priority to ensure the current run is the accepting one of $\psst$.
+%	
+%	Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho, S), a, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
+%	\begin{itemize}
+%		\item $\delta_T (q, a) = (q_1 \ldots q_i \ldots q_m)$, 
+%		\item $s = E(q,a,q_i)$.
+%		\item $S' = \delta_T^{\ast} (S, a) \cup \{ q_1, \ldots, q_{i - 1} \}$, where $\delta_T^{\ast}(S,a) = \{q' \mid \exists q \in S, q' \in \delta_T(q,a)\}$.
+%		\item and $\rho'$ is obtained from $\rho$ and $s$ as follows: for each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
+%		%
+%		%$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
+%	\end{itemize}
+%	
+%	Moreover, $F_B$ is the set of states $(q, \rho, S) \in Q_B$ such that
+%	\begin{enumerate}
+%		\item $F_T (q)$ is defined,
+%		\item For any $q' \in S$, $F_T (q')$ is not defined
+%		
+%		\item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise, 
+%		let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
+%	\end{enumerate}
+%\end{proof}
+%
+%Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
+%thus it works for general, or \tmtextit{copyful} \PSST{} \cite{FR17}.
 
 % Note that in the definition of \NSST, there is no \emph{copyless} restriction.
 
@@ -86,22 +86,29 @@ S &::= &  z:= x\ \concat\ y \mid z := \replaceall_{\pat, \rep}(x)   \mid \\
 %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
 \end{array}
 \]
-\tl{to avoid confusion, write  $\ASSERT{x \in A}$?} 
-where $\concat$ is the string concatenation operation which concatenates two strings, $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, $e \in \regexp$, %$\replaceall$ is the replace-all function to be defined shortly,
-$\reverse$ is the string function which reverses a string, and $\Transducer$ is a \PSST.  
+%\tl{to avoid confusion, write  $\ASSERT{x \in A}$?} 
+where 
+\begin{itemize}
+	\item $\concat$ is the string concatenation operation which concatenates two strings;
+	\item  For the $\replaceall$ operation, it is required that $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+	\item $\reverse$ is the string function which reverses a string; 
+	\item $\Transducer$ is a \PSST;
+	\item for assertions, $e \in \regexp$.
+\end{itemize} 
 %and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
 \end{definition}
-\zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
-\tl{maybe just use NSST to replace PSST?}
+%
+%\zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
+%\tl{maybe just use NSST to replace PSST?}
+%
+%\zhilei{PSST is needed for decision procedure. NSST can be decided too, but the algorithm is very similar, so maybe too tedious to add both }
 
-\zhilei{PSST is needed for decision procedure. NSST can be decided too, but the algorithm is very similar, so maybe too tedious to add both }
+%It is evident that the $\reverse$ function is subsumed by \PSST{}s.
 
-It is evident that the $\reverse$ function is subsumed by \PSST{}s.
-
-
-\begin{remark}
-	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
-\end{remark}
+%
+%\begin{remark}
+%	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
+%\end{remark}
 
 \subsection{Undecidability: Regular expressions with capturing groups and back references}
 
