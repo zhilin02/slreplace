@@ -1,17 +1,25 @@
 
-\section{Decision procedures}
+\section{Decision procedure} \label{sec:decision}
 
-In this section, we restrict to the case that in the assertion $\ASSERT{x \in e}$, $e$ is a regular expression \emph{without} capturing groups and back references.
+In this section, we restrict the form of the assertion $\ASSERT{x \in e}$ such that $e$ is a regular expression \emph{without} capturing groups and back references.
 
 \subsection{Construction of pNFA from \regexp[\sf CG]}
 \label{construction:pnfa}
 
-For any \regexp[\sf CG] $e$, we define a pNFA $A_e$ by a modified version of
-Glushkov's construction \cite{Gluskov61}. The original construction on regular expression
-produces an NFA with no $\varepsilon$-transition, which we denote by $G_e$.
-The state of $G_e$ comprises $q_0$, a special starting state, and $a_i$'s
-where the i-th character occurring in e is $a$. We refer the reader to \cite{Gluskov61} for 
-details of how to construct $G_e$.
+\begin{figure*}
+	\centering
+	\includegraphics{pglushkov_01}
+	\caption{pNFA $A_e$ for (a) $e=e_1+e_2$ (b) $e=e_1^{\ast}$ and (c) $e=e_1 \concat e_2$ where $\varepsilon \in \Lang(e_1)$ and $\varepsilon \notin \Lang(e_2)$. A transition of lower priority is depicted thiner and more densely dotted. }
+	\label{fig:pglushkov}
+\end{figure*}
+
+For any $e \in \regexp[\sf CG]$, we define a pNFA $A_e$ by an adaptation of the standard
+Glushkov construction \cite{Gluskov61}. The original construction on regular expressions
+produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
+%The state of $G_e$ comprises $q_0$ which is a special starting state, and $a_i$'s
+%where the $i$-th character occurring in e is $a$. 
+We refer the reader to \cite{Gluskov61} for 
+details of how to construct $G_e$. %\tl{is this just the textbook construction?}
 
 The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
 \begin{itemize}
@@ -105,12 +113,7 @@ The following  theorem states the equivalence of the accepting match of a \regex
 
 For simplicity, we refer the reader to the appendix for proof.
 
-\begin{figure*}
- \centering
- \includegraphics{pglushkov_01}
- \caption{pNFA $A_e$ for (a) $e=e_1+e_2$ (b) $e=e_1^{\ast}$ and (c) $e=e_1 \concat e_2$ where $\varepsilon \in \Lang(e_1)$ and $\varepsilon \notin \Lang(e_2)$. A transition of lower priority is depicted thiner and more densely dotted. }
- \label{fig:pglushkov}
-\end{figure*}
+
  
 \subsection{$\replaceall$ with capturing groups and references}
 
