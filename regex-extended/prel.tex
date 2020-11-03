@@ -67,7 +67,7 @@ We use $\regexp[\sf CG]$ to denote the fragment of $\regexp$  excluding $\$ n$, 
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
   
   \begin{definition}[Subexpression]
-  	For any two $\regexp[\sf CG]$ $e$ and $r$, we say $r$ is a subexpression of $e$,
+  	For any two $\regexp$ $e$ and $r$, we say $r$ is a subexpression of $e$,
   	if either $r=e$ or
   	\begin{itemize}
   		\item If $e = e_1 e_2$ or $e_1 + e_2$ then $r$ is a subexpression of $e_1$
@@ -115,8 +115,7 @@ Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the roo
   \end{definition}
   
   \begin{definition}[Semantics of $\regexp$]
-  	\
-  	
+  		
   	For any $\regexp$ $e$, we recursively define a total order on $\cM(e)$, written $T
   	>_e T'$ where $T, T' \in \cM(e)$, as follows:
   	\begin{itemize}
@@ -137,19 +136,27 @@ Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the roo
   		(w_1', e_1) (w_2', e_2)$, then $T >_e T'$ when either $T_{(w_1, e_1)} >_{e_1}
   		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{e_2} T'_{(w_2', e_2)}$.
   		
-  		\item $e = e_1^{\ast}$. If $T$ is a single node but $T'$ is not, then $T >_e T'$.
+  		\item $e = e_1^{\ast}$. If $T' $ is  a single node, i.e. $(\varepsilon, e)$, but $T$ is not, then $T >_e T'$.
   		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ either when $C (T)$
-  		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
+  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T')$
+  		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
   		\neq w_j'$, $T_{(w_j, e_1)} >_{e_1} T'_{(w_j', e_1)}$.
   	\end{itemize}
   	
   	Let $e \in \regexp$ and $w \in \Lang(e)$. Then the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of the set $\{ T \in \cM(e) \mid \mbox{the root of } T \mbox{ is } (w, e) \}$.
-  	
+%  	
   	For any subexpression $e'$ of e, suppose $(w_1, e') \ldots (w_m, e')$ are
   	all the nodes labeled by $(w', e')$ with $w' \neq \varepsilon$, in the
   	pre-order traversal of $M_e(w)$. Then the match result captured by $e'$, denoted
   	by $M_{e', e} (w)$, is the sequence of substrings $w_1 \ldots w_m$.
   \end{definition}
   
-  \zhilei{Give an example here}
+    \zhilei{Give an example here}
+
+\begin{example}
+Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w= baa$. Then the set of match trees of $e$ to $w$ is illustrated in Figure.
+ \end{example}
+  
+  \begin{remark}
+  \end{remark}
+  
