@@ -8,7 +8,34 @@ The function ``changeNameFormat''  in Figure~\ref{fig-run-exmp} transforms the n
 Specifically,  the name format of each author, except the last one, is specified by the the regular expression {\sf re}  in Figure~\ref{fig-run-exmp}, which describes the pattern of a surname (a sequence of alphabetic letters, $-$ or $.$), followed by the comma, then a given name, finally the word ``and'', where $\backslash s$ represents the blank symbol and $\backslash w$ represents alphabetic letters, digits, or the underline symbol $\_$. There are two capturing groups in {\sf re}, one for surnames, the other one for given names. Note that surnames or given names may comprise several words. The subexpression $(?: [w-.]+s*)$ in ${\sf re}$ denotes the non-capturing groups, i.e. matching $[w-.]+s*$ but not remembering the match.
 Similarly, the regular expression {\sf reLast} describes the name format of the last author, except that it replaces the word ``and'' by the symbol $\$$, denoting the end of the author list. Notice that the global flag ``g'' is used in {\sf re} so that the name format of each author is transformed. The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(re, ``$\$$2 $\$$1 and'')} and  {\sf result.replace(reLast, `` $\$$2 $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
 
-To do a symbolic execution of the Javascript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references in {\sf replace}. For this purpose, we introduce prioritized streaming string transducers (PSST). \zhilin{to continue}
+To do a symbolic execution of the Javascript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(re, ``$\$$2 $\$$1 and'')} and {\sf replace(reLast, `` $\$$2 $\$$1'')} can be captured by $\cT_{\sf re}$ and $\cT_{\sf reLast}$ respectively, where the priorities are used to model the greedy semantics of $+$ or $*$. Then the invariant whether none of the return values of the function {\sf changeNameFormat()} contains the word ``and'' is reduced to the path feasibility problem of the following program (namely, whether there exists some value of {\sf authorList} so that the program can execute to the end): 
+%
+\begin{eqnarray}\label{eqn:exmp}
+& & \sf result  := \sf  \cT_{ re}(authorList); ret : = \cT_{reLast}(result);\nonumber \\
+& & \sf \ASSERT{ret \in \Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*},
+\end{eqnarray}
+%
+where $\sf assert(ret \in \Sigma^*{\small\sqcup}and{\small\sqcup}\Sigma^*)$ requires that the value of $\sf ret$ matches the regular expression $\Sigma^* {\small\sqcup}\sf and{\small\sqcup} \Sigma^*$ ($\Sigma$ denotes the alphabet and $\sqcup$ denotes the blank symbol).
+
+The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by a ``backward'' reasoning as follows (see Section~\ref{sec:decision}):  
+\begin{itemize}
+\item At first, we compute $(\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)$,  i.e. the pre-image of the language $\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*$ under $\cT_{\sf reLast}$,  remove $\sf  ret : = \cT_{reLast}(result)$, and add the assertion $\ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)}$, resulting into the program in the sequel,
+\begin{eqnarray}
+& & \sf result  := \sf  \cT_{ re}(authorList); \nonumber\\
+& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)}; \nonumber\\
+& & \sf \ASSERT{ret \in \Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*},
+\end{eqnarray}
+
+%
+\item Then, we compute $(\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)$, i.e. the pre-image of $(\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)$ under $\cT_{ re}$, remove $ \sf result  := \sf  \cT_{ re}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)}$, resulting into the program 
+\begin{eqnarray}\label{eqn:exmp-final}
+& & \ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)}; \nonumber\\
+& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)}; \nonumber\\
+& & \sf \ASSERT{ret \in \Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*}.
+\end{eqnarray}
+Since the program in Equation~(\ref{eqn:exmp-final}) contains no assignment statements, its path feasibility can be solved by checking the nonemptiness of regular languages.
+\item Finally, check the nonemptiness of the regular language $(\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)$.
+\end{itemize}
 
 \begin{figure*}[htbp]
 \begin{center}
