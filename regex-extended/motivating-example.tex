@@ -1,0 +1,30 @@
+%!TEX root = main.tex
+
+\section{Motivating Example}\label{sec:mot}
+
+We are going to use the Javascript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main idea of this paper. 
+The function ``changeNameFormat''  in Figure~\ref{fig-run-exmp} transforms the name format of an author list from the ACM style to the DBLP style. For instance,  if a paper is authored by Alice Brown and John Smith, then the author list in the ACM style is ``Brown, Alice and Smith, John'', while that in the DBLP style is ``Alice Brown and John Smith''. 
+
+Specifically,  the name format of each author, except the last one, is specified by the the regular expression {\sf re}  in Figure~\ref{fig-run-exmp}, which describes the pattern of a surname (a sequence of alphabetic letters, $-$ or $.$), followed by the comma, then a given name, finally the word ``and'', where $\backslash s$ represents the blank symbol and $\backslash w$ represents alphabetic letters, digits, or the underline symbol $\_$. There are two capturing groups in {\sf re}, one for surnames, the other one for given names. Note that surnames or given names may comprise several words. The subexpression $(?: [w-.]+s*)$ in ${\sf re}$ denotes the non-capturing groups, i.e. matching $[w-.]+s*$ but not remembering the match.
+Similarly, the regular expression {\sf reLast} describes the name format of the last author, except that it replaces the word ``and'' by the symbol $\$$, denoting the end of the author list. Notice that the global flag ``g'' is used in {\sf re} so that the name format of each author is transformed. The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(re, ``$\$$2 $\$$1 and'')} and  {\sf result.replace(reLast, `` $\$$2 $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
+
+To do a symbolic execution of the Javascript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references in {\sf replace}. For this purpose, we introduce prioritized streaming string transducers (PSST). \zhilin{to continue}
+
+\begin{figure*}[htbp]
+\begin{center}
+{
+%\small
+\begin{minted}[linenos]{javascript}
+		function changeNameFormat(authorList)
+		{
+		  var re = /\s*((?:[\w-\.]+\s*)+),\s+((?:[\w-\.]+\s*)+)\s+and/g;
+		  var result = authorList.replace(re, "$2 $1 and");
+		  var reLast = /\s*((?:[\w-\.]+\s*)+),\s+((?:[\w-\.]+\s*)+)$/;
+		  return result.replace(reLast, " $2 $1");
+		}
+\end{minted}
+}
+\end{center}
+\caption{Change the name format of an author list: A motivating example}
+\label{fig-run-exmp}
+\end{figure*}
