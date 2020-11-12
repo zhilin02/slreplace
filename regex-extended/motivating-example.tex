@@ -45,13 +45,15 @@ The invariant property holds iff the regular language $(\cT_{\sf re})^{-1}\left(
 {
 %\small
 \begin{minted}[linenos]{javascript}
-		function changeNameFormat(authorList)
-		{
-		  var re = /\s*((?:[\w-\.]+\s*)+),\s+((?:[\w-\.]+\s*)+)\s+and/g;
-		  var result = authorList.replace(re, "$2 $1 and");
-		  var reLast = /\s*((?:[\w-\.]+\s*)+),\s+((?:[\w-\.]+\s*)+)$/;
-		  return result.replace(reLast, " $2 $1");
-		}
+    function changeNameFormat(authorList)
+    {
+      var autListReg = /^([\w-\.\s]+,[\w-\.\s]+and)*[\w-\.\s]+,[\w-\.\s]+$/;
+      if (autListReg.test(authorList)) {
+        var nameReg = /([\w-\.]+(?:\s+[\w-\.]+)*),\s*([\w-\.]+(?:\s+[\w-\.]+)*)((\s+and\s+)|$)/g;
+        return authorList.replace(nameReg, "$2 $1 $3");
+      }
+      else return authorList;
+    }
 \end{minted}
 }
 \end{center}
