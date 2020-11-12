@@ -9,10 +9,10 @@
 \begin{minted}[linenos]{javascript}
     function changeNameFormat(authorList)
     {
-      var autListReg = /^([\w-\.\s]+,[\w-\.\s]+and)*[\w-\.\s]+,[\w-\.\s]+$/;
+      var autListReg = /^([\w-\.\s]+,[\w-\.\s]+\sand\s)*[\w-\.\s]+,[\w-\.\s]+$/;
       if (autListReg.test(authorList)) {
         var nameReg = /([\w-\.]+(?:\s+[\w-\.]+)*),\s*([\w-\.]+(?:\s+[\w-\.]+)*)((\s+and\s+)|$)/g;
-        return authorList.replace(nameReg, "$2 $1 $3");
+        return authorList.replace(nameReg, "$2 $1$3");
       }
       else return authorList;
     }
@@ -34,7 +34,7 @@ The name format of each author, except for the last one, is specified by the reg
 %
 Notice that the global flag ``g'' is used in {\sf nameReg} so that the name format of each author is transformed. The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(nameReg, ``$\$$2 $\$$1 $\$$3'')}, where $\$1$, $\$2$, $\$3$ refer to the match of the first, second and third capturing group respectively. 
 
-For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(nameReg, ``$\$$2 $\$$1 $\$$3'')} can be captured by $\cT_{\sf nameReg}$, where the priorities are used to model the greedy semantics of $+$ or $*$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matches of capturing groups.
+For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(nameReg, ``$\$$2 $\$$1$\$$3'')} can be captured by $\cT_{\sf nameReg}$, where the priorities are used to model the greedy semantics of $+$ or $*$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matches of capturing groups.
 
 An intuitive invariant property satisfied by the output of {\sf changeNameFormat} is that if {\sf authorList} matches {\sf autListReg}, then none of its outputs contains the comma ``,''. The invariant property holds iff the following program in single static assignment form is infeasible (namely, there does not exist a value of {\sf authorList} so that the program can execute to the end):
 %
