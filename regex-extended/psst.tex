@@ -46,7 +46,14 @@ A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$,
 
 
 \begin{example}
-The PSST $\cT_{\sf nameReg}$ mentioned in Section~\ref{sec:mot} is illustrated in Figure~\ref{}.
+The PSST $\cT_{\sf nameReg}=(Q, \Sigma, X, \delta, E,  q_{0}, F$ mentioned in Section~\ref{sec:mot} is illustrated in Figure~\ref{fig-psst-exmp}, where $Q = \{q_0, \dots, q_{10}\}$, $X= \{x_1, x_2, x_3, x_4\}$ with $x_1, x_2, x_3$ recording the matches of the 1st, 2nd, 3rd capturing group, and $x_4$ recording the string after the replacements, $F(q_{10}) = x_4 x_2 \backslash {\rm s} x_1$ denotes the final output, and $\delta, E$ are illustrated by the edges, e.g. $\delta(q_3, \ell) = q_4q_{10}$, $E(q_3, \ell, q_4)(x_2) = x_2 \ell$ for each $\ell$ matching $\backslash $w, - or dot. Note that the identity assignments, e.g. $E(q_3, \ell, q_4)(x') = x'$ for $x' \in \{x_1, x_3, x_4\}$, are omitted in Figure~\ref{fig-psst-exmp}, for improving the readability. Moreover, the symbol $\ell$ is used in Figure~\ref{fig-psst-exmp} to denote the current input letter scanned by $\cT_{\sf nameReg}$.
+\begin{figure*}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics{psst-exmp.pdf}
+\caption{The PSST $\cT_{\sf nameReg}$}
+\label{fig-psst-exmp}
+\end{figure*}
 \end{example}
 
   
