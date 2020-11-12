@@ -3,40 +3,41 @@
 \section{Motivating Example}\label{sec:mot}
 
 We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main approach of this paper. 
-The function ``changeNameFormat''  in Figure~\ref{fig-run-exmp} transforms the name format of an author list from the ACM style to the DBLP style. For instance,  if a paper is authored by Alice Brown and John Smith, then the author list in the ACM style is ``Brown, Alice and Smith, John'', while  in the DBLP style it is ``Alice Brown and John Smith''. \tl{should the "and" in dblp be removed? Alice Brown, John Smith}
+The function ``changeNameFormat''  in Figure~\ref{fig-run-exmp} transforms the name format of an author list from the ACM bibtex style to the DBLP bibtex style. For instance,  if a paper is authored by Alice Brown and John Smith, then the author list in the ACM bibtex style is ``Brown, Alice and Smith, John'', while  in the DBLP bibtex style it is ``Alice Brown and John Smith''. \tl{should the "and" in dblp be removed? Alice Brown, John Smith}\zhilin{I am referring to the bibtex style. Both ACM and DBLP bibtex style contain ``and''}
 
 Specifically,  the name format of each author, except for the last one, is specified by the regular expression {\sf re}  in Figure~\ref{fig-run-exmp}, which describes the pattern of a surname (a sequence of alphabetic letters, $-$ or $.$), followed by the comma, then a given name, finally the word ``and'', where $\backslash s$ represents the blank symbol and $\backslash w$ represents alphabetic letters, digits, or the underline symbol $\_$. There are two capturing groups in {\sf re}  for surname and  given name respectively. Note that surnames or given names may comprise several words. The subexpression $(?: [w-.]+s*)$ in ${\sf re}$ denotes the non-capturing groups, i.e. matching $[w-.]+s*$ but not remembering the match.
 Similarly, the regular expression {\sf reLast} describes the name format of the last author, except that it replaces the word ``and'' by the symbol $\$$, denoting the end of the author list. Notice that the global flag ``g'' is used in {\sf re} so that the name format of each author is transformed. The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(re, ``$\$$2 $\$$1 and'')} and  {\sf result.replace(reLast, `` $\$$2 $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
 
-For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(re, ``$\$$2 $\$$1 and'')} and {\sf replace(reLast, `` $\$$2 $\$$1'')} can be captured by $\cT_{\sf re}$ and $\cT_{\sf reLast}$ respectively, where the priorities are used to model the greedy semantics of $+$ or $*$. \tl{here greedy semantics may be clear for the reader}
+For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one need model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(re, ``$\$$2 $\$$1 and'')} and {\sf replace(reLast, `` $\$$2 $\$$1'')} can be captured by $\cT_{\sf re}$ and $\cT_{\sf reLast}$ respectively, where the priorities are used to model the greedy semantics of $+$ or $*$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matches of capturing groups.
 
-The invariant property whether none of the return values of the function {\sf changeNameFormat()} contain the word ``and'' is reduced to the path feasibility problem of the following program (namely, whether there exists some value of {\sf authorList} so that the program can execute to the end): \tl{it is a bit confusing as the original program does not have conditionals; also here do we need to mention that we actually negated the invariance to find the wrong input?} 
+The invariant property whether none of the return values of the function {\sf changeNameFormat()} contain the comma ``,'' is reduced to the path feasibility problem of the following program (namely, whether there exists some value of {\sf authorList} so that the program can execute to the end): \tl{it is a bit confusing as the original program does not have conditionals; also here do we need to mention that we actually negated the invariance to find the wrong input?} 
 %
 \begin{eqnarray}\label{eqn:exmp}
 & & \sf result  := \sf  \cT_{ re}(authorList); ret : = \cT_{reLast}(result);\nonumber \\
-& &  \ASSERT{ret \in \Sigma^*{\small\sqcup} \mbox{and}{\small\sqcup} \Sigma^*},
+& &  \ASSERT{\sf ret \in \Sigma^*,\Sigma^*},
 \end{eqnarray}
 %
-where $\ASSERT{ret \in \Sigma^*{\small\sqcup}and{\small\sqcup}\Sigma^*)}$ requires that the value of $\sf ret$ matches the regular expression $\Sigma^* {\small\sqcup}{\sf and}{\small\sqcup} \Sigma^*$ ($\Sigma$ denotes the alphabet and $\sqcup$ denotes the space symbol).
+where $\ASSERT{\sf ret \in \Sigma^*,\Sigma^*)}$ requires that the value of $\sf ret$ matches the regular expression $\Sigma^*, \Sigma^*$ ($\Sigma$ denotes the alphabet).
 
-The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by a ``backward'' reasoning as follows (see Section~\ref{sec:decision}):  
+The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by a ``backward'' reasoning as follows (see Section~\ref{sec:decision} for the details):  
 \begin{itemize}
-\item At first, we compute $(\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)$,  i.e. the pre-image of the language $\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*$ under $\cT_{\sf reLast}$,  remove $\sf  ret : = \cT_{reLast}(result)$, and add the assertion $\ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)}$, resulting in the program as follows,
+\item At first, we compute $(\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)$,  i.e. the pre-image of the language $\Sigma^*, \Sigma^*$ under $\cT_{\sf reLast}$,  remove the assignment $\sf  ret : = \cT_{reLast}(result)$, and add the assertion $\ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)}$, resulting into the following program,
 \begin{eqnarray}
 & & \sf result  := \sf  \cT_{ re}(authorList); \nonumber\\
-& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)}; \nonumber\\
-& & \sf \ASSERT{ret \in \Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*},
+& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)}; \nonumber\\
+& & \sf \ASSERT{ret \in \Sigma^*, \Sigma^*},
 \end{eqnarray}
 
 %
-\item Then, we compute $(\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)$, i.e. the pre-image of $(\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)$ under $\cT_{ re}$, remove $ \sf result  := \sf  \cT_{ re}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)}$, resulting in the program 
+\item Then, we compute $(\cT_{\sf re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)$, i.e. the pre-image of $(\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)$ under $\cT_{\sf re}$, remove the assignment $ \sf result  := \sf  \cT_{ re}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)}$, resulting into the program 
 \begin{eqnarray}\label{eqn:exmp-final}
-& & \ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)}; \nonumber\\
-& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)}; \nonumber\\
-& & \sf \ASSERT{ret \in \Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*}.
+& & \ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)}; \nonumber\\
+& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)}; \nonumber\\
+& & \sf \ASSERT{ret \in \Sigma^*, \Sigma^*}.
 \end{eqnarray}
-Since the program in Equation~(\ref{eqn:exmp-final}) contains no assignment statements, its path feasibility can be solved by checking the nonemptiness of regular languages.
-\item Finally, check the nonemptiness of the regular language $(\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*{\small\sqcup} and{\small\sqcup} \Sigma^*)\right)$.
+%Since the program in Equation~(\ref{eqn:exmp-final}) contains no assignment statements, its path feasibility can be solved by checking the nonemptiness of regular languages.
+\item Finally, check the nonemptiness of the regular language $(\cT_{\sf re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)$.\\
+The invariant property holds iff the regular language $(\cT_{\sf re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)$ is empty.
 \end{itemize}
 
 \begin{figure*}[htbp]
