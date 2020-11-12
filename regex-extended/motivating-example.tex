@@ -48,7 +48,7 @@ where $\ASSERT{\sf authorList \in autListReg}$ requires that $\sf authorList$ ma
 
 The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by a ``backward'' reasoning as follows (see Section~\ref{sec:decision} for the details):  
 \begin{itemize}
-\item At first, we compute $(\cT_{\sf nameReg})^{-1}(.*,.*)$,  i.e. the pre-image of the language $.*,.*$ under $\cT_{\sf nameReg}$,  remove the assignment $\sf  ret  := \sf  \cT_{nameReg}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{\sf nameREg})^{-1}(.*,.*)}$, resulting into the following program,
+\item At first, we compute $(\cT_{\sf nameReg})^{-1}(.*,.*)$,  i.e. the pre-image of the language $.*,.*$ under $\cT_{\sf nameReg}$ (see Theorem~\ref{theorem:psst_preimage}),  remove  $\sf  ret  := \sf  \cT_{nameReg}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{\sf nameREg})^{-1}(.*,.*)}$, resulting into the following program,
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\sf authorList \in autListReg};\nonumber \\
 %& & \sf ret  := \sf  \cT_{nameReg}(authorList);\nonumber \\
