@@ -46,13 +46,14 @@ An (extend) regular expression (with capturing group and back reference) is defi
 \end{definition}
 We abbreviate $e \concat e^*$ as $e^+$ and $e \concat e^{*?}$ as $e^{+?}$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $a_1 + \cdots + a_k$ and thus  $\Gamma^\ast \equiv (a_1 + \cdots + a_k)^\ast$. 
 
-Note that parentheses in $\regexp$ are used for both precedence and capturing. 
+Note that the parentheses in $\regexp$ are used for both precedence and capturing groups. 
 %We assume that the parentheses in every regular expression are well matched. 
 %
 %Besides the common rules governing regular expressions, a regex obeys
 %the following syntactic rule: 
-Every back reference $\$ n$ is found to the right of the $n$-th pair of parentheses, where parentheses
-are indexed according to the occurrence sequence of their left parenthesis. For instance, $((a+b)^*) c \$1$ is in $\regexp$, where $\$1$ refers to the matching of the subexpression $(a+b)^*$. Intuitively, it denotes the set of strings of the form $u c u$, where $u$ is a string with each letter being $a$ or $b$.
+Parenthesis pairs are indexed according to the occurrence sequence of their left parentheses, and it is required that every back reference $\$ n$ occurs  %the right of 
+after the $n$-th pair of parentheses. For instance, $((a+b)^*) c \$1$ is in $\regexp$, where $\$1$ refers to the matching of the subexpression $(a+b)^*$. Intuitively, it denotes the set of strings of the form $u c u$, where $u$ is a string of $a$ and $b$. 
+%with each letter being $a$ or $b$.
   
 %Note that standard regular expressions are those without $\$ n$. 
 %Moreover, 
@@ -78,7 +79,7 @@ We use $\regexp[\sf CG]$ to denote the fragment of $\regexp$  excluding $\$ n$, 
   	We use $S (e)$ to denote the set of all subexpressions of $e$.
   \end{definition}
 
-We are going to define the semantics of $\regexp$, which uses a concept of matches of $e \in \regexp$ to strings $w$ defined in the sequel.
+We  define the semantics of $\regexp$, which uses a concept of matches of $e \in \regexp$ to strings $w$ defined in the sequel.
   
   \begin{definition}[Match of $\regexp$ to strings]
   	A \tmtextbf{match} of $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
@@ -91,17 +92,18 @@ We are going to define the semantics of $\regexp$, which uses a concept of match
   		\item If $e' = e'_1 + e'_2$, then $\alpha$ has a single child $\alpha_1 = (w',
   		e'_i)$ where $i \in \{ 1, 2 \}$.
   		
-  		\item If $e' = {e'_1}^{\ast}$, then when $w' = \varepsilon$, $\alpha$ is a
-  		leaf, otherwise there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
+  		\item If $e' = {e'_1}^{\ast}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
+  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
-  		$i \in [k]$, $w'_i \neq \varepsilon$, even if $\varepsilon \in L
-  		(e'_1)$.
+  		$i \in [k]$, $w'_i \neq \varepsilon$, (even if $\varepsilon \in L
+  		(e'_1)$).
 %
-  		\item If $e' = {e'_1}^{\ast?}$, then when $w' = \varepsilon$, $\alpha$ is a
-  		leaf, otherwise there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
+  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
+  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
-  		$i \in [k]$, $w'_i \neq \varepsilon$, even if $\varepsilon \in L
-  		(e'_1)$.
+  		$i \in [k]$, $w'_i \neq \varepsilon$ (even if $\varepsilon \in L
+  		(e'_1)$).
+  		\tl{what is the difference?}
 %		
   		\item If $e' = (e'_1)$, then $\alpha$ has a single child $\alpha_1 = (w', e'_1)$.
  % 		
@@ -114,9 +116,9 @@ We are going to define the semantics of $\regexp$, which uses a concept of match
 %  	Whenever unambiguous, we use a node u to represent the whole subtree
  We use $T_\alpha$ to represent the subtree of $T$ rooted at $\alpha$.
  % 	where u is the root. 
-	The notation $C(T)$ refers to the sequence of direct children of the root node of $T$
+The notation $C(T)$ refers to the sequence of direct children of the root node of $T$
   	(and thus all direct subtrees).
- If a tree $T$ is a match of $e$ to a string $w$, then it is called a \emph{match tree} of $e$. We use $\cM(e)$ to denote the set of all match trees of $e$.
+ If a tree $T$ is a match of $e$ to a string $w$, then it is called a \emph{match tree} of $e$ \tl{to $w$?}. We use $\cM(e)$ to denote the set of all match trees of $e$.
 Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the root of a match of } e \mbox{ to } w\}$.
   \end{definition}
   
