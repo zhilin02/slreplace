@@ -1,5 +1,8 @@
+%!TEX root = main.tex
+
 \section{The string logic}\label{sec:logic}
 
+In this section, we define the string-manipulating programming language $\strline$ considered in this paper.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -75,13 +78,17 @@
 
 %We define the set of reference expressions as follows: 
 
+%We consider the symbolic execution of the string-manipulating programs.
 
-\begin{definition}[The constraint language $\strline$] 
-The constraint language $\strline$ is defined by
+%\begin{definition}[The constraint language $\strline$] 
+The $\strline$ language is defined by
 \[
 \begin{array}{l c l}
-S &::= &  z:= x\ \concat\ y \mid z := \replaceall_{\pat, \rep}(x)   \mid \\ 
-& &  y := \reverse(x) \mid y := \Transducer(x)\ |\  \text{$\ASSERT{x \in e}$}\ |\ S; S\
+S &::= &  z:= x\ \concat\ y \mid y := \extract_i(x,e) \mid  \\ 
+& &  
+%y := \reverse(x) 
+y := \replaceall_{\pat, \rep}(x)   \mid y := \Transducer(x)\  \mid\\
+& & \text{$\ASSERT{x \in e}$} \mid S; S\
 \label{eq:SL}
 %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
 \end{array}
@@ -89,14 +96,18 @@ S &::= &  z:= x\ \concat\ y \mid z := \replaceall_{\pat, \rep}(x)   \mid \\
 %\tl{to avoid confusion, write  $\ASSERT{x \in A}$?} 
 where 
 \begin{itemize}
-	\item $\concat$ is the string concatenation operation which concatenates two strings;
-	\item  For the $\replaceall$ operation, it is required that $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
-	\item $\reverse$ is the string function which reverses a string; 
-	\item $\Transducer$ is a \PSST;
+	\item $\concat$ is the string concatenation operation which concatenates two strings,
+%
+\item for the $\extract$ function, $i \in \Nat$, $e \in \regexp[\sf CG]$,
+%
+	\item  for the $\replaceall$ operation, $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+%	\item $\reverse$ is the string function which reverses a string; 
+	\item $\Transducer$ is a \PSST,
+%
 	\item for assertions, $e \in \regexp$.
 \end{itemize} 
 %and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
-\end{definition}
+%\end{definition}
 %
 %\zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
 %\tl{maybe just use NSST to replace PSST?}
@@ -109,6 +120,8 @@ where
 %\begin{remark}
 %	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
 %\end{remark}
+
+\zhilin{define the semantics here}
 
 \subsection{Undecidability: Regular expressions with capturing groups and back references}
 

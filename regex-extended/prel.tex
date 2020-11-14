@@ -39,12 +39,12 @@ For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relati
 An (extend) regular expression (with capturing group and back reference) is defined as follows.
   
 \begin{definition}[Regular expressions with capturing group and back reference, $\regexp$]
-  	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid \$n \mid e + e \mid e \concat e \mid e^* \mid (e)  , \]
+  	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid \$n \mid e + e \mid e \concat e \mid e^* \mid e^{*?} \mid (e)  , \]
   	where $a \in \Sigma, n \in \Int^+$. 
   	%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. 
   	%We use the abbreviation 
 \end{definition}
-We abbreviate $e \concat e^*$ as $e^+$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $a_1 + \cdots + a_k$ and thus  $\Gamma^\ast \equiv (a_1 + \cdots + a_k)^\ast$. 
+We abbreviate $e \concat e^*$ as $e^+$ and $e \concat e^{*?}$ as $e^{+?}$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $a_1 + \cdots + a_k$ and thus  $\Gamma^\ast \equiv (a_1 + \cdots + a_k)^\ast$. 
 
 Note that parentheses in $\regexp$ are used for both precedence and capturing. 
 %We assume that the parentheses in every regular expression are well matched. 
@@ -73,7 +73,7 @@ We use $\regexp[\sf CG]$ to denote the fragment of $\regexp$  excluding $\$ n$, 
   		\item If $e = e_1 e_2$ or $e_1 + e_2$ then $r$ is a subexpression of $e_1$
   		or $e_2$
   		
-  		\item If $e = e_1^{\ast}$ or $(e_1)$ then $r$ is a subexpression of $e_1$
+  		\item If $e = e_1^{\ast}$, $e_1^{\ast?}$, or $(e_1)$, then $e_1$ is a subexpression of $e$.
   	\end{itemize}
   	We use $S (e)$ to denote the set of all subexpressions of $e$.
   \end{definition}
@@ -96,12 +96,18 @@ We are going to define the semantics of $\regexp$, which uses a concept of match
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
   		$i \in [k]$, $w'_i \neq \varepsilon$, even if $\varepsilon \in L
   		(e'_1)$.
-  		
+%
+  		\item If $e' = {e'_1}^{\ast?}$, then when $w' = \varepsilon$, $\alpha$ is a
+  		leaf, otherwise there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
+  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
+  		$i \in [k]$, $w'_i \neq \varepsilon$, even if $\varepsilon \in L
+  		(e'_1)$.
+%		
   		\item If $e' = (e'_1)$, then $\alpha$ has a single child $\alpha_1 = (w', e'_1)$.
-  		
+ % 		
   		\item If $e' = a$ (resp. $e' = \varepsilon$), then $\alpha$ is a leaf and
   		$w' = a$ (resp. $w' = \varepsilon$).
-		
+%		
 		\item If $e' = \$n$, then $\alpha$ is a leaf of $T$, moreover, let $e'' \in S(e)$ be enclosed by the $n$-th pair of parentheses in $e$ and $\beta = (w_1, e_1)$ be the last node preceding $\alpha$ in $T$ such that $e_1 = e''$, according to the left-to-right ordering of the nodes, then $w' = w_1$.
   	\end{itemize}
   	
@@ -128,18 +134,24 @@ Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the roo
   		\item $e = e_1 + e_2$.
   		\begin{itemize}
   			\item If $C (T) = (w, e_1)$ and $C (T') = (w', e_2)$, then $T >_e T'$.
-  			
+%  			
   			\item If $C (T) = (w, e_i)$ and $C (T') = (w', e_i)$ for some $i \in \{ 1,
   			2 \}$, then $T >_e T'$ iff $T_{(w, e_i)} >_{e_i} T'_{(w', e_i)}$.
   		\end{itemize}
   		\item $e = e_1 \cdot e_2$. Suppose $C (T) = (w_1, e_1) (w_2, e_2)$ and $C (T') =
   		(w_1', e_1) (w_2', e_2)$, then $T >_e T'$ when either $T_{(w_1, e_1)} >_{e_1}
   		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{e_2} T'_{(w_2', e_2)}$.
-  		
+%  		
   		\item $e = e_1^{\ast}$. If $T' $ is  a single node, i.e. $(\varepsilon, e)$, but $T$ is not, then $T >_e T'$.
   		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
   		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T')$
   		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
+  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{e_1} T'_{(w_j', e_1)}$.
+%
+  		\item $e = e_1^{\ast?}$. If $T$ is  a single node, i.e. $(\varepsilon, e)$, but $T'$ is not, then $T >_e T'$.
+  		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T)$
+  		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
   		\neq w_j'$, we have $T_{(w_j, e_1)} >_{e_1} T'_{(w_j', e_1)}$.
   	\end{itemize}
   	
