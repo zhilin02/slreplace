@@ -172,9 +172,9 @@ We also use $\Lang(e)$ to denote $\{w \in \Sigma^* \mid \cM_w(e) \neq \emptyset\
 %  	by $M_{e', e} (w)$, is the sequence of substrings $w_1 \ldots w_m$.
   \end{definition}
 
-\begin{example}
+\begin{example}\label{exmp-regex-semantics}
 Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w= baa$. Then $\cM_{w}(e) = \{T_1,T_2,T_3\}$ as illustrated in Figure~\ref{fig-regex-semantics}: (i), (ii), (iii).  Because  $(T_2)_{(\varepsilon, b^\ast)}$ is a single node, while $(T_1)_{(b,b^\ast)}$ is not, we have $(T_1)_{(b,b^\ast)} >_{w, b^\ast} (T_2)_{(\varepsilon, b^\ast)}$, thus $(T_1)_{(b, (b^\ast))} >_{w, (b^\ast)} (T_2)_{(\varepsilon, (b^\ast))}$. From the fact that $(T_1)_{(b, (b^\ast))}$ and $(T_2)_{(\varepsilon, (b^\ast))}$ are the left subtrees of $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ and $ (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ respectively, we deduce that $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} >_{w, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)} (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$, thus $(T_1)_{(b, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))} >_{w, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} (T_2)_{(ba, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))}$. From this, we conclude that $T_1 >_{w, e} T_2$. Similarly, we have $T_1 >_{w, e} T_3$. Therefore, $M_e(w) = T_1$. 
-Note that in $T_1$, the capturing group $((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))$ does not acquire the longest match.
+Note that in $T_1$, the capturing group $((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))$ does not acquire the longest match. Moreover, the match of $e$ in $baabba$ is $baa$, where the matches of the first and second capturing group are $b$ and $\varepsilon$ respectively, while the match of the third capturing group is undefined.
 \begin{figure*}[ht]
 \centering
 %\rule{\linewidth}{0cm}

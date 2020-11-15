@@ -121,15 +121,15 @@ where
 %	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
 %\end{remark}
 
-\zhilin{define the semantics here}
-
-The $\extract$ function 
-
+The $\extract_i(x, e)$ function extracts the match of the $i$-th capturing group in the match of $e$ in $x$, if the match of $e$ in $x$ exists (otherwise, the return value of the function is undefined). Note that if $i=0$, then $\extract_i(x, e)$ returns the match of $e$ in $x$. For instance, let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$, then $\extract_1(baabba, e)=b$ and $\extract_2(baabba, e)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}.
 
 The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
-\emph{pattern} that is a regular expression with capturing groups, and the \emph{replacement} string  which is a regular expression with reference only. For a given input string $x$, the function identifies all the substrings of $x$ matching the pattern and replace them with the corresponding strings specified by the replacement string.  
+\emph{pattern} $\pat \in \regexp[\sf CG]$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies the first, second, $\dots$, match of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string (where the references are replaced by the corresponding matches of the capturing groups).  For instance, let $\pat = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $\rep = \#\$1$, then  $\replaceall_{\pat, \rep}(baabba) = \#b\#bb$. 
 
+Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, each variable $x$ is assigned at most once, moreover, if it is assigned, then all its occurrences in the right-hand-sides of the assignment statements or in assertions are after the assignment statement of $x$.
 
+For a $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur in the left-hand-side of assignment statements. 
+The \emph{path feasibility} problem of a $\strline$ program is to decide whether there are valuations of the input variables so that the program can execute to the end.
 
 
 %
@@ -141,9 +141,12 @@ The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} st
 %For instance, $\replaceall(aababaab, (ab)^+, c) =ac\cdot \replaceall(aab, (ab)^+, c)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by the pattern parameter does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCHLW18} for the formal semantics of the $\replaceall$ function. To be consistent with the notation in this paper, for each regular expression $e$, we define
 %the string function $\replaceall_e: \ialphabet^* \times \ialphabet^* \rightarrow \ialphabet^*$ such that for $u, v \in \ialphabet^*$, $\replaceall_e(u, v) = \replaceall(u, e, v)$, and we write $\replaceall(x, e, y)$ as $\replaceall_e(x,y)$.
 
-\subsection{Undecidability: Regular expressions with capturing groups and back references}
+It turns out that the path feasibility problem is undecidable, attributed to the the back references in assertion statements. 
 
-$\strline$ is in general undecidable, as a result of the back references.
+\begin{proposition}\label{prop-und}
+The path feasibility problem of $\strline$ is undecidable.
+\end{proposition}
 
-\zhilin{Decidable fragments? Could we assume that the assertions $\ASSERT{x \in e'}$ where $e'$ contains back references are only for the input variables ?}
+The proof of Proposition~\ref{prop-und} is obtained by an encoding of post-correspondence-problem. \zhilin{details to be done}
 
+In the next section, we shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden. 
