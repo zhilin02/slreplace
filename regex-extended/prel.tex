@@ -4,7 +4,7 @@
 
 Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 
-We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$. 
+We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$. A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
 
 \begin{definition}[Finite-state automata] \label{def:nfa}
 	A \emph{(nondeterministic) finite-state automaton}
@@ -92,18 +92,18 @@ We  define the semantics of $\regexp$, which uses a concept of matches of $e \in
   		\item If $e' = e'_1 + e'_2$, then $\alpha$ has a single child $\alpha_1 = (w',
   		e'_i)$ where $i \in \{ 1, 2 \}$.
   		
-  		\item If $e' = {e'_1}^{\ast}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
+  		\item If $e' = {e'_1}^{\ast}$ or ${e'_1}^{\ast ?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
   		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
   		$i \in [k]$, $w'_i \neq \varepsilon$, (even if $\varepsilon \in L
   		(e'_1)$).
 %
-  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
-  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
-  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
-  		$i \in [k]$, $w'_i \neq \varepsilon$ (even if $\varepsilon \in L
-  		(e'_1)$).
-  		\tl{what is the difference?}
+%  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
+%  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
+%  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
+%  		$i \in [k]$, $w'_i \neq \varepsilon$ (even if $\varepsilon \in L
+%  		(e'_1)$).
+%  		\tl{what is the difference?}
 %		
   		\item If $e' = (e'_1)$, then $\alpha$ has a single child $\alpha_1 = (w', e'_1)$.
  % 		
@@ -117,57 +117,64 @@ We  define the semantics of $\regexp$, which uses a concept of matches of $e \in
  We use $T_\alpha$ to represent the subtree of $T$ rooted at $\alpha$.
  % 	where u is the root. 
 The notation $C(T)$ refers to the sequence of direct children of the root node of $T$ (and thus all direct subtrees).
-
-If a tree $T$ is a match of $e$ to a string $w$, then it is called a \emph{match tree} of $e$ \tl{to $w$?}. We use $\cM(e)$ to denote the set of all match trees of $e$.
-Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the root of a match of } e \mbox{ to } w\}$.
+%
+%If a tree $T$ is a match of $e$ to a string $w$, then it is called a \emph{match tree} of $e$ \tl{to $w$?}. 
+We use $\cM_{w}(e)$ to denote the set of all match trees of $e$ to $w$. Moreover, for $L \subseteq \Sigma^\ast$, we use $\cM_{L}(e)$ to denote the set of match trees of $e$ to some $w \in L$.
+We also use $\Lang(e)$ to denote $\{w \in \Sigma^* \mid \cM_w(e) \neq \emptyset\}$. 
   \end{definition}
   
   \begin{definition}[Semantics of $\regexp$]\label{def-regex-semantics}
   		
-  	For any $\regexp$ $e$, we recursively define a total order on $\cM(e)$, written $T
-  	>_e T'$ where $T, T' \in \cM(e)$, as follows:
+  	For any $\regexp$ $e$ and a string $w$, we recursively define a total order on $\cM_{\pref(w)}(e)$, written $T
+  	>_{w,e} T'$, where $T, T' \in \cM_{\pref(w)}(e)$, as follows:
   	\begin{itemize}
   		\item $e = \varepsilon$ or $e = a$ or $e = \$ n$. There is only one match tree, thus the
-  		order $>_e$ is empty.
+  		order $>_{w, e}$ is empty.
   		
-  		\item $e = (e_1)$. Suppose $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$,
-  		then $T >_e T'$ iff $T_{(w_1, e_1)} >_{e_1} T'_{(w_2, e_1)}$.
+  		\item $e = (e_1)$. Suppose that $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$ for some $w_1, w_2 \in \pref(w)$.
+  		Then $T >_{w,e} T'$ iff $T_{(w_1, e_1)} >_{w, e_1} T'_{(w_2, e_1)}$.
   		
   		\item $e = e_1 + e_2$.
   		\begin{itemize}
-  			\item If $C (T) = (w, e_1)$ and $C (T') = (w', e_2)$, then $T >_e T'$.
+  			\item If $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_2)$ for some $w_1, w_2 \in \pref(w)$, then $T >_{w,e} T'$.
 %  			
-  			\item If $C (T) = (w, e_i)$ and $C (T') = (w', e_i)$ for some $i \in \{ 1,
-  			2 \}$, then $T >_e T'$ iff $T_{(w, e_i)} >_{e_i} T'_{(w', e_i)}$.
+  			\item If $C (T) = (w_i, e_i)$ and $C (T') = (w'_i, e_i)$ for some $i \in \{ 1,
+  			2 \}$ and $w_i, w'_i \in \pref(w)$, then $T >_{w,e} T'$ iff $T_{(w_i, e_i)} >_{w, e_i} T'_{(w'_i, e_i)}$.
   		\end{itemize}
   		\item $e = e_1 \cdot e_2$. Suppose $C (T) = (w_1, e_1) (w_2, e_2)$ and $C (T') =
-  		(w_1', e_1) (w_2', e_2)$, then $T >_e T'$ when either $T_{(w_1, e_1)} >_{e_1}
-  		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{e_2} T'_{(w_2', e_2)}$.
+  		(w_1', e_1) (w_2', e_2)$, then $T >_{w,e} T'$ when either $T_{(w_1, e_1)} >_{w, e_1}
+  		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{w_1^{-1}w, e_2} T'_{(w_2', e_2)}$.
 %  		
-  		\item $e = e_1^{\ast}$. If $T' $ is  a single node $(\varepsilon, e)$, but $T$ is not, then $T >_e T'$.
-  		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T')$
+  		\item $e = e_1^{\ast}$. 
+		\begin{itemize}
+		\item If $T' $ is  a single node $(\varepsilon, e)$, but $T$ is not, then $T >_{w, e} T'$.
+  		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T')$
   		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{e_1} T'_{(w_j', e_1)}$.
+  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{(w_1\cdots w_{j-1})^{-1}w, e_1} T'_{(w_j', e_1)}$.
+		\end{itemize}
 %
-  		\item $e = e_1^{\ast?}$. If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_e T'$.
-  		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T)$
+  		\item $e = e_1^{\ast?}$. 
+		\begin{itemize}
+		\item If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
+  		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T)$
   		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{e_1} T'_{(w_j', e_1)}$.
+  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{(w_1\cdots w_{j-1})^{-1}w, e_1} T'_{(w_j', e_1)}$.
+		\end{itemize}
   	\end{itemize}
   	
-  	Let $e \in \regexp$ and $w \in \Lang(e)$. Then the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of the set $\{ T \in \cM(e) \mid \mbox{the root of } T \mbox{ is } (w, e) \}$.
+  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$. Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if there is $w \in  \Sigma^\ast\Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the accepting match of $e$ to $w'$ such that $w = w_1w'w_2$ for some $w_1,w_2\in \Sigma^\ast$ and for every nonempty suffix $w'_1$ of $w_1$, $w'_1w'w_2 \not \in \Lang(e)\Sigma^\ast$, otherwise, the match of $e$ in $w$ is undefined.  
 %  	
-  	For any subexpression $e'$ of $e$, suppose $(w_1, e') \ldots (w_m, e')$ are
-  	all the nodes labeled by $(w', e')$ with $w' \neq \varepsilon$, in the
-  	pre-order traversal of $M_e(w)$. Then the match result captured by $e'$, denoted
-  	by $M_{e', e} (w)$, is the sequence of substrings $w_1 \ldots w_m$.
+%  	For any subexpression $e'$ of $e$, suppose $(w_1, e') \ldots (w_m, e')$ are
+%  	all the nodes labeled by $(w', e')$ with $w' \neq \varepsilon$, in the
+%  	pre-order traversal of $M_e(w)$. Then the match result captured by $e'$, denoted
+%  	by $M_{e', e} (w)$, is the sequence of substrings $w_1 \ldots w_m$.
   \end{definition}
 
-\begin{example}
-Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w= baa$. Then the  match trees of $e$ to $w$ are $T_1,T_2,T_3$ in Figure~\ref{fig-regex-semantics}: (i), (ii), (iii).  Because  $(T_2)_{(\varepsilon, b^\ast)}$ is a single node, while $(T_1)_{(b,b^\ast)}$ is not, we have $(T_1)_{(b,b^\ast)} >_{b^\ast} (T_2)_{(\varepsilon, b^\ast)}$, thus $(T_1)_{(b, (b^\ast))} >_{(b^\ast)} (T_2)_{(\varepsilon, (b^\ast))}$. From the fact that $(T_1)_{(b, (b^\ast))}$ and $(T_2)_{(\varepsilon, (b^\ast))}$ are the left subtrees of $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ and $ (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ respectively, we deduce that $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} >_{(b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)} (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$, thus $(T_1)_{(b, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))} >_{((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} (T_2)_{(ba, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))}$. From this, we conclude that $T_1 >_e T_2$. Similarly, we have $T_1 >_e T_3$. Therefore, $M_e(w) = T_1$. 
-Note that in $T_1$, the capturing group $((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))$ does not acquire the longest match.
+\begin{example}\label{exmp-regex-semantics}
+Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w= baa$. Then $\cM_{w}(e) = \{T_1,T_2,T_3\}$ as illustrated in Figure~\ref{fig-regex-semantics}: (i), (ii), (iii).  Because  $(T_2)_{(\varepsilon, b^\ast)}$ is a single node, while $(T_1)_{(b,b^\ast)}$ is not, we have $(T_1)_{(b,b^\ast)} >_{w, b^\ast} (T_2)_{(\varepsilon, b^\ast)}$, thus $(T_1)_{(b, (b^\ast))} >_{w, (b^\ast)} (T_2)_{(\varepsilon, (b^\ast))}$. From the fact that $(T_1)_{(b, (b^\ast))}$ and $(T_2)_{(\varepsilon, (b^\ast))}$ are the left subtrees of $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ and $ (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ respectively, we deduce that $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} >_{w, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)} (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$, thus $(T_1)_{(b, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))} >_{w, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} (T_2)_{(ba, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))}$. From this, we conclude that $T_1 >_{w, e} T_2$. Similarly, we have $T_1 >_{w, e} T_3$. Therefore, $M_e(w) = T_1$. 
+Note that in $T_1$, the capturing group $((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))$ does not acquire the longest match. Moreover, the match of $e$ in $baabba$ is $baa$, where the matches of the first and second capturing group are $b$ and $\varepsilon$ respectively, while the match of the third capturing group is undefined.
 \begin{figure*}[ht]
 \centering
 %\rule{\linewidth}{0cm}
