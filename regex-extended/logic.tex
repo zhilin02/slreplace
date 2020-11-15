@@ -123,6 +123,24 @@ where
 
 \zhilin{define the semantics here}
 
+The $\extract$ function 
+
+
+The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
+\emph{pattern} that is a regular expression with capturing groups, and the \emph{replacement} string  which is a regular expression with reference only. For a given input string $x$, the function identifies all the substrings of $x$ matching the pattern and replace them with the corresponding strings specified by the replacement string.  
+
+
+
+
+%
+%For the semantics of $\replaceall$ function, in particular when the pattern is a regular expression, we adopt the \emph{leftmost and longest} matching. 
+
+
+
+
+%For instance, $\replaceall(aababaab, (ab)^+, c) =ac\cdot \replaceall(aab, (ab)^+, c)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by the pattern parameter does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCHLW18} for the formal semantics of the $\replaceall$ function. To be consistent with the notation in this paper, for each regular expression $e$, we define
+%the string function $\replaceall_e: \ialphabet^* \times \ialphabet^* \rightarrow \ialphabet^*$ such that for $u, v \in \ialphabet^*$, $\replaceall_e(u, v) = \replaceall(u, e, v)$, and we write $\replaceall(x, e, y)$ as $\replaceall_e(x,y)$.
+
 \subsection{Undecidability: Regular expressions with capturing groups and back references}
 
 $\strline$ is in general undecidable, as a result of the back references.

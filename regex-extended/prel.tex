@@ -116,9 +116,9 @@ We  define the semantics of $\regexp$, which uses a concept of matches of $e \in
 %  	Whenever unambiguous, we use a node u to represent the whole subtree
  We use $T_\alpha$ to represent the subtree of $T$ rooted at $\alpha$.
  % 	where u is the root. 
-The notation $C(T)$ refers to the sequence of direct children of the root node of $T$
-  	(and thus all direct subtrees).
- If a tree $T$ is a match of $e$ to a string $w$, then it is called a \emph{match tree} of $e$ \tl{to $w$?}. We use $\cM(e)$ to denote the set of all match trees of $e$.
+The notation $C(T)$ refers to the sequence of direct children of the root node of $T$ (and thus all direct subtrees).
+
+If a tree $T$ is a match of $e$ to a string $w$, then it is called a \emph{match tree} of $e$ \tl{to $w$?}. We use $\cM(e)$ to denote the set of all match trees of $e$.
 Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the root of a match of } e \mbox{ to } w\}$.
   \end{definition}
   
@@ -144,13 +144,13 @@ Moreover,  let $\Lang(e)$ denote $\{w \in \Sigma^* \mid (w, e) \mbox{ is the roo
   		(w_1', e_1) (w_2', e_2)$, then $T >_e T'$ when either $T_{(w_1, e_1)} >_{e_1}
   		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{e_2} T'_{(w_2', e_2)}$.
 %  		
-  		\item $e = e_1^{\ast}$. If $T' $ is  a single node, i.e. $(\varepsilon, e)$, but $T$ is not, then $T >_e T'$.
+  		\item $e = e_1^{\ast}$. If $T' $ is  a single node $(\varepsilon, e)$, but $T$ is not, then $T >_e T'$.
   		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
   		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T')$
   		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
   		\neq w_j'$, we have $T_{(w_j, e_1)} >_{e_1} T'_{(w_j', e_1)}$.
 %
-  		\item $e = e_1^{\ast?}$. If $T$ is  a single node, i.e. $(\varepsilon, e)$, but $T'$ is not, then $T >_e T'$.
+  		\item $e = e_1^{\ast?}$. If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_e T'$.
   		Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
   		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_e T'$ iff either when $C (T)$
   		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j

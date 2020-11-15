@@ -1,7 +1,41 @@
 
 \section{Introduction}
 
-stress regex, which admits features such as capturing groups, reference
+
+
+Strings are a fundamental data type in virtually all programming languages.
+Their generic nature can, however, lead to many subtle programming
+bugs, some with security consequences, e.g., cross-site scripting
+(XSS), which is among the OWASP Top 10 Application Security Risks
+\cite{owasp17}. 
+
+One effective
+automatic testing method for identifying subtle programming errors
+%automatically generating test cases
+%generation with a good coverage
+is based on \emph{symbolic execution}
+\cite{king76} and combinations with dynamic analysis
+called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
+See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
+which runs only \emph{concrete} program executions on different
+inputs, the techniques of symbolic execution analyse \emph{static} paths
+(also called symbolic executions) through the software system under test.
+%Since such a path is simply a sequence of assignments and
+%conditionals/assertions,
+Such a path can be viewed as a constraint $\varphi$ (over
+appropriate data domains) and the hope is that a fast
+solver is available for checking the satisfiability of $\varphi$ (i.e. to check
+the \emph{feasibility} of the static path), which can be used for generating
+inputs that lead to certain parts of the program or an erroneous behaviour.
+%a undesirable program behaviour.
+%or an exploration of a new part of the
+%system.
+
+
+A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
+
+
+In programming language, stress regex, which admits features such as capturing groups, reference
 
 
 symbolic execution requires SMT solving 
