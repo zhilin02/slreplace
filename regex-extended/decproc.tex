@@ -42,7 +42,7 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
   \item If $e = (e_1)$, then $A_e = A_{e_1}$.
   
   \item If $e = e_1 + e_2$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1,
-  \Sigma, \delta_1, q_0, F_1)$, $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma,
+  \Sigma, \delta_1, q_0, F_1)$ and $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma,
   \delta_2, q_0, F_2)$, then $A_e = (\{ q_0 \} \cup Q_1 \cup Q_2, \Sigma,
   \delta, q_0, F_1 \cup F_2)$, where $\delta$ is defined by following rules:
   \begin{itemize}
@@ -67,28 +67,32 @@ The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
      \end{array} \right. \]
   and $\delta$ is defined by following rules:
   \begin{itemize}
-    \item for any $q \neq q_0$, $a \in \Sigma$ and $q_1 \ldots q_n \in
-    \overline{Q_{_1}} \cup \overline{Q_2}$ such that $\delta_1 (q, a) = q_1
-    \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$, we have $\delta (q, a)
-    = q_1 \ldots q_n$
+    \item For any $q \in (Q_1 \cup Q_2) \backslash F_1$, $a \in \Sigma$ and
+    $q_1 \ldots q_n \in \overline{Q_{_1}} \cup \overline{Q_2}$ such that
+    $\delta_1 (q, a) = q_1 \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$,
+    we have $\delta (q, a) = q_1 \ldots q_n$
     
-    \item for any $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1 \ldots q_n$,
-    then we have $\delta (q_0, a) = q_1 \ldots q_n$
+    \item For any $q \in F_1 \backslash \{ q_0 \}$, $a \in \Sigma$, if
+    $\delta_1 (q, a) = q_1 \ldots q_m$ and $\delta_2 (q_0, a) = q_1' \ldots
+    q_n'$, then we have $\delta (q, a) = q_1 \ldots q_m q_1' \ldots q_n'$.
     
-    \item for any $a \in \Sigma$, if $\delta_2 (q_0, a) = q_1 \ldots q_n$,
-    then for every $q \in F_1$ we have $\delta (q, a) = q_1 \ldots q_n$
+    \item For any $a \in \Sigma$, suppose $\delta_1 (q_0, a) = q_1 \ldots q_m$
+    and $\delta_2 (q_0, a) = q_1' \ldots q_n'$. If $q_0 \in F_1$, then $\delta
+    (q_0, a) = q_1 \ldots q_m q_1' \ldots q_n'$. If not, $\delta (q_0, a) =
+    q_1 \ldots q_m$.
   \end{itemize}
   \item If $e = e_1^{\ast}$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1,
   \Sigma, \delta_1, q_0, F_1)$, then $A_e = (\{ q_0 \} \cup Q_1, \Sigma,
   \delta, q_0, F)$ where $F = F_1 \cup \{ q_0 \}$ and $\delta$ is defined by
   following rules:
   \begin{itemize}
-    \item for any $q \neq q_0$, $a \in \Sigma$ and $q_1 \ldots q_n \in
-    \overline{Q_1}$ such that $\delta_1 (q, a) = q_1 \ldots q_n$, we have
-    $\delta (q, a) = q_1 \ldots q_n$
+    \item For any $q \in (\{ q_0 \} \cup Q_1) \backslash \{ F_1 \}$, $a \in
+    \Sigma$ and $q_1 \ldots q_n \in \overline{Q_1}$ such that $\delta_1 (q, a)
+    = q_1 \ldots q_n$, we have $\delta (q, a) = q_1 \ldots q_n$
     
-    \item for any $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1 \ldots q_n$,
-    then for every $q \in F$ we have $\delta (q, a) = q_1 \ldots q_n$
+    \item For any $q \in F_1$ and $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1
+    \ldots q_m$ and $\delta_1 (q, a) = q_1' \ldots q_n'$, then for every we
+    have $\delta (q, a) = q_1 \ldots q_m q_1' \ldots q_n'$.
   \end{itemize}
 \end{itemize}
 
@@ -318,7 +322,7 @@ The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}
 %can simulate this behaviour using FTs and replaceAll.
 
 
-The main open question is the complexity of the SL fragment with replaceall function and prioritized streaming transducers. Note that PST can (hopefully) simulate 2FT (adapting Matt's proof?), so we could obtain nonelementary lower bound for SL with PST.
+The main open question is the complexity of the SL fragment with replaceall function and prioritized streaming transducers. Note that PSST can simulate 2FT (adapting Matt's proof?), so we could obtain nonelementary lower bound for SL with PSST.
 
 However, this variant of replaceall is quite different from the replaceall we had before ...
 
