@@ -32,9 +32,11 @@ inputs that lead to certain parts of the program or an erroneous behaviour.
 
 
 %
-In this paper, we focus on two string operations with emphasis on practical usage of  regular expressions. Rather than textbook style regular expressions, regular expressions used in programming languages are considerably more involved. 
+In this paper, we focus on two string operations with emphasis on practical usage of  regular expressions. Rather than textbook style regular expressions, regular expressions used in programming languages are considerably more involved. On particular feature we consider is the capturing group. This is particularly useful for string pattern matching 
+%Many regular expression matching libraries perform matching as a form of parsing by using capturing groups,and thus 
+where it can be returned what subexpression matched which substring. 
 
-On particular feature we consider is the capturing group, 
+%This form of regular expression matching requires theoretical un-derpinnings different from classical regular expressions as defined in formal language theory. 
 
 
 %which effective serves as a register when matching the regular expression to a string. Accompanying to the capturing groups 
@@ -46,7 +48,7 @@ On particular feature we consider is the capturing group,
 %
 %A complicating factor in this approach is introduced by the fact that the matching semantics dictates a single output string for each input string, obtained by using rules to determine a “highest priority” match among the potentially exponentially many possible ones (in contrast,[6]discusses non-deterministic capturing groups).
 
-the \emph{string-replace function}, 
+The \emph{string-replace function}, 
 which may be used to replace all occurrences of a string matching a pattern by 
 another string. 
 
@@ -75,17 +77,18 @@ the replace-all functionality) is omnipresent in HTML5 applications
 A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
 
 
-In programming language, stress regex, which admits features such as capturing groups, reference
 
 
-symbolic execution requires SMT solving 
+%In programming language, stress regex, which admits features such as capturing groups, reference
+
+
+%symbolic execution requires SMT solving 
 
 The semantics of regular expressions with capturing groups and back references is rather involved. One of the reasons is that different languages may choose different semantics for a regex to match the string when the regex is served as a pattern. 
 
-To capture the semantics, priority is introduced, giving rise to an extension of the standard finite-state automata. 
+To capture the semantics, priority is introduced, giving rise to an extension of the standard finite-state automata. However, this is not sufficient for capturing string operations. For that purpose, we introduce  a new transducer model, prioritized streaming string transducer (PSST) which is a combination of priority which is essential for modelling capturing groups and streaming transducers which are a highly expressive formalism for modelling string operations. 
 
-the main contribution is to introduce  a new transducer model, prioritized streaming string transducer (PSST) with the  motivation 
-(1) using the priority to model regular expressions features such as capturing groups and (2) streaming transducers as a generic and expressive model for string manipulation. For instance, it can capture, among others, the reverse operation. 
+%(1) using the priority to model regular expressions features such as capturing groups and (2) streaming transducers as a generic and expressive model for string manipulation. For instance, it can capture, among others, the reverse operation. 
 
 The new contribution: 
 

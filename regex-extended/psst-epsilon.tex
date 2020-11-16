@@ -49,14 +49,14 @@ Note that PFAs differ from FAs only in the way that the strings are accepted, th
 \begin{example}
 The PFAs corresponding to $a^\ast$ and $a^{\ast?}$ respectively are illustrated in Figure~\ref{fig-pfa}: (i) and (ii), where the dashed line represents $\pi_2(\tau(q_0))$ (of lower priority than the $a$-transition), the thicker solid line represents $\pi_1(\tau(q_0))$ (of higher priority than the $a$-transition), and the doubly circled state $q_1$ is a final state.
 
-%\begin{figure}[ht]
-%\centering
-%%\rule{\linewidth}{0cm}
-%\includegraphics[scale=0.8]{pfa.pdf}
-%\caption{The PFAs for $a^\ast$ and $a^{\ast?}$}
-%\label{fig-pfa}
-%\end{figure}
-%
+\begin{figure}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.8]{pfa.pdf}
+\caption{The PFAs for $a^\ast$ and $a^{\ast?}$}
+\label{fig-pfa}
+\end{figure}
+
 \end{example}
 
 \begin{remark}
@@ -103,7 +103,7 @@ The accepting run of $\psst$ on an input $w$ is a run of $\psst$ on $w$ of the h
 
 \zhilin{stopped here}
 \begin{example}
-The PSST $\cT_{\sf nameReg}=(Q, \Sigma, X, \delta, E,  q_{0}, F$ mentioned in Section~\ref{sec:mot} is illustrated in Figure~\ref{fig-psst-exmp}, where $Q = \{q_0, \dots, q_{10}\}$, $X= \{x_1, x_2, x_3, x_4\}$ with $x_1, x_2, x_3$ recording the matches of the 1st, 2nd, 3rd capturing group, and $x_4$ recording the string after the replacements, $F(q_{10}) = x_4 x_2 \backslash {\rm s} x_1$ denotes the final output, and $\delta, E$ are illustrated by the edges, e.g. $\delta(q_4, \backslash\mbox{s}) = q_5q_{6}$ and $E(q_4, \backslash\mbox{s}, q_5)(x_2) = x_2 \backslash s$.  Note that the identity assignments, e.g. $E(q_4, \backslash\mbox{s}, q_5)(x') = x'$ for $x' \in \{x_1, x_3, x_4\}$, are omitted in Figure~\ref{fig-psst-exmp}, for readability. From $\delta(q_4, \backslash s) = q_5q_{6}$, we know that $q_5$ is prior to $q_6$. Therefore, whenever $\cT_{\sf nameReg}$ reads $\backslash$s at the state $q_4$,  it will choose to go the state $q_5$ greedily, unless this choice would lead to the nonacceptance (in this case, $q_6$ will be chosen). Moreover, the symbol $\ell$ is used therein to denote the current input letter scanned by $\cT_{\sf nameReg}$.
+The PSST $\cT_{\sf nameReg}=(Q, \Sigma, X, \delta, E,  q_{0}, F)$ mentioned in Section~\ref{sec:mot} is illustrated in Figure~\ref{fig-psst-exmp}, where $Q = \{q_0, \dots, q_{10}\}$, $X= \{x_1, x_2, x_3, x_4\}$ with $x_1, x_2, x_3$ recording the matches of the 1st, 2nd, 3rd capturing group, and $x_4$ recording the string after the replacements, $F(q_{10}) = x_4 x_2 \backslash {\rm s} x_1$ denotes the final output, and $\delta, E$ are illustrated by the edges, e.g. $\delta(q_4, \backslash\mbox{s}) = q_5q_{6}$ and $E(q_4, \backslash\mbox{s}, q_5)(x_2) = x_2 \backslash s$.  Note that the identity assignments, e.g. $E(q_4, \backslash\mbox{s}, q_5)(x') = x'$ for $x' \in \{x_1, x_3, x_4\}$, are omitted in Figure~\ref{fig-psst-exmp}, for readability. From $\delta(q_4, \backslash s) = q_5q_{6}$, we know that $q_5$ is prior to $q_6$. Therefore, whenever $\cT_{\sf nameReg}$ reads $\backslash$s at the state $q_4$,  it will choose to go the state $q_5$ greedily, unless this choice would lead to the nonacceptance (in this case, $q_6$ will be chosen). Moreover, the symbol $\ell$ is used therein to denote the current input letter scanned by $\cT_{\sf nameReg}$.
 \begin{figure*}[ht]
 \centering
 %\rule{\linewidth}{0cm}
