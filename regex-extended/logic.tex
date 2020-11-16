@@ -147,6 +147,15 @@ It turns out that the path feasibility problem is undecidable, attributed to the
 The path feasibility problem of $\strline$ is undecidable.
 \end{proposition}
 
-The proof of Proposition~\ref{prop-und} is obtained by an encoding of post-correspondence-problem. \zhilin{details to be done}
+The proof of Proposition~\ref{prop-und} is obtained by an encoding of post correspondence problem (PCP).
+Let $\Sigma$ be a finite alphabet such that $\# \not\in \Sigma$ and $[n] \cap \Sigma = \emptyset$, $(u_i, v_i)_{i \in [n]}$ be a PCP instance with $u_i, v_i \in \Sigma^\ast$. A solution of the PCP instance is a string $i_1 \cdots i_m$ with $i_j \in [n]$ for every $j \in [m]$ such that $u_{i_1} \cdots u_{i_m} = v_{i_1} \cdots v_{i_m}$. We will use $\replaceall$ to encode the generation of the strings $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$ from $i_1 \cdots i_m$, then use a regular expression with  capturing groups and back references to verify the equality of $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$. Specifically, suppose $\# \not \in \Sigma$, then the PCP instance is encoded by the following $\strline$ program,
+\[
+\begin{array}{l}
+\ASSERT{x_0 \in \{1, \cdots, n\}^+}; \\
+x_1 := \replaceall_{1, u_1}(x_0); \cdots; x_n:=\replaceall_{n, u_n}(x_{n-1}); \\
+y_1:=\replaceall_{1, v_1}(x_0); \cdots; y_n:=\replaceall_{n, u_n}(y_{n-1});\\
+z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
+\end{array}
+\]
 
 In the next section, we shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden. 
