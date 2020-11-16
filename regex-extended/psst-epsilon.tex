@@ -13,19 +13,22 @@ For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_
 
 \begin{definition}[Prioritized Finite-state Automata]\label{def-pfa}
   A \emph{prioritized finite-state automaton} (PFA) over a finite alphabet $\Sigma$ is a tuple $\pnfa=(Q, \Sigma, \delta, \tau, q_0, F)$ where $\delta \in Q
-  \times \Sigma \rightarrow \overline{Q}$ and $\tau \in Q \rightarrow \overline{Q} \times \overline{Q}$ such that for every $q \in Q$, if $\tau(q) = (P_1; P_2)$, then $P_1 \cap P_2 = \emptyset$. For $\tau(q) = (P_1; P_2)$, we will use $\pi_1(\tau(q))$ and $\pi_2(\tau(q))$ to denote $P_1$ and $P_2$ respectively. The definition of $Q$, $q_0$ and $F$ is the same as ordinary FA. (Intuitively, $\tau(q)=(P_1; P_2)$ specifies the $\varepsilon$-transitions at $q$, with the intention that the $\varepsilon$-transitions to the states in $P_1$ resp. $P_2$ have higher resp. lower priorities than the non-$\varepsilon$-transitions out of $q$.)
+  \times \Sigma \rightarrow \overline{Q}$ and $\tau \in Q \rightarrow \overline{Q} \times \overline{Q}$ such that for every $q \in Q$, if $\tau(q) = (P_1; P_2)$, then $P_1 \cap P_2 = \emptyset$. 
+  The definition of $Q$, $q_0$ and $F$ is the same as ordinary FA.
+\end{definition}
+  For $\tau(q) = (P_1; P_2)$, we will use $\pi_1(\tau(q))$ and $\pi_2(\tau(q))$ to denote $P_1$ and $P_2$ respectively.  With slight abuse of notation, we write $q\in (P_1; P_2)$ for $q\in P_1\cup P_2$. Intuitively, $\tau(q)=(P_1; P_2)$ specifies the $\varepsilon$-transitions at $q$, with the intention that the $\varepsilon$-transitions to the states in $P_1$ resp. $P_2$ have higher resp. lower priorities than the non-$\varepsilon$-transitions out of $q$.)
   
-An run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ such that 
+A  run of $\pnfa$ is the sequence $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ such that 
 \begin{itemize}
 %\item $q_m \in F$,
-\item for any $i \in [m]$, either $\sigma_i \in \Sigma$ and $q_i \in \delta (q_{i - 1}, \sigma_i)$, or $\sigma_i = \varepsilon$ and $q_i \in \tau(q_{i-1})$,
+\item for any $i \in [m]$, either $\sigma_i \in \Sigma$ and $q_i \in \delta (q_{i - 1}, \sigma_i)$, or $\sigma_i = \varepsilon$ and $q_i \in \tau(q_{i-1)}$ %\pi_1(\tau(q_{i-1}))\cup \pi_2(\tau(q_{i-1}))$,
 \item for every subsequence $q_i \sigma_{i+1} q_{i+1} \ldots \sigma_{j} q_j$ such that  $i < j$ and $\sigma_{i+1} = \cdots = \sigma_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
 \end{itemize}
 For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigma'_1 q_1' \ldots \sigma'_n q'_n$ such that $\sigma_1 \ldots \sigma_m = \sigma'_1 \ldots \sigma'_n$, we say that $p$ is of a higher priority over $p'$ if 
 \begin{itemize}
 \item either $p'$ is a prefix of $p$ (in this case, the transitions of $p$ after $p'$ are all $\varepsilon$-transitions), 
 %
-\item or there is an index $j$ satisfying one of the following constraints, 
+\item or there is an index $j$ satisfying one of the following constraints:
 \begin{itemize}
 \item $q_0 \sigma_1 q_1 \ldots q_{j-1} \sigma_j = q_0 \sigma'_1 q'_1 \ldots q'_{j-1} \sigma'_j$, $q_j \neq q'_j$, $\sigma_j \in \Sigma$, and $\delta (q_{j - 1}, \sigma_j) =(\ldots, q_j, \ldots, q_j', \ldots)$,
 %
@@ -39,24 +42,25 @@ For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigm
 
 The \emph{accepting} run of $\pnfa$ on $w$ is a run $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ of $\pnfa$ on $w$ with the \emph{highest} priority such that $q_m \in F$. The language of $\pnfa$, denoted as $\Lang(\pnfa)$, is the set of
  strings on which $\pnfa$ has an accepting run.
-\end{definition}
+
 
 Note that PFAs differ from FAs only in the way that the strings are accepted, they still define regular languages. 
 
 \begin{example}
 The PFAs corresponding to $a^\ast$ and $a^{\ast?}$ respectively are illustrated in Figure~\ref{fig-pfa}: (i) and (ii), where the dashed line represents $\pi_2(\tau(q_0))$ (of lower priority than the $a$-transition), the thicker solid line represents $\pi_1(\tau(q_0))$ (of higher priority than the $a$-transition), and the doubly circled state $q_1$ is a final state.
-\begin{figure}[ht]
-\centering
-%\rule{\linewidth}{0cm}
-\includegraphics[scale=0.8]{pfa.pdf}
-\caption{The PFAs for $a^\ast$ and $a^{\ast?}$}
-\label{fig-pfa}
-\end{figure}
+
+%\begin{figure}[ht]
+%\centering
+%%\rule{\linewidth}{0cm}
+%\includegraphics[scale=0.8]{pfa.pdf}
+%\caption{The PFAs for $a^\ast$ and $a^{\ast?}$}
+%\label{fig-pfa}
+%\end{figure}
 %
 \end{example}
 
 \begin{remark}
-We would like to remark that PFAs in Definition~\ref{def-pfa} are different from pNFAs in \cite{BM17} in the sense that the state set in a pNFA is partitioned into two disjoint subsets and the non-$\varepsilon$-transitions are deterministic, while this is not the case in PFAs. We choose this definition of PFAs as a more natural extension of FAs. 
+Remark that PFAs in Definition~\ref{def-pfa} are different from pNFAs in \cite{BM17} in the sense that the state set in a pNFA is partitioned into two disjoint subsets and the non-$\varepsilon$-transitions are deterministic, while this is not the case in PFAs. We choose this definition of PFAs as a more natural extension of FAs. 
 \end{remark}
 
 The priorities of PFAs are used to model the eager and greedy semantics of $\regexp$, as we shall see in Section~\ref{construction:pnfa}.
@@ -69,7 +73,7 @@ and streaming string transducers \cite{AC10,AD11}.
   
 \begin{definition}[Prioritized Streaming String Transducers]
 A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, \Sigma, X, \delta, \tau, E, q_0, F)$, where $Q$ a
-finite set of states, $\Sigma$ is the input and output alphabet, $X$ a finite set of variables, $\delta \in Q \times \Sigma \rightarrow \overline{Q}$, $\tau \in Q \rightarrow \overline{Q} \times \overline{Q}$, $E$ is a partial function from $Q \times \Sigma^\varepsilon \times
+finite set of states, $\Sigma$ is the input and output alphabet, $X$ is a finite set of variables, $\delta \in Q \times \Sigma \rightarrow \overline{Q}$, $\tau \in Q \rightarrow \overline{Q} \times \overline{Q}$, $E$ is a partial function from $Q \times \Sigma^\varepsilon \times
   Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$, i.e. the set of assignments,
    $q_0 \in Q$ is the initial state, and $F$ is a partial function
   from $Q$ to $(X \cup \Sigma)^{\ast}$.
@@ -81,7 +85,7 @@ A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$ 
  for each $i \in [m]$, 
 \begin{itemize}
 \item either $\sigma_i \in \Sigma$, $q_i \in \delta (q_{i-1}, \sigma_i)$, and $s_i = E (q_{i - 1}, \sigma_i, q_i)$, 
-\item or $\sigma_i = \varepsilon$, $q_i \in \tau(q_{i-1})$, and $s_i = E (q_{i - 1}, \varepsilon, q_i)$.
+\item or $\sigma_i = \varepsilon$, $q_i \in \tau(q_{i-1})$ and $s_i = E (q_{i - 1}, \varepsilon, q_i)$.
 \end{itemize}
 %
 %\item for every subsequence $q_i \sigma_{i+1} s_{i+1} q_{i+1} \ldots \sigma_{j} s_j q_j$ such that  $i < j$ and $\sigma_{i+1} = \cdots = \sigma_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
