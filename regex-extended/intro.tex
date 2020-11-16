@@ -2,6 +2,9 @@
 \section{Introduction}
 
 
+% general intro on string constraint solving
+
+%
 
 Strings are a fundamental data type in virtually all programming languages.
 Their generic nature can, however, lead to many subtle programming
@@ -33,9 +36,21 @@ inputs that lead to certain parts of the program or an erroneous behaviour.
 
 
 %
-In this paper, we focus on two string operations with emphasis on extended regular expressions. 
+In this paper, we focus on two string operations with emphasis on practical usage of  regular expressions. Rather than textbook style regular expressions, regular expressions used in programming languages are considerably more involved. 
 
-s the \emph{string-replace function}, 
+On particular feature we consider is the capturing group, 
+
+
+%which effective serves as a register when matching the regular expression to a string. Accompanying to the capturing groups 
+
+
+%Many regular expression matching libraries perform matching as a form of parsing by using capturing groups,and thus output what subexpression matched which substring[9]. This form of regular expression matching requires theoretical un-derpinnings different from classical regular expressions as defined in formal language theory. 
+%
+%A popular implementation strategy used for performing regular expression matching (or parsing) with capturing groups, used for example in Java, .NET and the PCRE library[14], is a worst-case exponential time depth-first search strategy. A formal approach to matching with capturing groups can be obtained by using finite state transducers that output annotations on the input string to signify what subexpression matched which substring[16]. 
+%
+%A complicating factor in this approach is introduced by the fact that the matching semantics dictates a single output string for each input string, obtained by using rules to determine a “highest priority” match among the potentially exponentially many possible ones (in contrast,[6]discusses non-deterministic capturing groups).
+
+the \emph{string-replace function}, 
 which may be used to replace either the \emph{first} occurrence or
 \emph{all} occurrences of a string (a string constant/variable, or a regular expression) by 
 another string (a string constant/variable). The replace function (especially 
