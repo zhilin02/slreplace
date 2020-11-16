@@ -32,6 +32,33 @@ inputs that lead to certain parts of the program or an erroneous behaviour.
 %system.
 
 
+%
+In this paper, we focus on two string operations with emphasis on extended regular expressions. 
+
+s the \emph{string-replace function}, 
+which may be used to replace either the \emph{first} occurrence or
+\emph{all} occurrences of a string (a string constant/variable, or a regular expression) by 
+another string (a string constant/variable). The replace function (especially 
+the replace-all functionality) is omnipresent in HTML5 applications
+\cite{LB16,TCJ16,YABI14}. 
+%\mat{What does it mean for the replace function to be convincingly argued?}
+For example, a standard industry defense against cross-site scripting 
+(XSS) vulnerabilities includes sanitising untrusted strings before adding them
+into the DOM (Document Object Model) or the HTML document. 
+This is typically done by %replacing every occurrence of
+various metacharacter-escaping mechanisms (see, for instance, 
+\cite{Kern14,BEK,OWASP-XSS}). An example of such a mechanism is backslash-escape, which replaces \emph{every
+	occurrence} of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
+string by \verb+\'+ and \verb+\"+. 
+In addition to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
+and \texttt{innerHTML} apply an \emph{implicit browser transduction} --- which
+decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input 
+string --- before inserting the input string into the DOM.
+Both of these examples can be expressed by (perhaps multiple) 
+applications of the string-replace function.
+Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} and Closure Templates~\cite{Closure} demonstrate the need for replacements involving variables.
+Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
+
 A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
 
 
