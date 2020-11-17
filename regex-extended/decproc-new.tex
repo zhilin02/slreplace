@@ -124,210 +124,131 @@ Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sig
 %For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
  
 %Figure.\ref{fig:pglushkov} also illustrates the subgraphs corresponding to direct subexpressions of $e$.
- 
-\zhilin{stopped here}
 
-\begin{definition}
-  Let $A_e$ be the pNFA constructed for $e$, and $p = q_0 \sigma_1 q_1 \ldots
-  \sigma_m q_m$ is the accepting run of $A_e$ on string w. For any subexpression $e'$ of $e$, we say a
-  consecutive sequence of states $q_i q_{i + 1} \ldots q_{j - 1} q_j$ in p is
-  a maximal $e'$-match, if $q_i \in \tmop{Start} (e')$, $q_j \in \tmop{End}
-  (e')$, $(q_{i - 1}, \sigma_i, q_i)$ is not a transition in $A_e [e']$, and
-  for any $k \in [i, j]$, $q_k$ is a vertex in $A_e [e']$. Moreover, if $j
-  \neq m$, then $(q_j, \sigma_{j + 1}, q_{j + 1})$ is not a transition in $A_e
-  [e']$.
+
+%\begin{definition}
+%Let $e \in \regexp[\sf CG]$ and $e'$ be a subexpression of $e$. Then a copy of $\cA_{e'}$ in $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$ is a PFA $(Q', \Sigma, \delta', \tau', q'_0, f'_0)$ such that  
+%\begin{itemize}
+%\item $Q' \subseteq Q$, $q'_0, f'_0 \in Q'$, 
+%\item $\delta'$ is the restriction of $\delta$ to $Q'$, with the outgoing transitions of $f'_0$ removed, specifically, for every $\sigma \in \Sigma$ and $q \in Q' \setminus \{f'_0\}$, $\delta'(q, \sigma) = \delta(q, \sigma)$, $\tau'(q) = \tau(q)$, $\delta'(f'_0, \sigma) = ()$, and $\tau'(f'_0) = ((); ())$,
+%\item $(Q', \Sigma, \delta', \tau', q'_0, f'_0)$ is isomorphic to $\cA_{e'}$.
+%\end{itemize}
+%\end{definition}
+
+From the aforementioned recursive construction of $\cA_e$, we know that for each subexpression $e'$ of $e$, a PFA for $e'$, which is isomorphic to $\cA_{e'}$, is also constructed. Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote this PFA for $e'$, which, roughly speaking, is a subgraph of $\cA_e$.
+%\begin{proposition}\label{prop-subexp}
+%Let $e \in \regexp[\sf CG]$. Then for every subexpression $e'$ of $e$, there is a unique copy of $\cA_{e'}$ in $\cA_e$, denoted by ${\sf Sub}_{e'}[\cA_e]$.
+%\end{proposition}
+
+%\begin{definition}
+%  Let $A_e$ be the pNFA constructed for $e$, and $p = q_0 \sigma_1 q_1 \ldots
+%  \sigma_m q_m$ is the accepting run of $A_e$ on string w. For any subexpression $e'$ of $e$, we say a
+%  consecutive sequence of states $q_i q_{i + 1} \ldots q_{j - 1} q_j$ in p is
+%  a maximal $e'$-match, if $q_i \in \tmop{Start} (e')$, $q_j \in \tmop{End}
+%  (e')$, $(q_{i - 1}, \sigma_i, q_i)$ is not a transition in $A_e [e']$, and
+%  for any $k \in [i, j]$, $q_k$ is a vertex in $A_e [e']$. Moreover, if $j
+%  \neq m$, then $(q_j, \sigma_{j + 1}, q_{j + 1})$ is not a transition in $A_e
+%  [e']$.
   
-  We use $p_{e', e} (w)$ to denote the sequence of disjoint maximal $e'$-match
-  $w_1 \ldots w_n$, in the order they occur in p. Note that in $A_e$, all
-  states except $q_0$ are labeled by a letter, thus a maximal $e'$-match can
-  be seen as a string.
-\end{definition}
+%  We use $p_{e', e} (w)$ to denote the sequence of disjoint maximal $e'$-match
+%  $w_1 \ldots w_n$, in the order they occur in p. Note that in $A_e$, all
+%  states except $q_0$ are labeled by a letter, thus a maximal $e'$-match can
+%  be seen as a string.
+%\end{definition}
 
-The following  theorem states the equivalence of the accepting match of a \regexp[\sf CG] $e$ and the accepting run of $A_e$ on the same input string, thus the construction precisely captures the semantics. % in \ref{semantics:regex}.
-\begin{theorem}
- \label{theorem:regex_pnfa_equiv}
-  For any regular expression e, subexpression $e'$ of e, and $w \in L (e)$,
-  $m_{e', e} (w) = p_{e', e} (w)$
-\end{theorem}
-
-For simplicity, we refer the reader to the appendix for proof.
+%The following  theorem states the equivalence of the accepting match of a \regexp[\sf CG] $e$ and the accepting run of $A_e$ on the same input string, thus the construction precisely captures the semantics. % in \ref{semantics:regex}.
+%\begin{theorem}
+% \label{theorem:regex_pnfa_equiv}
+%  For any regular expression e, subexpression $e'$ of e, and $w \in L (e)$,
+%  $m_{e', e} (w) = p_{e', e} (w)$
+%\end{theorem}
+%
+%For simplicity, we refer the reader to the appendix for proof.
 
 
  
 \subsection{Proof of Lemma~\ref{lem-extract}-\ref{lem-replace}}
 
+We first prove Lemma~\ref{lem-extract}, namely, show how to construct a PPST $\cT_{\extract_{i,e}}$ for $\extract_{i,e}$.
 
+\paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
+Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\hide{
-\begin{definition}[Two way NSST?]
-  The definition of 2NSST is just like 2FT, allowing bidirectional move of
-  NSST's head.
-\end{definition}
-
-\begin{note}
-  One thing is worth noting about this idea of 2NSST: \tmtextit{the pre-image
-  of 2NSST is still computable}. We just use a 2FA N to simulate the 2NSST, in
-  the same manner of the construction above. We can then transform the 2FA
-  into a one-way FA in exponential time.
-  
-  However, the expressive power of 2NSST is unknown (yet). I highly suspect
-  that 2NSST is equivalent to NSST, since the bidirectional move of head
-  provides the same function as variables, to some extent. Anyway, the
-  expressive power of NSST should be sufficient now.
-\end{note}
-
-All the function expressible by 2FT is also expressible by NSST, like
-\tmtextit{split}. Below is an example of what more NSST can express.
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\begin{definition}[Regular Expression with capturing group, regex]
-%  Suppose $\Gamma$ is some set of variables, x is an element of $\Gamma$. a is
-%  a character in $\Sigma$
-%  \[ \alpha \colons = \varepsilon |a| \alpha + \alpha | \alpha \circ \alpha |
-%     \alpha^{\ast} | (\alpha) \%x \]
-%  WLOG, we assume a variable occurs at most once in a regex.
-  
-%  the semantics of regex is defined as tuple $(w, w_x, w_y, \ldots)$ where w
-%  is the whole string matched, and $w_x$ is the string matched by the
-%  capturing group marked by x, etc. A more formal definition involves match
-%  trees and recursive definition.
-%  See{\cite{CSY03,CN09}}
-%\end{definition}
-
-%\begin{definition}[Semantics of $\replaceall_{\pat, \rep}$]
-%  Consider the constriant $y = \replaceall_{\pat, \rep}(x)$, where $\pat \in \regexp[\sf CG]$ and $\rep \in \refexp$.
-%  
-%The semantics of $\replaceall_{\pat, \rep}$ is  similar to that in {\cite{CCH+18}}, where the leftmost and longest matching of
-%  $e_1$ in $x$ is considered, with the difference that here the replacement string is obtained from a matching of $e_1$ by replacing every reference $\$ n$ in $e_2$ with the string matched by the subexpression corresponding to the $n$-th capturing group.
-%%  
-%\zhilin{A more formal definition should be added in the future.}
-%\end{definition}
-
-%\begin{remark}
-%  In the aforementioned definition of the semantics of $\replaceall_{\pat,\rep}(x)$, the matching of $\pat$ in $x$ is deterministic since the leftmost and longest matching is considered, and the process of matching the subexpressions is captured by the semantics in \ref{semantics:regex}.
-%  
-%Therefore, the $\replaceall_{e_1,e_2}(x)$ function can be seen as a precise modeling of that used in practical programming languages, e.g. Javascript. \zhilei{might need exemplification}
-%\end{remark}
-
-
-\begin{theorem}
-  Each $\pat \in \regexp[\sf CG]$ and $\rep \in \refexp$, $\replaceall_{\pat, \rep}$ can be modeled by a $\PSST${} $T_{e_1,e_2}$.
-\end{theorem}
-
-\begin{proof}
-
-Suppose pNFA $A_{e_1} =(Q, \Sigma,  \delta, q_0, F)$ is the Glushkov automaton constructed from $e_1 \in \regexp[\sf CG]$ by the modified algorithm in \ref{construction:pnfa}. From the algorithm, we know that $Q$ is the union of the initial state $q_0$ and the set of $a_i$'s where the $i$-th character occurring in $e$ is $a$.
-
-For each subexpression $e'$ of $e_1$, we use $C_{e'}$ to denote the set of subexpressions of $e'$ corresponding to a capturing group in $e'$, i.e. the set $\{v \in S(e')\mid \exists v'. v=(v')\}$.
-
-For each state $a_i$ of $A_{e_1}$, we define $C(a_i)$  as the set $\{ e' \in C_{e_1} \mid a_i \mbox{ is a vertex in }
-A_{e_1}[e']\}$. Intuitively, $C(a_i)$ represents the set of subexpressions in $C_{e_1}$ whose values should be updated when entering the state $a_i$ in $A_{e_1}$. 
-
-Moreover, for each $e' \in C_{e_1}$, we use $\ssym(e')$ (resp. $\esym(e')$) to denote the set of marked symbols that can be matched to the first  (resp. last) symbol of a string in $\Lang(e')$. For instance, let $e' = a(ab)^*$, then $\ssym(e') = \{a_1\}$ and $\esym(e') = \{a_1, b_3\}$. 
-
-For each $e' \in C_{e_1}$, we introduce a string variable $x_{e'}$. Besides, a special string variable $x_{res}$ is introduced to store, accumulate, and denote the result of $\replaceall_{e_1,e_2}$. Let $X$ denote the set of these string variables.
-
-
-Then we construct the \PSST{} $T_{e_1,e_2} = (Q', \Sigma, X, E, \delta', q_0', F')$, by using the idea of parsing automata in \cite{CCH+18}. Note in the below, we omit the priority of some transitions and simply write $q' \in \delta'(q,a)$ instead of $\delta'(q,a)=(q_1,q_2,\ldots,q_n)$. In this case, the priority is immaterial and any combination will work.
-
-At first, $q'_0= (\{ q_0
-\}, \tmop{left}, \emptyset)$. The set of transition rules $\delta'$ is defined by the following rules.
-
+Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\extract_{i,e}} = (Q \cup \{q'_0, f'_0\}, \Sigma, X, \delta', \tau', E, q'_0, F)$ where
 \begin{itemize}
-  
-  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$, $a \in \Sigma$,
-  $\delta (S, a) \cap F = \emptyset$ and $\delta^{\ast} (\rho \{ q_0 \}, a) \cap F =
-  \emptyset$, then
-  \[ (\tmop{red} (\delta^{\ast} (\rho \{ q_0 \}, a)) \{ q_0 \}, \tmop{left}, \delta
-     (S, a)) \in \delta' ((\rho \{ q_0 \}, \tmop{left}, S), a) \]
-  and the corresponding assignment is defined as $s(x_{res}) = res \concat a$ and $s(x_{e'})=x_{e'}$ for
-  every $e' \in C_{e_1}$.
-  
-  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$ and $a \in \Sigma$.
-  If $\delta (S, a) \cap F = \emptyset$, $\delta^{\ast} (\rho, a) \cap F = \emptyset$
-  and $\delta (q_0, a) \nsubseteq \delta (S, a) \cup \delta^{\ast} (\rho, a)$, then
-  for every $q' \in \delta (q_0, a) \backslash \delta (S, a) \cup \delta^{\ast}
-  (\rho, a)$, we have
-  \[ (\{ q' \}, \tmop{long}, \delta (S, a) \cup \delta^{\ast} (\rho, a)) \in \delta'
-     ((\rho \{ q_0 \}, \tmop{left}, S), a) \]
-  and $s$ is the assignment function defined as follows: $s(x_{e'}) = a$ for every $e'  \in C(q')$, and $s(y)=y$ for every other string variable $y \in X$.
-  
-  \item Suppose $(\{ q \}, \tmop{long}, S) \in Q',$ and $a \in \Sigma$. If
-  $\delta (S, a) \cap F = \emptyset$, $\delta (q, a) \nsubseteq \delta (S,
-  a)$, and $\delta (q, a) \backslash \delta (S, a) = \{ q_1, \ldots,
-  q_n \}$, where $\delta (q, a) = \ldots q_i \ldots q_j \ldots$ for all $i < j$,
-  we have $\forall i \in [n]$
-  \[ (\{ q_i \}, \tmop{long}, \delta (S, a)) \in \delta' ((\{ q \},
-     \tmop{long}, S), a) \]
-  and the transition to $(\{ q_i \}, \tmop{long}, \delta (S, a))$ is more prioritized than the transition to
-  $(\{ q_j \}, \tmop{long}, \delta (S, a))$ for all $i < j$. 
-  
-  For any $i \in [n]$, the corresponding assignment $s_i$ is defined as follows:
-  
-  Suppose $\Theta = \{e' \mid e' = e''^*  \wedge
-  q \in \esym(e'') \wedge q_i \in \ssym(e'') \}$ and $C_{\Theta}$ denotes the set of subexpression $e''$ such that $e'' \in C_{e'}$ for some $e' \in \Theta$.
-Then 
+\item $q'_0, f'_0 \not \in Q$,
+
+\item  $X = \{x\}$,
+%
+\item $F(f'_0) = x$, and $F(q')$ is undefined for every $q' \in Q \cup \{q'_0\}$,
+
+\item $\delta'$ and $\tau'$ are obtained from $\delta$ and $\tau$ as follows,
 \begin{itemize}
-\item for each $e \in C_{\Theta} \cap C(q_i)$, $s(x_e) = a$,
+\item $\delta'(q'_0, \sigma) = (q'_0)$ for every $\sigma \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
 %
-\item for each $e \in C_{\Theta} \setminus C(q_i)$, $s(x_e) = \varepsilon$, 
+\item  for every $q \in Q \setminus \{f_0\}$ and $\sigma \in \Sigma$, $\delta'(q, \sigma) = \delta(q, \sigma)$ and $\tau'(q) = \tau(q)$, 
 %
-\item for each $e \in C(q_i) \setminus C_\Theta$, $s(x_e) = x_e \concat a$,
+\item $\delta'(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$ and $\tau'(f_0) = ((f'_0); ())$,
 %
-\item for each $e \in X \setminus (C_\Theta \cup C(q_i))$, $s(x_e)= x_e$.
+\item $\delta'(f'_0, \sigma) = (f'_0)$ for every $\sigma \in \Sigma$ and $\tau'(f'_0) = ((); ())$,
+\end{itemize}
+%
+\item $E$ is defined as follows, 
+\begin{itemize}
+\item for every transition $(q, \sigma, q')$ with  $\sigma \in \Sigma^\varepsilon$ in ${\sf Sub}_{e'}[\cA_e]$, we have $E(q, \sigma, q')(x) = x\sigma$, 
+\item for all the other transitions $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ in $\cA_e$, we have $E(q, \sigma, q')(x) = x$, 
+\item $E(q'_0, \sigma, q'_0)(x) = x$ for every $\sigma \in \Sigma$, $E(q'_0, \varepsilon, q_0)(x) = x$, 
+\item $E(f_0, \varepsilon, f'_0)(x) = x$, and $E(f'_0, \sigma, f'_0)(x) = x$ for every $\sigma \in \Sigma$.
+\end{itemize}
+%
 \end{itemize}
 
-    \item Suppose $(\{ q \}, \tmop{long}, S) \in Q'$, and $a \in \Sigma$. If
-  $\delta (S, a) \cap F = \emptyset$, and $\delta (q, a) \cap F = \{ q_1,
-  \ldots, q_n \}$, where $\delta (q, a) = \ldots q_i \ldots q_j \ldots$ for all
-  $i < j$, we have $\forall i \in [n]$,
-  \[ (\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \{ q_i \}) \in \delta' ((\{ q
-     \}, \tmop{long}, S), a) \]
-  and the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \{ q_i \})$ is more
-  prioritized than the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \{ q_j \})$
-  for all $i < j$.
-  
-  For every $i \in [n]$, the corresponding assignment $s_i$ is defined as follows:
-  
-  Suppose $\Theta = \{e' \mid e' = e''^*  \wedge
-  q \in \esym(e'') \wedge q_i \in \ssym(e'') \}$ and $C_{\Theta}$ denotes the set of $e''$ such that $e'' \in C_{e'}$ for some $e' \in \Theta$. Then $s (x_{res}) = x_{res}  \concat b_1   \ldots  b_n$ such that $e_2 = a_1 \ldots a_n$, and for each $i \in [n]$, if $a_i  \in \Sigma$, then $b_i = a_i$, otherwise, $a_i = \$ j$ for some $j$, let $e' \in C_{e_1}$ be the subexpression corresponding to the $j$-th capturing group of $e_1$, then:
-  
-  \begin{itemize}
-\item if $e' \in C_{\Theta} \cap C(q_i)$, $b_j = a$,
-%
-\item if $e' \in C_{\Theta} \setminus C(q_i)$, $b_j = \varepsilon$, 
-%
-\item if $e' \in C(q_i) \setminus C_\Theta$, $b_j= x_{e'} \concat a$,
-%
-\item if $e' \in X \setminus (C_\Theta \cup C(q_i))$, $b_j = x_{e'}$.
-\end{itemize}
-  
-  Moreover, $s(y) = \varepsilon$ for every other variable $y \in X$
-  
-  \item Suppose $(\rho \{ q_0 \}, \tmop{left}, S) \in Q'$, $a \in \Sigma$,
-  $\delta (S, a) \cap F = \emptyset, \delta^{\ast} (\rho, a) \cap F = \emptyset,
-  \delta (q_0, a) \cap F = \{ q_1, \ldots, q_n \}$ where $\delta (q, a) =
-  \ldots q_i \ldots q_j \ldots$ for all $i < j$. We have for every $i \in [n],$
-  \[ (\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \delta^{\ast} (\rho, a) \cup \{ q_i
-     \}) \in \delta' ((\rho \{ q_0 \}, \tmop{left}, S), a) \]
-  and the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a) \cup \delta^{\ast} (\rho, a) \cup \{
-  q_i \})$ is more prioritized than the transition to $(\{ q_0 \}, \tmop{left}, \delta (S, a)
-  \cup \delta^{\ast} (\rho, a) \cup \{ q_j \})$ for all $i < j$.
-  
-  For every $i \in [n]$, the corresponding assignment $s_i$
-  is defined as:
-  
-  $s (x_{res}) = x_{res}  \concat b_1   \ldots  b_n$ such that $e_2 = a_1 \ldots a_n$, and for each $i \in [n]$, if $a_i  \in \Sigma$, then $b_i = a_i$, otherwise, $a_i = \$ j$ for some $j$, let $e' \in C_{e_1}$ be the subexpression corresponding to the $j$-th capturing group of $e_1$, then if $e' \in C(q_i)$, $b_j = a$, otherwise $b_j = \varepsilon$
 
-  Moreover, $s(y) = \varepsilon$ for every other variable $y \in X$
-  
+
+\paragraph*{Construction of $\cT_{\replaceall_{\pat, \rep}}$.} 
+Let $\$i_1, \cdots, \$i_k$ with $i_1 < \cdots < i_k$ be an enumeration of all the references in $\rep$. 
+Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group.
+Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall_{\pat, \rep}} =$ $(Q \cup \{q'_0, f'_0\}$, $\Sigma$, $X$, $\delta'$, $\tau', E, q'_0, F)$ where
+\begin{itemize}
+\item $q'_0, f'_0 \not \in Q$,
+
+\item  $X = \{x_0, x_1, \cdots, x_k\}$,
+%
+\item $F(f'_0) = x_0$, and $F(q')$ is undefined for every $q' \in Q \cup \{q'_0\}$,
+%
+\item $\delta'$ and $\tau'$ are obtained from $\delta$ and $\tau$ as follows,
+\begin{itemize}
+\item $\delta'(q'_0, \sigma) = (q'_0)$ for every $\sigma \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
+%
+\item  for every $q \in Q \setminus \{f_0\}$ and $\sigma \in \Sigma$, $\delta'(q, \sigma) = \delta(q, \sigma)$ and $\tau'(q) = \tau(q)$, 
+%
+\item $\delta'(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$ and $\tau'(f_0) = ((q'_0,f'_0); ())$,
+%
+\item $\delta'(f'_0, \sigma) = (f'_0)$ for every $\sigma \in \Sigma$ and $\tau'(f'_0) = ((); ())$.
 \end{itemize}
-The output function $F'$ is simple: $F' (q) = x_{res}$  iff $q = (-, \tmop{left}, -) $.
-\end{proof}
+%
+\item $E$ is defined as follows, 
+\begin{itemize}
+\item for every transition $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, \sigma, q')(x_0) = x_0$,
+%
+\item for every transition $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ and every $j \in [k]$,  if $(q, \sigma, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, \sigma, q')(x_j) = x_j\sigma$, otherwise, $E(q, \sigma, q')(x_j) = x_j$,
+%
+%\item for all the other transitions $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ in $\cA_e$, we have $E(q, \sigma, q')(x) = x$, 
+%
+\item  for every $\sigma \in \Sigma$, $E(q'_0, \sigma, q'_0)(x_0) = x_0\sigma$, and for every $j \in [k]$, $E(q'_0, \sigma, q'_0)(x_j) = x_j$, 
+
+\item $E(q'_0, \varepsilon, q_0)(x_j) = x_j$ for every $j \in [k] \cup \{0\}$, 
+%
+\item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, and for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, 
+%
+\item $E(f_0, \varepsilon, f'_0)(x_0) = x_0  \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, and for every $j \in [k]$, $E(f_0, \varepsilon, f'_0)(x_j) = \varepsilon$,
+%
+\item for every $\sigma \in \Sigma$, $E(f'_0, \sigma, f'_0)(x_0) = x_0$, and  for every $j \in [k]$, $E(f'_0, \sigma, f'_0)(x_j) = x_j$.
+\end{itemize}
+%
+\end{itemize}
+
+\zhilin{stopped here}
 
 \subsection{Complexity}
 
