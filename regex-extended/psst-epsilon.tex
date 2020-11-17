@@ -26,7 +26,8 @@ A  run of $\pnfa$ on a string $w$ is a sequence $q_0 \sigma'_1 q_1 \ldots \sigma
 %
 \item for every subsequence $q_i \sigma'_{i+1} q_{i+1} \ldots \sigma'_{j} q_j$ such that  $i < j$ and $\sigma'_{i+1} = \cdots = \sigma'_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
 \end{itemize}
-Note that given a string $w$, the length of a run of $\pnfa$ on $w$ is $O(|w||Q|)$.
+Note that it is possible that $\delta(q, \sigma) = ()$, namely, there is no $\sigma$-transition out of $q$. 
+It is easy to observe that given a string $w$, the length of a run of $\pnfa$ on $w$ is $O(|w||Q|)$.
 For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigma'_1 q_1' \ldots \sigma'_n q'_n$ such that $\sigma_1 \ldots \sigma_m = \sigma'_1 \ldots \sigma'_n$, we say that $p$ is of a higher priority over $p'$ if 
 \begin{itemize}
 \item either $p'$ is a prefix of $p$ (in this case, the transitions of $p$ after $p'$ are all $\varepsilon$-transitions), 
@@ -104,13 +105,14 @@ For any pair of runs $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_
 The accepting run of $\psst$ on an input $w$ is a run of $\psst$ on $w$ of the highest priority, say $q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$, such that $F(q_m)$ is defined. The output of $\psst$ on $w$, denoted by $\psst(w)$, is defined as $\eta_m(F(q_m))$, where $\eta_0(x) = \varepsilon$ for each $x \in X$, and $\eta_{i}(x) = \eta_{i-1}(s_{i}(x))$ for every $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation  $\eta_m(F(q_m))$ and $\eta_{i-1}(s_{i}(x))$ by taking a function $\eta$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\eta(x)$. If there is no accepting run of $\psst$ on $w$, then $\psst(w) = \bot$, namely, the output of $\psst$ on $w$ is undefined. The string relation defined by $\psst$, denoted by $\cR_\psst$,  is $\{(w, \psst(w)) \mid w \in \Sigma^\ast, \psst(w) \neq \bot\}$.
 \end{definition}
 
-\zhilin{stopped here}
 \begin{example}
-The PSST $\cT_{\sf nameReg}=(Q, \Sigma, X, \delta, E,  q_{0}, F)$ mentioned in Section~\ref{sec:mot} is illustrated in Figure~\ref{fig-psst-exmp}, where $Q = \{q_0, \dots, q_{10}\}$, $X= \{x_1, x_2, x_3, x_4\}$ with $x_1, x_2, x_3$ recording the matches of the 1st, 2nd, 3rd capturing group, and $x_4$ recording the string after the replacements, $F(q_{10}) = x_4 x_2 \backslash {\rm s} x_1$ denotes the final output, and $\delta, E$ are illustrated by the edges, e.g. $\delta(q_4, \backslash\mbox{s}) = q_5q_{6}$ and $E(q_4, \backslash\mbox{s}, q_5)(x_2) = x_2 \backslash s$.  Note that the identity assignments, e.g. $E(q_4, \backslash\mbox{s}, q_5)(x') = x'$ for $x' \in \{x_1, x_3, x_4\}$, are omitted in Figure~\ref{fig-psst-exmp}, for readability. From $\delta(q_4, \backslash s) = q_5q_{6}$, we know that $q_5$ is prior to $q_6$. Therefore, whenever $\cT_{\sf nameReg}$ reads $\backslash$s at the state $q_4$,  it will choose to go the state $q_5$ greedily, unless this choice would lead to the nonacceptance (in this case, $q_6$ will be chosen). Moreover, the symbol $\ell$ is used therein to denote the current input letter scanned by $\cT_{\sf nameReg}$.
+The PSST $\cT_{\sf nameReg}=(Q, \Sigma, X, \delta, \tau, E,  q_{0}, F)$ mentioned in Section~\ref{sec:mot} is illustrated in Figure~\ref{fig-psst-exmp}, where $Q = \{q_0, \dots, q_{24}\}$, $X= \{x_1, x_2, x_3, x_4\}$ with $x_1, x_2, x_3$ recording the matches of the 1st, 2nd, 3rd capturing group, and $x_4$ recording the string after the replacements, $F(q_{24}) = x_4$ denotes the final output, and $\delta, \tau, E$ are illustrated by the edges, where the dashed edges denote the $\varepsilon$-transitions of lower priorities than the non-$\varepsilon$-transitions and the symbol $\ell$ is used to denote the currently scanned input letter. For instance, $\delta(q_3, \backslash\mbox{s}) = (q_3)$, $\tau(q_3) = ((); (q_4))$, and $E(q_3, \backslash\mbox{s}, q_3)(x_1) = x_1 \backslash s$. Since the $\varepsilon$-transition has lower priority than the $\backslash\mbox{s}$-transition at the state $q_3$, whenever the currently scanned letter is $\backslash$s at $q_3$,  $\cT_{\sf nameReg}$ will choose to go to $q_3$ greedily, until there is no more $\backslash$s. (In this case, it has to choose the $\epsilon$-transition and goes to $q_4$.) Note that the identity assignments, e.g. $E(q_3, \backslash\mbox{s}, q_3)(x') = x'$ for $x' \in \{x_2, x_3, x_4\}$, are omitted in Figure~\ref{fig-psst-exmp}, for readability. 
+%From $\delta(q_4, \backslash s) = q_5q_{6}$, we know that $q_5$ is prior to $q_6$. 
+%Therefore, whenever $\cT_{\sf nameReg}$ reads $\backslash$s at the state $q_3$,  it will choose to go the state $q_5$ greedily, unless this choice would lead to the nonacceptance (in this case, $q_6$ will be chosen). 
 \begin{figure*}[ht]
 \centering
 %\rule{\linewidth}{0cm}
-\includegraphics{psst-exmp.pdf}
+\includegraphics[scale=0.8]{psst-epsilon-exmp.pdf}
 \caption{The PSST $\cT_{\sf nameReg}$}
 \label{fig-psst-exmp}
 \end{figure*}
