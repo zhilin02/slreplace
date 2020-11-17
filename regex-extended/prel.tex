@@ -14,14 +14,14 @@ We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \em
 	states, $q_0\in \controls$ is
 	the initial state, $\finals\subseteq \controls$ is a set of final states, and 
 	$\transrel\subseteq \controls \times 
-	\ialphabet \times  \controls$ is the
+	\ialphabet^\varepsilon \times  \controls$ is the
 	transition relation. 
 \end{definition}
 
-For an input string $w=a_1 \dots a_n$, a \emph{run} of $\Aut$ on $w$
+For an input string $w$, a \emph{run} of $\Aut$ on $w$
 %(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
-is a sequence of states $q_0, \ldots, q_n$ such that $(q_{j-1}, a_{j}, q_{j}) \in
-\transrel$  for every $j \in [n]$.
+is a sequence $q_0 \sigma_1 q_1 \ldots \sigma_n q_n$ such that $w = \sigma_1 \cdots \sigma_n$ and $(q_{j-1}, \sigma_{j}, q_{j}) \in
+\transrel$ for every $j \in [n]$.
 The run is said to be \defn{accepting} if $q_n \in \finals$.
 A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
 $\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ if $q_0 \in F$. The set of strings accepted by $\Aut$, i.e., the language \defn{recognised} by $\Aut$, is denoted by $\Lang(\Aut)$.
