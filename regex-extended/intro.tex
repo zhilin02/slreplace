@@ -2,26 +2,25 @@
 \section{Introduction}
 
 
+% general intro on string constraint solving
+
+%
 
 Strings are a fundamental data type in virtually all programming languages.
-Their generic nature can, however, lead to many subtle programming
-bugs, some with security consequences, e.g., cross-site scripting
-(XSS), which is among the OWASP Top 10 Application Security Risks
-\cite{owasp17}. 
+%Their generic nature can, however, lead to many subtle programming
+%bugs, some with security consequences, e.g., cross-site scripting
+%(XSS), which is among the OWASP Top 10 Application Security Risks
+%\cite{owasp17}. 
 
-One effective
-automatic testing method for identifying subtle programming errors
-%automatically generating test cases
-%generation with a good coverage
-is based on \emph{symbolic execution}
+One effective automatic testing method for identifying subtle programming errors  is based on \emph{symbolic execution}
 \cite{king76} and combinations with dynamic analysis
 called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
-See \cite{symbex-survey} for an excellent survey. Unlike purely random testing,
+See \cite{symbex-survey} for an excellent survey. 
+
+Unlike purely random testing,
 which runs only \emph{concrete} program executions on different
 inputs, the techniques of symbolic execution analyse \emph{static} paths
 (also called symbolic executions) through the software system under test.
-%Since such a path is simply a sequence of assignments and
-%conditionals/assertions,
 Such a path can be viewed as a constraint $\varphi$ (over
 appropriate data domains) and the hope is that a fast
 solver is available for checking the satisfiability of $\varphi$ (i.e. to check
@@ -32,16 +31,64 @@ inputs that lead to certain parts of the program or an erroneous behaviour.
 %system.
 
 
+%
+In this paper, we focus on two string operations with emphasis on practical usage of  regular expressions. Rather than textbook style regular expressions, regular expressions used in programming languages are considerably more involved. On particular feature we consider is the capturing group. This is particularly useful for string pattern matching 
+%Many regular expression matching libraries perform matching as a form of parsing by using capturing groups,and thus 
+where it can be returned what subexpression matched which substring. 
+
+%This form of regular expression matching requires theoretical un-derpinnings different from classical regular expressions as defined in formal language theory. 
+
+
+%which effective serves as a register when matching the regular expression to a string. Accompanying to the capturing groups 
+
+
+%Many regular expression matching libraries perform matching as a form of parsing by using capturing groups,and thus output what subexpression matched which substring[9]. This form of regular expression matching requires theoretical un-derpinnings different from classical regular expressions as defined in formal language theory. 
+%
+%A popular implementation strategy used for performing regular expression matching (or parsing) with capturing groups, used for example in Java, .NET and the PCRE library[14], is a worst-case exponential time depth-first search strategy. A formal approach to matching with capturing groups can be obtained by using finite state transducers that output annotations on the input string to signify what subexpression matched which substring[16]. 
+%
+%A complicating factor in this approach is introduced by the fact that the matching semantics dictates a single output string for each input string, obtained by using rules to determine a “highest priority” match among the potentially exponentially many possible ones (in contrast,[6]discusses non-deterministic capturing groups).
+
+The \emph{string-replace function}, 
+which may be used to replace all occurrences of a string matching a pattern by 
+another string. 
+
+The replace function (especially 
+the replace-all functionality) is omnipresent in HTML5 applications
+\cite{LB16,TCJ16,YABI14}. 
+%\mat{What does it mean for the replace function to be convincingly argued?}
+
+%For example, a standard industry defense against cross-site scripting 
+%(XSS) vulnerabilities includes sanitising untrusted strings before adding them
+%into the DOM (Document Object Model) or the HTML document. 
+%This is typically done by %replacing every occurrence of
+%various metacharacter-escaping mechanisms (see, for instance, 
+%\cite{Kern14,BEK,OWASP-XSS}). An example of such a mechanism is backslash-escape, which replaces \emph{every
+%	occurrence} of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
+%string by \verb+\'+ and \verb+\"+. 
+%In addition to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
+%and \texttt{innerHTML} apply an \emph{implicit browser transduction} --- which
+%decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input 
+%string --- before inserting the input string into the DOM.
+%Both of these examples can be expressed by (perhaps multiple) 
+%applications of the string-replace function.
+%Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} and Closure Templates~\cite{Closure} demonstrate the need for replacements involving variables.
+%Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
+
 A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
 
 
-In programming language, stress regex, which admits features such as capturing groups, reference
 
 
-symbolic execution requires SMT solving 
+%In programming language, stress regex, which admits features such as capturing groups, reference
 
-the main contribution is to introduce  a new transducer model, prioritized streaming string transducer (PSST) with the  motivation 
-(1) using the priority to model regular expressions features such as capturing groups and (2) streaming transducers as a generic and expressive model for string manipulation. For instance, it can capture, among others, the reverse operation. 
+
+%symbolic execution requires SMT solving 
+
+The semantics of regular expressions with capturing groups and back references is rather involved. One of the reasons is that different languages may choose different semantics for a regex to match the string when the regex is served as a pattern. 
+
+To capture the semantics, priority is introduced, giving rise to an extension of the standard finite-state automata. However, this is not sufficient for capturing string operations. For that purpose, we introduce  a new transducer model, prioritized streaming string transducer (PSST) which is a combination of priority which is essential for modelling capturing groups and streaming transducers which are a highly expressive formalism for modelling string operations. 
+
+%(1) using the priority to model regular expressions features such as capturing groups and (2) streaming transducers as a generic and expressive model for string manipulation. For instance, it can capture, among others, the reverse operation. 
 
 The new contribution: 
 
