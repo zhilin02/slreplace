@@ -28,97 +28,104 @@ Let $S$ be the current $\strline'_{\sf reg}$ program.
 \item If the last assignment statement of $S$ is $z:=x \concat y$, then let $\ASSERT{z \in \cA_1}, \cdots, \ASSERT{z \in \cA_n}$ be an enumeration of all the assertion statements for $z$ in $S$. Compute $\concat^{-1}(\Lang(\cA_1))$, the pre-image of $\concat$ under $\Lang(\cA_1)$, as a collection of FA pairs $(\cB_{1,j}, \cC_{1,j})_{j \in [m_1]}$, $\cdots$, and $\concat^{-1}(\Lang(\cA_n))$ as $(\cB_{n, j}, \cC_{n,j})_{j \in [m_n]}$ (c.f. \cite{CHL+19}). Remove the assignment $z:=x \concat y$, nondeterministically choose the indices $j_1 \in [m_1], \cdots, j_n \in [m_n]$, and add the assertion statements $\ASSERT{x \in \cB_{1,j_1}}; \ASSERT{y \in \cC_{1, j_1}}$; $\cdots$; $\ASSERT{x \in \cB_{n,j_n}}; \ASSERT{y \in \cC_{n, j_n}}$. 
 \end{itemize}
 
-It remains to show Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}. As a preparation, we first show how a PFA can be constructed from $e \in \regexp[\sf CG]$. Then we prove the two lemmas. 
+It remains to show Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}. As a warm-up, we first recall the construction of PFA from $\regexp[\sf CG]$ in \cite{BDM14}.  
+Then we prove the two lemmas. 
 
 
 \subsection{From $\regexp[\sf CG]$ to PFA}
 \label{construction:pnfa}
 
-\begin{figure*}
-	\centering
-	\includegraphics{pglushkov_01}
-	\caption{pNFA $A_e$ for (a) $e=e_1+e_2$ (b) $e=e_1^{\ast}$ and (c) $e=e_1 \concat e_2$ where $\varepsilon \in \Lang(e_1)$ and $\varepsilon \notin \Lang(e_2)$. A transition of lower priority is depicted thiner and more densely dotted. }
-	\label{fig:pglushkov}
-\end{figure*}
+%\begin{figure*}
+%	\centering
+%	\includegraphics{pglushkov_01}
+%	\caption{pNFA $A_e$ for (a) $e=e_1+e_2$ (b) $e=e_1^{\ast}$ and (c) $e=e_1 \concat e_2$ where $\varepsilon \in \Lang(e_1)$ and $\varepsilon \notin \Lang(e_2)$. A transition of lower priority is depicted thiner and more densely dotted. }
+%	\label{fig:pglushkov}
+%\end{figure*}
 
-For any $e \in \regexp[\sf CG]$, we define a pNFA $A_e$ by an adaptation of the standard
-Glushkov construction \cite{Gluskov61}. The original construction on regular expressions
-produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
-%The state of $G_e$ comprises $q_0$ which is a special starting state, and $a_i$'s
-%where the $i$-th character occurring in e is $a$. 
-We refer the reader to \cite{Gluskov61} for 
-details of how to construct $G_e$. %\tl{is this just the textbook construction?}
-
-The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
+For any $e \in \regexp[\sf CG]$, a PFA $\cA_e$ can be constructed recursively by adapting the standard
+Thompson construction (cf. Section 4.1 in \cite{Thompson68}). The constructed PFA $\cA_e$ satisfies that it has a unique initial state without incoming transitions and a unique final state  without outgoing transitions.
+%The original construction on regular expressions
+%produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
+%We refer the reader to \cite{Gluskov61} for 
+%details of how to construct $G_e$. %\tl{is this just the textbook construction?}
+%
+%The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
 \begin{itemize}
-  \item If $e = \varepsilon$ or $e = a$ or $e = \emptyset$, then $A_e = G_e$.
+\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
+
+  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
+
+  \item If $e = a$, then $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = (f_0)$, $\delta(q_0, \sigma) = ()$ for every $\sigma \in \Sigma \setminus \{a\}$, $\tau(q_0) = ((); ())$, and $\tau(f_0) = ((); ())$.
+    
+  \item If $e = (e_1)$, then $\cA_e = \cA_{e_1}$.
   
-  \item If $e = (e_1)$, then $A_e = A_{e_1}$.
+  \item If $e = e_1 + e_2$, and suppose $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
+  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = (Q_1 \cup Q_2 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau, q_0, f_0)$, where  
+  \begin{itemize}
+ \item $q_0, f_0 \not \in Q_1 \cup Q_2$, 
+ \item $\delta(q) = \delta_i(q)$ for every $q \in Q_i$ ($i=1,2$), 
+$\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, 
+%
+ \item $\tau(q) = \tau_i(q)$ for every $q \in Q_i$ ($i =1,2$), $\tau(q_0) = ((q_1,q_2); ())$,  $\tau(f_1) = \tau(f_2) = ((f_0); ())$, and $\tau(f_0) = ((); ())$.
+ \end{itemize}
+%
+  \item If $e = e_1 \concat e_2$, and suppose $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
+  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = ( Q_1 \cup Q_2, \Sigma, \delta, \tau, q_1,
+  f_2)$, where 
+  \begin{itemize}
+    \item for every $q \in Q_i$, $\delta(q) = \delta_i(q)$ ($i = 1,2$),
+    
+    \item for every $q \in Q_2$, $\tau(q) = \tau_2(q)$, 
+%
+    \item for every $q \in Q_1 \setminus \{f_1\}$, $\tau(q) = \tau_1(q)$, and $\tau(f_1) = ((q_2); ())$.
+  \end{itemize}
+%  
+  \item If $e = e_1^{\ast}$, and suppose  $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau, q_0, f_0)$, where 
+  \begin{itemize}
+  \item $q_0, f_0 \not \in Q_1$,
   
-  \item If $e = e_1 + e_2$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1,
-  \Sigma, \delta_1, q_0, F_1)$ and $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma,
-  \delta_2, q_0, F_2)$, then $A_e = (\{ q_0 \} \cup Q_1 \cup Q_2, \Sigma,
-  \delta, q_0, F_1 \cup F_2)$, where $\delta$ is defined by following rules:
-  \begin{itemize}
-    \item for any $q \neq q_0$, $a \in \Sigma$ and $q_1 \ldots q_n \in
-    \overline{Q_{_1}} \cup \overline{Q_2}$ such that $\delta_1 (q, a) = q_1
-    \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$, we have $\delta (q, a)
-    = q_1 \ldots q_n$
+    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
     
-    \item for any $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1 \ldots q_n$ and
-    $\delta_2 (q_0, a) = q'_1 \ldots q'_m$, then $\delta (q_0, a) = q_1 \ldots
-    q_n q'_1 \ldots q'_m$
+    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1, f_0); ())$, $\tau(f_1) = ((q_1, f_0); ())$, and $\tau(f_0) = ((); ())$.
   \end{itemize}
-  \item If $e = e_1 e_2$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1, \Sigma,
-  \delta_1, q_0, F_1)$ and $A_{e_2} = (\{ q_0 \} \cup Q_2, \Sigma, \delta_2,
-  q_0, F_2)$, then $A_e = (\{ q_0 \} \cup Q_1 \cup Q_2, \Sigma, \delta, q_0,
-  F)$, where $F$ is defined as:
-  \[ F = \left\{ \begin{array}{ll}
-       F_1 \cup F_2 & \varepsilon \in L (e_1) \wedge \varepsilon \in L (e_2)\\
-       (F_1 \cup F_2) \backslash \{ q_0 \} & \varepsilon \nin L (e_1) \wedge
-       \varepsilon \in L (e_2)\\
-       F_2 & \varepsilon \nin L (e_2)
-     \end{array} \right. \]
-  and $\delta$ is defined by following rules:
+ %
+  \item If $e = e_1^{\ast?}$, and suppose $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau, q_0, f_0)$, where 
   \begin{itemize}
-    \item For any $q \in (Q_1 \cup Q_2) \backslash F_1$, $a \in \Sigma$ and
-    $q_1 \ldots q_n \in \overline{Q_{_1}} \cup \overline{Q_2}$ such that
-    $\delta_1 (q, a) = q_1 \ldots q_n$ or $\delta_2 (q, a) = q_1 \ldots q_n$,
-    we have $\delta (q, a) = q_1 \ldots q_n$
+  \item $q_0, f_0 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
     
-    \item For any $q \in F_1 \backslash \{ q_0 \}$, $a \in \Sigma$, if
-    $\delta_1 (q, a) = q_1 \ldots q_m$ and $\delta_2 (q_0, a) = q_1' \ldots
-    q_n'$, then we have $\delta (q, a) = q_1 \ldots q_m q_1' \ldots q_n'$.
-    
-    \item For any $a \in \Sigma$, suppose $\delta_1 (q_0, a) = q_1 \ldots q_m$
-    and $\delta_2 (q_0, a) = q_1' \ldots q_n'$. If $q_0 \in F_1$, then $\delta
-    (q_0, a) = q_1 \ldots q_m q_1' \ldots q_n'$. If not, $\delta (q_0, a) =
-    q_1 \ldots q_m$.
-  \end{itemize}
-  \item If $e = e_1^{\ast}$, and suppose $A_{e_1} = (\{ q_0 \} \cup Q_1,
-  \Sigma, \delta_1, q_0, F_1)$, then $A_e = (\{ q_0 \} \cup Q_1, \Sigma,
-  \delta, q_0, F)$ where $F = F_1 \cup \{ q_0 \}$ and $\delta$ is defined by
-  following rules:
-  \begin{itemize}
-    \item For any $q \in (\{ q_0 \} \cup Q_1) \backslash \{ F_1 \}$, $a \in
-    \Sigma$ and $q_1 \ldots q_n \in \overline{Q_1}$ such that $\delta_1 (q, a)
-    = q_1 \ldots q_n$, we have $\delta (q, a) = q_1 \ldots q_n$
-    
-    \item For any $q \in F_1$ and $a \in \Sigma$, if $\delta_1 (q_0, a) = q_1
-    \ldots q_m$ and $\delta_1 (q, a) = q_1' \ldots q_n'$, then for every we
-    have $\delta (q, a) = q_1 \ldots q_m q_1' \ldots q_n'$.
-  \end{itemize}
+    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((f_0, q_1); ())$, $\tau(f_1) = ((f_0, q_1); ())$, and $\tau(f_0) = ((); ())$.
+  \end{itemize}  
 \end{itemize}
 
-The key transitions of some non-trivial cases of the construction are illustrated in Figure.\ref{fig:pglushkov}.
+%The key transitions of some non-trivial cases of the construction are illustrated in Figure.\ref{fig:pglushkov}.
 
- An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$. We denote this subgraph by $A_{e}[e']$. This subgraph can be seen as the automaton obtained by removing from $A_{e'}$ the state $q_0$ and all transitions from it.
- 
- For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
- 
- Figure.\ref{fig:pglushkov} also illustrates the subgraphs corresponding to direct subexpressions of $e$.
- 
+% An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$. We denote this subgraph by $A_{e}[e']$. This subgraph can be seen as the automaton obtained by removing from $A_{e'}$ the state $q_0$ and all transitions from it.
 
+\begin{example}
+Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_0, q_3)$ and $\cA_{e_2} =  (Q_2, \Sigma, \delta_2, \tau_2, q_0, q_3)$ are illustrated in Figure~\ref{fig-retopfa}: (i), (ii), where thicker solid lines denote the $\varepsilon$-transitions of greater priorities. For instance, in $\cA_{e_1}$, $\tau_1(q_0) = ((q_1, q_3); ())$ and $\tau_1(q_2) = ((q_1, q_3); ())$, while in $\cA_{e_2}$, $\tau_2(q_0) = ((q_3, q_1); ())$ and $\tau_2(q_2) = ((q_3, q_1); ())$. Note that $\cA_{e_1}$ and $\cA_{e_2}$ are different from those in Example~\ref{exmp-pfa}.
+\begin{figure}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.8]{retopfa.pdf}
+\caption{$\cA_{e_1}$ and $\cA_{e_2}$ for $e_1= a^\ast$ and $e_2 = a^{\ast?}$}
+\label{fig-retopfa}
+\end{figure}
+\end{example}
+ 
+%For instance, if $e = (a (ab)^*)^*$ and $e' = a(ab)^*$, then $A_{e}[e']$ is the subgraph of $A_{e}$ comprising the states $\{a_1, a_2, b_3\}$ and the transitions $\{(a_1, a, a_2), (a_2, b, b_3), (b_3, a, a_2)\}$.
+ 
+%Figure.\ref{fig:pglushkov} also illustrates the subgraphs corresponding to direct subexpressions of $e$.
+ 
+\zhilin{stopped here}
 
 \begin{definition}
   Let $A_e$ be the pNFA constructed for $e$, and $p = q_0 \sigma_1 q_1 \ldots
