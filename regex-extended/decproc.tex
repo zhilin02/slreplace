@@ -2,22 +2,39 @@
 
 \section{Decision procedure} \label{sec:decision}
 
-In this section, we are going to show the main result of this paper, namely, the path feasibility of $\strline_{\sf reg}$ is decidable.
+In this section, we are going to show the main result of this paper.
 
 \begin{theorem}\label{thm-main}
 The path feasibility of $\strline_{\sf reg}$ is decidable.
 \end{theorem}
 
-The proof of Theorem~\ref{thm-main} is obtained by first showing that both $\extract$ and $\replaceall$ functions can be transformed into PSST, then computing the pre-images of regular languages under PSSTs and removing all the assignment statements, finally solving the nonemptiness of intersection of regular languages. The aforementioned procedure extends the approach of backward reasoning proposed in \cite{CCH+18,CHL+19} in the following sense: While \cite{CCH+18,CHL+19} used the standard one-way/two-way transducers, we introduce a new model of PSSTs to capture the semantics of $\extract$ and $\replaceall$, where priorities are used to model the greedy/non-greedy semantics of capturing groups and string variables are used to model the back references. Moreover, we show that the pre-images of regular languages under PSSTs are still regular and can be computed effectively (see Theorem~\ref{theorem:psst_preimage}).
+The proof of Theorem~\ref{thm-main} is obtained by first showing that both $\extract$ and $\replaceall$ functions can be transformed into PSST, then computing the pre-images of regular languages under PSSTs and removing all the assignment statements, finally solving the nonemptiness of intersection of regular languages. The aforementioned procedure extends the approach of backward reasoning proposed in \cite{CCH+18,CHL+19} in the following sense: While \cite{CCH+18,CHL+19} used the standard one-way/two-way transducers, we introduce a new model of PSSTs to capture the semantics of $\extract$ and $\replaceall$, where priorities are used to model the greedy/non-greedy semantics of capturing groups and string variables are used to model the back references. Moreover, as we have shown in Theorem~\ref{theorem:psst_preimage}, the pre-images of regular languages under PSSTs are still regular and can be computed effectively.
 
+In the sequel, we shall show that semantically equivalent PSSTs can be effectively constructed from the $\extract$ and $\replaceall$ functions. 
 
-In the following two subsections, we are going to show how to transform $\extract$ and $\replaceall$ into PSSTs.
+\begin{lemma}\label{lem-extract}
+From $\extract_{i,e}(x)$, a PSST $\cT_{\extract_{i,e}}$ can be constructed such that $\cR_{\cT_{\extract_{i,e}}} = \{(w, w') \mid w'= \extract_{i,e}(w)\}$.
+\end{lemma}
+
+\begin{lemma}\label{lem-replace}
+From $\replaceall_{\pat, \rep}(x)$, a PSST $\cT_{\replaceall_{\pat, \rep}}$ can be constructed such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$.
+\end{lemma}
+
+With Lemma~\ref{lem-extract}-\ref{lem-replace}, the path feasibility of $\strline_{\sf reg}$ is reduced to the path feasibility of string-manipulating programs that are a sequential composition of the statements of the form $z:=x \concat y$, $y:=\cT(x)$ and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA. Let us use  $\strline'_{\sf reg}$ to denote the class of such programs. Then we can follow the backward reasoning approach of the OSTRICH solver proposed in \cite{CCH+18,CHL+19} and solve the path feasibility of $\strline'_{\sf reg}$ by repeating the following procedure, until no more assignment statements are left:\\
+Let $S$ be the current $\strline'_{\sf reg}$ program.
+\begin{itemize}
+\item If the last assignment statement of $S$ is $y:=\cT(x)$, then let $\ASSERT{y \in \cA_1}, \cdots, \ASSERT{y \in \cA_n}$ be an enumeration of all the assertion statements for $y$ in $S$. Compute $\cR^{-1}_\cT(\Lang(\cA_1))$ as an FA $\cB_1$, $\cdots$, and $\cR^{-1}_\cT(\Lang(\cA_n))$ as $\cB_n$. Remove  the assignment  $y:=\cT(x)$ and add the assertion statements $\ASSERT{x \in \cB_1}$; $\cdots$; $\ASSERT{x \in \cB_n}$. 
+%
+\item If the last assignment statement of $S$ is $z:=x \concat y$, then let $\ASSERT{z \in \cA_1}, \cdots, \ASSERT{z \in \cA_n}$ be an enumeration of all the assertion statements for $z$ in $S$. Compute $\concat^{-1}(\Lang(\cA_1))$, the pre-image of $\concat$ under $\Lang(\cA_1)$, as a collection of FA pairs $(\cB_{1,j}, \cC_{1,j})_{j \in [m_1]}$, $\cdots$, and $\concat^{-1}(\Lang(\cA_n))$ as $(\cB_{n, j}, \cC_{n,j})_{j \in [m_n]}$ (c.f. \cite{CHL+19}). Remove the assignment $z:=x \concat y$, nondeterministically choose the indices $j_1 \in [m_1], \cdots, j_n \in [m_n]$, and add the assertion statements $\ASSERT{x \in \cB_{1,j_1}}; \ASSERT{y \in \cC_{1, j_1}}$; $\cdots$; $\ASSERT{x \in \cB_{n,j_n}}; \ASSERT{y \in \cC_{n, j_n}}$. 
+\end{itemize}
+
+It remains to show Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
 
 \zhilin{stopped here}
 
 
 
-\subsection{Construction of pNFA from \regexp[\sf CG]}
+\paragraph{Construction of pNFA from \regexp[\sf CG]}
 \label{construction:pnfa}
 
 \begin{figure*}

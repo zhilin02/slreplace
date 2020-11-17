@@ -84,7 +84,7 @@ In this section, we define the string-manipulating programming language $\strlin
 The $\strline$ language is defined by
 \[
 \begin{array}{l c l}
-S &::= &  z:= x\ \concat\ y \mid y := \extract_i(x,e) \mid  \\ 
+S &::= &  z:= x\ \concat\ y \mid y := \extract_{i, e}(x) \mid  \\ 
 & &  
 %y := \reverse(x) 
 y := \replaceall_{\pat, \rep}(x)   \mid \\
@@ -122,7 +122,7 @@ where
 %	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
 %\end{remark}
 
-The $\extract$ function models the regular-expression match function in programming languages, e.g. $\sf str.match(regexp)$ function in Javascript. Specifically, the $\extract_i(x, e)$ function extracts the match of the $i$-th capturing group in the match of $e$ in $x$, if the match of $e$ in $x$ exists (otherwise, the return value of the function is undefined). Note that if $i=0$, then $\extract_i(x, e)$ returns the match of $e$ in $x$. For instance, let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$, then $\extract_1(baabba, e)=b$ and $\extract_2(baabba, e)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. 
+The $\extract$ function models the regular-expression match function in programming languages, e.g. $\sf str.match(regexp)$ function in Javascript. Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the match of $e$ in $x$, if the match of $e$ in $x$ exists (otherwise, the return value of the function is undefined). Note that if $i=0$, then $\extract_{i, e}(x)$ returns the match of $e$ in $x$. For instance, let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$, then $\extract_{1, e}(baabba)=b$ and $\extract_{2, e}(baabba)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. 
 
 The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
 \emph{pattern} $\pat \in \regexp[\sf CG]$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies the first, second, $\dots$, match of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string (where the references are replaced by the corresponding matches of the capturing groups).  For instance, let $\pat = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $\rep = \#\$1$, then  $\replaceall_{\pat, \rep}(baabba) = \#b\#bb$. 
