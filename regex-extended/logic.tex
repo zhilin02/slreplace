@@ -87,7 +87,8 @@ The $\strline$ language is defined by
 S &::= &  z:= x\ \concat\ y \mid y := \extract_i(x,e) \mid  \\ 
 & &  
 %y := \reverse(x) 
-y := \replaceall_{\pat, \rep}(x)   \mid y := \Transducer(x)\  \mid\\
+y := \replaceall_{\pat, \rep}(x)   \mid \\
+%y := \Transducer(x)\  \mid\\
 & & \text{$\ASSERT{x \in e}$} \mid S; S\
 \label{eq:SL}
 %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
@@ -102,7 +103,7 @@ where
 %
 	\item  for the $\replaceall$ operation, $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
 %	\item $\reverse$ is the string function which reverses a string; 
-	\item $\Transducer$ is a \PSST,
+%	\item $\Transducer$ is a \PSST,
 %
 	\item for assertions, $e \in \regexp$.
 \end{itemize} 
@@ -158,4 +159,4 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 \end{array}
 \]
 
-In the next section, we shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice. In the rest of this paper, we use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs where no back references occur in assertion statements.
+We shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice. In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs where no back references occur in assertion statements. The decision procedure for $\strline_{\sf reg}$ utilizes a new model called prioritized streaming string transducers, which will be defined in the next section.
