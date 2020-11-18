@@ -136,6 +136,7 @@ For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \S
 \end{theorem}
 
 \tl{another way is to first define B as a PST, could make the construction a bit modular?}
+ \zhilin{this is a bug in this proof, which should be cleaned.}
  
 \begin{proof}
 Without loss of generality, we assume that $\Aut$ contains no $\varepsilon$-transitions. 
@@ -145,18 +146,21 @@ Before the formal construction of $\cB$, we introduce some notations.
 \begin{itemize}
 \item For $S \subseteq Q_T$, $\delta^{(ip)}_T(S, a) = \{q'_1 \mid \exists q_1 \in S, q'_1 \in \delta_T(q_1, a)\}$.
 %
-\item For $q \in Q_T$,  if $\tau_T(q) = (P_1, P_2)$, then $\tau^{(ip)}_T(\{q\})=S$ such that $S$ is the set of states occurring in $P_1$ and $P_2$. 
-\tl{a bit confused, why not write $S=P_1\cup P_2$?} Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{q \in S} \tau^{(ip)}_T(\{q\})$. 
+\item For $q \in Q_T$,  if $\tau_T(q) = (P_1, P_2)$, then $\tau^{(ip)}_T(\{q\})=S$ such that $S = P_1 \cup P_2$. 
+Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{q \in S} \tau^{(ip)}_T(\{q\})$. We also use $(\tau^{(ip)}_T)^\ast$ to denote $\bigcup \limits_{n \in \Nat} (\tau^{(ip)}_T)^{n}(S)$, where $(\tau^{(ip)}_T)^{0}(S) = S$, and for $n \in \Nat$, $(\tau^{(ip)}_T)^{n+1}(S) = \tau^{(ip)}_T((\tau^{(ip)}_T)^{n}(S))$. 
 %
-We also use $(\tau^{(ip)}_T)^\ast$ to denote the reflexive transitive closure of $\tau^{(ip)}_T$. \tl{here $(\tau^{(ip)}_T)$ is defined as a function... you mean function composition?}
-\zhilei{I think we can just use the term 'epsilon closure' here?}
+%We also use $(\tau^{(ip)}_T)^\ast$ to denote the reflexive transitive closure of $\tau^{(ip)}_T$. \tl{here $(\tau^{(ip)}_T)$ is defined as a function... you mean function composition?}
+%\zhilei{I think we can just use the term 'epsilon closure' here?}
 %\item For $\sigma \in \Sigma$ and $S \subseteq Q_T$,  we use $\tau^+_T[a, S]$ to denote the set of states that can be obtained from 
 % 
 \item For $\rho \in (\cP(Q_A \times Q_A ))^{X}$ and $s \in X \rightarrow (X \cup \Sigma)^{\ast}$, we use $s(\rho)$ to denote $\rho'$ that is obtained from $\rho$ as follows: For each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
 \end{itemize}
 
-We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$: $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises 
+We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$: $Q_B = \{q'_0\} \cup Q_T \times (\Sigma \cup \{\bot\}) \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = q'_0$, 
+$\delta_{B}$ comprises 
 \begin{itemize}
+\item $(q'_0, )$, $(q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, 
+%
 \item the tuples $((q, \rho, S), \sigma, (q_i, \rho', S'))$ such that $\sigma \in \Sigma$ and there exists $s \in \left((X \cup \Sigma\right)^*)^X)$ satisfying
 \begin{itemize}
 \item $\delta_T (q, \sigma) = (q_1, \ldots, q_i, \ldots, q_m)$, 
