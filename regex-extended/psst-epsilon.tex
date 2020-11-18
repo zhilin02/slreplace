@@ -21,7 +21,7 @@ For $\tau(q) = (P_1; P_2)$, we will use $\pi_1(\tau(q))$ and $\pi_2(\tau(q))$ to
 A  run of $\pnfa$ on a string $w$ is a sequence $q_0 \sigma'_1 q_1 \ldots \sigma'_m q_m$ such that 
 \begin{itemize}
 %\item $q_m \in F$,
-\item for any $i \in [m]$, either $\sigma'_i \in \Sigma$ and $q_i \in \delta (q_{i - 1}, \sigma'_i)$, or $\sigma'_i = \varepsilon$ and $q_i \in \tau(q_{i-1)}$ %\pi_1(\tau(q_{i-1}))\cup \pi_2(\tau(q_{i-1}))$,
+\item for any $i \in [m]$, either $\sigma'_i \in \Sigma$ and $q_i \in \delta (q_{i - 1}, \sigma'_i)$, or $\sigma'_i = \varepsilon$ and $q_i \in \tau(q_{i-1})$ %\pi_1(\tau(q_{i-1}))\cup \pi_2(\tau(q_{i-1}))$,
 \item $w = \sigma'_1 \cdots \sigma'_m$,
 %
 \item for every subsequence $q_i \sigma'_{i+1} q_{i+1} \ldots \sigma'_{j} q_j$ such that  $i < j$ and $\sigma'_{i+1} = \cdots = \sigma'_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
@@ -156,7 +156,7 @@ We also use $(\tau^{(ip)}_T)^\ast$ to denote the reflexive transitive closure of
 
 We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$: $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises 
 \begin{itemize}
-\item the tuples $((q, \rho, S), \sigma, (q_i, \rho', S'))$ such that $\sigma \in \Sigma$ and there exists $s \in X\rightarrow \left((X \cup \Sigma\right)^*)$ satisfying
+\item the tuples $((q, \rho, S), \sigma, (q_i, \rho', S'))$ such that $\sigma \in \Sigma$ and there exists $s \in \left((X \cup \Sigma\right)^*)^X)$ satisfying
 \begin{itemize}
 \item $\delta_T (q, \sigma) = (q_1, \ldots, q_i, \ldots, q_m)$, 
 %
