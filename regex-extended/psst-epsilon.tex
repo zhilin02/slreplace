@@ -156,48 +156,68 @@ Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{
 \item For $\rho \in (\cP(Q_A \times Q_A ))^{X}$ and $s \in X \rightarrow (X \cup \Sigma)^{\ast}$, we use $s(\rho)$ to denote $\rho'$ that is obtained from $\rho$ as follows: For each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
 \end{itemize}
 
-We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$: $Q_B = \{q'_0\} \cup Q_T \times (\Sigma \cup \{\bot\}) \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = q'_0$, 
-$\delta_{B}$ comprises 
+We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$. 
 \begin{itemize}
-\item $(q'_0, )$, $(q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, 
+\item $Q_B = \{q'_0\} \cup Q_T \times (\Sigma \cup \{\bot\}) \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)$, (Intuitively, the letter $\sigma$ in $(q, \sigma, \rho, S) \in Q_B$ means the next letter to be read at $q$, with $\bot$ represents the end of the input.)
+
+\item $q_{0, B} = q'_0$, 
+
+\item $\delta_{B}$ comprises 
+\begin{itemize}
+\item the tuples $(q'_0, \varepsilon, ((q_{0,T},\sigma), \rho_{\varepsilon}, \emptyset))$ where $\sigma \in \Sigma$, $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, 
 %
-\item the tuples $((q, \rho, S), \sigma, (q_i, \rho', S'))$ such that $\sigma \in \Sigma$ and there exists $s \in \left((X \cup \Sigma\right)^*)^X)$ satisfying
+\item the tuples $(((q,\sigma), \rho, S), \sigma, ((q_i,\sigma'), \rho', S'))$ such that  
+%there exists $s \in \left((X \cup \Sigma\right)^*)^X)$ satisfying
 \begin{itemize}
+\item $\sigma \in \Sigma$, $\sigma' \in \Sigma \cup \{\bot\}$, 
+%
 \item $\delta_T (q, \sigma) = (q_1, \ldots, q_i, \ldots, q_m)$, 
 %
-\item $s = E(q, \sigma, q_i)$, \tl{here $s$ must be this, so no need to quantify $s$?}
+\item $s = E(q, \sigma, q_i)$, 
 %
-\item let $\tau^{(ip)}_T(q) = (S_1, S_2)$ and $(\tau^{(ip)}_T)^\ast(S \cup S_1) = S''$, then $S' =  \delta^{(ip)}_T(S'', \sigma)$ $\cup$ $\{ q_1$, $\ldots$, $q_{i - 1} \}$, 
-\item $\rho' = s(\rho)$;
+\item $\rho' = s(\rho)$,
+%
+\item let $\tau_T(q) = (P_1, P_2)$ and $(\tau^{(ip)}_T)^\ast(S \cup P_1) = S''$, then $S' =  \delta^{(ip)}_T(S'', \sigma)$ $\cup$ $\{ q_1$, $\ldots$, $q_{i - 1} \}$; 
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
 %
-\item the tuples $((q, \rho, S), \varepsilon, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
+\item the tuples $(((q, \sigma), \rho, S), \varepsilon, ((q_i,\sigma), \rho', S'))$ such that 
+%there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
+\item $\sigma \in \Sigma  \cup \{\bot\}$
+%, $\sigma' \in \Sigma \cup \{\bot\}$, 
+%
 \item $\tau_T (q) = ((q_1, \ldots, q_i, \ldots, q_m); \cdots)$, 
 %
 \item $s = E(q, \varepsilon, q_i)$,
 %
-\item $S' =  \tau^{(ip)}_T(S) \cup   \{ q_1, \ldots, q_{i - 1} \}$, 
-\item $\rho' = s(\rho)$;
+\item $\rho' = s(\rho)$,
+
+\item $S' =  \tau^{(ip)}_T(S) \cup   \{ q_1, \ldots, q_{i - 1} \}$;
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
 %
-\item the tuples $((q, \rho, S), \varepsilon, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
+\zhilin{stopped here}
+\item the tuples $(((q, \sigma), \rho, S), \varepsilon, ((q_i, \sigma), \rho', S'))$ such that 
+%there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
+\item $\sigma \in \Sigma  \cup \{\bot\}$, 
+%$\sigma' \in \Sigma \cup \{\bot\}$, 
+%
 \item $\tau_T (q) = ((q'_1, \ldots, q'_n); (q_1, \ldots, q_i, \ldots, q_m))$, 
 %
 \item $s = E(q, \varepsilon, q_i)$,
 %
-\item $S' =\tau^{(ip)}_T(S) \cup  \{q'_1, \ldots, q'_n, q_1, \ldots, q_{i - 1} \}$, 
-\item $\rho' = s(\rho)$.
+\item $\rho' = s(\rho)$,
+%
+\item if $\sigma = \bot$, then $S' =\tau^{(ip)}_T(S)$ $\cup$  $\{q'_1, \ldots, q'_n, q_1$, $\ldots$, $q_{i - 1} \}$, otherwise, $S' =\tau^{(ip)}_T(S) \cup  \delta_T(S \cup \{q\}, \sigma) \cup \{q'_1, \ldots, q'_n, q_1, \ldots, q_{i - 1} \}$.
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
 \end{itemize}
-
+\item
 Moreover, $F_B$ is the set of states $(q, \rho, S) \in Q_B$ such that
 \begin{enumerate}
   \item $F_T (q)$ is defined,
@@ -207,6 +227,7 @@ Moreover, $F_B$ is the set of states $(q, \rho, S) \in Q_B$ such that
   \item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise, 
 let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
 \end{enumerate}
+\end{itemize}
 \end{proof}
 
 Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
