@@ -179,7 +179,7 @@ Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$
 
 Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\extract_{i,e}}$ is obtained from $\cA_e$ by adding two fresh states $q'_0, f'_0$ such that (see Figure~\ref{fig-psst-extract})
 \begin{itemize}
-\item $\cT_{\extract_{i,e}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $e$, 
+\item $\cT_{\extract_{i,e}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search for the first match of $e$, 
 %
 \item then $\cT_{\extract_{i,e}}$ simulates $\cA_e$ and stores the match of the $i$-th capturing group of $e$ into a string variable $x$,  
 %
@@ -228,7 +228,33 @@ Formally, $\cT_{\extract_{i,e}} = (Q \cup \{q'_0, f'_0\}, \Sigma, X, \delta', \t
 \paragraph*{Construction of $\cT_{\replaceall_{\pat, \rep}}$.} 
 Let $\$i_1, \cdots, \$i_k$ with $i_1 < \cdots < i_k$ be an enumeration of all the references in $\rep$. 
 Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group.
-Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall_{\pat, \rep}} =$ $(Q \cup \{q'_0, f'_0\}$, $\Sigma$, $X$, $\delta'$, $\tau', E, q'_0, F)$ where
+
+Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replace_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding two fresh states $q'_0, f'_0$ such that (see Figure~\ref{fig-psst-replace})
+\begin{itemize}
+\item $\cT_{\replace_{\pat,\rep}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position, 
+%
+\item when $\cT_{\replace_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, 
+%
+\item starting from $q_0$, $\cT_{\replace_{\pat,\rep}}$ simulates $\cA_\pat$ and stores the matches of the $\$i_1$-th, $\ldots$, $\$i_k$-th capturing groups of $\pat$ into the string variables $x_1, \cdots, x_k$ respectively,   
+%
+\item when the first match of $\pat$ is found, 
+\begin{itemize}
+\item either $\cT_{\replace_{\pat,\rep}}$ goes from $f_0$ to $q'_0$ via an $\varepsilon$-transition, appends the current replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, and keeps searching for the next match of $\pat$, 
+%
+\item or it goes from $f_0$ to $f'_0$, appends the replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, then keeps idle (except appending the letters to the end of $x_0$), and finally outputs the content of $x_0$.
+\end{itemize}
+Moreover, the $\varepsilon$-transition from $f_0$ to $q'_0$ is assigned higher priority than the $\varepsilon$-transition from $f_0$ to $f'_0$, which guarantees that all the matches of $\pat$ in the input string are found, in other words, no match of $\pat$ in the input string is missed.
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.65]{psst-replace.pdf}
+\caption{The PSST for $\replace_{\pat,\rep}$}
+\label{fig-psst-replace}
+\end{figure}
+
+Formally, $\cT_{\replaceall_{\pat, \rep}} =$ $(Q \cup \{q'_0, f'_0\}$, $\Sigma$, $X$, $\delta'$, $\tau', E, q'_0, F)$ where
 \begin{itemize}
 \item $q'_0, f'_0 \not \in Q$,
 
@@ -263,7 +289,7 @@ Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall
 %
 \item $E(f_0, \varepsilon, f'_0)(x_0) = x_0  \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, and for every $j \in [k]$, $E(f_0, \varepsilon, f'_0)(x_j) = \varepsilon$,
 %
-\item for every $\sigma \in \Sigma$, $E(f'_0, \sigma, f'_0)(x_0) = x_0$, and  for every $j \in [k]$, $E(f'_0, \sigma, f'_0)(x_j) = x_j$.
+\item for every $\sigma \in \Sigma$, $E(f'_0, \sigma, f'_0)(x_0) = x_0 \sigma$, and  for every $j \in [k]$, $E(f'_0, \sigma, f'_0)(x_j) = x_j$.
 \end{itemize}
 %
 \end{itemize}
