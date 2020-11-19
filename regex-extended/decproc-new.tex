@@ -114,7 +114,7 @@ $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$,
 % An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$. We denote this subgraph by $A_{e}[e']$. This subgraph can be seen as the automaton obtained by removing from $A_{e'}$ the state $q_0$ and all transitions from it.
 
 \begin{example}
-Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_0, q_3)$ and $\cA_{e_2} =  (Q_2, \Sigma, \delta_2, \tau_2, q_0, q_3)$ are illustrated in Figure~\ref{fig-retopfa}: (i), (ii), where thicker solid lines denote the $\varepsilon$-transitions of greater priorities. For instance, in $\cA_{e_1}$, $\tau_1(q_0) = ((q_1, q_3); ())$ and $\tau_1(q_2) = ((q_1, q_3); ())$, while in $\cA_{e_2}$, $\tau_2(q_0) = ((q_3, q_1); ())$ and $\tau_2(q_2) = ((q_3, q_1); ())$. Note that $\cA_{e_1}$ and $\cA_{e_2}$ are different from those in Example~\ref{exmp-pfa}.
+Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_0, q_3)$ and $\cA_{e_2} =  (Q_2, \Sigma, \delta_2, \tau_2, q_0, q_3)$ are illustrated in Figure~\ref{fig-retopfa}: (i), (ii), where thicker solid lines (resp. dashed lines) denote the $\varepsilon$-transitions of higher (resp. lower) priorities than non-$\varepsilon$-transitions. For instance, in $\cA_{e_1}$, $\tau_1(q_0) = ((); (q_2))$ and $\tau_1(q_1) = ((q_0); ())$, while in $\cA_{e_2}$, $\tau_2(q_0) = ((q_2); ())$ and $\tau_2(q_1) = ((q_0); ())$. Note that $\cA_{e_1}$ and $\cA_{e_2}$ are slightly different from those in Example~\ref{exmp-pfa}.
 \begin{figure}[ht]
 \centering
 %\rule{\linewidth}{0cm}
