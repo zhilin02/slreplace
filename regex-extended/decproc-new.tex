@@ -177,7 +177,24 @@ We first prove Lemma~\ref{lem-extract}, namely, show how to construct a PPST $\c
 \paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
 Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$. 
 
-Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\extract_{i,e}} = (Q \cup \{q'_0, f'_0\}, \Sigma, X, \delta', \tau', E, q'_0, F)$ where
+Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\extract_{i,e}}$ is obtained from $\cA_e$ by adding two fresh states $q'_0, f'_0$ such that (see Figure~\ref{fig-psst-extract})
+\begin{itemize}
+\item $\cT_{\extract_{i,e}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $e$, 
+%
+\item then $\cT_{\extract_{i,e}}$ simulates $\cA_e$ and stores the match of the $i$-th capturing group of $e$ into a string variable $x$,  
+%
+\item when the first match of $e$ is found, $\cT_{\extract_{i,e}}$ goes from $f_0$ to $f'_0$ via an $\varepsilon$-transition, then keeps idle, and finally output the content of $x$.
+\end{itemize}
+
+\begin{figure}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.8]{psst-extract.pdf}
+\caption{The PSST for $\extract_{i,e}$}
+\label{fig-psst-extract}
+\end{figure}
+
+Formally, $\cT_{\extract_{i,e}} = (Q \cup \{q'_0, f'_0\}, \Sigma, X, \delta', \tau', E, q'_0, F)$ where 
 \begin{itemize}
 \item $q'_0, f'_0 \not \in Q$,
 
