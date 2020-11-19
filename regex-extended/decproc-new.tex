@@ -28,8 +28,10 @@ Let $S$ be the current $\strline'_{\sf reg}$ program.
 \item If the last assignment statement of $S$ is $z:=x \concat y$, then let $\ASSERT{z \in \cA_1}, \cdots, \ASSERT{z \in \cA_n}$ be an enumeration of all the assertion statements for $z$ in $S$. Compute $\concat^{-1}(\Lang(\cA_1))$, the pre-image of $\concat$ under $\Lang(\cA_1)$, as a collection of FA pairs $(\cB_{1,j}, \cC_{1,j})_{j \in [m_1]}$, $\cdots$, and $\concat^{-1}(\Lang(\cA_n))$ as $(\cB_{n, j}, \cC_{n,j})_{j \in [m_n]}$ (c.f. \cite{CHL+19}). Remove the assignment $z:=x \concat y$, nondeterministically choose the indices $j_1 \in [m_1], \cdots, j_n \in [m_n]$, and add the assertion statements $\ASSERT{x \in \cB_{1,j_1}}; \ASSERT{y \in \cC_{1, j_1}}$; $\cdots$; $\ASSERT{x \in \cB_{n,j_n}}; \ASSERT{y \in \cC_{n, j_n}}$. 
 \end{itemize}
 
-It remains to show Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}. As a warm-up, we first recall the construction of PFA from $\regexp[\sf CG]$ in \cite{BDM14}.  
-Then we prove the two lemmas. 
+It remains to show Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}. As a warm-up, we first present a cornerstone of the proof of the two lemmas, namely, the construction of PFAs from $\regexp[\sf CG]$ expressions, which is adapted from the pNFA construction in \cite{BDM14}, which in turn is a variant of the standard
+Thompson construction \cite{Thompson68}. 
+%We include the construction here for improving the readability.  
+Afterwards, we prove the two lemmas. 
 
 
 \subsection{From $\regexp[\sf CG]$ to PFA}
@@ -42,8 +44,7 @@ Then we prove the two lemmas.
 %	\label{fig:pglushkov}
 %\end{figure*}
 
-For any $e \in \regexp[\sf CG]$, a PFA $\cA_e$ can be constructed recursively by adapting the standard
-Thompson construction (cf. Section 4.1 in \cite{Thompson68}). The constructed PFA $\cA_e$ satisfies that it has a unique initial state without incoming transitions and a unique final state  without outgoing transitions.
+For any $e \in \regexp[\sf CG]$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that it has a unique initial state and a unique final state  without outgoing transitions.
 %The original construction on regular expressions
 %produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
 %We refer the reader to \cite{Gluskov61} for 
@@ -84,25 +85,27 @@ $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$,
   \end{itemize}
 %  
   \item If $e = e_1^{\ast}$, and suppose  $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau, q_0, f_0)$, where 
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{f_0\}, \Sigma,
+  \delta, \tau, q_1, f_0)$, where 
   \begin{itemize}
-  \item $q_0, f_0 \not \in Q_1$,
+  \item $f_0 \not \in Q_1$,
   
-    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
+    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, 
+    %moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1, f_0); ())$, $\tau(f_1) = ((q_1, f_0); ())$, and $\tau(f_0) = ((); ())$.
+    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)), f_0))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $f_1$ to $q_1$ and from $q_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
   \end{itemize}
  %
   \item If $e = e_1^{\ast?}$, and suppose $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau, q_0, f_0)$, where 
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{f_0\}, \Sigma,
+  \delta, \tau, q_1, f_0)$, where 
   \begin{itemize}
   \item $q_0, f_0 \not \in Q_1$,
   
-    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
+    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, 
+    %moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((f_0, q_1); ())$, $\tau(f_1) = ((f_0, q_1); ())$, and $\tau(f_0) = ((); ())$.
+    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_1) = ((f_0, \pi_1(\tau_1(q_1))); \pi_2(\tau_1(q_1)))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $q_1$ to $f_0$ is of the highest priority.)
   \end{itemize}  
 \end{itemize}
 
