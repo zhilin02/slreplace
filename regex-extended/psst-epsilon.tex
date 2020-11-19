@@ -136,18 +136,19 @@ For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \S
 \end{theorem}
 
 \tl{another way is to first define B as a PST, could make the construction a bit modular?}
- \zhilin{this is a bug in this proof, which should be cleaned.}
  
 \begin{proof}
 Without loss of generality, we assume that $\Aut$ contains no $\varepsilon$-transitions. 
-Intuitively, $\cB$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. Moreover, $\cB$ also records all the states accessible from a run with higher priority to ensure the current run is the accepting one of $\psst$.
+Intuitively, $\cB$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records an $\Aut$-abstraction of the string stored in $x$, that is, the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. Moreover, $\cB$ also records all the states accessible from a run of higher priority to ensure the current run is the accepting one of $\psst$.
+More specifically, each state of $\cB$ is of the form $(q, \rho, S)$, where $q \in Q_T$, $\rho \in (\cP(Q_A \times Q_A ))^{X}$ is the $\Aut$-abstraction function, and $S \subseteq Q_T$ represents the set of states of $\cT$ accessible from a run of higher priority. 
+%ready for taking non-$\varepsilon$ transitions, 
 
-Before the formal construction of $\cB$, we introduce some notations.
+Before the construction of $\cB$, we introduce some notations.
 \begin{itemize}
 \item For $S \subseteq Q_T$, $\delta^{(ip)}_T(S, a) = \{q'_1 \mid \exists q_1 \in S, q'_1 \in \delta_T(q_1, a)\}$.
 %
 \item For $q \in Q_T$,  if $\tau_T(q) = (P_1, P_2)$, then $\tau^{(ip)}_T(\{q\})=S$ such that $S = P_1 \cup P_2$. 
-Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{q \in S} \tau^{(ip)}_T(\{q\})$. We also use $(\tau^{(ip)}_T)^\ast$ to denote $\bigcup \limits_{n \in \Nat} (\tau^{(ip)}_T)^{n}(S)$, where $(\tau^{(ip)}_T)^{0}(S) = S$, and for $n \in \Nat$, $(\tau^{(ip)}_T)^{n+1}(S) = \tau^{(ip)}_T((\tau^{(ip)}_T)^{n}(S))$. 
+Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{q \in S} \tau^{(ip)}_T(\{q\})$. We also use $(\tau^{(ip)}_T)^\ast$ to denote the $\varepsilon$-closure of $\cT$, namely, $(\tau^{(ip)}_T)^\ast(S) = \bigcup \limits_{n \in \Nat} (\tau^{(ip)}_T)^{n}(S)$, where $(\tau^{(ip)}_T)^{0}(S) = S$, and for $n \in \Nat$, $(\tau^{(ip)}_T)^{n+1}(S) = \tau^{(ip)}_T((\tau^{(ip)}_T)^{n}(S))$. 
 %
 %We also use $(\tau^{(ip)}_T)^\ast$ to denote the reflexive transitive closure of $\tau^{(ip)}_T$. \tl{here $(\tau^{(ip)}_T)$ is defined as a function... you mean function composition?}
 %\zhilei{I think we can just use the term 'epsilon closure' here?}
@@ -158,18 +159,20 @@ Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{
 
 We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$. 
 \begin{itemize}
-\item $Q_B = \{q'_0\} \cup Q_T \times (\Sigma \cup \{\bot\}) \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)$, (Intuitively, the letter $\sigma$ in $(q, \sigma, \rho, S) \in Q_B$ means the next letter to be read at $q$, with $\bot$ represents the end of the input.)
+\item $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)$, 
+%(Intuitively, the letter $\sigma$ in $(q, \sigma, \rho, S) \in Q_B$ means the next letter to be read at $q$, with $\bot$ represents the end of the input.)
 
-\item $q_{0, B} = q'_0$, 
+\item $q_{0, B} = (q_{0,T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$,
 
 \item $\delta_{B}$ comprises 
 \begin{itemize}
-\item the tuples $(q'_0, \varepsilon, ((q_{0,T},\sigma), \rho_{\varepsilon}, \emptyset))$ where $\sigma \in \Sigma$, $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, 
+%\item the tuples $(q'_0, \varepsilon, ((q_{0,T},\sigma), \rho_{\varepsilon}, \emptyset))$ where $\sigma \in \Sigma$, $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, 
 %
-\item the tuples $(((q,\sigma), \rho, S), \sigma, ((q_i,\sigma'), \rho', S'))$ such that  
+\item the tuples $((q, \rho, S), \sigma, (q_i, \rho', S'))$ such that  
 %there exists $s \in \left((X \cup \Sigma\right)^*)^X)$ satisfying
 \begin{itemize}
-\item $\sigma \in \Sigma$, $\sigma' \in \Sigma \cup \{\bot\}$, 
+\item $\sigma \in \Sigma$, 
+%$\sigma' \in \Sigma \cup \{\bot\}$, 
 %
 \item $\delta_T (q, \sigma) = (q_1, \ldots, q_i, \ldots, q_m)$, 
 %
@@ -177,33 +180,35 @@ We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$,
 %
 \item $\rho' = s(\rho)$,
 %
-\item let $\tau_T(q) = (P_1, P_2)$ and $(\tau^{(ip)}_T)^\ast(S \cup P_1) = S''$, then $S' =  \delta^{(ip)}_T(S'', \sigma)$ $\cup$ $\{ q_1$, $\ldots$, $q_{i - 1} \}$; 
+\item let $\tau_T(q) = (P_1, P_2)$, then $S' = (\tau^{(ip)}_T)^\ast\big(\{ q_1$, $\ldots$, $q_{i - 1} \} \cup \delta^{(ip)}_T\big(S \cup (\tau^{(ip)}_T)^\ast(P_1), \sigma\big)\big)$; (Intuitively, we assume that $S$ is the current set of states ready for taking non-$\varepsilon$-transitions and has already included the states belonging to its $\varepsilon$-closure, moreover, $S'$ is the $\varepsilon$-closure of the set of states reached after taking a $\sigma$-transition.)
+%the set of states that can be reached from $S \cup (\tau^{(ip)}_T)^\ast(P_1)$ by a sequence of $\varepsilon$-transitions, followed by a $\sigma$-transition, 
+%more precisely, suppose $(\tau^{(ip)}_T)^\ast(S \cup P_1) = S''$, then $S' =  \delta^{(ip)}_T(S'', \sigma)$ $\cup$ $\{ q_1$, $\ldots$, $q_{i - 1} \}$; 
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
 %
-\item the tuples $(((q, \sigma), \rho, S), \varepsilon, ((q_i,\sigma), \rho', S'))$ such that 
+\item the tuples $((q, \rho, S), \varepsilon, (q_i, \rho', S'))$ such that 
 %there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
-\item $\sigma \in \Sigma  \cup \{\bot\}$
+\item $\sigma \in \Sigma$,
 %, $\sigma' \in \Sigma \cup \{\bot\}$, 
 %
-\item $\tau_T (q) = ((q_1, \ldots, q_i, \ldots, q_m); \cdots)$, 
+\item $\tau_T(q) = ((q_1, \ldots, q_i, \ldots, q_m); \cdots)$, 
 %
 \item $s = E(q, \varepsilon, q_i)$,
 %
 \item $\rho' = s(\rho)$,
 
-\item $S' =  \tau^{(ip)}_T(S) \cup   \{ q_1, \ldots, q_{i - 1} \}$;
+\item $S' =  S \cup (\tau^{(ip)}_T)^\ast(\{ q_1, \ldots, q_{i - 1} \})$;
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
 %
-\zhilin{stopped here}
-\item the tuples $(((q, \sigma), \rho, S), \varepsilon, ((q_i, \sigma), \rho', S'))$ such that 
+
+\item the tuples $((q, \rho, S), \varepsilon, (q_i, \rho', S'))$ such that 
 %there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
-\item $\sigma \in \Sigma  \cup \{\bot\}$, 
+%\item $\sigma \in \Sigma$, 
 %$\sigma' \in \Sigma \cup \{\bot\}$, 
 %
 \item $\tau_T (q) = ((q'_1, \ldots, q'_n); (q_1, \ldots, q_i, \ldots, q_m))$, 
@@ -212,7 +217,7 @@ We are ready to present the construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$,
 %
 \item $\rho' = s(\rho)$,
 %
-\item if $\sigma = \bot$, then $S' =\tau^{(ip)}_T(S)$ $\cup$  $\{q'_1, \ldots, q'_n, q_1$, $\ldots$, $q_{i - 1} \}$, otherwise, $S' =\tau^{(ip)}_T(S) \cup  \delta_T(S \cup \{q\}, \sigma) \cup \{q'_1, \ldots, q'_n, q_1, \ldots, q_{i - 1} \}$.
+\item $S' = S \cup \{q\} \cup (\tau^{(ip)}_T)^\ast(\{q'_1, \ldots, q'_n, q_1, \ldots, q_{i - 1} \})$. (Note that here we include $q$ into $S'$, since the non-$\varepsilon$-transitions out of $q$ have higher priorities than the transition $(q, \varepsilon, q_i)$.)
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
@@ -232,6 +237,10 @@ let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\
 
 Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
   thus it works for general, or \tmtextit{copyful} \PSST{} \cite{FR17}.
+
+\begin{example}
+\zhilin{an example should be put here}
+\end{example}
 
 % Note that in the definition of \NSST, there is no \emph{copyless} restriction.
 
