@@ -235,10 +235,20 @@ let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\
 \end{proof}
 
 Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
-  thus it works for general, or \tmtextit{copyful} \PSST{} \cite{FR17}.
+  thus it works for general, or \textit{copyful} \PSST{} \cite{FR17}.
 
 \begin{example}
 \zhilin{an example should be put here}
+
+Figure. \ref{fig-psst-preimage-exmp} gives a simple example of \PSST{} Pre-image computation. $\cT$ is a basic \PSST{} that reads \textit{a} from the input and appends it to string variable \textit{x}, which will be the output. At any point it could stop and keep idle by entering $q_1$. $\Aut$ is a trivial FA which accepts mere $aa$. The FA $\cB$ encodes the Pre-image $\cR^{-1}_{\cT}(\Lang(\Aut))$. The states of $\cB$ are labeled the triple mentioned in the algorithm above.
+
+\begin{figure*}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.8]{psst-preimage.pdf}
+\caption{\textit{a)} The PSST $\cT$. \textit{b)} The FA $\Aut$ \textit{c)} The FA $\cB$ which encodes $\cR^{-1}_{\cT}(\Lang(\Aut))$}
+\label{fig-psst-preimage-exmp}
+\end{figure*}
 \end{example}
 
 % Note that in the definition of \NSST, there is no \emph{copyless} restriction.
