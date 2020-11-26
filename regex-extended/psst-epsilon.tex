@@ -192,7 +192,9 @@ Before the construction of $\cB$, we introduce some notations.
 \item For $S \subseteq Q_T$, $\delta^{(ip)}_T(S, a) = \{q'_1 \mid \exists q_1 \in S, q'_1 \in \delta_T(q_1, a)\}$.
 %
 \item For $q \in Q_T$,  if $\tau_T(q) = (P_1, P_2)$, then $\tau^{(ip)}_T(\{q\})=S$ such that $S = P_1 \cup P_2$. 
-Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{q \in S} \tau^{(ip)}_T(\{q\})$. We also use $(\tau^{(ip)}_T)^\ast$ to denote the $\varepsilon$-closure of $\cT$, namely, $(\tau^{(ip)}_T)^\ast(S) = \bigcup \limits_{n \in \Nat} (\tau^{(ip)}_T)^{n}(S)$, where $(\tau^{(ip)}_T)^{0}(S) = S$, and for $n \in \Nat$, $(\tau^{(ip)}_T)^{n+1}(S) = \tau^{(ip)}_T((\tau^{(ip)}_T)^{n}(S))$. 
+Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{q \in S} \tau^{(ip)}_T(\{q\})$. We also use $\big(\tau^{(ip)}_T\big)^\ast$ to denote the $\varepsilon$-closure of $\cT$, namely, $\big(\tau^{(ip)}_T\big)^\ast(S) = \bigcup \limits_{n \in \Nat} \big(\tau^{(ip)}_T\big)^{n}(S)$, where $\big(\tau^{(ip)}_T\big)^{0}(S) = S$, and for $n \in \Nat$, $\big(\tau^{(ip)}_T\big)^{n+1}(S) = \tau^{(ip)}_T\big(\big(\tau^{(ip)}_T\big)^{n}(S)\big)$. 
+%
+\item For $S \subseteq Q_T$ and $\Lambda \subseteq  \cE(\tau_T)$, we use $\big(\tau^{(ip)}_T \backslash \Lambda\big)^\ast(S)$ to denote the set of states reachable from $S$ by sequences of $\varepsilon$-transitions where {\it no} transitions $(q, \varepsilon, q')$ such that $(q, q') \in \Lambda$ are used.
 %
 %We also use $(\tau^{(ip)}_T)^\ast$ to denote the reflexive transitive closure of $\tau^{(ip)}_T$. \tl{here $(\tau^{(ip)}_T)$ is defined as a function... you mean function composition?}
 %\zhilei{I think we can just use the term 'epsilon closure' here?}
@@ -226,7 +228,7 @@ We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\de
 %
 \item $\Lambda' = \emptyset$, (Intuitively, $\Lambda$ is reset.)
 %
-\item let $\tau_T(q) = (P_1, P_2)$, then $S' = (\tau^{(ip)}_T)^\ast\big(\{ q_1$, $\ldots$, $q_{i - 1} \} \cup \delta^{(ip)}_T\big(S \cup (\tau^{(ip)}_T)^\ast(P_1), \sigma\big)\big)$; 
+\item let $\tau_T(q) = (P_1, P_2)$, then $S' = \big(\tau^{(ip)}_T\big)^\ast\big(\{ q_1$, $\ldots$, $q_{i - 1} \} \cup \delta^{(ip)}_T\big(S \cup \big(\tau^{(ip)}_T \setminus \Lambda\big)^\ast(P'_1), \sigma\big)\big)$, where $P'_1 = \{q' \in P_1 \mid (q, q') \not \in \Lambda\}$;  (Note that according to the semantics of PSSTs, when computing the set of states reachable from $q$ through an $\varepsilon$-transition to some $q' \in P_1$ first and a sequence of $\varepsilon$-transitions starting from $q'$ next, the transitions $(q'', \varepsilon, q''')$ with $(q'', q''') \in \Lambda$ should be excluded. )
 %(Intuitively, we assume that $S$ is the current set of states ready for taking non-$\varepsilon$-transitions and has already included the states belonging to its $\varepsilon$-closure, moreover, $S'$ is the $\varepsilon$-closure of the set of states reached after taking a $\sigma$-transition.)
 %the set of states that can be reached from $S \cup (\tau^{(ip)}_T)^\ast(P_1)$ by a sequence of $\varepsilon$-transitions, followed by a $\sigma$-transition, 
 %more precisely, suppose $(\tau^{(ip)}_T)^\ast(S \cup P_1) = S''$, then $S' =  \delta^{(ip)}_T(S'', \sigma)$ $\cup$ $\{ q_1$, $\ldots$, $q_{i - 1} \}$; 
@@ -249,7 +251,7 @@ We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\de
 %
 \item $\Lambda' = \Lambda \cup \{(q, q_i)\}$, 
 %
-\item $S' =  S \cup (\tau^{(ip)}_T)^\ast(\{ q_1, \ldots, q_{i - 1} \})$;
+\item $S' =  S \cup \big(\tau^{(ip)}_T \backslash \Lambda \big)^\ast(\{ q_j \mid j \in [i-1], (q, q_j) \not \in \Lambda \})$;
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
@@ -271,7 +273,7 @@ We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\de
 %
 \item $\Lambda' = \Lambda \cup \{(q, q_i)\}$, 
 %
-\item $S' = S \cup \{q\} \cup (\tau^{(ip)}_T)^\ast(\{q'_1, \ldots, q'_n, q_1, \ldots, q_{i - 1} \})$. (Note that here we include $q$ into $S'$, since the non-$\varepsilon$-transitions out of $q$ have higher priorities than the transition $(q, \varepsilon, q_i)$.)
+\item $S' = S \cup \{q\} \cup \big(\tau^{(ip)}_T \backslash \Lambda \big)^\ast\big(\big\{q'_j \mid j \in [n], (q, q'_j) \not \in \Lambda \big\} \cup \big\{q_j \mid j \in [i-1], (q, q_j) \not \in \Lambda \big\} \big)$. (Note that here we include $q$ into $S'$, since the non-$\varepsilon$-transitions out of $q$ have higher priorities than the transition $(q, \varepsilon, q_i)$.)
 %
 %$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$. 
 \end{itemize}
