@@ -24,10 +24,12 @@ A  run of $\pnfa$ on a string $w$ is a sequence $q_0 \sigma'_1 q_1 \ldots \sigma
 \item for any $i \in [m]$, either $\sigma'_i \in \Sigma$ and $q_i \in \delta (q_{i - 1}, \sigma'_i)$, or $\sigma'_i = \varepsilon$ and $q_i \in \tau(q_{i-1})$ %\pi_1(\tau(q_{i-1}))\cup \pi_2(\tau(q_{i-1}))$,
 \item $w = \sigma'_1 \cdots \sigma'_m$,
 %
-\item for every subsequence $q_i \sigma'_{i+1} q_{i+1} \ldots \sigma'_{j} q_j$ such that  $i < j$ and $\sigma'_{i+1} = \cdots = \sigma'_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
+\item for every subsequence $q_i \sigma'_{i+1} q_{i+1} \ldots \sigma'_{j} q_j$ such that  $i < j$ and $\sigma'_{i+1} = \cdots = \sigma'_j = \varepsilon$, it holds that for every $k, l: i \le k < l < j$, $(q_k, q_{k+1}) \neq (q_l, q_{l+1})$.
+%each state $q \in Q$ occurs \emph{at most twice} in the subsequence. 
+(Intuitively, each transition occurs at most once in a sequence of $\varepsilon$-transitions.) 
 \end{itemize}
 Note that it is possible that $\delta(q, \sigma) = ()$, namely, there is no $\sigma$-transition out of $q$. 
-It is easy to observe that given a string $w$, the length of a run of $\pnfa$ on $w$ is $O(|w||Q|)$.
+It is easy to observe that given a string $w$, the length of a run of $\pnfa$ on $w$ is $O(|w||\cA|)$.
 For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigma'_1 q_1' \ldots \sigma'_n q'_n$ such that $\sigma_1 \ldots \sigma_m = \sigma'_1 \ldots \sigma'_n$, we say that $p$ is of a higher priority over $p'$ if 
 \begin{itemize}
 \item either $p'$ is a prefix of $p$ (in this case, the transitions of $p$ after $p'$ are all $\varepsilon$-transitions), 
@@ -44,11 +46,22 @@ For any two runs $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ and $p' =  q_0 \sigm
 \end{itemize}
 \end{itemize}
 
-The \emph{accepting} run of $\pnfa$ on $w$ is a run $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ of $\pnfa$ on $w$ with the \emph{highest} priority such that $q_m \in F$. The language of $\pnfa$, denoted as $\Lang(\pnfa)$, is the set of
- strings on which $\pnfa$ has an accepting run.
+An \emph{accepting} run of $\pnfa$ on $w$ is a run $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ of $\pnfa$ on $w$ with the \emph{highest} priority such that $q_m \in F$. (Note that a run $q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ of $\pnfa$ with the highest priority may not be accepting, i.e. satisfy $q_m \in F$.) The language of $\pnfa$, denoted as $\Lang(\pnfa)$, is the set of strings on which $\pnfa$ has an accepting run.
 
 
 Note that PFAs differ from FAs only in the way that the strings are accepted, they still define regular languages. 
+
+\begin{remark}
+In each run of $\pnfa$ on a given string $w$, it is required that each state occurs at most twice in a sequence of $\varepsilon$-transitions. This requirement is necessary for bounding the length of the runs on $w$, thus guaranteeing the existence of a run of highest priority on $w$. The choice of ``at most twice'', instead of ``at most once'', is for technical reasons. 
+\end{remark}
+
+%\begin{figure}[ht]
+%\centering
+%\rule{\linewidth}{0cm}
+%\includegraphics[scale=0.8]{pfa-epsilon-star.pdf}
+%\caption{The PFA for $\varepsilon^\ast$}
+%\label{fig-pfa-epsilon-star}
+%\end{figure}
 
 \begin{example}\label{exmp-pfa}
 The PFAs corresponding to $a^\ast$ and $a^{\ast?}$ respectively are illustrated in Figure~\ref{fig-pfa}: (i) and (ii), where the dashed line represents $\pi_2(\tau(q_0))$ (of lower priority than the $a$-transition), the thicker solid line represents $\pi_1(\tau(q_0))$ (of higher priority than the $a$-transition), and the doubly circled state $q_1$ is a final state.
@@ -63,9 +76,9 @@ The PFAs corresponding to $a^\ast$ and $a^{\ast?}$ respectively are illustrated 
 
 \end{example}
 
-\begin{remark}
-Remark that PFAs in Definition~\ref{def-pfa} are different from pNFAs in \cite{BM17} in the sense that the state set in a pNFA is partitioned into two disjoint subsets and the non-$\varepsilon$-transitions are deterministic, while this is not the case in PFAs. Therefore, PFAs are slightly more flexible than pNFAs in \cite{BM17}. We choose this definition of PFAs as a more natural extension of FAs. 
-\end{remark}
+%\begin{remark}
+%Remark that PFAs in Definition~\ref{def-pfa} are different from pNFAs in \cite{BM17} in the sense that the state set in a pNFA is partitioned into two disjoint subsets and the non-$\varepsilon$-transitions are deterministic, while this is not the case in PFAs. Therefore, PFAs are slightly more flexible than pNFAs in \cite{BM17}. We choose this definition of PFAs as a more natural extension of FAs. 
+%\end{remark}
 
 The priorities of PFAs are used to model the eager and greedy semantics of $\regexp$, as we shall see in Section~\ref{construction:pnfa}.
 
@@ -89,10 +102,11 @@ A run of $\psst$ on a string $w$ is a sequence $q_0 \sigma_1 s_1 q_1 \ldots \sig
 \item for each $i \in [m]$, 
 \begin{itemize}
 \item either $\sigma_i \in \Sigma$, $q_i \in \delta (q_{i-1}, \sigma_i)$, and $s_i = E (q_{i - 1}, \sigma_i, q_i)$, 
-\item or $\sigma_i = \varepsilon$, $q_i \in \tau(q_{i-1})$ and $s_i = E (q_{i - 1}, \varepsilon, q_i)$.
+\item or $\sigma_i = \varepsilon$, $q_i \in \tau(q_{i-1})$ and $s_i = E (q_{i - 1}, \varepsilon, q_i)$,
 \end{itemize}
 
-\item for every subsequence $q_i \sigma_{i+1} s_{i+1} q_{i+1} \ldots \sigma_{j} s_j q_j$ such that  $i < j$ and $\sigma_{i+1} = \cdots = \sigma_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
+%\item for every subsequence $q_i \sigma_{i+1} s_{i+1} q_{i+1} \ldots \sigma_{j} s_j q_j$ such that  $i < j$ and $\sigma_{i+1} = \cdots = \sigma_j = \varepsilon$, it holds that $q_i, \ldots, q_j$ are mutually distinct. (Intuitively, loops of $\varepsilon$-transitions are forbidden.) 
+\item for every subsequence $q_i \sigma_{i+1} s_{i+1} q_{i+1} \ldots \sigma_{j} s_j q_j$ such that  $i < j$ and $\sigma_{i+1} = \cdots = \sigma_j = \varepsilon$,  it holds that for every $k, l: i \le k < l < j$, $(q_k, q_{k+1}) \neq (q_l, q_{l+1})$.
 \end{itemize}
 
 %A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$, where $F (q_m)$ is defined and for each $i \in [m], q_i \in \delta (q_{i-1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. 
@@ -102,7 +116,7 @@ For any pair of runs $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_
   % $p \neq p'$ and, for the smallest index $j$ with $q_j \neq q_j'$,
  % $\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
   
-The accepting run of $\psst$ on an input $w$ is a run of $\psst$ on $w$ of the highest priority, say $q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$, such that $F(q_m)$ is defined. The output of $\psst$ on $w$, denoted by $\psst(w)$, is defined as $\eta_m(F(q_m))$, where $\eta_0(x) = \varepsilon$ for each $x \in X$, and $\eta_{i}(x) = \eta_{i-1}(s_{i}(x))$ for every $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation  $\eta_m(F(q_m))$ and $\eta_{i-1}(s_{i}(x))$ by taking a function $\eta$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\eta(x)$. If there is no accepting run of $\psst$ on $w$, then $\psst(w) = \bot$, namely, the output of $\psst$ on $w$ is undefined. The string relation defined by $\psst$, denoted by $\cR_\psst$,  is $\{(w, \psst(w)) \mid w \in \Sigma^\ast, \psst(w) \neq \bot\}$.
+An accepting run of $\psst$ on an input $w$ is a run of $\psst$ on $w$ of the highest priority, say $q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$, such that $F(q_m)$ is defined. The output of $\psst$ on $w$, denoted by $\psst(w)$, is defined as $\eta_m(F(q_m))$, where $\eta_0(x) = \varepsilon$ for each $x \in X$, and $\eta_{i}(x) = \eta_{i-1}(s_{i}(x))$ for every $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation  $\eta_m(F(q_m))$ and $\eta_{i-1}(s_{i}(x))$ by taking a function $\eta$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\eta(x)$. If there is no accepting run of $\psst$ on $w$, then $\psst(w) = \bot$, namely, the output of $\psst$ on $w$ is undefined. The string relation defined by $\psst$, denoted by $\cR_\psst$,  is $\{(w, \psst(w)) \mid w \in \Sigma^\ast, \psst(w) \neq \bot\}$.
 \end{definition}
 
 \begin{example}
@@ -135,11 +149,38 @@ For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \S
   \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
 \end{theorem}
 
-\tl{another way is to first define B as a PST, could make the construction a bit modular?}
+\tl{another way is to first define B as a PFA, could make the construction a bit modular?}\zhilin{Add a counter example for this natural idea.}
  
-\begin{proof}
+Let $\psst = (Q_T, \Sigma$, $X, \delta_T, \tau_T, E_T,  q_{0, T}, F_T)$ be \PSST{}  and $\Aut
+  = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$ be an \FA{}.
 Without loss of generality, we assume that $\Aut$ contains no $\varepsilon$-transitions. 
-Intuitively, $\cB$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records an $\Aut$-abstraction of the string stored in $x$, that is, the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. Moreover, $\cB$ also records all the states accessible from a run of higher priority to ensure the current run is the accepting one of $\psst$.
+
+To illustrate the intuition of the FA construction, let us start with the following natural idea of constructing a PFA $\cB$ for the pre-image: $\cB$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records an $\Aut$-abstraction of the string stored in $x$, that is, the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. Specifically, the states of $\cB$ are of the form $(q, \rho)$ with $q \in Q$ and $\rho \in (\cP(Q_A \times Q_A ))^{X}$, moreover, the priorities of $\cB$ inherit those of $\Aut$. 
+
+Nevertheless, it turns out that this PFA construction is flawed: A string $w$ is in $\cR^{-1}_{\cT}(\Lang(\Aut))$ iff the (unique) accepting run of $\cT$ on $w$ produces an output $w'$ that is accepted by $\Aut$. In contrast, a string $w$ is accepted by the PFA $\cB$ iff there is a run of $\cT$ on $w$, not necessarily of the highest priority, producing an output $w'$ that is accepted by $\Aut$. The following example illustrates the flaw of the PFA construction. 
+
+\begin{example}
+Let $\cT$ be the PSST and $\cA$ be the FA in Figure~\ref{fig-pre-image-count-exmp}, that is, 
+\begin{itemize}
+\item $\cT=(\{q_0, q_1, q_2\}, \{a,b,c\}, \{x_0\}, \delta_T, \tau_T, E_T, q_0, F_T)$, where $\delta_T(q_0, \sigma) = (q_0)$, $\delta_T(q_1, a) = (q_1)$, $\delta_T(q_2, \sigma) = (q_2)$, $\tau_T(q_0) = ((q_1); ())$, $\tau_T(q_1)=((q_0, q_2);())$, and $\tau_T(q_2)= ((); ())$, $E_T(q_0, \sigma, q_0) (x_0) = x_0 \sigma$, $E_T(q_1, \varepsilon, q_0) (x_0) = x_0 c$, $E_T(q_1, \varepsilon, q_2) (x_0) = x_0 c$, $E_T(q_2, \sigma, q_2) (x_0) = x_0 \sigma$, for $\sigma \in\{ a, b\}$, moreover, $F_T(q_2)= x_0$;
+%
+\item $\cA = (\{p_0\}, \{a,b,c\}, \delta_A, p_0, \{p_0\})$, where $\delta_A$ = $\{(p_0, \sigma, p_0)$ $\mid \sigma = b, c\}$.
+\end{itemize}
+
+\begin{figure*}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.8]{pre-image-counter-example.pdf}
+\caption{A counter example for the PFA pre-image construction}
+\label{fig-pre-image-count-exmp}
+\end{figure*}
+
+Let us consider $w = a$. The accepting run of $\cT$ on $w$ is $q_0 \xrightarrow{\varepsilon} q_1 \xrightarrow[x_0:=x_0c]{\varepsilon} q_0 \xrightarrow[x_0:=x_0a]{a} q_0 \xrightarrow{\varepsilon} q_1 \xrightarrow[x_0:=x_0c]{\varepsilon} q_2$, producing an output $cac \not \in \Lang(\cA)$. Therefore, $a \not \in \cR_\cT^{-1}(\Lang(\cA))$. Nevertheless, if we consider the PFA $\cB$ constructed from $\cT$ and $\cA$,  it turns out that $\cB$ does accept $w$, witnessed by the run $(q_0, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_1, \{(p_0,p_0)\}) \xrightarrow{a} (q_1, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_2, \{(p_0, p_0)\})$, although the run of $\cB$ corresponding to the accepting run of $\cT$ on $w$, i.e. $(q_0, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_1, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_0, \{(p_0, p_0)\}) \xrightarrow{a}  (q_0, \emptyset) \xrightarrow{\varepsilon} (q_1, \emptyset) \xrightarrow{\varepsilon} (q_2, \emptyset)$, is not accepting, where $\{(p_0,p_0)\}$ and $\emptyset$ are the $\cA$-abstractions of $x_0$.
+\end{example}
+
+\begin{proof}
+The FA $\cB$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records an $\Aut$-abstraction of the string stored in $x$, that is, the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. 
+Moreover, $\cB$ also records all the states accessible from a run of higher priority to ensure the current run is the accepting one of $\psst$.
 More specifically, each state of $\cB$ is of the form $(q, \rho, S)$, where $q \in Q_T$, $\rho \in (\cP(Q_A \times Q_A ))^{X}$ is the $\Aut$-abstraction function, and $S \subseteq Q_T$ represents the set of states of $\cT$ accessible from a run of higher priority. 
 %ready for taking non-$\varepsilon$ transitions, 
 
