@@ -155,6 +155,7 @@ To illustrate the intuition of the FA construction, let us start with the follow
 Nevertheless, it turns out that this construction method is flawed: A string $w$ is in $\cR^{-1}_{\cT}(\Lang(\Aut))$ iff the (unique) accepting run of $\cT$ on $w$ produces an output $w'$ that is accepted by $\Aut$. However, a string $w$ is accepted by $\cB'$ iff there is a run of $\cT$ on $w$, not necessarily of the highest priority, producing an output $w'$ that is accepted by $\Aut$. The following example illustrates the flaw of the construction above.
 
 \begin{example}
+\label{pre-image-count-examp}
 Let $\cT$ be the PSST and $\cA$ be the FA in Figure~\ref{fig-pre-image-count-exmp}, that is, 
 \begin{itemize}
 \item $\cT=(\{q_0, q_1, q_2\}, \{a,b,c\}, \{x_0\}, \delta_T, \tau_T, E_T, q_0, F_T)$, where $\delta_T(q_0, \sigma) = (q_0)$, $\delta_T(q_1, a) = (q_1)$, $\delta_T(q_2, \sigma) = (q_2)$, $\tau_T(q_0) = ((q_1); ())$, $\tau_T(q_1)=((q_0, q_2);())$, and $\tau_T(q_2)= ((); ())$, $E_T(q_0, \sigma, q_0) (x_0) = x_0 \sigma$, $E_T(q_1, \varepsilon, q_0) (x_0) = x_0 c$, $E_T(q_1, \varepsilon, q_2) (x_0) = x_0 c$, $E_T(q_2, \sigma, q_2) (x_0) = x_0 \sigma$, for $\sigma \in\{ a, b\}$. Moreover, $F_T(q_2)= x_0$;
@@ -162,16 +163,16 @@ Let $\cT$ be the PSST and $\cA$ be the FA in Figure~\ref{fig-pre-image-count-exm
 \item $\cA = (\{p_0\}, \{a,b,c\}, \delta_A, p_0, \{p_0\})$, where $\delta_A$ = $\{(p_0, \sigma, p_0)$ $\mid \sigma = b, c\}$.
 \end{itemize}
 
-\begin{figure*}[ht]
+Let us consider $w = a$. The accepting run of $\cT$ on $w$ is $q_0 \xrightarrow{\varepsilon} q_1 \xrightarrow[x_0:=x_0c]{\varepsilon} q_0 \xrightarrow[x_0:=x_0a]{a} q_0 \xrightarrow{\varepsilon} q_1 \xrightarrow[x_0:=x_0c]{\varepsilon} q_2$, producing an output $cac \not \in \Lang(\cA)$. Therefore, $a \not \in \cR_\cT^{-1}(\Lang(\cA))$. Nevertheless, if we consider the FA $\cB'$ constructed from $\cT$ and $\cA$,  it turns out that $\cB'$ does accept $w$, witnessed by the run $(q_0, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_1, \{(p_0,p_0)\}) \xrightarrow{a} (q_1, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_2, \{(p_0, p_0)\})$. On the other hand, the run of $\cB'$ corresponding to the accepting run of $\cT$ on $w$, i.e. $(q_0, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_1, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_0, \{(p_0, p_0)\}) \xrightarrow{a}  (q_0, \emptyset) \xrightarrow{\varepsilon} (q_1, \emptyset) \xrightarrow{\varepsilon} (q_2, \emptyset)$, is not accepting, where $\{(p_0,p_0)\}$ and $\emptyset$ are the $\cA$-abstractions of $x_0$.
+\end{example}
+
+\begin{figure}[ht]
 \centering
 %\rule{\linewidth}{0cm}
 \includegraphics[scale=0.8]{pre-image-counter-example.pdf}
-\caption{A counter example for the PFA pre-image construction}
+\caption{A counterexample to disprove the flawed pre-image construction method}
 \label{fig-pre-image-count-exmp}
-\end{figure*}
-
-Let us consider $w = a$. The accepting run of $\cT$ on $w$ is $q_0 \xrightarrow{\varepsilon} q_1 \xrightarrow[x_0:=x_0c]{\varepsilon} q_0 \xrightarrow[x_0:=x_0a]{a} q_0 \xrightarrow{\varepsilon} q_1 \xrightarrow[x_0:=x_0c]{\varepsilon} q_2$, producing an output $cac \not \in \Lang(\cA)$. Therefore, $a \not \in \cR_\cT^{-1}(\Lang(\cA))$. Nevertheless, if we consider the PFA $\cB$ constructed from $\cT$ and $\cA$,  it turns out that $\cB'$ does accept $w$, witnessed by the run $(q_0, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_1, \{(p_0,p_0)\}) \xrightarrow{a} (q_1, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_2, \{(p_0, p_0)\})$. On the other hand, the run of $\cB'$ corresponding to the accepting run of $\cT$ on $w$, i.e. $(q_0, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_1, \{(p_0,p_0)\}) \xrightarrow{\varepsilon} (q_0, \{(p_0, p_0)\}) \xrightarrow{a}  (q_0, \emptyset) \xrightarrow{\varepsilon} (q_1, \emptyset) \xrightarrow{\varepsilon} (q_2, \emptyset)$, is not accepting, where $\{(p_0,p_0)\}$ and $\emptyset$ are the $\cA$-abstractions of $x_0$.
-\end{example}
+\end{figure}
 
 \begin{proof}[Proof of Theorem~\ref{theorem:psst_preimage}]
 Let $\psst = (Q_T, \Sigma$, $X, \delta_T, \tau_T, E_T,  q_{0, T}, F_T)$ be a \PSST{} and $\Aut
@@ -290,16 +291,78 @@ Note that the above construction  does not utilize the so-called \tmtextit{copyl
   thus it works for general, or \textit{copyful} \PSST{} \cite{FR17}.
 
 \begin{example}
-Figure.\ref{fig-psst-preimage-exmp} gives a simple example of \PSST{} Pre-image computation. $\cT$ is a basic \PSST{} that reads \textit{a} from the input and appends it to string variable \textit{x}, which will be the output. At any point it could stop and keep idle by entering $q_1$. $\Aut$ is a trivial FA which accepts mere $aa$. The FA $\cB$ encodes the Pre-image $\cR^{-1}_{\cT}(\Lang(\Aut))$. The states of $\cB$ are labeled the triple mentioned in the algorithm above.
+Figure \ref{fig-psst-preimage-exmp} gives the correct FA $\cB$ encoding $\cR^{-1}_{\cT}(\Lang(\Aut))$ in Example \ref{pre-image-count-examp} using the construction method introduced above. Only those states reachable from the initial state $r_0$ are shown. Table \ref{table:psst-preimage} shows the correspondence between the states in the figure and the states of $\cB$.
 
-\begin{figure*}[ht]
+\end{example}
+
+
+\begin{figure}[ht]
 \centering
 %\rule{\linewidth}{0cm}
-\includegraphics[scale=0.8]{psst-preimage.pdf}
-\caption{\textit{a)} The PSST $\cT$. \textit{b)} The FA $\Aut$ \textit{c)} The FA $\cB$ which encodes $\cR^{-1}_{\cT}(\Lang(\Aut))$}
+\includegraphics[scale=0.8]{psst-preimage-example.pdf}
+\caption{FA $\cB$ that encodes $\cR^{-1}_{\cT}(\Lang(\Aut))$}
 \label{fig-psst-preimage-exmp}
-\end{figure*}
-\end{example}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{the actual $\cB$ state in Figure 
+\label{table:psst-preimage}
+\ref{fig-psst-preimage-exmp}}
+\begin{tabular}{|c|c|}
+    \hline
+    Symbol & State of $\cB$\\
+    \hline
+    $r_0$ & $(q_0, \rho_1, \emptyset, \emptyset)$\\
+    \hline
+    $r_1$ & $(q_1, \rho_1, \{ (q_0, q_1) \}, \emptyset)$\\
+    \hline
+    $r_2$ & $(q_2, \rho_1, \{ (q_0, q_1), (q_1, q_2) \}, \{ q_0 \})$\\
+    \hline
+    $r_3$ & $(q_2, \rho_2, \emptyset, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_4$ & $(q_2, \rho_1, \emptyset, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_5$ & $(q_0, \rho_1, \{ (q_0, q_1) (q_1, q_0) \}, \emptyset)$\\
+    \hline
+    $r_6$ & $(q_0, \rho_2, \emptyset, \emptyset)$\\
+    \hline
+    $r_7$ & $(q_0, \rho_2, \emptyset, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_8$ & $(q_1, \rho_2, \{ (q_0, q_1) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_9$ & $(q_0, \rho_2, \{ (q_0, q_1) (q_1, q_0) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{10}$ & $(q_2, \rho_2, \{ (q_0, q_1) (q_1, q_2) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{11}$ & $(q_0, \rho_1, \emptyset, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{12}$ & $(q_1, \rho_1, \{ (q_0, q_1) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{13}$ & $(q_0, \rho_1, \{ (q_0, q_1) (q_1, q_0) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{14}$ & $(q_2, \rho_1, \{ (q_0, q_1) (q_1, q_2) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{15}$ & $(q_2, \rho_2, \{ (q_0, q_1) (q_1, q_2) \}, \{ q_0 \})$\\
+    \hline
+    $r_{16}$ & $(q_1, \rho_2, \emptyset, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{17}$ & $(q_2, \rho_2, \{ (q_1, q_2) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{18}$ & $(q_0, \rho_2, \{ (q_1, q_0) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{19}$ & $(q_1, \rho_2, \{ (q_1, q_0) (q_0, q_1) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{20}$ & $(q_2, \rho_2, \{ (q_1, q_0) (q_0, q_1) (q_1, q_2) \}, \{ q_0, q_1, q_2 \})$\\
+    \hline
+    $r_{21}$ & $(q_1, \rho_2, \{ (q_0, q_1) \}, \emptyset)$\\
+    \hline
+    $r_{22}$ & $(q_0, \rho_2, \{ (q_0, q_1) (q_1, q_0) \}, \emptyset)$\\
+    \hline
+\end{tabular}
+
+\end{table}
+
 
 % Note that in the definition of \NSST, there is no \emph{copyless} restriction.
 
