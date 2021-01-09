@@ -1,0 +1,134 @@
+
+\documentclass{llncs}
+
+%%%(20 pages max, must be anonymized)
+%% Conference information
+
+\usepackage{mathrsfs}
+\usepackage{blindtext}
+\usepackage{minted}
+\usepackage{eqnarray}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+\newif\ifdraft\drafttrue
+%\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {AL: #1 :LA} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\newcommand{\philipp}[1]{\color{magenta} {PR: #1 :PR} \color{black}}
+\newcommand{\zhilei}[1]{\color{violet} {ZLH: #1 :HZL} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\newcommand{\zhilei}[1]{}
+\fi
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\colons}{\,:\,}
+\newcommand{\tmop}[1]{\ensuremath{\operatorname{#1}}}
+\newcommand{\tmtextit}[1]{{\itshape{#1}}}
+\newcommand{\tmtextbf}[1]{{\bfseries{#1}}}
+%\newtheorem{definition}{Definition}
+%{\theorembodyfont{\rmfamily}\newtheorem{note}{Note}}
+%{\theorembodyfont{\rmfamily}\newtheorem{remark}{Remark}}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{note}{Note}
+%\newtheorem{remark}{Remark}
+\newcommand\NSST{{\sf NSST}}
+\newcommand\PSST{{\sf PSST}}
+\newcommand\refexp{{\sf REF}}
+\newcommand\ssym{{\sf Start}}
+\newcommand\esym{{\sf End}}
+
+\newcommand\pnfa{\mathcal{A}}
+\newcommand\psst{\mathcal{T}}
+
+\newcommand\pat{\mathsf{pat}}
+\newcommand\rep{\mathsf{rep}}
+
+
+%\newcommand{\ASSERT}[1]{\textsf{assert}\left(#1\right)}
+%%%%%%%%%% End TeXmacs macros
+
+
+
+\input{macros.tex}
+
+
+\begin{document}
+
+%% Title information
+\title{Solving String Constraints with Practical Regular Expressions}
+
+
+
+%% Author with single affiliation.
+\author{}
+\institute{}
+
+\maketitle
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+Text of abstract \ldots.
+\end{abstract}
+
+
+%% Keywords
+%% comma separated list
+\keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{intro.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{motivating-example.tex}
+
+\input{prel.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\input{logic.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{psst-epsilon.tex}
+
+
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{decproc-new.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{impl.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{experiments.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{alpha}
+\bibliography{string}
+
+%% Appendix
+\appendix
+
+\input{appendix.tex}
+
+\end{document}
