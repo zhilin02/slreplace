@@ -1,0 +1,8 @@
+(declare-fun Constructed_Argument_t () String)
+(declare-fun Constructed_Argument_2_t () String)
+(declare-fun Constructed_Argument_3_t () String)
+(assert (= Constructed_Argument_t "number"))
+(assert (= Constructed_Argument_2_t "boolean"))
+(assert (not (= Constructed_Argument_3_t "string")))
+(assert (= Constructed_Argument_3_t "number"))
+(check-sat)

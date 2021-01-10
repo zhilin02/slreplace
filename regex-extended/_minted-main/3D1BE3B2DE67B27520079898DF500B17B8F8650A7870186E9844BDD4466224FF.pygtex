@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{k+kd}{function} \PYG{n+nx}{changeNameFormat}\PYG{p}{(}\PYG{n+nx}{authorList}\PYG{p}{)}
+    \PYG{p}{\PYGZob{}}
+      \PYG{k+kd}{var} \PYG{n+nx}{autListReg} \PYG{o}{=} \PYG{l+s+sr}{/\PYGZca{}([\PYGZbs{}w\PYGZhy{}\PYGZbs{}.\PYGZbs{}s]+,[\PYGZbs{}w\PYGZhy{}\PYGZbs{}.\PYGZbs{}s]+\PYGZbs{}sand\PYGZbs{}s)*[\PYGZbs{}w\PYGZhy{}\PYGZbs{}.\PYGZbs{}s]+,[\PYGZbs{}w\PYGZhy{}\PYGZbs{}.\PYGZbs{}s]+\PYGZdl{}/}\PYG{p}{;}
+      \PYG{k}{if} \PYG{p}{(}\PYG{n+nx}{autListReg}\PYG{p}{.}\PYG{n+nx}{test}\PYG{p}{(}\PYG{n+nx}{authorList}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+        \PYG{k+kd}{var} \PYG{n+nx}{nameReg} \PYG{o}{=} \PYG{l+s+sr}{/([\PYGZbs{}w\PYGZhy{}\PYGZbs{}.]+(?:\PYGZbs{}s+[\PYGZbs{}w\PYGZhy{}\PYGZbs{}.]+)*),\PYGZbs{}s*([\PYGZbs{}w\PYGZhy{}\PYGZbs{}.]+(?:\PYGZbs{}s+[\PYGZbs{}w\PYGZhy{}\PYGZbs{}.]+)*)((\PYGZbs{}s+and\PYGZbs{}s+)|\PYGZdl{})/g}\PYG{p}{;}
+        \PYG{k}{return} \PYG{n+nx}{authorList}\PYG{p}{.}\PYG{n+nx}{replace}\PYG{p}{(}\PYG{n+nx}{nameReg}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}\PYGZdl{}2 \PYGZdl{}1\PYGZdl{}3\PYGZdq{}}\PYG{p}{);}
+      \PYG{p}{\PYGZcb{}}
+      \PYG{k}{else} \PYG{k}{return} \PYG{n+nx}{authorList}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+\end{Verbatim}

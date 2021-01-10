@@ -1,0 +1,20 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kd}{function} \PYG{n+nx}{urlSimpleParse}\PYG{p}{(}\PYG{n+nx}{url}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+  \PYG{k+kd}{var} \PYG{n+nx}{protocol}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{,} \PYG{n+nx}{host}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{;}
+  \PYG{n+nx}{url} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{trim}\PYG{p}{();}
+  \PYG{k+kd}{var} \PYG{n+nx}{colonpos} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{indexof}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}:\PYGZsq{}}\PYG{p}{);}
+  \PYG{k}{if} \PYG{p}{(}\PYG{n+nx}{colonpos} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{)}
+  \PYG{p}{\PYGZob{}}
+    \PYG{n+nx}{protocol} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nx}{colonpos}\PYG{p}{).}\PYG{n+nx}{toLowerCase}\PYG{p}{();}
+    \PYG{k}{if}\PYG{p}{(}\PYG{l+s+sr}{/\PYGZca{}http\PYGZdl{}|\PYGZca{}https\PYGZdl{}/}\PYG{p}{.}\PYG{n+nx}{test}\PYG{p}{(}\PYG{n+nx}{protocol}\PYG{p}{))}
+    \PYG{p}{\PYGZob{}}
+      \PYG{n+nx}{url} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{n+nx}{colonpos}\PYG{o}{+}\PYG{l+m+mi}{3}\PYG{p}{);}
+      \PYG{k+kd}{var} \PYG{n+nx}{slashpos} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{indexof}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}/\PYGZsq{}}\PYG{p}{);}
+      \PYG{k}{if} \PYG{p}{(}\PYG{n+nx}{slashpos} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{)}  \PYG{n+nx}{host} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nx}{slashpos}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else} \PYG{n+nx}{protocol} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{;}
+    \PYG{k}{return} \PYG{n+nx}{protocol}\PYG{p}{,} \PYG{n+nx}{host}\PYG{p}{;}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

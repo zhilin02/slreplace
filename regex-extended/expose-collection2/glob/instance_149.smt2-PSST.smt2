@@ -1,0 +1,5 @@
+(declare-fun Constructed_Argument_t () String)
+(declare-fun Constructed_Argument_2_t () String)
+(assert (= Constructed_Argument_t "null"))
+(assert (= Constructed_Argument_2_t "string"))
+(check-sat)
