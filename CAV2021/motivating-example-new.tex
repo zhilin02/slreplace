@@ -5,19 +5,23 @@
 \begin{figure*}[htbp]
 \begin{center}
 \begin{minted}[linenos]{javascript}
-function checkEvent (exp, text) {
-  const unaryOperatorsRE = /\s*\([^\)]*\)|\b\s*\([^\)]*\)/;
-  const stripStringRE = /'(?:[^'\\]|\.)*'|"(?:[^"\\]|\.)*"|`(?:[^`\\]|\.)*\$\{|\}(?:[^`\\]|\.)*`|`(?:[^`\\]|\.)*`/g
-  const stripped = exp.replace(stripStringRE, '');
-  const keywordMatch = stripped.match(unaryOperatorsRE);
-  if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
-    console.log(`avoid using JavaScript unary operator as property name: "` +
-      keywordMatch[0]+`" in expression' + text.trim());
+function normalize(decimal)
+{
+  var format = decimal.match(/^(\d+)\.?(\d*)$/);
+  var result = "";
+  if(format)
+  {
+   var integer = format[1].replace(/^0*/, "");
+   var fractional  = format[2].replace(/0*$/, "");
+   if(integer !== "") result = integer;
+   else result = "0"; 
+   if(fractional !== "") result = result + "." + fractional;
   }
+  return result;
 }
 \end{minted}
 \end{center}
-\caption{Change the name format of an author list: A motivating example}
+\caption{Normalize a decimal by removing the leading and trailing zeros}
 \label{fig-run-exmp}
 \end{figure*}
 
