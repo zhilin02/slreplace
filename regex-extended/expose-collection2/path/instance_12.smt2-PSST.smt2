@@ -1,5 +1,0 @@
-(declare-fun ExpandObjSwitcher () Real)
-(declare-fun CreateAsClass () Bool)
-(assert (= ExpandObjSwitcher 0.0))
-(assert CreateAsClass)
-(check-sat)

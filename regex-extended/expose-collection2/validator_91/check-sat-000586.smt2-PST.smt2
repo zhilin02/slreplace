@@ -1,7 +1,0 @@
-(declare-fun Constructed_Argument_t () String)
-(declare-fun Constructed_Argument_2_t () String)
-(declare-fun CreateAsClass () Bool)
-(assert (= Constructed_Argument_t (str.++ (seq.unit #x6e) (seq.unit #x75) (seq.unit #x6c) (seq.unit #x6c))))
-(assert (= Constructed_Argument_2_t (str.++ (seq.unit #x6e) (seq.unit #x75) (seq.unit #x6c) (seq.unit #x6c))))
-(assert CreateAsClass)
-(check-sat)

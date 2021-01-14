@@ -1,7 +1,0 @@
-(declare-fun Constructed_Argument_t () String)
-(declare-fun CreateAsClass () Bool)
-(declare-fun Constructed_Argument () Real)
-(assert (= Constructed_Argument_t "number"))
-(assert (not CreateAsClass))
-(assert (not (= Constructed_Argument 0.0)))
-(check-sat)

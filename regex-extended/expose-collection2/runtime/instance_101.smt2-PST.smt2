@@ -1,7 +1,0 @@
-(declare-fun Constructed_Argument_t () String)
-(declare-fun CreateAsClass () Bool)
-(declare-fun Constructed_Argument () Bool)
-(assert (= Constructed_Argument_t "boolean"))
-(assert (not CreateAsClass))
-(assert Constructed_Argument)
-(check-sat)

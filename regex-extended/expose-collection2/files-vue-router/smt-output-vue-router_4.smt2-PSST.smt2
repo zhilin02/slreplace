@@ -1,7 +1,0 @@
-(declare-fun Constructed_Argument_t () String)
-(assert (not (= Constructed_Argument_t "string")))
-(assert (not (= Constructed_Argument_t "number")))
-(assert (not (= Constructed_Argument_t "boolean")))
-(assert (not (= Constructed_Argument_t "object")))
-(assert (= Constructed_Argument_t "array_number"))
-(check-sat)

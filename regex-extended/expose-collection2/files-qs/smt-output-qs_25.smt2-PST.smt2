@@ -1,6 +1,0 @@
-(declare-fun ExpandObjSwitcher () Real)
-(declare-fun Constructed_Argument_t () String)
-(assert (not (= ExpandObjSwitcher 0.0)))
-(assert (= ExpandObjSwitcher 1.0))
-(assert (= Constructed_Argument_t "string"))
-(check-sat)

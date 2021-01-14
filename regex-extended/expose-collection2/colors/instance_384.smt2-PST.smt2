@@ -1,7 +1,0 @@
-(declare-fun ExpandObjSwitcher () Real)
-(declare-fun Constructed_Argument_t () String)
-(declare-fun CreateAsClass () Bool)
-(assert (= ExpandObjSwitcher 3.0))
-(assert (= Constructed_Argument_t "object"))
-(assert CreateAsClass)
-(check-sat)

@@ -1,8 +1,0 @@
-(declare-fun Constructed_Argument_t () String)
-(declare-fun CreateAsClass () Bool)
-(declare-fun Constructed_Argument_elements_routes_0_t () String)
-(assert (= Constructed_Argument_t "object"))
-(assert CreateAsClass)
-(assert (not (= Constructed_Argument_elements_routes_0_t "string")))
-(assert (= Constructed_Argument_elements_routes_0_t "number"))
-(check-sat)

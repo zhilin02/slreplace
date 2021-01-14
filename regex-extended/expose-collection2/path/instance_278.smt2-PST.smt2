@@ -1,5 +1,0 @@
-(declare-fun ExpandObjSwitcher () Real)
-(assert (not (= ExpandObjSwitcher 0.0)))
-(assert (= ExpandObjSwitcher 1.0))
-(assert false)
-(check-sat)
