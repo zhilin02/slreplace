@@ -1,0 +1,96 @@
+%!TEX root = main.tex
+
+\section{Motivating Example}\label{sec:mot}
+
+\begin{figure*}[htbp]
+\begin{center}
+\begin{minted}[linenos]{javascript}
+function checkEvent (exp, text) {
+  const unaryOperatorsRE = /\s*\([^\)]*\)|\b\s*\([^\)]*\)/;
+  const stripStringRE = /'(?:[^'\\]|\.)*'|"(?:[^"\\]|\.)*"|`(?:[^`\\]|\.)*\$\{|\}(?:[^`\\]|\.)*`|`(?:[^`\\]|\.)*`/g
+  const stripped = exp.replace(stripStringRE, '');
+  const keywordMatch = stripped.match(unaryOperatorsRE);
+  if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
+    console.log(`avoid using JavaScript unary operator as property name: "` +
+      keywordMatch[0]+`" in expression' + text.trim());
+  }
+}
+\end{minted}
+\end{center}
+\caption{Change the name format of an author list: A motivating example}
+\label{fig-run-exmp}
+\end{figure*}
+
+\hide{
+\begin{figure*}[htbp]
+\begin{center}
+{
+%\small
+\begin{minted}[linenos]{javascript}
+    function changeNameFormat(authorList)
+    {
+      var autListReg = /^([\w-\.\s]+,[\w-\.\s]+\sand\s)*[\w-\.\s]+,[\w-\.\s]+$/;
+      if (autListReg.test(authorList)) {
+        var nameReg = /([\w-\.]+(?:\s+[\w-\.]+)*),\s*([\w-\.]+(?:\s+[\w-\.]+)*)((\s+and\s+)|$)/g;
+        return authorList.replace(nameReg, "$2 $1$3");
+      }
+      else return authorList;
+    }
+\end{minted}
+}
+\end{center}
+\caption{Change the name format of an author list: A motivating example}
+\label{fig-run-exmp}
+\end{figure*}
+}
+
+We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main approach of this paper. 
+The function ``changeNameFormat''  in Figure~\ref{fig-run-exmp} transforms the name format of an author list from the ACM bibtex style to the DBLP bibtex style. For instance,  if a paper is authored by Alice Brown and John Smith, then the author list in the ACM bibtex style is ``Brown, Alice and Smith, John'', while  in the DBLP bibtex style it is ``Alice Brown and John Smith''. 
+
+%\tl{should the "and" in dblp be removed? Alice Brown, John Smith}\zhilin{I am referring to the bibtex style. Both ACM and DBLP bibtex style contain ``and''}
+
+The input of the function ``changeNameFormat'' is {\sf authorList}, which should follow the pattern specified by the regular expression {\sf autListReg}. Intuitively, {\sf autListReg} stipulates that {\sf authorList} %can be obtained by joining 
+%is the concatenation of  
+joins the strings of the following structure, with the word ``and'' as the separator: concatenation of two sequences of alphabetic letters (denoted by $\backslash$w), bar (denoted by $-$), dot (denoted by $.$), or the blank symbol (denoted by $\backslash$s), with the comma in between. The symbols \^{} and $\$$ denote the beginning and end of an input.
+
+The name format of each author, except for the last one, is specified by the regular expression {\sf nameReg}  in Figure~\ref{fig-run-exmp}, which describes the pattern of a surname (a sequence of alphabetic letters, $-$ or $.$), followed by the comma, then a given name, finally the word ``and'' or $\$$ denoting the end of the input, where $\backslash s$ represents the blank symbol and $\backslash w$ represents alphabetic letters, digits, or the underline symbol $\_$. There are three capturing groups in {\sf nameReg}, intuitively recording surname, given name, and the word ``and'' or $\$$ respectively. Note that surnames or given names may comprise several words. The subexpression (?:$\backslash$s+$[\backslash$w-.]+) in ${\sf nameReg}$ denotes the non-capturing groups, i.e. matching $\backslash$s+$[\backslash$w-.]+ but not remembering the match.
+%Similarly, the regular expression {\sf reLast} describes the name format of the last author, except that it replaces the word ``and'' by the symbol $\$$, denoting the end of the author list. 
+%
+Notice that the global flag ``g'' is used in {\sf nameReg} so that the name format of each author is transformed. 
+\tl{mention  this is replaceAll?}
+The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(nameReg, ``$\$$2 $\$$1 $\$$3'')}, where $\$1$, $\$2$, $\$3$ refer to the match of the first, second and third capturing group respectively. 
+
+For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one needs to  model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(nameReg, ``$\$$2 $\$$1$\$$3'')} can be captured by $\cT_{\sf nameReg}$, where the priorities are used to model the greedy semantics of $+$ or $*$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matches of capturing groups.
+
+An intuitive invariant property of the output of {\sf changeNameFormat} is that, if {\sf authorList} matches {\sf autListReg}, then none of its outputs contains the comma ``,''. The invariant property holds iff the following program in single static assignment form is infeasible (namely, there does not exist a value of {\sf authorList} so that the program can execute to the end):
+%
+\begin{eqnarray}\label{eqn:exmp}
+& & \ASSERT{\sf authorList \in autListReg};\nonumber \\
+& & \sf ret  := \sf  \cT_{nameReg}(authorList);\nonumber \\
+& &  \ASSERT{\sf ret \in .*,.*},
+\end{eqnarray}
+%
+where $\ASSERT{\sf authorList \in autListReg}$ requires that $\sf authorList$ matches $\sf autListReg$, while $\ASSERT{\sf ret \in .*,.*}$ requires that $\sf ret$ contains an occurrence of $,$ ($.$ can match any symbol, except the line breaker).
+
+The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by a ``backward'' reasoning as follows (see Section~\ref{sec:decision} for the details):  
+\begin{itemize}
+\item At first, we compute $(\cT_{\sf nameReg})^{-1}(.*,.*)$,  i.e. the pre-image of the language $.*,.*$ under $\cT_{\sf nameReg}$ (see Theorem~\ref{theorem:psst_preimage}),  remove  $\sf  ret  := \sf  \cT_{nameReg}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{\sf nameREg})^{-1}(.*,.*)}$, resulting into the following program,
+\begin{eqnarray}\label{eqn:exmp}
+& & \ASSERT{\sf authorList \in autListReg};\nonumber \\
+%& & \sf ret  := \sf  \cT_{nameReg}(authorList);\nonumber \\
+& &  \ASSERT{\sf ret \in .*,.*}; \nonumber \\
+& & \ASSERT{\sf authorList \in (\cT_{\sf nameREg})^{-1}(.*,.*)}.
+\end{eqnarray}
+
+%
+%\item Then, we compute $(\cT_{\sf re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)$, i.e. the pre-image of $(\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)$ under $\cT_{\sf re}$, remove the assignment $ \sf result  := \sf  \cT_{ re}(authorList)$, and add the assertion $\ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)}$, resulting into the program 
+%\begin{eqnarray}\label{eqn:exmp-final}
+%& & \ASSERT{\sf authorList \in (\cT_{ re})^{-1}\left((\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)\right)}; \nonumber\\
+%& & \ASSERT{\sf result \in (\cT_{\sf reLast})^{-1}(\Sigma^*, \Sigma^*)}; \nonumber\\
+%& & \sf \ASSERT{ret \in \Sigma^*, \Sigma^*}.
+%\end{eqnarray}
+%Since the program in Equation~(\ref{eqn:exmp-final}) contains no assignment statements, its path feasibility can be solved by checking the nonemptiness of regular languages.
+\item Then, we check the nonemptiness of the intersection of the regular languages $\sf autListReg$ and $(\cT_{\sf nameREg})^{-1}(.*,.*)$.\\
+If the intersection is empty, then the invariant property holds, otherwise, it does not.
+\end{itemize}
+
