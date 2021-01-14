@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{n+nx}{prothostpath} \PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{;} \PYG{n+nx}{querfrag} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{;}
+    \PYG{n+nx}{url1} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{trim}\PYG{p}{();} \PYG{n+nx}{qmarkpos} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{indexof}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}?\PYGZsq{}}\PYG{p}{);}
+    \PYG{n+nx}{sharppos} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{indexof}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZsh{}\PYGZsq{}}\PYG{p}{);} \PYG{n+nx}{assert}\PYG{p}{(}\PYG{n+nx}{qmarkpos} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{);}
+    \PYG{n+nx}{prothostpath1} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nx}{qmarkpos}\PYG{p}{);}
+    \PYG{n+nx}{querfrag1} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{n+nx}{qmarkpos}\PYG{p}{);}
+    \PYG{n+nx}{querfrag2} \PYG{o}{=} \PYG{n+nx}{querfrag1}\PYG{p}{.}\PYG{n+nx}{replace}\PYG{p}{(}\PYG{l+s+sr}{/script/g}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{);}
+    \PYG{n+nx}{url2} \PYG{o}{=} \PYG{n+nx}{prothostpath1}\PYG{p}{.}\PYG{n+nx}{concat}\PYG{p}{(}\PYG{n+nx}{querfrag2}\PYG{p}{);}
+    \PYG{n+nx}{assert}\PYG{p}{(}\PYG{l+s+sr}{/script/}\PYG{p}{.}\PYG{n+nx}{test}\PYG{p}{(}\PYG{n+nx}{querfrag2}\PYG{p}{))}
+\end{Verbatim}

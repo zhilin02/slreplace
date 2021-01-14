@@ -1,0 +1,18 @@
+(declare-fun Constructed_Argument_t () String)
+(declare-fun Constructed_Argument_2_t () String)
+(define-funs-rec ( ( str.repeat ((x!1 String) (x!2 Int)) String)
+                   ( str.whiteLeft ((x!1 String) (x!2 Int)) Int)
+                   ( str.whiteRight ((x!1 String) (x!2 Int)) Int))
+                 ( (ite (<= x!2 0)
+                        ""
+                        (str.++ x!1 ((_ str.repeat 0) x!1 (- x!2 1))))
+                   (ite (= (str.at x!1 x!2) " ")
+                        ((_ str.whiteLeft 0) x!1 (+ x!2 1))
+                        x!2)
+                   (ite (= (str.at x!1 x!2) " ")
+                        ((_ str.whiteRight 0) x!1 (- x!2 1))
+                        x!2)))
+(assert (= Constructed_Argument_t "number"))
+(assert (= Constructed_Argument_2_t "string"))
+
+(check-sat)

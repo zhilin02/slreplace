@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n+nx}{protocol} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{;} \PYG{n+nx}{host} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}\PYGZsq{}}\PYG{p}{;} \PYG{n+nx}{url1} \PYG{o}{=} \PYG{n+nx}{url}\PYG{p}{.}\PYG{n+nx}{trim}\PYG{p}{();}
+  \PYG{n+nx}{colonpos} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{indexof}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}:\PYGZsq{}}\PYG{p}{);} \PYG{n+nx}{assert}\PYG{p}{(}\PYG{n+nx}{colonpos} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{);}
+  \PYG{n+nx}{protocol1} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nx}{colonpos}\PYG{p}{);}
+  \PYG{n+nx}{protocol2} \PYG{o}{=} \PYG{n+nx}{protocol1}\PYG{p}{.}\PYG{n+nx}{toLowerCase}\PYG{p}{();}
+  \PYG{n+nx}{assert}\PYG{p}{(}\PYG{l+s+sr}{/\PYGZca{}http\PYGZdl{}|\PYGZca{}https\PYGZdl{}/}\PYG{p}{.}\PYG{n+nx}{test}\PYG{p}{(}\PYG{n+nx}{protocol2}\PYG{p}{));}
+  \PYG{n+nx}{url2} \PYG{o}{=} \PYG{n+nx}{url1}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{n+nx}{colonpos}\PYG{o}{+}\PYG{l+m+mi}{3}\PYG{p}{);}
+  \PYG{n+nx}{slashpos} \PYG{o}{=} \PYG{n+nx}{url2}\PYG{p}{.}\PYG{n+nx}{indexof}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}/\PYGZsq{}}\PYG{p}{);} \PYG{n+nx}{assert}\PYG{p}{(}\PYG{n+nx}{slashpos} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{);}
+  \PYG{n+nx}{host1} \PYG{o}{=} \PYG{n+nx}{url2}\PYG{p}{.}\PYG{n+nx}{substr}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nx}{slashpos}\PYG{p}{);} \PYG{n+nx}{assert}\PYG{p}{(}\PYG{o}{!}\PYG{l+s+sr}{/[\PYGZbs{}w|\PYGZbs{}x2E]*/}\PYG{p}{.}\PYG{n+nx}{test}\PYG{p}{(}\PYG{n+nx}{host1}\PYG{p}{))}
+\end{Verbatim}

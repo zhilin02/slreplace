@@ -1,0 +1,8 @@
+(declare-fun Constructed_Argument_t () String)
+(declare-fun Constructed_Argument_Array_Length () Int)
+(declare-fun CreateAsClass () Bool)
+(assert (= Constructed_Argument_t "array_string"))
+(assert (>= Constructed_Argument_Array_Length 0))
+(assert (not CreateAsClass))
+(assert false)
+(check-sat)
