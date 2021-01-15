@@ -120,43 +120,45 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   	For a $\regexp$ $e$ and a string $w$, we recursively define an order on $\cM_{\pref(w)}(e)$, written $T
   	>_{w,e} T'$ for $T, T' \in \cM_{\pref(w)}(e)$, as follows:
   	\begin{itemize}
-  		\item $e = \varepsilon$ or $e = a$ or $e = \$ n$. There is only one match tree, thus the
+  		\item $e = \varepsilon$, $e = a$, or $e = \$ n$. There is only one match tree, thus the
   		order $>_{w, e}$ is empty.
-  		
+ %
+ 		\item $e  = a?$. There are only two single-node match trees in $\cM_{\pref(w)}(e)$, namely, $(\varepsilon, e)$ and $(a, e)$. Then we have $(a, e) >_{w,e} (\varepsilon, e)$.
+%		 		
   		\item $e = (e_1)$. Suppose that $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$ for some $w_1, w_2 \in \pref(w)$.
   		Then $T >_{w,e} T'$ iff $T_{(w_1, e_1)} >_{w, e_1} T'_{(w_2, e_1)}$.
   		
-  		\item $e = e_1 + e_2$.
+  		\item $e = [e_1 + e_2]$.
   		\begin{itemize}
   			\item If $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_2)$ for some $w_1, w_2 \in \pref(w)$, then $T >_{w,e} T'$.
 %  			
   			\item If $C (T) = (w_i, e_i)$ and $C (T') = (w'_i, e_i)$ for some $i \in \{ 1,
   			2 \}$ and $w_i, w'_i \in \pref(w)$, then $T >_{w,e} T'$ iff $T_{(w_i, e_i)} >_{w, e_i} T'_{(w'_i, e_i)}$.
   		\end{itemize}
-  		\item $e = e_1 \cdot e_2$. Suppose $C (T) = (w_1, e_1) (w_2, e_2)$ and $C (T') =
+  		\item $e = [e_1 \cdot e_2]$. Suppose $C (T) = (w_1, e_1) (w_2, e_2)$ and $C (T') =
   		(w_1', e_1) (w_2', e_2)$, then $T >_{w,e} T'$ when either $T_{(w_1, e_1)} >_{w, e_1}
-  		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{w_1^{-1}w, e_2} T'_{(w_2', e_2)}$.
+  		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{w_1^{-1}w, e_2} T'_{(w_2', e_2)}$. \zhilin{double check}
 %  		
-  		\item $e = e_1^{\ast}$. 
+  		\item $e = [e_1^{\ast}]$. 
 		\begin{itemize}
 		\item If $T' $ is  a single node $(\varepsilon, e)$, but $T$ is not, then $T >_{w, e} T'$.
   		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T')$
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T')$
   		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{(w_1\cdots w_{j-1})^{-1}w, e_1} T'_{(w_j', e_1)}$.
+  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 		\end{itemize}
 %
-  		\item $e = e_1^{\ast?}$. 
+  		\item $e = [e_1^{\ast?}]$. 
 		\begin{itemize}
 		\item If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
   		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1) \ldots (w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T)$
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T)$
   		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)} >_{(w_1\cdots w_{j-1})^{-1}w, e_1} T'_{(w_j', e_1)}$.
+  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 		\end{itemize}
   	\end{itemize}
   	
-  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$. Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if there is $w \in  \Sigma^\ast\Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the accepting match of $e$ to $w'$ such that $w = w_1w'w_2$ for some $w_1,w_2\in \Sigma^\ast$ and for every nonempty suffix $w'_1$ of $w_1$, $w'_1w'w_2 \not \in \Lang(e)\Sigma^\ast$, otherwise, the match of $e$ in $w$ is undefined.  
+  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$. Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if $w \in \Sigma^\ast \Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the supremum of $\cM_{\pref(w_1^{-1}w)}(e)$ such that $w_1$ is the shortest prefix of $w$ satisfying that $w_1^{-1}w \in \Lang(e)\Sigma^\ast$. If $w \not \in \Sigma^\ast \Lang(e)\Sigma^\ast$, the match of $e$ in $w$ is undefined.  
 %  	
 %  	For any subexpression $e'$ of $e$, suppose $(w_1, e') \ldots (w_m, e')$ are
 %  	all the nodes labeled by $(w', e')$ with $w' \neq \varepsilon$, in the
