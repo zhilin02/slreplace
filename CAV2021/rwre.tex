@@ -83,18 +83,17 @@ We also use $\Lang(e)$ to denote $\{w \in \Sigma^* \mid \cM_w(e) \neq \emptyset\
   \end{definition}
   
 \begin{example}\label{exmp-regex-match-tree}
-Let $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, where $\Gamma = \{0,1,\cdots,9\}$ and $w= 0250$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics}: (i), (ii), (iii), an (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted to avoid tediousness.
+Let $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, where $\Gamma = \{0,1,\cdots,9\}$ and $w= 0250$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics-decimal}: (i), (ii), (iii), an (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted to avoid tediousness.
 \begin{figure}[htb]
 \centering
 %\rule{\linewidth}{0cm}
 \includegraphics[width=1\textwidth]{regex-semantics-decimal.pdf}
 \caption{Match trees of $e=[[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ to $w= 0250$}
-\label{fig-regex-semantics}
+\label{fig-regex-semantics-decimal}
 \end{figure}
 %\Blindtext
  \end{example}
 
-  \zhilin{stopped here}
 
 
 %%%%% the original example %%%%%%%%%%
@@ -117,7 +116,7 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   
   \begin{definition}[Semantics of $\regexp$]\label{def-regex-semantics}
   		
-  	For a $\regexp$ $e$ and a string $w$, we recursively define an order on $\cM_{\pref(w)}(e)$, written $T
+  	For a $\regexp$ $e$ and a string $w$, we recursively define a linear order on $\cM_{\pref(w)}(e)$, written $T
   	>_{w,e} T'$ for $T, T' \in \cM_{\pref(w)}(e)$, as follows:
   	\begin{itemize}
   		\item $e = \varepsilon$, $e = a$, or $e = \$ n$. There is only one match tree, thus the
@@ -136,8 +135,8 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   			2 \}$ and $w_i, w'_i \in \pref(w)$, then $T >_{w,e} T'$ iff $T_{(w_i, e_i)} >_{w, e_i} T'_{(w'_i, e_i)}$.
   		\end{itemize}
   		\item $e = [e_1 \cdot e_2]$. Suppose $C (T) = (w_1, e_1) (w_2, e_2)$ and $C (T') =
-  		(w_1', e_1) (w_2', e_2)$, then $T >_{w,e} T'$ when either $T_{(w_1, e_1)} >_{w, e_1}
-  		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{w_1^{-1}w, e_2} T'_{(w_2', e_2)}$. \zhilin{double check}
+  		(w_1', e_1) (w_2', e_2)$ (note that $w_1$ is a prefix of $w'_1$ or vice versa), then $T >_{w,e} T'$ when either $T_{(w_1, e_1)} >_{w, e_1}
+  		T'_{(w_1', e_1)}$, or $w_1 = w_1'$ and $T_{(w_2, e_2)} >_{w_1^{-1}w, e_2} T'_{(w_2', e_2)}$. 
 %  		
   		\item $e = [e_1^{\ast}]$. 
 		\begin{itemize}
@@ -167,13 +166,12 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   \end{definition}
 
 \begin{example}\label{exmp-regex-semantics}
-Let us continue Example~\ref{exmp-regex-match-tree}.  In Figure~\ref{exmp-regex-match-tree}, because $(T_2)_{(\varepsilon, b^\ast)}$ is a single node, while $(T_1)_{(b,b^\ast)}$ is not, we have $(T_1)_{(b,b^\ast)} >_{w, b^\ast} (T_2)_{(\varepsilon, b^\ast)}$, thus $(T_1)_{(b, (b^\ast))} >_{w, (b^\ast)} (T_2)_{(\varepsilon, (b^\ast))}$. From the fact that $(T_1)_{(b, (b^\ast))}$ and $(T_2)_{(\varepsilon, (b^\ast))}$ are the left subtrees of $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ and $ (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$ respectively, we deduce that $(T_1)_{(b, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} >_{w, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)} (T_2)_{(ba, (b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))}$, thus $(T_1)_{(b, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))} >_{w, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))} (T_2)_{(ba, ((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon)))}$. From this, we conclude that $T_1 >_{w, e} T_2$. Similarly, we have $T_1 >_{w, e} T_3$. Therefore, $M_e(w) = T_1$. 
-Note that in $T_1$, the capturing group $((b^\ast) \cdot ((b\cdot a^\ast) | \varepsilon))$ does not acquire the longest match. Moreover, the match of $e$ in $baabba$ is $baa$, where the matches of the first and second capturing group are $b$ and $\varepsilon$ respectively, while the match of the third capturing group is undefined.
+Let us continue Example~\ref{exmp-regex-match-tree}.  In Figure~\ref{fig-regex-semantics-decimal}, we have $(T_1)_{(0250, [\Gamma^+])} >_{(w, e)} (T_2)_{(025, [\Gamma^+])}$, since $(0, \Gamma)(2, \Gamma)(5,\Gamma)$ is a proper prefix of $(0, \Gamma)(2, \Gamma)(5,\Gamma)(0, \Gamma)$. From this, we deduce that $(T_1)_{(0250, ([\Gamma^+]))} >_{(w, e)} (T_2)_{(025, ([\Gamma^+]))}$. Therefore, $(T_1)_{(0250, [([\Gamma^+]) \concat .?])} >_{(w, e)} (T_2)_{(025,  [([\Gamma^+]) \concat .?])}$ and $T_1 >_{(w,e)} T_2$. Similarly, we have $T_2 >_{(w,e)} T_3$ and $T_3 >_{(w,e)} T_4$. Therefore, $T_1$ is the accepting match of $e$ to $w$, where the first and second capturing group of $e$ are matched to $0250$  and $\varepsilon$ respectively. 
 %\Blindtext
  \end{example}
   
 \begin{remark}
-Intuitively, the semantics of $\regexp$ in Definition~\ref{def-regex-semantics} is eager for $e_1 + e_2$ and greedy for $e^\ast$, which is adopted by the script languages Perl, PHP, and JavaScript etc \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, of which we leave the investigation as the future work. 
+The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} is essentially the semantics of regular expressions in Perl, PHP, and JavaScript etc. \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, which we choose not to consider in this paper. 
 \end{remark}
   
   
