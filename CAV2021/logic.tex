@@ -133,8 +133,6 @@ The match function in programming languages, e.g. $\sf str.match(reg)$ function 
 The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
 \emph{pattern} $\pat \in \cgexp$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies the first, second, $\dots$, match of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string (where the references are replaced by the corresponding matches of the capturing groups).  For instance, let $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(2.5,3.4) = 2,3$. 
 
-\zhilin{stopped here}
-
 Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, each variable $x$ is assigned at most once, moreover, if it is assigned, then all its occurrences in the right-hand-sides of the assignment statements or in assertions are after the assignment statement of $x$.
 
 For a $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur in the left-hand-side of assignment statements. 
@@ -156,15 +154,9 @@ It turns out that the path feasibility problem is undecidable, attributed to the
 The path feasibility problem of $\strline$ is undecidable.
 \end{proposition}
 
-The proof of Proposition~\ref{prop-und} is obtained by an encoding of post correspondence problem (PCP).
-Let $\Sigma$ be a finite alphabet such that $\# \not\in \Sigma$ and $[n] \cap \Sigma = \emptyset$, $(u_i, v_i)_{i \in [n]}$ be a PCP instance with $u_i, v_i \in \Sigma^\ast$. A solution of the PCP instance is a string $i_1 \cdots i_m$ with $i_j \in [n]$ for every $j \in [m]$ such that $u_{i_1} \cdots u_{i_m} = v_{i_1} \cdots v_{i_m}$. We will use $\replaceall$ to encode the generation of the strings $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$ from $i_1 \cdots i_m$, then use a regular expression with  capturing groups and back references to verify the equality of $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$. Specifically, suppose $\# \not \in \Sigma$, then the PCP instance is encoded by the following $\strline$ program,
-\[
-\begin{array}{l}
-\ASSERT{x_0 \in \{1, \cdots, n\}^+}; \\
-x_1 := \replaceall_{1, u_1}(x_0); \cdots; x_n:=\replaceall_{n, u_n}(x_{n-1}); \\
-y_1:=\replaceall_{1, v_1}(x_0); \cdots; y_n:=\replaceall_{n, u_n}(y_{n-1});\\
-z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
-\end{array}
-\]
+We shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice\footnote{A partial evidence for this is the fact that the occurrences of regular expressions with back references occupy only less than $1\%$ in the NPM packages, according to the statistics in \cite{LMK19}.}. In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs where no back references occur in assertion statements. We state the main result of this paper here.
 
-We shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice. In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs where no back references occur in assertion statements. The decision procedure for $\strline_{\sf reg}$ utilizes a new model called prioritized streaming string transducers, which will be defined in the next section.
+\begin{theorem}\label{thm-main}
+The path feasibility of $\strline_{\sf reg}$ is decidable in XXX. \zhilin{complexity should be added}
+\end{theorem}
+The decision procedure for $\strline_{\sf reg}$ utilizes a new model called prioritized streaming string transducers, which will be defined in the next section.
