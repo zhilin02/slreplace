@@ -2,8 +2,6 @@
 
 \section{The string logic}\label{sec:logic}
 
-\zhilin{stopped here}
-
 In this section, we define the string-manipulating programming language $\strline$ considered in this paper.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,13 +83,13 @@ In this section, we define the string-manipulating programming language $\strlin
 %\begin{definition}[The constraint language $\strline$] 
 The $\strline$ language is defined by
 \[
-\begin{array}{l c l}
-S &::= &  z:= x\ \concat\ y \mid y := \extract_{i, e}(x) \mid  \\ 
-& &  
+\begin{array}{l}
+S \eqdef  z:= x \concat y \mid y := \extract_{i, e}(x) \mid  
+%& &  
 %y := \reverse(x) 
-y := \replaceall_{\pat, \rep}(x)   \mid \\
+y := \replaceall_{\pat, \rep}(x)   \mid 
 %y := \Transducer(x)\  \mid\\
-& & \ASSERT{x \in e} \mid S; S\
+ \ASSERT{x \in e} \mid S; S\
 \label{eq:SL}
 %a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
 \end{array}
@@ -101,9 +99,9 @@ where
 \begin{itemize}
 	\item $\concat$ is the string concatenation operation which concatenates two strings,
 %
-\item for the $\extract$ function, $i \in \Nat$, $e \in \regexp[\sf CG]$,
+\item for the $\extract$ function, $i \in \Nat$, $e \in \cgexp$,
 %
-	\item  for the $\replaceall$ operation, $\pat\in \regexp[\sf CG]$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+	\item  for the $\replaceall$ operation, $\pat\in \cgexp$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
 %	\item $\reverse$ is the string function which reverses a string; 
 %	\item $\Transducer$ is a \PSST,
 %
@@ -124,10 +122,18 @@ where
 %	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
 %\end{remark}
 
-The $\extract$ function models the regular-expression match function in programming languages, e.g. $\sf str.match(regexp)$ function in Javascript. Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the match of $e$ in $x$, if the match of $e$ in $x$ exists (otherwise, the return value of the function is undefined). Note that if $i=0$, then $\extract_{i, e}(x)$ returns the match of $e$ in $x$. For instance, let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$, then $\extract_{1, e}(baabba)=b$ and $\extract_{2, e}(baabba)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. 
+The $\extract$ function is used to model the regular-expression match function in programming languages.
+%, e.g. $\sf str.match(regexp)$ function in Javascript. 
+Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the accepting match of $e$ to $x$, if $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that if $i=0$, then $\extract_{i, e}(x)$ returns $x$. For instance, let $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, then $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. 
+
+\begin{remark}
+The match function in programming languages, e.g. $\sf str.match(reg)$ function in Javascript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. Specifically, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$.
+\end{remark}
 
 The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
-\emph{pattern} $\pat \in \regexp[\sf CG]$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies the first, second, $\dots$, match of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string (where the references are replaced by the corresponding matches of the capturing groups).  For instance, let $\pat = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $\rep = \#\$1$, then  $\replaceall_{\pat, \rep}(baabba) = \#b\#bb$. 
+\emph{pattern} $\pat \in \cgexp$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies the first, second, $\dots$, match of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string (where the references are replaced by the corresponding matches of the capturing groups).  For instance, let $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(2.5,3.4) = 2,3$. 
+
+\zhilin{stopped here}
 
 Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, each variable $x$ is assigned at most once, moreover, if it is assigned, then all its occurrences in the right-hand-sides of the assignment statements or in assertions are after the assignment statement of $x$.
 
