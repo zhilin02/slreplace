@@ -73,8 +73,8 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   
   \begin{definition}[Matches of $\regexp$ to strings]
   	A \tmtextbf{match} of a $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
-  	tree $T$, whose nodes are elements of $\Sigma^{\ast} \times S (e)$ satisfying the following constraints: Its root is $(w, e)$, and for any node $\alpha =
-  	(w', e')$ in $T$, we have:
+  	tree $T$, whose nodes are elements of $\Sigma^{\ast} \times S (e)$. %satisfying the following constraints: its
+  	The  root of $T$ is $(w, e)$, and for any node $\alpha =  	(w', e')$ in $T$, we have:
   	\begin{itemize}
   		\item If $e' = [e'_1 \concat e'_2]$, then $\alpha$ has two children $\alpha_1 = (w'_1,
   		e'_1)$ and $\alpha_2=(w'_2, e'_2)$ where $w' = w'_1 w'_2$.
@@ -103,7 +103,7 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   		\item If $e' = a?$, then $\alpha$ is a leaf and
   		$w' = a$ or $\varepsilon$.
 %
-		\item If $e' = \$n$, then $\alpha$ is a leaf of $T$. Moreover, let $e'' \in S(e)$ be enclosed by the $n$-th pair of parentheses in $e$ and $\beta = (w_1, e_1)$ be the last node preceding $\alpha$ in $T$ such that $e_1 = e''$ (there may be multiple nodes preceding $\alpha$ satisfying this condition), 
+		\item If $e' = \$n$, then $\alpha$ is a leaf of $T$. Moreover, let $e'' \in S(e)$ be enclosed by the $n$-th pair of parentheses in $e$ and $\beta = (w_1, e")$ be the last node preceding $\alpha$ in $T$ %such that $e_1 = e''$ (there may be multiple nodes preceding $\alpha$ satisfying this condition), 
 		according to the left-to-right ordering of the nodes, then $w' = w_1$.
   	\end{itemize}
   	
@@ -118,7 +118,7 @@ We also use $\Lang(e)$ to denote $\{w \in \Sigma^* \mid \cM_w(e) \neq \emptyset\
   \end{definition}
   
 \begin{example}\label{exmp-regex-match-tree}
-Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\Gamma = \{0,1,\cdots,9\}$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics-decimal}(i), (ii), (iii), and (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted to avoid tediousness.
+Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\Gamma = \{0,1,\cdots,9\}$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics-decimal}(i), (ii), (iii), and (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted. % to avoid tediousness.
 \begin{figure}[htb]
 \centering
 %\rule{\linewidth}{0cm}
