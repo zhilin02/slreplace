@@ -2,7 +2,7 @@
 
 \section{The string logic}\label{sec:logic}
 
-In this section, we define the string-manipulating programming language $\strline$ considered in this paper.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -81,6 +81,7 @@ In this section, we define the string-manipulating programming language $\strlin
 %We consider the symbolic execution of the string-manipulating programs.
 
 %\begin{definition}[The constraint language $\strline$] 
+We define the string-manipulating language $\strline$ considered in this paper.
 The $\strline$ language is defined by
 \[
 \begin{array}{l}
@@ -127,7 +128,7 @@ The $\extract$ function is used to model the regular-expression match function i
 Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the accepting match of $e$ to $x$, if $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that if $i=0$, then $\extract_{i, e}(x)$ returns $x$. For instance, let $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, then $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. 
 
 \begin{remark}
-The match function in programming languages, e.g. $\sf str.match(reg)$ function in Javascript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. Specifically, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$.
+The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. Specifically, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$.
 \end{remark}
 
 The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
