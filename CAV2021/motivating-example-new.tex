@@ -22,24 +22,28 @@ function normalize(decimal)
 }
 \end{minted}
 \end{center}
+\vspace{-8mm}
 \caption{Normalize a decimal by removing the leading and trailing zeros}
 \label{fig-run-exmp}
 \end{figure}
 
-We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate our approach. 
-The function {\tt normalize}  in Figure~\ref{fig-run-exmp} normalizes a decimal string by removing the leading and trailing zeros. The input of {\tt normalize} is a string variable {\tt decimal}. For instance,  if $\tt{decimal} =$``02.50'', $\tt{normalize(decimal)}$ returns ``2.5''; if $\tt{decimal} =$``0250'', $\tt{normalize(decimal)}$ returns ``250''; if $\tt{decimal} =$``0.250'', then $\tt{normalize(decimal)}$ returns ``0.25''. 
+We use the JavaScript program in Figure~\ref{fig-run-exmp} as a running example to illustrate our approach. The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
+{\tt decimal}. For instance,  if $\tt{decimal} =$``02.50'', $\tt{normalize(decimal)}$ returns ``2.5''; if $\tt{decimal} =$``0250'', $\tt{normalize(decimal)}$ returns ``250''; if $\tt{decimal} =$``0.250'', then $\tt{normalize(decimal)}$ returns ``0.25''. 
 
 %\tl{should the "and" in dblp be removed? Alice Brown, John Smith}\zhilin{I am referring to the bibtex style. Both ACM and DBLP bibtex style contain ``and''}
 
-The input {\tt decimal} of the function {\tt normalize} is matched to a regular expression {\tt decimalReg}={\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of an input, possibly followed by a dot symbol as well as another digit sequence representing the fractional part (where the anchor symbols \^{} and $\$$ denote the beginning and end of an input). Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover, it utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any occurrence of the dot symbol. For instance, if {\tt decimal} = ``0250'', then {\tt ({\footnotesize\textbackslash}d+)} is matched by ``0250'' and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
-\tl{i guess here we want to express that the greedy semantics is crucial; the standard nondeterministic semantics does not meet our requirement?}
-Nevertheless, if the standard \emph{nondeterministic} semantics of {\tt +} is used, then the following matching is also valid: {\tt ({\footnotesize\textbackslash}d+)} is matched to ``02'' and {\tt ({\footnotesize\textbackslash}d*)} is matched to ``50''. The result of the matching, which is an array of strings, is stored in the variable {\tt format}. Since there are two capturing groups in {\tt decimalReg}, the array {\tt format} is of length 3.
-
+In the function body, the input {\tt decimal} %of the function {\tt normalize} 
+is matched to a regular expression {\tt decimalReg}={\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of the input, possibly followed by a dot symbol (intuitively the decimal point) as well as another digit sequence representing the fractional part (where the anchor symbols \^{} and $\$$ denote the beginning and the end of the input). Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover,  it utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any occurrence of the dot symbol. For instance, if {\tt decimal} = ``0250'', then {\tt ({\footnotesize\textbackslash}d+)} is matched by ``0250'' and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
+%\tl{i guess here we want to express that the greedy semantics is crucial; the standard nondeterministic semantics does not meet our requirement?}
+%Nevertheless, 
+Note that the greedy semantics is crucial because if the standard \emph{nondeterministic} semantics of {\tt +} were adopted, the following matching would also be valid: {\tt ({\footnotesize\textbackslash}d+)} is matched to ``02'' and {\tt ({\footnotesize\textbackslash}d*)} is matched to ``50'', which would give the wrong result.  The result of the matching, which is an array of strings, is stored in the variable {\tt format}. 
+%Since there are two capturing groups in {\tt decimalReg}, the array {\tt format} is of length 3.
+%
 Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\tt format[1]} and the result is stored in the variable {\tt integer}. Similarly, the trailing zeros are trimmed by {\tt replace(/{}0+\$/, "")} to {\tt format[2]} and the result is stored in the variable {\tt fractional}. Again, the greedy semantics of {\tt 0+} is used to trim \emph{all} the leading/trailing zeros.
-
+%
 The return value is obtained as follows: If {\tt integer} is empty, then it gets a default value ``0''. If {\tt fractional} is empty, then the return value is {\tt integer}. Otherwise, the return value  joins {\tt integer} and {\tt fractional} with the dot symbol. 
 
-A natural invariant property of {\tt normalize} is that its output contains neither leading nor trailing zeros. The invariant property holds iff for along \emph{every} execution path of the program, the return value of {\tt normalize} satisfies the property. 
+A natural invariant property of {\tt normalize} is that its output contains neither leading nor trailing zeros. The invariant property holds iff  along \emph{every} execution path of the program, the return value of {\tt normalize} satisfies the property. 
 %Therefore, the invariant property does not hold if along \emph{some} execution path of the program, the return value of {\tt normalize} does not satisfy the property. 
 %
 Take one typical execution path as an example. %for the validity of the invariant property, it is necessary that 
@@ -65,7 +69,7 @@ The invariant property entails that the  program in single static assignment for
 \end{figure}
 where the regular expression {\tt /\^{}0[1-9].*|.*{\footnotesize\textbackslash}.d*0\$/} specifies the existence of leading or trailing zeros.
 
-To support symbolic execution of the JavaScript program in Fig.~\ref{fig-run-exmp-path}, one needs to model the greedy semantics of {\tt +} and the matchings of capturing groups. For this purpose, we introduce prioritized streaming string transducers (PSST; cf. Section~\ref{sect:psst}). Then the extraction of {\tt format[1]} (i.e., {\tt decimal.match(decimalReg)[1]}) can be modeled by a PSST $\cT_{\tt match_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matchings of capturing groups. %Similarly for  
+To support symbolic execution of the JavaScript program in Fig.~\ref{fig-run-exmp-path}, one needs to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we introduce \emph{prioritized streaming string transducers} (PSST; cf. Section~\ref{sect:psst}). Then the extraction of {\tt format[1]} (i.e., {\tt decimal.match(decimalReg)[1]}) can be modeled by a PSST $\cT_{\tt match_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matchings of capturing groups. %Similarly for  
 {\tt format[2]} can be handled in a similar way. Moreover, the function {\tt replace(/\^{}0+/, "")} can also be modeled by a PSST $\cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}$. Then the program in Figure~\ref{fig-run-exmp-path} is transformed and simplified to the following program
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
