@@ -1,7 +1,8 @@
 %!TEX root = main.tex
 
 \section{Real-world Regular Expressions}
-Regular expressions are a well-known concept in formal languages and they have the same expressibility as finite state automata. Moreover, many programming languages provide regular expression capabilities either built-in or via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. Regular expressions in programming languages are dramatically different from those in formal languages, mainly in the following aspects: greedy/non-greedy semantics of the quantifiers (* and +), non-commutativity of the alternation operator (+), capturing groups, and back references. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
+Regular expressions are a well-known concept in formal languages and  have the same expressibility as finite state automata. Moreover, many programming languages provide build-in regular expressions %capabilities either built-in 
+or otherwise via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. However, it should be emphasized that regular expressions used in programming languages are dramatically different from those in formal language theory, mainly on the following aspects: greedy/non-greedy semantics of the quantifiers ($*$ and its variant $+$), non-commutativity of the alternation operator, capturing groups, and back references. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
   
 \begin{definition}[Real-world regular expressions, $\regexp$]
   	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid a? \mid \$n \mid [e + e] \mid [e \concat e] \mid [e^*] \mid [e^{*?}] \mid (e), \]
@@ -9,9 +10,10 @@ Regular expressions are a well-known concept in formal languages and they have t
   	%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. 
   	%We use the abbreviation 
 \end{definition}
-We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. Moreover, for $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $\Gamma^\ast \equiv [[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast$. 
+We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $\Gamma^\ast \equiv [[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast$. 
 
-Note that the parentheses in $\regexp$ are used for capturing groups and square brackets in $\regexp$ are used for precedence. \tl{do we consider change the notation to [e]?}\zhilin{I used $[]$ for precedence and $()$ for capturing groups.}
+Note that the parentheses in $\regexp$ are used for capturing groups and square brackets in $\regexp$ are used for precedence. 
+%\tl{do we consider change the notation to [e]?}\zhilin{I used $[]$ for precedence and $()$ for capturing groups.}
 %We assume that the parentheses in every regular expression are well matched. 
 %
 %Besides the common rules governing regular expressions, a regex obeys
@@ -28,7 +30,7 @@ We use $\cgexp$ to denote the fragment of $\regexp$ excluding the back reference
   %\label{semantics:regex}
   
 
-We are going to define the semantics of $\regexp$, which uses the concepts of subexpressions and matches of regular expressions to strings defined in the sequel.
+We shall define the semantics of $\regexp$, which uses the concepts of subexpressions and matches of regular expressions to strings defined below.
   
   %\subsection{Semantics of \regexp[\sf CG]}
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
