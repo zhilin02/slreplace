@@ -108,3 +108,88 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 %     \ldots p_{e', e_1} (w_n)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
 %   \end{itemize}
 % \end{proof}
+
+
+\subsection{From $\cgexp$ to PFA}
+
+For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that it has a unique initial state and a unique final state  without outgoing transitions.
+%The original construction on regular expressions
+%produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
+%We refer the reader to \cite{Gluskov61} for 
+%details of how to construct $G_e$. %\tl{is this just the textbook construction?}
+%
+%The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
+\begin{itemize}
+\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
+
+  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
+
+  \item If $e = a$, then $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = (f_0)$, $\delta(q_0, \sigma) = ()$ for every $\sigma \in \Sigma \setminus \{a\}$, $\tau(q_0) = ((); ())$, and $\tau(f_0) = ((); ())$.
+    
+  \item If $e = (e_1)$, then $\cA_e = \cA_{e_1}$.
+  
+  \item If $e = e_1 + e_2$, and suppose $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
+  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = (Q_1 \cup Q_2 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau, q_0, f_0)$, where  
+  \begin{itemize}
+ \item $q_0, f_0 \not \in Q_1 \cup Q_2$, 
+ \item $\delta(q) = \delta_i(q)$ for every $q \in Q_i$ ($i=1,2$), 
+$\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, 
+%
+ \item $\tau(q) = \tau_i(q)$ for every $q \in Q_i$ ($i =1,2$), $\tau(q_0) = ((q_1,q_2); ())$,  $\tau(f_1) = \tau(f_2) = ((f_0); ())$, and $\tau(f_0) = ((); ())$.
+ \end{itemize}
+%
+  \item If $e = e_1 \concat e_2$, and suppose $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
+  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = ( Q_1 \cup Q_2, \Sigma, \delta, \tau, q_1,
+  f_2)$, where 
+  \begin{itemize}
+    \item for every $q \in Q_i$, $\delta(q) = \delta_i(q)$ ($i = 1,2$),
+    
+    \item for every $q \in Q_2$, $\tau(q) = \tau_2(q)$, 
+%
+    \item for every $q \in Q_1 \setminus \{f_1\}$, $\tau(q) = \tau_1(q)$, and $\tau(f_1) = ((q_2); ())$.
+  \end{itemize}
+%  
+  \item If $e = e_1^{\ast}$, and suppose  $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{f_0\}, \Sigma,
+  \delta, \tau, q_1, f_0)$, where 
+  \begin{itemize}
+  \item $f_0 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, 
+    %moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
+    
+    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)), f_0))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $f_1$ to $q_1$ and from $q_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
+  \end{itemize}
+ %
+  \item If $e = e_1^{\ast?}$, and suppose $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{f_0\}, \Sigma,
+  \delta, \tau, q_1, f_0)$, where 
+  \begin{itemize}
+  \item $q_0, f_0 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, 
+    %moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
+    
+    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_1) = ((f_0, \pi_1(\tau_1(q_1))); \pi_2(\tau_1(q_1)))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $q_1$ to $f_0$ is of the highest priority.)
+  \end{itemize}  
+\end{itemize}
+
+%The key transitions of some non-trivial cases of the construction are illustrated in Figure.\ref{fig:pglushkov}.
+
+% An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$. We denote this subgraph by $A_{e}[e']$. This subgraph can be seen as the automaton obtained by removing from $A_{e'}$ the state $q_0$ and all transitions from it.
+
+\begin{example}
+Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_0, q_3)$ and $\cA_{e_2} =  (Q_2, \Sigma, \delta_2, \tau_2, q_0, q_3)$ are illustrated in Figure~\ref{fig-retopfa}: (i), (ii), where thicker solid lines (resp. dashed lines) denote the $\varepsilon$-transitions of higher (resp. lower) priorities than non-$\varepsilon$-transitions. For instance, in $\cA_{e_1}$, $\tau_1(q_0) = ((); (q_2))$ and $\tau_1(q_1) = ((q_0); ())$, while in $\cA_{e_2}$, $\tau_2(q_0) = ((q_2); ())$ and $\tau_2(q_1) = ((q_0); ())$. Note that $\cA_{e_1}$ and $\cA_{e_2}$ are slightly different from those in Example~\ref{exmp-pfa}.
+\begin{figure}[ht]
+\centering
+%\rule{\linewidth}{0cm}
+\includegraphics[scale=0.8]{retopfa.pdf}
+\caption{$\cA_{e_1}$ and $\cA_{e_2}$ for $e_1= a^\ast$ and $e_2 = a^{\ast?}$}
+\label{fig-retopfa}
+\end{figure}
+\end{example}
+ 
+
