@@ -83,7 +83,8 @@ To support symbolic execution of the JavaScript program in Fig.~\ref{fig-run-exm
 \end{eqnarray}
 where $\Aut_{\scriptsize\mbox{\tt.+}}$, $\Aut_{\tt decimalReg}$ and $\Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}}$ are three finite automata corresponding to the three regular expressions respectively.
 
-The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by a ``backward'' reasoning as follows (see Section~\ref{sec:decision} for the details):  
+\tl{this part may be removed? take up too much space and not quite informative here?}
+The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by ``backward'' reasoning as follows (see Section~\ref{sec:decision} for details):  
 \begin{itemize}
 \item At first, we compute the pre-image of $(\Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}})$ under the concatenation $\concat$, which is a finite union of products of regular languages, remove $\tt result2 := integer \concat ``." \concat fractional$, select one disjunct of the union, say $(\Aut'_1, \Aut'_2)$, add the assertion $\ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}$, resulting into the following program,
 \begin{eqnarray}\label{eqn:exmp-2}

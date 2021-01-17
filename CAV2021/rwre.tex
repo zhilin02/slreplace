@@ -1,6 +1,39 @@
 %!TEX root = main.tex
 
 \section{Real-world Regular Expressions}
+
+
+Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
+
+We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$ and $\varepsilon$ to denote the empty string. Moreover, for convenience, we use $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
+
+\begin{definition}[Finite-state automata] \label{def:nfa}
+	A \emph{(nondeterministic) finite-state automaton}
+	(\FA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
+	(\ialphabet, \controls, q_0, \finals, \transrel)$ where 
+	$\controls$ is a finite set of 
+	states, $q_0\in \controls$ is
+	the initial state, $\finals\subseteq \controls$ is a set of final states, and 
+	$\transrel\subseteq \controls \times 
+	\ialphabet^\varepsilon \times  \controls$ is the
+	transition relation. 
+\end{definition}
+
+For an input string $w$, a \emph{run} of $\Aut$ on $w$
+%(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
+is a sequence $q_0 \sigma_1 q_1 \ldots \sigma_n q_n$ such that $w = \sigma_1 \cdots \sigma_n$ and $(q_{j-1}, \sigma_{j}, q_{j}) \in
+\transrel$ for every $j \in [n]$.
+The run is said to be \defn{accepting} if $q_n \in \finals$.
+A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
+$\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ if $q_0 \in F$. The set of strings accepted by $\Aut$, i.e., the language \defn{recognized} by $\Aut$, is denoted by $\Lang(\Aut)$.
+%Since we deal with computational complexity in the sequel, we define
+The \defn{size} $|\Aut|$ of $\Aut$ is defined as the cardinality of the set $Q$ of states, which will be 
+used when the computational complexity is concerned.
+
+For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 Regular expressions are a well-known concept in formal language and  have the same expressibility as finite state automata. Many programming languages provide build-in regular expressions %capabilities either built-in 
 or otherwise via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. However, it should be emphasized that regular expressions used in programming languages are considerably different from those in formal language theory, mainly on the following aspects: greedy/non-greedy semantics of the quantifiers ($*$ and its variant $+$), non-commutativity of the alternation operator, capturing groups, and back references. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
   
@@ -173,7 +206,7 @@ Let us continue Example~\ref{exmp-regex-match-tree}.  In Figure~\ref{fig-regex-s
  \end{example}
   
 \begin{remark}
-The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} is essentially the semantics of regular expressions in Perl, PHP, and JavaScript etc. \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, which we leave as the future work. 
+The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} captures the use of regular expressions in Perl, PHP, JavaScript, etc. \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, which we leave as the future work. 
 \end{remark}
   
   
