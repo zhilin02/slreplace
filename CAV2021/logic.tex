@@ -134,10 +134,10 @@ The match function in programming languages, e.g. $\sf str.match(reg)$ function 
 The $\replaceall_{\pat, \rep}(x)$ function is indexed by the  %\emph{subject} string, the second parameter is a 
 \emph{pattern} $\pat \in \cgexp$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies the first, second, $\dots$, match of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string (where the references are replaced by the corresponding matches of the capturing groups).  For instance, let $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(2.5,3.4) = 2,3$. 
 
-Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, each variable $x$ is assigned at most once, moreover, if it is assigned, then all its occurrences in the right-hand-sides of the assignment statements or in assertions are after the assignment statement of $x$.
+Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, each variable $x$ is assigned at most once. Moreover, if it is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
 
-For a $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur in the left-hand-side of assignment statements. 
-The \emph{path feasibility} problem of a $\strline$ program is to decide whether there are valuations of the input variables so that the program can execute to the end.
+For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur on the left hand side of assignment statements. 
+The \emph{path feasibility} problem of an $\strline$ program is to decide whether there are valuations of the input variables such that the program can execute to the end.
 
 
 %
