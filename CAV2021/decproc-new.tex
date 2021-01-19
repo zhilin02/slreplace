@@ -52,7 +52,7 @@ At first, we can adapt the pNFA construction in \cite{BDM14}, which in turn is a
 \begin{proposition}\label{prop-rwre-to-pfa}
 For each $\cgexp$ $e$, a PFA $\cA_e$ can be constructed in linear time such that 
 \begin{itemize}
-\item $\cA_e$ has a unique initial state  without incoming transitions and a unique final state without outgoing transitions,
+\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
 %
 \item for subexpression $e'$ of $e$, $\cA_e$ contains an isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
 \end{itemize}
@@ -103,17 +103,29 @@ Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$
 
 Intuitively, $\cT_{\extract_{i,e}}$ simulates $\cA_e$ and stores the letters in a string variable $x$, when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$.
 
-Formally, suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$, then $\cT_{\extract_{i,e}} = (Q, \Sigma, X, \delta, \tau, E, q_0, F)$ (see Figure~\ref{fig-psst-extract}), where 
+Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. 
+Then $\cT_{\extract_{i,e}} = (Q  \cup \{q'_0\}, \Sigma, X, \delta', \tau', E', q'_0, F')$ (see Figure~\ref{fig-psst-extract}), where 
 \begin{itemize}
+\item $q'_0 \not \in Q$,
 %\item $\cT_{\extract_{i,e}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search for the first match of $e$, 
 %
 \item $X = \{x\}$,
 %
 %\item $\delta'$ is obtained from $\delta$ by adding $x: = x\sigma$ for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$,  
 %
-\item for each transition $(q_1, \sigma, q_2)$ in ${\sf Sub}_{e'}[\cA_e]$ with $\sigma \in \Sigma$, we have $E(q_1, \sigma, q_2)(x)=x\sigma$, and for all the other transitions $(q'_1, \sigma', q'_2)$, $E(q'_1, \sigma', q'_2)(x) = x$.
+\item $\tau'(q'_0) = ((q_0), ())$, moreover, if $q_0$ occurs in ${\sf Sub}_{e'}[\cA_e]$, then $E'((q'_0,\varepsilon, q_0)) = \varepsilon$, otherwise, $E'((q'_0,\varepsilon, q_0)) = {\sf null}$, 
+%
+\item all the transitions of $\delta$ (resp. $\tau$) are in $\delta'$ (resp. $\tau'$), and the values of $E'$ on these transitions are defined as follows,
+%
+\begin{itemize}
+\item for every transition $(p, \sigma, q)$ with $\sigma \in \Sigma$ in ${\sf Sub}_{e'}[\cA_e]$, $E'((p, \sigma, q))(x) = x \sigma$,
+%
+\item for every transition $(p, \varepsilon, q)$ in $\cA_e$ such that $q$ is the initial state of ${\sf Sub}_{e'}[\cA_e]$ and $p$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, $E'((p, \varepsilon, q))(x) = \varepsilon$,
 % 
-\item $F(f_0) = x$.
+\item for all the other transitions $(p, \sigma, q)$ with $\sigma \in \Sigma$ (resp. $(p, \varepsilon, q)$)  in $\cA_e$, $E'((p, \sigma, q))(x) = x$ (resp. $E'((p, \varepsilon, q))(x) = x$),
+\end{itemize}
+%
+\item $F'(f_0) = x$.
 \end{itemize}
 
 \begin{figure}[ht]
