@@ -3,27 +3,61 @@
 \section{Implementation and Experiments}
 \label{sect:impl}
 
-We have implemented our decision procedure for $\strline$ in the SMT solver OSTRICH \cite{CHL+19}, which provides a modular and easy-to-use framework for extending all sorts of string operations. As shown in Section \ref{sec:decision}, \PSST s satisfy the conditions required by the backwards reasoning approach of OSTRICH, which enables us to integrate our logic with standard string theory.
+We have implemented our decision procedure for $\strline$ in the SMT
+solver OSTRICH \cite{CHL+19}, which provides a modular and easy-to-use
+framework for extending all sorts of string operations. As shown in
+Section \ref{sec:decision}, \PSST s satisfy the conditions required by
+the backwards reasoning approach of OSTRICH, which enables us to
+integrate our logic with standard string theory. The resulting
+extended theory of strings is a conservative extension of the SMT-LIB
+theory of Unicode strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
 
-Our implementation extends classical regular expression in SMTLIB with {\sf re.capture} and {\sf re.reference} operators, which signify capturing groups and reference to them. We also add {\sf re.*?} and {\sf re.+?} for nongreedy Klenne stars.
+\subsection{Input format}
 
-Three novel string operators that use these extended real world regular expressions are also added:
+Our implementation extends classical regular expression in SMT-LIB
+with indexed {\sf re.capture} and {\sf re.reference} operators, which
+denote capturing groups and references to them. We also add {\sf re.*?}
+and {\sf re.+?} for non-greedy Kleene stars.
 
-\begin{enumerate}
-  \item {\sf str.replace\_cg} and {\sf str.replace\_cg\_all} are
-  counterparts of standard {\sf str.replace\_re} and
-  {\sf replace\_re\_all} operators, which allows using
-  capturing groups in the match pattern and references
-  in the replacement pattern. However, it's not allowed to use symbolic
-  variable as replacement pattern, like the standard operators did.
-  
-  \item {\sf str.extract} behaves like {\sf match} function in
-  javascript. It performs a match of a real world regular expression against
-  the input string, and extracts the content of a capturing group.
-\end{enumerate}
+The three string operators that use these extended real world regular
+expressions are {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
+{\sf str.extract}. Operators {\sf str.replace\_cg} and {\sf
+  str.replace\_cg\_all} are counterparts of the standard {\sf
+  str.replace\_re} and {\sf replace\_re\_all} operators, and allow
+capturing groups in the match pattern and references in the
+replacement pattern. As an example, the following constraint swaps
+lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
+%
+\begin{minted}{lisp}
+  (= w (str.replace_cg_all v
+                   (re.++ ((_ re.capture 1) (re.range "a" "z"))
+                          ((_ re.capture 2) (re.range "A" "Z")))
+                   (re.++ (_ re.reference 2) (_ re.reference 1))))
+\end{minted}
+%
+The replacement string is written as a regular expression only
+containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf
+  re.reference}. It is not allowed to use symbolic variables as
+replacement pattern, in contrast to the standard operators.
 
-Our implementation is able to handle \textit{anchors} as well. Due to space restrictions we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it's quite common to use \^{} and $\$$ in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
+The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
+$\strline$. For instance, the term
+%
+\begin{minted}{lisp}
+  ((_ str.extract 1)
+        (re.++ (re.*? re.allchar)
+               ((_ re.capture 1) (re.* (re.range "a" "z"))
+               re.all)) x)
+\end{minted}
+%
+extracts the left-most, longest sub-string consisting of only lower-case
+characters from a string~$x$.
 
-We evaluated our implementation in XXX ...
+Our implementation is able to handle \textit{anchors} as well. Due to space restrictions we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it is quite common to use \verb!^! and \verb!$! in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
 
-\zhilei{stopped here}
+\subsection{Implementation}
+
+Say more about the actual handling of PSSTs ...
+
+\subsection{Evaluation}
+
