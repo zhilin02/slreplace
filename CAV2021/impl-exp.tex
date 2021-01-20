@@ -1,6 +1,27 @@
 \section{Implementation and Experiments}
 \label{sect:impl}
 
-We have implemented our decision procedure for $\strline$ in the SMT solver OSTRICH \cite{CHL+19}, which provides a modular and easy-to-use framework for extending all sorts of string operations. As shown in \ref{sec:decision}, \PSST s satisfy the conditions required by the backwards reasoning approach of OSTRICH, which enables us to integrate our logic with standard string theory.
+We have implemented our decision procedure for $\strline$ in the SMT solver OSTRICH \cite{CHL+19}, which provides a modular and easy-to-use framework for extending all sorts of string operations. As shown in Section \ref{sec:decision}, \PSST s satisfy the conditions required by the backwards reasoning approach of OSTRICH, which enables us to integrate our logic with standard string theory.
 
-Our implementation supports three operators
+Our implementation extends classical regular expression in SMTLIB with {\sf re.capture} and {\sf re.reference} operators, which signify capturing groups and reference to them. We also add {\sf re.*?} and {\sf re.+?} for nongreedy Klenne stars.
+
+Three novel string operators that use these extended real world regular expressions are also added:
+
+\begin{enumerate}
+  \item {\sf str.replace\_cg} and {\sf str.replace\_cg\_all} are
+  counterparts of standard {\sf str.replace\_re} and
+  {\sf replace\_re\_all} operators, which allows using
+  capturing groups in the match pattern and references
+  in the replacement pattern. However, it's not allowed to use symbolic
+  variable as replacement pattern, like the standard operators did.
+  
+  \item {\sf str.extract} behaves like {\sf match} function in
+  javascript. It performs a match of a real world regular expression against
+  the input string, and extracts the content of a capturing group.
+\end{enumerate}
+
+Our implementation is able to handle \textit{anchors} as well. Due to space restrictions we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it's quite common to use $\^{}$ and $\$$ in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
+
+We evaluated our implementation in XXX ...
+
+\zhilei{stopped here}
