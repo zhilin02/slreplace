@@ -4,13 +4,15 @@
 \label{sect:impl}
 
 We have implemented our decision procedure for $\strline$ in the SMT
-solver OSTRICH \cite{CHL+19}, which provides a modular and easy-to-use
-framework for extending all sorts of string operations. As shown in
-Section \ref{sec:decision}, \PSST s satisfy the conditions required by
-the backwards reasoning approach of OSTRICH, which enables us to
-integrate our logic with standard string theory. The resulting
-extended theory of strings is a conservative extension of the SMT-LIB
-theory of Unicode strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
+solver OSTRICH
+\cite{CHL+19},\footnote{\url{https://github.com/uuverifiers/ostrich}}
+which provides a modular and easy-to-use framework for extending all
+sorts of string operations. As shown in Section \ref{sec:decision},
+\PSST s satisfy the conditions required by the backwards reasoning
+approach of OSTRICH, which enables us to integrate our logic with
+standard string theory. The resulting extended theory of strings is a
+conservative extension of the SMT-LIB theory of Unicode
+strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
 
 \subsection{Input format}
 
@@ -41,7 +43,7 @@ containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf
 replacement pattern, in contrast to the standard operators.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
-$\strline$. For instance, the term
+$\strline$. For instance,
 %
 \begin{minted}{lisp}
   ((_ str.extract 1)
@@ -59,5 +61,19 @@ Our implementation is able to handle \textit{anchors} as well. Due to space rest
 
 Say more about the actual handling of PSSTs ...
 
-\subsection{Evaluation}
+\subsection{Experimental evaluation}
 
+Our experiments have the purpose of answering two main questions:\\
+\textbf{R1:} How does the algorithm and implementation compare to
+other solvers
+that can handle replace(All) and capturing groups?\\
+\textbf{R2:} How do they perform in the context of symbolic execution,
+the prime application of string solving?
+
+Concerning \textbf{R1}, we are not aware of other SMT solvers with
+support for capturing groups; the same holds for CP approaches to
+string solving (e.g.,
+\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}). The
+closest related work is the refinement-based algorithm implemented in
+the symbolic execution tool
+ExpoSE~\cite{DBLP:conf/spin/LoringMK17,LMK19}. 
