@@ -102,37 +102,40 @@ We are ready to prove Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
 %\paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
 Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$. 
 
-Intuitively, $\cT_{\extract_{i,e}}$ simulates $\cA_e$ and stores the letters in a string variable $x$, when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$.
+Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Moreover, let $\cA^\dag_e = (Q^\dag, \Sigma, \delta^\dag, \tau^\dag, q^\dag_0, f^\dag_0)$ be an isomorphic copy of $\cA_e$, where every state $q$ in $\cA_e$ is replaced by $q^\dag$ in $\cA^\dag_e$. Let us use ${\sf Sub}_{e'}[\cA^\dag_e]$ to denote the isomorphic copy of ${\sf Sub}_{e'}[\cA_e]$ in $\cA^\dag_e$.
 
-Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. 
-Then $\cT_{\extract_{i,e}} = (Q  \cup \{q'_0\}, \Sigma, X, \delta', \tau', E', q'_0, F')$ (see Figure~\ref{fig-psst-extract}), where 
+Intuitively, $\cT_{\extract_{i,e}}$ contains both $\cA_e$ and $\cA^\dag_e $, and its run comprises two stages: In the first stage, it simulates $\cA_e$. Later on, when it tries to enter a state in ${\sf Sub}_{e'}[\cA_e]$, it enters the second stage and goes to a state in ${\sf Sub}_{e'}[\cA^\dag_e]$, instead of ${\sf Sub}_{e'}[\cA_e]$, and stores the letters into $x$. It outputs $x$ in the state $f^\dag_0$.
+
+Then $\cT_{\extract_{i,e}} = (Q  \cup Q^\dag \cup \{q'_0\}, \Sigma, X, \delta', \tau', E', q'_0, F')$ (see Figure~\ref{fig-psst-extract}), where 
 \begin{itemize}
-\item $q'_0 \not \in Q$,
-%\item $\cT_{\extract_{i,e}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search for the first match of $e$, 
+\item $q'_0 \not \in Q \cup Q^\dag$,
 %
 \item $X = \{x\}$,
 %
 %\item $\delta'$ is obtained from $\delta$ by adding $x: = x\sigma$ for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$,  
 %
-\item $\tau'(q'_0) = ((q_0), ())$, moreover, if $q_0$ occurs in ${\sf Sub}_{e'}[\cA_e]$, then $E'((q'_0,\varepsilon, q_0)) = \varepsilon$, otherwise, $E'((q'_0,\varepsilon, q_0)) = {\sf null}$, 
+\item $F'(f^\dag_0)= x$ and $F'(p)$ is undefined for all the other states in $p \in Q  \cup Q^\dag \cup \{q'_0\}$,
 %
-\item all the transitions of $\delta$ (resp. $\tau$) are in $\delta'$ (resp. $\tau'$), and the values of $E'$ on these transitions are defined as follows,
-%
+\item $\delta'$ and $\tau'$ are defined as follows,
 \begin{itemize}
-\item for every transition $(p, \sigma, q)$ with $\sigma \in \Sigma$ in ${\sf Sub}_{e'}[\cA_e]$, $E'((p, \sigma, q))(x) = x \sigma$,
+\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $\tau'(q'_0) = ((q_0), ())$, otherwise, $\tau'(q'_0) = ((q^\dag_0), ())$, 
 %
-\item for every transition $(p, \varepsilon, q)$ in $\cA_e$ such that $q$ is the initial state of ${\sf Sub}_{e'}[\cA_e]$ and $p$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, $E'((p, \varepsilon, q))(x) = \varepsilon$,
-% 
-\item for all the other transitions $(p, \sigma, q)$ with $\sigma \in \Sigma$ (resp. $(p, \varepsilon, q)$)  in $\cA_e$, $E'((p, \sigma, q))(x) = x$ (resp. $E'((p, \varepsilon, q))(x) = x$),
+\item for each $q \in Q$ such that $\delta(q) = (q_1, \cdots, q_n)$ and $q$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, we have $\delta'(q) = (q'_1, \cdots, q'_n)$, where for each $i \in [n]$, if $q_i$ occurs in ${\sf Sub}_{e'}[\cA_e]$, then $q'_i = q^\dag_i$, otherwise, $q'_i = q_i$,
+%
+\item for each $q \in Q$ such that $\tau(q) = (P_1; P_2)$ and $q$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, we have $\tau'(q) = (P'_1; P'_2)$, where $P'_1$ is obtained from $P_1$ by replacing each state $q \in P_1$ occurring in ${\sf Sub}_{e'}[\cA_e]$ with $q^\dag$, similarly for $P'_2$,
+%
+\item $\delta'$ (resp. $\tau'$) includes all the transitions in $\delta^\dag_e$ (resp. $\tau^\dag_e$),
+%
 \end{itemize}
 %
-\item $F'(f_0) = x$.
+\item for each transition $(q^\dag_1, \sigma, q^\dag_2)$ in ${\sf Sub}_{e'}[\cA^\dag_e]$ with $\sigma \in \Sigma$, we have $E'((q^\dag_1, \sigma, q^\dag_2))(x) = x \sigma$, and  on all the other transitions, $E'$ does not change the value of $x$.
+%
 \end{itemize}
 
 \begin{figure}[ht]
 \centering
 %\rule{\linewidth}{0cm}
-\includegraphics[width = 0.5\textwidth]{psst-extract.pdf}
+\includegraphics[width = \textwidth]{psst-extract.pdf}
 \caption{The PSST for $\extract_{i,e}$}
 \label{fig-psst-extract}
 \end{figure}
