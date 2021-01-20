@@ -151,11 +151,11 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   
   \begin{definition}[Semantics of $\regexp$]\label{def-regex-semantics}
   		
-  	For a $\regexp$ $e$ and a string $w$, we recursively define a linear order on $\cM_{\pref(w)}(e)$, written $T
+  	For a $\regexp$ $e$ and a string $w$, we recursively define a (strict) total order on $\cM_{\pref(w)}(e)$, written $T
   	>_{w,e} T'$ for $T, T' \in \cM_{\pref(w)}(e)$, as follows:
   	\begin{itemize}
   		\item $e = \varepsilon$, $e = a$, or $e = \$ n$. There is only one match tree, thus the
-  		order $>_{w, e}$ is empty. \tl{this is nitpicking, but linear order implies reflectivity }
+  		order $>_{w, e}$ is empty. \tl{this is nitpicking, but linear order implies reflectivity }\zhilin{changed to strict total order}
  %
  		\item $e  = a?$. There are only two single-node match trees in $\cM_{\pref(w)}(e)$, namely, $(\varepsilon, e)$ and $(a, e)$. Then we have $(a, e) >_{w,e} (\varepsilon, e)$. %\tl{check; ? is for non-greedy semantics?}
 %		 		
@@ -192,7 +192,7 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
 		\end{itemize}
   	\end{itemize}
   	
-  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$. Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if $w \in \Sigma^\ast \Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the supremum of $\cM_{\pref(w_1^{-1}w)}(e)$ such that $w_1$ is the shortest prefix of $w$ satisfying that $w_1^{-1}w \in \Lang(e)\Sigma^\ast$. If $w \not \in \Sigma^\ast \Lang(e)\Sigma^\ast$, the match of $e$ in $w$ is undefined.  \tl{why do we need this extra def?}
+  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$. Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if $w \in \Sigma^\ast \Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the supremum of $\cM_{\pref(w_1^{-1}w)}(e)$ such that $w_1$ is the shortest prefix of $w$ satisfying that $w_1^{-1}w \in \Lang(e)\Sigma^\ast$. If $w \not \in \Sigma^\ast \Lang(e)\Sigma^\ast$, the match of $e$ in $w$ is undefined.  \tl{why do we need this extra def?}\zhilin{to define the semantics of replace function for instance.}
 %  	
 %  	For any subexpression $e'$ of $e$, suppose $(w_1, e') \ldots (w_m, e')$ are
 %  	all the nodes labeled by $(w', e')$ with $w' \neq \varepsilon$, in the
