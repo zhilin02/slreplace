@@ -4,12 +4,14 @@
 \label{sect:impl}
 
 We have implemented our decision procedure for $\strline$ in the SMT
-solver OSTRICH
-\cite{CHL+19},\footnote{\url{https://github.com/uuverifiers/ostrich}}
-which provides a modular and easy-to-use framework for extending all
-sorts of string operations. As shown in Section \ref{sec:decision},
+solver \ostrich.\footnote{Name anonymized for doubly-blind review,
+and will be provided in the final paper.}
+%\cite{CHL+19}, %\url{https://github.com/uuverifiers/ostrich}}
+%which provides a modular and easy-to-use framework for extending all
+%sorts of string operations. 
+As shown in Section \ref{sec:decision},
 \PSST s satisfy the conditions required by the backwards reasoning
-approach of OSTRICH, which enables us to integrate our logic with
+approach of \ostrich, which enables us to integrate our logic with
 standard string theory. The resulting extended theory of strings is a
 conservative extension of the SMT-LIB theory of Unicode
 strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
@@ -64,16 +66,24 @@ Say more about the actual handling of PSSTs ...
 \subsection{Experimental evaluation}
 
 Our experiments have the purpose of answering two main questions:\\
-\textbf{R1:} How does the algorithm and implementation compare to
+\textbf{R1:} How does \ostrich\ compare to
 other solvers
 that can handle replace(All) and capturing groups?\\
-\textbf{R2:} How do they perform in the context of symbolic execution,
+\textbf{R2:} How does it perform in the context of symbolic execution,
 the prime application of string solving?
 
 Concerning \textbf{R1}, we are not aware of other SMT solvers with
-support for capturing groups; the same holds for CP approaches to
-string solving (e.g.,
+support for capturing groups; the same holds for CP solvers (e.g.,
 \cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}). The
-closest related work is the refinement-based algorithm implemented in
-the symbolic execution tool
-ExpoSE~\cite{DBLP:conf/spin/LoringMK17,LMK19}. 
+closest related work is the algorithm implemented in the symbolic
+execution tool ExpoSE~\cite{DBLP:conf/spin/LoringMK17,LMK19}, which
+applies Z3-seq~\cite{Z3} for solving string constraints, but augments
+it with a refinement loop to approximate the semantics of
+replace(All).\footnote{We also considered to replace Z3 with \ostrich\
+  in ExpoSE for the experiments. However, ExpoSE integrates Z3 using
+  its C API, and changing to a solver like \ostrich, with native
+  support for capture groups, would have required the rewrite of
+  substantial parts of ExpoSE.}
+%
+For \textbf{R1}, we therefore compared \ostrich\ with ExpoSE on
+regular expressions taken from the ??? library.
