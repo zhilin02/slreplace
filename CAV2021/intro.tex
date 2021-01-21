@@ -1,3 +1,4 @@
+%!TEX root = main.tex
 
 \section{Introduction}
 
@@ -6,6 +7,35 @@
 
 %
 
+String-manipulating programs are notoriously subtle, and their potential bugs may bring severe security consequences. A typical example is cross-site scripting (XSS), which is among the OWASP Top 10 Application Security Risks. Regular expressions are widely used in string-manipulating programs. An effective and increasingly popular method for identifying bugs, including XSS, is symbolic execution. In a nutshell, this technique analyses static paths through the program being considered. Each of these paths can be viewed as a constraint $\phi$ and symbolic execution tools demand fast constraint solvers to check the satisfiability of $\phi$. 
+
+Regular expressions in string-manipulating programs are dramatically different from regular expressions in theoretical computer science and formal language theory. In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. Classical regular expressions are built from letters by the operators of concatenation, union, and repetition. Real-world regular expressions differ from classical ones mainly in the following two aspects: 1) the non-standard semantics of operators, e.g. the non-commutative union, the greedy repetition, 2) the new features e.g. capturing groups and back references. 
+
+The semantics of real-world regular expressions are tricky and can be different in different programming languages. Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. As a result, symbolic executors of string manipulating programs, e.g. Aratha, only considered some approximate encoding to the non-standard semantics of regular expressions, which unexpectedly leads to the precision loss. To tackle this issue, some other symbolic executors, e.g. Expose, used CEGAR (counter-example guided abstraction and refinement) to approach the genuine semantics of real-world regular expressions. Although the CEGAR approach of Expose made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
+
+This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite transducers \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and back references by string variables. 
+The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
+
+We then design a decision procedure for a class of string constraints with real-world regular expressions. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
+
+We implement the decision procedure on top of OSTRICH and do extensive experiments to evaluate the performance. For the benchmarks, we generate over 160,000 Javascript programs from a library of real-world regular expressions \cite{DMC+19}, by using some simple Javascript program template containing match and replace functions.  Then we generate all the path constraints for each Javascript program and put them into one smt file. We run OSTRICH on these smt files. The average running time on each file is 2 seconds. For comparison, we also run Expose on the Javascript programs. The average running time for each program is \zhilin{xxx} seconds. The huge difference of the running time shows that our approach can reason about real-world regular expressions in a much faster (and even more precise) way than the CEGAR based approach.
+
+
+\paragraph*{Related work.}
+
+theoretical study on regular expressions with capturing groups and back references \cite{CSY03,CN09,Freydenberger13,Schmid16,FS19}.
+
+string constraint solving
+\cite{ZAM19}
+
+
+empirical study on regular expressions \cite{MDD+19}.
+
+security issues around regular expressions, e.g. DDos attacks \cite{SP18,DCSL18}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 Strings are a fundamental data type in virtually all programming languages.
 %Their generic nature can, however, lead to many subtle programming
 %bugs, some with security consequences, e.g., cross-site scripting
@@ -57,45 +87,11 @@ the replace-all functionality) is omnipresent in HTML5 applications
 \cite{LB16,TCJ16,YABI14}. 
 %\mat{What does it mean for the replace function to be convincingly argued?}
 
-%For example, a standard industry defense against cross-site scripting 
-%(XSS) vulnerabilities includes sanitising untrusted strings before adding them
-%into the DOM (Document Object Model) or the HTML document. 
-%This is typically done by %replacing every occurrence of
-%various metacharacter-escaping mechanisms (see, for instance, 
-%\cite{Kern14,BEK,OWASP-XSS}). An example of such a mechanism is backslash-escape, which replaces \emph{every
-%	occurrence} of quotes and double-quotes (i.e. \verb+'+ and \verb+"+) in the
-%string by \verb+\'+ and \verb+\"+. 
-%In addition to sanitisers, common JavaScript functionalities like \texttt{document.write()} 
-%and \texttt{innerHTML} apply an \emph{implicit browser transduction} --- which
-%decodes HTML codes (e.g. \verb+&#39;+ is replaced by \verb+'+) in the input 
-%string --- before inserting the input string into the DOM.
-%Both of these examples can be expressed by (perhaps multiple) 
-%applications of the string-replace function.
-%Moreover, although these examples replace constants by constants, the popularity of template systems such as Mustache~\cite{Mustache} and Closure Templates~\cite{Closure} demonstrate the need for replacements involving variables.
-%Using Mustache, a web-developer, for example, may define an HTML fragment with placeholders that is instantiated with user data during the construction of the delivered page.
-
 A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
-
-
-
-
-%In programming language, stress regex, which admits features such as capturing groups, reference
-
-
-%symbolic execution requires SMT solving 
 
 The semantics of regular expressions with capturing groups and back references is rather involved. One of the reasons is that different languages may choose different semantics for a regex to match the string when the regex is served as a pattern. 
 
 To capture the semantics, priority is introduced, giving rise to an extension of the standard finite-state automata. However, this is not sufficient for capturing string operations. For that purpose, we introduce  a new transducer model, prioritized streaming string transducer (PSST) which is a combination of priority which is essential for modelling capturing groups and streaming transducers which are a highly expressive formalism for modelling string operations. 
-
-%(1) using the priority to model regular expressions features such as capturing groups and (2) streaming transducers as a generic and expressive model for string manipulation. For instance, it can capture, among others, the reverse operation. 
-
-The new contribution: 
-
-\begin{itemize}
-	\item extending Streaming String Transducers: \cite{FR17}
-	
-	\item  universal solution 
-	
-	\item 
-\end{itemize} 
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
