@@ -101,11 +101,10 @@ We are ready to prove Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
 \begin{proof}[Lemma~\ref{lem-extract}]
 %\paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
 Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$. 
-
 Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. 
 %Moreover, let $\cA^\dag_e = (Q^\dag, \Sigma, \delta^\dag, \tau^\dag, q^\dag_0, f^\dag_0)$ be an isomorphic copy of $\cA_e$, where every state $q$ in $\cA_e$ is replaced by $q^\dag$ in $\cA^\dag_e$. Let us use ${\sf Sub}_{e'}[\cA^\dag_e]$ to denote the isomorphic copy of ${\sf Sub}_{e'}[\cA_e]$ in $\cA^\dag_e$.
 
-Intuitively, $\cT_{\extract_{i,e}}$ uses a string variable $x$ to store the value of the $i$th capturing group. Initially it use $\nullchar$ to signify the capturing group is not matched yet. It then simulates $\cA_e$, and stores letters into $x$ when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$, finally it outputs the value of $x$ when $\cA_e$ accepts.
+Intuitively, $\cT_{\extract_{i,e}}$ uses a string variable $x$ to store the value of the $i$th capturing group. Initially it assigns $\nullchar$ to $x$ to denote the fact that the capturing group is not matched yet. It then simulates $\cA_e$, and stores letters into $x$ when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$. Finally, it outputs the value of $x$ when $\cA_e$ accepts.
 
 Formally, $\cT_{\extract_{i,e}} = (Q \cup \{q'_0\}, \Sigma, X, \delta', \tau', E', q'_0, F')$ (see Figure~\ref{fig-psst-extract}), where 
 \begin{itemize}
@@ -115,21 +114,30 @@ Formally, $\cT_{\extract_{i,e}} = (Q \cup \{q'_0\}, \Sigma, X, \delta', \tau', E
 %
 %\item $\delta'$ is obtained from $\delta$ by adding $x: = x\sigma$ for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$,  
 %
-\item $F'(f_0)= x$ and $F'(p)$ is undefined for all the other states in $p \in Q  \cup \{q'_0\}$,
+\item $F'(f_0)= x$ and $F'(p)$ is undefined for all the other states $p \in Q  \cup \{q'_0\}$,
 %
-\item $\delta'$, $\tau'$, and $E'$ are defined as follows,
+\item $\delta'$ and $\tau'$ are defined as follows,
 \begin{itemize}
-\item $\tau'(q'_0) = ((q_0); ())$
-\item if $q_0$ is not in ${\sf Sub}_{e'}[\cA_e]$, $E'((q'_0, \varepsilon, q_0))(x) = \nullchar$. Otherwise $E'((q'_0, \varepsilon, q_0))(x) = \varepsilon$
+\item $\tau'(q'_0) = ((q_0); ())$,
 %
-\item $\delta'$ includes all the transitions in $\delta$ and $\tau'$ includes all the transitions in $\tau$,
+\item $\delta'$ includes all the transitions in $\delta$,
 %
-\item for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'((q, \sigma, q'))(x) = x \sigma$ 
-\item for each transition $(q, \sigma, q')$ such that $q$ is not in ${\sf Sub}_{e'}[\cA_e]$ but $q'$ is in ${\sf Sub}_{e'}[\cA_e]$, $E'((q, \sigma, q'))(x) = \sigma$.
-\item For all the other transitions $t$ of $\cA_e$, $E'(t)(x) = x$.
-%
+\item $\tau'$ includes all the transitions in $\tau$,
 %
 \end{itemize}
+%
+\item $E'$ is defined as follows,
+\begin{itemize}
+\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $E'((q'_0, \varepsilon, q_0))(x) = \nullchar$, otherwise, $E'((q'_0, \varepsilon, q_0))(x) = \varepsilon$,
+%
+\item for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'((q, \sigma, q'))(x) = x \sigma$,
+% 
+\item for each transition $(q, \sigma, q')$ such that $q$ does not occur not in ${\sf Sub}_{e'}[\cA_e]$ and $q'$ occurs in ${\sf Sub}_{e'}[\cA_e]$, $E'((q, \sigma, q'))(x) = \varepsilon$,
+%
+\item for all the other transitions $t$ of $\cA_e$, $E'(t)(x) = x$.
+\end{itemize}
+%
+%
 \end{itemize}
 
 \begin{figure}[ht]
