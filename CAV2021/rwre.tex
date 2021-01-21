@@ -46,7 +46,7 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   %\subsection{Semantics of \regexp[\sf CG]}
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
    For two $\regexp$s $e$ and $e'$, we say $e'$ is a \emph{subexpression} of $e$,
-  	if one of the following conditions holds: 1) $e'=e$, 2) $e = e_1 e_2$ or $e_1 + e_2$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = e_1^{\ast}$, $e_1^{\ast?}$, $(e_1)$, or $[e_1]$, and $e'$ is a subexpression of $e_1$. We use $S (e)$ to denote the set of all subexpressions of $e$. \tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
+  	if one of the following conditions holds: 1) $e'=e$, 2) $e = e_1 e_2$ or $e_1 + e_2$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = e_1^{\ast}$, $e_1^{\ast?}$, $(e_1)$, or $[e_1]$, and $e'$ is a subexpression of $e_1$. We use $S (e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
   
   \begin{definition}[Matches of $\regexp$ to strings]
   	A \tmtextbf{match} of a $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
@@ -186,7 +186,7 @@ Let us continue Example~\ref{exmp-regex-match-tree}.  In Figure~\ref{fig-regex-s
  \end{example}
   
 \begin{remark}
-The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} captures the use of regular expressions in Perl, PHP, JavaScript, etc. \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, which we leave as the future work. 
+The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} captures regular expressions in Perl, PHP, JavaScript, etc. \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, which we leave as the future work. 
 \end{remark}
   
   
