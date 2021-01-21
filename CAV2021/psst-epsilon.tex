@@ -7,6 +7,33 @@ In this section, we introduce prioritized streaming string transducers (PSST), w
 %based on which we model the semantics of $\regexp$ defined in Section~\ref{sec:prel} and design the decision procedure in Section~\ref{sec:decision}.
 
 %\paragraph{Prioritized Finite-state automata.}
+
+
+\begin{definition}[Finite-state automata] \label{def:nfa}
+	A \emph{(nondeterministic) finite-state automaton}
+	(\FA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
+	(\ialphabet, \controls, q_0, \finals, \transrel)$ where 
+	$\controls$ is a finite set of 
+	states, $q_0\in \controls$ is
+	the initial state, $\finals\subseteq \controls$ is a set of final states, and 
+	$\transrel\subseteq \controls \times 
+	\ialphabet^\varepsilon \times  \controls$ is the
+	transition relation. 
+\end{definition}
+
+For an input string $w$, a \emph{run} of $\Aut$ on $w$
+%(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
+is a sequence $q_0 \sigma_1 q_1 \ldots \sigma_n q_n$ such that $w = \sigma_1 \cdots \sigma_n$ and $(q_{j-1}, \sigma_{j}, q_{j}) \in
+\transrel$ for every $j \in [n]$.
+The run is said to be \defn{accepting} if $q_n \in \finals$.
+A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
+$\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ if $q_0 \in F$. The set of strings accepted by $\Aut$, i.e., the language \defn{recognized} by $\Aut$, is denoted by $\Lang(\Aut)$.
+%Since we deal with computational complexity in the sequel, we define
+The \defn{size} $|\Aut|$ of $\Aut$ is defined as the cardinality of the set $Q$ of states, which will be 
+used when the computational complexity is concerned.
+
+For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
+
 %
 For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_n) \mid \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of sequences of non-repetitive elements from $Q$. In particular, the empty sequence $\varepsilon \in \overline{Q}$. Note that the length of each sequence from $\overline{Q}$ is bounded by  $| Q |$. For a sequence $P = (q_1, \ldots, q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if  $q = q_i$ for some $i \in [n]$. Moreover, for $P_1 = (q_1, \ldots, q_m) \in \overline{Q}$ and $P_2 = (q'_1, \ldots, q'_n) \in \overline{Q}$, we say $P_1 \cap P_2 = \emptyset$ if $\{q_1, \ldots, q_m\} \cap \{q'_1, \ldots, q'_n\} = \emptyset$.
 

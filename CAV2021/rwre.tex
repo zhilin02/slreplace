@@ -7,34 +7,11 @@ Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$
 
 We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$ and $\varepsilon$ to denote the empty string. Moreover, for convenience, we use $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
 
-\begin{definition}[Finite-state automata] \label{def:nfa}
-	A \emph{(nondeterministic) finite-state automaton}
-	(\FA{}) over a finite alphabet $\ialphabet$ is a tuple $\Aut =
-	(\ialphabet, \controls, q_0, \finals, \transrel)$ where 
-	$\controls$ is a finite set of 
-	states, $q_0\in \controls$ is
-	the initial state, $\finals\subseteq \controls$ is a set of final states, and 
-	$\transrel\subseteq \controls \times 
-	\ialphabet^\varepsilon \times  \controls$ is the
-	transition relation. 
-\end{definition}
-
-For an input string $w$, a \emph{run} of $\Aut$ on $w$
-%(with $a_0 = \EndLeft$ and $a_{n+1} = \EndRight$)
-is a sequence $q_0 \sigma_1 q_1 \ldots \sigma_n q_n$ such that $w = \sigma_1 \cdots \sigma_n$ and $(q_{j-1}, \sigma_{j}, q_{j}) \in
-\transrel$ for every $j \in [n]$.
-The run is said to be \defn{accepting} if $q_n \in \finals$.
-A string $w$ is \defn{accepted} by $\Aut$ if there is an accepting run of
-$\Aut$ on $w$. In particular, the empty string $\varepsilon$ is accepted by $\Aut$ if $q_0 \in F$. The set of strings accepted by $\Aut$, i.e., the language \defn{recognized} by $\Aut$, is denoted by $\Lang(\Aut)$.
-%Since we deal with computational complexity in the sequel, we define
-The \defn{size} $|\Aut|$ of $\Aut$ is defined as the cardinality of the set $Q$ of states, which will be 
-used when the computational complexity is concerned.
-
-For convenience, for $a \in \Sigma$, we use $\delta^{(a)}$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta\}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-Regular expressions are a well-known concept in formal language and  have the same expressibility as finite state automata. Many programming languages provide build-in regular expressions %capabilities either built-in 
+\tl{this part can be moved to intro?}
+Regular expressions are a well-known concept in formal language. %and  have the same expressibility as finite state automata. 
+Many programming languages provide build-in regular expressions %capabilities either built-in 
 or otherwise via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. However, it should be emphasized that regular expressions used in programming languages are considerably different from those in formal language theory, mainly on the following aspects: greedy/non-greedy semantics of the quantifiers ($*$ and its variant $+$), non-commutativity of the alternation operator, capturing groups, and back references. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
   
 \begin{definition}[Real-world regular expressions, $\regexp$]
@@ -155,7 +132,7 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   	>_{w,e} T'$ for $T, T' \in \cM_{\pref(w)}(e)$, as follows:
   	\begin{itemize}
   		\item $e = \varepsilon$, $e = a$, or $e = \$ n$. There is only one match tree, thus the
-  		order $>_{w, e}$ is empty. \tl{this is nitpicking, but linear order implies reflectivity }\zhilin{changed to strict total order}
+  		order $>_{w, e}$ is empty. %\tl{this is nitpicking, but linear order implies reflectivity }\zhilin{changed to strict total order}
  %
  		\item $e  = a?$. There are only two single-node match trees in $\cM_{\pref(w)}(e)$, namely, $(\varepsilon, e)$ and $(a, e)$. Then we have $(a, e) >_{w,e} (\varepsilon, e)$. %\tl{check; ? is for non-greedy semantics?}
 %		 		
@@ -192,7 +169,10 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
 		\end{itemize}
   	\end{itemize}
   	
-  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$. Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if $w \in \Sigma^\ast \Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the supremum of $\cM_{\pref(w_1^{-1}w)}(e)$ such that $w_1$ is the shortest prefix of $w$ satisfying that $w_1^{-1}w \in \Lang(e)\Sigma^\ast$. If $w \not \in \Sigma^\ast \Lang(e)\Sigma^\ast$, the match of $e$ in $w$ is undefined.  \tl{why do we need this extra def?}\zhilin{to define the semantics of replace function for instance.}
+  	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$.
+  	
+  	 Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if $w \in \Sigma^\ast \Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the supremum of $\cM_{\pref(w_1^{-1}w)}(e)$ such that $w_1$ is the shortest prefix of $w$ satisfying that $w_1^{-1}w \in \Lang(e)\Sigma^\ast$. If $w \not \in \Sigma^\ast \Lang(e)\Sigma^\ast$, the match of $e$ in $w$ is undefined.  
+  	%\tl{why do we need this extra def?}\zhilin{to define the semantics of replace function for instance.}
 %  	
 %  	For any subexpression $e'$ of $e$, suppose $(w_1, e') \ldots (w_m, e')$ are
 %  	all the nodes labeled by $(w', e')$ with $w' \neq \varepsilon$, in the
