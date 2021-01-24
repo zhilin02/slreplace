@@ -57,22 +57,21 @@ Real-world Regular Expressions}
 %% before \maketitle command
 \begin{abstract}
 %% some background on regular expressions
-Regular expressions are a classical concept in theoretical computer science and formal language theory, which are expressions built from characters by the concatenation, union, and repetition operators. Real-world regular expressions in programming languages differ dramatically from classical regular expressions in formal language theory by adopting the non-standard semantics of operators, e.g. non-commutative union and greedy repetition, as well as introducing the new features like capturing groups and back references. 
+Regular expressions (RE) are a classical concept in formal language theory, which are expressions built from characters by the operators of concatenation, union, and repetition. Real-world regular expressions (RWRE) in programming languages differ from REs in the non-standard semantics of operators, e.g. non-commutative union and greedy repetition, as well as  the additional features like capturing groups and back references. 
 %% symbolic execution requires faithful encoding of regex semantics
-String constraint solvers are one of the cornerstones of the analysis and verification of string manipulating programs. Faithful encoding of the semantics of real-world regular expressions in string constraint solvers facilitates more precise program analysis and verification.
+%String constraint solvers are one of the cornerstones of the analysis and verification of string manipulating programs. Faithful encoding of the semantics of real-world regular expressions in string constraint solvers facilitates more precise program analysis and verification.
 %% state of the art string constraint solvers
-The semantics of real-word regular expressions are tricky and vary in different programming languages. It is challenging for string constraint solvers to support real-world regular expressions.
-As a result, the state-of-the-art string constraint solvers (e.g. CVC4 and Z3-str) only support classical regular expressions.  
+%The semantics of real-word regular expressions are tricky and vary in different programming languages. It is challenging for string constraint solvers to support real-world regular expressions.
+State-of-the-art string constraint solvers (e.g. CVC4 and Z3-str) do not support RWREs. Symbolic executors of string-manipulating programs have to resort to counter example guided refinements (CEGAR) to mitigate the imprecise semantics of REs in the solvers.  
 %
 %The semantics of real-world regular expressions are better to be encoded as faithfully as possible. For instance, in dynamic symbolic execution of string manipulating programs, in order to generate the inputs for execution paths and improve coverage,  the semantics of real-world regular expressions are better to be encoded as faithfully as possible in string constraint solvers. 
 %% contribution
-This work proposes a novel approach of supporting real-world regular expressions in string constraint solving. The kernel of this approach is a new automata model called prioritized streaming string transducers (PSST), which combines priorities in prioritized finite transducers and string variables in streaming string transducers. 
-With PSSTs, real-world regular expressions can be conveniently modeled. 
+In this work, we propose an approach of natively supporting RWREs in string constraint solving. We introduce a new automata model called prioritized streaming string transducers (PSST), which combines priorities in prioritized finite transducers and string variables in streaming string transducers, to model the string functions involving RWREs. 
 %non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
 %the non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
-Moreover, we design a decision procedure for string constraints with real-world regular expressions based on PSSTs. 
+Based on PSSTs, we design a decision procedure for string constraints with RWREs. 
 %% implementation and experiments
-We implement the decision procedure and do extensive experiments to evaluate its performance. The experimental results on over 160,000 string constraints, which are generated from regular expressions in open-source programs, show that our implementation is able to tackle a wide range of real-world regular expressions quite efficiently. To the best of our knowledge, this work represents the first string constraint solver capable of dealing with real-world regular expressions.
+Moreover, we implement the decision procedure and do extensive experiments to evaluate its performance. The experimental results on over 160,000 string constraints generated from RWREs in open-source programs show that our approach is much more efficient than CEGAR-based approach for RWREs. To the best of our knowledge, this work represents the first string constraint solver capable of dealing with RWREs.
 \end{abstract}
 
 
