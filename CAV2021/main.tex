@@ -57,12 +57,12 @@ Real-world Regular Expressions}
 %% before \maketitle command
 \begin{abstract}
 %% some background on regular expressions
-Regular expressions (RE) are a classical concept in formal language theory, which are expressions built from characters by the operators of concatenation, union, and repetition. Real-world regular expressions (RWRE) in programming languages differ from REs in the non-standard semantics of operators, e.g. non-commutative union and greedy repetition, as well as  the additional features like capturing groups and back references. 
+Regular expressions (RE) are a classical concept in formal language theory, which are expressions built from characters by the operators of concatenation, union, and Kleene star. Real-world regular expressions (RWRE) in programming languages differ from REs in the non-standard semantics of operators, e.g. non-commutative union and greedy/lazy Kleene star, as well as  the additional features like capturing groups and back references. 
 %% symbolic execution requires faithful encoding of regex semantics
 %String constraint solvers are one of the cornerstones of the analysis and verification of string manipulating programs. Faithful encoding of the semantics of real-world regular expressions in string constraint solvers facilitates more precise program analysis and verification.
 %% state of the art string constraint solvers
 %The semantics of real-word regular expressions are tricky and vary in different programming languages. It is challenging for string constraint solvers to support real-world regular expressions.
-While REs are supported by every state-of-the-art string constraint solvers (e.g. CVC4 and Z3-str), none of them supports RWREs. The mismatch between REs in string constraint solvers and RWREs in programming languages hinders the precision and efficiency of symbolic executors, which have to resort to counter example guided abstraction and refinements (CEGAR) to mitigate this issue. 
+While REs are supported by every state-of-the-art string constraint solvers (e.g. CVC4 and Z3-str), none of them supports RWREs. The mismatch between REs in string constraint solvers and RWREs in programming languages hinders the precision and efficiency of symbolic executors, which have to resort to counter example guided abstraction refinements (CEGAR) to mitigate this issue. 
 %
 %The semantics of real-world regular expressions are better to be encoded as faithfully as possible. For instance, in dynamic symbolic execution of string manipulating programs, in order to generate the inputs for execution paths and improve coverage,  the semantics of real-world regular expressions are better to be encoded as faithfully as possible in string constraint solvers. 
 %% contribution
