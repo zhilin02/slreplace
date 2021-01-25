@@ -66,12 +66,13 @@ While REs are supported by every state-of-the-art string constraint solvers (e.g
 %
 %The semantics of real-world regular expressions are better to be encoded as faithfully as possible. For instance, in dynamic symbolic execution of string manipulating programs, in order to generate the inputs for execution paths and improve coverage,  the semantics of real-world regular expressions are better to be encoded as faithfully as possible in string constraint solvers. 
 %% contribution
-In this work, we propose an approach of natively supporting RWREs in string constraint solving. The key of our approach is to introduce a new automata model called prioritized streaming string transducers (PSST), which combines priorities in prioritized finite transducers and string variables in streaming string transducers, to model the string functions involving RWREs. 
+In this work, we propose an approach of natively supporting RWREs in string constraint solving. The key of our approach is to introduce a new automata model called prioritized streaming string transducers (PSST), 
+which combines priorities in prioritized finite transducers and string variables in streaming string transducers, to model the string functions involving RWREs. 
 %non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
 %the non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
 Based on PSSTs, we design a decision procedure for string constraints with RWREs. 
 %% implementation and experiments
-Moreover, we implement the decision procedure and do extensive experiments to evaluate its performance. The experimental results on over 160,000 string constraints generated from RWREs in open-source programs show that our approach is much more efficient than CEGAR-based approach for RWREs. To the best of our knowledge, this work represents the first string constraint solver supporting RWREs.
+Moreover, we implement the decision procedure and do extensive experiments to evaluate its performance. The experimental results on over 160,000 string constraints generated from RWREs in open-source programs show that our approach dramatically improves the CEGAR-based approach for RWREs in both precision and efficiency. To the best of our knowledge, this work represents the first string constraint solver supporting RWREs.
 \end{abstract}
 
 
