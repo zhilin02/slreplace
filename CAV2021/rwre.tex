@@ -15,14 +15,15 @@ Many programming languages provide build-in regular expressions %capabilities ei
 or otherwise via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. However, it should be emphasized that regular expressions used in programming languages are considerably different from those in formal language theory, mainly on the following aspects: greedy/non-greedy semantics of the quantifiers ($*$ and its variant $+$), non-commutativity of the alternation operator, capturing groups, and back references. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
   
 \begin{definition}[Real-world regular expressions, $\regexp$]
-  	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid a? \mid \$n \mid [e + e] \mid [e \concat e] \mid [e^*] \mid [e^{*?}] \mid (e), \]
+  	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid a? \mid \$n \mid [e + e] \mid [e \concat e] \mid [e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid (e), \]
   	where $a \in \Sigma, n \in \Int^+$. 
   	%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. 
   	%We use the abbreviation 
 \end{definition}
-We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $\Gamma^\ast \equiv [[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast$. 
+%We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. 
+For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $\Gamma^\ast \equiv [[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast$. 
 
-Note that the parentheses are used for capturing groups and square brackets  are used for precedence. 
+Note that square brackets $[]$ are used for the operator precedence and the parentheses $()$ are used for capturing groups. 
 %\tl{do we consider change the notation to [e]?}\zhilin{I used $[]$ for precedence and $()$ for capturing groups.}
 %We assume that the parentheses in every regular expression are well matched. 
 %
@@ -46,7 +47,7 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   %\subsection{Semantics of \regexp[\sf CG]}
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
    For two $\regexp$s $e$ and $e'$, we say $e'$ is a \emph{subexpression} of $e$,
-  	if one of the following conditions holds: 1) $e'=e$, 2) $e = e_1 e_2$ or $e_1 + e_2$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = e_1^{\ast}$, $e_1^{\ast?}$, $(e_1)$, or $[e_1]$, and $e'$ is a subexpression of $e_1$. We use $S (e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
+  	if one of the following conditions holds: 1) $e'=e$, 2) $e = e_1 e_2$ or $e_1 + e_2$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = e_1^{\ast}$, $e_1^{+}$, $e_1^{\ast?}$, $e_1^{+?}$, $(e_1)$, or $[e_1]$, and $e'$ is a subexpression of $e_1$. We use $S (e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
   
   \begin{definition}[Matches of $\regexp$ to strings]
   	A \tmtextbf{match} of a $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
@@ -64,6 +65,9 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
   		$i \in [k]$, $w'_i \neq \varepsilon$ (even if  $L
   		(e'_1)$ could contain $\varepsilon$).
+
+  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
+  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$.
 %
 %  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
 %  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
@@ -126,6 +130,7 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
  %%%%% the original example %%%%%%%%%%
 %%%%% the original example %%%%%%%%%% 
   
+  \zhilin{stopped here, to add e+}
   \begin{definition}[Semantics of $\regexp$]\label{def-regex-semantics}
   		
   	For a $\regexp$ $e$ and a string $w$, we recursively define a (strict) total order on $\cM_{\pref(w)}(e)$, written $T
