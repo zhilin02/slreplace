@@ -83,38 +83,4 @@ The extraction of {\tt decomp[2]} can be handled in a similar way. Moreover, the
 \end{eqnarray}
 where $\Aut_{\scriptsize\mbox{\tt.+}}$, $\Aut_{\tt decimalReg}$ and $\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}$ are three finite automata corresponding to the three regular expressions respectively.
 
-\tl{this part may be removed? take up too much space and not quite informative here?}
-The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by ``backward'' reasoning as follows (see Section~\ref{sec:decision} for details):  
-\begin{itemize}
-\item At first, we compute the pre-image of $(\Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}})$ under the concatenation $\concat$, which is a finite union of products of regular languages, remove $\tt result2 := integer \concat ``." \concat fractional$, select one disjunct of the union, say $(\Aut'_1, \Aut'_2)$, add the assertion $\ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}$, resulting into the following program,
-\begin{eqnarray}\label{eqn:exmp-2}
-& & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
-& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
-& & \tt fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,2}}(decimal));\nonumber \\
-&&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
-%\nonumber\\
-%&&  \tt result1 := integer;\nonumber\\
-  \ASSERT{\tt fractional \in \Aut_{\scriptsize\mbox{\tt.+}}}; \nonumber\\
-% && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
- && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}}}; \nonumber\\
-  && \ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}; 
-\end{eqnarray}
-%
-\item Next, we compute the pre-image of $\Aut'_2$ under $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})} \circ \cT_{\tt match_{decimalReg,2}}$ (see Theorem~\ref{theorem:psst_preimage}), denoted by $\cB_1$, similarly we compute the pre-image of $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})} \circ \cT_{\tt match_{decimalReg,2}}$,  denoted by $\cB_2$, then remove the assignment for  $\tt fractional$, and add $\ASSERT{\tt decimal \in \cB_1};\ASSERT{\tt decimal \in \cB_2}$. Similarly, we compute the pre-images of $\Aut'_2$ and $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})} \circ \cT_{\tt match_{decimalReg, 1}}$, denoted by $\cC_1$ and $\cC_2$, remove the assignment for {\tt integer}, and add the assertions $\ASSERT{\tt decimal \in \cC_1};\ASSERT{\tt decimal \in \cC_2}$. Then we obtain the following program containing no assignment statements, 
-\begin{eqnarray}\label{eqn:exmp-2}
-& & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
-%& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
-%& & \tt fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,2}}(decimal));\nonumber \\
-&&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
-%\nonumber\\
-%&&  \tt result1 := integer;\nonumber\\
-  \ASSERT{\tt fractional \in \Aut_{\scriptsize\mbox{\tt.+}}}; \nonumber\\
-% && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
- && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}}}; \nonumber\\
-  && \ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}; \nonumber\\
-    && \ASSERT{\tt decimal \in \cB_1};\ASSERT{\tt decimal \in \cB_2}; \nonumber\\
-    && \ASSERT{\tt decimal \in \cC_1};\ASSERT{\tt decimal \in \cC_2}; 
-\end{eqnarray}
-%
-\item Finally, we check the nonemptiness of the intersection of the regular languages for the input variable $\tt decimal$, namely, $\Lang(\Aut_{\tt decimalReg})$, $\Lang(\cB_1)$, $\Lang(\cB_2)$, $\Lang(\cC_1)$, and $\Lang(\cC_2)$. If the intersection is nonempty, then the invariant property does \emph{not} hold.
-\end{itemize}
+Then the path feasibility of the program in Equation~(\ref{eqn:exmp}) can be solved by following the ``backward'' reasoning approach proposed in \cite{CHL+19}: At first, we show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}). Then we compute the pre-images of regular languages under the concatenation operation and remove the last assignment statement. Moreover, we compute the pre-images of regular languages under the PSSTs $\cT_{\tt extract_{decimalReg,2}}$ as well as $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$, and remove the second assignment statement. Similarly for the first assignment statement. In the end, a program containing only regular membership queries is obtained, whose feasibility is reduced to checking the nonemptiness of the intersection of regular languages, which is known to be decidable (\pspace-complete). (See Appendix~\ref{app-br-mot-exmp} for more details.)

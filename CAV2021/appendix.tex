@@ -2,6 +2,45 @@
 
 \section{Appendix}
 
+
+\subsection{Backward Reasoning in the Motivating Example}\label{app-br-mot-exmp}
+
+The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by ``backward'' reasoning as follows:  
+\begin{itemize}
+\item At first, we compute the pre-image of $(\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}})$ under the concatenation $\concat$, which is a finite union of products of regular languages, remove $\tt result2 := integer \concat ``." \concat fractional$, select one disjunct of the union, say $(\Aut'_1, \Aut'_2)$, add the assertion $\ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}$, resulting into the following program,
+\begin{eqnarray}\label{eqn:exmp-2}
+& & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
+& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
+& & \tt fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}(\cT_{\tt match_{decimalReg,2}}(decimal));\nonumber \\
+&&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
+%\nonumber\\
+%&&  \tt result1 := integer;\nonumber\\
+  \ASSERT{\tt fractional \in \Aut_{\scriptsize\mbox{\tt.+}}}; \nonumber\\
+% && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
+ && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; \nonumber\\
+  && \ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}; 
+\end{eqnarray}
+%
+\item Next, we compute the pre-image of $\Aut'_2$ under $\cT_{\tt match_{decimalReg,2}}$ (see Lemma~\ref{lem:psst_preimage}), denoted by $\cB_1$, then the pre-image of $\Lang(\cB_1)$ under $\cT_{\tt replace(\mbox{\scriptsize \tt /0+\$/, ""})}$, denoted by $\cB'_1$. Similarly, we compute the pre-image of $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt match_{decimalReg,2}}$ as well as $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}$,  and obtain a finite automaton $\cB'_2$. Moreover, we remove the assignment statement for  $\tt fractional$, and add the assertions $\ASSERT{\tt decimal \in \cB'_1}; \ASSERT{\tt decimal \in \cB'_2}$. Finally, we compute the pre-images of $\Aut'_1$ and $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt match_{decimalReg, 1}}$ as well as $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}$, and obtain finite automata $\cC'_1$ and $\cC'_2$ respectively. Then we remove the assignment for {\tt integer}, and add $\ASSERT{\tt decimal \in \cC'_1};\ASSERT{\tt decimal \in \cC'_2}$. In the end, we get the following program containing no assignment statements, 
+\begin{eqnarray}\label{eqn:exmp-2}
+& & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
+%& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
+%& & \tt fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,2}}(decimal));\nonumber \\
+&&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
+%\nonumber\\
+%&&  \tt result1 := integer;\nonumber\\
+  \ASSERT{\tt fractional \in \Aut_{\scriptsize\mbox{\tt.+}}}; \nonumber\\
+% && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
+ && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; \nonumber\\
+  && \ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}; \nonumber\\
+    && \ASSERT{\tt decimal \in \cB'_1};\ASSERT{\tt decimal \in \cB'_2}; \nonumber\\
+    && \ASSERT{\tt decimal \in \cC'_1};\ASSERT{\tt decimal \in \cC'_2}; 
+\end{eqnarray}
+%
+\item Finally, we check the nonemptiness of the intersection of the regular languages for the input variable $\tt decimal$, namely, $\Lang(\Aut_{\tt decimalReg})$, $\Lang(\cB'_1)$, $\Lang(\cB'_2)$, $\Lang(\cC'_1)$, and $\Lang(\cC'_2)$. If the intersection is nonempty, then the invariant property does \emph{not} hold.
+\end{itemize}
+
+
 \subsection{Undecidability of $\strline$}
 
 \noindent {\bf Proposition~\ref{prop-und}}.
