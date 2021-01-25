@@ -8,12 +8,12 @@
 function normalize(decimal)
 {
   const decimalReg = /^(\d+)\.?(\d*)$/;
-  var format = decimal.match(decimalReg);
+  var decomp = decimal.match(decimalReg);
   var result = "";
-  if(format)
+  if(decomp)
   {
-   var integer = format[1].replace(/^0+/, "");
-   var fractional  = format[2].replace(/0+$/, "");
+   var integer = decomp[1].replace(/^0+/, "");
+   var fractional  = decomp[2].replace(/0+$/, "");
    if(integer !== "") result = integer;
    else result = "0"; 
    if(fractional !== "") result = result + "." + fractional;
@@ -36,10 +36,10 @@ In the function body, the input {\tt decimal} %of the function {\tt normalize}
 is matched to a regular expression {\tt decimalReg}={\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of the input, possibly followed by a dot symbol (intuitively the decimal point) as well as another digit sequence representing the fractional part (where the anchor symbols \^{} and $\$$ denote the beginning and the end of the input). Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover,  it utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any occurrence of the dot symbol. For instance, if {\tt decimal} = ``0250'', then {\tt ({\footnotesize\textbackslash}d+)} is matched by ``0250'' and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
 %\tl{i guess here we want to express that the greedy semantics is crucial; the standard nondeterministic semantics does not meet our requirement?}
 %Nevertheless, 
-Note that the greedy semantics is crucial because if the standard \emph{nondeterministic} semantics of {\tt +} were adopted, the following matching would also be valid: {\tt ({\footnotesize\textbackslash}d+)} is matched to ``02'' and {\tt ({\footnotesize\textbackslash}d*)} is matched to ``50'', which would give the wrong result.  The result of the matching, which is an array of strings, is stored in the variable {\tt format}. 
+Note that the greedy semantics is crucial because if the standard \emph{nondeterministic} semantics of {\tt +} were adopted, the following matching would also be valid: {\tt ({\footnotesize\textbackslash}d+)} is matched to ``02'' and {\tt ({\footnotesize\textbackslash}d*)} is matched to ``50'', which would give the wrong result.  The result of the matching, which is an array of strings, is stored in the variable {\tt decomp}. 
 %Since there are two capturing groups in {\tt decimalReg}, the array {\tt format} is of length 3.
 %
-Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\tt format[1]} and the result is stored in the variable {\tt integer}. Similarly, the trailing zeros are trimmed by {\tt replace(/{}0+\$/, "")} to {\tt format[2]} and the result is stored in the variable {\tt fractional}. Again, the greedy semantics of {\tt 0+} is used to trim \emph{all} the leading/trailing zeros.
+Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\tt decomp[1]} and the result is stored in the variable {\tt integer}. Similarly, the trailing zeros are trimmed by {\tt replace(/{}0+\$/, "")} to {\tt decomp[2]} and the result is stored in the variable {\tt fractional}. Again, the greedy semantics of {\tt 0+} is used to trim \emph{all} the leading/trailing zeros.
 %
 The return value is obtained as follows: If {\tt integer} is empty, then it gets a default value ``0''. If {\tt fractional} is empty, then the return value is {\tt integer}. Otherwise, the return value  joins {\tt integer} and {\tt fractional} with the dot symbol. 
 
@@ -47,41 +47,41 @@ A natural invariant property of {\tt normalize} is that its output contains neit
 %Therefore, the invariant property does not hold if along \emph{some} execution path of the program, the return value of {\tt normalize} does not satisfy the property. 
 %
 Take one typical execution path as an example. %for the validity of the invariant property, it is necessary that 
-The invariant property entails that the  program in single static assignment form (cf. Fig.~\ref{fig-run-exmp-path}) is infeasible (namely, there does not exist an input of {\tt decimal} so that the program can execute to the end), 
+The invariant property entails that the following program in single static assignment form (cf. Fig.~\ref{fig-run-exmp-path}) is infeasible (namely, there does not exist an input of {\tt decimal} so that the program can execute to the end), 
 \begin{figure}[htbp]
 \begin{center}
 \begin{minted}[linenos]{javascript}
   const decimalReg = /^(\d+)\.?(\d*)$/;
-  var format = decimal.match(decimalReg);
+  var decomp = decimal.match(decimalReg);
   var result = "";
-  assert(format!==null);
-  var integer = format[1].replace(/^0+/, "");
-  var fractional  = format[2].replace(/0+$/, "");
+  assert(decomp!==null);
+  var integer = decomp[1].replace(/^0+/, "");
+  var fractional  = decomp[2].replace(/0+$/, "");
   assert(integer !== ""); 
   result1 = integer;
   assert(fractional !== ""); 
   result2 = result1 + "." + fractional;
-  assert(/^0[1-9].*|.*\.\d*0$/.test(result2));
+  assert(/^0\d+.*|.*\.\d*0$/.test(result2));
 \end{minted}
 \end{center}
 \label{fig-run-exmp-path}
 \caption{Symbolic execution of a path of the JavaScript program in Fig.~\ref{fig-run-exmp}}
 \end{figure}
-where the regular expression {\tt /\^{}0[1-9].*|.*{\footnotesize\textbackslash}.d*0\$/} specifies the existence of leading or trailing zeros.
+where the regular expression {\tt /\^{}0\textbackslash d+.*|.*{\footnotesize\textbackslash}.\textbackslash d*0\$/} specifies the existence of leading or trailing zeros.
 
-To support symbolic execution of the JavaScript program in Fig.~\ref{fig-run-exmp-path}, one needs to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we introduce \emph{prioritized streaming string transducers} (PSST; cf. Section~\ref{sect:psst}). Then the extraction of {\tt format[1]} (i.e., {\tt decimal.match(decimalReg)[1]}) can be modeled by a PSST $\cT_{\tt match_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matchings of capturing groups. %Similarly for  
-{\tt format[2]} can be handled in a similar way. Moreover, the function {\tt replace(/\^{}0+/, "")} can also be modeled by a PSST $\cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}$. Then the program in Figure~\ref{fig-run-exmp-path} is transformed and simplified to the following program
+To support symbolic execution of the JavaScript program in Fig.~\ref{fig-run-exmp-path}, one needs to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we introduce \emph{prioritized streaming string transducers} (PSST; cf. Section~\ref{sect:psst}). Then the extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
+The extraction of {\tt decomp[2]} can be handled in a similar way. Moreover, the functions {\tt replace(/\^{}0+/, "")} and {\tt replace(/0+\$/, "")}  can also be modeled by PSSTs $\cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}$ and $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$. Then the program in Fig.~\ref{fig-run-exmp-path} is transformed and simplified to the following program
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
-& & \sf integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
-& & \sf fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,2}}(decimal));\nonumber \\
+& & \sf integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt extract_{decimalReg,1}}(decimal));\nonumber \\
+& & \sf fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}(\cT_{\tt extract_{decimalReg,2}}(decimal));\nonumber \\
 &&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
 %&&  \tt result1 := integer;\nonumber\\
 \ASSERT{\tt fractional \in \Aut_{\scriptsize\mbox{\tt.+}}}; \nonumber\\
  && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
- && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}}}; 
+ && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; 
 \end{eqnarray}
-where $\Aut_{\scriptsize\mbox{\tt.+}}$, $\Aut_{\tt decimalReg}$ and $\Aut_{\scriptsize\mbox{\tt /\^{}0[1-9].*|.*{\scriptsize\textbackslash}.d*0\$/}}$ are three finite automata corresponding to the three regular expressions respectively.
+where $\Aut_{\scriptsize\mbox{\tt.+}}$, $\Aut_{\tt decimalReg}$ and $\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}$ are three finite automata corresponding to the three regular expressions respectively.
 
 \tl{this part may be removed? take up too much space and not quite informative here?}
 The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by ``backward'' reasoning as follows (see Section~\ref{sec:decision} for details):  
