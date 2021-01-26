@@ -64,6 +64,37 @@ Our implementation revolves around \PSST. Any of the three string operators ment
 
 \subsection{Experimental evaluation}
 
+\begin{table}[tb]
+  \begin{center}
+  \begin{tabular}{l@{\quad}c@{\quad}|*{6}{c}|@{\quad}c}
+     & &
+    \multicolumn{6}{c|@{\quad}}{\textbf{\ostrich}} & \textbf{ExpoSE}
+    \\
+      && \multicolumn{6}{c|@{\quad}}{\# solved queries}
+    \\
+     & \#Benchm.& ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
+    \\\hline
+    \textbf{Match} & 98117 & 75 & 88 & 176 & 79 & 96565 & 1132
+    \\
+    && \multicolumn{6}{c|@{\quad}}{Average time: 0.63s}
+    \\
+    && \multicolumn{6}{c|@{\quad}}{Total \#sat: 108132, \#unsat: 279135}
+    \\\hline
+    \textbf{Replace} & 98117 & 445 & 229 & 576 & 95735 & --- & 1132
+    \\
+    && \multicolumn{6}{c|@{\quad}}{Average time: 1.02s}
+    \\
+    && \multicolumn{6}{c|@{\quad}}{Total \#sat: 273927, \#unsat: 14659}
+  \end{tabular}
+  \end{center}
+  \caption{Results of running \ostrich\ and ExpoSE on regular
+    expressions.  Average time is wall-clock time. All experiments
+    were done on an AMD Opteron 2220 SE machine, running 64-bit Linux
+    and Java~1.8.  Runtime was limited to 1min wall clock time, and
+    heap space to 2GB.}
+  \label{tab:exp}
+\end{table}
+
 Our experiments have the purpose of answering two main questions:\\
 \textbf{R1:} How does \ostrich\ compare to
 other solvers
