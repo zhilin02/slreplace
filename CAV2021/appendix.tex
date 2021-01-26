@@ -10,8 +10,8 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 \item At first, we compute the pre-image of $(\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}})$ under the concatenation $\concat$, which is a finite union of products of regular languages, remove $\tt result2 := integer \concat ``." \concat fractional$, select one disjunct of the union, say $(\Aut'_1, \Aut'_2)$, add the assertion $\ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}$, resulting into the following program,
 \begin{eqnarray}\label{eqn:exmp-2}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
-& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
-& & \tt fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}(\cT_{\tt match_{decimalReg,2}}(decimal));\nonumber \\
+& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt extract_{decimalReg,1}}(decimal));\nonumber \\
+& & \tt fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}(\cT_{\tt extract_{decimalReg,2}}(decimal));\nonumber \\
 &&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
 %\nonumber\\
 %&&  \tt result1 := integer;\nonumber\\
@@ -21,7 +21,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
   && \ASSERT{\tt integer \in \Aut'_1};\ASSERT{\tt fractional \in \Aut'_2}; 
 \end{eqnarray}
 %
-\item Next, we compute the pre-image of $\Aut'_2$ under $\cT_{\tt match_{decimalReg,2}}$ (see Lemma~\ref{lem:psst_preimage}), denoted by $\cB_1$, then the pre-image of $\Lang(\cB_1)$ under $\cT_{\tt replace(\mbox{\scriptsize \tt /0+\$/, ""})}$, denoted by $\cB'_1$. Similarly, we compute the pre-image of $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt match_{decimalReg,2}}$ as well as $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}$,  and obtain a finite automaton $\cB'_2$. Moreover, we remove the assignment statement for  $\tt fractional$, and add the assertions $\ASSERT{\tt decimal \in \cB'_1}; \ASSERT{\tt decimal \in \cB'_2}$. Finally, we compute the pre-images of $\Aut'_1$ and $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt match_{decimalReg, 1}}$ as well as $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}$, and obtain finite automata $\cC'_1$ and $\cC'_2$ respectively. Then we remove the assignment for {\tt integer}, and add $\ASSERT{\tt decimal \in \cC'_1};\ASSERT{\tt decimal \in \cC'_2}$. In the end, we get the following program containing no assignment statements, 
+\item Next, we compute the pre-image of $\Aut'_2$ under $\cT_{\tt extract_{decimalReg,2}}$ (see Lemma~\ref{lem:psst_preimage}), denoted by $\cB_1$, then the pre-image of $\Lang(\cB_1)$ under $\cT_{\tt replace(\mbox{\scriptsize \tt /0+\$/, ""})}$, denoted by $\cB'_1$. Similarly, we compute the pre-image of $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt extract_{decimalReg,2}}$ as well as $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}$,  and obtain a finite automaton $\cB'_2$. Moreover, we remove the assignment statement for  $\tt fractional$, and add the assertions $\ASSERT{\tt decimal \in \cB'_1}; \ASSERT{\tt decimal \in \cB'_2}$. Finally, we compute the pre-images of $\Aut'_1$ and $\Aut_{\scriptsize\mbox{\tt.+}}$ under $\cT_{\tt extract_{decimalReg, 1}}$ as well as $\cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}$, and obtain finite automata $\cC'_1$ and $\cC'_2$ respectively. Then we remove the assignment for {\tt integer}, and add $\ASSERT{\tt decimal \in \cC'_1};\ASSERT{\tt decimal \in \cC'_2}$. In the end, we get the following program containing no assignment statements, 
 \begin{eqnarray}\label{eqn:exmp-2}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
 %& & \tt integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt match_{decimalReg,1}}(decimal));\nonumber \\
@@ -48,7 +48,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
 \begin{proof}
 The proof of Proposition~\ref{prop-und} is obtained by an encoding of post correspondence problem (PCP).
-Let $\Sigma$ be a finite alphabet such that $\# \not\in \Sigma$ and $[n] \cap \Sigma = \emptyset$, $(u_i, v_i)_{i \in [n]}$ be a PCP instance with $u_i, v_i \in \Sigma^\ast$. A solution of the PCP instance is a string $i_1 \cdots i_m$ with $i_j \in [n]$ for every $j \in [m]$ such that $u_{i_1} \cdots u_{i_m} = v_{i_1} \cdots v_{i_m}$. We will use $\replaceall$ to encode the generation of the strings $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$ from $i_1 \cdots i_m$, then use a regular expression with  capturing groups and back references to verify the equality of $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$. Specifically, suppose $\# \not \in \Sigma$, then the PCP instance is encoded by the following $\strline$ program,
+Let $\Sigma$ be a finite alphabet such that $\# \not\in \Sigma$ and $[n] \cap \Sigma = \emptyset$, $(u_i, v_i)_{i \in [n]}$ be a PCP instance with $u_i, v_i \in \Sigma^\ast$. A solution of the PCP instance is a string $i_1 \cdots i_m$ with $i_j \in [n]$ for every $j \in [m]$ such that $u_{i_1} \cdots u_{i_m} = v_{i_1} \cdots v_{i_m}$. We will use $\replaceall$ to encode the generation of the strings $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$ from $i_1 \cdots i_m$, then use a regular expression with  capturing groups and back references to verify the equality of $u_{i_1} \cdots u_{i_m}$ and $v_{i_1} \cdots v_{i_m}$. Specifically, the PCP instance is encoded by the following $\strline$ program,
 \[
 \begin{array}{l}
 \ASSERT{x_0 \in \{1, \cdots, n\}^+}; \\
@@ -149,7 +149,22 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 % \end{proof}
 
 
-\subsection{From $\cgexp$ to PFA}
+%======================================================
+
+\subsection{From $\extract$ and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
+
+At first, we can adapt the pNFA construction in \cite{BDM14}, which in turn is a variant of the standard Thompson construction \cite{Thompson68}, and show the following result. 
+
+\begin{proposition}\label{prop-rwre-to-pfa}
+	For each $\cgexp$ $e$, a PFA $\cA_e$ can be constructed in linear time such that 
+	\begin{itemize}
+		\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
+		%
+		\item for subexpression $e'$ of $e$, $\cA_e$ contains an isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
+	\end{itemize}
+\end{proposition}
+%Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
+
 
 For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that it has a unique initial state and a unique final state  without outgoing transitions.
 %The original construction on regular expressions
@@ -231,21 +246,7 @@ Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sig
 \end{figure}
 \end{example}
  
-%======================================================
 
-\subsection{From $\extract$ and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
-
-At first, we can adapt the pNFA construction in \cite{BDM14}, which in turn is a variant of the standard Thompson construction \cite{Thompson68}, and show the following result. 
-
-\begin{proposition}\label{prop-rwre-to-pfa}
-	For each $\cgexp$ $e$, a PFA $\cA_e$ can be constructed in linear time such that 
-	\begin{itemize}
-		\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
-		%
-		\item for subexpression $e'$ of $e$, $\cA_e$ contains an isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
-	\end{itemize}
-\end{proposition}
-%Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
 
 %
 %\begin{theorem}\label{thm-main}
