@@ -9,10 +9,13 @@ We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \em
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \tl{this part can be moved to intro?}
 Regular expressions are a well-known concept in formal language. %and  have the same expressibility as finite state automata. 
 Many programming languages provide build-in regular expressions %capabilities either built-in 
 or otherwise via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. However, it should be emphasized that regular expressions used in programming languages are considerably different from those in formal language theory, mainly on the following aspects: greedy/non-greedy semantics of the quantifiers ($*$ and its variant $+$), non-commutativity of the alternation operator, capturing groups, and back references. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
   
 \begin{definition}[Real-world regular expressions, $\regexp$]
   	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid a? \mid \$n \mid [e + e] \mid [e \concat e] \mid [e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid (e), \]
@@ -21,7 +24,7 @@ or otherwise via libraries. Programmers widely use regular expressions in softwa
   	%We use the abbreviation 
 \end{definition}
 %We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. 
-For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $\Gamma^\ast \equiv [[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast$. 
+For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $\Gamma^\ast \equiv [[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast$. Similarly for $\Gamma^{\ast?}$, $\Gamma^+$, and $\Gamma^{+?}$. For a RWRE $e$, we use $|e|$ to denote the length of $e$, i.e. the number of symbols occurring in $e$.
 
 Note that square brackets $[]$ are used for the operator precedence and the parentheses $()$ are used for capturing groups. 
 %\tl{do we consider change the notation to [e]?}\zhilin{I used $[]$ for precedence and $()$ for capturing groups.}
@@ -47,7 +50,7 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   %\subsection{Semantics of \regexp[\sf CG]}
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
    For two $\regexp$s $e$ and $e'$, we say $e'$ is a \emph{subexpression} of $e$,
-  	if one of the following conditions holds: 1) $e'=e$, 2) $e = e_1 e_2$ or $e_1 + e_2$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = e_1^{\ast}$, $e_1^{+}$, $e_1^{\ast?}$, $e_1^{+?}$, $(e_1)$, or $[e_1]$, and $e'$ is a subexpression of $e_1$. We use $S (e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
+  	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, or $(e_1)$, and $e'$ is a subexpression of $e_1$. We use $S (e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
   
   \begin{definition}[Matches of $\regexp$ to strings]
   	A \tmtextbf{match} of a $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
@@ -58,16 +61,14 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   		e'_1)$ and $\alpha_2=(w'_2, e'_2)$ where $w' = w'_1 w'_2$.
   		
   		\item If $e' = [e'_1 + e'_2]$, then $\alpha$ has a single child $\alpha_1 = (w',
-  		e'_i)$ where $i \in \{ 1, 2 \}$.
+  		e'_i)$ for some $i \in \{ 1, 2 \}$.
   		
   		\item If $e' = [{e'_1}^{\ast}]$ or $[{e'_1}^{\ast ?}]$, then either $w' = \varepsilon$ in which case $\alpha$ is a
   		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
-  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$ and for all
-  		$i \in [k]$, $w'_i \neq \varepsilon$ (even if  $L
-  		(e'_1)$ could contain $\varepsilon$).
+  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, moreover, $w' = w'_1 \cdots w'_k$ and $w'_i = \varepsilon$ for at most one $i \in [k]$.
 
   		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
-  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$ where $w' = w'_1 \ldots w'_k$.
+  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, moreover, $w' = w'_1 \ldots w'_k$ and $w'_i = \varepsilon$ for at most one $i \in [k]$.
 %
 %  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
 %  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
@@ -97,6 +98,7 @@ The notation $C(T)$ refers to the sequence of direct children of the root node o
 We use $\cM_{w}(e)$ to denote the set of all match trees of $e$ to $w$. Moreover, for $L \subseteq \Sigma^\ast$, we use $\cM_{L}(e)$ to denote the set of match trees of $e$ to some $w \in L$.
 We also use $\Lang(e)$ to denote $\{w \in \Sigma^* \mid \cM_w(e) \neq \emptyset\}$. 
   \end{definition}
+By a mutual induction on $|w|$ and $|e|$, we can show that $|\cM_{w}(e)|$, the size of $\cM_{w}(e)$, is at most $(|w|+1)|e|$.  
   
 \begin{example}\label{exmp-regex-match-tree}
 Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\Gamma = \{0,1,\cdots,9\}$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics-decimal}(i), (ii), (iii), and (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted. % to avoid tediousness.
@@ -130,7 +132,6 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
  %%%%% the original example %%%%%%%%%%
 %%%%% the original example %%%%%%%%%% 
   
-  \zhilin{stopped here, to add e+}
   \begin{definition}[Semantics of $\regexp$]\label{def-regex-semantics}
   		
   	For a $\regexp$ $e$ and a string $w$, we recursively define a (strict) total order on $\cM_{\pref(w)}(e)$, written $T
@@ -164,6 +165,15 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 		\end{itemize}
 %
+  		\item $e = [e_1^{+}]$. 
+%		\begin{itemize}
+%		\item If $T' $ is  a single node $(\varepsilon, e)$, but $T$ is not, then $T >_{w, e} T'$.
+  		Suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C(T')$
+  		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
+  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
+%		\end{itemize}
+%
   		\item $e = [e_1^{\ast?}]$. 
 		\begin{itemize}
 		\item If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
@@ -172,6 +182,15 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
   		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 		\end{itemize}
+%
+  		\item $e = [e_1^{+?}]$. 
+%		\begin{itemize}
+%		\item If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
+  		Suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T)$
+  		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
+  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
+%		\end{itemize}
   	\end{itemize}
   	
   	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$.
@@ -186,12 +205,13 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   \end{definition}
 
 \begin{example}\label{exmp-regex-semantics}
-Let us continue Example~\ref{exmp-regex-match-tree}.  In Figure~\ref{fig-regex-semantics-decimal}, we have $(T_1)_{(0250, [\Gamma^+])} >_{(w, e)} (T_2)_{(025, [\Gamma^+])}$, since $(0, \Gamma)(2, \Gamma)(5,\Gamma)$ is a proper prefix of $(0, \Gamma)(2, \Gamma)(5,\Gamma)(0, \Gamma)$. From this, we deduce that $(T_1)_{(0250, ([\Gamma^+]))} >_{(w, e)} (T_2)_{(025, ([\Gamma^+]))}$. Therefore, $(T_1)_{(0250, [([\Gamma^+]) \concat .?])} >_{(w, e)} (T_2)_{(025,  [([\Gamma^+]) \concat .?])}$ and $T_1 >_{(w,e)} T_2$. Similarly, we have $T_2 >_{(w,e)} T_3$ and $T_3 >_{(w,e)} T_4$. Therefore, $T_1$ is the accepting match of $e$ to $w$, where the first and second capturing group of $e$ are matched to $0250$  and $\varepsilon$ respectively. 
+Let us continue Example~\ref{exmp-regex-match-tree}.  In Fig.~\ref{fig-regex-semantics-decimal}, we have $(T_1)_{(0250, [\Gamma^+])} >_{(w, e)} (T_2)_{(025, [\Gamma^+])}$, since $(0, \Gamma)(2, \Gamma)(5,\Gamma)$ is a proper prefix of $(0, \Gamma)(2, \Gamma)(5,\Gamma)(0, \Gamma)$. From this, we deduce that $(T_1)_{(0250, ([\Gamma^+]))} >_{(w, e)} (T_2)_{(025, ([\Gamma^+]))}$. Therefore, $(T_1)_{(0250, [([\Gamma^+]) \concat .?])} >_{(w, e)} (T_2)_{(025,  [([\Gamma^+]) \concat .?])}$ and $T_1 >_{(w,e)} T_2$. Similarly, we have $T_2 >_{(w,e)} T_3$ and $T_3 >_{(w,e)} T_4$. Therefore, $T_1$ is the accepting match of $e$ to $w$, where the first and second capturing group of $e$ are matched to $0250$  and $\varepsilon$ respectively. 
 %\Blindtext
  \end{example}
   
 \begin{remark}
-The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} captures regular expressions in Perl, PHP, JavaScript, etc. \cite{MasterREbook}. In comparison, POSIX regular expressions require the leftmost and longest match, which we leave as the future work. 
+The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} follows the 10th Edition of the ECMAScript language specification (ES10 for short) \cite{ECMAScript10}, with a focus on the greedy/lazy semantics of Kleene star/plus, as well as capturing groups and back references.
+In comparison, POSIX regular expressions require the leftmost and longest match of regular expressions, which we leave as the future work. 
 \end{remark}
   
   
