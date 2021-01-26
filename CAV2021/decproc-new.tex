@@ -248,7 +248,7 @@ Let $\cT_{\tt extract_{decimalReg,1}}$ be the PSST in Fig.~\ref{fig-psst-exmp} a
 %\item $\cA = (\{p_0\}, \{a,b,c\}, \delta_A, p_0, \{p_0\})$, where $\delta_A$ = $\{(p_0, \sigma, p_0)$ $\mid \sigma = b, c\}$.
 %\end{itemize}
 
-Let us consider $w = 10$. The accepting run of $\cT_{\tt extract_{decimalReg,1}}$ on $w$ is $q_0 \xrightarrow[x_1:=x_11]{1} q_1 \xrightarrow[x_1:=x_10]{0} q_1 \xrightarrow{\varepsilon} q_2 \xrightarrow{\varepsilon} q_3 \xrightarrow{\varepsilon} q_4 \xrightarrow{\varepsilon} q_5 \xrightarrow{\varepsilon} q_6$, producing an output $10 \not \in \Lang(\cA)$. Therefore, $10 \not \in \cR_\cT^{-1}(\Lang(\cA))$. Nevertheless, if we consider the FA $\cB'$ constructed from $\cT$ and $\cA$,  it turns out that $\cB'$ does accept $w$, witnessed by the run $(q_0, \{(p_0,p_0)\}) \xrightarrow{1} (q_1, \{(p_0, p_0)\}) \xrightarrow{\varepsilon} (q_2, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_3, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_4, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_5, \{(p_0, p_0)\}) \xrightarrow{0}  (q_5, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_6, \{(p_0, p_0)\})$, where $\{(p_0, p_0)\}$ is the $\cA$-abstraction of the strings $\varepsilon$ and $1$. On the other hand, the run of $\cB'$ corresponding to the accepting run of $\cT$ on $w$, i.e. $(q_0, \{(p_0, p_0)\}) \xrightarrow{1} (q_1, \{(p_0, p_0)\}) \xrightarrow{0} (q_1, \emptyset) \xrightarrow{\varepsilon}  (q_2, \emptyset) \xrightarrow{\varepsilon} (q_3, \emptyset) \xrightarrow{\varepsilon} (q_4, \emptyset) \xrightarrow{\varepsilon} (q_5, \emptyset) \xrightarrow{\varepsilon} (q_6, \emptyset)$, is not accepting, where $\{(p_0,p_0)\}$ is the $\cA$-abstraction of $\varepsilon$ as well as $1$ and $\emptyset$ is the $\cA$-abstraction of $10$.
+Let us consider $w = 10$. The accepting run of $\cT_{\tt extract_{decimalReg,1}}$ on $w$ is $q_0 \xrightarrow[x_1:=x_11]{1} q_1 \xrightarrow[x_1:=x_10]{0} q_1 \xrightarrow{\varepsilon} q_2 \xrightarrow{\varepsilon} q_3 \xrightarrow{\varepsilon} q_4 \xrightarrow{\varepsilon} q_5 \xrightarrow{\varepsilon} q_6$, producing an output $10 \not \in \Lang(\cA)$. Therefore, $10 \not \in \cR_\cT^{-1}(\Lang(\cA))$. Nevertheless, if we consider the FA $\cB'$ constructed from $\cT$ and $\cA$,  it turns out that $\cB'$ does accept $w$, witnessed by the run $(q_0, \{(p_0,p_0)\}) \xrightarrow{1} (q_1, \{(p_0, p_0)\}) \xrightarrow{\varepsilon} (q_2, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_3, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_4, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_5, \{(p_0, p_0)\}) \xrightarrow{0}  (q_5, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_6, \{(p_0, p_0)\})$, where $\{(p_0, p_0)\}$ is the $\cA$-abstraction of the strings $\varepsilon$ and $1$. On the other hand, the run of $\cB'$ corresponding to the accepting run of $\cT$ on $w$, i.e. $(q_0, \{(p_0, p_0)\}) \xrightarrow{1} (q_1, \{(p_0, p_0)\}) \xrightarrow{0} (q_1, \emptyset) \xrightarrow{\varepsilon}  (q_2, \emptyset) \xrightarrow{\varepsilon} (q_3, \emptyset) \xrightarrow{\varepsilon} (q_4, \emptyset) \xrightarrow{\varepsilon} (q_5, \emptyset) \xrightarrow{\varepsilon} (q_6, \emptyset)$, is not accepting, where $\{(p_0,p_0)\}$ is the $\cA$-abstraction of $\varepsilon$ as well as $1$, and $\emptyset$ is the $\cA$-abstraction of $10$.
 \end{example}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,25 +285,23 @@ We are ready to prove Lemma~\ref{lem:psst_preimage}.
   
 Our goal is to construct a FA $\cB$ that simulates the accepting run of $\psst$ on $w$, and, for each $x \in X$, records an $\Aut$-abstraction of the string stored in $x$, that is, the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. To simulate the accepting run of $\psst$, it is necessary to record all the states accessible through the runs of higher priorities to ensure the current run is indeed the accepting run of $\psst$ (of highest priority). Moreover, $\cB$ also remembers the set of $\varepsilon$-transitions of $\cT$ after the latest non-$\varepsilon$-transition to ensure that no transition occurs twice in a sequence of $\varepsilon$-transitions of $\cT$.
 
-\zhilin{stopped here}
-
 Specifically, each state of $\cB$ is of the form $(q, \rho, \Lambda, S)$, where $q \in Q_T$, $\rho \in (\cP(Q_A \times Q_A ))^{X}$, $\Lambda \subseteq \cE(\tau_T)$, and $S \subseteq Q_T$. 
 For a state $(q, \rho, \Lambda, S)$, our intention for $S$ is that the states in it are those that can be reached in the runs of higher priorities than the current run, by reading the same sequence of letters and applying the $\varepsilon$-transitions as many as possible. Note that when recording in $S$ all the states accessible through the runs of higher priorities, we do not take the non-repetition of $\varepsilon$-transitions into consideration since if a state is reachable by a sequence of $\varepsilon$-transitions where some $\varepsilon$-transitions are repeated, then there exists also a sequence of non-repeated $\varepsilon$-transitions reaching the state. 
-Moreover, when simulating a $\sigma$-transition of $\cT$ (where $\sigma \in \Sigma$) at a state $(q, \rho, \Lambda, S)$, suppose $\delta_T(q, \sigma) = (q_1, \cdots, q_m)$ and $\tau_T(q) = (P_1, P_2)$, then $\cB$ nondeterministically chooses $q_i$ and goes to the state $(q_i, \rho', \emptyset, S')$, where 
+Moreover, when simulating an $a$-transition of $\cT$ (where $a \in \Sigma$) at a state $(q, \rho, \Lambda, S)$, suppose $\delta_T(q, a) = (q_1, \cdots, q_m)$ and $\tau_T(q) = (P_1, P_2)$, then $\cB$ nondeterministically chooses $q_i$ and goes to the state $(q_i, \rho', \emptyset, S')$, where 
 \begin{itemize}
 \item $\rho'$ is obtained from $\rho$ and $E_T(q, \sigma, q_i)$, 
 %
 \item $\Lambda$ is reset to $\emptyset$,
 % 
-\item all the states obtained from $S$ by applying  a $\sigma$ transition should be \emph{saturated by $\varepsilon$-transitions} and put into $S'$, more precisely, all the states reachable from $S$ by first applying a $\sigma$-transition, then a sequence of $\varepsilon$-transitions, should be put into $S'$,
+\item all the states obtained from $S$ by applying  an $a$ transition should be \emph{saturated by $\varepsilon$-transitions} and put into $S'$, more precisely, all the states reachable from $S$ by first applying an $a$-transition, then a sequence of $\varepsilon$-transitions, should be put into $S'$,
 %
 \item moreover, all the states obtained from $q_1,\cdots, q_{i-1}$ (which are of higher priorities than $q_i$) by saturating with $\varepsilon$-transitions should be put into $S'$,
 %
-\item finally, all the states obtained from those in $P'_1 = \{q' \in P_1 \mid (q, q') \not \in \Lambda\}$ (which are of higher priorities than $q_i$) by saturating with non-$\Lambda$ $\varepsilon$-transitions first (i.e. the $\varepsilon$-transitions that do not belong to $\Lambda$), and applying a $\sigma$ transition next, finally saturating with $\varepsilon$-transitions again, should be put into $S'$, (note that according to the semantics of PSST, the $\varepsilon$-transitions in $\Lambda$ should be avoided when defining $P'_1$ and saturating the states in $P'_1$ with $\varepsilon$-transitions). 
+\item finally, all the states obtained from those in $P'_1 = \{q' \in P_1 \mid (q, q') \not \in \Lambda\}$ (which are of higher priorities than $q_i$) by saturating with non-$\Lambda$ $\varepsilon$-transitions first (i.e. the $\varepsilon$-transitions that do not belong to $\Lambda$), and applying an $a$-transition next, finally saturating with $\varepsilon$-transitions again, should be put into $S'$, (note that according to the semantics of PSST, the $\varepsilon$-transitions in $\Lambda$ should be avoided when defining $P'_1$ and saturating the states in $P'_1$ with $\varepsilon$-transitions). 
 \end{itemize}
 %For technical reasons, when constructing $\cB$, we assume that this saturation happens when a state is added to $S$ for the first time. Therefore, at a state $(q, \rho, \Lambda, S)$, all the states reachable from the states in $S$ by sequences of $\varepsilon$-transitions in $\cT$ have already been in $S$.
 
-Before the formal construction of $\cB$, we introduce some notations.
+For the formal construction of $\cB$, we need some additional notations.
 \begin{itemize}
 \item For $S \subseteq Q_T$, $\delta^{(ip)}_T(S, a) = \{q'_1 \mid \exists q_1 \in S, q'_1 \in \delta_T(q_1, a)\}$.
 %
@@ -316,7 +314,7 @@ Moreover, for $S \subseteq Q_T$, we define $\tau^{(ip)}_T(S) = \bigcup \limits_{
 %\zhilei{I think we can just use the term 'epsilon closure' here?}
 %\item For $\sigma \in \Sigma$ and $S \subseteq Q_T$,  we use $\tau^+_T[a, S]$ to denote the set of states that can be obtained from 
 % 
-\item For $\rho \in (\cP(Q_A \times Q_A ))^{X}$ and $s \in X \rightarrow (X \cup \Sigma)^{\ast}$, we use $s(\rho)$ to denote $\rho'$ that is obtained from $\rho$ as follows: For each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
+\item For $\rho \in (\cP(Q_A \times Q_A ))^{X}$ and $s \in X \rightarrow (X \cup \Sigma)^{\ast}$, we use $s(\rho)$ to denote $\rho'$ that is obtained from $\rho$ as follows: For each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise, and $\circ$ represents the composition of binary relations.
 \end{itemize}
 
 We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\delta_B$, $q_{0, B}, F_B)$. 
@@ -330,21 +328,21 @@ We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\de
 \begin{itemize}
 %\item the tuples $(q'_0, \varepsilon, ((q_{0,T},\sigma), \rho_{\varepsilon}, \emptyset))$ where $\sigma \in \Sigma$, $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, 
 %
-\item the tuples $((q, \rho, \Lambda, S), \sigma, (q_i, \rho', \Lambda', S'))$ such that  
+\item the tuples $((q, \rho, \Lambda, S), a, (q_i, \rho', \Lambda', S'))$ such that  
 %there exists $s \in \left((X \cup \Sigma\right)^*)^X)$ satisfying
 \begin{itemize}
-\item $\sigma \in \Sigma$, 
-%$\sigma' \in \Sigma \cup \{\bot\}$, 
+\item $a \in \Sigma$, 
+%$a' \in \Sigma \cup \{\bot\}$, 
 %
-\item $\delta_T (q, \sigma) = (q_1, \ldots, q_i, \ldots, q_m)$, 
+\item $\delta_T (q, a) = (q_1, \ldots, q_i, \ldots, q_m)$, 
 %
-\item $s = E(q, \sigma, q_i)$, 
+\item $s = E((q, a, q_i))$, 
 %
 \item $\rho' = s(\rho)$,
 %
 \item $\Lambda' = \emptyset$, (Intuitively, $\Lambda$ is reset.)
 %
-\item let $\tau_T(q) = (P_1, P_2)$, then $S' = \big(\tau^{(ip)}_T\big)^\ast\big(\{ q_1$, $\ldots$, $q_{i - 1} \} \cup \delta^{(ip)}_T\big(S \cup \big(\tau^{(ip)}_T \setminus \Lambda\big)^\ast(P'_1), \sigma\big)\big)$, where $P'_1 = \{q' \in P_1 \mid (q, q') \not \in \Lambda\}$;  
+\item let $\tau_T(q) = (P_1, P_2)$, then $S' = \big(\tau^{(ip)}_T\big)^\ast\big(\{ q_1$, $\ldots$, $q_{i - 1} \} \cup \delta^{(ip)}_T\big(S \cup \big(\tau^{(ip)}_T \setminus \Lambda\big)^\ast(P'_1), a\big)\big)$, where $P'_1 = \{q' \in P_1 \mid (q, q') \not \in \Lambda\}$;  
 %(Note that according to the semantics of PSSTs, when computing the set of states reachable from $q$ through an $\varepsilon$-transition to some $q' \in P_1$ first and a sequence of $\varepsilon$-transitions starting from $q'$ next, the transitions $(q'', \varepsilon, q''')$ with $(q'', q''') \in \Lambda$ should be excluded. )
 %
 \end{itemize}
@@ -352,7 +350,7 @@ We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\de
 \item the tuples $((q, \rho, \Lambda, S), \varepsilon, (q_i, \rho', \Lambda', S'))$ such that 
 %there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
-%, $\sigma' \in \Sigma \cup \{\bot\}$, 
+%, $a' \in \Sigma \cup \{\bot\}$, 
 %
 \item $\tau_T(q) = ((q_1, \ldots, q_i, \ldots, q_m); \cdots)$, 
 %
@@ -373,8 +371,8 @@ We are ready to present the formal construction of $\cB =  (Q_B$, $\Sigma$, $\de
 \item the tuples $((q, \rho, \Lambda, S), \varepsilon, (q_i, \rho', \Lambda', S'))$ such that 
 %there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
 \begin{itemize}
-%\item $\sigma \in \Sigma$, 
-%$\sigma' \in \Sigma \cup \{\bot\}$, 
+%\item $a \in \Sigma$, 
+%$a' \in \Sigma \cup \{\bot\}$, 
 %
 \item $\tau_T (q) = ((q'_1, \ldots, q'_n); (q_1, \ldots, q_i, \ldots, q_m))$, 
 %
@@ -396,7 +394,7 @@ Moreover, $F_B$ is the set of states $(q, \rho, \Lambda, S) \in Q_B$ such that
 \begin{enumerate}
   \item $F_T (q)$ is defined,
 %
-  \item for any $q' \in S$, $F_T (q')$ is not defined,
+  \item for every $q' \in S$, $F_T (q')$ is not defined,
   %
   \item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise, 
 let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
@@ -404,22 +402,22 @@ let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\
 \end{itemize}
 %\end{proof}
 
-Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
-  thus it works for general, or \textit{copyful} \PSST{} \cite{FR17}.
+Note that the above construction  does not utilize the so-called \tmtextit{copyless} property (i.e. for each transition $t$ and each variable $x$, $x$ appears at most once on the right-hand side of the assignment for $t$) \cite{AC10,AD11}, 
+  thus it works for general, or \textit{copyful}, PSSTs \cite{FR17}.
 
 \begin{example}
-Let us continue Example~\ref{pre-image-count-examp}. Suppose $\cT_{\tt match_{decimalReg,1}} = (Q_T, \Sigma$, $X, \delta_T$, $\tau_T, E_T,  q_{0, T}, F_T)$. Then the FA defining $\cR^{-1}_{\cT_{\tt match_{decimalReg,1}}}(\Lang(\Aut))$ constructed by using the aforementioned procedure is illustrated in Figure \ref{fig-psst-preimage-exmp}, where the final states are those boxed states, moreover, the states reachable from $(q_2, \emptyset, \{(q_1,q_2)\}, \{q_1\})$ are omitted because no final states are unreachable from those states, which are therefore redundant. Let us exemplify the construction by considering the state $(q_5, \{(p_0,p_0)\}, \{(q_1,q_2), (q_2,q_3), (q_3,q_4), (q_4, q_5)\}, \{q_1,q_3\})$. For each letter $\ell \in \{0,\cdots, 9\}$, the state $(q_5, \{(p_0,p_0)\}, \emptyset, \{q_1,q_2, q_3, q_4, q_5, q_6\})$ is reached from it, since $\delta(q_1,\ell) = (q_1)$ and $(\tau^{(ip)}_T)^*(\{q_1\}) = \{q_1, q_2, q_3, q_4, q_5, q_6\}$. Note that the state $(q_6, \{(p_0,p_0)\}, \{(q_5,q_6)\}, \{q_1, q_2, q_3, q_4, q_5, q_6\})$ is not a final state since $q_6$ belongs to the last component of the state and $F_T(q_6)$ is defined.
+Let us continue Example~\ref{pre-image-count-examp}. Suppose $\cT_{\tt extract_{decimalReg,1}} = (Q_T, \Sigma$, $X, \delta_T$, $\tau_T, E_T,  q_{0, T}, F_T)$. Then the FA defining $\cR^{-1}_{\cT_{\tt extract_{decimalReg,1}}}(\Lang(\Aut))$ constructed by using the aforementioned procedure is illustrated in Fig. \ref{fig-psst-preimage-exmp}, where the final states are those doubly boxed states, moreover, the states reachable from the state $(q_2, \emptyset, \{(q_1,q_2)\}, \{q_1\})$ are omitted because no final states are unreachable from those states, which are therefore redundant. Let us exemplify the construction by considering the state $(q_5, \{(p_0,p_0)\}, \{(q_1,q_2), (q_2,q_3), (q_3,q_4), (q_4, q_5)\}, \{q_1,q_3\})$. For each letter $\ell \in \{0,\cdots, 9\}$, the state $(q_5, \{(p_0,p_0)\}, \emptyset, \{q_1,q_2, q_3, q_4, q_5, q_6\})$ is reached from it, since $\delta_T(q_5,\ell)  = (q_5)$, $\delta_T(q_1,\ell) = (q_1)$ and $(\tau^{(ip)}_T)^*(\{q_1\}) = \{q_1, q_2, q_3, q_4, q_5, q_6\}$. The state $(q_6, \{(p_0,p_0)\}, \{(q_5,q_6)\}, \{q_1, q_2, q_3, q_4, q_5, q_6\})$ is not a final state since $q_6$ is in $\{q_1, q_2, q_3, q_4, q_5, q_6\}$ and $F_T(q_6)$ is defined.
 %For efficiency, we minimize the FA after the construction. See Section \ref{sect:impl} for implementation details.
-\end{example}
-
-
+%
 \begin{figure}[ht]
 \centering
 %\rule{\linewidth}{0cm}
+\vspace{-4mm}
 \includegraphics[width = \textwidth]{psst-preimage-example-new.pdf}
-\caption{The FA defining $\cR^{-1}_{\cT_{\tt match_{decimalReg,1}}}(\Lang(\Aut))$}
+\caption{The FA defining $\cR^{-1}_{\cT_{\tt extract_{decimalReg,1}}}(\Lang(\Aut))$}
 \label{fig-psst-preimage-exmp}
 \end{figure}
+\end{example}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
