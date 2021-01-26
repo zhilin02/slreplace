@@ -134,12 +134,12 @@ The match function in programming languages, e.g. $\sf str.match(reg)$ function 
 
 The $\replaceall_{\pat, \rep}(x)$ function is parameterized by the  %\emph{subject} string, the second parameter is a 
 \emph{pattern} $\pat \in \cgexp$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies all the %the first, second, $\dots$, 
-matches of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string. (In the replacement string,  references may be used which refer to %are replaced by 
-the corresponding matches of the capturing groups.)  For instance, let $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$. We have $\replaceall_{\pat, \rep}(2.5,3.4) = 2,3$. 
+matches of $\pat$ in $x$ and replace them with the corresponding strings specified by the replacement string $\rep$. (In $\rep$,  references may be used to refer to %are replaced by 
+the corresponding matches of the capturing groups.)  For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$. 
 
-Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, each variable $x$ is assigned at most once. Moreover, if it is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
+Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is, the following two conditions are satisfied: 1) each variable $x$ is assigned at most once; 2) if $x$ is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
 %
-For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur on the left hand sides of assignment statements. The \emph{path feasibility} problem of an $\strline$ program is to decide whether there are valuations of the input variables such that the program can execute to the end.
+For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur on the left hand sides of assignment statements. The \emph{path feasibility} problem of an $\strline$ program is to decide whether there are valuations of the input variables so that the program can execute to the end.
 
 
 %
@@ -157,11 +157,11 @@ It turns out that the path feasibility problem is undecidable, attributed to the
 The path feasibility problem of $\strline$ is undecidable.
 \end{proposition}
 
-We shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice.\footnote{A partial evidence is that the occurrences of regular expressions with back references occupy only less than $1\%$ in the NPM package, according to the statistics collected in \cite{LMK19}.} In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of %where no 
+We shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice.\footnote{An evidence was given in  \cite{LMK19}, where the statistics showed that the occurrences of regular expressions with back references occupy only less than $1\%$ in the widely used Javascript NPM packages.} In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of %where no 
 back references in assertion statements. %We state 
 The main result of this paper is as follows.
 
 \begin{theorem}\label{thm-main}
-The path feasibility of $\strline_{\sf reg}$ is decidable in XXX. \zhilin{complexity should be added}
+The path feasibility of $\strline_{\sf reg}$ is decidable.
 \end{theorem}
 The decision procedure for $\strline_{\sf reg}$ utilizes a new model called prioritized streaming string transducers, which will be defined in the next section.
