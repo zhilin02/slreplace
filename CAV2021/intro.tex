@@ -46,21 +46,27 @@ RWREs, % are not primitively supported by state-of-the-art string solvers
 %(in fact, they are in general ,
 existing symbolic execution analysis approaches that handle real-world
 string-manipulating programs with RWREs apply a workaround.
-We mention here Aratha \cite{?} and Expose \cite{LMK19}, both of which are
+We mention here Aratha \cite{aratha} and Expose \cite{LMK19}, both of which are
 symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
 Aratha performs a very rough approximation to the 
 non-standard semantics of regular expressions, e.g., a backreference
 is replaced by the regular expression referred to by the backreference 
 operator. On the other hand, Expose attempts to exploit the power of string 
-equations and classical REs (as implemented in Z3 \cite{?}) supported by string 
+equations and classical REs (as implemented in Z3 \cite{Z3}) supported by string
 solvers to capture the 
 semantics of RWREs. Unfortunately, the semantics of RWREs cannot 
 in general be captured by string constraints with REs. For this reason, 
 Expose attempts to underapproximate the semantics of RWREs in the style of 
 CEGAR (counter-example guided abstraction and refinement). This, however,
-results in a severe price in both precision and performance. \anthony{Say more
-here}
+results in a rather severe price in both precision and performance. For one,
+satisfiability of string equations with regular constraints is
+well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
+best of our knowledge, no existing string solver is complete for string 
+equations with regular
+constraints.
+%\anthony{Say more
+%here}
 
 %In particular, 
  %to approach the genuine semantics of real-world regular expressions. 
