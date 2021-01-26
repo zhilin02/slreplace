@@ -51,12 +51,21 @@ symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
 Aratha performs a very rough approximation to the 
 non-standard semantics of regular expressions, e.g., a backreference
-is replaced by the regular expression referred to by the backreference 
-operator. On the other hand, Expose attempts to exploit the power of string 
+is replaced by the regular expression that accepts every word.
+%referred to by the backreference 
+%operator. 
+On the other hand, Expose attempts to exploit the power of string 
 equations and classical REs (as implemented in Z3 \cite{Z3}) supported by string
 solvers to capture the 
 semantics of RWREs. Unfortunately, the semantics of RWREs cannot 
-in general be captured by string constraints with REs. For this reason, 
+in general be fully captured by string constraints with REs. 
+%This is caused by
+%the aforementioned features of RWREs: greedy semantics
+%, especially in the
+%presence of the greedy semantics of backreferences. 
+%It is even an open
+%question if even the greedy semantics of RWREs have to be 
+For this reason, 
 Expose attempts to underapproximate the semantics of RWREs in the style of 
 CEGAR (counter-example guided abstraction and refinement). This, however,
 results in a rather severe price in both precision and performance. For one,
@@ -67,6 +76,22 @@ equations with regular
 constraints.
 %\anthony{Say more
 %here}
+
+Of course, RWREs themselves are often in practice used in combination with
+other string operations. In particular, their semantics drastically affect
+the match and replace functions, which are commonly used in combination with
+RWRE \cite{LMK19}. On a given string $s$ and a RWRE $e$, the match
+function allows one to extract the last match in $s$ for a 
+capturing group in $e$. Over RWRE, one must take a special care of the
+greedy/lazy semantics of Kleene star, which cannot 
+be captured in a complete way as constraints over word equations and classical 
+REs. On a given string $s$, a matching pattern RWRE $e$, and a replacement 
+string $t$, the replace function replaces the first occurrence (or all 
+occurrences,
+if the global flag is enabled) of substring matching $e$ by $t$. Here $t$
+could contain references to the results of matches for various capturing groups
+in $e$. \anthony{More to come}
+
 
 %In particular, 
  %to approach the genuine semantics of real-world regular expressions. 
