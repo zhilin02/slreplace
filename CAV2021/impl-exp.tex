@@ -40,9 +40,8 @@ lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
 \end{minted}
 %
 The replacement string is written as a regular expression only
-containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf
-  re.reference}. It is not allowed to use symbolic variables as
-replacement pattern, in contrast to the standard operators.
+containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf re.reference}. In contrast to the standard operators, it is not allowed to use symbolic variables as
+replacement pattern.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
 $\strline$. For instance,
@@ -61,7 +60,7 @@ Our implementation is able to handle \textit{anchors} as well. Due to space rest
 
 \subsection{Implementation}
 
-Say more about the actual handling of PSSTs ...
+Our implementation revolves around \PSST. Any of the three string operators mentioned above would be converted into an equivalent \PSST (See \ref{appendix:sec-extract-replace-to-psst}). \ostrich then iterates the dependency graph and repeatedly eliminates them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate constraints on variables and check satisfiability, then use forward concrete evaluation to generate a model. 
 
 \subsection{Experimental evaluation}
 
