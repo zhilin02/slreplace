@@ -92,8 +92,8 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 %     
 %     If $w \in L (e_1)$, then if $e'$ is a subexpression of $e_2$, we have
 %     $m_{e', e} (w) = p_{e', e} (w) = \emptyset$, otherwise by induction we
-%     have $m_{e', e_1} (w) = p_{e', e_1} (w)$. Suppose $p = q_0 \sigma_1 q_1
-%     \ldots \sigma_m q_m$ is the accepting run of $A_{e_1}$, then by definition
+%     have $m_{e', e_1} (w) = p_{e', e_1} (w)$. Suppose $p = q_0 a_1 q_1
+%     \ldots a_m q_m$ is the accepting run of $A_{e_1}$, then by definition
 %     of $A_e$, we know p is also the accepting run of $A_e$, thus $p_{e', e_1}
 %     (w) = p_{e', e} (w)$. By definition of match tree, we have $m_{e', e_1}
 %     (w) = m_{e', e} (w)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
@@ -104,22 +104,22 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 %     \item If $e = e_1 e_2$, then for any $w \in L (e)$, suppose $w = w_1 w_2$
 %     such that $C (m_e (w)) = (w_1, e_1) (w_2, e_2)$.
 %     
-%     Assuming $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ is the accepting run
-%     of $A_e$ on w, and $w_1 = \sigma_1 \ldots \sigma_i$, $w_2 = \sigma_{i + 1}
-%     \ldots \sigma_m$, we know $q_0 \sigma_1 q_1 \ldots \sigma_i q_i$ is the
+%     Assuming $p = q_0 a_1 q_1 \ldots a_m q_m$ is the accepting run
+%     of $A_e$ on w, and $w_1 = a_1 \ldots a_i$, $w_2 = a_{i + 1}
+%     \ldots a_m$, we know $q_0 a_1 q_1 \ldots a_i q_i$ is the
 %     accepting run of $A_{e_1}$ on $w_1$. If not, suppose the accepting run of
-%     $A_{e_1}$ on $w_1$ is $q_0 \sigma_1' q_1' \ldots \sigma_i' q_i'$ instead,
+%     $A_{e_1}$ on $w_1$ is $q_0 a_1' q_1' \ldots a_i' q_i'$ instead,
 %     then by definition of $A_e$, another run of $A_e$ on
-%     w, $q_0 \sigma_1' q_1' \ldots \sigma_i' q_i'
-%     \sigma_{i + 1} q_{i + 1} \ldots \sigma_m q_m$, is of higher priority than p, which leads to contradiction.
-%     Similarly, we know $q_0 \sigma_{i + 1} q_{i + 1} \ldots \sigma_m q_m$ is
+%     w, $q_0 a_1' q_1' \ldots a_i' q_i'
+%     a_{i + 1} q_{i + 1} \ldots a_m q_m$, is of higher priority than p, which leads to contradiction.
+%     Similarly, we know $q_0 a_{i + 1} q_{i + 1} \ldots a_m q_m$ is
 %     the accepting run of $A_{e_2}$ on $w_2$.
 %     
 %     If $e'$ is a subexpression of $e_1$, then by induction, $m_{e', e_1} (w_1)
 %     = p_{e', e_1} (w_1)$. By definition of match tree, $e'$ cannot occur in
 %     the subtree $(w_2, e_2)$, thus we have $m_{e', e_1} (w_1) = m_{e', e}
-%     (w)$. Because the maximal $e'$-matches in p only occur in $q_0 \sigma_1
-%     q_1 \ldots \sigma_i q_i$, we also have $p_{e', e_1} (w_1) = p_{e', e}
+%     (w)$. Because the maximal $e'$-matches in p only occur in $q_0 a_1
+%     q_1 \ldots a_i q_i$, we also have $p_{e', e_1} (w_1) = p_{e', e}
 %     (w)$. Thus $m_{e', e} (w) = p_{e', e} (w)$.
 %     
 %     Similarly when $e'$ is a subexpression of $e_2$, we have $m_{e', e} (w) =
@@ -130,11 +130,11 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 %     \emptyset$ for any $e'$. Otherwise, suppose $w = w_1 \ldots w_n$ such that
 %     $C (m_e (w)) = (w_1, e_1) \ldots (w_n, e_1)$.
 %     
-%     Assuming $p = q_0 \sigma_1 q_1 \ldots \sigma_m q_m$ is the accepting run
-%     of $A_e$ on w, $w_1 = \sigma_1 \ldots \sigma_{i_1}$, $w_2 = \sigma_{i_1 +
-%     1} \ldots \sigma_{i_2}$ .etc, and $w_n = \sigma_{i_{m - 1} + 1} \ldots
-%     \sigma_m$, we know $p_k = q_0 \sigma_{i_{k - 1} + 1} q_{i_{k - 1} + 1}
-%     \ldots \sigma_{i_k} q_{i_k}$ is the accepting run of $A_{e_1}$ on
+%     Assuming $p = q_0 a_1 q_1 \ldots a_m q_m$ is the accepting run
+%     of $A_e$ on w, $w_1 = a_1 \ldots a_{i_1}$, $w_2 = a_{i_1 +
+%     1} \ldots a_{i_2}$ .etc, and $w_n = a_{i_{m - 1} + 1} \ldots
+%     a_m$, we know $p_k = q_0 a_{i_{k - 1} + 1} q_{i_{k - 1} + 1}
+%     \ldots a_{i_k} q_{i_k}$ is the accepting run of $A_{e_1}$ on
 %     $w_k$. The proof is similar to the one above when $e = e_1 e_2$, and we
 %     will omit it for simplicity.
 %     
@@ -153,7 +153,7 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 
 \subsection{From $\extract$ and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
 
-At first, we can adapt the pNFA construction in \cite{BDM14}, which in turn is a variant of the standard Thompson construction \cite{Thompson68}, and show the following result. 
+At first, we can adapt the PFA construction in \cite{BDM14}, which in turn is a variant of the standard Thompson construction \cite{Thompson68}, and show the following result. 
 
 \begin{proposition}\label{prop-rwre-to-pfa}
 	For each $\cgexp$ $e$, a PFA $\cA_e$ can be constructed in linear time such that 
@@ -165,7 +165,7 @@ At first, we can adapt the pNFA construction in \cite{BDM14}, which in turn is a
 \end{proposition}
 %Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
 
-
+\begin{proof}
 For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that it has a unique initial state and a unique final state  without outgoing transitions.
 %The original construction on regular expressions
 %produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
@@ -174,67 +174,95 @@ For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. 
 %
 %The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
 \begin{itemize}
-\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
+\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
 
-  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
+  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
 
-  \item If $e = a$, then $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = (f_0)$, $\delta(q_0, \sigma) = ()$ for every $\sigma \in \Sigma \setminus \{a\}$, $\tau(q_0) = ((); ())$, and $\tau(f_0) = ((); ())$.
+  \item If $e = a$, then $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = (f_0)$, $\delta(q_0, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_0) = ((); ())$, and $\tau(f_0) = ((); ())$.
     
   \item If $e = (e_1)$, then $\cA_e = \cA_{e_1}$.
   
-  \item If $e = e_1 + e_2$, and suppose $\cA_{e_1} = (Q_1,
+  \item If $e = [e_1 + e_2]$, let $\cA_{e_1} = (Q_1,
   \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
   \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = (Q_1 \cup Q_2 \cup \{q_0, f_0\}, \Sigma,
   \delta, \tau, q_0, f_0)$, where  
   \begin{itemize}
  \item $q_0, f_0 \not \in Q_1 \cup Q_2$, 
- \item $\delta(q) = \delta_i(q)$ for every $q \in Q_i$ ($i=1,2$), 
-$\delta(q_0, \sigma) = \delta(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$, 
+ \item $\delta(q, a) = \delta_i(q, a)$ for every $i \in \{1,2\}$, $q \in Q_i$ and $a \in \Sigma$, 
+$\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, 
 %
  \item $\tau(q) = \tau_i(q)$ for every $q \in Q_i$ ($i =1,2$), $\tau(q_0) = ((q_1,q_2); ())$,  $\tau(f_1) = \tau(f_2) = ((f_0); ())$, and $\tau(f_0) = ((); ())$.
  \end{itemize}
 %
-  \item If $e = e_1 \concat e_2$, and suppose $\cA_{e_1} = (Q_1,
+  \item If $e = [e_1 \concat e_2]$, let $\cA_{e_1} = (Q_1,
   \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
   \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = ( Q_1 \cup Q_2, \Sigma, \delta, \tau, q_1,
   f_2)$, where 
   \begin{itemize}
-    \item for every $q \in Q_i$, $\delta(q) = \delta_i(q)$ ($i = 1,2$),
+    \item for every $i \in \{1,2\}$, $q \in Q_i$ and $a \in \Sigma$, $\delta(q, a) = \delta_i(q, a)$,
     
     \item for every $q \in Q_2$, $\tau(q) = \tau_2(q)$, 
 %
     \item for every $q \in Q_1 \setminus \{f_1\}$, $\tau(q) = \tau_1(q)$, and $\tau(f_1) = ((q_2); ())$.
   \end{itemize}
 %  
-  \item If $e = e_1^{\ast}$, and suppose  $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{f_0\}, \Sigma,
-  \delta, \tau, q_1, f_0)$, where 
-  \begin{itemize}
-  \item $f_0 \not \in Q_1$,
-  
-    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, 
-    %moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
-    
-    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)), f_0))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $f_1$ to $q_1$ and from $q_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
-  \end{itemize}
- %
-  \item If $e = e_1^{\ast?}$, and suppose $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{f_0\}, \Sigma,
-  \delta, \tau, q_1, f_0)$, where 
+  \item If $e = [e_1^{\ast}]$, let  $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau$, $q_0$, $f_0)$, where 
   \begin{itemize}
   \item $q_0, f_0 \not \in Q_1$,
   
-    \item for every $q \in Q_1$ and $\sigma \in \Sigma$, $\delta(q, \sigma) = \delta_1(q, \sigma)$, 
-    %moreover, $\delta(q_0, \sigma) = \delta(f_0, \sigma)  = ()$,
+    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_1) = ((f_0, \pi_1(\tau_1(q_1))); \pi_2(\tau_1(q_1)))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $q_1$ to $f_0$ is of the highest priority.)
+    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)), f_0))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $f_1$ to $q_1$, and from $q_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
+  \end{itemize}
+%
+  \item If $e = [e_1^{+}]$, let  $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau$, $q_0$, $f_0)$, where 
+  \begin{itemize}
+  \item $q_0, f_0 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
+    
+    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(f_1) = ((q_1,f_0); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $f_1$ to $q_1$, and from $f_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $f_1$ to $f_0$ is of the lowest priority.)
+  \end{itemize}
+
+ %
+  \item If $e = [e_1^{\ast?}]$, let $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma, \delta$, $\tau$, $q_0$, $f_0)$, where 
+  \begin{itemize}
+  \item $q_0, f_0 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
+    
+    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = ((f_0, \pi_1(\tau_1(q_1))); \pi_2(\tau_1(q_1)))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $q_1$ to $f_0$ is of the highest priority.)
+  \end{itemize}  
+%
+  \item If $e = [e_1^{+?}]$, let $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau$, $q_0$, $f_0)$, where 
+  \begin{itemize}
+  \item $q_0, f_0 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
+    
+    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(f_1) = ((f_0, q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $f_1$ to $f_0$ is of the highest priority.)
   \end{itemize}  
 \end{itemize}
+\qed
+\end{proof}
 
 %The key transitions of some non-trivial cases of the construction are illustrated in Figure.\ref{fig:pglushkov}.
 
 % An important property of the automaton $G_e$ and thus $A_e$ is that, for any subexpression $e'$ of $e$, there must be a subgraph of $A_{e}$ corresponding to $e'$. We denote this subgraph by $A_{e}[e']$. This subgraph can be seen as the automaton obtained by removing from $A_{e'}$ the state $q_0$ and all transitions from it.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
 \begin{example}
 Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_0, q_3)$ and $\cA_{e_2} =  (Q_2, \Sigma, \delta_2, \tau_2, q_0, q_3)$ are illustrated in Figure~\ref{fig-retopfa}: (i), (ii), where thicker solid lines (resp. dashed lines) denote the $\varepsilon$-transitions of higher (resp. lower) priorities than non-$\varepsilon$-transitions. For instance, in $\cA_{e_1}$, $\tau_1(q_0) = ((); (q_2))$ and $\tau_1(q_1) = ((q_0); ())$, while in $\cA_{e_2}$, $\tau_2(q_0) = ((q_2); ())$ and $\tau_2(q_1) = ((q_0); ())$. Note that $\cA_{e_1}$ and $\cA_{e_2}$ are slightly different from those in Example~\ref{exmp-pfa}.
 \begin{figure}[ht]
@@ -245,8 +273,9 @@ Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sig
 \label{fig-retopfa}
 \end{figure}
 \end{example}
- 
-
+} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %
 %\begin{theorem}\label{thm-main}
@@ -276,7 +305,7 @@ Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sig
 %Let $e \in \regexp[\sf CG]$ and $e'$ be a subexpression of $e$. Then a copy of $\cA_{e'}$ in $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$ is a PFA $(Q', \Sigma, \delta', \tau', q'_0, f'_0)$ such that  
 %\begin{itemize}
 %\item $Q' \subseteq Q$, $q'_0, f'_0 \in Q'$, 
-%\item $\delta'$ is the restriction of $\delta$ to $Q'$, with the outgoing transitions of $f'_0$ removed, specifically, for every $\sigma \in \Sigma$ and $q \in Q' \setminus \{f'_0\}$, $\delta'(q, \sigma) = \delta(q, \sigma)$, $\tau'(q) = \tau(q)$, $\delta'(f'_0, \sigma) = ()$, and $\tau'(f'_0) = ((); ())$,
+%\item $\delta'$ is the restriction of $\delta$ to $Q'$, with the outgoing transitions of $f'_0$ removed, specifically, for every $a \in \Sigma$ and $q \in Q' \setminus \{f'_0\}$, $\delta'(q, a) = \delta(q, a)$, $\tau'(q) = \tau(q)$, $\delta'(f'_0, a) = ()$, and $\tau'(f'_0) = ((); ())$,
 %\item $(Q', \Sigma, \delta', \tau', q'_0, f'_0)$ is isomorphic to $\cA_{e'}$.
 %\end{itemize}
 %\end{definition}
@@ -284,23 +313,43 @@ Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sig
 %From the aforementioned recursive construction of $\cA_e$, we know that for each subexpression $e'$ of $e$, a PFA for $e'$, which is isomorphic to $\cA_{e'}$, is also constructed. Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote this PFA for $e'$, which, roughly speaking, is a subgraph of $\cA_e$.
 
 
-We are ready to prove Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
+%We are ready to prove Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
 
-\begin{proof}[Lemma~\ref{lem-extract}]
+\medskip
+
+\noindent{\bf Lemma~\ref{lem-extract}}. 
+\emph{A PSST $\cT_{\extract_{i,e}}$ can be constructed for $\extract_{i,e}$ such that 
+$$\cR_{\cT_{\extract_{i,e}}} = \{(w, w') \mid w'= \extract_{i,e}(w)\}.$$}
+
+\begin{proof}
 	%\paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
 	Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$. 
 	Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. 
 	%Moreover, let $\cA^\dag_e = (Q^\dag, \Sigma, \delta^\dag, \tau^\dag, q^\dag_0, f^\dag_0)$ be an isomorphic copy of $\cA_e$, where every state $q$ in $\cA_e$ is replaced by $q^\dag$ in $\cA^\dag_e$. Let us use ${\sf Sub}_{e'}[\cA^\dag_e]$ to denote the isomorphic copy of ${\sf Sub}_{e'}[\cA_e]$ in $\cA^\dag_e$.
 	
-	Intuitively, $\cT_{\extract_{i,e}}$ uses a string variable $x$ to store the value of the $i$th capturing group. Initially it assigns $\nullchar$ to $x$ to denote the fact that the capturing group is not matched yet. It then simulates $\cA_e$, and stores letters into $x$ when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$. Finally, it outputs the value of $x$ when $\cA_e$ accepts.
+	Intuitively, $\cT_{\extract_{i,e}}$ (see Fig.~\ref{fig-psst-extract})
+	\begin{itemize}
+	\item uses a string variable $x$ to store the value of the $i$th capturing group,
+	\item initially assigns $\nullchar$ to $x$ to denote the fact that the capturing group is not matched yet,
+	\item then simulates $\cA_e$ and stores letters into $x$ when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$,
+	\item finally outputs the value of $x$ when $\cA_e$ accepts.
+	\end{itemize}
+
+	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.6\textwidth]{psst-extract.pdf}
+		\caption{The PSST $\cT_{\extract_{i,e}}$}
+		\label{fig-psst-extract}
+	\end{figure}
 	
-	Formally, $\cT_{\extract_{i,e}} = (Q \cup \{q'_0\}, \Sigma, X, \delta', \tau', E', q'_0, F')$ (see Figure~\ref{fig-psst-extract}), where 
+	Formally, $\cT_{\extract_{i,e}} = (Q \cup \{q'_0\}, \Sigma, X, \delta', \tau', E', q'_0, F')$, where 
 	\begin{itemize}
 		\item $q'_0 \not \in Q$,
 		%
 		\item $X = \{x\}$,
 		%
-		%\item $\delta'$ is obtained from $\delta$ by adding $x: = x\sigma$ for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$,  
+		%\item $\delta'$ is obtained from $\delta$ by adding $x: = xa$ for each transition $(q, a, q')$ in ${\sf Sub}_{e'}[\cA_e]$,  
 		%
 		\item $F'(f_0)= x$ and $F'(p)$ is undefined for all the other states $p \in Q  \cup \{q'_0\}$,
 		%
@@ -316,50 +365,46 @@ We are ready to prove Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
 		%
 		\item $E'$ is defined as follows,
 		\begin{itemize}
-			\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $E'((q'_0, \varepsilon, q_0))(x) = \nullchar$, otherwise, $E'((q'_0, \varepsilon, q_0))(x) = \varepsilon$,
+			\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $E'(q'_0, \varepsilon, q_0)(x) = \nullchar$, otherwise, $E'(q'_0, \varepsilon, q_0)(x) = \varepsilon$,
 			%
-			\item for each transition $(q, \sigma, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'((q, \sigma, q'))(x) = x \sigma$,
+			\item for each transition $(q, a, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = x a$,
 			% 
-			\item for each transition $(q, \sigma, q')$ such that $q$ does not occur not in ${\sf Sub}_{e'}[\cA_e]$ and $q'$ occurs in ${\sf Sub}_{e'}[\cA_e]$, $E'((q, \sigma, q'))(x) = \varepsilon$,
+			\item for each transition $(q, a, q')$ such that $q$ does not occur in ${\sf Sub}_{e'}[\cA_e]$ and $q'$ occurs in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = \varepsilon$,
 			%
 			\item for all the other transitions $t$ of $\cA_e$, $E'(t)(x) = x$.
 		\end{itemize}
 		%
 		%
 	\end{itemize}
-	
-	\begin{figure}[ht]
-		\centering
-		%\rule{\linewidth}{0cm}
-		\includegraphics[width = 0.6\textwidth]{psst-extract.pdf}
-		\caption{The PSST for $\extract_{i,e}$}
-		\label{fig-psst-extract}
-	\end{figure}
 	\qed
 \end{proof}
 
+\medskip
 
-\begin{proof}[Lemma~\ref{lem-replace}]
-	%\paragraph*{Construction of $\cT_{\replaceall_{\pat, \rep}}$.} 
+\noindent{\bf Lemma~\ref{lem-replace}}.
+\emph{A PSST $\cT_{\replaceall_{\pat, \rep}}$ can be constructed for $\replaceall_{\pat, \rep}$ such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$.}
+
+
+\begin{proof}	%\paragraph*{Construction of $\cT_{\replaceall_{\pat, \rep}}$.} 
 	Let $\$i_1, \cdots, \$i_k$ with $i_1 < \cdots < i_k$ be an enumeration of all the references in $\rep$. 
 	Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group.
 	
-	Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replace_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh states $q'_0$ such that (see Figure~\ref{fig-psst-replace})
+	Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replace_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replace})
 	\begin{itemize}
 		\item $\cT_{\replace_{\pat,\rep}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position, 
 		%
-		\item when $\cT_{\replace_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, 
+		\item when $\cT_{\replace_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, which stores the output of $\cT_{\replace_{\pat,\rep}}$,
 		%
 		\item starting from $q_0$, $\cT_{\replace_{\pat,\rep}}$ simulates $\cA_\pat$ and stores the matches of the $\$i_1$-th, $\ldots$, $\$i_k$-th capturing groups of $\pat$ into the string variables $x_1, \cdots, x_k$ respectively,   
 		%
-		\item when the first match of $\pat$ is found, $\cT_{\replace_{\pat,\rep}}$ goes from $f_0$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, and keeps searching for the next match of $\pat$.
+		\item when the first match of $\pat$ is found, $\cT_{\replace_{\pat,\rep}}$ goes from $f_0$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, resets the values of $x_1,\cdots,x_k$ to $\varepsilon$ and keeps searching for the next match of $\pat$.
 	\end{itemize}
 	
 	\begin{figure}[ht]
 		\centering
 		%\rule{\linewidth}{0cm}
-		\includegraphics[scale=0.8]{psst-replace.pdf}
-		\caption{The PSST for $\replace_{\pat,\rep}$}
+		\includegraphics[scale=0.9]{psst-replace.pdf}
+		\caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
 		\label{fig-psst-replace}
 	\end{figure}
 	
@@ -373,27 +418,27 @@ We are ready to prove Lemma~\ref{lem-extract} and Lemma~\ref{lem-replace}.
 		%
 		\item $\delta'$ and $\tau'$ are obtained from $\delta$ and $\tau$ as follows,
 		\begin{itemize}
-			\item $\delta'(q'_0, \sigma) = (q'_0)$ for every $\sigma \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
+			\item $\delta'(q'_0, a) = (q'_0)$ for every $a \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
 			%
-			\item for every $q \in Q \setminus \{f_0\}$ and $\sigma \in \Sigma$, $\delta'(q, \sigma) = \delta(q, \sigma)$ and $\tau'(q) = \tau(q)$, 
+			\item for every $q \in Q \setminus \{f_0\}$ and $a \in \Sigma$, $\delta'(q, a) = \delta(q, a)$ and $\tau'(q) = \tau(q)$, 
 			%
-			\item $\delta'(f_0, \sigma) = ()$ for every $\sigma \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
+			\item $\delta'(f_0, a) = ()$ for every $a \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
 		\end{itemize}
 		%
 		\item $E$ is defined as follows, 
 		\begin{itemize}
-			\item for every transition $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, \sigma, q')(x_0) = x_0$,
+			\item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, a, q')(x_0) = x_0$,
 			%
-			\item for every transition $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ and $j \in [k]$,  if $(q, \sigma, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, \sigma, q')(x_j) = x_j\sigma$, otherwise, $E(q, \sigma, q')(x_j) = x_j$,
+			\item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ and every $j \in [k]$,  if $(q, a, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, a, q')(x_j) = x_ja$, otherwise, $E(q, a, q')(x_j) = x_j$,
 			%
-			%\item for all the other transitions $(q, \sigma, q')$ with $\sigma \in \Sigma^\varepsilon$ in $\cA_e$, we have $E(q, \sigma, q')(x) = x$, 
+			%\item for all the other transitions $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_e$, we have $E(q, a, q')(x) = x$, 
 			%
-			\item  for every $\sigma \in \Sigma$ and $j \in [k]$, $E(q'_0, \sigma, q'_0)(x_0) = x_0\sigma$ and $E(q'_0, \sigma, q'_0)$$(x_j) = x_j$, 
+			\item  for every $a \in \Sigma$ and $j \in [k]$, $E(q'_0, a, q'_0)(x_0) = x_0a$ and $E(q'_0, a, q'_0)$$(x_j) = x_j$, 
 			
 			\item $E(q'_0, \varepsilon, q_0)(x_j) = x_j$ for every $j \in [k] \cup \{0\}$, 
 			%
-			\item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, and for every $j \in [k]$, we have $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$.
-			
+			\item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, moreover, for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, where $ \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$ denotes the string term obtained from $\rep$ by replacing every occurrence of $\$i_1,\cdots, \$i_k$ with $x_1,\cdots,x_k$ respectively.
+%			
 		\end{itemize}
 		%
 	\end{itemize}
