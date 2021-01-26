@@ -6,13 +6,67 @@
 % general intro on string constraint solving
 
 %
+%Strings are among the most important data types. 
+The rise of programming 
+languages like JavaScript, Python, Java, and PHP, which support a variety of
+string operations (e.g. concatenation, regex matching, split, etc.), place
+the string data types the forefront and make their use indispensable.
+Despite this,
+string-manipulating programs are notoriously subtle, error-prone, and their 
+potential bugs
+may bring severe security consequences. A typical example is cross-site
+scripting (XSS), which is among the OWASP Top 10 Application Security Risks.
+%Regular expressions are widely used in string-manipulating programs. 
+An effective and increasingly popular method for identifying such bugs
+in the program is symbolic execution, possibly in combination with dynamic
+analysis. In a nutshell, this technique analyses a static path in a
+a program under consideration, by viewing it as a constraint $\phi$, whose 
+feasibility could be checked by an SMT-solver.
 
-String-manipulating programs are notoriously subtle, and their potential bugs may bring severe security consequences. A typical example is cross-site scripting (XSS), which is among the OWASP Top 10 Application Security Risks. Regular expressions are widely used in string-manipulating programs. An effective and increasingly popular method for identifying bugs, including XSS, is symbolic execution. In a nutshell, this technique analyses static paths through the program being considered. Each of these paths can be viewed as a constraint $\phi$ and symbolic execution tools demand fast constraint solvers to check the satisfiability of $\phi$. 
+Regular expression matching is one of the most important string operations
+in real-world programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+This is in fact also one reason that most state-of-the-art string solvers (e.g.
+Z3, CVC4, Z3-str2, Norn, OSTRICH, ... \anthony{make sure we add all}) support
+the so-called \emph{regular constraints}, e.g., matching a string with a 
+regular expression, as we know it from formal language theory. Unfortunately, 
+\emph{Real-world Regular Expressions} (RWRE) are dramatically different from 
+\emph{classical Regular Expressions} (RE) from formal language theory. 
+%In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
+Classical regular expressions are built from letters by the operators of concatenation, union, and repetition. Real-world regular expressions differ from classical ones mainly in the following two aspects: 1) the non-standard semantics of 
+operators, e.g., the non-commutative union, the greedy repetition, 2) the new 
+features, e.g., capturing groups and back references.
 
-Regular expressions in string-manipulating programs are dramatically different from regular expressions in theoretical computer science and formal language theory. In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. Classical regular expressions are built from letters by the operators of concatenation, union, and repetition. Real-world regular expressions differ from classical ones mainly in the following two aspects: 1) the non-standard semantics of operators, e.g. the non-commutative union, the greedy repetition, 2) the new features e.g. capturing groups and back references. 
+%The semantics of RWREs are tricky and can be different in different programming languages. 
+%Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
+RWRE are in general more expressive than classical RE, e.g., it is known that
+with backreferences one can easily generate languages that are not even 
+context-free (e.g. see \cite{FS19}). %It is an open question whether 
+Since the state-of-the-art string solvers support only classical RE instead of
+RWREs, % are not primitively supported by state-of-the-art string solvers
+%(in fact, they are in general ,
+existing symbolic execution analysis approaches that handle real-world
+string-manipulating programs with RWREs apply a workaround.
+We mention here Aratha \cite{?} and Expose \cite{LMK19}, both of which are
+symbolic execution engines for JavaScript programs.
+%symbolic executors of string manipulating programs, e.g. 
+Aratha performs a very rough approximation to the 
+non-standard semantics of regular expressions, e.g., a backreference
+is replaced by the regular expression referred to by the backreference 
+operator. On the other hand, Expose attempts to exploit the power of string 
+equations and classical REs (as implemented in Z3 \cite{?}) supported by string 
+solvers to capture the 
+semantics of RWREs. Unfortunately, the semantics of RWREs cannot 
+in general be captured by string constraints with REs. For this reason, 
+Expose attempts to underapproximate the semantics of RWREs in the style of 
+CEGAR (counter-example guided abstraction and refinement). This, however,
+results in a severe price in both precision and performance. \anthony{Say more
+here}
 
-The semantics of real-world regular expressions are tricky and can be different in different programming languages. Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. As a result, symbolic executors of string manipulating programs, e.g. Aratha, only considered some approximate encoding to the non-standard semantics of regular expressions, which unexpectedly leads to the precision loss. To tackle this issue, some other symbolic executors, e.g. Expose, used CEGAR (counter-example guided abstraction and refinement) to approach the genuine semantics of real-world regular expressions. Although the CEGAR approach of Expose made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
+%In particular, 
+ %to approach the genuine semantics of real-world regular expressions. 
+%Although the CEGAR approach of Expose made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
+\paragraph*{Contributions}
 This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite transducers \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and back references by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
