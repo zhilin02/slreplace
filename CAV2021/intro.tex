@@ -76,13 +76,13 @@ results in a rather severe price in both precision and performance: The refineme
 
 %Typical string operations involving RWREs in programming languages include match, exec, test, search/find, and replace.
 
-In practice, RWREs are commonly used in combination with
-other string operations, e.g. match and replace(all) functions \cite{LMK19}. The semantics of RWREs drastically affect the behaviors of these functions. 
+RWREs are commonly used in combination with
+other string operations, e.g. match and replace(all) functions \cite{LMK19}.  
 On a given string $s$ and a RWRE $e$, the match function allows one to extract the match of a capturing group from the first match of $e$ in $s$. For the replace function, on a given string $s$, a matching pattern RWRE $e$, and a replacement string $t$, it replaces the first match (or all 
 matches, if the global flag is enabled) of $e$ in $s$ by $t$. Here $t$
 could contain references to the matches of various capturing groups
 in $e$. 
-To find the matches of RWREs in strings, one must take a special care of the
+The semantics of RWREs drastically affect the behaviors of these functions. In particular, one must take a special care of the
 greedy/lazy semantics of Kleene star, which cannot 
 be captured in a complete way as constraints over word equations and classical 
 REs. 
