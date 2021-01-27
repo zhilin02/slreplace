@@ -9,7 +9,7 @@
 %Strings are among the most important data types. 
 The rise of programming 
 languages like JavaScript, Python, Java, and PHP, which support a variety of
-string operations (e.g. concatenation, regex matching, split, etc.), place
+string operations (e.g. concatenation, regex matching, replace, etc.), place
 the string data types the forefront and make their use indispensable.
 Despite this,
 string-manipulating programs are notoriously subtle, error-prone, and their 
@@ -24,33 +24,33 @@ a program under consideration, by viewing it as a constraint $\phi$, whose
 feasibility could be checked by an SMT-solver.
 
 Regular expression matching is one of the most important string operations
-in real-world programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
-This is in fact also one reason that most state-of-the-art string solvers (e.g.
-Z3, CVC4, Z3-str2, Norn, OSTRICH, ... \anthony{make sure we add all}) support
+in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+This is in fact also one reason that most state-of-the-art string constraint solvers (e.g.
+Z3, CVC4, Z3-str2, Norn, Trau, OSTRICH, ... \anthony{make sure we add all}) support
 the so-called \emph{regular constraints}, e.g., matching a string with a 
 regular expression, as we know it from formal language theory. Unfortunately, 
-\emph{Real-world Regular Expressions} (RWRE) are dramatically different from 
-\emph{classical Regular Expressions} (RE) from formal language theory. 
+\emph{Real-world Regular Expressions} (RWRE) in programming languages are dramatically different from 
+\emph{classical Regular Expressions} (RE) in formal language theory. 
 %In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
-Classical regular expressions are built from letters by the operators of concatenation, union, and repetition. Real-world regular expressions differ from classical ones mainly in the following two aspects: 1) the non-standard semantics of 
-operators, e.g., the non-commutative union, the greedy repetition, 2) the new 
+Classical regular expressions are built from letters by the operators of concatenation, union, and Kleene star. RWREs differ from classical ones mainly in the following two aspects: 1) the non-standard semantics of 
+operators, e.g., the non-commutative union, the greedy/lazy Kleene star, 2) the new 
 features, e.g., capturing groups and back references.
 
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
-RWRE are in general more expressive than classical RE, e.g., it is known that
-with backreferences one can easily generate languages that are not even 
+RWREs are in general more expressive than classical REs, e.g., it is known that
+with back references one can easily generate languages that are not even 
 context-free (e.g. see \cite{FS19}). %It is an open question whether 
-Since the state-of-the-art string solvers support only classical RE instead of
+Since the state-of-the-art string solvers support only classical REs instead of
 RWREs, % are not primitively supported by state-of-the-art string solvers
 %(in fact, they are in general ,
-existing symbolic execution analysis approaches that handle real-world
+existing symbolic execution approaches that handle
 string-manipulating programs with RWREs apply a workaround.
 We mention here Aratha \cite{aratha} and Expose \cite{LMK19}, both of which are
 symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
 Aratha performs a very rough approximation to the 
-non-standard semantics of regular expressions, e.g., a backreference
+non-standard semantics of regular expressions, e.g., a back reference
 is replaced by the regular expression that accepts every word.
 %referred to by the backreference 
 %operator. 
@@ -66,16 +66,15 @@ in general be fully captured by string constraints with REs.
 %It is even an open
 %question if even the greedy semantics of RWREs have to be 
 For this reason, 
-Expose attempts to underapproximate the semantics of RWREs in the style of 
+Expose opts to approximate the semantics of RWREs in the style of 
 CEGAR (counter-example guided abstraction and refinement). This, however,
-results in a rather severe price in both precision and performance. For one,
-satisfiability of string equations with regular constraints is
-well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
-best of our knowledge, no existing string solver is complete for string 
-equations with regular
-constraints.
-%\anthony{Say more
-%here}
+results in a rather severe price in both precision and performance: The refinement process may not terminate and the symbolic execution of a simple program with RWREs may need to be refined for tens of times. 
+%For one, satisfiability of string equations with regular constraints is
+%well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
+%best of our knowledge, no existing string solver is complete for string 
+%equations with regular constraints.
+
+%Typical string operations involving RWREs in programming languages include match, exec, test, search/find, and replace.
 
 Of course, RWREs themselves are often in practice used in combination with
 other string operations. In particular, their semantics drastically affect
@@ -90,7 +89,7 @@ string $t$, the replace function replaces the first occurrence (or all
 occurrences,
 if the global flag is enabled) of substring matching $e$ by $t$. Here $t$
 could contain references to the results of matches for various capturing groups
-in $e$. \anthony{More to come}
+in $e$. \anthony{More to come}\zhilin{Do we really need this paragraph?}
 
 
 %In particular, 
@@ -98,12 +97,12 @@ in $e$. \anthony{More to come}
 %Although the CEGAR approach of Expose made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
 \paragraph*{Contributions}
-This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite transducers \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and back references by string variables. 
+This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and back references by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
 We then design a decision procedure for a class of string constraints with real-world regular expressions. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
 
-We implement the decision procedure on top of OSTRICH and do extensive experiments to evaluate the performance. For the benchmarks, we generate over 160,000 Javascript programs from a library of real-world regular expressions \cite{DMC+19}, by using some simple Javascript program template containing match and replace functions.  Then we generate all the path constraints for each Javascript program and put them into one smt file. We run OSTRICH on these smt files. The average running time on each file is 2 seconds. For comparison, we also run Expose on the Javascript programs. The average running time for each program is \zhilin{xxx} seconds. The huge difference of the running time shows that our approach can reason about real-world regular expressions in a much faster (and even more precise) way than the CEGAR based approach.
+We implement the decision procedure on top of {\ostrich} and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate \zhilin{xxx} Javascript programs from a library of real-world regular expressions \cite{DMC+19}, by using some simple Javascript program template containing match and replace functions.  Then we generate all the path constraints for each Javascript program and put them into one SMT file. We run {\ostrich} on these SMT files. The average running time on each file is \zhilin{xxx} seconds. For comparison, we also run Expose on the Javascript programs. The average running time for each program is \zhilin{xxx} seconds. The huge difference of the running time shows that our approach can reason about RWREs in a much more precise and faster way than the CEGAR-based approach.
 
 
 \paragraph*{Related work.}
