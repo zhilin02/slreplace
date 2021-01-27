@@ -10,18 +10,18 @@ The goal of this section is to prove Theorem~\ref{thm-main}, i.e., the decidabil
 
 We first show that semantically equivalent PSSTs can be effectively constructed from the $\extract$ and $\replaceall$ functions. 
 
-\begin{lemma}\label{lem-extract}
-A PSST $\cT_{\extract_{i,e}}$ can be constructed for $\extract_{i,e}$ such that 
-$$\cR_{\cT_{\extract_{i,e}}} = \{(w, w') \mid w'= \extract_{i,e}(w)\}.$$
+\begin{lemma}\label{lem-str-fun-to-psst}
+For each string function $f = \extract_{i,e}$, $\replace_{\pat, \rep}$, or $\replaceall_{\pat, \rep}$, a PSST $\cT_f$ can be constructed such that 
+$$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$
 \end{lemma}
 
-\begin{lemma}\label{lem-replace}
-A PSST $\cT_{\replaceall_{\pat, \rep}}$ can be constructed for $\replaceall_{\pat, \rep}$ such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$.
-\end{lemma}
+%\begin{lemma}\label{lem-replace}
+%A PSST $\cT_{\replace_{\pat, \rep}}$ (resp. $\cT_{\replaceall_{\pat, \rep}}$) can be constructed for $\replace_{\pat, \rep}$ (resp. $\replaceall_{\pat, \rep}$) such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$ (resp. $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$).
+%\end{lemma}
 %
-The proofs of Lemma~\ref{lem-extract}-\ref{lem-replace} are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
+The proof of Lemma~\ref{lem-str-fun-to-psst} is given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
 
-With Lemma~\ref{lem-extract}-\ref{lem-replace}, the path feasibility of $\strline_{\sf reg}$ is reduced to the path feasibility of string-manipulating programs consisting of  a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.  The class of programs is denoted by $\strline'_{\sf reg}$. We then  follow %the %backward computation %reasoning approach of 
+With Lemma~\ref{lem-str-fun-to-psst}, the path feasibility of $\strline_{\sf reg}$ is reduced to the path feasibility of string-manipulating programs consisting of  a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.  The class of programs is denoted by $\strline'_{\sf reg}$. We then  follow %the %backward computation %reasoning approach of 
 the backward reasoning approach proposed in \cite{CCH+18,CHL+19} to solve the path feasibility of $\strline'_{\sf reg}$, where the key is to show that the pre-images of regular languages  under PSSTs  are regular and can be computed effectively.
 
 \begin{definition}[Pre-image]

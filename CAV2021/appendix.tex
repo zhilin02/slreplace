@@ -151,7 +151,7 @@ z:= x_n \# y_n; \ASSERT{z \in (\Sigma^+)\#\$1}.
 
 %======================================================
 
-\subsection{From $\extract$ and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
+\subsection{From string functions $\extract$, $\replace$, and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
 
 At first, we can adapt the PFA construction in \cite{BDM14}, which in turn is a variant of the standard Thompson construction \cite{Thompson68}, and show the following result. 
 
@@ -317,9 +317,9 @@ Let $e_1 = a^\ast$ and $e_2 = a^{\ast ?}$. Then the PFAs $\cA_{e_1} = (Q_1, \Sig
 
 \medskip
 
-\noindent{\bf Lemma~\ref{lem-extract}}. 
-\emph{A PSST $\cT_{\extract_{i,e}}$ can be constructed for $\extract_{i,e}$ such that 
-$$\cR_{\cT_{\extract_{i,e}}} = \{(w, w') \mid w'= \extract_{i,e}(w)\}.$$}
+\noindent{\bf Lemma~\ref{lem-str-fun-to-psst}}. 
+\emph{For each string function $f = \extract_{i,e}$, $\replace_{\pat, \rep}$, or $\replaceall_{\pat, \rep}$, a PSST $\cT_f$ can be constructed such that 
+$$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
 
 \begin{proof}
 	%\paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
@@ -376,36 +376,34 @@ $$\cR_{\cT_{\extract_{i,e}}} = \{(w, w') \mid w'= \extract_{i,e}(w)\}.$$}
 		%
 		%
 	\end{itemize}
-	\qed
-\end{proof}
 
-\medskip
-
-\noindent{\bf Lemma~\ref{lem-replace}}.
-\emph{A PSST $\cT_{\replaceall_{\pat, \rep}}$ can be constructed for $\replaceall_{\pat, \rep}$ such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$.}
+%\noindent{\bf Lemma~\ref{lem-replace}}.
+%\emph{A PSST $\cT_{\replaceall_{\pat, \rep}}$ can be constructed for $\replaceall_{\pat, \rep}$ such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$.}
 
 
-\begin{proof}	%\paragraph*{Construction of $\cT_{\replaceall_{\pat, \rep}}$.} 
+%\begin{proof}	%\paragraph*{Construction of $\cT_{\replaceall_{\pat, \rep}}$.} 
+	Next, we show how to construct the PSST for $\replaceall_{\pat, \rep}$. 
+	
 	Let $\$i_1, \cdots, \$i_k$ with $i_1 < \cdots < i_k$ be an enumeration of all the references in $\rep$. 
 	Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group.
 	
-	Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replace_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replace})
+	Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replaceall})
 	\begin{itemize}
-		\item $\cT_{\replace_{\pat,\rep}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position, 
+		\item $\cT_{\replaceall_{\pat,\rep}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position, 
 		%
-		\item when $\cT_{\replace_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, which stores the output of $\cT_{\replace_{\pat,\rep}}$,
+		\item when $\cT_{\replaceall_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, which stores the output of $\cT_{\replaceall_{\pat,\rep}}$,
 		%
-		\item starting from $q_0$, $\cT_{\replace_{\pat,\rep}}$ simulates $\cA_\pat$ and stores the matches of the $\$i_1$-th, $\ldots$, $\$i_k$-th capturing groups of $\pat$ into the string variables $x_1, \cdots, x_k$ respectively,   
+		\item starting from $q_0$, $\cT_{\replaceall_{\pat,\rep}}$ simulates $\cA_\pat$ and stores the matches of the $\$i_1$-th, $\ldots$, $\$i_k$-th capturing groups of $\pat$ into the string variables $x_1, \cdots, x_k$ respectively,   
 		%
-		\item when the first match of $\pat$ is found, $\cT_{\replace_{\pat,\rep}}$ goes from $f_0$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, resets the values of $x_1,\cdots,x_k$ to $\varepsilon$ and keeps searching for the next match of $\pat$.
+		\item when the first match of $\pat$ is found, $\cT_{\replaceall_{\pat,\rep}}$ goes from $f_0$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, resets the values of $x_1,\cdots,x_k$ to $\varepsilon$ and keeps searching for the next match of $\pat$.
 	\end{itemize}
 	
 	\begin{figure}[ht]
 		\centering
 		%\rule{\linewidth}{0cm}
-		\includegraphics[scale=0.9]{psst-replace.pdf}
+		\includegraphics[scale=0.9]{psst-replaceall.pdf}
 		\caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
-		\label{fig-psst-replace}
+		\label{fig-psst-replaceall}
 	\end{figure}
 	
 	Formally, $\cT_{\replaceall_{\pat, \rep}} =$ $(Q \cup \{q'_0\}$, $\Sigma$, $X$, $\delta'$, $\tau', E, q'_0, F)$ where
@@ -445,3 +443,11 @@ $$\cR_{\cT_{\extract_{i,e}}} = \{(w, w') \mid w'= \extract_{i,e}(w)\}.$$}
 	\qed
 \end{proof}
 
+The construction of the PSST for $\replace_{\pat, \rep}$ is similar and illustrated in Fig.~\ref{fig-psst-replace}. The details are omitted.
+	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width=\textwidth]{psst-replace.pdf}
+		\caption{The PSST $\cT_{\replace_{\pat,\rep}}$}
+		\label{fig-psst-replace}
+	\end{figure}

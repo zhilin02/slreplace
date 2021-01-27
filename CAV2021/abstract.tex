@@ -1,3 +1,5 @@
+%!TEX root = main.tex
+
 \begin{abstract}
 %% some background on regular expressions
 Regular expressions (RE) are a classical concept in formal language theory.
@@ -11,8 +13,9 @@ groups and backreferences.
 %% state of the art string constraint solvers
 %The semantics of real-word regular expressions are tricky and vary in different programming languages. It is challenging for string constraint solvers to support real-world regular expressions.
 While REs are supported by every state-of-the-art string constraint solver, 
-RWREs are thus far unsupported. Recent works have suggested that the mismatch 
-between REs %in string constraint 
+RWREs are thus far unsupported. Recent works have suggested that 
+the mismatch between REs and RWREs
+ %in string constraint 
 %solvers and RWREs in programming languages 
 %hinders the precision and efficiency 
 makes it difficult for a symbolic execution engine to deal with RWREs,
@@ -29,7 +32,7 @@ many satisfiability checks of string constraints with only REs.
 In this paper we propose an approach of natively supporting RWREs in string
 constraint solving. 
 The key of our approach is to introduce a new automata model called prioritized streaming string transducers (PSST), 
-which combines priorities in prioritized finite transducers and string variables in streaming string transducers, to model the string functions involving RWREs.
+which combines priorities in prioritized finite-state automata and string variables in streaming string transducers, to model the string functions involving RWREs.
 %non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
 %the non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
 Based on PSSTs, we design a decision procedure for string constraints with 
@@ -37,7 +40,7 @@ RWREs and provide its implementation.
 %% implementation and experiments
 %We implement the decision procedure 
 %and do extensive experiments to evaluate its performance. 
-We evaluate its performance on on over 160,000 string constraints generated 
+We evaluate its performance on over 160,000 string constraints generated 
 from RWREs in open-source programs.
 Our approach dramatically improves the CEGAR-based approach for RWREs in both 
 precision and efficiency. 
