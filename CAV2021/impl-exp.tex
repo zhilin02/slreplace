@@ -86,7 +86,7 @@ Our implementation revolves around PSSTs. Any of the three string operators ment
 (pop 1)
 \end{minted}
   \end{minipage}\hfill
-  \raisebox{-20ex}{\rule{0.4pt}{40ex}}\hfill
+  \raisebox{-19ex}{\rule{0.4pt}{39.5ex}}\hfill
   \begin{minipage}{0.49\linewidth}
 \begin{minted}{js}
 function fun(x) {
@@ -168,32 +168,37 @@ fun(x);
   \label{tab:exp-r1}
 \end{table}
 
-Our experiments have the purpose of answering the following main questions:\\
-\textbf{R1:} Are the semantics of RWREs defined in this paper
+Our experiments have the purpose of answering the following main questions:
+
+\medskip
+\noindent
+\textbf{R1:} Are the  RWREs defined in this paper
 suitable to encode regular expressions in programming languages,
-for instance ECMAScript expressions~\cite{ECMAScript10}?
+for instance ECMAScript expressions~\cite{ECMAScript11}?
 \\
 \textbf{R2:} How does \ostrich\ compare to other solvers that can
 handle real-world regular expressions, e.g., greedy/non-greedy
 quantifiers and capturing groups?
 \\
-\textbf{R3:} How does it perform in the context of symbolic execution,
+\textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the prime application of string solving?
 
+\medskip
 For \textbf{R1}, we implemented a translator from ES11 regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
-the regression test suite of
-ExpoSE~\cite{DBLP:conf/spin/LoringMK17}, as well as some other
-Javascript programs containing match or replace functions extracted
-from Github. To verify the soundness of Aratha+\ostrich, we compared
-the results with those produced by ExpoSE; we also checked the
-correctness of models computed by \ostrich\ by concretely executing
-the JavaScript program under test on the generated inputs, to confirm
-that the concrete execution indeed follows the targeted path. The
-results are summarized in Table~\ref{tab:exp-r2}; no inconsistencies
-were observed in the experiments, showing that the semantics in this
-paper are indeed suitable for capturing ECMA semantics.
+the regression test suite of ExpoSE~\cite{DBLP:conf/spin/LoringMK17},
+as well as some other Javascript programs containing match or replace
+functions extracted from Github. To verify the soundness of
+Aratha+\ostrich, we compared the results with those produced by
+ExpoSE; we also checked the correctness of models computed by
+\ostrich\ by concretely executing the JavaScript program under test on
+the generated inputs, to confirm that the concrete execution indeed
+follows the targeted path.\philipp{Zhilin, how should this formulation
+  be weakened?} The results are summarized in Table~\ref{tab:exp-r2};
+no inconsistencies were observed in the experiments, showing that the
+semantics in this paper are indeed suitable for capturing ECMA
+semantics.
 
 For \textbf{R2}, we are not aware of other constraint solvers
 supporting capturing groups, neither of SMT solvers nor
