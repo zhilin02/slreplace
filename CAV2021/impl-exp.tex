@@ -92,7 +92,7 @@ Our implementation revolves around PSSTs. Any of the three string operators ment
     were done on an AMD Opteron 2220 SE machine, running 64-bit Linux
     and Java~1.8.  Runtime was limited to 1min wall clock time, and
     heap space to 2GB.}
-  \label{tab:exp}
+  \label{tab:exp-r1}
 \end{table}
 
 Our experiments have the purpose of answering two main questions:\\
@@ -120,3 +120,33 @@ replace(All).\footnote{We also considered to replace Z3 with \ostrich\
 %
 For \textbf{R1}, we therefore compared \ostrich\ with ExpoSE on
 regular expressions taken from the ??? library.
+
+For \textbf{R2}, we plug {\ostrich} into Aratha and compare it with ExpoSE, on the collection of Javascript programs tested by ExpoSE, as well as some other Javascript programs containing match or replace functions extracted from Github. The experimental results are summarized in Table~\ref{tab:exp-r2}. From the results, we can see that on average, Aratha+{\ostrich} is faster than ExpoSE+Z3 by one order of magnitude. Therefore, in the context of symbolic execution, {\ostrich} is much more efficient than the CEGAR-augmented symbolic execution, for dealing with RWREs.
+\begin{table}[H]
+	\begin{center}
+	\begin{tabular}{|l@{\quad}c@{\quad}|*{2}{c}|@{\quad}*{2}{c}|}
+	\hline
+	   & &
+	  \multicolumn{2}{c|@{\quad}}{\textbf{ExpoSE+Z3}} &\multicolumn{2}{c@{\quad}|}{\textbf{Aratha+\ostrich}}
+	  \\
+	   & \#JS-Progs. & ~ \# Executed~  & ~ \#Timeout~ &  ~\# Executed ~ & ~\#Timeout
+	  \\\hline
+	  \textbf{ExpoSE} & 94 & 93 & 1 & \textbf{94} & 0 
+	  \\
+	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{5.53}s}
+	  \\\hline
+	  \textbf{Match} & 38 &  30&   8& \textbf{38} & 0
+	  \\
+	  && \multicolumn{2}{c|@{\quad}}{Average time: 13.56s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{2.78}s}
+	  \\\hline
+	  \textbf{Replace} & 40 & 16 & 24 & \textbf{40} & 0
+	  \\
+	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{2.69}s}
+	  \\\hline
+	\end{tabular}
+	\end{center}
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs. Average time is wall-clock time. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 1min wall-clock time. }
+	\label{tab:exp-r2}
+  \end{table}
+
+For \textbf{R3}, we apply an additional post-processing step to Aratha+{\ostrich} in the experiments for \textbf{R2}, that is, when Aratha reports that some path is feasible and {\ostrich} returns a model, the Javascript program is executed concretely, with the model as the input, in order to confirm that the concrete execution indeed follows the targeted path, thus showing that the semantics in this paper are consistent with that of Javascript.
