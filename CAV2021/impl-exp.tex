@@ -4,14 +4,15 @@
 \label{sect:impl}
 
 We have implemented our decision procedure for $\strline_{\sf reg}$ in the SMT
-solver \ostrich.\footnote{Name anonymized for doubly-blind review,
-and will be provided in the final version.}
+solver \ostrich,\footnote{Name anonymized for doubly-blind review,
+and will be provided in the final version.} extending the
+open-source solver OSTRICH~\cite{CHL+19}.
 %\cite{CHL+19}, %\url{https://github.com/uuverifiers/ostrich}}
 %which provides a modular and easy-to-use framework for extending all
 %sorts of string operations. 
 As shown in Section \ref{sec:decision},
 PSSTs satisfy the conditions required by the backward reasoning
-approach of \ostrich, which enables us to integrate our logic with
+approach of OSTRICH, which enables us to integrate our logic with
 standard string theory. The resulting extended theory of strings is a
 conservative extension of the SMT-LIB theory of Unicode
 strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
@@ -108,7 +109,7 @@ fun(x);
   \end{minipage}
   
   \caption{Harnesses with replace-all: SMT-LIB for \ostrich,
-    and JavaScript for ExpoSE.}
+    and JavaScript for \expose{}.}
   \label{fig:harness}
 \end{figure}
 
@@ -117,11 +118,11 @@ fun(x);
 	\begin{tabular}{|l@{\quad}c@{\quad}|*{2}{c}|@{\quad}*{2}{c}|}
 	\hline
 	   & &
-	  \multicolumn{2}{c|@{\quad}}{\textbf{ExpoSE+Z3}} &\multicolumn{2}{c@{\quad}|}{\textbf{Aratha+\ostrich}}
+	  \multicolumn{2}{c|@{\quad}}{\textbf{\expose{}+Z3}} &\multicolumn{2}{c@{\quad}|}{\textbf{Aratha+\ostrich}}
 	  \\
 	   & \#JS-Progs. & ~ \# Executed~  & ~ \#Timeout~ &  ~\#Executed ~ & ~\#Timeout~
 	  \\\hline
-	  \textbf{ExpoSE} & 94 & 93 & 1 & \textbf{94} & 0 
+	  \textbf{\expose{}} & 94 & 93 & 1 & \textbf{94} & 0 
 	  \\
 	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{5.53}s}
 	  \\\hline
@@ -135,45 +136,49 @@ fun(x);
 	  \\\hline
 	\end{tabular}
 	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs. Average time is wall-clock time. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 1min wall-clock time. }
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is wall-clock time.  \philipp{do average times include timeouts?}}
 	\label{tab:exp-r1}
 
   \begin{center}
-  \begin{tabular}{l@{\quad}c@{\quad}|*{6}{c}|@{\quad}*{6}{c}}
-     & &
-    \multicolumn{6}{c|@{\quad}}{\textbf{\ostrich}} &
-    \multicolumn{6}{c}{\textbf{ExpoSE} on 73448}
+  \begin{tabular}{|l@{\quad}|*{6}{c}|*{5}{c}@{\quad}|}
+    \hline
+     & 
+    \multicolumn{6}{c|}{\textbf{\ostrich}} &
+    \multicolumn{5}{c|}{\textbf{\expose{}} on 73448}
     \\
-      && \multicolumn{6}{c|@{\quad}}{\# solved queries}
-      & \multicolumn{6}{c}{\# covered paths}
+      & \multicolumn{6}{c|}{\# queries solved within 60s}
+      & \multicolumn{5}{c|}{\# paths covered within 60s}
     \\
-     & \#Benchm.& ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
      & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
+     & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~
     \\\hline
-    \textbf{Match} & 98117 & 75 & 88 & 176 & 79 & 96565 & 1132
-    & 2497 & 7168 & 27685 & 36098 & 0
+    \textbf{Match}  & 75 & 20 & 77 & 167 & 96644 & 1132
+    & 2497 & 7168 & 27685 & 36098 &
     \\
-    && \multicolumn{6}{c|@{\quad}}{Average time: 0.63s}
-    &\multicolumn{6}{c}{Average time: 28.0s}
+     \emph{(98117} & \multicolumn{6}{c|}{Average time: 0.79s}
+    &\multicolumn{5}{c|}{Average time: 28.0s}
     \\
-    && \multicolumn{6}{c|@{\quad}}{Total \#sat: 108132, \#unsat: 279135}
-    & \multicolumn{6}{c}{Total paths covered: 73448}
+    \emph{benchm.)} & \multicolumn{6}{c|}{Total \#sat: 108132, \#unsat: 279135}
+    & \multicolumn{5}{c|}{Total \#paths covered: 73448}
     \\\hline
-    \textbf{Replace} & 98117 & 445 & 229 & 576 & 95735 & --- & 1132
+    \textbf{Replace} & 445 & 229 & 576 & 95735 & --- & 1132
     & 3929 & 13859 & 51524 & 4217 & ---
     \\
-    && \multicolumn{6}{c|@{\quad}}{Average time: 1.02s}
-    & \multicolumn{6}{c}{Average time: 55.0s}
+    \emph{(98117} & \multicolumn{6}{c|}{Average time: 1.48s}
+    & \multicolumn{5}{c|}{Average time: 55.0s}
     \\
-    && \multicolumn{6}{c|@{\quad}}{Total \#sat: 273927, \#unsat: 14659}
-    & \multicolumn{6}{c}{Total paths covered: 73529}
+    \emph{benchm.)} & \multicolumn{6}{c|}{Total \#sat: 273927, \#unsat: 14659}
+    & \multicolumn{5}{c|}{Total \#paths covered: 73529}
+      \\\hline
   \end{tabular}
   \end{center}
   \caption{The number of queries answered by \ostrich, and number of
-    paths covered by ExpoSE, in the \textbf{R2} experiments.  Average time is
-    wall-clock time. All experiments were done on an AMD Opteron 2220
-    SE machine, running 64-bit Linux and Java~1.8.  Runtime was
-    limited to 1min wall clock time, and memory to 2GB.}
+    paths covered by \expose{}, in the \textbf{R2} experiments.  All
+    experiments were done on an AMD Opteron 2220 SE machine, running
+    64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
+    60s wall clock time, memory to 2GB, and the number of tests
+    executed concurrently by \expose\ to 1.  Average time is
+    wall-clock time needed per benchmark, and counts timeouts as 60s.}
   \label{tab:exp-r2}
 \end{table}
 
@@ -192,15 +197,14 @@ quantifiers and capturing groups?
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the prime application of string solving?
 
-\medskip
-For \textbf{R1}, we implemented a translator from ES11 regular
+\paragraph{For \textbf{R1}:} We implemented a translator from ES11 regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
-the regression test suite of ExpoSE~\cite{DBLP:conf/spin/LoringMK17},
+the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
 as well as some other Javascript programs containing match or replace
 functions extracted from Github. To verify the soundness of
 Aratha+\ostrich, we compared the results with those produced by
-ExpoSE; we also checked the correctness of models computed by
+\expose{}; we also checked the correctness of models computed by
 \ostrich\ by concretely executing the JavaScript program under test on
 the generated inputs, to confirm that the concrete execution indeed
 follows the targeted path.\philipp{Zhilin, how should this formulation
@@ -209,45 +213,58 @@ no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ECMA
 semantics.
 
-For \textbf{R2}, we are not aware of other constraint solvers
+\paragraph{For \textbf{R2}:} We are not aware of other constraint solvers
 supporting capturing groups, neither among the SMT nor  the
 CP solvers. %(e.g.,
 %\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
-The closest related work is the algorithm implemented in ExpoSE, which
+The closest related work is the algorithm implemented in \expose{}, which
 applies Z3-seq~\cite{Z3} for solving string constraints, but augments
 it with a refinement loop to approximate RWRE
 semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
-  ExpoSE for the experiments. However, ExpoSE integrates Z3 using its
+  \expose{} for the experiments. However, \expose{} integrates Z3 using its
   C API, and changing to a solver like \ostrich, with native support
   for capture groups, would have required the rewrite of substantial
-  parts of ExpoSE.}
+  parts of \expose{}.}
 %
-For \textbf{R2}, we therefore compared \ostrich\ with ExpoSE on 98117
+For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98117
 regular expressions taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
 SMT-LIB, as input for \ostrich, and two in JavaScript, as input for
-ExpoSE. The two harnesses shown in Figure~\ref{fig:harness} use one of the
+\expose{}. The two harnesses shown in Figure~\ref{fig:harness} use one of the
 regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
 the replace-all function to simulate typical string processing;
 \verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
 replacement string \verb!"$1"!. The three paths of the JavaScript
 function~\verb!fun! correspond to the three queries in the SMT-LIB
 script, so that a direct comparison can be made between the results of
-the SMT-LIB queries and the set of paths covered by ExpoSE. The other
+the SMT-LIB queries and the set of paths covered by \expose{}. The other
 two harnesses are similar to the ones in Figure~\ref{fig:harness}, but
 use the match function instead of replace-all, and contain four
 queries and four paths, respectively.
 
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
-for 98.4\% of the match benchmarks, and all three queries in 97.6\% of
-the replace-all benchmarks. The errors in 1132 cases are due to
-back-references in \verb!<re1>!, which are not handled by \ostrich.
+in 96644 (98.5\%) of the match benchmarks, and all three queries in
+95735 (97.6\%) of the replace-all benchmarks. The errors in 1132 cases are due
+to back-references in \verb!<re1>!, which are not handled by \ostrich.
+For match, the number of paths covered by \expose{} is comparable to
+the number of \ostrich\ sat results, although the runtime of \expose{}
+is on average 35x higher than that of \ostrich. For replace, the
+runtime of \expose{} is even 37x higher, but the number of paths
+covered is only 36\% of the number of sat answers produced by
+\ostrich.  Overall, the experiments indicate that \ostrich\ is
+significantly more efficient than the ExpoSE approach at solving path
+constraints involving RWRE.
 
-For \textbf{R3}, we compare Aratha+\ostrich with ExpoSE on the same
-benchmarks as for \textbf{R1}.  From the results in
-Table~\ref{tab:exp-r1}, we can see that on average, Aratha+{\ostrich}
-is faster than ExpoSE+Z3 by one order of magnitude. Therefore, in the
-context of symbolic execution, {\ostrich} is much more efficient than
-the CEGAR-augmented symbolic execution, for dealing with RWREs.
+\paragraph{For \textbf{R3}:} We compare Aratha+\ostrich with \expose{}
+on the same benchmarks as for \textbf{R1}.  From the results in
+Table~\ref{tab:exp-r1}, we can see that, on average, Aratha+{\ostrich}
+is faster than \expose{}+Z3 by a factor between 3 and 5, while being
+able to cover more paths. The smaller speedup compared to the results
+for \textbf{R2} can be explained by the fact that SMT-LIB queries
+produced by Aratha are not pure string constraints, but also include
+ADTs, arrays, and bit-vectors. The experiments still indicate that,
+in the context of symbolic execution, {\ostrich} is significantly more
+efficient than the CEGAR-augmented symbolic execution for dealing
+with RWREs.
