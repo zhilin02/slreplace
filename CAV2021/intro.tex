@@ -12,6 +12,7 @@ and PHP natively support a variety of string operations, and use
 strings to store and process virtually any kind of data or code.
 Applied string operations range from concatenation, splitting, and
 replacement, to complex functions like regular expression matching and
+character
 encoding/decoding.  As a result, string-manipulating programs are
 notoriously subtle, error-prone, and their potential bugs may bring
 severe security consequences. A typical example is cross-site
@@ -35,12 +36,12 @@ regular expression, as we know it from formal language theory. Unfortunately,
 %In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
 Classical regular expressions are built from letters by the operators of concatenation, union, and Kleene star, and have nice compositional semantics. RWREs differ from classical ones mainly in the following two aspects: 1) non-standard semantics of 
 operators, e.g., the non-commutative union, the greedy/lazy Kleene star, and 2) new 
-features, e.g., capturing groups and back-references.
+features, e.g., capturing groups and backreferences.
 
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
 RWREs are in general more expressive than classical REs, e.g., it is known that
-with back references one can easily generate languages that are not even 
+with backreferences one can easily generate languages that are not even 
 context-free (e.g. see \cite{FS19}). %It is an open question whether 
 Since the state-of-the-art string solvers support only classical REs instead of
 RWREs, % are not primitively supported by state-of-the-art string solvers
@@ -51,8 +52,8 @@ We mention here Aratha \cite{aratha} and Expose \cite{LMK19}, both of which are
 symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
 Aratha performs a very rough approximation to the 
-non-standard semantics of regular expressions, e.g., a back reference
-is replaced by the regular expression that accepts every word.
+non-standard semantics of regular expressions, e.g., a backreference
+is replaced by the regular expression $\ialphabet^*$ that accepts all words.
 %referred to by the backreference 
 %operator. 
 On the other hand, Expose attempts to exploit the power of string 
@@ -67,7 +68,7 @@ in general be fully captured by string constraints with REs.
 %It is even an open
 %question if even the greedy semantics of RWREs have to be 
 For this reason, 
-Expose opts to approximate the semantics of RWREs in the style of 
+Expose attempts to instead approximate the semantics of RWREs in the style of 
 CEGAR (counter-example guided abstraction and refinement). This, however,
 results in a rather severe price in both precision and performance: The refinement process may not terminate and the symbolic execution of a simple program with RWREs may need to be refined for tens of times. 
 %For one, satisfiability of string equations with regular constraints is
@@ -95,7 +96,7 @@ REs.
 %Although the CEGAR approach of Expose made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
 \paragraph*{Contributions}
-This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and back references by string variables. 
+This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and backreferences by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
 We then design a decision procedure for a class of string constraints with real-world regular expressions. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
@@ -107,7 +108,7 @@ on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
 
 \paragraph*{Related work.}
 
-RWREs have been investigated in formal language theory. Regular expressions with capturing groups and back references have been considered in \cite{CSY03,CN09,Freydenberger13,Schmid16,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of RWREs, namely, the non-commutative union and the greedy/lazy semantics of Kleene star, were not addressed therein.
+RWREs have been investigated in formal language theory. Regular expressions with capturing groups and backreferences have been considered in \cite{CSY03,CN09,Freydenberger13,Schmid16,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of RWREs, namely, the non-commutative union and the greedy/lazy semantics of Kleene star, were not addressed therein.
 
 Prioritized finite-state automata and prioritized finite-state transducers were proposed in \cite{BM17}. Prioritized finite-state transducers add indexed brackets to the input string in order to identify the matches of capturing groups. In contrast, PSSTs store the matches of capturing groups into string variables, which can then be referred to later on, thus allowing to conveniently model the match and replace(all) function. 
 %
@@ -171,7 +172,7 @@ the replace-all functionality) is omnipresent in HTML5 applications
 
 A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
 
-The semantics of regular expressions with capturing groups and back references is rather involved. One of the reasons is that different languages may choose different semantics for a regex to match the string when the regex is served as a pattern. 
+The semantics of regular expressions with capturing groups and backreferences is rather involved. One of the reasons is that different languages may choose different semantics for a regex to match the string when the regex is served as a pattern. 
 
 To capture the semantics, priority is introduced, giving rise to an extension of the standard finite-state automata. However, this is not sufficient for capturing string operations. For that purpose, we introduce  a new transducer model, prioritized streaming string transducer (PSST) which is a combination of priority which is essential for modelling capturing groups and streaming transducers which are a highly expressive formalism for modelling string operations. 
 }
