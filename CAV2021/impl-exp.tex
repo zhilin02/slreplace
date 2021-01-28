@@ -3,14 +3,14 @@
 \section{Implementation and Experiments}
 \label{sect:impl}
 
-We have implemented our decision procedure for $\strline$ in the SMT
+We have implemented our decision procedure for $\strline_{\sf reg}$ in the SMT
 solver \ostrich.\footnote{Name anonymized for doubly-blind review,
-and will be provided in the final paper.}
+and will be provided in the final version.}
 %\cite{CHL+19}, %\url{https://github.com/uuverifiers/ostrich}}
 %which provides a modular and easy-to-use framework for extending all
 %sorts of string operations. 
 As shown in Section \ref{sec:decision},
-\PSST s satisfy the conditions required by the backwards reasoning
+PSSTs satisfy the conditions required by the backward reasoning
 approach of \ostrich, which enables us to integrate our logic with
 standard string theory. The resulting extended theory of strings is a
 conservative extension of the SMT-LIB theory of Unicode
@@ -21,7 +21,7 @@ strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}
 Our implementation extends classical regular expression in SMT-LIB
 with indexed {\sf re.capture} and {\sf re.reference} operators, which
 denote capturing groups and references to them. We also add {\sf re.*?}
-and {\sf re.+?} for non-greedy Kleene stars.
+and {\sf re.+?} for lazy Kleene stars.
 
 The three string operators that use these extended real world regular
 expressions are {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
@@ -40,8 +40,8 @@ lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
 \end{minted}
 %
 The replacement string is written as a regular expression only
-containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf re.reference}. In contrast to the standard operators, it is not allowed to use symbolic variables as
-replacement pattern.
+containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf re.reference}. In contrast to the standard operators, it is not allowed to use string variables in the 
+replacement parameter.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
 $\strline$. For instance,
@@ -49,7 +49,7 @@ $\strline$. For instance,
 \begin{minted}{lisp}
   ((_ str.extract 1)
         (re.++ (re.*? re.allchar)
-               ((_ re.capture 1) (re.* (re.range "a" "z"))
+               ((_ re.capture 1) (re.+ (re.range "a" "z"))
                re.all)) x)
 \end{minted}
 %
@@ -60,7 +60,7 @@ Our implementation is able to handle \textit{anchors} as well. Due to space rest
 
 \subsection{Implementation}
 
-Our implementation revolves around \PSST. Any of the three string operators mentioned above would be converted into an equivalent \PSST (See \ref{appendix:sec-extract-replace-to-psst}). \ostrich then iterates the dependency graph and repeatedly eliminates them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate constraints on variables and check satisfiability, then use forward concrete evaluation to generate a model. 
+Our implementation revolves around PSSTs. Any of the three string operators mentioned above will be converted into an equivalent PSST (See Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then iterates the dependency graph and repeatedly eliminates the them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate constraints on variables and check satisfiability, then use forward concrete evaluation to generate a model. 
 
 \subsection{Experimental evaluation}
 
@@ -101,6 +101,7 @@ other solvers
 that can handle replace(All) and capturing groups?\\
 \textbf{R2:} How does it perform in the context of symbolic execution,
 the prime application of string solving?
+\zhilin{the two research questions are unclear for me}
 
 Concerning \textbf{R1}, we are not aware of other SMT solvers with
 support for capturing groups; the same holds for CP solvers (e.g.,
