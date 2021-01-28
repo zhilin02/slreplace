@@ -67,7 +67,7 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
 
-  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then either $w' = \varepsilon$ and $\alpha$ has one child $\alpha_1 = (\varepsilon, e'_1)$, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \ldots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
+  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then either $w' = \varepsilon$ and $\alpha$ has one child $\alpha_1 = (\varepsilon, e'_1)$, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
 %
 %  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
 %  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
@@ -165,17 +165,17 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
 		\end{itemize}
 %
   		\item $e = [e_1^{+}]$. 
-%		\begin{itemize}
-%		\item If $T' $ is  a single node $(\varepsilon, e)$, but $T$ is not, then $T >_{w, e} T'$.
-  		Suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C(T')$
+		\begin{itemize}
+		\item If the roots of $T$ and $T' $ are  $(v, e)$ and $(\varepsilon, e)$ respectively such that $v \neq \varepsilon$, then $T >_{w, e} T'$.
+  		\item If the roots of $T$ and $T' $ are $(v, e)$ and $(v', e)$ respectively such that $v, v' \neq \varepsilon$,  suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, then $T >_{w,e} T'$ iff either when $C(T')$
   		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
   		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
-%		\end{itemize}
+		\end{itemize}
 %
   		\item $e = [e_1^{\ast?}]$. 
 		\begin{itemize}
-		\item If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
+		\item If $T$ is a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
   		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
   		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T)$
   		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
@@ -183,13 +183,13 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
 		\end{itemize}
 %
   		\item $e = [e_1^{+?}]$. 
-%		\begin{itemize}
-%		\item If $T$ is  a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, e} T'$.
-  		Suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w,e} T'$ iff either when $C (T)$
+		\begin{itemize}
+		\item If the roots of $T$ and $T' $ are  $(\varepsilon, e)$ and $(v, e)$ respectively such that $v \neq \varepsilon$, then $T >_{w, e} T'$.
+  		\item If the roots of $T$ and $T' $ are $(v, e)$ and $(v', e)$ respectively such that $v, v' \neq \varepsilon$,  suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, then $T >_{w,e} T'$ iff either when $C(T)$
   		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
   		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
-%		\end{itemize}
+		\end{itemize}
   	\end{itemize}
   	
   	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$.
