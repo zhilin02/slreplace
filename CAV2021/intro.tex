@@ -7,34 +7,35 @@
 
 %
 %Strings are among the most important data types. 
-The rise of programming 
-languages like JavaScript, Python, Java, and PHP, which support a variety of
-string operations (e.g. concatenation, regex matching, replace, etc.), place
-the string data types the forefront and make their use indispensable.
-Despite this,
-string-manipulating programs are notoriously subtle, error-prone, and their 
-potential bugs
-may bring severe security consequences. A typical example is cross-site
-scripting (XSS), which is among the OWASP Top 10 Application Security Risks.
+Modern high-level programming languages like JavaScript, Python, Java,
+and PHP natively support a variety of string operations, and use
+strings to store and process virtually any kind of data or code.
+Applied string operations range from concatenation, splitting, and
+replacement, to complex functions like regular expression matching and
+encoding/decoding.  As a result, string-manipulating programs are
+notoriously subtle, error-prone, and their potential bugs may bring
+severe security consequences. A typical example is cross-site
+scripting (XSS), which is among the OWASP Top 10 Application Security
+Risks.
 %Regular expressions are widely used in string-manipulating programs. 
 An effective and increasingly popular method for identifying such bugs
 in the program is symbolic execution, possibly in combination with dynamic
 analysis. In a nutshell, this technique analyses a static path in a
 a program under consideration, by viewing it as a constraint $\phi$, whose 
-feasibility could be checked by an SMT-solver.
+feasibility can be checked by constraint solvers.
 
 Regular expression matching is one of the most important string operations
 in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
-This is in fact also one reason that most state-of-the-art string constraint solvers (e.g.
-Z3, CVC4, Z3-str2, ABC, Norn, Trau, OSTRICH, S2S, Stranger, ... \anthony{make sure we add all}) support
-the so-called \emph{regular constraints}, e.g., matching a string with a 
+Most state-of-the-art string constraint solvers (e.g.
+Z3, CVC4, Z3-str2/3/4, ABC, Norn, Trau, OSTRICH, S2S, Stranger, Slog, Slent, Gecode+S, G-Strings, ... \anthony{make sure we add all}) therefore support
+the \emph{regular expression constraints}, e.g., matching a string with a 
 regular expression, as we know it from formal language theory. Unfortunately, 
 \emph{Real-world Regular Expressions} (RWRE) in programming languages are dramatically different from 
 \emph{classical Regular Expressions} (RE) in formal language theory. 
 %In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
-Classical regular expressions are built from letters by the operators of concatenation, union, and Kleene star. RWREs differ from classical ones mainly in the following two aspects: 1) the non-standard semantics of 
-operators, e.g., the non-commutative union, the greedy/lazy Kleene star, 2) the new 
-features, e.g., capturing groups and back references.
+Classical regular expressions are built from letters by the operators of concatenation, union, and Kleene star, and have nice compositional semantics. RWREs differ from classical ones mainly in the following two aspects: 1) non-standard semantics of 
+operators, e.g., the non-commutative union, the greedy/lazy Kleene star, and 2) new 
+features, e.g., capturing groups and back-references.
 
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
