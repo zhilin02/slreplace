@@ -213,9 +213,10 @@ no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ECMA
 semantics.
 
-\paragraph{For \textbf{R2}:} We are not aware of other constraint solvers
-supporting capturing groups, neither among the SMT nor  the
-CP solvers. %(e.g.,
+\paragraph{For \textbf{R2}:} The are no standard string benchmarks
+involved RWREs, and we are not aware of other constraint solvers
+supporting capturing groups, neither among the SMT nor the CP
+solvers. %(e.g.,
 %\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
 The closest related work is the algorithm implemented in \expose{}, which
 applies Z3-seq~\cite{Z3} for solving string constraints, but augments
@@ -227,7 +228,7 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
   parts of \expose{}.}
 %
 For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98117
-regular expressions taken from \cite{DMC+19}.
+real-world regular expressions taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
 SMT-LIB, as input for \ostrich, and two in JavaScript, as input for
@@ -245,17 +246,18 @@ queries and four paths, respectively.
 
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
-in 96644 (98.5\%) of the match benchmarks, and all three queries in
-95735 (97.6\%) of the replace-all benchmarks. The errors in 1132 cases are due
-to back-references in \verb!<re1>!, which are not handled by \ostrich.
-For match, the number of paths covered by \expose{} is comparable to
-the number of \ostrich\ sat results, although the runtime of \expose{}
-is on average 35x higher than that of \ostrich. For replace, the
-runtime of \expose{} is even 37x higher, but the number of paths
-covered is only 36\% of the number of sat answers produced by
-\ostrich.  Overall, the experiments indicate that \ostrich\ is
-significantly more efficient than the ExpoSE approach at solving path
-constraints involving RWRE.
+in 96644 of the match benchmarks (98.5\%), and all three queries in
+95735 of the replace-all benchmarks (97.6\%). The errors in 1132 cases
+are due to back-references in \verb!<re1>!, which are not handled by
+\ostrich.  For match, the number of paths covered by \expose{} is
+comparable to the number of \ostrich\ sat results, although the
+runtime of \expose{} is on average 35x higher than that of
+\ostrich. For replace, the runtime of \expose{} is even 37x higher,
+but the number of paths covered is only 36\% of the number of sat
+answers produced by \ostrich. Overall, even taking the overhead of
+analysing JavaScript code (as opposed to SMT-LIB) into account, the
+experiments show that \ostrich\ is a very efficient and highly
+competitive solver for RWREs.
 
 \paragraph{For \textbf{R3}:} We compare Aratha+\ostrich with \expose{}
 on the same benchmarks as for \textbf{R1}.  From the results in
