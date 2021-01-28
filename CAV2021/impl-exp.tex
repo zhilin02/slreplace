@@ -64,6 +64,54 @@ Our implementation revolves around PSSTs. Any of the three string operators ment
 
 \subsection{Experimental evaluation}
 
+\begin{figure}[tb]
+  \scriptsize
+
+  \begin{minipage}{0.49\linewidth}
+\begin{minted}{lisp}
+(declare-fun x () String)
+(define-fun  y () String
+   (str.replace_cg_all x <re1> <repl>))
+(push 1)
+(assert (str.in.re x <re1>))
+(assert (str.in.re y <re2>))
+(check-sat) (get-model)
+(pop 1) (push 1)
+(assert (str.in.re x <regex>))
+(assert (not (str.in.re y <re2>)))
+(check-sat) (get-model)
+(pop 1) (push 1)
+(assert (not (str.in.re x <re1>)))
+(check-sat) (get-model)
+(pop 1)
+\end{minted}
+  \end{minipage}\hfill
+  \raisebox{-20ex}{\rule{0.4pt}{40ex}}\hfill
+  \begin{minipage}{0.49\linewidth}
+\begin{minted}{js}
+function fun(x) {
+   if(/<re1>/.test(x)) {
+      var y = x.replace(/<re1>/g, <repl>);
+      if(/<re2>/.test(y))
+        console.log("1");
+      else
+        console.log("2");
+   }
+   else
+       console.log("3");
+}
+
+var S$ = require("S$");
+var x = S$.symbol("x", "");
+fun(x);
+\end{minted}
+  \end{minipage}
+  
+  \caption{Harnesses with replace-all: SMT-LIB for \ostrich,
+    and JavaScript for ExpoSE.}
+  \label{fig:harness}
+\end{figure}
+
 \begin{table}[tb]
 	\begin{center}
 	\begin{tabular}{|l@{\quad}c@{\quad}|*{2}{c}|@{\quad}*{2}{c}|}
@@ -132,28 +180,46 @@ quantifiers and capturing groups?
 \textbf{R3:} How does it perform in the context of symbolic execution,
 the prime application of string solving?
 
-For \textbf{R1}, we apply an additional post-processing step to
-Aratha+{\ostrich} in the experiments for \textbf{R3}, that is, when
-Aratha reports that some path is feasible and {\ostrich} returns a
-model, the Javascript program is executed concretely, with the model
-as the input, in order to confirm that the concrete execution indeed
-follows the targeted path, thus showing that the semantics in this
-paper are consistent with that of Javascript.
+For \textbf{R1}, we implemented a translator from ES11 regular
+expressions to RWREs, and integrated \ostrich\ into the symbolic
+execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
+the regression test suite of
+ExpoSE~\cite{DBLP:conf/spin/LoringMK17}, as well as some other
+Javascript programs containing match or replace functions extracted
+from Github. To verify the soundness of Aratha+\ostrich, we compared
+the results with those produced by ExpoSE; we also checked the
+correctness of models computed by \ostrich\ by concretely executing
+the JavaScript program under test on the generated inputs, to confirm
+that the concrete execution indeed follows the targeted path. The
+results are summarized in Table~\ref{tab:exp-r2}; no inconsistencies
+were observed in the experiments, showing that the semantics in this
+paper are indeed suitable for capturing ECMA semantics.
 
-Concerning \textbf{R2}, we are not aware of other SMT solvers with
-support for capturing groups; the same holds for CP solvers (e.g.,
-\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}). The
-closest related work is the algorithm implemented in the symbolic
-execution tool ExpoSE~\cite{DBLP:conf/spin/LoringMK17,LMK19}, which
+For \textbf{R2}, we are not aware of other constraint solvers
+supporting capturing groups, neither of SMT solvers nor
+CP solvers. %(e.g.,
+%\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
+The closest related work is the algorithm implemented in ExpoSE, which
 applies Z3-seq~\cite{Z3} for solving string constraints, but augments
-it with a refinement loop to approximate the semantics of
-replace(All).\footnote{We also considered to replace Z3 with \ostrich\
-  in ExpoSE for the experiments. However, ExpoSE integrates Z3 using
-  its C API, and changing to a solver like \ostrich, with native
-  support for capture groups, would have required the rewrite of
-  substantial parts of ExpoSE.}
+it with a refinement loop to approximate RWRE
+semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
+  ExpoSE for the experiments. However, ExpoSE integrates Z3 using its
+  C API, and changing to a solver like \ostrich, with native support
+  for capture groups, would have required the rewrite of substantial
+  parts of ExpoSE.}
 %
-For \textbf{R2}, we therefore compared \ostrich\ with ExpoSE on
-regular expressions taken from the ??? library.
+For \textbf{R2}, we therefore compared \ostrich\ with ExpoSE on 98117
+regular expressions taken from \cite{DMC+19}. For each of the regular
+expressions, we created four harnesses: two in SMT-LIB, as input for
+\ostrich, and two in JavaScript, as input for ExpoSE. Two of the
+harnesses are shown in Figure~\ref{fig:harness}.
 
-For \textbf{R3}, we plug {\ostrich} into Aratha and compare it with ExpoSE, on the collection of Javascript programs tested by ExpoSE, as well as some other Javascript programs containing match or replace functions extracted from Github. The experimental results are summarized in Table~\ref{tab:exp-r2}. From the results, we can see that on average, Aratha+{\ostrich} is faster than ExpoSE+Z3 by one order of magnitude. Therefore, in the context of symbolic execution, {\ostrich} is much more efficient than the CEGAR-augmented symbolic execution, for dealing with RWREs.
+For \textbf{R3}, we plug {\ostrich} into Aratha and compare it with
+ExpoSE, on the collection of JavaScript programs tested by ExpoSE, as
+well as some other Javascript programs containing match or replace
+functions extracted from Github. The experimental results are
+summarized in Table~\ref{tab:exp-r2}. From the results, we can see
+that on average, Aratha+{\ostrich} is faster than ExpoSE+Z3 by one
+order of magnitude. Therefore, in the context of symbolic execution,
+{\ostrich} is much more efficient than the CEGAR-augmented symbolic
+execution, for dealing with RWREs.
