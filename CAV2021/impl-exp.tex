@@ -136,7 +136,7 @@ fun(x);
 	\end{tabular}
 	\end{center}
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs. Average time is wall-clock time. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 1min wall-clock time. }
-	\label{tab:exp-r2}
+	\label{tab:exp-r1}
 
   \begin{center}
   \begin{tabular}{l@{\quad}c@{\quad}|*{6}{c}|@{\quad}c}
@@ -160,12 +160,12 @@ fun(x);
     && \multicolumn{6}{c|@{\quad}}{Total \#sat: 273927, \#unsat: 14659}
   \end{tabular}
   \end{center}
-  \caption{Results of running \ostrich\ and ExpoSE on regular
-    expressions.  Average time is wall-clock time. All experiments
-    were done on an AMD Opteron 2220 SE machine, running 64-bit Linux
-    and Java~1.8.  Runtime was limited to 1min wall clock time, and
-    memory to 2GB.}
-  \label{tab:exp-r1}
+  \caption{The number of queries answered by \ostrich, and number of
+    paths covered by ExpoSE, in the \textbf{R2} experiments.  Average time is
+    wall-clock time. All experiments were done on an AMD Opteron 2220
+    SE machine, running 64-bit Linux and Java~1.8.  Runtime was
+    limited to 1min wall clock time, and memory to 2GB.}
+  \label{tab:exp-r2}
 \end{table}
 
 Our experiments have the purpose of answering the following main questions:
@@ -195,13 +195,13 @@ ExpoSE; we also checked the correctness of models computed by
 \ostrich\ by concretely executing the JavaScript program under test on
 the generated inputs, to confirm that the concrete execution indeed
 follows the targeted path.\philipp{Zhilin, how should this formulation
-  be weakened?} The results are summarized in Table~\ref{tab:exp-r2};
+  be weakened?} The results are summarized in Table~\ref{tab:exp-r1};
 no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ECMA
 semantics.
 
 For \textbf{R2}, we are not aware of other constraint solvers
-supporting capturing groups, neither of SMT solvers nor
+supporting capturing groups, neither among the SMT nor  the
 CP solvers. %(e.g.,
 %\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
 The closest related work is the algorithm implemented in ExpoSE, which
@@ -214,17 +214,31 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
   parts of ExpoSE.}
 %
 For \textbf{R2}, we therefore compared \ostrich\ with ExpoSE on 98117
-regular expressions taken from \cite{DMC+19}. For each of the regular
-expressions, we created four harnesses: two in SMT-LIB, as input for
-\ostrich, and two in JavaScript, as input for ExpoSE. Two of the
-harnesses are shown in Figure~\ref{fig:harness}.
+regular expressions taken from \cite{DMC+19}.
 
-For \textbf{R3}, we plug {\ostrich} into Aratha and compare it with
-ExpoSE, on the collection of JavaScript programs tested by ExpoSE, as
-well as some other Javascript programs containing match or replace
-functions extracted from Github. The experimental results are
-summarized in Table~\ref{tab:exp-r2}. From the results, we can see
-that on average, Aratha+{\ostrich} is faster than ExpoSE+Z3 by one
-order of magnitude. Therefore, in the context of symbolic execution,
-{\ostrich} is much more efficient than the CEGAR-augmented symbolic
-execution, for dealing with RWREs.
+For each of the regular expressions, we created four harnesses: two in
+SMT-LIB, as input for \ostrich, and two in JavaScript, as input for
+ExpoSE. The two harnesses shown in Figure~\ref{fig:harness} use one of the
+regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
+the replace-all function to simulate typical string processing;
+\verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
+replacement string \verb!"$1"!. The three paths of the JavaScript
+function~\verb!fun! correspond to the three queries in the SMT-LIB
+script, so that a direct comparison can be made between the results of
+the SMT-LIB queries and the set of paths covered by ExpoSE. The other
+two harnesses are similar to the ones in Figure~\ref{fig:harness}, but
+use the match function instead of replace-all, and contain four
+queries and four paths, respectively.
+
+The results of this experiment are shown in
+Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
+for 98.4\% of the match benchmarks, and all three queries in 97.6\% of
+the replace-all benchmarks. The errors in 1132 cases are due to
+back-references in \verb!<re1>!, which are not handled by \ostrich.
+
+For \textbf{R3}, we compare Aratha+\ostrich with ExpoSE on the same
+benchmarks as for \textbf{R1}.  From the results in
+Table~\ref{tab:exp-r1}, we can see that on average, Aratha+{\ostrich}
+is faster than ExpoSE+Z3 by one order of magnitude. Therefore, in the
+context of symbolic execution, {\ostrich} is much more efficient than
+the CEGAR-augmented symbolic execution, for dealing with RWREs.
