@@ -65,10 +65,9 @@ We shall define the semantics of $\regexp$, which uses the concepts of subexpres
   		
   		\item If $e' = [{e'_1}^{\ast}]$ or $[{e'_1}^{\ast ?}]$, then either $w' = \varepsilon$ in which case $\alpha$ is a
   		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
-  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, moreover, $w' = w'_1 \cdots w'_k$ and $w'_i = \varepsilon$ for at most one $i \in [k]$.
+  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
 
-  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
-  		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, moreover, $w' = w'_1 \ldots w'_k$ and $w'_i = \varepsilon$ for at most one $i \in [k]$.
+  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then either $w' = \varepsilon$ and $\alpha$ has one child $\alpha_1 = (\varepsilon, e'_1)$, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \ldots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
 %
 %  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
 %  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
@@ -98,7 +97,7 @@ The notation $C(T)$ refers to the sequence of direct children of the root node o
 We use $\cM_{w}(e)$ to denote the set of all match trees of $e$ to $w$. Moreover, for $L \subseteq \Sigma^\ast$, we use $\cM_{L}(e)$ to denote the set of match trees of $e$ to some $w \in L$.
 We also use $\Lang(e)$ to denote $\{w \in \Sigma^* \mid \cM_w(e) \neq \emptyset\}$. 
   \end{definition}
-By a mutual induction on $|w|$ and $|e|$, we can show that $|\cM_{w}(e)|$, the size of $\cM_{w}(e)$, is at most $(|w|+1)|e|$.  
+By a mutual induction on $|w|$ and $|e|$, we can show that $|\cM_{w}(e)|$, the size of $\cM_{w}(e)$, is at most $|w||e|$.  
   
 \begin{example}\label{exmp-regex-match-tree}
 Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\Gamma = \{0,1,\cdots,9\}$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics-decimal}(i), (ii), (iii), and (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted. % to avoid tediousness.
