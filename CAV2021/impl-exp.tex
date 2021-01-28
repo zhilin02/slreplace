@@ -139,25 +139,34 @@ fun(x);
 	\label{tab:exp-r1}
 
   \begin{center}
-  \begin{tabular}{l@{\quad}c@{\quad}|*{6}{c}|@{\quad}c}
+  \begin{tabular}{l@{\quad}c@{\quad}|*{6}{c}|@{\quad}*{6}{c}}
      & &
-    \multicolumn{6}{c|@{\quad}}{\textbf{\ostrich}} & \textbf{ExpoSE}
+    \multicolumn{6}{c|@{\quad}}{\textbf{\ostrich}} &
+    \multicolumn{6}{c}{\textbf{ExpoSE} on 73448}
     \\
       && \multicolumn{6}{c|@{\quad}}{\# solved queries}
+      & \multicolumn{6}{c}{\# covered paths}
     \\
      & \#Benchm.& ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
+     & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
     \\\hline
     \textbf{Match} & 98117 & 75 & 88 & 176 & 79 & 96565 & 1132
+    & 2497 & 7168 & 27685 & 36098 & 0
     \\
     && \multicolumn{6}{c|@{\quad}}{Average time: 0.63s}
+    &\multicolumn{6}{c}{Average time: 28.0s}
     \\
     && \multicolumn{6}{c|@{\quad}}{Total \#sat: 108132, \#unsat: 279135}
+    & \multicolumn{6}{c}{Total paths covered: 73448}
     \\\hline
     \textbf{Replace} & 98117 & 445 & 229 & 576 & 95735 & --- & 1132
+    & 3929 & 13859 & 51524 & 4217 & ---
     \\
     && \multicolumn{6}{c|@{\quad}}{Average time: 1.02s}
+    & \multicolumn{6}{c}{Average time: 55.0s}
     \\
     && \multicolumn{6}{c|@{\quad}}{Total \#sat: 273927, \#unsat: 14659}
+    & \multicolumn{6}{c}{Total paths covered: 73529}
   \end{tabular}
   \end{center}
   \caption{The number of queries answered by \ostrich, and number of
