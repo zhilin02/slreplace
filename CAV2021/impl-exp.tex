@@ -64,7 +64,32 @@ Our implementation revolves around PSSTs. Any of the three string operators ment
 
 \subsection{Experimental evaluation}
 
-\begin{table}[htb]
+\begin{table}[tb]
+	\begin{center}
+	\begin{tabular}{|l@{\quad}c@{\quad}|*{2}{c}|@{\quad}*{2}{c}|}
+	\hline
+	   & &
+	  \multicolumn{2}{c|@{\quad}}{\textbf{ExpoSE+Z3}} &\multicolumn{2}{c@{\quad}|}{\textbf{Aratha+\ostrich}}
+	  \\
+	   & \#JS-Progs. & ~ \# Executed~  & ~ \#Timeout~ &  ~\#Executed ~ & ~\#Timeout~
+	  \\\hline
+	  \textbf{ExpoSE} & 94 & 93 & 1 & \textbf{94} & 0 
+	  \\
+	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{5.53}s}
+	  \\\hline
+	  \textbf{Match} & 38 &  30&   8& \textbf{38} & 0
+	  \\
+	  && \multicolumn{2}{c|@{\quad}}{Average time: 13.56s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{2.78}s}
+	  \\\hline
+	  \textbf{Replace} & 40 & 16 & 24 & \textbf{40} & 0
+	  \\
+	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{2.69}s}
+	  \\\hline
+	\end{tabular}
+	\end{center}
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs. Average time is wall-clock time. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 1min wall-clock time. }
+	\label{tab:exp-r2}
+
   \begin{center}
   \begin{tabular}{l@{\quad}c@{\quad}|*{6}{c}|@{\quad}c}
      & &
@@ -91,21 +116,31 @@ Our implementation revolves around PSSTs. Any of the three string operators ment
     expressions.  Average time is wall-clock time. All experiments
     were done on an AMD Opteron 2220 SE machine, running 64-bit Linux
     and Java~1.8.  Runtime was limited to 1min wall clock time, and
-    heap space to 2GB.}
+    memory to 2GB.}
   \label{tab:exp-r1}
 \end{table}
 
-Our experiments have the purpose of answering two main questions:\\
-\textbf{R1:} How does \ostrich\ compare to
-other solvers
-that can handle replace(All) and capturing groups? \zhilin{that can handle real-world regular expressions, e.g. greedy/lazy Kleene star and capturing groups ?}
+Our experiments have the purpose of answering the following main questions:\\
+\textbf{R1:} Are the semantics of RWREs defined in this paper
+suitable to encode regular expressions in programming languages,
+for instance ECMAScript expressions~\cite{ECMAScript10}?
 \\
-\textbf{R2:} How does it perform in the context of symbolic execution,
+\textbf{R2:} How does \ostrich\ compare to other solvers that can
+handle real-world regular expressions, e.g., greedy/non-greedy
+quantifiers and capturing groups?
+\\
+\textbf{R3:} How does it perform in the context of symbolic execution,
 the prime application of string solving?
-\\
-\zhilin{\textbf{R3:} Are the semantics of RWREs defined in this paper consistent with that of ECMAScript(Javascript) regular expressions ?}
 
-Concerning \textbf{R1}, we are not aware of other SMT solvers with
+For \textbf{R1}, we apply an additional post-processing step to
+Aratha+{\ostrich} in the experiments for \textbf{R3}, that is, when
+Aratha reports that some path is feasible and {\ostrich} returns a
+model, the Javascript program is executed concretely, with the model
+as the input, in order to confirm that the concrete execution indeed
+follows the targeted path, thus showing that the semantics in this
+paper are consistent with that of Javascript.
+
+Concerning \textbf{R2}, we are not aware of other SMT solvers with
 support for capturing groups; the same holds for CP solvers (e.g.,
 \cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}). The
 closest related work is the algorithm implemented in the symbolic
@@ -118,35 +153,7 @@ replace(All).\footnote{We also considered to replace Z3 with \ostrich\
   support for capture groups, would have required the rewrite of
   substantial parts of ExpoSE.}
 %
-For \textbf{R1}, we therefore compared \ostrich\ with ExpoSE on
+For \textbf{R2}, we therefore compared \ostrich\ with ExpoSE on
 regular expressions taken from the ??? library.
 
-For \textbf{R2}, we plug {\ostrich} into Aratha and compare it with ExpoSE, on the collection of Javascript programs tested by ExpoSE, as well as some other Javascript programs containing match or replace functions extracted from Github. The experimental results are summarized in Table~\ref{tab:exp-r2}. From the results, we can see that on average, Aratha+{\ostrich} is faster than ExpoSE+Z3 by one order of magnitude. Therefore, in the context of symbolic execution, {\ostrich} is much more efficient than the CEGAR-augmented symbolic execution, for dealing with RWREs.
-\begin{table}[H]
-	\begin{center}
-	\begin{tabular}{|l@{\quad}c@{\quad}|*{2}{c}|@{\quad}*{2}{c}|}
-	\hline
-	   & &
-	  \multicolumn{2}{c|@{\quad}}{\textbf{ExpoSE+Z3}} &\multicolumn{2}{c@{\quad}|}{\textbf{Aratha+\ostrich}}
-	  \\
-	   & \#JS-Progs. & ~ \# Executed~  & ~ \#Timeout~ &  ~\#Executed ~ & ~\#Timeout~
-	  \\\hline
-	  \textbf{ExpoSE} & 94 & 93 & 1 & \textbf{94} & 0 
-	  \\
-	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{5.53}s}
-	  \\\hline
-	  \textbf{Match} & 38 &  30&   8& \textbf{38} & 0
-	  \\
-	  && \multicolumn{2}{c|@{\quad}}{Average time: 13.56s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{2.78}s}
-	  \\\hline
-	  \textbf{Replace} & 40 & 16 & 24 & \textbf{40} & 0
-	  \\
-	  && \multicolumn{2}{c|@{\quad}}{Average time: 17.65s} & \multicolumn{2}{c@{\quad}|}{Average time: \textbf{2.69}s}
-	  \\\hline
-	\end{tabular}
-	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs. Average time is wall-clock time. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 1min wall-clock time. }
-	\label{tab:exp-r2}
-  \end{table}
-
-For \textbf{R3}, we apply an additional post-processing step to Aratha+{\ostrich} in the experiments for \textbf{R2}, that is, when Aratha reports that some path is feasible and {\ostrich} returns a model, the Javascript program is executed concretely, with the model as the input, in order to confirm that the concrete execution indeed follows the targeted path, thus showing that the semantics in this paper are consistent with that of Javascript.
+For \textbf{R3}, we plug {\ostrich} into Aratha and compare it with ExpoSE, on the collection of Javascript programs tested by ExpoSE, as well as some other Javascript programs containing match or replace functions extracted from Github. The experimental results are summarized in Table~\ref{tab:exp-r2}. From the results, we can see that on average, Aratha+{\ostrich} is faster than ExpoSE+Z3 by one order of magnitude. Therefore, in the context of symbolic execution, {\ostrich} is much more efficient than the CEGAR-augmented symbolic execution, for dealing with RWREs.
