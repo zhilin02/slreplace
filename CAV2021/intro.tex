@@ -34,15 +34,71 @@ regular expression, as we know it from formal language theory. Unfortunately,
 \emph{Real-world Regular Expressions} (RWRE) in programming languages are dramatically different from 
 \emph{classical Regular Expressions} (RE) in formal language theory. 
 %In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
-Classical regular expressions are built from letters by the operators of concatenation, union, and Kleene star, and have nice compositional semantics. RWREs differ from classical ones mainly in the following two aspects: 1) non-standard semantics of 
+Classical regular expressions are built from letters by the operators of
+concatenation, union, and Kleene star, and have nice compositional semantics. On
+the other hand, RWREs differ from classical ones mainly in the following two 
+aspects: 1) non-standard semantics of 
 operators, e.g., the non-commutative union, the greedy/lazy Kleene star, and 2) new 
 features, e.g., capturing groups and backreferences.
+RWREs are in general more expressive than classical REs, e.g., it is known that
+with backreferences one can easily generate languages that are not even 
+context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether 
+\begin{example}
+    Consider the RWRE \mintinline{javascript}{(\d+)(\d*)}. It has two capturing
+    groups (i.e. each within a pair of opening/closing brackets), each matches
+    a string of digits (signified by \mintinline{javascript}{\d}). The second 
+    capturing group
+    could be matched with an empty sequence of digits. Given a string of digits
+    (e.g. \texttt{"2050"}), the entire string will always be matched by the
+    first subexpression \mintinline{javascript}{(\d+)}, owing to the greedy semantics of
+    RWREs. 
+
+    Consider another RWRE \mintinline{javascript}{(\d+)\1\1}. This contains two
+    backreferences (i.e. \mintinline{javascript}{\1}), each is to be 
+    matched precisely with
+    the matched word of the first capturing group. So, it
+    accepts precisely the set $L$ of all the words $www$, where $w$ is a 
+    nonempty sequence of digits, which is not a context-free language.
+    \qed
+\end{example}
 
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
-RWREs are in general more expressive than classical REs, e.g., it is known that
-with backreferences one can easily generate languages that are not even 
-context-free (e.g. see \cite{FS19}). %It is an open question whether 
+
+As to be expected, RWREs in real-world programs are also commonly used in 
+combination with
+other string operations (e.g. match and replace(all) functions \cite{LMK19}),
+which pose additional challenges to symbolic execution engines.
+On a given string $s$ and a RWRE $e$, the match function allows one to extract 
+the last match of a capturing group in $e$ with respect to $s$. 
+For the replace function, on a given string $s$, a matching pattern RWRE $e$, and a replacement string $t$, it replaces the first match (or all 
+matches, if the global flag is enabled) of $e$ in $s$ by $t$. Here $t$
+could contain references to the matches of various capturing groups
+in $e$. 
+\begin{example}
+    We give a fuller example in Section \ref{sec:mot}, which simultaneously 
+    involves both match and replace.
+    Consider the snippet
+    \begin{minted}{javascript}
+        var namesReg = /([A-Za-z]+) ([A-Za-z]+)/g;
+        var newAuthorList = authorList.replace(nameReg,\$2, \$1);
+    \end{minted}
+    Assuming \texttt{authorList} is given as a \texttt{;}-separated 
+    list of author names --- first name, followed by a last name ---
+    the above program would convert this to last name, followed by first name
+    format. For example, \texttt{"Don Knuth; Alan Turing; Bob Floyd"} would
+    be converted to \texttt{"Knuth, Don; Turing, Alan; Floyd, Bob"}.
+    \qed
+\end{example}
+\OMIT{
+The semantics of RWREs drastically affect the behaviors of these functions. In particular, one must take a special care of the
+greedy/lazy semantics of Kleene star, which cannot 
+be captured in a complete way as constraints over word equations and classical 
+REs. 
+\anthony{More to come}
+}
+
+
 Since the state-of-the-art string solvers support only classical REs instead of
 RWREs, % are not primitively supported by state-of-the-art string solvers
 %(in fact, they are in general ,
@@ -78,17 +134,6 @@ results in a rather severe price in both precision and performance: The refineme
 
 %Typical string operations involving RWREs in programming languages include match, exec, test, search/find, and replace.
 
-RWREs are commonly used in combination with
-other string operations, e.g. match and replace(all) functions \cite{LMK19}.  
-On a given string $s$ and a RWRE $e$, the match function allows one to extract the match of a capturing group from the first match of $e$ in $s$. For the replace function, on a given string $s$, a matching pattern RWRE $e$, and a replacement string $t$, it replaces the first match (or all 
-matches, if the global flag is enabled) of $e$ in $s$ by $t$. Here $t$
-could contain references to the matches of various capturing groups
-in $e$. 
-The semantics of RWREs drastically affect the behaviors of these functions. In particular, one must take a special care of the
-greedy/lazy semantics of Kleene star, which cannot 
-be captured in a complete way as constraints over word equations and classical 
-REs. 
-\anthony{More to come}
 
 
 %In particular, 
