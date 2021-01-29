@@ -65,8 +65,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
 
-As to be expected, RWREs in real-world programs are also commonly used in 
-combination with
+RWREs in real-world programs are also commonly used in combination with
 other string operations (e.g. match and replace(all) functions \cite{LMK19}),
 which pose additional challenges to symbolic execution engines.
 On a given string $s$ and a RWRE $e$, the match function allows one to extract 
@@ -76,9 +75,8 @@ matches, if the global flag is enabled) of $e$ in $s$ by $t$. Here $t$
 could contain references to the matches of various capturing groups
 in $e$. 
 \begin{example}
-    We give a fuller example in Section \ref{sec:mot}, which simultaneously 
-    involves both match and replace.
-    Consider the snippet
+    We give a more extensive example in Section \ref{sec:mot}, which 
+    simultaneously involves both match and replace. Consider the snippet
     \begin{minted}{javascript}
         var namesReg = /([A-Za-z]+) ([A-Za-z]+)/g;
         var newAuthorList = authorList.replace(nameReg,$2, $1);
