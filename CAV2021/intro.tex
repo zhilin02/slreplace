@@ -42,7 +42,11 @@ operators, e.g., the non-commutative union, the greedy/lazy Kleene star, and 2) 
 features, e.g., capturing groups and backreferences.
 RWREs are in general more expressive than classical REs, e.g., it is known that
 with backreferences one can easily generate languages that are not even 
-context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether 
+context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
+%Thus far, no work on string constraint solving has considered RWRE
+%It is an open question whether RWRE can be incorporated into a string 
+%constraint language, while preserving 
+
 \begin{example}
     Consider the RWRE \mintinline{javascript}{(\d+)(\d*)}. It has two capturing
     groups (i.e. each within a pair of opening/closing brackets), each matches
@@ -65,9 +69,10 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
 
+To make matters worse,
 RWREs in real-world programs are also commonly used in combination with
 other string operations (e.g. match and replace(all) functions \cite{LMK19}),
-which pose additional challenges to symbolic execution engines.
+which pose additional challenges to symbolic execution tools.
 On a given string $s$ and a RWRE $e$, the match function allows one to extract 
 the last match of a capturing group in $e$ with respect to $s$. 
 For the replace function, on a given string $s$, a matching pattern RWRE $e$, and a replacement string $t$, it replaces the first match (or all 
@@ -95,7 +100,6 @@ be captured in a complete way as constraints over word equations and classical
 REs. 
 \anthony{More to come}
 }
-
 
 Since the state-of-the-art string solvers support only classical REs instead of
 RWREs, % are not primitively supported by state-of-the-art string solvers
@@ -127,6 +131,21 @@ CEGAR (counter-example guided abstraction and refinement). This, however,
 results in a rather severe price in both precision and performance: The
 refinement process may not terminate and the symbolic execution of even a simple
 program with RWREs may need to be refined many times.
+
+On a more theoretical level, there also has not been any attempt to incorporate
+RWRE into a decidable string constraint language, e.g., word equations
+\cite{Gut98}. Thus far, most decidability and complexity results regarding RWRE 
+solely focus on standard decision problems over RWRE (e.g. membership and 
+emptiness being decidable and NP-complete \cite{FS19,BM17b}). 
+We conclude with two open questions from the discussion:
+\begin{description}
+    \item[(Q1)] Incorporate RWRE matching, match and replace functions
+        as primitives in a string constraint language and develop a 
+        fast string solver for it.
+    \item[(Q2)] Develop a reasonably expressive decidable string constraint 
+        language that supports concatenation, the replace function, and RWRE
+        matching.
+\end{description}
 %For one, satisfiability of string equations with regular constraints is
 %well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
 %best of our knowledge, no existing string solver is complete for string 
@@ -141,7 +160,49 @@ program with RWREs may need to be refined many times.
 %Although the CEGAR approach of Expose made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
 \paragraph*{Contributions}
-This paper proposes a novel approach to support real-world regular expressions in string constraint solving. The main idea of our approach is to propose a new automata model, called prioritized streaming string transducers (PSST). The model of PSST extends and combines prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular expression operators by priorities and deal with capturing groups and backreferences by string variables. 
+The main contributions of the paper is to answer both (Q1) and (Q2) in the
+positive for a reasonable fragment of RWRE. In particular, we consider the 
+problem of path feasibility of a simple symbolic path constraint language
+that uses only string variables:
+\[
+\begin{array}{l c l}
+\smallskip
+S & \eqdef  & z:= x \concat y \mid y := \extract_{i, e}(x) \mid  
+%& &  
+%y := \reverse(x) 
+y := \replace_{\pat, \rep}(x) \mid \\
+& & y := \replaceall_{\pat, \rep}(x)   \mid 
+%y := \Transducer(x)\  \mid\\
+ \ASSERT{x \in e} \mid S; S\
+\label{eq:SL}
+%a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
+\end{array}
+\]
+That is, assignments are allowed whose right hand side could use concatenation,
+the match function ($\extract$), and the replace function (with/without the 
+global flag). RWREs ($e,\pat,\rep$ in the syntax above) are allowed in the 
+assertions, as well as in the match and the replace functions. A given path is
+feasible if there is an initialization of the string variables so that the above
+path can run from start to finish without violating any of the assertions.
+Our main result is the decidability of this problem for a reasonable class of
+RWREs. In particular, $\rep$ is a concatenation of string 
+constants and backreferences, while $e, \pat$ are RWRE that allow commutative
+unions, capturing groups, and greedy/lazy Kleene stars, but \emph{not} 
+backreferences. Our fragment of RWRE supports a significant portion of
+frequently used features of RWRE (as indicated by the data analysis performed in
+\cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
+global flag ($\sim$30\%), and greedy/lazy Kleene stars ($\sim$23\%). Features
+like backreferences turned out to be not so frequently used ($\sim$0.8\%).
+An example of a symbolic path that is covered in this fragment is that of
+Example \ref{exmp-name-swap}.
+\anthony{Can you guys add some other statistics here perhaps?}
+
+%This paper proposes a novel approach to support real-world regular expressions in string constraint solving. 
+Our decision procedure requires that we introduce a new automata model, called 
+prioritized streaming string transducers (PSST), which extends and combines 
+prioritized finite-state automata \cite{BM17} and streaming string transducers 
+\cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular 
+expression operators by priorities and deal with capturing groups and backreferences by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
 We then design a decision procedure for a class of string constraints with real-world regular expressions. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
