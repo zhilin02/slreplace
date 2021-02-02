@@ -30,30 +30,33 @@ expressions are {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
   str.replace\_cg\_all} are counterparts of the standard {\sf
   str.replace\_re} and {\sf replace\_re\_all} operators, and allow
 capturing groups in the match pattern and references in the
-replacement pattern. As an example, the following constraint swaps
-lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
+replacement pattern. As an example, the following constraint swaps the first name and the last name (see Example~\ref{exmp-name-swap}),
+%lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
 %
+{\small
 \begin{minted}{lisp}
-  (= w (str.replace_cg_all v
-                   (re.++ ((_ re.capture 1) (re.range "a" "z"))
-                          ((_ re.capture 2) (re.range "A" "Z")))
-                   (re.++ (_ re.reference 2) (_ re.reference 1))))
+(= w (str.replace_cg_all v (re.++  
+ ((_ re.capture 1)(re.+ (re.union (re.range "A" "Z")(re.range "a" "z"))))
+ (str.to.re " ") 
+ ((_ re.capture 2)(re.+ (re.union (re.range "A" "Z")(re.range "a" "z")))))
+ (re.++ (_ re.reference 2) (_ re.reference 1))))
 \end{minted}
+}
 %
 The replacement string is written as a regular expression only
 containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf re.reference}. In contrast to the standard operators, it is not allowed to use string variables in the 
 replacement parameter.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
-$\strline$. For instance,
+$\strline_{\sf reg}$. For instance,
 %
+{\small
 \begin{minted}{lisp}
   ((_ str.extract 1)
         (re.++ (re.*? re.allchar)
-               ((_ re.capture 1) (re.+ (re.range "a" "z"))
-               re.all)) x)
+               ((_ re.capture 1) (re.+ (re.range "a" "z")) re.all)) x)
 \end{minted}
-%
+}
 extracts the left-most, longest sub-string consisting of only lower-case
 characters from a string~$x$.
 
@@ -74,15 +77,20 @@ Our implementation revolves around PSSTs. Any of the three string operators ment
 (define-fun  y () String
    (str.replace_cg_all x <re1> <repl>))
 (push 1)
-(assert (str.in.re x <re1>))
-(assert (str.in.re y <re2>))
+(assert (str.in.re x 
+          (re.++ re.all <re1> re.all)))
+(assert (str.in.re y 
+          (re.++ re.all <re2> re.all)))
 (check-sat) (get-model)
 (pop 1) (push 1)
-(assert (str.in.re x <regex>))
-(assert (not (str.in.re y <re2>)))
+(assert (str.in.re x 
+          (re.++ re.all <re1> re.all)))
+(assert (not (str.in.re y 
+          (re.++ re.all <re2> re.all))))
 (check-sat) (get-model)
 (pop 1) (push 1)
-(assert (not (str.in.re x <re1>)))
+(assert (not (str.in.re x 
+          (re.++ re.all <re1> re.all))))
 (check-sat) (get-model)
 (pop 1)
 \end{minted}
@@ -136,7 +144,8 @@ fun(x);
 	  \\\hline
 	\end{tabular}
 	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is wall-clock time.  \philipp{do average times include timeouts?}}
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
+    wall-clock time needed per benchmark, and counts timeouts as 60s.\zhilin{@denghang, update the statistics}}
 	\label{tab:exp-r1}
 
   \begin{center}
@@ -191,13 +200,13 @@ suitable to encode regular expressions in programming languages,
 for instance ECMAScript expressions~\cite{ECMAScript11}?
 \\
 \textbf{R2:} How does \ostrich\ compare to other solvers that can
-handle real-world regular expressions, e.g., greedy/non-greedy
+handle real-world regular expressions, e.g., greedy/lazy
 quantifiers and capturing groups?
 \\
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the prime application of string solving?
 
-\paragraph{For \textbf{R1}:} We implemented a translator from ES11 regular
+\paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
 the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
@@ -207,14 +216,13 @@ Aratha+\ostrich, we compared the results with those produced by
 \expose{}; we also checked the correctness of models computed by
 \ostrich\ by concretely executing the JavaScript program under test on
 the generated inputs, to confirm that the concrete execution indeed
-follows the targeted path.\philipp{Zhilin, how should this formulation
-  be weakened?} \zhilin{Philipp, we do not need to weaken it. Denghang is trying to do the semantic comparison with Expose. He should be able to get the statistics before the Feb. 4.} The results are summarized in Table~\ref{tab:exp-r1};
+follows the targeted path. The results are summarized in Table~\ref{tab:exp-r1};
 no inconsistencies were observed in the experiments, showing that the
-semantics in this paper are indeed suitable for capturing ECMA
+semantics in this paper are indeed suitable for capturing ES11
 semantics.
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
-involved RWREs, and we are not aware of other constraint solvers
+involving RWREs, and we are not aware of other constraint solvers
 supporting capturing groups, neither among the SMT nor the CP
 solvers. %(e.g.,
 %\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
@@ -231,8 +239,8 @@ For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98117
 real-world regular expressions taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
-SMT-LIB, as input for \ostrich, and two in JavaScript, as input for
-\expose{}. The two harnesses shown in Figure~\ref{fig:harness} use one of the
+SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
+\expose{}. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
 regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
 the replace-all function to simulate typical string processing;
 \verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
@@ -240,7 +248,7 @@ replacement string \verb!"$1"!. The three paths of the JavaScript
 function~\verb!fun! correspond to the three queries in the SMT-LIB
 script, so that a direct comparison can be made between the results of
 the SMT-LIB queries and the set of paths covered by \expose{}. The other
-two harnesses are similar to the ones in Figure~\ref{fig:harness}, but
+two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
 use the match function instead of replace-all, and contain four
 queries and four paths, respectively.
 
@@ -259,7 +267,7 @@ even taking into account that \expose{} has to analyze JavaScript
 code, as opposed to the SMT-LIB given to \ostrich, the experiments
 show that \ostrich\ is a highly competitive solver for RWREs.
 
-\paragraph{For \textbf{R3}:} We compare Aratha+\ostrich with \expose{}
+\paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with \expose{}
 on the same benchmarks as for \textbf{R1}.  From the results in
 Table~\ref{tab:exp-r1}, we can see that, on average, Aratha+{\ostrich}
 is faster than \expose{}+Z3 by a factor between 3 and 5, while being
