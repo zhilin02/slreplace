@@ -211,16 +211,6 @@ on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
  and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate \zhilin{xxx} Javascript programs from a library of real-world regular expressions \cite{DMC+19}, by using some simple Javascript program template containing match and replace functions.  Then we generate all the path constraints for each Javascript program and put them into one SMT file. We run {\ostrich} on these SMT files. The average running time on each file is \zhilin{xxx} seconds. For comparison, we also run \expose{} on the Javascript programs. The average running time for each program is \zhilin{xxx} seconds. The huge difference of the running time shows that our approach can reason about RWREs in a much more precise and faster way than the CEGAR-based approach.
 
 
-\paragraph*{Related work.}
-
-RWREs have been investigated in formal language theory. Regular expressions with capturing groups and backreferences have been considered in \cite{CSY03,CN09,Freydenberger13,Schmid16,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of RWREs, namely, the non-commutative union and the greedy/lazy semantics of Kleene star, were not addressed therein.
-
-Prioritized finite-state automata and prioritized finite-state transducers were proposed in \cite{BM17}. Prioritized finite-state transducers add indexed brackets to the input string in order to identify the matches of capturing groups. In contrast, PSSTs store the matches of capturing groups into string variables, which can then be referred to later on, thus allowing us to conveniently model the match and replace(all) function. 
-%
-Streaming string transducers were used in \cite{ZAM19} to solve the straight-line string constraints with concatenation, finite-state transducers, and regular constraints.
-
-RWREs have also received the attentions in software engineering community. Some empirical studies were reported for RWREs recently, including portability across different programing languages \cite{DMC+19} and DDos attacks \cite{SP18}, as well as how programmers write RWREs in practice \cite{MDD+19}.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \hide{
