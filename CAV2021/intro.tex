@@ -187,15 +187,20 @@ Our main result is the decidability of this problem for a reasonable class of
 RWREs. In particular, $\rep$ is a concatenation of string 
 constants and backreferences, while $e, \pat$ are RWRE that allow commutative
 unions, capturing groups, and greedy/lazy Kleene stars, but \emph{not} 
-backreferences. We complement this by proving undecidability when we permit
+backreferences. 
+An example of a symbolic path that is covered in this fragment is that of
+Example \ref{exmp-name-swap}.
+We complement this by proving undecidability when we permit
 backreferences in $e, \pat$.
 Our decidable fragment of RWRE supports a significant portion of
 frequently used features of RWRE (as indicated by the data analysis performed in
 \cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
 global flag ($\sim$30\%), and greedy/lazy Kleene stars ($\sim$23\%). Features
 like backreferences turned out to be not so frequently used ($\sim$0.8\%).
-An example of a symbolic path that is covered in this fragment is that of
-Example \ref{exmp-name-swap}.
+These stats are also consistent with the regex usage stats for Python across
+3,898 projects \cite{CS16}, e.g., capturing groups are the most frequently used
+features of RWRE ($\sim$53\% out of the found regex), while backreferences are
+not frequently used ($\sim$0.1\%).
 \anthony{Can you guys add some other statistics here perhaps?}
 
 %This paper proposes a novel approach to support real-world regular expressions in string constraint solving. 
