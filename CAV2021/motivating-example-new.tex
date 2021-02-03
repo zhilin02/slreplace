@@ -36,10 +36,10 @@ applications.
 %\tl{should the "and" in dblp be removed? Alice Brown, John Smith}\zhilin{I am referring to the bibtex style. Both ACM and DBLP bibtex style contain ``and''}
 
 In the function body, the input {\tt decimal} %of the function {\tt normalize} 
-is matched to a regular expression {\tt decimalReg}={\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of the input, possibly followed by a dot symbol (the decimal point) as well as another digit sequence representing the fractional part. The anchors  \verb!^! and \verb!$! denote the beginning and the end of the input, respectively. Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover,  the regular expression utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any dots. For instance, if ${\tt decimal} = \texttt{"0250"}$, then {\tt ({\footnotesize\textbackslash}d+)} is matched by \texttt{"0250"} and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
+is matched to a regular expression {\tt decimalReg}\,=\,{\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of the input, possibly followed by a dot symbol (the decimal point) as well as another digit sequence representing the fractional part. The anchors  \verb!^! and \verb!$! denote the beginning and the end of the input, respectively. Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover,  the regular expression utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any dots. For instance, if ${\tt decimal} = \texttt{"0250"}$, then {\tt ({\footnotesize\textbackslash}d+)} is matched by \texttt{"0250"} and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
 %\tl{i guess here we want to express that the greedy semantics is crucial; the standard nondeterministic semantics does not meet our requirement?}
 %Nevertheless, 
-Note that the greedy semantics is crucial here, because with standard \emph{nondeterministic} semantics the {\tt ({\footnotesize\textbackslash}d+)} could also (incorrectly) by matched by \texttt{"02"}, and {\tt ({\footnotesize\textbackslash}d*)} by \texttt{"50"}.
+Note that the greedy semantics is crucial here, because with standard \emph{non-deterministic} semantics the {\tt ({\footnotesize\textbackslash}d+)} could also (incorrectly) by matched by \texttt{"02"}, and {\tt ({\footnotesize\textbackslash}d*)} by \texttt{"50"}.
 
   The result of the matching, which is an array of strings, is stored in the variable {\tt decomp}. 
 %Since there are two capturing groups in {\tt decimalReg}, the array {\tt format} is of length 3.
@@ -48,45 +48,60 @@ Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\
 %
 The return value is obtained as follows: If {\tt integer} is empty, then it gets a default value \texttt{"0"}. If {\tt fractional} is empty, then the return value is {\tt integer}. Otherwise, the return value  joins {\tt integer} and {\tt fractional} with the dot symbol. 
 
-A natural post-condition of {\tt normalize} is that the result contains neither leading nor trailing zeros. The post-condition holds if it is
-established by the function on \emph{every} execution path. 
-%Therefore, the invariant property does not hold if along \emph{some} execution path of the program, the return value of {\tt normalize} does not satisfy the property. 
-%
-Take one typical execution path as an example. %for the validity of the invariant property, it is necessary that 
-The post-condition entails that the following program in single static assignment form (cf. Fig.~\ref{fig-run-exmp-path}) is infeasible (namely, there does not exist an input of {\tt decimal} so that the program can execute to the end), 
+A natural post-condition of {\tt normalize} is that the result
+contains neither leading nor trailing zeros. This post-condition has
+to be established by the function on \emph{every} execution path.  As
+an example, consider the path shown in Figure~\ref{fig-run-exmp-path},
+in which the branches taken in the program are represented as
+\texttt{assume} statements. The negated post-condition is captured by
+the regular expression in the last \texttt{assume}. For this path, the
+post-condition can be proved by showing that the program in
+Figure~\ref{fig-run-exmp-path} is infeasible: there does not exist an
+initial value {\tt decimal} so that no assumption fails and the
+program executes to the end.
 \begin{figure}[tb]
 \begin{center}
 \begin{minted}[linenos]{javascript}
   const decimalReg = /^(\d+)\.?(\d*)$/;
   var decomp = decimal.match(decimalReg);
   var result = "";
-  assert(decomp!==null);
+  assume (decomp!==null);
   var integer = decomp[1].replace(/^0+/, "");
   var fractional  = decomp[2].replace(/0+$/, "");
-  assert(integer !== ""); 
+  assume (integer !== ""); 
   result1 = integer;
-  assert(fractional !== ""); 
+  assume (fractional !== ""); 
   result2 = result1 + "." + fractional;
-  assert(/^0\d+.*|.*\.\d*0$/.test(result2));
+  assume (/^0\d+.*|.*\.\d*0$/.test(result2));
 \end{minted}
 \end{center}
 \label{fig-run-exmp-path}
-\caption{Symbolic execution of a path of the JavaScript program in Fig.~\ref{fig-run-exmp}}
+\vspace{-3mm}
+\caption{Symbolic execution of a path of the JavaScript program in Figure~\ref{fig-run-exmp}}
 \end{figure}
-where the regular expression {\tt /\^{}0\textbackslash d+.*|.*{\footnotesize\textbackslash}.\textbackslash d*0\$/} specifies the existence of leading or trailing zeros.
 
-To support symbolic execution of the JavaScript program in Fig.~\ref{fig-run-exmp-path}, one needs to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we introduce \emph{prioritized streaming string transducers} (PSST; cf. Section~\ref{sect:psst}). Then the extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
-The extraction of {\tt decomp[2]} can be handled in a similar way. Moreover, the functions {\tt replace(/\^{}0+/, "")} and {\tt replace(/0+\$/, "")}  can also be modeled by PSSTs $\cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}$ and $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$. Then the program in Fig.~\ref{fig-run-exmp-path} is transformed and simplified to the following program
+To enable symbolic execution of the JavaScript programs like in Figure~\ref{fig-run-exmp}, we need to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we propose the use \emph{prioritized streaming string transducers} (PSST, Section~\ref{sect:psst}). The extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
+The extraction of {\tt decomp[2]} can be handled in a similar way. Moreover, the functions {\tt replace(/\^{}0+/, "")} and {\tt replace(/0+\$/, "")}  can also be modeled by PSSTs $\cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}$ and $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$.
+
+After some further simplifications, we arrive at the following program
+in our string logic\philipp{there is a terminology problem here. SL is
+  clearly not a logic}, capturing Figure~\ref{fig-run-exmp-path}.  In
+the program, $\Aut_{\scriptsize\mbox{\tt.+}}$, $\Aut_{\tt decimalReg}$
+and
+$\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash
+    d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}$ denote
+finite-state automata corresponding to the regular expressions, and
+the assumptions are encoded using \textsf{assert} (using the same
+terminology as \cite{CHL+19}):
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
 & & \sf integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt extract_{decimalReg,1}}(decimal));\nonumber \\
-& & \sf fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}(\cT_{\tt extract_{decimalReg,2}}(decimal));\nonumber \\
+& & \sf fractional  := \tt  \cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}(\cT_{\tt extract_{decimalReg,2}}(decimal)); \\
 &&  \ASSERT{\tt integer \in \Aut_{\scriptsize\mbox{\tt.+}}}; 
 %&&  \tt result1 := integer;\nonumber\\
 \ASSERT{\tt fractional \in \Aut_{\scriptsize\mbox{\tt.+}}}; \nonumber\\
  && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
- && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; 
+ && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; \nonumber
 \end{eqnarray}
-where $\Aut_{\scriptsize\mbox{\tt.+}}$, $\Aut_{\tt decimalReg}$ and $\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}$ are three finite automata corresponding to the three regular expressions respectively.
 
-Then the path feasibility of the program in Equation~(\ref{eqn:exmp}) can be solved by following the ``backward'' reasoning approach proposed in \cite{CHL+19}: At first, we show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}). Then we compute the pre-images of regular languages under the concatenation operation and remove the last assignment statement. Moreover, we compute the pre-images of regular languages under the PSSTs $\cT_{\tt extract_{decimalReg,2}}$ as well as $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$, and remove the second assignment statement. Similarly for the first assignment statement. In the end, a program containing only regular membership queries (but possibly including disjunctions) is obtained, whose feasibility is reduced to checking the nonemptiness of the intersection of regular languages, which is known to be decidable (\pspace-complete). (See Appendix~\ref{app-br-mot-exmp} for more details.)
+Path feasibility of the program in \eqref{eqn:exmp} can be checked by following the ``backward'' reasoning approach from \cite{CHL+19}: at first, we show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}). Then we compute the pre-images of regular languages under the concatenation operation and remove the last assignment statement. Moreover, we compute the pre-images of regular languages under the PSSTs $\cT_{\tt extract_{decimalReg,2}}$ as well as $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$, and remove the second assignment statement. Similarly for the first assignment statement. In the end, a program containing only regular membership queries (but possibly including disjunctions) is obtained, whose feasibility is reduced to checking the nonemptiness of the intersection of regular languages, which is known to be decidable (\pspace-complete). (See Appendix~\ref{app-br-mot-exmp} for more details.)
