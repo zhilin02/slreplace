@@ -138,12 +138,12 @@ solely focus on standard decision problems over RWRE (e.g. membership and
 emptiness being decidable and NP-complete \cite{FS19,BM17b}). 
 We conclude with two open questions from the discussion:
 \begin{description}
-    \item[(Q1)] Incorporate RWRE matching, match and replace functions
+    \item[(Q1)] Incorporate RWRE into match and replace functions
         as primitives in a string constraint language and develop a 
         fast string solver for it.
     \item[(Q2)] Develop a reasonably expressive decidable string constraint 
-        language that supports concatenation, the replace function, and RWRE
-        matching.
+        language that supports the replace function and
+        the match function with RWRE, as well as string concatenation.
 \end{description}
 %For one, satisfiability of string equations with regular constraints is
 %well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
@@ -187,7 +187,9 @@ Our main result is the decidability of this problem for a reasonable class of
 RWREs. In particular, $\rep$ is a concatenation of string 
 constants and backreferences, while $e, \pat$ are RWRE that allow commutative
 unions, capturing groups, and greedy/lazy Kleene stars, but \emph{not} 
-backreferences. Our fragment of RWRE supports a significant portion of
+backreferences. We complement this by proving undecidability when we permit
+backreferences in $e, \pat$.
+Our decidable fragment of RWRE supports a significant portion of
 frequently used features of RWRE (as indicated by the data analysis performed in
 \cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
 global flag ($\sim$30\%), and greedy/lazy Kleene stars ($\sim$23\%). Features
