@@ -12,14 +12,14 @@ function normalize(decimal) {
   if (decomp) {
     var integer    = decomp[1].replace(/^0+/, "");
     var fractional = decomp[2].replace(/0+$/, "");
-    if (integer !== "")    result = integer; else result = "0"; 
+    if (integer    !== "") result = integer; else result = "0"; 
     if (fractional !== "") result = result + "." + fractional;
   }
   return result;
 }
 \end{minted}
 \end{center}
-%\vspace{-8mm}
+\vspace{-3mm}
 \caption{Normalize a decimal by removing the leading and trailing zeros}
 \label{fig-run-exmp}
 \end{figure}
@@ -28,26 +28,32 @@ We use the JavaScript program in Figure~\ref{fig-run-exmp} as a running example 
 contrived, but close to code found in typical JavaScript
 applications.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
-{\tt decimal}. For instance,  if $\tt{decimal} = \texttt{"02.50"}$, $\tt{normalize(decimal)}$ returns \texttt{"2.5"}; if $\tt{decimal} = \texttt{"0250"}$, $\tt{normalize(decimal)}$ returns \texttt{"250"}; if $\tt{decimal} = \texttt{"0.250"}$, then $\tt{normalize(decimal)}$ returns \texttt{"0.25"}. 
+{\tt decimal}. For instance, we get results
+ \verb!normalize("02.50") == "2.5"!,
+ \verb!normalize("0250") == "250"!, and finally
+ \verb!normalize("0.250") == "0.25"!.
 
 %\tl{should the "and" in dblp be removed? Alice Brown, John Smith}\zhilin{I am referring to the bibtex style. Both ACM and DBLP bibtex style contain ``and''}
 
 In the function body, the input {\tt decimal} %of the function {\tt normalize} 
-is matched to a regular expression {\tt decimalReg}={\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of the input, possibly followed by a dot symbol (the decimal point) as well as another digit sequence representing the fractional part (where the anchor symbols \^{} and $\$$ denote the beginning and the end of the input). Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover,  it utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any dots. For instance, if ${\tt decimal} = \texttt{"0250"}$, then {\tt ({\footnotesize\textbackslash}d+)} is matched by \texttt{"0250"} and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
+is matched to a regular expression {\tt decimalReg}={\tt /\^{}({\footnotesize\textbackslash}d+){\footnotesize\textbackslash}.?({\footnotesize\textbackslash}d*)\$/}, which requires that  the input comprises a digit sequence representing the integer part of the input, possibly followed by a dot symbol (the decimal point) as well as another digit sequence representing the fractional part. The anchors  \verb!^! and \verb!$! denote the beginning and the end of the input, respectively. Note that  {\tt decimalReg} utilizes two capturing groups, namely, {\tt ({\footnotesize\textbackslash}d+)} and {\tt ({\footnotesize\textbackslash}d*)}, to record the integer and fractional part of the decimal. The expression {\tt {\footnotesize\textbackslash}.?} specifies that the dot symbol is optional, namely, it may not occur in the input. Moreover,  the regular expression utilizes the \emph{greedy} semantics of the quantifier {\tt +} to enforce that {\tt {\footnotesize\textbackslash}d+} is matched by the whole string if the input does not contain any dots. For instance, if ${\tt decimal} = \texttt{"0250"}$, then {\tt ({\footnotesize\textbackslash}d+)} is matched by \texttt{"0250"} and  {\tt ({\footnotesize\textbackslash}d*)} is matched by the empty string. 
 %\tl{i guess here we want to express that the greedy semantics is crucial; the standard nondeterministic semantics does not meet our requirement?}
 %Nevertheless, 
-Note that the greedy semantics is crucial because if the standard \emph{nondeterministic} semantics of {\tt +} were adopted, the following matching would also be valid: {\tt ({\footnotesize\textbackslash}d+)} is matched to \texttt{"02"} and {\tt ({\footnotesize\textbackslash}d*)} is matched to \texttt{"50"}, which would give the wrong result.  The result of the matching, which is an array of strings, is stored in the variable {\tt decomp}. 
+Note that the greedy semantics is crucial here, because with standard \emph{nondeterministic} semantics the {\tt ({\footnotesize\textbackslash}d+)} could also (incorrectly) by matched by \texttt{"02"}, and {\tt ({\footnotesize\textbackslash}d*)} by \texttt{"50"}.
+
+  The result of the matching, which is an array of strings, is stored in the variable {\tt decomp}. 
 %Since there are two capturing groups in {\tt decimalReg}, the array {\tt format} is of length 3.
 %
 Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\tt decomp[1]} and the result is stored in the variable {\tt integer}. Similarly, the trailing zeros are trimmed by {\tt replace(/{}0+\$/, "")} to {\tt decomp[2]} and the result is stored in the variable {\tt fractional}. Again, the greedy semantics of {\tt 0+} is used to trim \emph{all} the leading/trailing zeros.
 %
 The return value is obtained as follows: If {\tt integer} is empty, then it gets a default value \texttt{"0"}. If {\tt fractional} is empty, then the return value is {\tt integer}. Otherwise, the return value  joins {\tt integer} and {\tt fractional} with the dot symbol. 
 
-A natural invariant property \philipp{I think this should be called post-condition} of {\tt normalize} is that its output contains neither leading nor trailing zeros. The invariant property holds iff  along \emph{every} execution path of the program, the return value of {\tt normalize} satisfies the property. 
+A natural post-condition of {\tt normalize} is that the result contains neither leading nor trailing zeros. The post-condition holds if it is
+established by the function on \emph{every} execution path. 
 %Therefore, the invariant property does not hold if along \emph{some} execution path of the program, the return value of {\tt normalize} does not satisfy the property. 
 %
 Take one typical execution path as an example. %for the validity of the invariant property, it is necessary that 
-The invariant property entails that the following program in single static assignment form (cf. Fig.~\ref{fig-run-exmp-path}) is infeasible (namely, there does not exist an input of {\tt decimal} so that the program can execute to the end), 
+The post-condition entails that the following program in single static assignment form (cf. Fig.~\ref{fig-run-exmp-path}) is infeasible (namely, there does not exist an input of {\tt decimal} so that the program can execute to the end), 
 \begin{figure}[tb]
 \begin{center}
 \begin{minted}[linenos]{javascript}
