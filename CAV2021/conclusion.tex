@@ -2,9 +2,9 @@
 
 \section{Related Work and Conclusion}
 
-RWREs have been investigated in formal language theory. Regular expressions with capturing groups and backreferences were considered in \cite{CSY03,CN09} and recently also in \cite{Freydenberger13,Schmid16,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of RWREs, namely, the non-commutative union and the greedy/lazy semantics of Kleene star, were not addressed therein.
+RWREs have been investigated in formal language theory. Regular expressions with capturing groups and backreferences were considered in \cite{CSY03,CN09} and also more recently in \cite{Freydenberger13,Schmid16,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of RWREs, namely, the non-commutative union and the greedy/lazy semantics of Kleene star/plus, were not addressed therein.
 
-Prioritized finite-state automata and prioritized finite-state transducers were proposed in \cite{BM17}. Prioritized finite-state transducers add indexed brackets to the input string in order to identify the matches of capturing groups. In contrast, PSSTs store the matches of capturing groups into string variables, which can then be referred to, thus allowing us to conveniently model the match and replace(all) function. 
+Prioritized finite-state automata and prioritized finite-state transducers were proposed in \cite{BM17}. Prioritized finite-state transducers add indexed brackets to the input string in order to identify the matches of capturing groups. It is hard, if not impossible, to use prioritized finite-state transducers to model replace(all) function in general, e.g. swapping the first and last name as in Example~\ref{exmp-name-swap}. In contrast, PSSTs store the matches of capturing groups into string variables, which can then be referred to, thus allowing us to conveniently model the match and replace(all) function. 
 %
 Streaming string transducers were used in \cite{ZAM19} to solve the straight-line string constraints with concatenation, finite-state transducers, and regular constraints.
 

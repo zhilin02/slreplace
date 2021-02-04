@@ -19,7 +19,7 @@ strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}
 
 \subsection{Implementation}
 
-Our implementation extends classical regular expression in SMT-LIB
+Our implementation extends classical regular expressions in SMT-LIB
 with indexed {\sf re.capture} and {\sf re.reference} operators, which
 denote capturing groups and references to them. We also add {\sf re.*?}
 and {\sf re.+?} for lazy Kleene stars.
@@ -60,7 +60,7 @@ $\strline_{\sf reg}$. For instance,
 extracts the left-most, longest sub-string consisting of only lower-case
 characters from a string~$x$.
 
-Our implementation is able to handle \textit{anchors} as well. Due to space restrictions we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it is quite common to use \verb!^! and \verb!$! in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
+Our implementation is able to handle \textit{anchors} as well. Due to space restrictions, we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it is quite common to use \verb!^! and \verb!$! in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
 
 The implementation revolves around PSSTs. Any of the three string operators mentioned above will be converted into an equivalent PSST (See Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then iterates the dependency graph and repeatedly eliminates them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate regular constraints on string variables and check satisfiability, and then use forward concrete evaluation to generate a model. We omit the details here due to space restrictions, and refer the readers to the baseline \cite{CHL+19}.
 
@@ -168,7 +168,7 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
   for capture groups, would have required the rewrite of substantial
   parts of \expose{}.}
 %
-For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98117
+For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98,117
 real-world regular expressions taken from \cite{DMC+19}.
 
 \begin{table}[tb]
@@ -215,23 +215,23 @@ real-world regular expressions taken from \cite{DMC+19}.
      & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
      & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~
     \\\hline
-    \textbf{Match}  & 172 & 92 & 61 & 534 & 96126 & 1132
-    & 3333 & 9274 & 36916 & 48594 &
+    \textbf{Match}  & 172 & 92 & 61 & 534 & 96,126 & 1132
+    & 3,333 & 9,274 & 36,916 & 48,594 &
     \\
-     \emph{(98117} & \multicolumn{6}{c|}{Average time: 1.19s}
+     \emph{(98,117} & \multicolumn{6}{c|}{Average time: 1.19s}
     &\multicolumn{5}{c|}{Average time: 28.0s}
     \\
-    \emph{~~benchmarks)} & \multicolumn{6}{c|}{Total \#sat: 249975, \#unsat: 136345}
-    & \multicolumn{5}{c|}{Total \#paths covered: 228888}
+    \emph{~~benchmarks)} & \multicolumn{6}{c|}{Total \#sat: 249,975, \#unsat: 136,345}
+    & \multicolumn{5}{c|}{Total \#paths covered: 228,888}
     \\\hline
-    \textbf{Replace} & 445 & 229 & 576 & 95735 & --- & 1132
-    & 5281 & 18221 & 69059 & 5556 & ---
+    \textbf{Replace} & 445 & 229 & 576 & 95,735 & --- & 1,132
+    & 5,281 & 18,221 & 69,059 & 5,556 & ---
     \\
-    \emph{(98117} & \multicolumn{6}{c|}{Average time: 1.48s}
+    \emph{(98,117} & \multicolumn{6}{c|}{Average time: 1.48s}
     & \multicolumn{5}{c|}{Average time: 55.0s}
     \\
-    \emph{~~benchmarks)} & \multicolumn{6}{c|}{Total \#sat: 273927, \#unsat: 14659}
-    & \multicolumn{5}{c|}{Total \#paths covered: 173007}
+    \emph{~~benchmarks)} & \multicolumn{6}{c|}{Total \#sat: 273,927, \#unsat: 14,659}
+    & \multicolumn{5}{c|}{Total \#paths covered: 173,007}
       \\\hline
   \end{tabular}
   \end{center}
@@ -263,13 +263,13 @@ queries and four paths, respectively.
 
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
-in 96126 of the match benchmarks (97.9\%), and all three queries in
-95735 of the replace-all benchmarks (97.6\%). The errors in 1132 cases
+in 96,126 of the match benchmarks (97.9\%), and all three queries in
+95,735 of the replace-all benchmarks (97.6\%). The errors in 1,132 cases
 are due to back-references in \verb!<re1>!, which are not handled by
-\ostrich. \expose{} can on the match problems cover 228888 paths in
+\ostrich. \expose{} can on the match problems cover 228,888 paths in
 total (91.5\% of the number of sat results of \ostrich), although the
 runtime of \expose{} is on average 23x higher than that of
-\ostrich. For replace, \expose{} can cover 173007 paths (63.2\%),
+\ostrich. For replace, \expose{} can cover 173,007 paths (63.2\%),
 showing that this class of constraints is harder; the runtime of
 \expose{} is on average 37x higher than that of \ostrich.  Overall,
 even taking into account that \expose{} has to analyze JavaScript
@@ -278,12 +278,12 @@ show that \ostrich\ is a highly competitive solver for RWREs.
 
 \vspace{-2mm}
 
-\paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with \expose{}
+\paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with \expose{}+Z3
 on the same benchmarks as for \textbf{R1}.  From the results in
 Table~\ref{tab:exp-r1}, we can see that, on average, Aratha+{\ostrich}
 is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
 able to cover more paths. The smaller speedup compared to the results
-for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path queries.
+for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path constraints.
 %SMT-LIB queries
 %produced by Aratha are not pure string constraints, but also include
 %ADTs, arrays, and bit-vectors. 
