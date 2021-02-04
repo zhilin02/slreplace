@@ -55,7 +55,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
     could be matched with an empty sequence of digits. Given a string of digits
     (e.g. \texttt{"2050"}), the entire string will always be matched by the
     first subexpression \mintinline{javascript}{(\d+)}, owing to the greedy semantics of
-    RWREs. 
+    Kleene plus. 
 
     Consider now the RWRE \mintinline{javascript}{(\d+)\1\1}. It contains two
     backreferences \mintinline{javascript}{\1}, each of which
@@ -73,13 +73,13 @@ RWREs in real-world programs are also commonly used in combination with
 other string operations (e.g. match and replace(all) functions \cite{LMK19}),
 which pose additional challenges to symbolic execution tools.
 On a given string $s$ and a RWRE $e$, the match function allows one to extract 
-the last match of a capturing group in $e$ with respect to $s$. 
+the last match of a capturing group $(e')$ with respect to the first match of $e$ in $s$. 
 For the replace function, on a given string $s$, a matching pattern RWRE $e$, and a replacement string $t$, it replaces the first match (or all 
 matches, if the global flag is enabled) of $e$ in $s$ by $t$. Here $t$
 could contain references to the matches of various capturing groups
 in $e$. 
 \begin{example}\label{exmp-name-swap}
-    We give a more extensive example in Section \ref{sec:mot}, which 
+    We shall give a more extensive example in Section \ref{sec:mot}, which 
     simultaneously involves both match and replace. Consider the snippet
     \begin{minted}{javascript}
         var namesReg = /([A-Za-z]+) ([A-Za-z]+)/g;
@@ -132,18 +132,18 @@ refinement process may not terminate and the symbolic execution of even a simple
 program with RWREs may need to be refined many times.
 
 On a more theoretical level, there also has not been any attempt to incorporate
-RWRE into a decidable string constraint language, e.g., word equations
+RWREs into a decidable string constraint language, e.g., word equations
 \cite{Gut98}. Thus far, most decidability and complexity results regarding RWRE 
-solely focus on standard decision problems over RWRE (e.g. membership and 
+solely focus on standard decision problems over RWREs (e.g. membership and 
 emptiness being decidable and NP-complete \cite{FS19,BM17b}). 
 We conclude with two open questions from the discussion:
 \begin{description}
-    \item[(Q1)] Incorporate RWRE into match and replace functions
+    \item[(Q1)] Incorporate RWREs into match and replace functions
         as primitives in a string constraint language and develop a 
         fast string solver for it.
     \item[(Q2)] Develop a reasonably expressive decidable string constraint 
         language that supports the replace function and
-        the match function with RWRE, as well as string concatenation.
+        the match function with RWREs, as well as string concatenation.
 \end{description}
 %For one, satisfiability of string equations with regular constraints is
 %well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
@@ -160,7 +160,7 @@ We conclude with two open questions from the discussion:
 
 \paragraph*{Contributions}
 The main contributions of the paper is to answer both (Q1) and (Q2) in the
-positive for a reasonable fragment of RWRE. In particular, we consider the 
+positive for a reasonable fragment of RWREs. In particular, we consider the 
 problem of path feasibility of a simple symbolic path constraint language
 that uses only string variables:
 \[
@@ -186,37 +186,38 @@ path can run from start to finish without violating any of the assertions.
 Our main result is the decidability of this problem for a reasonable class of
 RWREs. In particular, $\rep$ is a concatenation of string 
 constants and backreferences, while $e, \pat$ are RWREs that allow non-commutative
-unions, capturing groups, and greedy/lazy Kleene stars, but \emph{not} 
+unions, greedy/lazy Kleene stars, and capturing groups, but \emph{not} 
 backreferences. 
 An example of a symbolic path that is covered in this fragment is that of
 Example \ref{exmp-name-swap}.
 We complement this by proving undecidability when we permit
-backreferences in $e, \pat$.
-Our decidable fragment of RWRE supports a significant portion of
-frequently used features of RWRE (as indicated by the data analysis performed in
+backreferences in $e$ or $\pat$.
+Our decidable fragment of RWREs supports a significant portion of
+frequently used features of RWREs (as indicated by the data analysis performed in
 \cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
 global flag ($\sim$30\%), and greedy/lazy Kleene stars ($\sim$23\%). Features
 like backreferences turned out to be not so frequently used ($\sim$0.8\%).
-These stats are also consistent with the regex usage stats for Python across
+These statistics are also consistent with the RWRE usage statistics for Python across
 3,898 projects \cite{CS16}, e.g., capturing groups are the most frequently used
-features of RWRE ($\sim$53\% out of the found regex), while backreferences are
-not frequently used ($\sim$0.1\%). Moreover, in a recent library of over 500,000 RWREs collected from open-source programs \cite{DMC+19},  $\sim$80\% of them are in our decidable fragment, while RWREs containing backreferences are less than 0.2\%.
-\anthony{Can you guys add some other statistics here perhaps?}
+features of RWREs ($\sim$53\% out of the found RWREs), while backreferences are
+not frequently used ($\sim$0.1\%). Moreover, in a recent library of over 500,000 RWREs collected from open-source programs \cite{DMC+19},  backreferences occur in less than 0.2\% of them, and our decidable fragment is able to cover $\sim$80\% of them.
+%\anthony{Can you guys add some other statistics here perhaps?}
 
 %This paper proposes a novel approach to support real-world regular expressions in string constraint solving. 
 Our decision procedure requires that we introduce a new automata model, called 
 prioritized streaming string transducers (PSST), which extends and combines 
 prioritized finite-state automata \cite{BM17} and streaming string transducers 
 \cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular 
-expression operators by priorities and deal with capturing groups and backreferences by string variables. 
+expression operators by priorities and deal with capturing groups by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
-We then design a decision procedure for a class of string constraints with real-world regular expressions. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
+We then design a decision procedure for a class of string constraints with RWREs. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
 
 We implement the decision procedure in our new solver \ostrich,
 on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
- and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of Javascript programs, with 98,117 programs in each of them, from a library of real-world regular expressions \cite{DMC+19}, by using two simple Javascript program templates containing match respectively replace functions.  
- Then we generate all the path constraints for each Javascript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp. three) queries in 97.9\% (resp. 97.6\%) of the match (resp. replace) SMT files, with the average time 1.19 (resp. 1.48) seconds per file. For comparison, we also run \expose{} on the Javascript programs. \expose{} covers 91.5\% (resp. 63.2\%) of feasible paths in the match (resp. replace) programs reported by {\ostrich}, with  the average time 28.0 (resp. 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. \zhilin{I rephrased a bit. @Philipp, please check.}
+ and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of Javascript programs (with 98,117 programs in each collection), from a library of real-world regular expressions \cite{DMC+19}, by using two simple Javascript program templates containing match respectively replace functions.  
+ Then we generate all the four (resp. three) path constraints for each match (resp. replace) Javascript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp. three) queries in 97.9\% (resp. 97.6\%) of the match (resp. replace) SMT files, with the average time 1.19 (resp. 1.48) seconds per file. For comparison, we also run \expose{} on the Javascript programs. \expose{} covers 91.5\% (resp. 63.2\%) of feasible paths in the match (resp. replace) programs reported by {\ostrich}, with  the average time 28.0 (resp. 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. 
+ %\zhilin{I rephrased a bit. @Philipp, please check.}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
