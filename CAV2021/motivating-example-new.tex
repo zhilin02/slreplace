@@ -24,7 +24,7 @@ function normalize(decimal) {
 \label{fig-run-exmp}
 \end{figure}
 
-We use the JavaScript program in Figure~\ref{fig-run-exmp} as a running example to illustrate our approach. The example is
+We use the JavaScript program in Fig.~\ref{fig-run-exmp} as a running example to illustrate our approach. The example is
 contrived, but close to code found in typical JavaScript
 applications.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
@@ -51,12 +51,12 @@ The return value is obtained as follows: If {\tt integer} is empty, then it gets
 A natural post-condition of {\tt normalize} is that the result
 contains neither leading nor trailing zeros. This post-condition has
 to be established by the function on \emph{every} execution path.  As
-an example, consider the path shown in Figure~\ref{fig-run-exmp-path},
+an example, consider the path shown in Fig.~\ref{fig-run-exmp-path},
 in which the branches taken in the program are represented as
 \texttt{assume} statements. The negated post-condition is captured by
 the regular expression in the last \texttt{assume}. For this path, the
 post-condition can be proved by showing that the program in
-Figure~\ref{fig-run-exmp-path} is infeasible: there does not exist an
+Fig.~\ref{fig-run-exmp-path} is infeasible: there does not exist an
 initial value {\tt decimal} so that no assumption fails and the
 program executes to the end.
 \begin{figure}[tb]
@@ -77,10 +77,10 @@ program executes to the end.
 \end{center}
 \label{fig-run-exmp-path}
 \vspace{-3mm}
-\caption{Symbolic execution of a path of the JavaScript program in Figure~\ref{fig-run-exmp}}
+\caption{Symbolic execution of a path of the JavaScript program in Fig.~\ref{fig-run-exmp}}
 \end{figure}
 
-To enable symbolic execution of the JavaScript programs like in Figure~\ref{fig-run-exmp}, we need to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we propose the use \emph{prioritized streaming string transducers} (PSST, Section~\ref{sect:psst}). The extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
+To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp}, we need to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we propose the use \emph{prioritized streaming string transducers} (PSST, Section~\ref{sect:psst}). The extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
 The extraction of {\tt decomp[2]} can be handled in a similar way. Moreover, the functions {\tt replace(/\^{}0+/, "")} and {\tt replace(/0+\$/, "")}  can also be modeled by PSSTs $\cT_{\scriptsize\tt replace(\mbox{\tt /\^{}0+/, ""})}$ and $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$.
 
 After some further simplifications, we arrive at the following program
