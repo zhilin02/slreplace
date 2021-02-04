@@ -60,7 +60,7 @@ $\strline_{\sf reg}$. For instance,
 extracts the left-most, longest sub-string consisting of only lower-case
 characters from a string~$x$.
 
-Our implementation is able to handle \textit{anchors} as well. Due to space restrictions, we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it is quite common to use \verb!^! and \verb!$! in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
+Our implementation is able to handle \textit{anchors} as well. Due to space restrictions, we did not introduce them as part of our formalism. Anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it is quite common to use \verb!^! and \verb!$! in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
 
 The implementation revolves around PSSTs. Any of the three string operators mentioned above will be converted into an equivalent PSST (See Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then iterates the dependency graph and repeatedly eliminates them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate regular constraints on string variables and check satisfiability, and then use forward concrete evaluation to generate a model. We omit the details here due to space restrictions, and refer the readers to the baseline \cite{CHL+19}.
 
