@@ -17,7 +17,7 @@ standard string theory. The resulting extended theory of strings is a
 conservative extension of the SMT-LIB theory of Unicode
 strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
 
-\subsection{Input format}
+\subsection{Implementation}
 
 Our implementation extends classical regular expression in SMT-LIB
 with indexed {\sf re.capture} and {\sf re.reference} operators, which
@@ -62,9 +62,7 @@ characters from a string~$x$.
 
 Our implementation is able to handle \textit{anchors} as well. Due to space restrictions we did not introduce them as part of our formalism. Basically, anchors are special symbols that match certain positions of a string without consuming any characters. In most practical programming languages, it is quite common to use \verb!^! and \verb!$! in regular expressions to signify the start and end of a string, respectively. We add \textsf{re.begin-anchor} and \textsf{re.end-anchor} for them.
 
-\subsection{Implementation}
-
-Our implementation revolves around PSSTs. Any of the three string operators mentioned above will be converted into an equivalent PSST (See Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then iterates the dependency graph and repeatedly eliminates them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate regular constraints on string variables and check satisfiability, and then use forward concrete evaluation to generate a model. 
+The implementation revolves around PSSTs. Any of the three string operators mentioned above will be converted into an equivalent PSST (See Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then iterates the dependency graph and repeatedly eliminates them. More specifically, we first use Lemma \ref{lem:psst_preimage} to back-propagate regular constraints on string variables and check satisfiability, and then use forward concrete evaluation to generate a model. We omit the details here due to space restrictions, and refer the readers to the baseline \cite{CHL+19}.
 
 \subsection{Experimental evaluation}
 
@@ -128,7 +126,7 @@ Our experiments have the purpose of answering the following main questions:
 \noindent
 \textbf{R1:} Are the  RWREs defined in this paper
 suitable to encode regular expressions in programming languages,
-for instance ECMAScript expressions~\cite{ECMAScript11}?
+for instance ECMAScript regular expressions~\cite{ECMAScript11}?
 \\
 \textbf{R2:} How does \ostrich\ compare to other solvers that can
 handle real-world regular expressions, e.g., greedy/lazy
