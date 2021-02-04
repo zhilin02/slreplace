@@ -7,20 +7,18 @@
 
 %
 %Strings are among the most important data types. 
-Modern high-level programming languages like JavaScript, Python, Java,
-and PHP natively support a variety of string operations, and use
-strings to store and process virtually any kind of data or code.
+Modern high-level programming languages such as JavaScript, Python, Java, and PHP natively support a variety of string operations, and use
+strings to store and process virtually all kinds of data or code.
 Applied string operations range from concatenation, splitting, and
-replacement, to complex functions like regular expression matching and
-character
-encoding/decoding.  As a result, string-manipulating programs are
+replacement, to complex functions such as regular expression matching and
+character encoding/decoding.  As a result, string-manipulating programs are
 notoriously subtle, error-prone, and their potential bugs may bring
 severe security consequences. A typical example is cross-site
 scripting (XSS), which is among the OWASP Top 10 Application Security
 Risks.
 %Regular expressions are widely used in string-manipulating programs. 
 An effective and increasingly popular method for identifying such bugs
-in the program is symbolic execution, possibly in combination with dynamic
+in  programs is symbolic execution, possibly in combination with dynamic
 analysis. In a nutshell, this technique analyses a static path in
 a program under consideration, by viewing it as a constraint $\phi$, whose 
 feasibility can be checked by constraint solvers.
@@ -28,7 +26,8 @@ feasibility can be checked by constraint solvers.
 Regular expression matching is one of the most important string operations
 in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 Most state-of-the-art string constraint solvers (e.g.
-Z3, CVC4, Z3-str/2/3/4, ABC, Norn, Trau, OSTRICH, S2S, Qzy, Stranger, Sloth, Slog, Slent, Gecode+S, G-Strings, HAMPI... \anthony{make sure we add all}) therefore support
+Z3, CVC4, Z3-str/2/3/4, ABC, Norn, Trau, OSTRICH, S2S, Qzy, Stranger, Sloth, Slog, Slent, Gecode+S, G-Strings, HAMPI) %... \anthony{make sure we add all}) 
+therefore support
  \emph{regular expression constraints}, e.g., matching a string with a 
 regular expression, as we know it from formal language theory. Unfortunately, 
 \emph{Real-world Regular Expressions} (RWRE) in programming languages are dramatically different from 
@@ -131,7 +130,7 @@ results in a rather severe price in both precision and performance: The
 refinement process may not terminate and the symbolic execution of even a simple
 program with RWREs may need to be refined many times.
 
-On a more theoretical level, there also has not been any attempt to incorporate
+At a more theoretical level, there has not been any attempt to incorporate
 RWREs into a decidable string constraint language, e.g., word equations
 \cite{Gut98}. Thus far, most decidability and complexity results regarding RWRE 
 solely focus on standard decision problems over RWREs (e.g. membership and 
@@ -140,10 +139,10 @@ We conclude with two open questions from the discussion:
 \begin{description}
     \item[(Q1)] Incorporate RWREs into match and replace functions
         as primitives in a string constraint language and develop a 
-        fast string solver for it.
+        fast string solver for them.
     \item[(Q2)] Develop a reasonably expressive decidable string constraint 
-        language that supports the replace function and
-        the match function with RWREs, as well as string concatenation.
+        language that supports the replace  and
+          match function with RWREs, as well as string concatenation.
 \end{description}
 %For one, satisfiability of string equations with regular constraints is
 %well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
@@ -158,8 +157,8 @@ We conclude with two open questions from the discussion:
  %to approach the genuine semantics of real-world regular expressions. 
 %Although the CEGAR approach of \expose{} made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
-\paragraph*{Contributions}
-The main contributions of the paper is to answer both (Q1) and (Q2) in the
+\paragraph*{Contributions.}
+The main contributions of the paper are to answer both (Q1) and (Q2) in the
 positive for a reasonable fragment of RWREs. In particular, we consider the 
 problem of path feasibility of a simple symbolic path constraint language
 that uses only string variables:
