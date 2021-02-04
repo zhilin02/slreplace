@@ -133,7 +133,7 @@ handle real-world regular expressions, e.g., greedy/lazy
 quantifiers and capturing groups?
 \\
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
-the prime application of string solving?
+the primary application of string constraint solving?
 
 \vspace{-2mm}
 
@@ -141,7 +141,7 @@ the prime application of string solving?
 expressions to RWREs, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
 the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
-as well as some other Javascript programs containing match or replace
+as well as some other JavaScript programs containing match or replace
 functions extracted from Github. To verify the soundness of
 Aratha+\ostrich, we compared the results with those produced by
 \expose{}; we also checked the correctness of models computed by
@@ -161,7 +161,7 @@ solvers. %(e.g.,
 %\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
 The closest related work is the algorithm implemented in \expose{}, which
 applies Z3~\cite{Z3} for solving string constraints, but augments
-it with a refinement loop to approximate RWRE
+it with a refinement loop to approximate the RWRE
 semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
   \expose{} for the experiments. However, \expose{} integrates Z3 using its
   C API, and changing to a solver like \ostrich, with native support
@@ -169,7 +169,7 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
   parts of \expose{}.}
 %
 For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98,117
-real-world regular expressions taken from \cite{DMC+19}.
+RWREs taken from \cite{DMC+19}.
 
 \begin{table}[tb]
 	\begin{center}
