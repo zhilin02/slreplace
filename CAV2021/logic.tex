@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-\section{The String-Manipulating Language}\label{sec:logic}
+\section{The String Constraint Language}\label{sec:logic}
 
 
 
@@ -81,7 +81,7 @@
 %We consider the symbolic execution of the string-manipulating programs.
 
 %\begin{definition}[The constraint language $\strline$] 
-We define the string-manipulating language $\strline$ %considered in this paper 
+We define the string constraint language $\strline$ %considered in this paper 
 as follows. 
 %The $\strline$ language is defined by
 \[
@@ -105,7 +105,7 @@ where
 %
 \item for the $\extract$ function, $i \in \Nat$, $e \in \cgexp$,
 %
-	\item  for the $\replace$ or $\replaceall$ operation, $\pat\in \cgexp$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \cgexp$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
 %	\item $\reverse$ is the string function which reverses a string; 
 %	\item $\Transducer$ is a \PSST,
 %
@@ -153,17 +153,19 @@ For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an 
 %For instance, $\replaceall(aababaab, (ab)^+, c) =ac\cdot \replaceall(aab, (ab)^+, c)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by the pattern parameter does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCHLW18} for the formal semantics of the $\replaceall$ function. To be consistent with the notation in this paper, for each regular expression $e$, we define
 %the string function $\replaceall_e: \ialphabet^* \times \ialphabet^* \rightarrow \ialphabet^*$ such that for $u, v \in \ialphabet^*$, $\replaceall_e(u, v) = \replaceall(u, e, v)$, and we write $\replaceall(x, e, y)$ as $\replaceall_e(x,y)$.
 
-It turns out that the path feasibility problem is undecidable, attributed to the the back references in assertion statements. 
+It turns out that the path feasibility problem is undecidable, attributed to the the backreferences in assertion statements or in pattern parameters of the $\replace$ or $\replaceall$ function. 
 
 \begin{proposition}\label{prop-und}
 The path feasibility problem of $\strline$ is undecidable.
 \end{proposition}
 
-We shall show that the path feasibility problem is decidable, if the uses of back references in assertion statements are forbidden, which turns out to be the situation in practice.\footnote{An evidence was given in  \cite{LMK19}, where the statistics showed that the occurrences of regular expressions with back references occupy only less than $1\%$ in the widely used JavaScript NPM packages.} In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of %where no 
-back references in assertion statements. %We state 
+We shall show that the path feasibility problem is decidable, if the uses of backreferences in assertion statements are forbidden, which turns out to be the situation in practice,  according to the statistics in the literature (see Section~\ref{sec-intro}).
+%\footnote{An evidence was given in  \cite{LMK19}, where the statistics showed that the occurrences of regular expressions with backreferences occupy only less than $1\%$ in the widely used JavaScript NPM packages.} 
+In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of %where no 
+backreferences in assertion statements. %We state 
 The main result of this paper is as follows.
 
 \begin{theorem}\label{thm-main}
 The path feasibility of $\strline_{\sf reg}$ is decidable.
 \end{theorem}
-The decision procedure for $\strline_{\sf reg}$ utilizes a new model called prioritized streaming string transducers, which will be defined in the next section.
+The decision procedure for $\strline_{\sf reg}$ utilizes a new automata model called prioritized streaming string transducers, which will be defined in the next section.
