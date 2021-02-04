@@ -45,8 +45,10 @@ With Lemma~\ref{lem:psst_preimage}, we  solve the path feasibility of $\strline'
 \end{itemize}
 Let $S'$ be the resulting $\strline'_{\sf reg}$ program containing no assignment statements. Then the path feasibility of $S'$ can be solved by checking the nonemptiness of the intersection of regular constraints for the input variables, which is known to be \pspace-complete \cite{Kozen77}.
 
+\vspace{-2mm}
 \paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up, the aforementioned decision procedure has a non-elementary complexity in the worst-case. Nevertheless, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per example less than one second (see Section~\ref{sect:impl}).
 
+\vspace{-2mm}
 
 \begin{remark}
 The aforementioned procedure extends the backward-reasoning approach in \cite{CCH+18,CHL+19}, since standard one-way and two-way finite-state transducers were considered therein and PSSTs, in particular priorities, are beyond them\footnote{It is known that deterministic streaming string transducers are expressively equivalent to two-way deterministic finite-state transducers, which, nevertheless, is not the case for nondeterministic transducers \cite{AC10,AD11}.}. 

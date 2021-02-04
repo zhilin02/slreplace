@@ -22,7 +22,7 @@ function normalize(decimal) {
 \vspace{-4mm}
 \caption{Normalize a decimal by removing the leading and trailing zeros}
 \label{fig-run-exmp}
-\vspace{-4mm}
+\vspace{-5mm}
 \end{figure}
 
 We use the JavaScript program in Fig.~\ref{fig-run-exmp} as a running example to illustrate our approach. The example is
@@ -96,6 +96,7 @@ $\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash
 finite-state automata corresponding to the regular expressions, and
 the assumptions are encoded using \textsf{assert} (using the same
 terminology as \cite{CHL+19}):
+%\vspace{-2mm}
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
 & & \sf integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt extract_{decimalReg,1}}(decimal));\nonumber \\
@@ -106,5 +107,6 @@ terminology as \cite{CHL+19}):
  && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
  && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; \nonumber
 \end{eqnarray}
+\vspace{-4mm}
 
 Path feasibility of the program in \eqref{eqn:exmp} can be checked by following the ``backward'' reasoning approach from \cite{CHL+19}: At first, we show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}). Then we compute the pre-images of regular languages under the concatenation operation and remove the last assignment statement. Moreover, we compute the pre-images of regular languages under the PSSTs $\cT_{\tt extract_{decimalReg,2}}$ as well as $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$, and remove the second assignment statement. Similarly for the first assignment statement. In the end, a program containing only regular membership queries (but possibly including disjunctions) is obtained, whose feasibility is reduced to checking the nonemptiness of the intersection of regular languages, which is known to be decidable (\pspace-complete). (See Appendix~\ref{app-br-mot-exmp} for more details.)

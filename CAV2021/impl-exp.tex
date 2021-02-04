@@ -135,6 +135,8 @@ quantifiers and capturing groups?
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the prime application of string solving?
 
+\vspace{-2mm}
+
 \paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
@@ -149,6 +151,8 @@ follows the targeted path. The results are summarized in Table~\ref{tab:exp-r1};
 no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ES11
 semantics.
+
+\vspace{-2mm}
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
 involving RWREs, and we are not aware of other constraint solvers
@@ -272,12 +276,14 @@ even taking into account that \expose{} has to analyze JavaScript
 code, as opposed to the SMT-LIB given to \ostrich, the experiments
 show that \ostrich\ is a highly competitive solver for RWREs.
 
+\vspace{-2mm}
+
 \paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with \expose{}
 on the same benchmarks as for \textbf{R1}.  From the results in
 Table~\ref{tab:exp-r1}, we can see that, on average, Aratha+{\ostrich}
 is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
 able to cover more paths. The smaller speedup compared to the results
-for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path queries.\zhilin{I adapted this sentence since Denghang only did the experiments on those string-manipulating programs. @Philpp, please check.}
+for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path queries.
 %SMT-LIB queries
 %produced by Aratha are not pure string constraints, but also include
 %ADTs, arrays, and bit-vectors. 
