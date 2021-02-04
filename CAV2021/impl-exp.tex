@@ -129,10 +129,10 @@ fun(x);
 	  \multicolumn{6}{c|@{\quad}}{\textbf{Aratha+\ostrich}} &\multicolumn{6}{c@{\quad}|}{\textbf{\expose{}+Z3}}
 	  \\
     & &
-	  \multicolumn{6}{c|@{\quad}}{solved paths within 60s} &\multicolumn{6}{c@{\quad}|}{solved paths within 60s}
+	  \multicolumn{6}{c|@{\quad}}{paths covered within 60s} &\multicolumn{6}{c@{\quad}|}{paths covered within 60s}
 	  \\
-	   & \#JS-Progs. & ~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#Timeout~ &
-	    ~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#Timeout~
+	   & \#JS-Progs. & ~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~ &
+	    ~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
 	  \\\hline
 	  \textbf{\expose{}} & 51 & 14 & 9 & 11 & 2 & 15 & 0  & 16 & 7 & 11 & 2 & 15 & 1  
 	  \\
@@ -149,7 +149,7 @@ fun(x);
 	\end{tabular}
 	\end{center}
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s.\zhilin{@denghang, update the statistics}}
+    wall-clock time needed per benchmark, and counts timeouts as 60s.}
 	\label{tab:exp-r1}
 
   \begin{center}
@@ -274,11 +274,13 @@ show that \ostrich\ is a highly competitive solver for RWREs.
 \paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with \expose{}
 on the same benchmarks as for \textbf{R1}.  From the results in
 Table~\ref{tab:exp-r1}, we can see that, on average, Aratha+{\ostrich}
-is faster than \expose{}+Z3 by a factor between 3 and 5, while being
+is faster than \expose{}+Z3 by a factor between 2 and 15, while being
 able to cover more paths. The smaller speedup compared to the results
-for \textbf{R2} can be explained by the fact that SMT-LIB queries
-produced by Aratha are not pure string constraints, but also include
-ADTs, arrays, and bit-vectors. The experiments still indicate that,
+for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path queries.\zhilin{I adapted this sentence since Denghang only did the experiments on those string-manipulating programs. @Philpp, please check.}
+%SMT-LIB queries
+%produced by Aratha are not pure string constraints, but also include
+%ADTs, arrays, and bit-vectors. 
+The experiments still indicate that,
 in the context of symbolic execution, {\ostrich} is significantly more
 efficient than the CEGAR-augmented symbolic execution for dealing
 with RWREs.
