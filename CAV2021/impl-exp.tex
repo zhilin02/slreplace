@@ -119,7 +119,55 @@ fun(x);
   \caption{Harnesses with replace-all: SMT-LIB for \ostrich,
     and JavaScript for \expose{}.}
   \label{fig:harness}
+  \vspace{-4mm}
 \end{figure}
+
+Our experiments have the purpose of answering the following main questions:
+
+\medskip
+\noindent
+\textbf{R1:} Are the  RWREs defined in this paper
+suitable to encode regular expressions in programming languages,
+for instance ECMAScript expressions~\cite{ECMAScript11}?
+\\
+\textbf{R2:} How does \ostrich\ compare to other solvers that can
+handle real-world regular expressions, e.g., greedy/lazy
+quantifiers and capturing groups?
+\\
+\textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
+the prime application of string solving?
+
+\paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
+expressions to RWREs, and integrated \ostrich\ into the symbolic
+execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
+the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
+as well as some other Javascript programs containing match or replace
+functions extracted from Github. To verify the soundness of
+Aratha+\ostrich, we compared the results with those produced by
+\expose{}; we also checked the correctness of models computed by
+\ostrich\ by concretely executing the JavaScript program under test on
+the generated inputs, to confirm that the concrete execution indeed
+follows the targeted path. The results are summarized in Table~\ref{tab:exp-r1};
+no inconsistencies were observed in the experiments, showing that the
+semantics in this paper are indeed suitable for capturing ES11
+semantics.
+
+\paragraph{For \textbf{R2}:} There are no standard string benchmarks
+involving RWREs, and we are not aware of other constraint solvers
+supporting capturing groups, neither among the SMT nor the CP
+solvers. %(e.g.,
+%\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
+The closest related work is the algorithm implemented in \expose{}, which
+applies Z3~\cite{Z3} for solving string constraints, but augments
+it with a refinement loop to approximate RWRE
+semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
+  \expose{} for the experiments. However, \expose{} integrates Z3 using its
+  C API, and changing to a solver like \ostrich, with native support
+  for capture groups, would have required the rewrite of substantial
+  parts of \expose{}.}
+%
+For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98117
+real-world regular expressions taken from \cite{DMC+19}.
 
 \begin{table}[tb]
 	\begin{center}
@@ -193,54 +241,9 @@ fun(x);
     executed concurrently by \expose\ to 1.  Average time is
     wall-clock time needed per benchmark, and counts timeouts as 60s.}
   \label{tab:exp-r2}
+\vspace{-8mm}
 \end{table}
 
-Our experiments have the purpose of answering the following main questions:
-
-\medskip
-\noindent
-\textbf{R1:} Are the  RWREs defined in this paper
-suitable to encode regular expressions in programming languages,
-for instance ECMAScript expressions~\cite{ECMAScript11}?
-\\
-\textbf{R2:} How does \ostrich\ compare to other solvers that can
-handle real-world regular expressions, e.g., greedy/lazy
-quantifiers and capturing groups?
-\\
-\textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
-the prime application of string solving?
-
-\paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
-expressions to RWREs, and integrated \ostrich\ into the symbolic
-execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
-the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
-as well as some other Javascript programs containing match or replace
-functions extracted from Github. To verify the soundness of
-Aratha+\ostrich, we compared the results with those produced by
-\expose{}; we also checked the correctness of models computed by
-\ostrich\ by concretely executing the JavaScript program under test on
-the generated inputs, to confirm that the concrete execution indeed
-follows the targeted path. The results are summarized in Table~\ref{tab:exp-r1};
-no inconsistencies were observed in the experiments, showing that the
-semantics in this paper are indeed suitable for capturing ES11
-semantics.
-
-\paragraph{For \textbf{R2}:} There are no standard string benchmarks
-involving RWREs, and we are not aware of other constraint solvers
-supporting capturing groups, neither among the SMT nor the CP
-solvers. %(e.g.,
-%\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
-The closest related work is the algorithm implemented in \expose{}, which
-applies Z3~\cite{Z3} for solving string constraints, but augments
-it with a refinement loop to approximate RWRE
-semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
-  \expose{} for the experiments. However, \expose{} integrates Z3 using its
-  C API, and changing to a solver like \ostrich, with native support
-  for capture groups, would have required the rewrite of substantial
-  parts of \expose{}.}
-%
-For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98117
-real-world regular expressions taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
 SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for

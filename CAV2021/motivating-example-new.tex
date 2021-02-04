@@ -19,9 +19,10 @@ function normalize(decimal) {
 }
 \end{minted}
 \end{center}
-\vspace{-3mm}
+\vspace{-4mm}
 \caption{Normalize a decimal by removing the leading and trailing zeros}
 \label{fig-run-exmp}
+\vspace{-4mm}
 \end{figure}
 
 We use the JavaScript program in Fig.~\ref{fig-run-exmp} as a running example to illustrate our approach. The example is
@@ -78,6 +79,7 @@ program executes to the end.
 \label{fig-run-exmp-path}
 \vspace{-3mm}
 \caption{Symbolic execution of a path of the JavaScript program in Fig.~\ref{fig-run-exmp}}
+\vspace{-4mm}
 \end{figure}
 
 To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp}, we need to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we propose the use \emph{prioritized streaming string transducers} (PSST, Section~\ref{sect:psst}). The extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
