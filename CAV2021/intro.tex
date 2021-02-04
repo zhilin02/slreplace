@@ -104,7 +104,7 @@ RWREs, % are not primitively supported by state-of-the-art string solvers
 %(in fact, they are in general ,
 existing symbolic execution approaches that handle
 string-manipulating programs with RWREs apply a workaround.
-We mention here Aratha \cite{aratha} and \expose~\cite{LMK19}, both of which are
+We mention Aratha \cite{aratha} and \expose~\cite{LMK19}, both of which are
 symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
 Aratha performs a very rough approximation to the 
@@ -126,7 +126,7 @@ in general be fully captured by string constraints with REs.
 For this reason, 
 \expose{} attempts to instead approximate the semantics of RWREs in the style of 
 CEGAR (counter-example guided abstraction and refinement). This, however,
-results in a rather severe price in both precision and performance: The
+results in a rather severe price in both precision and performance: the
 refinement process may not terminate and the symbolic execution of even a simple
 program with RWREs may need to be refined many times.
 
@@ -180,7 +180,7 @@ That is, assignments are allowed whose right hand side could use concatenation,
 the match function ($\extract$), and the replace function (with/without the 
 global flag). RWREs ($e,\pat,\rep$ in the syntax above) are allowed in the 
 assertions, as well as in the match and the replace functions. A given path is
-feasible if there is an initialization of the string variables so that the above
+feasible if there is an initialization of the string variables under which the above
 path can run from start to finish without violating any of the assertions.
 Our main result is the decidability of this problem for a reasonable class of
 RWREs. In particular, $\rep$ is a concatenation of string 
@@ -191,11 +191,11 @@ An example of a symbolic path that is covered in this fragment is that of
 Example \ref{exmp-name-swap}.
 We complement this by proving undecidability when we permit
 backreferences in $e$ or $\pat$.
-Our decidable fragment of RWREs supports a significant portion of
-frequently used features of RWREs (as indicated by the data analysis performed in
+Our decidable fragment of RWREs supports a significant portion of the 
+frequently used features in RWREs (as indicated by the data analysis performed in
 \cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
 global flag ($\sim$30\%), and greedy/lazy Kleene stars ($\sim$23\%). Features
-like backreferences turned out to be not so frequently used ($\sim$0.8\%).
+such as backreferences turned out to be not so frequently used ($\sim$0.8\%).
 These statistics are also consistent with the RWRE usage statistics for Python across
 3,898 projects \cite{CS16}, e.g., capturing groups are the most frequently used
 features of RWREs ($\sim$53\% out of the found RWREs), while backreferences are
@@ -204,9 +204,9 @@ not frequently used ($\sim$0.1\%). Moreover, in a recent library of over 500,000
 
 %This paper proposes a novel approach to support real-world regular expressions in string constraint solving. 
 Our decision procedure requires that we introduce a new automata model, called 
-prioritized streaming string transducers (PSST), which extends and combines 
+prioritized streaming string transducers (PSSTs), which extends and combines 
 prioritized finite-state automata \cite{BM17} and streaming string transducers 
-\cite{AC10,AD11}. With PSST, we encode the non-standard semantics of regular 
+\cite{AC10,AD11}. With PSSTs, we encode the non-standard semantics of regular 
 expression operators by priorities and deal with capturing groups by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
