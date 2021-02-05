@@ -152,7 +152,42 @@ no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ES11
 semantics.
 
-\vspace{-2mm}
+\begin{table}[htb]
+\vspace{-4mm}
+	\begin{center}
+	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
+	\hline
+	   & 
+	  \multicolumn{6}{c|}{\textbf{Aratha+\ostrich}} &\multicolumn{6}{c|}{\textbf{\expose{}+Z3}}
+	  \\
+    & 
+	  \multicolumn{6}{c|}{~\# paths covered within 60s~~} &\multicolumn{6}{c@{\quad}|}{~\# paths covered within 60s}
+	  \\
+	   & ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~ &
+	    ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
+	  \\\hline
+	  \textbf{\expose{}} &  14 & 9 & 11 & 2 & 15 & 0  & 15 & 8 & 11 & 2 & 15 & 1  
+	  \\
+	  \emph{(51 programs)} & \multicolumn{6}{c|}{Average time: \textbf{8.57}s} & \multicolumn{6}{c@{\quad}|}{Average time: 14.57s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered:}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:}	  
+	  \\\hline
+	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
+	  \\
+	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.30}s} & \multicolumn{6}{c@{\quad}|}{Average time: 23.66s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 49}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 47}	  
+	  \\\hline
+	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 12 & 23 & 3 & 0 & 0 & 22
+	  \\
+	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{2.71}s} & \multicolumn{6}{c@{\quad}|}{Average time: 41.73s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 32}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 29}	  
+	  \\\hline
+	\end{tabular}
+	\end{center}
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
+    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeout files. Note the one or more paths may have already been covered before timeout. }
+	\label{tab:exp-r1}
+\vspace{-1cm}	
+\end{table}
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
 involving RWREs, and we are not aware of other constraint solvers
@@ -171,37 +206,8 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
 For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98,117
 RWREs taken from \cite{DMC+19}.
 
-\begin{table}[tb]
-	\begin{center}
-	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
-	\hline
-	   & 
-	  \multicolumn{6}{c|}{\textbf{Aratha+\ostrich}} &\multicolumn{6}{c|}{\textbf{\expose{}+Z3}}
-	  \\
-    & 
-	  \multicolumn{6}{c|}{~\# paths covered within 60s~~} &\multicolumn{6}{c@{\quad}|}{~\# paths covered within 60s}
-	  \\
-	   & ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~ &
-	    ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
-	  \\\hline
-	  \textbf{\expose{}} &  14 & 9 & 11 & 2 & 15 & 0  & 15 & 8 & 11 & 2 & 15 & 1  
-	  \\
-	  \emph{(51 programs)} & \multicolumn{6}{c|}{Average time: \textbf{8.57}s} & \multicolumn{6}{c@{\quad}|}{Average time: 14.57s}
-	  \\\hline
-	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
-	  \\
-	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.30}s} & \multicolumn{6}{c@{\quad}|}{Average time: 23.66s}
-	  \\\hline
-	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 12 & 23 & 3 & 0 & 0 & 22
-	  \\
-	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{2.71}s} & \multicolumn{6}{c@{\quad}|}{Average time: 41.73s}
-	  \\\hline
-	\end{tabular}
-	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeout files. Note the one or more paths may have already been covered before timeout. }
-	\label{tab:exp-r1}
-
+\begin{table}[htb]
+\vspace{-4mm}
   \begin{center}
   \begin{tabular}{|l@{~~}|*{6}{c}|*{5}{c}@{~~}|}
     \hline
@@ -275,6 +281,7 @@ showing that this class of constraints is harder; the runtime of
 even taking into account that \expose{} has to analyze JavaScript
 code, as opposed to the SMT-LIB given to \ostrich, the experiments
 show that \ostrich\ is a highly competitive solver for RWREs.
+
 
 \vspace{-2mm}
 
