@@ -117,7 +117,7 @@ fun(x);
   \caption{Harnesses with replace-all: SMT-LIB for \ostrich,
     and JavaScript for \expose{}.}
   \label{fig:harness}
-  \vspace{-4mm}
+  \vspace{-2mm}
 \end{figure}
 
 Our experiments have the purpose of answering the following main questions:
@@ -135,7 +135,7 @@ quantifiers and capturing groups?
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the primary application of string constraint solving?
 
-\vspace{-2mm}
+%\vspace{-2mm}
 
 \paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
@@ -153,7 +153,7 @@ semantics in this paper are indeed suitable for capturing ES11
 semantics.
 
 \begin{table}[htb]
-\vspace{-3mm}
+\vspace{-2mm}
 	\begin{center}
 	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
 	\hline
@@ -168,7 +168,7 @@ semantics.
 	  \\\hline
 	  \textbf{\expose{}} &  14 & 9 & 9 & 2 & 15 & 0  & 15 & 8 & 9 & 2 & 15 & 1  
 	  \\
-	  \emph{(51 programs)} & \multicolumn{6}{c|}{Average time: \textbf{6.49}s} & \multicolumn{6}{c@{\quad}|}{Average time: 13.46s}\\
+	  \emph{(49 programs)} & \multicolumn{6}{c|}{Average time: \textbf{6.49}s} & \multicolumn{6}{c@{\quad}|}{Average time: 13.46s}\\
 	  & \multicolumn{6}{c|}{Total \#paths covered:126}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:122}	  
 	  \\\hline
 	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
@@ -183,11 +183,12 @@ semantics.
 	  \\\hline
 	\end{tabular}
 	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
     wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
-\vspace{-1.2cm}	
+\vspace{-1.4cm}	
 \end{table}
+
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
 involving RWREs, and we are not aware of other constraint solvers
@@ -206,8 +207,22 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
 For \textbf{R2}, we compared \ostrich\ with \expose{} on 98,117
 RWREs taken from \cite{DMC+19}.
 
+For each of the regular expressions, we created four harnesses: two in
+SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
+\expose{}. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
+regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
+the replace-all function to simulate typical string processing;
+\verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
+replacement string \verb!"$1"!. The three paths of the JavaScript
+function~\verb!fun! correspond to the three queries in the SMT-LIB
+script, so that a direct comparison can be made between the results of
+the SMT-LIB queries and the set of paths covered by \expose{}. The other
+two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
+use the match function instead of replace-all, and contain four
+queries and four paths, respectively.
+
 \begin{table}[htb]
-\vspace{-5mm}
+\vspace{-3mm}
   \begin{center}
   \begin{tabular}{|l@{~~}|*{6}{c}|*{5}{c}@{~~}|}
     \hline
@@ -242,8 +257,8 @@ RWREs taken from \cite{DMC+19}.
   \end{tabular}
   \end{center}
   \caption{The number of queries answered by \ostrich, and number of
-    paths covered by \expose{}, in the \textbf{R2} experiments.  All
-    experiments were done on an AMD Opteron 2220 SE machine, running
+    paths covered by \expose{}, in the \textbf{R2} experiments. 
+    Experiments were done on an AMD Opteron 2220 SE machine, running
     64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
     60s wall clock time, memory to 2GB, and the number of tests
     executed concurrently by \expose\ to 1.  Average time is
@@ -253,19 +268,6 @@ RWREs taken from \cite{DMC+19}.
 \end{table}
 
 
-For each of the regular expressions, we created four harnesses: two in
-SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
-\expose{}. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
-regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
-the replace-all function to simulate typical string processing;
-\verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
-replacement string \verb!"$1"!. The three paths of the JavaScript
-function~\verb!fun! correspond to the three queries in the SMT-LIB
-script, so that a direct comparison can be made between the results of
-the SMT-LIB queries and the set of paths covered by \expose{}. The other
-two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
-use the match function instead of replace-all, and contain four
-queries and four paths, respectively.
 
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
@@ -291,8 +293,8 @@ Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
 60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
 discover feasible paths more quickly than \expose{}+Z3, however: on
 all three families of benchmarks, Aratha+{\ostrich} terminates on
-average in less than 10s, and it does not discover new paths 
-after 35s. \expose{}+Z3 fully utilizes the available 60s for
+average in less than 10s, and it discovers all paths 
+within 35s. \expose{}+Z3 needs full 60s for
 29 of the programs (``T.O.'' in the table),
 and it finds new paths until the end of the 60s. Since \expose{}+Z3
 handles the replace-all operation by unrolling, it is not able to
