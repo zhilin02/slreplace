@@ -25,7 +25,7 @@ or otherwise via libraries. Programmers widely use regular expressions in softwa
 \end{definition}
 %We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. 
 %
-For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $[\Gamma^\ast] \equiv [[[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast]$. Similarly for $[\Gamma^{\ast?}]$, $[\Gamma^+]$, and $[\Gamma^{+?}]$. For a RWRE $e$, we use $|e|$ to denote the length of $e$, i.e. the number of symbols occurring in $e$.
+For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $[\Gamma^\ast] \equiv [[[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast]$. Similarly for $[\Gamma^{\ast?}]$, $[\Gamma^+]$, and $[\Gamma^{+?}]$. We write $|e|$ for the length of an RWRE $e$, i.e. the number of symbols occurring in $e$.
 
 Note that square brackets $[]$ are used for the operator precedence and the parentheses $()$ are used for capturing groups. 
 %\tl{do we consider change the notation to [e]?}\zhilin{I used $[]$ for precedence and $()$ for capturing groups.}
@@ -37,7 +37,7 @@ Parenthesis pairs are indexed according to the occurrence sequence of their left
 after the $n$-th pair of parentheses. For instance, $[[([[a+b]^*]) \concat c] \concat \$1]$ is in $\regexp$, where $\$1$ refers to the matching of the subexpression $[[a+b]^*]$. Intuitively, it denotes the set of strings of the form $u c u$, where $u$ is a string of $a$ and $b$. 
 %
 
-The operator $[e^*]$ is the \emph{greedy} Kleene star, meaning $e$ should be matched as many times as possible. In contrast, the operator $[e^{*?}]$ is the \emph{lazy} Kleene star, which means that $e$ should be matched  as few times as possible. The Kleene plus operators $[e^+]$ and $[e^{+?}]$ are similar to $[e^*]$ and $[e^{*?}]$ respectively, with the difference that $e$ should be matched at least once.
+The operator $[e^*]$ is the \emph{greedy} Kleene star, meaning $e$ should be matched as many times as possible. The operator $[e^{*?}]$ is the \emph{lazy} Kleene star, meaning $e$ should be matched  as few times as possible. The Kleene plus operators $[e^+]$ and $[e^{+?}]$ are similar to $[e^*]$ and $[e^{*?}]$ but $e$ should be matched at least once.
 %with each letter being $a$ or $b$.
   
 %Note that standard regular expressions are those without $\$ n$. 
@@ -114,7 +114,7 @@ Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\
 \includegraphics[width=1\textwidth]{regex-semantics-decimal.pdf}
 \caption{Match trees of $e=[[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ to $w= 0250$}
 \label{fig-regex-semantics-decimal}
-\vspace{-4mm}
+
 \end{figure}
 %\Blindtext
  \end{example}
@@ -140,7 +140,6 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
 %%%%% the original example %%%%%%%%%% 
   
   \begin{definition}[Semantics of $\regexp$]\label{def-regex-semantics}
-  		
   	For a $\regexp$ $e$ and a string $w$, we recursively define a (strict) total order on $\cM_{\pref(w)}(e)$, written $T
   	>_{w,\idxexp(e)} T'$ for $T, T' \in \cM_{\pref(w)}(e)$, as follows:
   	\begin{itemize}
@@ -201,7 +200,6 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   	\end{itemize}
   	
   	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$.
-  	
   	 Moreover,  for $e \in \regexp$ and $w \in \Sigma^\ast$, if $w \in \Sigma^\ast \Lang(e)\Sigma^\ast$, then the (first) \emph{match} of $e$ in $w$ is defined as the supremum of $\cM_{\pref(w_1^{-1}w)}(e)$ such that $w_1$ is the shortest prefix of $w$ satisfying that $w_1^{-1}w \in \Lang(e)\Sigma^\ast$. If $w \not \in \Sigma^\ast \Lang(e)\Sigma^\ast$, the match of $e$ in $w$ is undefined.  
   	%\tl{why do we need this extra def?}\zhilin{to define the semantics of replace function for instance.}
 %  	
@@ -217,8 +215,8 @@ Let us continue Example~\ref{exmp-regex-match-tree}.  In Fig.~\ref{fig-regex-sem
  \end{example}
   
 \begin{remark}
-The semantics of $\regexp$ in Definition~\ref{def-regex-semantics} follows the 11th Edition of the ECMAScript language specification (ES11 for short) \cite{ECMAScript11}, with a focus on the non-commutative union, the greedy/lazy semantics of Kleene star/plus, as well as capturing groups and backreferences.
-In comparison, POSIX regular expressions require the leftmost and longest match of regular expressions, which we leave as the future work. 
+Our semantics of $\regexp$ follows the 11th Edition of the ECMAScript specification (ES11 for short) \cite{ECMAScript11}, with a focus on the non-commutative union, the greedy/lazy semantics of Kleene star/plus, as well as capturing groups and backreferences.
+In comparison, POSIX regular expressions require the leftmost and longest match of regular expressions, which we leave as future work.
 \end{remark}
   
   

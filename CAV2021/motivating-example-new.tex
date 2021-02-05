@@ -19,10 +19,10 @@ function normalize(decimal) {
 }
 \end{minted}
 \end{center}
-\vspace{-4mm}
+
 \caption{Normalize a decimal by removing the leading and trailing zeros}
 \label{fig-run-exmp}
-\vspace{-6mm}
+
 \end{figure}
 
 We use the JavaScript program in Fig.~\ref{fig-run-exmp} as a running example to
@@ -47,9 +47,9 @@ Note that the greedy semantics is crucial here, because with standard \emph{non-
   The result of the matching, which is an array of strings, is stored in the variable {\tt decomp}. 
 %Since there are two capturing groups in {\tt decimalReg}, the array {\tt format} is of length 3.
 %
-Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\tt decomp[1]} and the result is stored in the variable {\tt integer}. Similarly, the trailing zeros are trimmed by {\tt replace(/{}0+\$/, "")} to {\tt decomp[2]} and the result is stored in the variable {\tt fractional}. Again, the greedy semantics of {\tt 0+} is used to trim \emph{all} the leading/trailing zeros.
+Then the leading zeros are trimmed by applying {\tt replace(/\^{}0+/, "")} to {\tt decomp[1]} and the result is stored in the variable {\tt integer}. Similarly, the trailing zeros are trimmed by {\tt replace(/{}0+\$/, "")} to {\tt decomp[2]} and the result is stored in {\tt fractional}. The greedy semantics of {\tt 0+} is used to trim \emph{all} the leading/trailing zeros.
 %
-The return value is obtained as follows: If {\tt integer} is empty, then it gets a default value \texttt{"0"}. If {\tt fractional} is empty, then the return value is {\tt integer}. Otherwise, the return value  joins {\tt integer} and {\tt fractional} with the dot symbol. 
+If {\tt integer} is empty, the return value gets a default value \texttt{"0"}. If {\tt fractional} is empty, then the return value is {\tt integer}. Otherwise, the return value joins {\tt integer} and {\tt fractional} with the dot symbol. 
 
 A natural post-condition of {\tt normalize} is that the result
 contains neither leading nor trailing zeros. This post-condition has
@@ -79,9 +79,9 @@ program executes to the end.
 \end{minted}
 \end{center}
 \label{fig-run-exmp-path}
-\vspace{-4mm}
+
 \caption{Symbolic execution of a path of the JavaScript program in Fig.~\ref{fig-run-exmp}}
-\vspace{-5mm}
+
 \end{figure}
 
 To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp}, we need to model the greedy semantics of {\tt +} and the matching of capturing groups. To this end, we propose the use of \emph{prioritized streaming string transducers} (PSST, Section~\ref{sect:psst}). The extraction of {\tt decomp[1]} from {\tt decimal}, namely {\tt decimal}. {\tt match(decimalReg)[1]}, can be modeled by a PSST $\cT_{\tt extract_{decimalReg,1}}$, where the priorities are used to capture the greedy semantics of $+$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec-rwre}) and the string variables are used to record the matches of capturing groups. %Similarly for  
@@ -96,7 +96,7 @@ $\Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash
 finite-state automata corresponding to the regular expressions, and
 the assumptions are encoded using \textsf{assert} (using the same
 terminology as \cite{CHL+19}):
-%\vspace{-2mm}
+%
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\tt decimal \in \Aut_{decimalReg}};\nonumber \\
 & & \sf integer  := \tt  \cT_{\tt replace(\mbox{\scriptsize \tt /\^{}0+/, ""})}(\cT_{\tt extract_{decimalReg,1}}(decimal));\nonumber \\
@@ -107,7 +107,7 @@ terminology as \cite{CHL+19}):
  && \tt result2 := integer \concat ``." \concat fractional; \nonumber\\
  && \ASSERT{\tt result2 \in \Aut_{\scriptsize\mbox{\tt /\^{}0\textbackslash d+.*|.*{\scriptsize\textbackslash}.\textbackslash d*0\$/}}}; \nonumber
 \end{eqnarray}
-\vspace{-4mm}
+
 
 At first, we show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}).
 Then, path feasibility of the program in \eqref{eqn:exmp} can be checked by following the ``backward'' reasoning approach from \cite{CHL+19}.

@@ -117,7 +117,7 @@ fun(x);
   \caption{Harnesses with replace-all: SMT-LIB for \ostrich,
     and JavaScript for \expose{}.}
   \label{fig:harness}
-  \vspace{-2mm}
+  
 \end{figure}
 
 Our experiments have the purpose of answering the following main questions:
@@ -135,7 +135,7 @@ quantifiers and capturing groups?
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the primary application of string constraint solving?
 
-%\vspace{-2mm}
+%
 
 \paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
@@ -152,8 +152,8 @@ no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ES11
 semantics.
 
-\begin{table}[htb]
-\vspace{-2mm}
+\begin{table}[t]
+
 	\begin{center}
 	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
 	\hline
@@ -186,7 +186,7 @@ semantics.
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
     wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
-\vspace{-1.4cm}	
+	
 \end{table}
 
 
@@ -198,9 +198,9 @@ solvers. %(e.g.,
 The closest related work is the algorithm implemented in \expose{}, which
 applies Z3~\cite{Z3} for solving string constraints, but augments
 it with a refinement loop to approximate the RWRE
-semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
+semantics.\footnote{We considered replacing Z3 with \ostrich\ in
   \expose{} for the experiments. However, \expose{} integrates Z3 using its
-  C API, and changing to a solver like \ostrich, with native support
+  C API, and changing to \ostrich, with native support
   for capture groups, would have required the rewrite of substantial
   parts of \expose{}.}
 %
@@ -221,8 +221,8 @@ two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
 use the match function instead of replace-all, and contain four
 queries and four paths, respectively.
 
-\begin{table}[htb]
-\vspace{-3mm}
+\begin{table}[t]
+
   \begin{center}
   \begin{tabular}{|l@{~~}|*{6}{c}|*{5}{c}@{~~}|}
     \hline
@@ -260,11 +260,11 @@ queries and four paths, respectively.
     paths covered by \expose{}, in the \textbf{R2} experiments. 
     Experiments were done on an AMD Opteron 2220 SE machine, running
     64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
-    60s wall clock time, memory to 2GB, and the number of tests
+    60s wall-clock time, 2GB memory, and the number of tests
     executed concurrently by \expose\ to 1.  Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s.}
+    wall-clock time per benchmark, timeouts count as 60s.}
   \label{tab:exp-r2}
-\vspace{-8mm}
+
 \end{table}
 
 
@@ -285,7 +285,7 @@ code, as opposed to the SMT-LIB given to \ostrich, the experiments
 show that \ostrich\ is a highly competitive solver for RWREs.
 
 
-\vspace{-2mm}
+
 
 \paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with
 \expose{}+Z3 on the benchmarks from \textbf{R1}. In
