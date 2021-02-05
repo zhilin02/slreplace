@@ -184,9 +184,9 @@ semantics.
 	\end{tabular}
 	\end{center}
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. All experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeout files. Note the one or more paths may have already been covered before timeout. }
+    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
-\vspace{-1cm}	
+\vspace{-1.2cm}	
 \end{table}
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
@@ -203,7 +203,7 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
   for capture groups, would have required the rewrite of substantial
   parts of \expose{}.}
 %
-For \textbf{R2}, we therefore compared \ostrich\ with \expose{} on 98,117
+For \textbf{R2}, we compared \ostrich\ with \expose{} on 98,117
 RWREs taken from \cite{DMC+19}.
 
 \begin{table}[htb]
@@ -285,16 +285,25 @@ show that \ostrich\ is a highly competitive solver for RWREs.
 
 \vspace{-2mm}
 
-\paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with \expose{}+Z3
-on the same benchmarks as for \textbf{R1}.  From the results in
-Table~\ref{tab:exp-r1}, we can see that, on average, Aratha+{\ostrich}
-is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
-able to cover more paths. The smaller speedup compared to the results
-for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path constraints.
+\paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with
+\expose{}+Z3 on the benchmarks from \textbf{R1}. In
+Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
+60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
+discover feasible paths more quickly than \expose{}+Z3, however: on
+all three families of benchmarks, Aratha+{\ostrich} terminates on
+average in less than 10s, and it does not discover new paths 
+after 35s. \expose{}+Z3 fully utilizes the available 60s for
+29 of the programs (``T.O.'' in the table),
+and it finds new paths until the end of the 60s. Since \expose{}+Z3
+handles the replace-all operation by unrolling, it is not able to
+prove infeasibility of paths involving such operations, and will
+therefore not terminate on some programs.
+%is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
+%able to cover more paths. The smaller speedup compared to the results
+%for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path constraints.
 %SMT-LIB queries
 %produced by Aratha are not pure string constraints, but also include
 %ADTs, arrays, and bit-vectors. 
-The experiments still indicate that,
-in the context of symbolic execution, {\ostrich} is significantly more
+Overall, the experiments indicate that {\ostrich} is more
 efficient than the CEGAR-augmented symbolic execution for dealing
 with RWREs.
