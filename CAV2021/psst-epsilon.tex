@@ -58,7 +58,7 @@ A  run of $\pnfa$ on a string $w$ is a sequence $q_0 a'_1 q_1 \ldots a'_m q_m$ s
 %each state $q \in Q$ occurs \emph{at most twice} in the subsequence. 
 (Intuitively, each transition occurs at most once in a sequence of $\varepsilon$-transitions.) 
 \end{itemize}
-Note that it is possible that $\delta(q, a) = ()$, namely, there is no $a$-transition out of $q$. 
+Note that it is possible that $\delta(q, a) = ()$, that is, there is no $a$-transition out of $q$. 
 It is easy to observe that given a string $w$, the length of a run of $\pnfa$ on $w$ is $O(|w||\cA|)$. 
 For any two runs $R = q_0 a_1 q_1 \ldots a_m q_m$ and $R' =  q_0 a'_1 q_1' \ldots a'_n q'_n$ such that $a_1 \ldots a_m = a'_1 \ldots a'_n$, we say that $R$ is of a higher priority over $R'$ if 
 \begin{itemize}
@@ -164,7 +164,7 @@ For any pair of runs $R = q_0 a_1 s_1 \ldots a_m s_m q_m$ and $R' = q_0 a'_1
   % $p \neq p'$ and, for the smallest index $j$ with $q_j \neq q_j'$,
  % $\delta (q_{j - 1}, a_j) = \ldots q_j \ldots q_j' \ldots$
   
-An accepting run of $\psst$ on $w$ is a run of $\psst$ on $w$, say $R = q_0 a_1 s_1 \ldots a_m s_m q_m$, such that 1) $F(q_m)$ is defined, 2)  $R$ is of the highest priority among those runs satisfying 1). The output of $\psst$ on $w$, denoted by $\psst(w)$, is defined as $\eta_m(F(q_m))$, where $\eta_0(x) = \varepsilon$ for each $x \in X$, and $\eta_{i}(x) = \eta_{i-1}(s_{i}(x))$ for every $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation $\eta_m(F(q_m))$ and $\eta_{i-1}(s_{i}(x))$ by taking a function $\eta$ from $X$ to $(\Sigma \cup \{\nullchar\} )^*$ as a function from $(X \cup \Sigma \cup \{\nullchar\})^*$ to $(\Sigma \cup \{\nullchar\})^*$, which maps each $x \in X$ to $\eta(x)$, each $a \in \Sigma$ to $a$, and $\nullchar$ to $\nullchar$ . If there is no accepting run of $\psst$ on $w$, then $\psst(w) = \bot$, namely, the output of $\psst$ on $w$ is undefined. The string relation defined by $\psst$, denoted by $\cR_\psst$,  is 
+An accepting run of $\psst$ on $w$ is a run of $\psst$ on $w$, say $R = q_0 a_1 s_1 \ldots a_m s_m q_m$, such that 1) $F(q_m)$ is defined, 2)  $R$ is of the highest priority among those runs satisfying 1). The output of $\psst$ on $w$, denoted by $\psst(w)$, is defined as $\eta_m(F(q_m))$, where $\eta_0(x) = \varepsilon$ for each $x \in X$, and $\eta_{i}(x) = \eta_{i-1}(s_{i}(x))$ for every $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation $\eta_m(F(q_m))$ and $\eta_{i-1}(s_{i}(x))$ by taking a function $\eta$ from $X$ to $(\Sigma \cup \{\nullchar\} )^*$ as a function from $(X \cup \Sigma \cup \{\nullchar\})^*$ to $(\Sigma \cup \{\nullchar\})^*$, which maps each $x \in X$ to $\eta(x)$, each $a \in \Sigma$ to $a$, and $\nullchar$ to $\nullchar$ . If there is no accepting run of $\psst$ on $w$, then $\psst(w) = \bot$, that is, the output of $\psst$ on $w$ is undefined. The string relation defined by $\psst$, denoted by $\cR_\psst$,  is 
 $$\{(w, \psst(w)) \mid w \in \Sigma^\ast, \psst(w)  \in \Sigma^* \cup \{\nullchar\}\}.$$
 Note that in the definition of $\cR_\psst$ above, the inputs of $\psst$ whose outputs are in $(\Sigma \cup \{\nullchar\})^* \setminus (\Sigma^* \cup \{\nullchar\})$ are ignored.
 

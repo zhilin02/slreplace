@@ -42,7 +42,7 @@ The name format transformation is done by the {\sf replace} function, i.e. {\sf 
 
 For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one needs to  model the semantics of capturing groups as well as references. For this purpose, we introduce prioritized streaming string transducers (PSST, see Section~\ref{sect:psst}). Then {\sf replace(nameReg, ``$\$$2 $\$$1$\$$3'')} can be captured by $\cT_{\sf nameReg}$, where the priorities are used to model the greedy semantics of $+$ or $*$ (see Definition~\ref{def-regex-semantics} in Section~\ref{sec:prel}) and the string variables are used to record the matches of capturing groups.
 
-An intuitive invariant property of the output of {\sf changeNameFormat} is that, if {\sf authorList} matches {\sf autListReg}, then none of its outputs contains the comma ``,''. The invariant property holds iff the following program in single static assignment form is infeasible (namely, there does not exist a value of {\sf authorList} so that the program can execute to the end):
+An intuitive invariant property of the output of {\sf changeNameFormat} is that, if {\sf authorList} matches {\sf autListReg}, then none of its outputs contains the comma ``,''. The invariant property holds iff the following program in single static assignment form is infeasible (that is, there does not exist a value of {\sf authorList} so that the program can execute to the end):
 %
 \begin{eqnarray}\label{eqn:exmp}
 & & \ASSERT{\sf authorList \in autListReg};\nonumber \\
