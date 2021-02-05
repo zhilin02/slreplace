@@ -10,10 +10,13 @@ The goal of this section is to prove Theorem~\ref{thm-main}, i.e., the decidabil
 
 We first show that semantically equivalent PSSTs can be effectively constructed from the $\extract$, $\replace$, and $\replaceall$ functions. 
 
+\vspace{-1mm}
 \begin{lemma}\label{lem-str-fun-to-psst}
 For each string function $f = \extract_{i,e}$, $\replace_{\pat, \rep}$, or $\replaceall_{\pat, \rep}$, a PSST $\cT_f$ can be constructed such that 
-$$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$
+$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$
 \end{lemma}
+\vspace{-1mm}
+
 
 %\begin{lemma}\label{lem-replace}
 %A PSST $\cT_{\replace_{\pat, \rep}}$ (resp. $\cT_{\replaceall_{\pat, \rep}}$) can be constructed for $\replace_{\pat, \rep}$ (resp. $\replaceall_{\pat, \rep}$) such that $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$ (resp. $\cR_{\cT_{\replaceall_{\pat, \rep}}} = \{(w, w') \mid w'= \replaceall_{\pat, \rep}(w)\}$).
@@ -24,16 +27,19 @@ The proof of Lemma~\ref{lem-str-fun-to-psst} is given in Appendix~\ref{appendix:
 With Lemma~\ref{lem-str-fun-to-psst}, the path feasibility of $\strline_{\sf reg}$ is reduced to the path feasibility of string-manipulating programs consisting of  a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.  The class of programs is denoted by $\strline'_{\sf reg}$. We then  follow %the %backward computation %reasoning approach of 
 the backward reasoning approach proposed in \cite{CCH+18,CHL+19} to solve the path feasibility of $\strline'_{\sf reg}$, where the key is to show that the pre-images of regular languages  under PSSTs  are regular and can be computed effectively.
 
+\vspace{-1mm}
 \begin{definition}[Pre-image]
 For a string relation $R \subseteq \Sigma^* \times (\Sigma^* \cup \{\nullchar\})$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$ as $R^{-1}(L):=\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$. 
 \end{definition}
- 
-\begin{lemma}[Pre-image of regular languages under PSSTs]
+\vspace{-3mm}
+
+ \begin{lemma}[Pre-image of regular languages under PSSTs]
   \label{lem:psst_preimage}
   Given a PSST $\psst = (Q_T, \Sigma$, $X$, $\delta_T$, $\tau_T$, $E_T$,  $q_{0, T}$, $F_T$) and an \FA{} $\Aut
   = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $\cB = (Q_B,
   \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
 \end{lemma}
+\vspace{-1mm}
 The proof of Lemma~\ref{lem:psst_preimage} is given in Appendix~\ref{app-pre-image}.
 
 
@@ -45,10 +51,10 @@ With Lemma~\ref{lem:psst_preimage}, we  solve the path feasibility of $\strline'
 \end{itemize}
 Let $S'$ be the resulting $\strline'_{\sf reg}$ program containing no assignment statements. Then the path feasibility of $S'$ can be solved by checking the nonemptiness of the intersection of regular constraints for the input variables, which is known to be \pspace-complete \cite{Kozen77}.
 
-\vspace{-2mm}
+\vspace{-1mm}
 \paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up, the aforementioned decision procedure has a non-elementary complexity in the worst-case. Nevertheless, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per query a few seconds (see Section~\ref{sect:impl}).
 
-\vspace{-2mm}
+\vspace{-1mm}
 
 \begin{remark}
 The aforementioned procedure extends the backward-reasoning approach in \cite{CHL+19}, since standard one-way and two-way finite-state transducers were considered therein and PSSTs, in particular priorities, are beyond them\footnote{It is known that deterministic streaming string transducers are expressively equivalent to two-way deterministic finite-state transducers, which, nevertheless, is not the case for nondeterministic transducers \cite{AC10,AD11}.}. 

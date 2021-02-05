@@ -46,6 +46,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 %It is an open question whether RWRE can be incorporated into a string 
 %constraint language, while preserving 
 
+\vspace{-1mm}
 \begin{example}
     Consider the RWRE \mintinline{javascript}{(\d+)(\d*)}. It has two capturing
     groups, each within a pair of opening/closing brackets and  matching
@@ -63,6 +64,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
     nonempty sequence of digits, which is not a context-free language.
     \qed
 \end{example}
+\vspace{-1mm}
 
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
@@ -77,20 +79,23 @@ For the replace function, on a given string $s$, a matching pattern RWRE $e$, an
 matches, if the global flag is enabled) of $e$ in $s$ by $t$. Here $t$
 could contain references to the matches of various capturing groups
 in $e$. 
+\vspace{-1mm}
 \begin{example}\label{exmp-name-swap}
-    We shall give a more extensive example in Section \ref{sec:mot}, which 
-    simultaneously involves both match and replace. Consider the snippet
+%    We shall give a more extensive example in Section \ref{sec:mot}, which 
+%    simultaneously involves both match and replace. 
+    Consider the snippet
     \begin{minted}{javascript}
         var namesReg = /([A-Za-z]+) ([A-Za-z]+)/g;
         var newAuthorList = authorList.replace(nameReg, "$2, $1");
     \end{minted}
-    Assuming \texttt{authorList} is given as a \texttt{;}-separated 
-    list of author names --- first name, followed by a last name ---
+    Assuming \texttt{authorList} is given as a 
+    list of \texttt{;}-separated author names --- first name, followed by a last name ---
     the above program would convert this to last name, followed by first name
-    format. For example, \texttt{"Don Knuth; Alan Turing; Bob Floyd"} would
-    be converted to \texttt{"Knuth, Don; Turing, Alan; Floyd, Bob"}.
+    format. For instance, \texttt{"Don Knuth; Alan Turing"} would
+    be converted to \texttt{"Knuth, Don; Turing, Alan"}.
     \qed
 \end{example}
+\vspace{-1mm}
 \OMIT{
 The semantics of RWREs drastically affect the behaviors of these functions. In particular, one must take a special care of the
 greedy/lazy semantics of Kleene star, which cannot 
@@ -157,6 +162,7 @@ We conclude with two open questions from the discussion:
  %to approach the genuine semantics of real-world regular expressions. 
 %Although the CEGAR approach of \expose{} made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
+\vspace{-4mm}
 \paragraph*{Contributions.}
 The main contributions of the paper are to answer both (Q1) and (Q2) in the
 positive for a reasonable fragment of RWREs. In particular, we consider the 
@@ -217,6 +223,8 @@ on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
  Then we generate all the four (resp. three) path constraints for each match (resp. replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp. three) queries in 97.9\% (resp. 97.6\%) of the match (resp. replace) SMT files, with the average time 1.19 (resp. 1.48) seconds per file. For comparison, we also run \expose{} on the JavaScript programs. \expose{} covers 91.5\% (resp. 63.2\%) of feasible paths in the match (resp. replace) programs reported by {\ostrich}, with  the average time 28.0 (resp. 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. 
  %\zhilin{I rephrased a bit. @Philipp, please check.}
 
+\vspace{-2mm}
+\paragraph*{Organization.} This paper is organized as follows: Section~\ref{sec:mot} proposes the motivating example. Section~\ref{sec-rwre} defines RWREs. Section~\ref{sec:logic} introduces the string constraint language. Section~\ref{sect:psst} is devoted to PSSTs. Section~\ref{sec:decision} presents the decision procedure. Section~\ref{sect:impl} describes the implementation and experiments. Section~\ref{sec-related} discusses the related work and concludes this work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

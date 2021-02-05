@@ -130,9 +130,11 @@ The $\extract$ function is used to model the regular-expression match function i
 %, e.g. $\sf str.match(regexp)$ function in Javascript. 
 Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the accepting match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. For instance, assuming $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$,   $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns $\nullchar$. For instance, when $[[a^+] + ([a^*])]$ is matched against the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$.
 
+\vspace{-1mm}
 \begin{remark}
 The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving RWREs, e.g. {\sf exec} and {\sf test}, are similar to {\sf match}, thus can be encoded by $\extract$ as well. 
 \end{remark}
+\vspace{-1mm}
 
 The $\replaceall_{\pat, \rep}(x)$ function is parameterized by the  %\emph{subject} string, the second parameter is a 
 \emph{pattern} $\pat \in \regexp$ and the \emph{replacement} string $\rep \in \refexp$. For a given input string $x$, the function identifies all the %the first, second, $\dots$, 
@@ -155,15 +157,18 @@ For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an 
 
 It turns out that the path feasibility problem is undecidable, attributed to the the backreferences in assertion statements or in pattern parameters of the $\replace$/$\replaceall$ function. 
 
+\vspace{-1mm}
 \begin{proposition}\label{prop-und}
 The path feasibility problem of $\strline$ is undecidable.
 \end{proposition}
+\vspace{-1mm}
 
 We shall show that the path feasibility problem becomes decidable, if the uses of backreferences in assertion statements and pattern parameters of the $\replace$/$\replaceall$ function are forbidden, which turns out to be the situation in practice,  according to the statistics in the literature (see Section~\ref{sec-intro}).
 %\footnote{An evidence was given in  \cite{LMK19}, where the statistics showed that the occurrences of regular expressions with backreferences occupy only less than $1\%$ in the widely used JavaScript NPM packages.} 
 In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of %where no 
 backreferences in assertion statements as well as in pattern parameters of the $\replace$/$\replaceall$ function. %We state 
 Note that $\strline_{\sf reg}$  still allows backreferences in replacement parameters of $\replace$/$\replaceall$ function. The main result of this paper is as follows.
+
 
 \begin{theorem}\label{thm-main}
 The path feasibility of $\strline_{\sf reg}$ is decidable.
