@@ -117,7 +117,7 @@ fun(x);
   \caption{Harnesses with replace-all: SMT-LIB for \ostrich,
     and JavaScript for \expose{}.}
   \label{fig:harness}
-  \vspace{-4mm}
+  \vspace{-2mm}
 \end{figure}
 
 Our experiments have the purpose of answering the following main questions:
@@ -135,7 +135,7 @@ quantifiers and capturing groups?
 \textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
 the primary application of string constraint solving?
 
-\vspace{-2mm}
+%\vspace{-2mm}
 
 \paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
 expressions to RWREs, and integrated \ostrich\ into the symbolic
@@ -153,7 +153,7 @@ semantics in this paper are indeed suitable for capturing ES11
 semantics.
 
 \begin{table}[htb]
-\vspace{-3mm}
+\vspace{-2mm}
 	\begin{center}
 	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
 	\hline
@@ -186,8 +186,9 @@ semantics.
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
     wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
-\vspace{-1.2cm}	
+\vspace{-1.4cm}	
 \end{table}
+
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
 involving RWREs, and we are not aware of other constraint solvers
@@ -206,8 +207,22 @@ semantics.\footnote{We also considered to replace Z3 with \ostrich\ in
 For \textbf{R2}, we compared \ostrich\ with \expose{} on 98,117
 RWREs taken from \cite{DMC+19}.
 
+For each of the regular expressions, we created four harnesses: two in
+SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
+\expose{}. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
+regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
+the replace-all function to simulate typical string processing;
+\verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
+replacement string \verb!"$1"!. The three paths of the JavaScript
+function~\verb!fun! correspond to the three queries in the SMT-LIB
+script, so that a direct comparison can be made between the results of
+the SMT-LIB queries and the set of paths covered by \expose{}. The other
+two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
+use the match function instead of replace-all, and contain four
+queries and four paths, respectively.
+
 \begin{table}[htb]
-\vspace{-5mm}
+\vspace{-3mm}
   \begin{center}
   \begin{tabular}{|l@{~~}|*{6}{c}|*{5}{c}@{~~}|}
     \hline
@@ -253,19 +268,6 @@ RWREs taken from \cite{DMC+19}.
 \end{table}
 
 
-For each of the regular expressions, we created four harnesses: two in
-SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
-\expose{}. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
-regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
-the replace-all function to simulate typical string processing;
-\verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
-replacement string \verb!"$1"!. The three paths of the JavaScript
-function~\verb!fun! correspond to the three queries in the SMT-LIB
-script, so that a direct comparison can be made between the results of
-the SMT-LIB queries and the set of paths covered by \expose{}. The other
-two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
-use the match function instead of replace-all, and contain four
-queries and four paths, respectively.
 
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
