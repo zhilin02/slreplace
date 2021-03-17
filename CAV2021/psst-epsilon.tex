@@ -55,9 +55,11 @@ A  run of $\pnfa$ on a string $w$ is a sequence $q_0 a'_1 q_1 \ldots a'_m q_m$ s
 \item for any $i \in [m]$, either $a'_i \in \Sigma$ and $q_i \in \delta (q_{i - 1}, a'_i)$, or $a'_i = \varepsilon$ and $q_i \in \tau(q_{i-1})$, %\pi_1(\tau(q_{i-1}))\cup \pi_2(\tau(q_{i-1}))$,
 \item $w = a'_1 \cdots a'_m$,
 %
-\item for every subsequence $q_i a'_{i+1} q_{i+1} \ldots a'_{j} q_j$ such that  $i < j$ and $a'_{i+1} = \cdots = a'_j = \varepsilon$, it holds that for every $k, l: i \le k < l < j$, $(q_k, q_{k+1}) \neq (q_l, q_{l+1})$.
+\item for every subsequence $q_i a'_{i+1} q_{i+1} \ldots a'_{j} q_j$ such that  $i < j$ and $a'_{i+1} = \cdots = a'_j = \varepsilon$, it holds that for every $k, l: i \le k < l < j$, $(q_k, q_{k+1}) \neq (q_l, q_{l+1})$,
 %each state $q \in Q$ occurs \emph{at most twice} in the subsequence. 
 (Intuitively, each transition occurs at most once in a sequence of $\varepsilon$-transitions.) 
+%
+\item moreover, for every suffix $q_i a'_{i+1} q_{i+1} \ldots a'_{m} q_m$ such that $i < m$ and $a'_{i+1} = \cdots = a'_m = \varepsilon$, it holds that $q_i, \dots, q_m$ are mutually distinct.  (Intuitively, each state occurs at most once in a suffix of $\varepsilon$-transitions.) 
 \end{itemize}
 Note that it is possible that $\delta(q, a) = ()$, that is, there is no $a$-transition out of $q$. 
 It is easy to observe that given a string $w$, the length of a run of $\pnfa$ on $w$ is $O(|w||\cA|)$. 

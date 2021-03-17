@@ -161,15 +161,15 @@ At first, we can adapt the PFA construction in \cite{BDM14}, which in turn is a 
 \begin{proposition}\label{prop-rwre-to-pfa}
 	For each $\cgexp$ $e$, a PFA $\cA_e$ can be constructed in linear time such that 
 	\begin{itemize}
-		\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
+		\item $\cA_e$ has a unique initial state without incoming transitions and each of its final states has no outgoing transitions,
 		%
-		\item for subexpression $e'$ of $e$, $\cA_e$ contains an isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
+		\item for subexpression $e'$ of $e$, $\cA_e$ contains some isomorphic copies of $\cA_{e'}$ (i.e. the PFA constructed for $e'$). (Let $\mathscr{C}_{e'}[\cA_e]$ denote the collection of these isomorphic copies of $\cA_{e'}$ in $\cA_e$.) 
 	\end{itemize}
 \end{proposition}
 %Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
 
 \begin{proof}
-For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that it has a unique initial state and a unique final state  without outgoing transitions.
+For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that 1) it has a unique initial state without incoming transitions and each of its  final states has no outgoing transitions, 2) all the transitions out of the initial state are $\varepsilon$-transitions. 
 %The original construction on regular expressions
 %produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
 %We refer the reader to \cite{Gluskov61} for 
@@ -177,75 +177,101 @@ For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. 
 %
 %The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
 \begin{itemize}
-\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
+\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, \{f_0\})$, where $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
 
-  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
+  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, \{f_0\})$, where  $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
 
-  \item If $e = a$, then $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = (f_0)$, $\delta(q_0, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_0) = ((); ())$, and $\tau(f_0) = ((); ())$.
+  \item If $e = a$, then $\cA_e = (\{q_0, q_1, f_0\}, \Sigma, \delta, \tau, q_0, \{f_0\})$, where  $\delta(q_0, b) = ()$ for every $b \in \Sigma$, $\tau(q_0) = ((q_1); ())$, $\delta(q_1, a) = (f_0)$ and $\delta(q_1, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_1) = ((); ())$ and $\tau(f_0) = ((); ())$.
     
   \item If $e = (e_1)$, then $\cA_e = \cA_{e_1}$.
   
   \item If $e = [e_1 + e_2]$, let $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
-  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = (Q_1 \cup Q_2 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau, q_0, f_0)$, where  
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
+  \delta_2, \tau_2, q_2, F_2)$, then $\cA_e = (Q_1 \cup Q_2 \cup \{q_0\}, \Sigma,
+  \delta, \tau, q_0, F_1 \cup F_2)$, where  
   \begin{itemize}
- \item $q_0, f_0 \not \in Q_1 \cup Q_2$, 
+ \item $q_0 \not \in Q_1 \cup Q_2$, 
  \item $\delta(q, a) = \delta_i(q, a)$ for every $i \in \{1,2\}$, $q \in Q_i$ and $a \in \Sigma$, 
-$\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, 
+$\delta(q_0, a) = ()$ for every $a \in \Sigma$, 
 %
- \item $\tau(q) = \tau_i(q)$ for every $q \in Q_i$ ($i =1,2$), $\tau(q_0) = ((q_1,q_2); ())$,  $\tau(f_1) = \tau(f_2) = ((f_0); ())$, and $\tau(f_0) = ((); ())$.
+ \item $\tau(q) = \tau_i(q)$ for every $q \in Q_i$ ($i =1,2$), $\tau(q_0) = ((q_1,q_2); ())$. 
+ %$\tau(f_1) = \tau(f_2) = ((f_0); ())$, and $\tau(f_0) = ((); ())$.
  \end{itemize}
 %
   \item If $e = [e_1 \concat e_2]$, let $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
-  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = ( Q_1 \cup Q_2, \Sigma, \delta, \tau, q_1,
-  f_2)$, where 
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
+  \delta_2, \tau_2, q_2, F_2)$, then $\cA_e = ( Q_1 \cup Q_2, \Sigma, \delta, \tau, q_1,
+  F_2)$, where 
   \begin{itemize}
     \item for every $i \in \{1,2\}$, $q \in Q_i$ and $a \in \Sigma$, $\delta(q, a) = \delta_i(q, a)$,
     
     \item for every $q \in Q_2$, $\tau(q) = \tau_2(q)$, 
 %
-    \item for every $q \in Q_1 \setminus \{f_1\}$, $\tau(q) = \tau_1(q)$, and $\tau(f_1) = ((q_2); ())$.
+    \item for every $q \in Q_1 \setminus F_1$, $\tau(q) = \tau_1(q)$, and for every $q \in F_1$, $\tau(q) = ((q_2); ())$.
   \end{itemize}
 %  
   \item If $e = [e_1^{\ast}]$, let  $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau$, $q_0$, $f_0)$, where 
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau$, $q_0$, $\{f_0\})$, where 
   \begin{itemize}
   \item $q_0, f_0 \not \in Q_1$,
   
     \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
     %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)), f_0))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $f_1$ to $q_1$, and from $q_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
+    \item for every $q \in Q_1 \setminus F_1 \cup \{q_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)),f_0))$, $\tau(q) = ((q_1); ())$  for every $q \in F_1$, $\tau(f_0) = \tau(f_1) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $q_1$ to $f_0$, from each $q \in F_1$ to $q_1$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
   \end{itemize}
 %
   \item If $e = [e_1^{+}]$, let  $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau$, $q_0$, $f_0)$, where 
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$ and $\cA'_{e_1} = (Q'_1,
+  \Sigma, \delta'_1, \tau'_1, q'_1, F'_1)$ be a copy of $\cA_{e_1}$, then $\cA_e = (Q_1 \cup Q'_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau$, $q_1$, $\{f_0\})$, where 
   \begin{itemize}
-  \item $q_0, f_0 \not \in Q_1$,
+  \item $q_0, f_0 \not \in Q_1 \cup Q'_1$,
   
-    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    \item for every $q \in Q_1$ (resp. $q' \in Q'_1$) and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$ (resp. $\delta(q', a) = \delta'_1(q', a)$), 
     %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(f_1) = ((q_1,f_0); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $f_1$ to $q_1$, and from $f_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $f_1$ to $f_0$ is of the lowest priority.)
+    \item for every $q \in (Q_1 \setminus F_1)$ (resp. $q' \in (Q'_1 \setminus F'_1 \cup \{q'_1\})$),  $\tau(q) = \tau_1(q)$ (resp. $\tau(q') = \tau'_1(q')$), moreover, $\tau(q) = ((q_0); ())$ for every $q \in F_1$, $\tau(q_0) = ((q'_1); ())$, $\tau(q'_1) = (\pi_1(\tau'_1(q'_1)); (\pi_2(\tau'_1(q'_1)), f_0))$, $\tau(q') = ((q'_1); ())$ for every $q' \in F'_1$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q \in F_1$ to $q_0$, from $q_0$ to $q'_1$, from $q'_1$ to $f_0$, and from $q' \in F'_1$ to $q'_1$ respectively are added, moreover, the $\varepsilon$-transition from $q'_1$ to $f_0$ is of the lowest priority.)
   \end{itemize}
 
- %
-  \item If $e = [e_1^{\ast?}]$, let $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma, \delta$, $\tau$, $q_0$, $f_0)$, where 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide{
+  \item If $e = [e_1^{+}]$ and $\varepsilon \not \in \Lang(e_1)$, let  $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+  \delta, \tau$, $q_0$, $\{f_0\})$, where 
   \begin{itemize}
   \item $q_0, f_0 \not \in Q_1$,
   
     \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
     %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = ((f_0, \pi_1(\tau_1(q_1))); \pi_2(\tau_1(q_1)))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $q_1$ to $f_0$ is of the highest priority.)
+    \item for every $q \in Q_1 \setminus F_1$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q) = ((q_1,f_0); ())$ for every $q \in F_1$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $q \in F_1$ to $q_1$ and $f_0$ respectively are added, moreover, the $\varepsilon$-transitions from $q \in F_1$ to $f_0$ is of the lowest priority.)
+  \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+  \item If $e = [e_1^{+?}]$ , let $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$ and $\cA'_{e_1} = (Q'_1,
+  \Sigma, \delta'_1, \tau'_1, q'_1, F'_1)$ be a copy of $\cA_{e_1}$, then $\cA_e = (Q_1 \cup Q'_1 \cup \{q_0, f_0, f_1\}, \Sigma,
+  \delta, \tau$, $q_1$, $\{f_0, f_1\})$, where 
+  \begin{itemize}
+  \item $q_0, f_0, f_1 \not \in Q_1$,
+  
+    \item for every $q \in Q_1$ (resp. $q' \in Q'_1$) and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$ (resp. $\delta(q', a) = \delta'_1(q', a)$), 
+    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
+    
+    \item for every $q \in Q_1 \setminus F_1$ (resp. $q' \in Q'_1 \setminus F'_1$),  $\tau(q) = \tau_1(q)$ (resp. $\tau(q') = \tau'_1(q')$), moreover, $\tau(q) = ((q_0); ())$ for every $q \in F_1$, $\tau(q_0) = ((f_0, q_1); ())$, $\tau(q') = ((f_1,q_1); ())$ for every $q' \in F'_1$, and $\tau(f_0) = \tau(f_1) = ((); ())$. (The $\varepsilon$-transitions from $q_0$ to $f_0$ and from $q' \in F'_1$ to $f_1$ are of the highest priority.)
   \end{itemize}  
-%
-  \item If $e = [e_1^{+?}]$, let $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hide
+{
+  \item If $e = [e_1^{+?}]$ , let $\cA_{e_1} = (Q_1,
+  \Sigma, \delta_1, \tau_1, q_1, F_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
   \delta, \tau$, $q_0$, $f_0)$, where 
   \begin{itemize}
   \item $q_0, f_0 \not \in Q_1$,
@@ -253,8 +279,11 @@ $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$,
     \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
     %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(f_1) = ((f_0, q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $f_1$ to $f_0$ is of the highest priority.)
+    \item for every $q \in Q_1 \setminus F_1$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q) = ((f_0, q_1); ())$ for every $q \in F_1$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transitions from $q \in F_1$ to $f_0$ are of the highest priority.)
   \end{itemize}  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+}
 \end{itemize}
 \qed
 \end{proof}
@@ -334,7 +363,7 @@ $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
 	\begin{itemize}
 	\item uses a string variable $x$ to store the value of the $i$th capturing group,
 	\item initially assigns $\nullchar$ to $x$ to denote the fact that the capturing group is not matched yet,
-	\item then simulates $\cA_e$ and stores letters into $x$ when applying the transitions in ${\sf Sub}_{e'}[\cA_e]$,
+	\item then simulates $\cA_e$ and stores letters into $x$ when applying the transitions in $\mathscr{C}_{e'}[\cA_e]$,
 	\item finally outputs the value of $x$ when $\cA_e$ accepts.
 	\end{itemize}
 
@@ -368,11 +397,15 @@ $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
 		%
 		\item $E'$ is defined as follows,
 		\begin{itemize}
-			\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $E'(q'_0, \varepsilon, q_0)(x) = \nullchar$, otherwise, $E'(q'_0, \varepsilon, q_0)(x) = \varepsilon$,
+%			\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $E'(q'_0, \varepsilon, q_0)(x) = \nullchar$, otherwise, $E'(q'_0, \varepsilon, q_0)(x) = \varepsilon$,
 			%
-			\item for each transition $(q, a, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = x a$,
+			\item $E'(q'_0, \varepsilon, q_0)(x) = \nullchar$,
+			%
+			\item let $p_0$ be the initial state of $\cA_{e'}$, then for each copy $p'_0$ of $p_0$ and each transition $(p'_0, \varepsilon, p')$ out of $p'_0$ in $\mathscr{C}_{e'}[\cA_e]$, $E'(p'_0, \varepsilon, p')(x) = \varepsilon$,  (note that all the transitions out of $p'_0$ in $\mathscr{C}_{e'}[\cA_e]$ are $\varepsilon$-transitions)
+			%
+			\item for all the transitions $(q, a, q')$ in $\mathscr{C}_{e'}[\cA_e]$, $E'(q, a, q')(x) = x a$,
 			% 
-			\item for each transition $(q, a, q')$ such that $(q, a, q')$ does not occur in ${\sf Sub}_{e'}[\cA_e]$ and $q'$ occurs in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = \varepsilon$,
+%			\item for each transition $(q, a, q')$ such that $(q, a, q')$ does not occur in ${\sf Sub}_{e'}[\cA_e]$ and $q'$ occurs in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = \varepsilon$,
 			%
 			\item for all the other transitions $t$ of $\cA_e$, $E'(t)(x) = x$.
 		\end{itemize}
