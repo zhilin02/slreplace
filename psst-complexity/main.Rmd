@@ -1,0 +1,132 @@
+--- 
+documentclass: article
+title: "Complexity of Some Fragments of String Constraints with Regular Expressions"
+author: "Matthew Hague"
+date: "`r Sys.Date()`"
+bibliography: ["references.bib"]
+biblio-style: apalike
+link-citations: yes
+description: "The complexity of String Constraints with replaceAll including references, and with general Prioritized Streaming String Transducers"
+---
+
+\newcommand\freplaceall{\mathtt{replaceAll}}
+
+# Abstract {-}
+
+We look at the complexity of straight-line string logic with two
+variants of the $\freplaceall$ operations.  The first replaces all
+occurrences in a string of a given regular expression with the contents
+of another string variable.  The second allows the use of capture groups
+in the regular expression to be replaced by patterns that may contain
+references.  We show that satisfiability of this logic can be decided in
+ExpSpace. Our upper bound algorithm uses a restricted form of
+prioritized streaming string transducers, where a variable can either
+only be used once before its value is reset, or whose value is a
+parameter of the transducer (i.e. fixed at the start of the run).
+
+Additionally, we show that the straight-line string logic that allows
+arbitrary streaming string transducers has a Tower-hard
+satisfiability problem.
+
+<!-- macros -->
+
+\newcommand\keyword[1]{\emph{#1}}
+
+\newcommand\brac[1]{\left(#1\right)}
+\newcommand\tup[1]{\brac{#1}}
+\newcommand\ap[2]{{#1}\mathord{\brac{#2}}}
+\newcommand\sequence[1]{\overline{#1}}
+\newcommand\set[1]{\left\{#1\right\}}
+\newcommand\defeq{\triangleq}
+\newcommand\synalt{\ |\ }
+\newcommand\idxi{i}
+\newcommand\idxj{j}
+\newcommand\idxk{k}
+\newcommand\posnats{\mathbb{N}^+}
+\newcommand\numof{n}
+
+\newcommand\alphabet{\Sigma}
+\newcommand\witheps[1]{{#1}^\epsilon}
+\newcommand\word{w}
+
+\newcommand\pnfa{A^p}
+\newcommand\fa{A}
+\newcommand\fastates{Q}
+\newcommand\fatran{\delta}
+\newcommand\fapriority{\tau}
+\newcommand\fas{q}
+\newcommand\fafinals{F}
+\newcommand\fastateseq{\vec{\fas}}
+
+\newcommand\psst{T}
+\newcommand\tstates{Q}
+\newcommand\tvars{\chi}
+\newcommand\tvar{X}
+\newcommand\ttrans{\delta}
+\newcommand\ttran{t}
+\newcommand\tpriority{\tau}
+\newcommand\ts{q}
+\newcommand\tfinals{F}
+\newcommand\tstateseq{\vec{\ts}}
+\newcommand\tassign{E}
+\newcommand\vnull{\mathtt{null}}
+
+\newcommand\scon{\phi}
+\newcommand\svar{x}
+\newcommand\varsvar{y}
+\newcommand\cha{a}
+\newcommand\chb{b}
+
+\newcommand\tiles{\Theta}
+\newcommand\hrel{H}
+\newcommand\vrel{V}
+\newcommand\inittile{\tile^0}
+\newcommand\fintile{f}
+\newcommand\tile{t}
+\newcommand\vartile{d}
+\newcommand\linlen{\numof}
+\newcommand\tileheight{h}
+\newcommand\expheight{m}
+\newcommand\spacer{\#}
+\newcommand\isnum[2]{R^{#2}_{#1}}
+\newcommand\lmark{\langle}
+\newcommand\rmark{\rangle}
+\newcommand\sftrue{\top}
+\newcommand\sffalse{\bot}
+\newcommand\sfvalue{v}
+
+\newcommand\tilesnum[1]{\tiles_{#1}}
+\newcommand\hrelnum[1]{\hrel_{#1}}
+\newcommand\vrelnum[1]{\vrel_{#1}}
+\newcommand\inittilenum[1]{\inittile_{#1}}
+\newcommand\fintilenum[1]{\fintile_{#1}}
+\newcommand\nmax[1]{N_{#1}}
+\newcommand\tenc[2]{[#2]_{#1}}
+
+\newcommand\fullrow[1]{
+    \tenc{\expheight}{1} \tile^{#1}_1
+        \ldots
+        \tenc{\expheight}{\nmax{\expheight}}
+            \tile^{#1}_{\nmax{\expheight}} 
+}
+
+\newcommand\concat{\cdot}
+\newcommand\extract[2]{\mathtt{extract}_{#1, #2}}
+\newcommand\pat{e}
+\newcommand\rep{r}
+\newcommand\replace[2]{\mathtt{replace}_{#1, #2}}
+\newcommand\replaceall[2]{\freplaceall_{#1, #2}}
+\newcommand\slassert[1]{\mathtt{assert}\ {#1}}
+
+\newcommand\regex{\rho}
+\newcommand\reopt[1]{{#1}?}
+\newcommand\reor{+}
+\newcommand\reconcat{\concat}
+\newcommand\restar[1]{#1^\ast}
+\newcommand\replus[1]{#1^+}
+\newcommand\restarng[1]{#1^{\ast?}}
+\newcommand\replusng[1]{#1^{+?}}
+\newcommand\recapture[1]{\left[#1\right]}
+\newcommand\reref[1]{\$#1}
+
+\newcommand\tvarout{O}

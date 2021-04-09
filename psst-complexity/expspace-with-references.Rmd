@@ -1,0 +1,121 @@
+
+# ReplaceAll with References is in ExpSpace
+
+Consider the following string logic.
+
+```{definition, name="String Logic with Regular Expressions and References (SLRER)"}
+A formula $\scon$ of the *string logic with regular expressions and
+references (SLRER)* is a formula from the syntax below.
+\[
+    \begin{array}{lcl}
+        \scon, \scon_1, \scon_2 & \defeq  &
+            \svar := \varsvar_1 \concat \varsvar_2 \synalt
+            \svar := \ap{\extract{\idxi}{\pat}}{\varsvar} \synalt
+            \svar := \ap{\replace{\pat}{\rep}}{\varsvar} \synalt \\
+        & & \svar := \ap{\replaceall{\pat}{\rep}}{\varsvar} \synalt
+            \slassert{\svar \in \pat} \synalt
+            \scon_1; \scon_2
+    \end{array}
+\]
+where $\pat$ is a regular expression pattern, and $\rep$ is a regular
+expression replacement pattern and $\svar$, $\varsvar$, $\varsvar_1$,
+and $\varsvar_2$ are string variables.
+
+```
+
+As shown in CAV 2021, SLRER is decidable. Crucially, it is shown that
+$\extract{\idxi}{\pat}$, $\replace{\pat}{\rep}$, and
+$\replaceall{\pat}{\rep}$ can be encoded as PSSTs. It is straightforward
+to encode $\slassert{}$ statements as finite automata. This means SLRER
+can be encoded in PSST logic. However, as shown in the previous section,
+PSST logic has a Tower-hard satisfiability problem. In this section we
+aim to show that satisfiability of SLRER is in ExpSpace.
+
+```{theorem}
+The satisfiability problem for string logic with regular expressions and
+references is in ExpSpace.
+
+```
+
+The proof will make the following key observation: the Tower-hardness of
+PSST logic depended on the ability of a PSST to read a substring of its
+input, and output it an arbitrary number of times (in fact a
+tower-of-exponential number of times).
+
+However, consider a $\replaceall{\pat}{\rep}$ operation. a substring
+matching $\pat$ will be replaced using $\rep$. The substring of the
+match captured by the $\idxi$th capture group may appear in the output
+only as many times as $\reref{\idxi}$ appears in $\rep$. That is, a
+linear number of times, not a tower of exponentials.
+
+Following this observation, our proof will use *copyless* PSSTs.  We
+will first describe Copyless PSSTs (LPSSTs), then we will show that
+SLRER functions can be encoded as Copyless PSSTs. Finally, we will show
+that the satisfiability of Copyless PSST Logic is ExpSpace.
+
+## Copyless PSSTs
+
+The *copyless* restriction was introduced by Alur and Černỳ [@AC10]. It
+is a restriction on the structure of a Streaming String Transducer to
+prevent the copying of variables.
+
+```{definition, name="Copyless PSSTs"}
+A *copyless PSST* is a PSST
+$\psst = \tup{
+    \tstates, \alphabet, \tvars, \ttrans, \tpriority, \tassign, \ts_0, \tfinals
+}$
+with variables $\tvars = \set{\tvar_1, \ldots, \tvar_\numof}$ such that
+for all transitions $\ttran \in \ttrans$ and variables $\tvar \in
+\tvars$ we have that $\tvar$ appears at most once in
+\[
+    \ap{\ap{\tassign}{\ttran}}{\tvar_1}
+    \concat \cdots \concat
+    \ap{\ap{\tassign}{\ttran}}{\tvar_\numof} \ .
+\]
+```
+
+## Encoding SLRER Functions with Copyless PSSTs
+
+An operation $\replaceall{\pat}{\rep}$ is encoded using a PSST that
+stores captured substrings in its variables $\tvar$. When a match is
+found, the replacement pattern appended to the output, with the
+appropriate variables $\tvar$ appearing in place of the references
+$\reref{\idxi}$. This is not immediately copyless as a reference may
+appear multiple times in the replacement pattern.
+
+To encode the operation as a copyless PSST, we use multiple variables
+for each capture group: one for each reference to it in the replacement
+pattern. For example, a pattern $\cha\recapture{\restar{\chb}}\cha$ with
+replacement patter $\reref{1} \reref{1}$ would contain two variables
+$\tvar_1$ and $\tvar_2$. The captured sequence of $\chb$ characters
+would be stored into both $\tvar_1$ and $\tvar_2$. Supposing output is
+being stored in the variable $\tvarout$ then the transition(s) $\ttran$
+that completes the match will have the following variable assignments.
+\[
+    \begin{array}{rcl}
+        \ap{\ap{\tassign}{\ttran}}{\tvar_1}
+            &=& \vnull \\
+        \ap{\ap{\tassign}{\ttran}}{\tvar_2}
+            &=& \vnull \\
+        \ap{\ap{\tassign}{\ttran}}{\tvarout}
+            &=& \tvar_1 \tvar_2
+    \end{array}
+\]
+This is a copyless transition.
+
+
+[TODO: write proper encoding.]
+
+## Deciding Copyless PSST Logic in ExpSpace
+
+[TODO: write properly!]
+
+In short, where CAV 2021 stored a **set** of pairs $\tup{\fas_1,
+\fas_2}$ to abstract a PSST variable $\tvar$, a copyless PSST only
+requires a **single** pair as an abstraction -- the finite automaton will
+guess which pair is needed for the one time the variable's value is
+used.
+
+This *should* mean (i think) that the pre-image of a finite automaton
+$\fa$ under a Copyless PSST is not exponential in the size of $\fa$,
+avoiding the tower-of-exponentials blow-up.
