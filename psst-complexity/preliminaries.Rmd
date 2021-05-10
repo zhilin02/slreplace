@@ -1,0 +1,159 @@
+
+# Preliminaries
+
+Given a set of elements $\fastates$, let $\sequence{\fastates}$ denote
+the set of non-repetitive sequences of elements in $\fastates$.
+
+## Characters and Strings
+
+We use $\alphabet$ to denote a finite alphabet and $\vnull$ denotes a special
+null symbol such that  $\vnull \not \in \alphabet$. A *string* over $\alphabet$
+is a finite sequence of characters from $\alphabet$. We use $\alphabet^*$ to
+denote the set of strings over $\alphabet$ and write $\epsilon$ for the empty
+string.  We write $\witheps{\alphabet}$ to denote $\alphabet \cup
+\set{\epsilon}$. A string $\word'$ is a *prefix* of $\word$ if $\word =
+\word'\word''$ for some string $\word''$.
+
+## Regular Expressions
+
+
+```{definition, name="Real-world regular expressions, $\\regex$"}
+A *real-world regular expression (RWRE or regex)* is constructed from the
+following syntax.
+\[
+    \regex, \regex_1, \regex_2 \defeq
+        \emptyset \synalt
+        \epsilon \synalt
+        \cha \synalt
+        \reopt{\regex} \synalt
+        \reref{\idxi} \synalt
+        \regex_1 \reor \regex_2 \synalt
+        \regex_1 \reconcat \regex_2 \synalt
+        \restar{\regex} \synalt 
+        \replus{\regex} \synalt
+        \restarng{\regex} \synalt
+        \replusng{\regex} \synalt
+        \recapture{\regex}
+\]
+where
+    $\cha \in \alphabet$, and
+    $\idxi \in \posnats$.
+
+```
+
+The semantics of regular expressions are typical.
+
+* $\emptyset$ matches no word,
+* $\epsilon$ matches the empty word,
+* $\cha$ matches the letter $\cha$,
+* $\reopt{\regex}$ optionally matches $\regex$,
+* $\regex_1 \reor \regex_2$ is disjunction,
+* $\regex_1 \reconcat \regex_2$ is concatenation,
+* $\restar{\regex}$ is greedy iteration,
+* $\replus{\regex}$ is greedy iteration except $\epsilon$,
+* $\restarng{\regex}$ is non-greedy iteration,
+* $\replusng{\regex}$ is non-greedy iteration except $\epsilon$,
+* $\recapture{\regex}$ denotes a capture group,
+* $\reref{\idxi}$ is a (back-)reference matches the string equal to the last match of the $\idxi$th capture group.
+
+
+In the following we we denote the following two subsets of regular expressions.
+
+* A pattern $\pat$ is a regular expression containing no backreferences.
+* A replacement pattern $\rep$ is a sequence of characters ($\cha$) and
+  references ($\reref{\idxi}$).
+
+## Automata and Transducers
+
+```{definition, name="Finite-state automata"}
+A *(nondeterministic) finite-state automaton*
+(FA) over a finite alphabet $\alphabet$ is a tuple
+\[
+    \fa = \tup{\alphabet, \fastates, \fas_0, \fafinals, \fatran}
+\]
+where
+
+* $\fastates$ is a finite set of states,
+* $\fas_0 \in \fastates$ is the initial state,
+* $\fafinals \subseteq \fastates$ is a set of final states, and
+* $\fatran \subseteq \fastates \times \witheps{\alphabet} \times \fastates$ is
+  the transition relation.
+
+```
+
+
+```{definition, name="Prioritized Finite-State Automata"}
+A *prioritized finite-state automaton* (PFA) over a finite alphabet
+$\alphabet$ is a tuple
+\[
+    \pnfa = \tup{
+        \fastates,
+        \alphabet,
+        \fatran,
+        \fapriority,
+        \fas_0,
+        \fafinals
+    }
+\]
+where
+
+* $\fastates$ is a finite set of states,
+* $\alphabet$ is the finite input alphabet,
+* $\fatran \in \fastates \times \alphabet \rightarrow \sequence{\fastates}$
+  is the transition function,
+* $\fapriority \in
+        \fastates \rightarrow
+            \sequence{\fastates} \times \sequence{\fastates}$
+  such that
+    for every $\fas \in \fastates$,
+    if $\ap{\fapriority}{\fas} = \tup{\fastateseq_1, \fastateseq_2}$,
+    then $\fastateseq_1 \cap \fastateseq_2 = \emptyset$,
+* $\fas_0 \in \fastates$ is the initial state, and
+* $\fafinals \subseteq \fastates$ is the set of final states.
+
+```
+
+```{definition, name="Prioritized Streaming String Transducers"}
+A *prioritized streaming string transducer* (PSST) over a finite
+alphabet $\alphabet$ is a tuple
+\[
+    \psst = \tup{
+        \tstates,
+        \alphabet,
+        \tvars,
+        \ttrans,
+        \tpriority,
+        \tassign,
+        \ts_0,
+        \tfinals
+    }
+\]
+where
+
+* $\tstates$ is a finite set of states,
+* $\alphabet$ is the finite input and output alphabet with $\vnull \notin
+  \alphabet$,
+* $\tvars$ is a finite set of variables,
+* $\ttrans \in \fastates \times \alphabet \rightarrow \sequence{\fastates}$
+    is the transition function,
+* $\tpriority \in
+    \tstates \rightarrow
+        \sequence{\tstates} \times \sequence{\tstates}$
+  such that
+    for every $\ts \in \tstates$,
+    if $\ap{\tpriority}{\ts} = \tup{\tstateseq_1, \tstateseq_2}$,
+    then $\tstateseq_1 \cap \tstateseq_2 = \emptyset$,
+* $\tassign$ is a partial function
+    from $\tstates \times \witheps{\alphabet} \times \tstates$
+    to $\tvars \rightarrow \set{\vnull} \cup \brac{\tvars \cup \alphabet}^\ast$,
+* $\ts_0 \in \fastates$ is the initial state, and
+* $\tfinals \subseteq \fastates$ is a partial function
+    from $\tstates$
+    to $\brac{\tvars \cup \alphabet}^\ast$.
+
+```
+
+Runs of the above automata and transducers are as defined in our CAV
+2021 submission.
+
+
