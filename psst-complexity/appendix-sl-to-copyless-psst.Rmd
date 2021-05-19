@@ -1,0 +1,216 @@
+
+# SL to Copyless PSSTs
+
+The following is a repeat of the CAV 2021 submission, with some minor
+adjustments to satisfy the copyless property.
+
+At first, we can adapt the PFA construction in [@BDM14], which in turn
+is a variant of the standard Thompson construction [@Thompson68], and
+show the following result.
+
+```{proposition}
+For each RWRE pattern $\pat$, a PFA $\patpfa{\pat}$ can be
+constructed in linear time such that
+
+* $\patpfa{\pat}$ has a unique initial state without incoming
+  transitions and a unique final state without outgoing transitions, and
+* for each subexpression $\pat'$ of $\pat$, $\patpfa{\pat}$
+  contains an isomorphic copy of $\patpfa{\pat'}$ (i.e. the PFA
+  constructed for $\pat'$), denoted by
+  $\subpfa{\pat'}{\patpfa{\pat}}$.
+```
+```{proof}
+For any RWRE pattern $\pat$, a PFA $\patpfa{\pat}$ is constructed
+recursively in the sequel. The constructed PFA satisfies that it has a
+unique initial state and a unique final state  without outgoing
+transitions.
+
+    * If $\pat = \emptyset$, then
+      $\patpfa{\pat} = \tup{
+        \set{\fas_0,\final}, \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where
+        $\ap{\fatran}{\fas_0, \cha} = \ap{\fatran}{\final, \cha} = \tup{}$
+            for every $\cha \in \alphabet$,
+        $\ap{\fapriority}{\fas_0} = \ap{\fapriority}{\final}= (\tup{}; \tup{})$.
+    * If $\pat = \epsilon$, then
+      $\patpfa{\pat} = \tup{
+        \set{\fas_0, \final}, \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where
+        $\ap{\fatran}{\fas_0, \cha} = \ap{\fatran}{\final, \cha} = \tup{}$
+            for every $\cha \in \alphabet$,
+        $\ap{\fapriority}{\fas_0} = \tup{\tup{\final}; \tup{}}$, and
+        $\ap{\fapriority}{\final} = \tup{\tup{}; \tup{}}$. 
+    * If $\pat = \cha$, then
+      $\patpfa{\pat} = \tup{
+        \set{\fas_0, \final}, \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where
+        $\ap{\fatran}{\fas_0, \cha} = \tup{\final}$,
+        $\ap{\fatran}{\fas_0, b} = \tup{}$
+            for every $\chb \in \alphabet \setminus \set{\cha}$,
+        $\ap{\fapriority}{\fas_0} = \tup{\tup{}; \tup{}}$, and
+        $\ap{\fapriority}{\final} = (\tup{}; \tup{})$.
+    * If $\pat = \recapture{\pat_1}$, then
+      $\patpfa{\pat} = \patpfa{\pat_1}$.
+    * If $\pat = \brac{\pat_1 \reor \pat_2}$, let
+      $\patpfa{\pat_1} = \tup{
+        \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+      }$
+      and
+      $\patpfa{\pat_2} = \tup{
+        \fastates_2, \alphabet, \fatran_2, \fapriority_2, \fas_2, \final_2
+      }$,
+      then
+      $\patpfa{\pat} = \tup{
+        \fastates_1 \cup \fastates_2 \cup \set{\fas_0, \final},
+        \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$, where
+        * $\fas_0, \final \not \in \fastates_1 \cup \fastates_2$,
+        * $\ap{\fatran}{\fas, \cha} = \ap{\fatran_\idxi}{\fas, \cha}$
+          for every
+            $\idxi \in \set{1,2}$,
+            $\fas \in \fastates_\idxi$ and
+            $\cha \in \alphabet$,
+        * $\ap{\fatran}{\fas_0, \cha} = \ap{\fatran}{\final, \cha} = \tup{}$
+          for every $\cha \in \alphabet$, 
+        * $\ap{\fapriority}{\fas} = \ap{\fapriority_\idxi}{\fas}$
+          for every $\fas \in \fastates_\idxi$ ($\idxi = 1, 2$),
+        * $\ap{\fapriority}{\fas_0} = \tup{\tup{\fas_1,\fas_2}; \tup{}}$,
+        * $\ap{\fapriority}{\final_1}
+            = \ap{\fapriority}{\final_2}
+            = \tup{\tup{\final}; \tup{}}$,
+          and
+        * $\ap{\fapriority}{\final} = (\tup{}; \tup{})$.
+    * If $\pat = \brac{\pat_1 \concat \pat_2}$, let
+      $\patpfa{\pat_1} = \tup{
+        \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+      }$
+      and
+      $\patpfa{\pat_2} = \tup{
+        \fastates_2, \alphabet, \fatran_2, \fapriority_2, \fas_2, \final_2
+      }$,
+      then
+      $\patpfa{\pat} = \tup{
+        \fastates_1 \cup \fastates_2,
+        \alphabet, \fatran, \fapriority, \fas_1, \final_2
+      }$,
+      where
+        * for every
+            $\idxi \in \set{1,2}$,
+            $\fas \in \fastates_\idxi$ and
+            $\cha \in \alphabet$,
+          $\ap{\fatran}{\fas, \cha} = \ap{\fatran_\idxi}{\fas, \cha}$,
+        * for every
+            $\fas \in \fastates_2$,
+          $\ap{\fapriority}{\fas} = \fapriority_2\tup{\fas}$,
+        * for every
+            $\fas \in \fastates_1 \setminus \set{\final_1}$,
+          $\ap{\fapriority}{\fas} = \fapriority_1(\fas)$, and
+          $\ap{\fapriority}{\final_1} = (\tup{\fas_2}; \tup{})$.
+    * If $\pat = \restar{\pat_1}$, let
+      $\patpfa{\pat_1} = \tup{
+        \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+      }$,
+      then
+      $\patpfa{\pat} = \tup{
+        \fastates_1 \cup \set{\fas_0, \final},
+        \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where 
+        * $\fas_0, \final \not \in \fastates_1$,
+        * for every
+            $\fas \in \fastates_1$ and $\cha \in \alphabet$,
+          $\ap{\fatran}{\fas, \cha} = \ap{\fatran_1}{\fas, \cha}$,
+        * for every
+            $\fas \in \fastates_1 \setminus \set{\fas_1, \final_1}$,
+          $\ap{\fapriority}{\fas} = \ap{\fapriority_1}{\fas}$,
+          moreover,
+            $\ap{\fapriority}{\fas_0} = (\tup{\fas_1}; \tup{})$,
+            $\ap{\fapriority}{\fas_1} = \tup{
+                \tup{\ap{\pi_1}{\ap{\fapriority_1}{\fas_1}}};
+                \tup{\ap{\pi_2}{\ap{\fapriority_1}{\fas_1}}, \final}
+            }$,
+            $\ap{\fapriority}{\final_1} = \tup{\tup{\fas_1}; \tup{}}$, and
+            $\ap{\fapriority}{\final} = \tup{\tup{}; \tup{}}$.
+          (Intuitively, the $\epsilon$-transitions from $\fas_0$ to
+          $\fas_1$, from $\final_1$ to $\fas_1$, and from $\fas_1$ to $\final$
+          respectively are added, moreover, the $\epsilon$-transition
+          from $\fas_1$ to $\final$ is of the lowest priority.)
+    * If $\pat = \replus{\pat_1}$, let
+      $\patpfa{\pat_1} = \tup{
+        \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+      }$,
+      then
+      $\patpfa{\pat} = \tup{
+        \fastates_1 \cup \set{\fas_0, \final},
+        \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where 
+        * $\fas_0, \final \not \in \fastates_1$,
+        * for every
+            $\fas \in \fastates_1$ and $\cha \in \alphabet$,
+          $\ap{\fatran}{\fas, \cha} = \ap{\fatran_1}{\fas, \cha}$,
+        * for every
+            $\fas \in \fastates_1 \setminus \set{\final_1}$,
+          $\ap{\fapriority}{\fas} = \ap{\fapriority_1}{\fas}$,
+          moreover,
+            $\ap{\fapriority}{\fas_0} = \tup{\tup{\fas_1}; \tup{}}$,
+            $\ap{\fapriority}{\final_1} = \tup{\tup{\fas_1,\final}; \tup{}}$, and
+            $\ap{\fapriority}{\final} = \tup{\tup{}; \tup{}}$.
+          (Intuitively, the $\epsilon$-transitions from $\fas_0$ to
+          $\fas_1$, from $\final_1$ to $\fas_1$, and from $\final_1$ to $\final$
+          respectively are added, moreover, the $\epsilon$-transition from
+          $\final_1$ to $\final$ is of the lowest priority.)
+    * If $\pat = \restarng{\pat_1}$, let
+      $\patpfa{\pat_1} = \tup{
+        \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+      }$,
+      then
+      $\patpfa{\pat} = \tup{
+        \fastates_1 \cup \set{\fas_0, \final},
+        \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where 
+        * $\fas_0, \final \not \in \fastates_1$,
+        * for every
+            $\fas \in \fastates_1$ and $\cha \in \alphabet$,
+          $\ap{\fatran}{\fas, \cha} = \fatran_1(\fas, \cha)$,
+        * for every
+            $\fas \in \fastates_1 \setminus \set{\fas_1, \final_1}$,
+        $\ap{\fapriority}{\fas} = \fapriority_1(\fas)$,
+        moreover,
+            $\ap{\fapriority}{\fas_0} = \tup{\tup{\fas_1}; \tup{}}$,
+            $\ap{\fapriority}{\fas_1} = \tup{
+                \tup{\final, \ap{\pi_1}{\ap{\fapriority_1}{\fas_1}}};
+                \ap{\pi_2}{\ap{\fapriority_1}{\fas_1}}
+            }$,
+            $\ap{\fapriority}{\final_1} = \tup{\tup{\fas_1}; \tup{}}$, and
+            $\ap{\fapriority}{\final} = \tup{\tup{}; \tup{}}$.
+        (The $\epsilon$-transition from $\fas_1$ to $\final$ is of the
+        highest priority.)
+    * If $\pat = \replusng{\pat_1}$, let
+      $\patpfa{\pat_1} = \tup{
+        \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+      }$,
+      then
+      $\patpfa{\pat} = \tup{
+        \fastates_1 \cup \set{\fas_0, \final},
+        \alphabet, \fatran, \fapriority, \fas_0, \final
+      }$,
+      where
+        * $\fas_0, \final \not \in \fastates_1$,
+        * for every
+            $\fas \in \fastates_1$ and $\cha \in \alphabet$,
+          $\ap{\fatran}{\fas, \cha} = \fatran_1(\fas, \cha)$,
+        * for every
+            $\fas \in \fastates_1 \setminus \set{\final_1}$,
+            $\ap{\fapriority}{\fas} = \ap{\fapriority_1}{\fas}$,
+          moreover,
+            $\ap{\fapriority}{\fas_0} = \tup{\tup{\fas_1}; \tup{}}$,
+            $\ap{\fapriority}{\final_1} = \tup{\tup{\final, \fas_1}; \tup{}}$, and
+            $\ap{\fapriority}{\final} = \tup{\tup{}; \tup{}}$.
+          (The $\epsilon$-transition from $\final_1$ to $\final$ is of the
+          highest priority.)
+
