@@ -169,93 +169,139 @@ At first, we can adapt the PFA construction in \cite{BDM14}, which in turn is a 
 %Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
 
 \begin{proof}
-For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that it has a unique initial state and a unique final state  without outgoing transitions.
+For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that 
+\begin{itemize}
+\item it has a unique initial state without incoming transitions and each of its final states has no outgoing transitions,
+\item all the transitions out of the initial state are $\varepsilon$-transitions, 
+\item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
+\end{itemize}
 %The original construction on regular expressions
 %produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
 %We refer the reader to \cite{Gluskov61} for 
 %details of how to construct $G_e$. %\tl{is this just the textbook construction?}
 %
 %The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
+Specifically, $\cA_e$ is constructed as follows.
 \begin{itemize}
-\item If $e =\emptyset$, then $\cA_e = (\{q_0,f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = \tau(f_0)= ((); ())$.
+\item If $e =\emptyset$, then $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \delta, \tau, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau(q_{\emptyset, 0}) = ((); ())$.
 
-  \item If $e = \varepsilon$, then  $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, $\tau(q_0) = ((f_0); ())$, and $\tau(f_0) = ((); ())$. 
+  \item If $e = \varepsilon$, then  $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \delta, \tau, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, where  $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$, $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$, and $\tau(f_{\varepsilon,0}) = ((); ())$. 
 
-  \item If $e = a$, then $\cA_e = (\{q_0, f_0\}, \Sigma, \delta, \tau, q_0, f_0)$, where  $\delta(q_0, a) = (f_0)$, $\delta(q_0, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_0) = ((); ())$, and $\tau(f_0) = ((); ())$.
+  \item If $e = a$, then $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \delta, \tau, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where $\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_{a,0}) = ((q_{a,1}); ())$, $\tau(q_{a,1}) = ((); ())$, and $\tau(f_{a,0}) = ((); ())$.
+  
+	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.4\textwidth]{reg2pfa-0.pdf}
+		\caption{The PFA $\cA_{\emptyset}$, $\cA_{\varepsilon}$, and $\cA_{a}$ }
+		\label{fig-reg2pfa-0}
+	\end{figure}  
     
   \item If $e = (e_1)$, then $\cA_e = \cA_{e_1}$.
   
-  \item If $e = [e_1 + e_2]$, let $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
-  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = (Q_1 \cup Q_2 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau, q_0, f_0)$, where  
+  \item If $e = [e_1 + e_2]$, let $\cA_{e_1} = (Q_{e_1},
+  \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$ and $\cA_{e_2} = (Q_{e_2}, \Sigma,
+  \delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$, then 
+  %
+  $\cA_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma,
+  \delta_e, \tau_e, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))$ (see Fig.~\ref{fig-reg2pfa-1}), where  
   \begin{itemize}
- \item $q_0, f_0 \not \in Q_1 \cup Q_2$, 
- \item $\delta(q, a) = \delta_i(q, a)$ for every $i \in \{1,2\}$, $q \in Q_i$ and $a \in \Sigma$, 
-$\delta(q_0, a) = \delta(f_0, a) = ()$ for every $a \in \Sigma$, 
+ \item $q_{e,0}  \not \in Q_{e_1} \cup Q_{e_2}$, 
+ \item $\delta_e(q, a) = \delta_{e_i}(q, a)$ for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, 
+$\delta_e(q_{e,0}, a)  = ()$ for every $a \in \Sigma$, 
 %
- \item $\tau(q) = \tau_i(q)$ for every $q \in Q_i$ ($i =1,2$), $\tau(q_0) = ((q_1,q_2); ())$,  $\tau(f_1) = \tau(f_2) = ((f_0); ())$, and $\tau(f_0) = ((); ())$.
+ \item $\tau_e(q) = \tau_{e_i}(q)$ for every $q \in Q_{e_i}$ ($i =1,2$), $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$.
  \end{itemize}
+
+	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.6\textwidth]{reg2pfa-1.pdf}
+		\caption{The PFA $\cA_{[e_1+e_2]}$}
+		\label{fig-reg2pfa-1}
+	\end{figure}  
+ 
 %
-  \item If $e = [e_1 \concat e_2]$, let $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$ and $\cA_{e_2} = (Q_2, \Sigma,
-  \delta_2, \tau_2, q_2, f_2)$, then $\cA_e = ( Q_1 \cup Q_2, \Sigma, \delta, \tau, q_1,
-  f_2)$, where 
+  \item If $e = [e_1 \concat e_2]$, let $\cA_{e_1} = (Q_{e_1},
+  \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, $\cA_{e_2} = (Q_{e_2}, \Sigma,
+  \delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$, and $\cA'_{e_2} = (Q'_{e_2}, \Sigma,
+  \delta'_{e_2}, \tau'_{e_2}, q'_{e_2,0}, (F'_{e_2, 1}, F'_{e_2,2}))$ be a fresh copy of $\cA_{e_2}$, then 
+  $\cA_e = ( Q_{e_1} \cup Q_{e_2} \cup Q'_{e_2}, \Sigma, \delta_e, \tau_e, q_{e_1,0},
+ (F_{e_2,1}, F_{e_2,2} \cup F'_{e_2,1} \cup F'_{e_2,2}))$ (see Fig.~\ref{fig-reg2pfa-2}), where 
   \begin{itemize}
-    \item for every $i \in \{1,2\}$, $q \in Q_i$ and $a \in \Sigma$, $\delta(q, a) = \delta_i(q, a)$,
-    
-    \item for every $q \in Q_2$, $\tau(q) = \tau_2(q)$, 
+    \item for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, $\delta_e(q, a) = \delta_{e_i}(q, a)$,
 %
-    \item for every $q \in Q_1 \setminus \{f_1\}$, $\tau(q) = \tau_1(q)$, and $\tau(f_1) = ((q_2); ())$.
+    \item for every $q' \in Q'_{e_2}$ and $a \in \Sigma$, $\delta_e(q', a) = \delta'_{e_2}(q',a)$, 
+    %    
+    \item for every $q \in Q_{e_2}$, $\tau_e(q) = \tau_{e_2}(q)$ and $\tau_e(q') = \tau'_{e_2}(q')$, 
+%
+    \item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$, $\tau_e(q) = \tau_{e_1}(q)$, for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,1}) = ((q_{e_2,0}); ())$, and for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e_1,2}) = ((q'_{e_2,0}), ())$.
   \end{itemize}
 %  
-  \item If $e = [e_1^{\ast}]$, let  $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau$, $q_0$, $f_0)$, where 
+	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.6\textwidth]{reg2pfa-2.pdf}
+		\caption{The PFA $\cA_{[e_1\concat e_2]}$}
+		\label{fig-reg2pfa-2}
+	\end{figure}  
+
+  \item If $e = [e_1^{\ast}]$, let  
+  $\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, then 
+  $\cA_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,0}, f_{e,1}\}, \Sigma, \delta_e, \tau_e, q_{e,0}, (\{f_{e,0}\}, \{f_{e,1}\}))$, where 
   \begin{itemize}
-  \item $q_0, f_0 \not \in Q_1$,
+  \item $q_{e,0}, f_{e,0} \not \in Q_{e_1}$,
   
-    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    \item for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q, a) = \delta_{e_1}(q, a)$, 
     %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = (\pi_1(\tau_1(q_1)); (\pi_2(\tau_1(q_1)), f_0))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $f_1$ to $q_1$, and from $q_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $q_1$ to $f_0$ is of the lowest priority.)
+    \item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((q_{e_1,0},f_{e,0}); ())$,  $\tau_e(q) = ((q_{e_1,0});())$ for every $q \in F_{e_1,1}$, $\tau_e(q) = ((q_{e_1,0}, f_{e,1});())$ for every $q \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $q_{e_1,0}$ and $f_{e,0}$, from each $q \in F_{e_1,1}$ to $q_{e_1,0}$, and from $q \in F_{e_1,2}$ to $q_{e_1,0}$ and $f_{e,1}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $f_{e,0}$ and from $q \in F_{e_1,2}$ to $f_{e,1}$ are of the lowest priority.)
   \end{itemize}
 %
-  \item If $e = [e_1^{+}]$, let  $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau$, $q_0$, $f_0)$, where 
-  \begin{itemize}
-  \item $q_0, f_0 \not \in Q_1$,
-  
-    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
-    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
-    
-    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(f_1) = ((q_1,f_0); ())$, and $\tau(f_0) = ((); ())$. (Intuitively, the $\varepsilon$-transitions from $q_0$ to $q_1$, from $f_1$ to $q_1$, and from $f_1$ to $f_0$ respectively are added, moreover, the $\varepsilon$-transition from $f_1$ to $f_0$ is of the lowest priority.)
-  \end{itemize}
+  \item If $e = [e_1^{+}]$, then $\cA_e$ is constructed as $\cA_{[e_1 \concat [e^\ast_1]]}$.
+ 
+ 	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.8\textwidth]{reg2pfa-3.pdf}
+		\caption{The PFA $\cA_{[e_1^\ast]}$ and $\cA_{[e_1^{\ast?}]}$}
+		\label{fig-reg2pfa-3}
+	\end{figure}  
 
  %
-  \item If $e = [e_1^{\ast?}]$, let $\cA_{e_1} = (Q_1, \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma, \delta$, $\tau$, $q_0$, $f_0)$, where 
+  \item If $e = [e_1^{\ast?}]$, let  
+  $\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, then 
+  $\cA_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,0}, f_{e,1}\}, \Sigma, \delta_e, \tau_e, q_{e,0}, (\{f_{e,0}\}, \{f_{e,1}\}))$ (see Fig.~\ref{fig-reg2pfa-3}), where 
   \begin{itemize}
-  \item $q_0, f_0 \not \in Q_1$,
+  \item $q_{e,0}, f_{e,0} \not \in Q_{e_1}$,
   
-    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
+    \item for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q, a) = \delta_{e_1}(q, a)$, 
     %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
     
-    \item for every $q \in Q_1 \setminus \{q_1, f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(q_1) = ((f_0, \pi_1(\tau_1(q_1))); \pi_2(\tau_1(q_1)))$, $\tau(f_1) = ((q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $q_1$ to $f_0$ is of the highest priority.)
-  \end{itemize}  
+    \item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((f_{e,0}, q_{e_1,0}); ())$,  $\tau_e(q) = ((q_{e_1,0});())$ for every $q \in F_{e_1,1}$, $\tau_e(q) = ((f_{e,1}, q_{e_1,0});())$ for every $q \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $f_{e,0}$ and $q_{e_1,0}$ , from each $q \in F_{e_1,1}$ to  $q_{e_1,0}$, and from each $q \in F_{e_1,2}$ to $f_{e,1}$ and $q_{e_1,0}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $q_{e_1,0}$ and from $q \in F_{e_1,2}$ to $q_{e_1,0}$ are of the lowest priority.)
+  \end{itemize}
 %
-  \item If $e = [e_1^{+?}]$, let $\cA_{e_1} = (Q_1,
-  \Sigma, \delta_1, \tau_1, q_1, f_1)$, then $\cA_e = (Q_1 \cup \{q_0, f_0\}, \Sigma,
-  \delta, \tau$, $q_0$, $f_0)$, where 
-  \begin{itemize}
-  \item $q_0, f_0 \not \in Q_1$,
-  
-    \item for every $q \in Q_1$ and $a \in \Sigma$, $\delta(q, a) = \delta_1(q, a)$, 
-    %moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
-    
-    \item for every $q \in Q_1 \setminus \{f_1\}$,  $\tau(q) = \tau_1(q)$, moreover, $\tau(q_0) = ((q_1); ())$, $\tau(f_1) = ((f_0, q_1); ())$, and $\tau(f_0) = ((); ())$. (The $\varepsilon$-transition from $f_1$ to $f_0$ is of the highest priority.)
-  \end{itemize}  
-\end{itemize}
+  \item If $e = [e_1^{+?}]$, then $\cA_e$ is constructed as $\cA_{[e_1 \concat [e_1^{*?}]]}$.
+  %
+  \item If $e = [e_1^{\{m_1,m_2\}}]$, then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$, where $\cA_{e_1^{m_1}}$ is the PFA corresponding to the $m_1$ concatenations of $e_1$, and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ is illustrated in Fig.~\ref{fig-reg2pfa-4}, which consists of $m_2-m_1$ copies of $\cA_{e_1}$, say $(\cA^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to a fresh state $f^\prime_1$ of the lowest priority. (Intuitively, each $\cA^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$. )
+  %
+   	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.95\textwidth]{reg2pfa-4.pdf}
+		\caption{The PFA $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$}
+		\label{fig-reg2pfa-4}
+	\end{figure}  
+
+    \item If $e = [e_1^{\{m_1,m_2\}?}]$, then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$, where $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$ is illustrated in Fig.~\ref{fig-reg2pfa-5}, which is the same as $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ in Fig.~\ref{fig-reg2pfa-4}, except that the priorities of $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are reversed.
+   	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.95\textwidth]{reg2pfa-5.pdf}
+		\caption{The PFA $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$}
+		\label{fig-reg2pfa-5}
+	\end{figure}  
+  \end{itemize}
 \qed
 \end{proof}
 
