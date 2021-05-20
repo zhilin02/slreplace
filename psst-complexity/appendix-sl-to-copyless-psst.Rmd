@@ -238,12 +238,12 @@ then $\pat' = \pat$.  Suppose $\patpfa{\pat} = \tup{
 Intuitively, $\sfunpsst{\extract{\idxi}{\pat}}$ (see
 Figure \@ref(fig:psst-extract))
 
-* (TODO: update) uses a string variable $\tvar$ to store the value of the $\idxi$th
+* uses a string variable $\tvar$ to store the value of the $\idxi$th
   capturing group,
 * initially assigns $\vnull$ to $\tvar$ to denote the fact that the
   capturing group is not matched yet,
 * then simulates $\patpfa{\pat}$ and stores letters into $\tvar$ when
-  applying the transitions in $subpfa{\pat'}{\patpfa{\pat}}$,
+  applying the transitions in $\subpfa{\pat'}{\patpfa{\pat}}$,
 * finally outputs the value of $\tvar$ when $\patpfa{\pat}$ accepts.
 
 (ref:psst-extract-cap) The PSST $\sfunpsst{\extract{\idxi}{\pat}}$
@@ -260,7 +260,7 @@ $\sfunpsst{\extract{\idxi}{\pat}} = \tup{
 
 * $\ts'_0 \notin \fastates$,
 * $\tvars = \set{\tvar}$,
-* $\ttran'$ is obtained from $\ttran$ by adding
+* $\ttrans'$ is obtained from $\ttrans$ by adding
   $\tvar = \tvar a$ for each transition $\tup{\fas, \cha, \fas'}$
   in $\subpfa{\pat'}{\patpfa{\pat}}$,
 * $\ap{\tfinals'}{\final} = \tvar$ and $\ap{\tfinals'}{p}$ is
@@ -329,7 +329,7 @@ Figure \@ref(fig:psst-replaceall))
   $\tvar_1,\cdots,\tvar_\idxk$ to $\epsilon$ and keeps searching for the
   next match of $\pat$.
 
-(ref:psst-repall-cap) The PSST $\sfunpsst{\replaceall{\pat}{\rep}}$}
+(ref:psst-repall-cap) The PSST $\sfunpsst{\replaceall{\pat}{\rep}}$
 
 ```{r, label="psst-replaceall", echo=FALSE, fig.cap="(ref:psst-repall-cap)"}
 knitr::include_graphics("psst-replaceall.svg")

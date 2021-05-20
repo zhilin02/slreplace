@@ -5,4 +5,4 @@
 #    $ R
 #    > install.packages("bookdown")
 
-Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::pdf_document2')"
+Rscript -e "bookdown::render_book('main.Rmd', 'bookdown::pdf_document2')"

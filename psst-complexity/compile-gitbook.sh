@@ -5,4 +5,5 @@
 #    $ R
 #    > install.packages("bookdown")
 
-Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::epub_book')"
+Rscript -e "bookdown::render_book('main.Rmd', 'bookdown::gitbook')"
+
