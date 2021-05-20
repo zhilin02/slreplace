@@ -294,40 +294,95 @@ $\sfunpsst{\extract{\idxi}{\pat}} = \tup{
 
 Next, we show how to construct the PSST for $\replaceall{\pat}{\rep}$.
 
-(TODO: enumerate better)
+**(Below: the main change from the CAV 2021 encoding)**
+
 Let
-    $\reref{\idxi_1}, \cdots, \reref{\idxi_\idxk}$
-with
-    $\idxi_1 < \cdots < \idxi_\idxk$
-be an enumeration of all the references in $\rep$.  Moreover, for every
-$1 \leq \idxj \leq \idxk$, let $\pat'_{\idxi_\idxj}$ be the subexpression
-of $\pat$ corresponding to the $\idxi_\idxj$-th capturing group.
+    $\rep =
+        \word_1 \reref{\idxi_1} \word_2
+        \cdots
+        \word_\idxk \reref{\idxi_\idxk} \word_{\idxk+1}$.
+Note, in particular, that we may have
+    $\idxi_\idxj = \idxi_{\idxj'}$
+with $\idxj \neq \idxj'$.
+
+By abuse of notation, we will write
+    $\rep[\tvar_1/\reref{\idxi_1}, \cdots, \tvar_\idxk/\reref{\idxi_\idxk}]$,
+to denote the replacement of the references, in order of appearance, by
+the contents of the variables $\tvar_\idxj$. For example, in
+    $\rep = \cha \reref{1} \cha \reref{2} \cha \reref{1} \cha$
+then
+    $\rep[
+        \tvar_1/\reref{\idxi_1},
+        \tvar_2/\reref{\idxi_2},
+        \tvar_3/\reref{\idxi_3}
+    ]$,
+is
+    $\cha \word_1 \cha \word_2 \cha \word_3 \cha$
+when $\word_\idxj$ is the value stored in $\tvar_\idxj$.
+
+Although it is possible to substitute different occurrences of a
+reference to a particular capture group with different word values, our
+encoding will always substitute the same value. If $\idxi_\idxj =
+\idxi_{\idxj'}$ then $\tvar_\idxj$ will contain the same value as
+$\tvar_{\idxj'}$. We need two variables in this case to satisfy the
+copyless property. If we tried to use a single variable -- e.g.
+    $\rep[\tvar/\reref{\idxi_1}, \tvar/\reref{\idxi_2}]$
+-- then the resulting transition in the encoding below would not be
+copyless.
+
+**(End of main change)**
+
+For every $1 \leq \idxj \leq \idxk$, let $\pat'_{\idxi_\idxj}$
+be the subexpression of $\pat$ corresponding to the $\idxi_\idxj$-th
+capturing group.
 
 Suppose $\patpfa{\pat} = \tup{
     \fastates, \alphabet, \fatran, \fapriority, \fas_0, \final
 }$. Then $\sfunpsst{\replaceall{\pat}{\rep}}$ is obtained from
-$\patpfa{\pat}$ by adding a fresh state $\ts'_0$ such that (see
-Figure \@ref(fig:psst-replaceall))
+$\patpfa{\pat}$ by adding a fresh state $\ts'_0$ such that the following
+hold (see Figure \@ref(fig:psst-replaceall)).
 
 * $\sfunpsst{\replaceall{\pat}{\rep}}$ goes from $\ts'_0$ to $\fas_0$
   via an $\epsilon$-transition of higher priority than the
   non-$\epsilon$-transitions, in order to search the first match of
-  $\pat$ starting from the current position, 
-* when $\sfunpsst{\replaceall{\pat}{\rep}}$ stays at $\ts'_0$, it keeps
+  $\pat$ starting from the current position.
+* When $\sfunpsst{\replaceall{\pat}{\rep}}$ stays at $\ts'_0$, it keeps
   appending the current letter to the end of $\tvar_0$, which stores the
-  output of $\sfunpsst{\replaceall{\pat}{\rep}}$,
-* starting from $\fas_0$, $\sfunpsst{\replaceall{\pat}{\rep}}$ simulates
+  output of $\sfunpsst{\replaceall{\pat}{\rep}}$.
+* Starting from $\fas_0$, $\sfunpsst{\replaceall{\pat}{\rep}}$ simulates
   $\patpfa{\pat}$ and stores the matches of the $\idxi_1$-th, $\ldots$,
   $\idxi_\idxk$-th capturing groups of $\pat$ into the string variables
-  $\tvar_1, \cdots, \tvar_\idxk$ respectively,
-* when the first match of $\pat$ is found,
+  $\tvar_1, \cdots, \tvar_\idxk$ respectively.
+* When the first match of $\pat$ is found,
   $\sfunpsst{\replaceall{\pat}{\rep}}$ goes from $\final$ to $\ts'_0$
   via an $\epsilon$-transition, appends the replacement string, which is
   $\rep[\tvar_1/\reref{\idxi_1}, \cdots, \tvar_\idxk/\reref{\idxi_\idxk}]$,
-  (TODO: this is not copyless, but can easily be so)
   to the end of $\tvar_0$, resets the values of
   $\tvar_1,\cdots,\tvar_\idxk$ to $\epsilon$ and keeps searching for the
   next match of $\pat$.
+
+**(Below: explanation of why copyless)**
+
+Observe that the PSST will be copyless: in all but the last case,
+variable assignments are of the form
+$\tvar_\idxj = \tvar_\idxj \cha$,
+$\tvar_\idxj = \tvar_\idxj$
+or
+$\tvar_\idxj = \epsilon$;
+in the final case, when a replacement is made, the assignments are of
+the form
+\[
+    \begin{array}{rcl}
+        \tvar_0 &=& \tvar_0 \word_1 \tvar_1 \word_2
+                    \cdots
+                    \word_\idxk \tvar_\idxk \word_{\idxk+1} \\
+        \tvar_1 &=& \epsilon \\
+        &\vdots& \\
+        \tvar_\idxk &=& \epsilon \ .
+    \end{array}
+\]
+
+**(End of explanation)**
 
 (ref:psst-repall-cap) The PSST $\sfunpsst{\replaceall{\pat}{\rep}}$
 
@@ -356,7 +411,7 @@ $\sfunpsst{\replaceall{\pat}{\rep}} = \tup{
     * $\ap{\fatran'}{\final, \cha} = \tup{}$
       for every $\cha \in \alphabet$
       and $\ap{\fapriority'}{\final} = \tup{\tup{\fas'_0}; \tup{}}$,
-* $\tassign$ is copyless and defined as follows, (TODO: make copyless)
+* $\tassign$ is copyless and defined as follows,
     * for every transition
         $\tup{\fas, \cha, \fas'}$
       with $\cha \in \alphabet^\epsilon$ in $\patpfa{\pat}$,
@@ -377,7 +432,8 @@ $\sfunpsst{\replaceall{\pat}{\rep}} = \tup{
     * for all the other transitions
         $\tup{\fas, \cha, \fas'}$
       with $\cha \in \alphabet^\epsilon$ in $\patpfa{\pat}$,
-      we have $\ap{\ap{\tassign}{\fas, \cha, \fas'}}{\tvar} = \tvar$,
+      we have
+      $\ap{\ap{\tassign}{\fas, \cha, \fas'}}{\tvar_\idxj} = \tvar_\idxj$,
     * for every
         $\cha \in \alphabet$ and $1 \leq \idxj \leq \idxk$,
       $\ap{\ap{\tassign}{\ts'_0, \cha, \ts'_0}}{\tvar_0} = \tvar_0\cha$ and
@@ -392,14 +448,7 @@ $\sfunpsst{\replaceall{\pat}{\rep}} = \tup{
         ]$,
       moreover, for every
         $1 \leq \idxj \leq \idxk$,
-      $\ap{\ap{\tassign}{\final, \epsilon, \fas'_0}}{\tvar_\idxj} = \epsilon$,
-      where
-        $\rep[\tvar_1/\reref{\idxi_1}, \ldots, \tvar_\idxk/\reref{\idxi_\idxk}]$
-      denotes the string term obtained from $\rep$ by replacing every
-      occurrence of
-        $\reref{\idxi_1}, \cdots, \reref{\idxi_\idxk}$
-      with $\tvar_1, \cdots, \tvar_\idxk$ respectively.
-
+      $\ap{\ap{\tassign}{\final, \epsilon, \fas'_0}}{\tvar_\idxj} = \epsilon$.
 :::
 
 The construction of the PSST for $\replace{\pat}{\rep}$ is similar and
