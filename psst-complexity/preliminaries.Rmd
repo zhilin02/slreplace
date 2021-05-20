@@ -17,7 +17,7 @@ string.  We write $\witheps{\alphabet}$ to denote $\alphabet \cup
 ## Regular Expressions
 
 
-```{definition, name="Real-world regular expressions, $\\regex$"}
+::: {.definition name="Real-world regular expressions, $\\regex$"}
 A *real-world regular expression (RWRE or regex)* is constructed from the
 following syntax.
 \[
@@ -38,8 +38,7 @@ following syntax.
 where
     $\cha \in \alphabet$, and
     $\idxi \in \posnats$.
-
-```
+:::
 
 The semantics of regular expressions are typical.
 
@@ -56,7 +55,6 @@ The semantics of regular expressions are typical.
 * $\recapture{\regex}$ denotes a capture group,
 * $\reref{\idxi}$ is a (back-)reference matches the string equal to the last match of the $\idxi$th capture group.
 
-
 In the following we we denote the following two subsets of regular expressions.
 
 * A pattern $\pat$ is a regular expression containing no backreferences.
@@ -65,7 +63,7 @@ In the following we we denote the following two subsets of regular expressions.
 
 ## Automata and Transducers
 
-```{definition, name="Finite-state automata"}
+::: {.definition name="Finite-state automata"}
 A *(nondeterministic) finite-state automaton*
 (FA) over a finite alphabet $\alphabet$ is a tuple
 \[
@@ -78,11 +76,9 @@ where
 * $\fafinals \subseteq \fastates$ is a set of final states, and
 * $\fatran \subseteq \fastates \times \witheps{\alphabet} \times \fastates$ is
   the transition relation.
+:::
 
-```
-
-
-```{definition, name="Prioritized Finite-State Automata"}
+::: {.definition name="Prioritized Finite-State Automata"}
 A *prioritized finite-state automaton* (PFA) over a finite alphabet
 $\alphabet$ is a tuple
 \[
@@ -110,10 +106,9 @@ where
     then $\fastateseq_1 \cap \fastateseq_2 = \emptyset$,
 * $\fas_0 \in \fastates$ is the initial state, and
 * $\fafinals \subseteq \fastates$ is the set of final states.
+:::
 
-```
-
-```{definition, name="Prioritized Streaming String Transducers"}
+::: {.definition name="Prioritized Streaming String Transducers"}
 A *prioritized streaming string transducer* (PSST) over a finite
 alphabet $\alphabet$ is a tuple
 \[
@@ -150,10 +145,8 @@ where
 * $\tfinals \subseteq \fastates$ is a partial function
     from $\tstates$
     to $\brac{\tvars \cup \alphabet}^\ast$.
-
-```
+:::
 
 Runs of the above automata and transducers are as defined in our CAV
 2021 submission.
-
 

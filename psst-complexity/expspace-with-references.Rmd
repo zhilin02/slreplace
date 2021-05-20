@@ -3,7 +3,9 @@
 
 Consider the following string logic.
 
-```{definition, name="String Logic with Regular Expressions and References (SLRER)"}
+(ref:slrer-title) String Logic with Regular Expressions and References (SLRER)
+
+::: {.definition name="(ref:slrer-title)"}
 A formula $\scon$ of the *string logic with regular expressions and
 references (SLRER)* is a formula from the syntax below.
 \[
@@ -20,8 +22,7 @@ references (SLRER)* is a formula from the syntax below.
 where $\pat$ is a regular expression pattern, and $\rep$ is a regular
 expression replacement pattern and $\svar$, $\varsvar$, $\varsvar_1$,
 and $\varsvar_2$ are string variables.
-
-```
+:::
 
 As shown in CAV 2021, SLRER is decidable. Crucially, it is shown that
 $\extract{\idxi}{\pat}$, $\replace{\pat}{\rep}$, and
@@ -31,11 +32,10 @@ can be encoded in PSST logic. However, as shown in the previous section,
 PSST logic has a Tower-hard satisfiability problem. In this section we
 aim to show that satisfiability of SLRER is in ExpSpace.
 
-```{theorem}
+::: {.theorem}
 The satisfiability problem for string logic with regular expressions and
 references is in ExpSpace.
-
-```
+:::
 
 The proof will make the following key observation: the Tower-hardness of
 PSST logic depended on the ability of a PSST to read a substring of its
@@ -59,7 +59,7 @@ The *copyless* restriction was introduced by Alur and Černỳ [@AC10]. It
 is a restriction on the structure of a Streaming String Transducer to
 prevent the copying of variables.
 
-```{definition, name="Copyless PSSTs"}
+::: {.definition name="Copyless PSSTs"}
 A *copyless PSST* is a PSST
 $\psst = \tup{
     \tstates, \alphabet, \tvars, \ttrans, \tpriority, \tassign, \ts_0, \tfinals
@@ -72,7 +72,7 @@ for all transitions $\ttran \in \ttrans$ and variables $\tvar \in
     \concat \cdots \concat
     \ap{\ap{\tassign}{\ttran}}{\tvar_\numof} \ .
 \]
-```
+:::
 
 ## Encoding SLRER Functions with Copyless PSSTs
 
@@ -106,14 +106,13 @@ This is a copyless transition.
 The following theorem is proved in Appendix \@ref(sl-to-copyless-pssts)
 and is a minor adaptation of the reduction in the CAV 2021 submission.
 
-```{lemma, label="string-funs-to-copyless"}
-There is a linear time translation of from string functions
+::: {.lemma #string-funs-to-copyless}
+There is a linear time translation from the string functions
     $\extract{\idxi}{\pat}$,
     $\replace{\pat}{\rep}$, and
     $\replaceall{\pat}{\rep}$
 to Copyless PSST.
-
-```
+:::
 
 ## Deciding Copyless PSST Logic in ExpSpace
 
