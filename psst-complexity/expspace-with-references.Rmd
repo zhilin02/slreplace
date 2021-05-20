@@ -111,19 +111,50 @@ There is a linear time translation from the string functions
     $\extract{\idxi}{\pat}$,
     $\replace{\pat}{\rep}$, and
     $\replaceall{\pat}{\rep}$
-to Copyless PSST.
+to Copyless PSSTs.
 :::
 
 ## Deciding Copyless PSST Logic in ExpSpace
 
-[TODO: write properly!]
+In CAV 2021, the pre-image of a finite automaton $\fa$ under a PSST had
+to store a **set** of pairs $\tup{\fas_1, \fas_2}$ to abstract a PSST
+variable $\tvar$. The existence of a pair $\tup{\fas_1, \fas_2}$ in the
+abstraction meant that the value stored in $\tvar$ could take $\fa$ from
+state $\fas_1$ to $\fas_2$.
 
-In short, where CAV 2021 stored a **set** of pairs $\tup{\fas_1,
-\fas_2}$ to abstract a PSST variable $\tvar$, a copyless PSST only
-requires a **single** pair as an abstraction -- the finite automaton will
-guess which pair is needed for the one time the variable's value is
-used.
+In a Copyful PSST, the value of a variable may be used in
+multiple situations. Each of these situations might need a different
+abstraction $\tup{\fas_1, \fas_2}$. This meant that every possible pair
+had to be stored in a set, causing an exponential blow-up in the size of
+the pre-image automaton.
 
-This *should* mean (i think) that the pre-image of a finite automaton
-$\fa$ under a Copyless PSST is not exponential in the size of $\fa$,
-avoiding the tower-of-exponentials blow-up.
+In a copyless PSST each variable only needs a **single** pair as an
+abstraction. This is because the value of a variable is only used once
+in any transition, which prevents its number of possible uses from
+multiplying from one transition to the next. This means that a set of
+pairs is not needed, and a single pair can be used instead. This means
+the set of pairs can be replaced by a single pair, avoiding the
+exponential blow-up.
+
+::: {.lemma #copyless-pre-image}
+Given a PSST
+    $\psst = \tup{
+        \tstates_\psst,
+        \alphabet, \tvars, \ttrans_\psst,
+        \tpriority_\psst, \tassign_\psst,
+        \ts_{0, \psst}, \tfinals_\psst
+    }$
+and a finite automaton
+    $\fa = \tup{
+        \fastates, \alphabet, \fatrans, \fas_0, \fafinals
+    }$,
+we can compute a finite automaton
+    $\fa' = \tup{
+        \fastates', \alphabet, \fatrans', \fas'_0, \fafinals'
+    }$
+in exponential time such that
+    $\falang{\fa'} = \ap{\psst^{-1}}{\falang{\fa}}$.
+(TODO: this is not the important property, it is exponential, but the
+exponential blow-ups are orthogonal as the preimage is repeated.
+Formulate better.)
+:::

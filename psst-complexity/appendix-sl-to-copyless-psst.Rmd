@@ -30,28 +30,28 @@ transitions.
 
 * If $\pat = \emptyset$, then
   $\patpfa{\pat} = \tup{
-    \set{\fas_0,\final}, \alphabet, \fatran, \fapriority, \fas_0, \final
+    \set{\fas_0,\final}, \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where
-    $\ap{\fatran}{\fas_0, \cha} = \ap{\fatran}{\final, \cha} = \tup{}$
+    $\ap{\fatrans}{\fas_0, \cha} = \ap{\fatrans}{\final, \cha} = \tup{}$
         for every $\cha \in \alphabet$,
     $\ap{\fapriority}{\fas_0} = \ap{\fapriority}{\final}= (\tup{}; \tup{})$.
 * If $\pat = \epsilon$, then
   $\patpfa{\pat} = \tup{
-    \set{\fas_0, \final}, \alphabet, \fatran, \fapriority, \fas_0, \final
+    \set{\fas_0, \final}, \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where
-    $\ap{\fatran}{\fas_0, \cha} = \ap{\fatran}{\final, \cha} = \tup{}$
+    $\ap{\fatrans}{\fas_0, \cha} = \ap{\fatrans}{\final, \cha} = \tup{}$
         for every $\cha \in \alphabet$,
     $\ap{\fapriority}{\fas_0} = \tup{\tup{\final}; \tup{}}$, and
     $\ap{\fapriority}{\final} = \tup{\tup{}; \tup{}}$. 
 * If $\pat = \cha$, then
   $\patpfa{\pat} = \tup{
-    \set{\fas_0, \final}, \alphabet, \fatran, \fapriority, \fas_0, \final
+    \set{\fas_0, \final}, \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where
-    $\ap{\fatran}{\fas_0, \cha} = \tup{\final}$,
-    $\ap{\fatran}{\fas_0, b} = \tup{}$
+    $\ap{\fatrans}{\fas_0, \cha} = \tup{\final}$,
+    $\ap{\fatrans}{\fas_0, b} = \tup{}$
         for every $\chb \in \alphabet \setminus \set{\cha}$,
     $\ap{\fapriority}{\fas_0} = \tup{\tup{}; \tup{}}$, and
     $\ap{\fapriority}{\final} = (\tup{}; \tup{})$.
@@ -59,24 +59,24 @@ transitions.
   $\patpfa{\pat} = \patpfa{\pat_1}$.
 * If $\pat = \brac{\pat_1 \reor \pat_2}$, let
   $\patpfa{\pat_1} = \tup{
-    \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+    \fastates_1, \alphabet, \fatrans_1, \fapriority_1, \fas_1, \final_1
   }$
   and
   $\patpfa{\pat_2} = \tup{
-    \fastates_2, \alphabet, \fatran_2, \fapriority_2, \fas_2, \final_2
+    \fastates_2, \alphabet, \fatrans_2, \fapriority_2, \fas_2, \final_2
   }$,
   then
   $\patpfa{\pat} = \tup{
     \fastates_1 \cup \fastates_2 \cup \set{\fas_0, \final},
-    \alphabet, \fatran, \fapriority, \fas_0, \final
+    \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$, where
     * $\fas_0, \final \not \in \fastates_1 \cup \fastates_2$,
-    * $\ap{\fatran}{\fas, \cha} = \ap{\fatran_\idxi}{\fas, \cha}$
+    * $\ap{\fatrans}{\fas, \cha} = \ap{\fatrans_\idxi}{\fas, \cha}$
       for every
         $\idxi \in \set{1,2}$,
         $\fas \in \fastates_\idxi$ and
         $\cha \in \alphabet$,
-    * $\ap{\fatran}{\fas_0, \cha} = \ap{\fatran}{\final, \cha} = \tup{}$
+    * $\ap{\fatrans}{\fas_0, \cha} = \ap{\fatrans}{\final, \cha} = \tup{}$
       for every $\cha \in \alphabet$, 
     * $\ap{\fapriority}{\fas} = \ap{\fapriority_\idxi}{\fas}$
       for every $\fas \in \fastates_\idxi$ ($\idxi = 1, 2$),
@@ -88,23 +88,23 @@ transitions.
     * $\ap{\fapriority}{\final} = (\tup{}; \tup{})$.
 * If $\pat = \brac{\pat_1 \concat \pat_2}$, let
   $\patpfa{\pat_1} = \tup{
-    \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+    \fastates_1, \alphabet, \fatrans_1, \fapriority_1, \fas_1, \final_1
   }$
   and
   $\patpfa{\pat_2} = \tup{
-    \fastates_2, \alphabet, \fatran_2, \fapriority_2, \fas_2, \final_2
+    \fastates_2, \alphabet, \fatrans_2, \fapriority_2, \fas_2, \final_2
   }$,
   then
   $\patpfa{\pat} = \tup{
     \fastates_1 \cup \fastates_2,
-    \alphabet, \fatran, \fapriority, \fas_1, \final_2
+    \alphabet, \fatrans, \fapriority, \fas_1, \final_2
   }$,
   where
     * for every
         $\idxi \in \set{1,2}$,
         $\fas \in \fastates_\idxi$ and
         $\cha \in \alphabet$,
-      $\ap{\fatran}{\fas, \cha} = \ap{\fatran_\idxi}{\fas, \cha}$,
+      $\ap{\fatrans}{\fas, \cha} = \ap{\fatrans_\idxi}{\fas, \cha}$,
     * for every
         $\fas \in \fastates_2$,
       $\ap{\fapriority}{\fas} = \fapriority_2\tup{\fas}$,
@@ -114,18 +114,18 @@ transitions.
       $\ap{\fapriority}{\final_1} = (\tup{\fas_2}; \tup{})$.
 * If $\pat = \restar{\pat_1}$, let
   $\patpfa{\pat_1} = \tup{
-    \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+    \fastates_1, \alphabet, \fatrans_1, \fapriority_1, \fas_1, \final_1
   }$,
   then
   $\patpfa{\pat} = \tup{
     \fastates_1 \cup \set{\fas_0, \final},
-    \alphabet, \fatran, \fapriority, \fas_0, \final
+    \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where 
     * $\fas_0, \final \not \in \fastates_1$,
     * for every
         $\fas \in \fastates_1$ and $\cha \in \alphabet$,
-      $\ap{\fatran}{\fas, \cha} = \ap{\fatran_1}{\fas, \cha}$,
+      $\ap{\fatrans}{\fas, \cha} = \ap{\fatrans_1}{\fas, \cha}$,
     * for every
         $\fas \in \fastates_1 \setminus \set{\fas_1, \final_1}$,
       $\ap{\fapriority}{\fas} = \ap{\fapriority_1}{\fas}$,
@@ -143,18 +143,18 @@ transitions.
       from $\fas_1$ to $\final$ is of the lowest priority.)
 * If $\pat = \replus{\pat_1}$, let
   $\patpfa{\pat_1} = \tup{
-    \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+    \fastates_1, \alphabet, \fatrans_1, \fapriority_1, \fas_1, \final_1
   }$,
   then
   $\patpfa{\pat} = \tup{
     \fastates_1 \cup \set{\fas_0, \final},
-    \alphabet, \fatran, \fapriority, \fas_0, \final
+    \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where 
     * $\fas_0, \final \not \in \fastates_1$,
     * for every
         $\fas \in \fastates_1$ and $\cha \in \alphabet$,
-      $\ap{\fatran}{\fas, \cha} = \ap{\fatran_1}{\fas, \cha}$,
+      $\ap{\fatrans}{\fas, \cha} = \ap{\fatrans_1}{\fas, \cha}$,
     * for every
         $\fas \in \fastates_1 \setminus \set{\final_1}$,
       $\ap{\fapriority}{\fas} = \ap{\fapriority_1}{\fas}$,
@@ -168,18 +168,18 @@ transitions.
       $\final_1$ to $\final$ is of the lowest priority.)
 * If $\pat = \restarng{\pat_1}$, let
   $\patpfa{\pat_1} = \tup{
-    \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+    \fastates_1, \alphabet, \fatrans_1, \fapriority_1, \fas_1, \final_1
   }$,
   then
   $\patpfa{\pat} = \tup{
     \fastates_1 \cup \set{\fas_0, \final},
-    \alphabet, \fatran, \fapriority, \fas_0, \final
+    \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where 
     * $\fas_0, \final \not \in \fastates_1$,
     * for every
         $\fas \in \fastates_1$ and $\cha \in \alphabet$,
-      $\ap{\fatran}{\fas, \cha} = \fatran_1(\fas, \cha)$,
+      $\ap{\fatrans}{\fas, \cha} = \fatrans_1(\fas, \cha)$,
     * for every
         $\fas \in \fastates_1 \setminus \set{\fas_1, \final_1}$,
     $\ap{\fapriority}{\fas} = \fapriority_1(\fas)$,
@@ -195,18 +195,18 @@ transitions.
     highest priority.)
 * If $\pat = \replusng{\pat_1}$, let
   $\patpfa{\pat_1} = \tup{
-    \fastates_1, \alphabet, \fatran_1, \fapriority_1, \fas_1, \final_1
+    \fastates_1, \alphabet, \fatrans_1, \fapriority_1, \fas_1, \final_1
   }$,
   then
   $\patpfa{\pat} = \tup{
     \fastates_1 \cup \set{\fas_0, \final},
-    \alphabet, \fatran, \fapriority, \fas_0, \final
+    \alphabet, \fatrans, \fapriority, \fas_0, \final
   }$,
   where
     * $\fas_0, \final \not \in \fastates_1$,
     * for every
         $\fas \in \fastates_1$ and $\cha \in \alphabet$,
-      $\ap{\fatran}{\fas, \cha} = \fatran_1(\fas, \cha)$,
+      $\ap{\fatrans}{\fas, \cha} = \fatrans_1(\fas, \cha)$,
     * for every
         $\fas \in \fastates_1 \setminus \set{\final_1}$,
         $\ap{\fapriority}{\fas} = \ap{\fapriority_1}{\fas}$,
@@ -233,7 +233,7 @@ we have $\ap{\sfunpsst{\sfun}}{\word} = \ap{\sfun}{\word}$.
 Let $\pat'$ be the subexpression corresponding to the
 $\idxi$-th capturing group of $\pat$. In particular, if $\idxi = 0$,
 then $\pat' = \pat$.  Suppose $\patpfa{\pat} = \tup{
-    \fastates, \alphabet, \fatran, \fapriority, \fas_0, \final
+    \fastates, \alphabet, \fatrans, \fapriority, \fas_0, \final
 }$.
 Intuitively, $\sfunpsst{\extract{\idxi}{\pat}}$ (see
 Figure \@ref(fig:psst-extract))
@@ -267,7 +267,7 @@ $\sfunpsst{\extract{\idxi}{\pat}} = \tup{
   undefined for all the other states in $\fastates  \cup \set{\ts'_0}$,
 * $\ttrans'$ and $\tpriority'$ are defined as follows,
     * $\ap{\tpriority'}{\ts'_0} = \tup{\tup{\fas_0}; \tup{}}$,
-    * $\ttrans'$ includes all the transitions in $\fatran$,
+    * $\ttrans'$ includes all the transitions in $\fatrans$,
     * $\tpriority'$ includes all the transitions in $\fapriority$,
 * $\tassign'$ is copyless and defined as follows,
     * if $\fas_0$ does not occur in $\subpfa{\pat'}{\patpfa{\pat}}$,
@@ -289,7 +289,7 @@ $\sfunpsst{\extract{\idxi}{\pat}} = \tup{
       and $\ts'$ occurs in
         $\subpfa{\pat'}{\patpfa{\pat}}$,
       $\ap{\ap{\tassign'}{\fas, \cha, \fas'}}{\tvar} = \epsilon$,
-    * for all the other transitions $\fatran$ of $\patpfa{\pat}$,
+    * for all the other transitions $\fatrans$ of $\patpfa{\pat}$,
       $\ap{\ap{\tassign'}{\ttran}}{\tvar} = \tvar$.
 
 Next, we show how to construct the PSST for $\replaceall{\pat}{\rep}$.
@@ -337,7 +337,7 @@ be the subexpression of $\pat$ corresponding to the $\idxi_\idxj$-th
 capturing group.
 
 Suppose $\patpfa{\pat} = \tup{
-    \fastates, \alphabet, \fatran, \fapriority, \fas_0, \final
+    \fastates, \alphabet, \fatrans, \fapriority, \fas_0, \final
 }$. Then $\sfunpsst{\replaceall{\pat}{\rep}}$ is obtained from
 $\patpfa{\pat}$ by adding a fresh state $\ts'_0$ such that the following
 hold (see Figure \@ref(fig:psst-replaceall)).
@@ -400,15 +400,15 @@ $\sfunpsst{\replaceall{\pat}{\rep}} = \tup{
 * $\tvars = \set{\tvar_0, \tvar_1, \cdots, \tvar_\idxk}$,
 * $\ap{\tfinals}{\ts'_0} = \tvar_0$, and $\ap{\tfinals}{\fas'}$ is
   undefined for every $\fas' \in Q$,
-* $\ttran'$ and $\tpriority'$ are obtained from $\fatran$ and
+* $\ttran'$ and $\tpriority'$ are obtained from $\fatrans$ and
   $\fapriority$ as follows,
     * for every
         $\fas \in \fastates \setminus \set{\final}$
       and
         $\cha \in \alphabet$,
-      $\ap{\fatran'}{\fas, \cha} = \ap{\fatran}{\fas, \cha}$ and
+      $\ap{\fatrans'}{\fas, \cha} = \ap{\fatrans}{\fas, \cha}$ and
       $\ap{\fapriority'}{\fas} = \ap{\fapriority}{\fas}$, 
-    * $\ap{\fatran'}{\final, \cha} = \tup{}$
+    * $\ap{\fatrans'}{\final, \cha} = \tup{}$
       for every $\cha \in \alphabet$
       and $\ap{\fapriority'}{\final} = \tup{\tup{\fas'_0}; \tup{}}$,
 * $\tassign$ is copyless and defined as follows,

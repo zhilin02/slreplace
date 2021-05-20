@@ -68,14 +68,14 @@ In the following we we denote the following two subsets of regular expressions.
 A *(nondeterministic) finite-state automaton*
 (FA) over a finite alphabet $\alphabet$ is a tuple
 \[
-    \fa = \tup{\alphabet, \fastates, \fas_0, \fafinals, \fatran}
+    \fa = \tup{\alphabet, \fastates, \fas_0, \fafinals, \fatrans}
 \]
 where
 
 * $\fastates$ is a finite set of states,
 * $\fas_0 \in \fastates$ is the initial state,
 * $\fafinals \subseteq \fastates$ is a set of final states, and
-* $\fatran \subseteq \fastates \times \witheps{\alphabet} \times \fastates$ is
+* $\fatrans \subseteq \fastates \times \witheps{\alphabet} \times \fastates$ is
   the transition relation.
 :::
 
@@ -86,7 +86,7 @@ $\alphabet$ is a tuple
     \pnfa = \tup{
         \fastates,
         \alphabet,
-        \fatran,
+        \fatrans,
         \fapriority,
         \fas_0,
         \fafinals
@@ -96,7 +96,7 @@ where
 
 * $\fastates$ is a finite set of states,
 * $\alphabet$ is the finite input alphabet,
-* $\fatran \in \fastates \times \alphabet \rightarrow \sequence{\fastates}$
+* $\fatrans \in \fastates \times \alphabet \rightarrow \sequence{\fastates}$
   is the transition function,
 * $\fapriority \in
         \fastates \rightarrow
