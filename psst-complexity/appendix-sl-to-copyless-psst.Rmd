@@ -235,8 +235,7 @@ $\idxi$-th capturing group of $\pat$. In particular, if $\idxi = 0$,
 then $\pat' = \pat$.  Suppose $\patpfa{\pat} = \tup{
     \fastates, \alphabet, \fatrans, \fapriority, \fas_0, \final
 }$.
-Intuitively, $\sfunpsst{\extract{\idxi}{\pat}}$ (see
-Figure \@ref(fig:psst-extract))
+Intuitively, $\sfunpsst{\extract{\idxi}{\pat}}$
 
 * uses a string variable $\tvar$ to store the value of the $\idxi$th
   capturing group,
@@ -245,12 +244,6 @@ Figure \@ref(fig:psst-extract))
 * then simulates $\patpfa{\pat}$ and stores letters into $\tvar$ when
   applying the transitions in $\subpfa{\pat'}{\patpfa{\pat}}$,
 * finally outputs the value of $\tvar$ when $\patpfa{\pat}$ accepts.
-
-(ref:psst-extract-cap) The PSST $\sfunpsst{\extract{\idxi}{\pat}}$
-
-```{r, label="psst-extract", echo=FALSE, fig.cap="(ref:psst-extract-cap)"}
-knitr::include_graphics("psst-extract.svg")
-```
 
 Formally,
 $\sfunpsst{\extract{\idxi}{\pat}} = \tup{
@@ -340,7 +333,7 @@ Suppose $\patpfa{\pat} = \tup{
     \fastates, \alphabet, \fatrans, \fapriority, \fas_0, \final
 }$. Then $\sfunpsst{\replaceall{\pat}{\rep}}$ is obtained from
 $\patpfa{\pat}$ by adding a fresh state $\ts'_0$ such that the following
-hold (see Figure \@ref(fig:psst-replaceall)).
+hold.
 
 * $\sfunpsst{\replaceall{\pat}{\rep}}$ goes from $\ts'_0$ to $\fas_0$
   via an $\epsilon$-transition of higher priority than the
@@ -383,12 +376,6 @@ the form
 \]
 
 **(End of explanation)**
-
-(ref:psst-repall-cap) The PSST $\sfunpsst{\replaceall{\pat}{\rep}}$
-
-```{r, label="psst-replaceall", echo=FALSE, fig.cap="(ref:psst-repall-cap)"}
-knitr::include_graphics("psst-replaceall.svg")
-```
 
 Formally,
 $\sfunpsst{\replaceall{\pat}{\rep}} = \tup{
@@ -451,13 +438,6 @@ $\sfunpsst{\replaceall{\pat}{\rep}} = \tup{
       $\ap{\ap{\tassign}{\final, \epsilon, \fas'_0}}{\tvar_\idxj} = \epsilon$.
 :::
 
-The construction of the PSST for $\replace{\pat}{\rep}$ is similar and
-illustrated in Figure \@ref(fig:psst-replace). The details are omitted.
-
-(ref:psst-rep-cap) The PSST $\sfunpsst{\replace{\idxi}{\pat}}$
-
-```{r, label="psst-replace", echo=FALSE, fig.cap="(ref:psst-rep-cap)"}
-knitr::include_graphics("psst-replace.svg")
-```
-
+The construction of the PSST for $\replace{\pat}{\rep}$ is similar. The details
+are omitted.
 
