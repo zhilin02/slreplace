@@ -1,0 +1,320 @@
+
+# Pre-Image Construction
+
+Let
+$\psst = \tup{
+    \tstates_\psst, \alphabet, \tvars, \ttrans_\psst,
+    \tpriority_\psst, \tassign_\psst,  \ts_{0, \psst}, \tfinals_\psst
+}$
+be a PSST and
+$\fa = \tup{
+    \fastates_\fa, \alphabet, \fatrans_\fa, \fas_{0, fa}, \fafinals_\fa
+}$
+be an FA. Without loss of generality, we assume that $\fa$ contains no
+$\epsilon$-transitions. For convenience, we use
+$\etrans{\tpriority_\psst}$ to denote
+$\setcomp{\tup{q, q'}}{q' \in \ap{\tpriority_\psst}{q}}$.
+
+**(Below: main benefit of copyless)**
+
+We construct an FA $\prefa{\psst}{\fa}$ that simulates the *accepting*
+run of $\psst$ on $\word$, and, for each $\tvar \in \tvars$, records an
+$\fa$-abstraction of the string stored in $\tvar$, that is, a pairs
+$(\fas_1, \fas_2) \in \fastates_\fa \times \fastates_\fa$ such that
+starting from $\fas_1$, $\fa$ can reach $\fas_2$ after reading the
+string stored in $\tvar$. Note, it is the copyless property of $\psst$
+that allows us to only store one pair. If a variable could be used
+multiple times, we would need to store a set of pairs.
+
+**(End of main benefit of copyless)**
+
+To simulate the accepting run of $\psst$, it is necessary to record all
+the states of $\psst$ accessible through the runs of higher priorities
+to ensure the current run is indeed the accepting run of $\psst$ (of
+highest priority). Moreover, $\prefa{\psst}{\fa}$ also remembers the set
+of $\epsilon$-transitions of $\psst$ after the latest
+non-$\epsilon$-transition to ensure that no transition occurs twice in a
+sequence of $\epsilon$-transitions of $\psst$.
+
+Specifically, each state of $\prefa{\psst}{\fa}$ is of the form
+\[
+    \tup{\ts, \tvarabs, \epsilonset, \alttsset}
+\]
+where
+    $\ts \in \tstates_\psst$,
+    $\tvarabs \in \tup{\fastates_\fa \times \fastates_\fa}^{\tvars}$,
+    $\epsilonset \subseteq \etrans{\tpriority_\psst}$, and
+    $\alttsset \subseteq \tstates_\psst$.
+For a state $\tup{\ts, \tvarabs, \epsilonset, \alttsset}$, our intention
+for $\alttsset$ is that the states in it are those that can be reached in
+the runs of higher priorities than the current run, by reading the same
+sequence of letters and applying as many $\epsilon$-transitions as
+possible.  Note that when recording in $\alttsset$ all the states
+accessible through the runs of higher priorities, we do not take the
+non-repetition of $\epsilon$-transitions into consideration since if a
+state is reachable by a sequence of $\epsilon$-transitions where some
+$\epsilon$-transitions are repeated, then there exists also a sequence
+of non-repeated $\epsilon$-transitions reaching the state.  Moreover,
+when simulating an $\cha$-transition of $\psst$ (where $\cha \in
+\alphabet$) at a state
+    $\tup{\ts, \tvarabs, \epsilonset, \alttsset}$,
+suppose
+    $\ap{\ttrans_\psst}{\ts, \cha} = \tup{\ts_1, \cdots, \ts_\varnumof}$
+and
+    $\ap{\tpriority_\psst}{\ts} = (\tstateseq_1, \tstateseq_2)$,
+then $\prefa{\psst}{\fa}$ nondeterministically chooses $\ts_\idxi$ and
+goes to all states $\tup{\ts_\idxi, \tvarabs', \emptyset, \alttsset'}$,
+where
+
+* $\tvarabs'$ is obtained from $\tvarabs$ and
+  $\ap{\tassign_\psst}{\ts, \cha, \ts_\idxi}$
+  (see below),
+* $\epsilonset$ is reset to $\emptyset$,
+* all the states obtained from $\alttsset$ by applying an $\cha$
+  transition should be *saturated by $\epsilon$-transitions* and
+  put into $\alttsset'$, more precisely, all the states reachable from
+  $\alttsset$ by first applying an $\cha$-transition, then a sequence of
+  $\epsilon$-transitions, should be put into $\alttsset'$,
+* moreover, all the states obtained from $\ts_1,\cdots, \ts_{\idxi-1}$ (which
+  are of higher priorities than $\ts_\idxi$) by saturating with
+  $\epsilon$-transitions should be put into $\alttsset'$,
+* finally, all the states obtained from those in
+  $\tstates'_1 = \setcomp{
+    \ts' \in \tstateseq_1
+  }{
+    \tup{\ts, \ts'} \notin \epsilonset
+  }$
+  (which are of higher priorities than $\ts_\idxi$) by saturating with
+  non-$\epsilonset$ $\epsilon$-transitions first (i.e. the
+  $\epsilon$-transitions that do not belong to $\epsilonset$), and
+  applying an $\cha$-transition next, finally saturating with
+  $\epsilon$-transitions again, should be put into $\alttsset'$, (note
+  that according to the semantics of PSST, the $\epsilon$-transitions in
+  $\epsilonset$ should be avoided when defining $\tstates'_1$ and
+  saturating the states in $\tstates'_1$ with $\epsilon$-transitions). 
+
+**(Below: main formal change from CAV 2021)**
+
+Obtaining $\tvarabs'$ from $\tvarabs$ and
+    $\ap{\tassign_\psst}{\ts, \cha, \ts_\idxi}$
+leads to non-determinism. That is $\tvarabs'$ is not unique. For
+example, if
+    $\ap{\ap{\tassign_\psst}{\ts, \cha, \ts_\idxi}}{\tvar} = \cha$
+then $\ap{\tvarabs}{\tvar}$ can be any pair of states
+    $\tup{\fas_1, \fas_2}$
+such that there is a run of $\fa$ from $\fas_1$ to $\fas_2$ that reads
+the character $\cha$. There will be a transition from
+    $\tup{\ts, \tvarabs, \epsilonset, \alttsset}$,
+for each possible (combination of) these pairs.
+
+To define the possible $\tvarabs'$ we define
+    $\seqabs{\tvarabs}
+        : \brac{\alphabet \cup \tvars}^\ast
+            \rightarrow 2^{\fastates_\fa \times \fastates_\fa}$
+to give all possible pairs that could abstract the RHS of a variable
+assignment.  That is
+\[
+    \begin{array}{rcl}
+        \ap{\seqabs{\tvarabs}}{\cha} &=& \setcomp{
+            \tup{\fas_1, \fas_2}
+        }{
+            \text{
+                There is a run over $\cha$ of $\fa$ from $\fas_1$ to
+                $\fas_2$
+            }
+        } \\
+        \ap{\seqabs{\tvarabs}}{\tvar} &=& \set{\ap{\tvarabs}{\tvar}} \\
+        \ap{\seqabs{\tvarabs}}{\word_1 \cdot \word_2} &=& \setcomp{
+            \tup{\fas_1, \fas_2}
+        }{
+            \exists \fas .
+                \tup{\fas_1, \fas} \in \ap{\seqabs{\tvarabs}}{\word_1}
+                \land
+                \tup{\fas, \fas_2} \in \ap{\seqabs{\tvarabs}}{\word_2}
+        }
+    \end{array}
+\]
+where
+    $\cha \in \witheps{\alphabet}$,
+    $\tvar \in \tvars$, and
+    $\word_\idxi \in \brac{\alphabet \cup \tvars}^\ast$.
+
+Then, for
+$\tvarassign : \tvars \rightarrow \brac{\tvars \cup \alphabet}^\ast$
+we define
+$\ap{\tvarassign}{\tvarabs_1}$
+to be the set of all $\tvarabs_2$ such that, for all $\tvar \in \tvars$,
+\[
+    \ap{\tvarabs_2}{\tvar} \in
+        \ap{\seqabs{\tvarabs_1}}{\ap{\tvarassign}{\tvar}} \ .
+\]
+In particular, we require
+$\tvarabs' \in
+    \ap{\ap{\tassign_\psst}{\ts, \cha, \ts_\idxi}}{\tvarabs}$.
+
+**(End main formal change from CAV 2021)**
+
+For the formal construction of $\prefa{\psst}{\fa}$, we need some
+additional notation.
+
+* For $\alttsset \subseteq \tstates_\psst$,
+  $\ap{\tsettrans_\psst}{\alttsset, \cha}
+    = \setcomp{\ts'_1}{
+        \exists \ts_1 \in \alttsset, \ts'_1 \in \ap{\ttrans_\psst}{\ts_1, \cha}
+    }$.
+* For $\ts \in \tstates_\psst$, if
+  $\ap{\tpriority_\psst}{q} = \tup{\tstateseq_1, \tstateseq_2}$,
+  then
+    $\ap{\tsetpriority_\psst}{\set{q}} = \alttsset$
+  such that $\alttsset = \tstateseq_1 \cup \tstateseq_2$.
+  Moreover, for $\alttsset \subseteq \tstates_\psst$, we define
+  $\ap{\tsetpriority_\psst}{\alttsset}
+    = \bigcup \limits_{\ts \in \alttsset}
+      \ap{\tsetpriority_\psst}{\set{\ts}}$.
+  We also use $\eclose{\tsetpriority_\psst}$ to denote the
+  $\epsilon$-closure of $\psst$, namely,
+  $\ap{\eclose{\tsetpriority_\psst}}{\alttsset}
+    = \bigcup \limits_{\numof \in \nats}
+        \ap{\eclosen{\tsetpriority_\psst}{n}}{\alttsset}$,
+  where
+    $\ap{\eclosen{\tsetpriority_\psst}{0}}{\alttsset} = \alttsset$,
+  and for $\numof \in \nats$,
+    $\ap{\eclosen{\tsetpriority_\psst}{n+1}}{\alttsset}
+        = \ap{\tsetpriority_\psst}{
+            \ap{\eclosen{\tsetpriority_\psst}{n}}{
+                \alttsset
+            }
+        }$.
+* For
+    $\alttsset \subseteq \tstates_\psst$ and
+    $\epsilonset \subseteq \etrans{\tpriority_\psst}$,
+  we use
+    $\ap{\eclosewout{\tsetpriority_\psst}{\epsilonset}}{\alttsset}$
+  to denote the set of states reachable from $\alttsset$ by sequences of
+  $\epsilon$-transitions where *no* transitions $\tup{\ts, \epsilon, \ts'}$
+  such that $\tup{\ts, \ts'} \in \epsilonset$ are used.
+
+We are ready to present the formal construction of
+$\prefa{\psst}{\fa} = \tup{\fastates, \alphabet, \delta, \fas_0, \fafinals}$.
+
+* $\fastates =
+    \tstates_\psst \times
+    \brac{\fastates_\fa \times \fastates_\fa}^{\tvars} \times
+    2^{\etrans{\tpriority_\psst}} \times
+    2^{\tstates_\psst}$,
+* $\fas_0 = \tup{\ts_{0, \psst}, \tvarabs_\epsilon, \emptyset, \emptyset}$
+  where
+    $\ap{\tvarabs_\epsilon}{\tvar} \in \ap{\seqabs{\_}}{\epsilon}$
+  for each $x \in \tvars$,
+* $\fatrans$ comprises
+    * the tuples
+          $\tup{
+            \tup{\ts, \tvarabs, \epsilonset, \alttsset},
+            \cha,
+            \tup{\ts_\idxi, \tvarabs', \epsilonset', \alttsset'}
+          }$
+      such that
+        * $\cha \in \alphabet$,
+        * $\ap{\ttrans_\psst}{\ts, \cha}
+            = \tup{\ts_1, \ldots, \ts_\idxi, \ldots, \ts_\varnumof}$,
+        * $\tvarassign = \ap{\tassign_\psst}{\ts, \cha, \ts_\idxi}$,
+        * $\tvarabs' \in \tvarassign(\tvarabs)$,
+        * $\epsilonset' = \emptyset$, (Intuitively, $\epsilonset$ is reset.)
+        * let
+          $\ap{\tpriority_\psst}{\ts}
+            = \tup{\tstateseq_1, \tstateseq_2}$,
+          then
+          $\alttsset' = \ap{\eclose{\tsetpriority_\psst}}{
+            \set{\ts_1, \ldots, \ts_{\idxi - 1}}
+            \cup
+            \ap{\tsettrans_\psst}{
+                \alttsset
+                    \cup
+                    \ap{\eclosewout{\tsetpriority_\psst}{\epsilonset}}{
+                        \tstates'_1
+                    },
+                \cha
+            }
+          }$,
+          where
+            $\tstates'_1 = \setcomp{\ts' \in \tstateseq_1}{
+                \tup{\ts, \ts'} \notin \epsilonset
+            }$;
+    * the tuples
+      $\tup{
+        \tup{\ts, \tvarabs, \epsilonset, \alttsset},
+        \epsilon,
+        \tup{\ts_\idxi, \tvarabs', \epsilonset', \alttsset'}
+      }$
+      such that
+        * $\ap{\tpriority_\psst}{\ts} = \tup{
+            \tup{\ts_1, \ldots, \ts_\idxi, \ldots, \ts_\varnumof}; \cdots
+          }$,
+        * $\tup{\ts, \ts_\idxi} \notin \epsilonset$,
+        * $\tvarassign = \ap{\tassign_\psst}{\ts, \epsilon, \ts_\idxi}$,
+        * $\tvarabs' \in \ap{\tvarassign}{\tvarabs}$,
+        * $\epsilonset' = \epsilonset \cup \set{\tup{\ts, \ts_\idxi}}$,
+        * $\alttsset' = \alttsset \cup
+            \ap{\eclosewout{\tsetpriority_\psst}{\epsilonset}}{
+                \setcomp{\ts_\idxj}{
+                    1 \leq \idxj \leq \idxi-1,
+                    \tup{\ts, \ts_\idxj} \notin \epsilonset
+                }
+            }$;
+    * the tuples
+      $\tup{
+        \tup{\ts, \tvarabs, \epsilonset, \alttsset},
+        \epsilon,
+        \tup{\ts_\idxi, \tvarabs', \epsilonset', \alttsset'}
+      }$
+      such that 
+        * $\ap{\tpriority_\psst}{\ts} = \tup{
+            \tup{\ts'_1, \ldots, \ts'_\numof};
+            \tup{\ts_1, \ldots, \ts_\idxi, \ldots, \ts_\varnumof}
+          }$,
+        * $\tup{\ts, \ts_\idxi} \notin \epsilonset$,
+        * $\tvarassign = \ap{\tassign_\psst}{\ts, \epsilon, \ts_\idxi}$,
+        * $\tvarabs' \in \ap{\tvarassign}{\tvarabs}$,
+        * $\epsilonset' = \epsilonset \cup \set{\tup{\ts, \ts_\idxi}}$,
+        * $\alttsset' = \alttsset \cup \set{\ts} \cup
+            \ap{\eclosewout{\tsetpriority_\psst}{\epsilonset}}{
+                \setcomp{\ts'_\idxj}{
+                    1 \leq \idxj \leq \numof,
+                    \tup{\ts, \ts'_\idxj} \notin \epsilonset
+                }
+                \cup
+                \setcomp{\ts_\idxj}{
+                    1 \leq \idxj \leq \idxi-1,
+                    \tup{\ts, \ts_\idxj} \notin \epsilonset
+                }
+            }$.
+            (Note that here we include $\ts$ into $\alttsset'$, since the
+            non-$\epsilon$-transitions out of $\ts$ have higher priorities
+            than the transition $\tup{\ts, \epsilon, \ts_\idxi}$.)
+* $\fafinals$ is the set of states
+  $\tup{\ts, \tvarabs, \epsilonset, \alttsset} \in \fastates$ such that
+    * $\ap{\tfinals_\psst}{q}$ is defined,
+    * for every $\ts' \in \alttsset$, $\ap{\tfinals_\psst}{\ts'}$ is not
+      defined,
+    * if $\ap{\tfinals_\psst}{\ts} = \epsilon$,
+      then $\fas_{0, \fa}  \in \fafinals_\fa$,
+    * if $\ap{\tfinals_\psst}{\ts} \neq \epsilon$,
+      then
+          $\ap{\seqabs{\tvarabs}}{\ap{\tfinals_\psst}{\ts}}
+              \cap
+              \brac{\set{\fas_{0,\fa}} \times \fafinals_\fa}
+              \neq \emptyset$.
+
+Observe that the size of $\prefa{\psst}{\fa}$ is
+$\compord{
+    \varnumof \cdot
+    \numof^{2\altnumof} \cdot
+    2^\varnumof \cdot
+    2^\varnumof
+}$
+where
+    $\varnumof$ is the number of states in $\psst$,
+    $\numof$ is the number of states in $\fa$, and
+    $\altnumof$ is the number of variables in $\psst$.
+This can be simplified to
+$\compord{\numof^{2\altnumof} \cdot 2^{2\varnumof}}$.

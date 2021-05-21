@@ -136,6 +136,9 @@ pairs is not needed, and a single pair can be used instead. This means
 the set of pairs can be replaced by a single pair, avoiding the
 exponential blow-up.
 
+The proof of the following lemma is given in
+Appendix \@ref(pre-image-construction).
+
 ::: {.lemma #copyless-pre-image}
 Given a PSST
     $\psst = \tup{
@@ -153,8 +156,21 @@ we can compute a finite automaton
         \fastates', \alphabet, \fatrans', \fas'_0, \fafinals'
     }$
 in exponential time such that
-    $\falang{\fa'} = \ap{\psst^{-1}}{\falang{\fa}}$.
-(TODO: this is not the important property, it is exponential, but the
-exponential blow-ups are orthogonal as the preimage is repeated.
-Formulate better.)
+    $\falang{\fa'} = \ap{\psst^{-1}}{\falang{\fa}}$
+and the size of $\fa'$ is
+    $\compord{\numof^{2\altnumof} \cdot 2^{2\varnumof}}$
+where
+    $\varnumof$ is the number of states in $\psst$,
+    $\numof$ is the number of states in $\fa$, and
+    $\altnumof$ is the number of variables in $\psst$.
 :::
+
+
+[TODO: argue that this means we can solve SL in ExpSpace. This will be like the
+POPL 18 paper. If we chain together k pre-image computations, the size of the
+automaton will be something like
+\[
+    \compord{2^{2^k \varnumof} \cdot n^{2^k \cdot \altnumof^k}}
+\]
+which is doubly-exponential. We have to argue that we can check it is empty is
+ExpSpace.]
