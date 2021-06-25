@@ -18,7 +18,13 @@ or otherwise via libraries. Programmers widely use regular expressions in softwa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
   
 \begin{definition}[Real-world regular expressions, $\regexp$]
-  	\[e \eqdef \emptyset \mid \varepsilon \mid a \mid a? \mid \$n \mid [e + e] \mid [e \concat e] \mid [e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid [e^{\{m_1,m_2\}}] \mid [e^{\{m_1,m_2\}?}] \mid (e), \]
+
+
+    \begin{multline*}
+     e \eqdef \emptyset \mid \varepsilon \mid a \mid [e?] \mid [e??] \mid \$n \mid [e + e] \mid [e \concat e] \mid \\
+     [e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid [e^{\{m_1,m_2\}}] \mid [e^{\{m_1,m_2\}?}] \mid (e) 
+    \end{multline*}
+
   	where $a \in \Sigma$,  $n \in \Int^+$, $m_1,m_2 \in \Nat$ with $m_1 \le m_2$. 
   	%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity. 
   	%We use the abbreviation 
@@ -56,7 +62,7 @@ For a $\regexp$ $e$, we use $\idxexp(e)$ to denote the \emph{indexed} $\regexp$ 
   %\subsection{Semantics of \regexp[\sf CG]}
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
    For two indexed $\regexp$s $e$ and $e'$, we say $e'$ is a \emph{subexpression} of $e$,
-  	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, or $(_n e_1)_n$, and $e'$ is a subexpression of $e_1$. We use $S(e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
+  	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e?], [e??], [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, $e_1^{\{m_1, m_2\}}$, $e_1^{\{m_1, m_2\}?}$ or $(_n e_1)_n$, and $e'$ is a subexpression of $e_1$. We use $S(e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
   
   \begin{definition}[Matches of $\regexp$ to strings]
   	A \tmtextbf{match} of a $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
@@ -73,7 +79,7 @@ For a $\regexp$ $e$, we use $\idxexp(e)$ to denote the \emph{indexed} $\regexp$ 
   		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
   		e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
 
-  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then either $w' = \varepsilon$ and $\alpha$ has one child $\alpha_1 = (\varepsilon, e'_1)$, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in [k]$.
+  		\item If $e' = [{e'_1}^{+}]$ or $[{e'_1}^{+ ?}]$, then there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in \{2, \cdots, k\}$.
 %
 %  		\item If $e' = {e'_1}^{\ast?}$, then either $w' = \varepsilon$ in which case $\alpha$ is a
 %  		leaf, or there is $k \geqslant 1$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1,
@@ -87,8 +93,10 @@ For a $\regexp$ $e$, we use $\idxexp(e)$ to denote the \emph{indexed} $\regexp$ 
   		\item If $e' = a$ (resp. $e' = \varepsilon$), then $\alpha$ is a leaf and
   		$w' = a$ (resp. $w' = \varepsilon$).
 %		
-  		\item If $e' = a?$, then $\alpha$ is a leaf and
-  		$w' = a$ or $\varepsilon$.
+  		\item If $e' = [e?]$ or $[e??]$, then either $\alpha$ is a leaf and
+  		$w' = \varepsilon$, or $\alpha$ has a single child $\alpha_1 = (w', e)$ and $w' \neq \varepsilon$.
+  		
+  		\item If $e' = e^{\{m_1, m_2\}}$ or $e^{\{m_1, m_2\}?}$, then there is $m_1 \leqslant k \leqslant m_2$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in \{m_1 + 1, \cdots, k\}$.
 %
 		\item If $e' = \$n$, then $\alpha$ is a leaf of $T$. 
 		Moreover, let $(_n e'' )_n \in S(\idxexp(e))$ and $\beta = (w_1, e_1)$ be the last node preceding $\alpha$ in $T$ such that $e_1 = (_n e'')_n$ (there may be multiple nodes preceding $\alpha$ satisfying this condition), 
@@ -146,8 +154,22 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   		\item $\idxexp(e) = \varepsilon$, $\idxexp(e) = a$, or $\idxexp(e) = \$ n$. There is only one match tree, thus the
   		order $>_{w, \idxexp(e)}$ is empty. %\tl{this is nitpicking, but linear order implies reflectivity }\zhilin{changed to strict total order}
  %
- 		\item $\idxexp(e)  = a?$. There are only two single-node match trees in $\cM_{\pref(w)}(e)$, namely, $(\varepsilon, \idxexp(e))$ and $(a, \idxexp(e))$. Then we have $(a, e) >_{w, \idxexp(e)} (\varepsilon, e)$. %\tl{check; ? is for non-greedy semantics?}
-%		 		
+ 		\item $\idxexp(e)  = [e_1?]$. 
+ 		
+ 		\begin{itemize}
+            \item If $T' $ is  a single node $(\varepsilon, \idxexp(e))$, but $T$ is not, then $T >_{w, \idxexp(e)} T'$.
+            
+  			\item If $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$ for some $w_1, w_2 \in \pref(w)$, then $T >_{w, \idxexp(e)} T'$ iff $T_{(w_1, e_1)} >_{w, e_1} T'_{(w_2, e_1)}$.
+ 		\end{itemize}
+ 		
+ 		\item $\idxexp(e)  = [e_1??]$. 
+ 		
+ 		\begin{itemize}
+            \item If $T $ is  a single node $(\varepsilon, \idxexp(e))$, but $T'$ is not, then $T >_{w, \idxexp(e)} T'$.
+%  			
+  			\item If $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$ for some $w_1, w_2 \in \pref(w)$, then $T >_{w, \idxexp(e)} T'$ iff $T_{(w_1, e_1)} >_{w, e_1} T'_{(w_2, e_1)}$.
+ 		\end{itemize}
+
   		\item $\idxexp(e) = (_n e_1)_n$. Suppose that $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$ for some $w_1, w_2 \in \pref(w)$.
   		Then $T >_{w, \idxexp(e)} T'$ iff $T_{(w_1, e_1)} >_{w, e_1} T'_{(w_2, e_1)}$.
   		
@@ -165,38 +187,22 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   		\item $\idxexp(e) = [e_1^{\ast}]$. 
 		\begin{itemize}
 		\item If $T' $ is  a single node $(\varepsilon, \idxexp(e))$, but $T$ is not, then $T >_{w, \idxexp(e)} T'$.
-  		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w, \idxexp(e)} T'$ iff either $C (T')$
-  		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
+  		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') = (w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w, \idxexp(e)} T'$ iff either $k > l$ and for every $i \in [l]$ we have $T_{(w_j, e_1)} = T_{(w_j', e_1)}$, or for the first index $j$ such that $T_{(w_j, e_1)} \neq T_{(w_j', e_1)}$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 		\end{itemize}
 %
-  		\item $\idxexp(e) = [e_1^{+}]$. 
-		\begin{itemize}
-		\item If the roots of $T$ and $T' $ are  $(v, e)$ and $(\varepsilon, e)$ respectively such that $v \neq \varepsilon$, then $T >_{w, \idxexp(e)} T'$.
-  		\item If the roots of $T$ and $T' $ are $(v, \idxexp(e))$ and $(v', \idxexp(e))$ respectively such that $v, v' \neq \varepsilon$,  suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, then $T >_{w, \idxexp(e)} T'$ iff either $C(T')$
-  		is a proper prefix of $C (T)$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
-		\end{itemize}
+  		\item $\idxexp(e) = [e_1^{+}]$ or $[e_1^{\{m_1, m_2\}}]$. 
+  		Suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') = (w_1', e_1)$ $\ldots$ $(w_l', e_1)$, then $T >_{w, \idxexp(e)} T'$ iff either $k > l$ and for every $i \in [l]$ we have $T_{(w_j, e_1)} = T_{(w_j', e_1)}$, or for the first index $j$ such that $T_{(w_j, e_1)} \neq T_{(w_j', e_1)}$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 %
   		\item $\idxexp(e) = [e_1^{\ast?}]$. 
 		\begin{itemize}
-		\item If $T$ is a single node  $(\varepsilon, e)$, but $T'$ is not, then $T >_{w, \idxexp(e)} T'$.
+		\item If $T$ is a single node  $(\varepsilon, \idxexp(e))$, but $T'$ is not, then $T >_{w, \idxexp(e)} T'$.
   		\item Otherwise, suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w, \idxexp(e)} T'$ iff either $C (T)$
-  		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
+  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, we have $T >_{w, \idxexp(e)} T'$ iff either $k < l$ and for every $i \in [k]$ we have $T_{(w_j, e_1)} = T_{(w_j', e_1)}$, or for the first index $j$ such that $T_{(w_j, e_1)} \neq T_{(w_j', e_1)}$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
 		\end{itemize}
 %
-  		\item $\idxexp(e) = [e_1^{+?}]$. 
-		\begin{itemize}
-		\item If the roots of $T$ and $T' $ are  $(\varepsilon, e)$ and $(v, e)$ respectively such that $v \neq \varepsilon$, then $T >_{w, \idxexp(e)} T'$.
-  		\item If the roots of $T$ and $T' $ are $(v, \idxexp(e))$ and $(v', \idxexp(e))$ respectively such that $v, v' \neq \varepsilon$,  suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') =
-  		(w_1', e_1)$ $\ldots$ $(w_l', e_1)$, then $T >_{w, \idxexp(e)} T'$ iff either $C(T)$
-  		is a proper prefix of $C (T')$, or for the first index $j$ such that $w_j
-  		\neq w_j'$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
-		\end{itemize}
+  		\item $\idxexp(e) = [e_1^{+?}]$ or $[e_1^{\{m_1, m_2\}?}]$. 
+  		Suppose $C(T) = (w_1, e_1) \ldots (w_k, e_1)$ and $C (T') = (w_1', e_1)$ $\ldots$ $(w_l', e_1)$, then $T >_{w, \idxexp(e)} T'$ iff either $k < l$ and for every $i \in [k]$ we have $T_{(w_j, e_1)} = T_{(w_j', e_1)}$, or for the first index $j$ such that $T_{(w_j, e_1)} \neq T_{(w_j', e_1)}$, we have $T_{(w_j, e_1)}$ $>_{(w_1\cdots w_{j-1})^{-1}w, e_1}$ $T'_{(w_j', e_1)}$.
+
   	\end{itemize}
   	
   	For $e \in \regexp$ and $w \in \Lang(e)$, the \emph{accepting match} of $e$ to $w$, denoted by $M_e(w)$, is the supremum of $\cM_w(e)$.
