@@ -163,7 +163,7 @@ At first, we can adapt the PFA construction in \cite{BDM14}, which in turn is a 
 	\begin{itemize}
 		\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
 		%
-		\item for subexpression $e'$ of $e$, $\cA_e$ contains an isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
+		\item for subexpression $e'$ of $e$, $\cA_e$ contains at least one isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
 	\end{itemize}
 \end{proposition}
 %Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
@@ -196,6 +196,7 @@ Specifically, $\cA_e$ is constructed as follows.
 		\caption{The PFA $\cA_{\emptyset}$, $\cA_{\varepsilon}$, and $\cA_{a}$ }
 		\label{fig-reg2pfa-0}
 	\end{figure}  
+	
     
   \item If $e = (e_1)$, then $\cA_e = \cA_{e_1}$.
   
@@ -221,7 +222,42 @@ $\delta_e(q_{e,0}, a)  = ()$ for every $a \in \Sigma$,
 		\label{fig-reg2pfa-1}
 	\end{figure}  
  
+  \item If $e = [e_1?]$, suppose $\cA_{e_1} = (Q_{e_1},
+  \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, 
+  then $\cA_e = (Q_{e_1} \cup \{q_{\varepsilon}\}, \Sigma,
+  \delta_e, \tau_e, q_{e,0}, (\{q_{\varepsilon}\}, F_{e_1,2}))$ (see Fig.~\ref{fig-reg2pfa-6}), where  
+  \begin{itemize}
+ \item $q_{e,0}  \not \in Q_{e_1}$
+ \item $\delta_e(q, a) = \delta_{e_1}(q, a)$ for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q_{e,0}, a)  = ()$ and $\delta_e(q_{\varepsilon}, a) = ()$ for every $a \in \Sigma$, 
 %
+ \item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{\varepsilon}); ())$.
+ \end{itemize}
+  	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.6\textwidth]{reg2pfa-6.pdf}
+		\caption{The PFA $\cA_{[e_1?]}$}
+		\label{fig-reg2pfa-6}
+	\end{figure}
+%
+  \item If $e = [e_1??]$, suppose $\cA_{e_1} = (Q_{e_1},
+  \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, 
+  then $\cA_e = (Q_{e_1} \cup \{q_{\varepsilon}\}, \Sigma,
+  \delta_e, \tau_e, q_{e,0}, (\{q_{\varepsilon}\}, F_{e_1,2}))$ (see Fig.~\ref{fig-reg2pfa-7}), where 
+  \begin{itemize}
+ \item $q_{e,0}  \not \in Q_{e_1}$
+ \item $\delta_e(q, a) = \delta_{e_1}(q, a)$ for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q_{e,0}, a)  = ()$ and $\delta_e(q_{\varepsilon}, a) = ()$ for every $a \in \Sigma$, 
+%
+ \item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, $\tau_e(q_{e,0}) = ((q_{\varepsilon}, q_{e_1,0}); ())$.
+ \end{itemize}
+  	\begin{figure}[ht]
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width = 0.6\textwidth]{reg2pfa-7.pdf}
+		\caption{The PFA $\cA_{[e_1??]}$}
+		\label{fig-reg2pfa-7}
+	\end{figure}
+	
   \item If $e = [e_1 \concat e_2]$, let $\cA_{e_1} = (Q_{e_1},
   \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, $\cA_{e_2} = (Q_{e_2}, \Sigma,
   \delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$, and $\cA'_{e_2} = (Q'_{e_2}, \Sigma,
@@ -283,7 +319,7 @@ $\delta_e(q_{e,0}, a)  = ()$ for every $a \in \Sigma$,
 %
   \item If $e = [e_1^{+?}]$, then $\cA_e$ is constructed as $\cA_{[e_1 \concat [e_1^{*?}]]}$.
   %
-  \item If $e = [e_1^{\{m_1,m_2\}}]$, then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$, where $\cA_{e_1^{m_1}}$ is the PFA corresponding to the $m_1$ concatenations of $e_1$, and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ is illustrated in Fig.~\ref{fig-reg2pfa-4}, which consists of $m_2-m_1$ copies of $\cA_{e_1}$, say $(\cA^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to a fresh state $f^\prime_1$ of the lowest priority. (Intuitively, each $\cA^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$. )
+  \item If $e = [e_1^{\{m_1,m_2\}}]$, then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$, where $\cA_{e_1^{m_1}}$ is the PFA corresponding to consecutive concatenations of $m_1$ copies of $e_1$, and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ is illustrated in Fig.~\ref{fig-reg2pfa-4}, which consists of $m_2-m_1$ copies of $\cA_{e_1}$, say $(\cA^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority), and a fresh state $f^\prime_1$ (of the lowest priority). The accepting states of $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cA^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$. )
   %
    	\begin{figure}[ht]
 		\centering
@@ -373,7 +409,7 @@ $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
 \begin{proof}
 	%\paragraph*{Construction of $\cT_{\extract_{i,e}}$.} 
 	Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$. 
-	Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$. 
+	Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$, and ${\sf Sub}_{e'}[\cA_e]$ is any isomorphic copy of $\cA_{e'}$ in $\cA_e$.
 	%Moreover, let $\cA^\dag_e = (Q^\dag, \Sigma, \delta^\dag, \tau^\dag, q^\dag_0, f^\dag_0)$ be an isomorphic copy of $\cA_e$, where every state $q$ in $\cA_e$ is replaced by $q^\dag$ in $\cA^\dag_e$. Let us use ${\sf Sub}_{e'}[\cA^\dag_e]$ to denote the isomorphic copy of ${\sf Sub}_{e'}[\cA_e]$ in $\cA^\dag_e$.
 	
 	Intuitively, $\cT_{\extract_{i,e}}$ (see Fig.~\ref{fig-psst-extract})
@@ -414,11 +450,12 @@ $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
 		%
 		\item $E'$ is defined as follows,
 		\begin{itemize}
-			\item if $q_0$ does not occur in ${\sf Sub}_{e'}[\cA_e]$, then $E'(q'_0, \varepsilon, q_0)(x) = \nullchar$, otherwise, $E'(q'_0, \varepsilon, q_0)(x) = \varepsilon$,
+			\item $E'(q'_0, \varepsilon, q_0)(x) = \nullchar$,
 			%
-			\item for each transition $(q, a, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = x a$,
+			\item for each transition $(q, a, q')$ in ${\sf Sub}_{e'}[\cA_e]$ such that $q$ is the inital state of ${\sf Sub}_{e'}[\cA_e]$(Note in this case, the construction in Proposition \ref{prop-rwre-to-pfa} ensures $a$ equals $\varepsilon$), $E'(q, a, q')(x) = \varepsilon$,
+			\item for each other transition $(q, a, q')$ in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = x a$,
 			% 
-			\item for each transition $(q, a, q')$ such that $(q, a, q')$ does not occur in ${\sf Sub}_{e'}[\cA_e]$ and $q'$ occurs in ${\sf Sub}_{e'}[\cA_e]$, $E'(q, a, q')(x) = \varepsilon$,
+			
 			%
 			\item for all the other transitions $t$ of $\cA_e$, $E'(t)(x) = x$.
 		\end{itemize}
@@ -434,7 +471,7 @@ $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
 	Next, we show how to construct the PSST for $\replaceall_{\pat, \rep}$. 
 	
 	Let $\$i_1, \cdots, \$i_k$ with $i_1 < \cdots < i_k$ be an enumeration of all the references in $\rep$. 
-	Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group.
+	Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group, and ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$ be any isomorphic copy of $\cA_{e'_{i_j}}$ in $\cA_\pat$.
 	
 	Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replaceall})
 	\begin{itemize}
