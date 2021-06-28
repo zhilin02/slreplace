@@ -21,7 +21,7 @@ or otherwise via libraries. Programmers widely use regular expressions in softwa
 
 
     \begin{multline*}
-     e \eqdef \emptyset \mid \varepsilon \mid a \mid [e?] \mid [e??] \mid \$n \mid [e + e] \mid [e \concat e] \mid \\
+     e \eqdef \emptyset \mid \varepsilon \mid a \mid [e^?] \mid [e^{??}] \mid \$n \mid [e + e] \mid [e \concat e] \mid \\
      [e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid [e^{\{m_1,m_2\}}] \mid [e^{\{m_1,m_2\}?}] \mid (e) 
     \end{multline*}
 
@@ -43,7 +43,8 @@ Parenthesis pairs are indexed according to the occurrence sequence of their left
 after the $n$-th pair of parentheses. For instance, $[[([[a+b]^*]) \concat c] \concat \$1]$ is in $\regexp$, where $\$1$ refers to the matching of the subexpression $[[a+b]^*]$. Intuitively, it denotes the set of strings of the form $u c u$, where $u$ is a string of $a$ and $b$. 
 %
 
-The operator $[e^*]$ is the \emph{greedy} Kleene star, meaning $e$ should be matched as many times as possible. The operator $[e^{*?}]$ is the \emph{lazy} Kleene star, meaning $e$ should be matched  as few times as possible. The Kleene plus operators $[e^+]$ and $[e^{+?}]$ are similar to $[e^*]$ and $[e^{*?}]$ but $e$ should be matched at least once.
+The operator $[e^*]$ is the \emph{greedy} Kleene star, meaning $e$ should be matched as many times as possible. The operator $[e^{*?}]$ is the \emph{lazy} Kleene star, meaning $e$ should be matched  as few times as possible. The Kleene plus operators $[e^+]$ and $[e^{+?}]$ are similar to $[e^*]$ and $[e^{*?}]$ but $e$ should be matched at least once. Likewise, the optional operator has greedy and lazy variants $[e^?]$ and $[e^{??}]$, respectively.
+
 %with each letter being $a$ or $b$.
   
 %Note that standard regular expressions are those without $\$ n$. 
@@ -62,7 +63,7 @@ For a $\regexp$ $e$, we use $\idxexp(e)$ to denote the \emph{indexed} $\regexp$ 
   %\subsection{Semantics of \regexp[\sf CG]}
   %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
    For two indexed $\regexp$s $e$ and $e'$, we say $e'$ is a \emph{subexpression} of $e$,
-  	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e?], [e??], [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, $e_1^{\{m_1, m_2\}}$, $e_1^{\{m_1, m_2\}?}$ or $(_n e_1)_n$, and $e'$ is a subexpression of $e_1$. We use $S(e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
+  	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e^?], [e^{??}], [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, $e_1^{\{m_1, m_2\}}$, $e_1^{\{m_1, m_2\}?}$ or $(_n e_1)_n$, and $e'$ is a subexpression of $e_1$. We use $S(e)$ to denote the set of all subexpressions of $e$. %\tl{is there a difference between $[e_1\cdot e_2]$ and $e_1 e_2$?}
   
   \begin{definition}[Matches of $\regexp$ to strings]
   	A \tmtextbf{match} of a $\regexp$ $e$ to a string $w$ is defined by a finite directed and ordered
@@ -93,7 +94,7 @@ For a $\regexp$ $e$, we use $\idxexp(e)$ to denote the \emph{indexed} $\regexp$ 
   		\item If $e' = a$ (resp. $e' = \varepsilon$), then $\alpha$ is a leaf and
   		$w' = a$ (resp. $w' = \varepsilon$).
 %		
-  		\item If $e' = [e?]$ or $[e??]$, then either $\alpha$ is a leaf and
+  		\item If $e' = [e^?]$ or $[e^{??}]$, then either $\alpha$ is a leaf and
   		$w' = \varepsilon$, or $\alpha$ has a single child $\alpha_1 = (w', e)$ and $w' \neq \varepsilon$.
   		
   		\item If $e' = e^{\{m_1, m_2\}}$ or $e^{\{m_1, m_2\}?}$, then there is $m_1 \leqslant k \leqslant m_2$ such that $\alpha$ has $k$ children $\alpha_1 = (w'_1, e'_1), \ldots, \alpha_k = (w'_k, e'_1)$, $w' = w'_1 \cdots w'_k$, and $w'_i \neq \varepsilon$ for every $i \in \{m_1 + 1, \cdots, k\}$.
@@ -154,7 +155,7 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   		\item $\idxexp(e) = \varepsilon$, $\idxexp(e) = a$, or $\idxexp(e) = \$ n$. There is only one match tree, thus the
   		order $>_{w, \idxexp(e)}$ is empty. %\tl{this is nitpicking, but linear order implies reflectivity }\zhilin{changed to strict total order}
  %
- 		\item $\idxexp(e)  = [e_1?]$. 
+ 		\item $\idxexp(e)  = [e_1^?]$. 
  		
  		\begin{itemize}
             \item If $T' $ is  a single node $(\varepsilon, \idxexp(e))$, but $T$ is not, then $T >_{w, \idxexp(e)} T'$.
@@ -162,7 +163,7 @@ Let $e = ((b^\ast) \cdot ((b \cdot a^\ast) | \varepsilon)) \cdot a^\ast$ and $w=
   			\item If $C (T) = (w_1, e_1)$ and $C (T') = (w_2, e_1)$ for some $w_1, w_2 \in \pref(w)$, then $T >_{w, \idxexp(e)} T'$ iff $T_{(w_1, e_1)} >_{w, e_1} T'_{(w_2, e_1)}$.
  		\end{itemize}
  		
- 		\item $\idxexp(e)  = [e_1??]$. 
+ 		\item $\idxexp(e)  = [e_1^{??}]$. 
  		
  		\begin{itemize}
             \item If $T $ is  a single node $(\varepsilon, \idxexp(e))$, but $T'$ is not, then $T >_{w, \idxexp(e)} T'$.
