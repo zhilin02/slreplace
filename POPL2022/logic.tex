@@ -1,0 +1,176 @@
+%!TEX root = main.tex
+
+\section{The String Constraint Language}\label{sec:logic}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\subsection{Prioritized Streaming String Transducer}
+%Below, we introduce  a new class of prioritized transducer \cite{BM17} which combines the expressive power of streaming string transducer \cite{AC10,AD11}.
+%
+%\begin{definition}[Prioritized Streaming String Transducer]
+%	A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, \Sigma, X, E, \delta, q_0, F)$, where $Q$ a
+%	finite set of states, $\Sigma$ is the input and output alphabet, and $X$ a finite set of variables. $E$ is a partial function from $Q \times \Sigma \times
+%	Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$, i.e. the set of assignment,
+%	$\delta \in Q \times \Sigma \rightarrow \overline{Q}$ and $F$ is a partial function
+%	from $Q$ to $(X \cup \Sigma)^{\ast}$.
+%\end{definition}
+%
+%A run of $\psst$ is the sequence $q_0 \sigma_1 s_1 q_1 \ldots \sigma_m s_m q_m$, where $F (q_m)$ is defined and for each $i \in [m], q_i \in \delta (q_{i-1}, \sigma_i)$ and $s_i = E (q_{i - 1}, \sigma_i, q_i)$. For any two runs on $w = \sigma_1 \ldots \sigma_m$, denoted by $p = q_0 \sigma_1 s_1 \ldots \sigma_m s_m q_m$ and $p' = q_0 \sigma_1
+%s_1' \ldots \sigma_m s_m' q_m'$, we say that $p$ is of a higher priority over
+%$p'$ if $p \neq p'$ and, for the smallest index $j$ with $q_j \neq q_j'$,
+%$\delta (q_{j - 1}, \sigma_j) = \ldots q_j \ldots q_j' \ldots$
+%
+%The accepting run of $\psst$ on input $w$ is the run of the highest priority. The output of $T$ on w, denoted by $T(w)$, is defined as $\pi_m(F(q_m))$, where $\pi_0(x) = \varepsilon$ for each $x \in X$, and $\pi_{i}(x) = \pi_{i-1}(s_{i}(x))$ for $1 \le i \le m$ and $x \in X$. Note that here we abuse the notation  $\pi_m(F(q_m))$ and $\pi_{i-1}(s_{i}(x))$ by taking a function $\pi$ from $X$ to $\Sigma^*$ as a function from $(X \cup \Sigma)^*$ to $\Sigma^*$, which maps each $\sigma \in \Sigma$ to $\sigma$ and each $x \in X$ to $\pi(x)$.
+%
+%%  $\tmop{Out} (r) =
+%%  s_{\varepsilon} \circ s_1 \circ s_2 \ldots s_n \circ F (q_n)$ where
+%%  $s_{\varepsilon}$ is the empty substitution which maps all variables to
+%%  $\varepsilon$.
+%
+%\begin{definition}[pre-image]
+%	For a string relation $R \subseteq \Sigma^* \times \Sigma^*$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$ as $R^{-1}(L):=\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$.
+%\end{definition}
+%
+%\begin{theorem}[pre-image of \PSST{}]
+%	\label{theorem:psst_preimage}
+%	Given a \PSST{} $\psst = (Q_T, \Sigma$, $X, E, \delta_T, q_{0, T}, F_T)$ and \FA{} $A
+%	= (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $B = (Q_B,
+%	\Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(B) = \cR^{-1}_T(\Lang(\Aut))$.
+%\end{theorem}
+%
+%\begin{proof}
+%	Intuitively, $B$ simulates the run of $\psst$ on $w$, and, for each $x \in X$, records the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $A$ can reach $q$ after reading the string stored in $x$. Moreover, $B$ also records all the states accessible from a run with higher priority to ensure the current run is the accepting one of $\psst$.
+%
+%	Formally, $Q_B = Q_T \times (\cP(Q_A \times Q_A ))^{X} \times \cP(Q_T)  $, $q_{0, B} = (q_{0, T}, \rho_{\varepsilon}, \emptyset)$ where $\rho_{\varepsilon} (x) = \{(q, q) \mid q \in Q\}$ for each $x \in X$, and $\delta_{B}$ comprises the tuples $((q, \rho, S), a, (q_i, \rho', S'))$ such that there exists $s \in \left((X \cup \Sigma\right)^*)^X$ satisfying
+%	\begin{itemize}
+%		\item $\delta_T (q, a) = (q_1 \ldots q_i \ldots q_m)$,
+%		\item $s = E(q,a,q_i)$.
+%		\item $S' = \delta_T^{\ast} (S, a) \cup \{ q_1, \ldots, q_{i - 1} \}$, where $\delta_T^{\ast}(S,a) = \{q' \mid \exists q \in S, q' \in \delta_T(q,a)\}$.
+%		\item and $\rho'$ is obtained from $\rho$ and $s$ as follows: for each $x \in X$, if $s(x) = \varepsilon$, then $\rho'(x) = \{(p, p) \mid p \in Q_A\}$, otherwise, let $s(x) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $\rho'(x) = \theta_1 \circ \cdots \circ \theta_\ell$, where $\theta_i = \delta^{(b_i)}_A$ if $b_i \in \Sigma$, and $\theta_i = \rho(b_i)$ otherwise.
+%		%
+%		%$\rho'(x) = \theta_\ell$ such that $\theta_0 = \{(p,p) \mid p \in Q_A\}$, and for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \{(p, p') \mid (p, p'') \in \theta_{i-1}, (p'', b_i, p') \in \delta_A \mbox{ for some } p''\}$, otherwise, $\theta_i = \theta_{i-1} \cdot \rho(x)$.
+%	\end{itemize}
+%
+%	Moreover, $F_B$ is the set of states $(q, \rho, S) \in Q_B$ such that
+%	\begin{enumerate}
+%		\item $F_T (q)$ is defined,
+%		\item For any $q' \in S$, $F_T (q')$ is not defined
+%
+%		\item if $F_T(q) = \varepsilon$, then $q_{0, A}  \in F_A$, otherwise,
+%		let $F_T(q) = b_1 \cdots b_\ell$ with $b_i \in \Sigma \cup X$ for each $i \in [\ell]$, then $(\theta_1 \circ \cdots \circ \theta_\ell) \cap (\{q_{0,A}\} \times F_A) \neq \emptyset$, where for each $i \in [\ell]$, if $b_i \in \Sigma$, then $\theta_i = \delta^{(b_i)}_A$, otherwise, $\theta_i = \rho(b_i)$.
+%	\end{enumerate}
+%\end{proof}
+%
+%Note that the above construction  does not utilize the so-called \tmtextit{copyless} property \cite{AC10,AD11},
+%thus it works for general, or \tmtextit{copyful} \PSST{} \cite{FR17}.
+
+% Note that in the definition of \NSST, there is no \emph{copyless} restriction.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%We will use $\$ 1, \$2, \cdots$ to denote the references to capturing groups in regular expressions.
+
+%We define the set of reference expressions as follows:
+
+%We consider the symbolic execution of the string-manipulating programs.
+
+%\begin{definition}[The constraint language $\strline$]
+We define the string constraint language $\strline$ %considered in this paper
+as follows.
+%The $\strline$ language is defined by
+\[
+\begin{array}{l c l}
+\smallskip
+S & \eqdef  & z:= x \concat y \mid y := \extract_{i, e}(x) \mid
+%& &
+%y := \reverse(x)
+y := \replace_{\pat, \rep}(x) \mid \\
+& & y := \replaceall_{\pat, \rep}(x)   \mid
+%y := \Transducer(x)\  \mid\\
+ \ASSERT{x \in e} \mid S; S\
+\label{eq:SL}
+%a ::= f(x_1,\ldots,x_n), \qquad b ::= g(x_1,\ldots,x_n)
+\end{array}
+\]
+%\tl{to avoid confusion, write  $\ASSERT{x \in A}$?}
+where
+\begin{itemize}
+	\item $\concat$ is the string concatenation operation which concatenates two strings,
+%
+\item for the $\extract$ function, $i \in \Nat$, $e \in \cgexp$,
+%
+	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$, %$\replaceall$ is the replace-all function to be defined shortly,
+%	\item $\reverse$ is the string function which reverses a string;
+%	\item $\Transducer$ is a \PSST,
+%
+	\item for assertions, $e \in \regexp$.
+\end{itemize}
+%and $R$ is a recognisable relation represented by a collection of tuples of \FA{}s.
+%\end{definition}
+%
+%\zhilei{Should we add NSST constraints? Basically NSST can express more than PSST.}
+%\tl{maybe just use NSST to replace PSST?}
+%
+%\zhilei{PSST is needed for decision procedure. NSST can be decided too, but the algorithm is very similar, so maybe too tedious to add both }
+
+%It is evident that the $\reverse$ function is subsumed by \PSST{}s.
+
+%
+%\begin{remark}
+%	Zhilin mentioned that we might introduce a function which takes a string and a pattern with capturing groups, and does sort of pattern matching to extra substrings. This function can be captured by the transducer $T$. We will formalise this later.
+%\end{remark}
+
+The $\extract$ function is used to model the regular-expression match function in programming languages.
+%, e.g. $\sf str.match(regexp)$ function in Javascript.
+Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the accepting match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. For instance, assuming $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$,   $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns $\nullchar$. For instance, when $[[a^+] + ([a^*])]$ is matched against the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$.
+
+
+\begin{remark}
+The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving RWREs, e.g. {\sf exec} and {\sf test}, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
+\end{remark}
+
+
+The $\replaceall_{\pat, \rep}(x)$ function is parameterized by the  %\emph{subject} string, the second parameter is a
+\emph{pattern} $\pat \in \regexp$ and the \emph{replacement} string $\rep \in \refexp$. For an input string $x$, it identifies all %the first, second, $\dots$,
+matches of $\pat$ in $x$ and replaces them with strings specified by the replacement string $\rep$. (In $\rep$,  references may be used to refer to %are replaced by
+the corresponding matches of the capturing groups.)  For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$. The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces at most once.
+
+Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is 1) each variable $x$ is assigned at most once; and 2) if $x$ is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
+%
+For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur on the left hand sides of assignment statements.
+
+%
+%For the semantics of $\replaceall$ function, in particular when the pattern is a regular expression, we adopt the \emph{leftmost and longest} matching.
+
+
+
+
+%For instance, $\replaceall(aababaab, (ab)^+, c) =ac\cdot \replaceall(aab, (ab)^+, c)= acac$, since the leftmost and longest matching of $(ab)^+$ in $aababaab$ is $abab$. Here we require that the language defined by the pattern parameter does \emph{not} contain the empty string, in order to avoid the troublesome definition of the semantics of the matching of the empty string. We refer the reader to \cite{CCHLW18} for the formal semantics of the $\replaceall$ function. To be consistent with the notation in this paper, for each regular expression $e$, we define
+%the string function $\replaceall_e: \ialphabet^* \times \ialphabet^* \rightarrow \ialphabet^*$ such that for $u, v \in \ialphabet^*$, $\replaceall_e(u, v) = \replaceall(u, e, v)$, and we write $\replaceall(x, e, y)$ as $\replaceall_e(x,y)$.
+
+The \emph{path feasibility} problem of an $\strline$ program is to decide whether there are valuations of the input variables so that the program can execute to the end.
+This problem turns out to be undecidable, this is because of the backreferences in assertion statements or in pattern parameters of the $\replace$/$\replaceall$ function.
+
+
+\begin{proposition}\label{prop-und}
+The path feasibility problem of $\strline$ is undecidable.
+\end{proposition}
+
+
+We shall show that the path feasibility problem becomes decidable, if the uses of backreferences in assertion statements and pattern parameters of the $\replace$/$\replaceall$ function are forbidden, which turns out to be the situation in practice,  according to the statistics in the literature (see Section~\ref{sec-intro}).
+%\footnote{An evidence was given in  \cite{LMK19}, where the statistics showed that the occurrences of regular expressions with backreferences occupy only less than $1\%$ in the widely used JavaScript NPM packages.}
+In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of %where no
+backreferences in assertion statements as well as in pattern parameters of the $\replace$/$\replaceall$ function. %We state
+Note that $\strline_{\sf reg}$  allows backreferences in replacement parameters of $\replace$/$\replaceall$. The main result of this paper is as follows.
+
+
+\begin{theorem}\label{thm-main}
+The path feasibility of $\strline_{\sf reg}$ is decidable.
+\end{theorem}
+The decision procedure for $\strline_{\sf reg}$ utilizes a new automata model called prioritized streaming string transducers, which will be defined in the next section.

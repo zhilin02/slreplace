@@ -1,0 +1,160 @@
+
+\documentclass{llncs}
+
+%%%(20 pages max, must be anonymized)
+%% Conference information
+
+\usepackage{mathrsfs}
+\usepackage{blindtext}
+\usepackage[cache=false]{minted}
+\usepackage{eqnarray}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{booktabs}
+
+\pagestyle{plain}
+
+\newif\ifdraft\drafttrue
+%\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {AL: #1 :LA} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\newcommand{\philipp}[1]{\color{magenta} {PR: #1 :PR} \color{black}}
+\newcommand{\zhilei}[1]{\color{violet} {ZLH: #1 :HZL} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\newcommand{\zhilei}[1]{}
+\fi
+
+\input{macros.tex}
+
+\begin{document}
+
+%% Title information
+\title{Solving String Constraints with \\
+Real-World Regular Expressions}
+
+
+
+%% Author with single affiliation.
+\author{}
+\institute{}
+
+\maketitle
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+%
+\input{abstract}
+\OMIT{
+\begin{abstract}
+%% some background on regular expressions
+Regular expressions (REs) %are a classical concept 
+in formal language theory %, which are expressions 
+are built up %from characters by the operators of 
+by operators such as concatenation, union, and Kleene star. Real-world regular expressions (RWREs) in programming languages %differ from REs in the 
+usually adopt non-standard semantics of these operators, e.g., non-commutative union and greedy/lazy Kleene star, and include additional features such as capturing groups and back references. 
+%% symbolic execution requires faithful encoding of regex semantics
+%String constraint solvers are one of the cornerstones of the analysis and verification of string manipulating programs. Faithful encoding of the semantics of real-world regular expressions in string constraint solvers facilitates more precise program analysis and verification.
+%% state of the art string constraint solvers
+%The semantics of real-word regular expressions are tricky and vary in different programming languages. It is challenging for string constraint solvers to support real-world regular expressions.
+While REs are generally well supported by state-of-the-art string constraint solvers, %(e.g. CVC4 and Z3-str), 
+RWREs have not been addressed sufficiently. %are not supported by them. The mismatch between REs in string constraint solvers and RWREs in programming languages 
+As a result, symbolic execution engines have to resort to ad hoc approximation of RWREs and counter example guided 
+abstraction refinements (CEGAR) to solve constraints with RWREs, which is limited in both precision and efficiency. %(CEGAR) to mitigate this issue. 
+%This hinders the precision and efficiency of symbolic execution engines, which have to resort to approximate encoding of RWREs and counter example guided abstraction refinements (CEGAR) to mitigate this issue. 
+%
+%The semantics of real-world regular expressions are better to be encoded as faithfully as possible. For instance, in dynamic symbolic execution of string manipulating programs, in order to generate the inputs for execution paths and improve coverage,  the semantics of real-world regular expressions are better to be encoded as faithfully as possible in string constraint solvers. 
+%% contribution
+In this paper, we propose a new, direct %an 
+approach %of natively supporting 
+to supporting RWREs in string constraint solving. The key %of our approach 
+is %to introduce 
+a new automata model called prioritized streaming string transducers (PSSTs), 
+which combines %priorities in 
+prioritized finite automata and %string variables in 
+streaming string transducers to model string functions involving RWREs. 
+%non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
+%the non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables. 
+Based on PSSTs, we develop decision procedures for string constraints with RWREs. 
+%% implementation and experiments
+We implement the decision procedure and carry out extensive experiments %to evaluate its performance. The experimental results on 
+on over 160,000 string constraints generated from RWREs in open-source programs. The results show that our approach drastically improves the CEGAR-based approach for RWREs in both precision and efficiency. To the best of our knowledge, this work represents the first string constraint solver supporting RWREs.
+\end{abstract}
+}
+
+%% Keywords
+%% comma separated list
+%\keywords{keyword1, keyword2, keyword3}  %% \keywords are mandatory in final camera-ready submission
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+
+%\zhilin{
+%page limit: 20
+%}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{intro.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{motivating-example-new.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%\input{prel.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\input{rwre-new.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\input{logic.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{psst-epsilon.tex}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{decproc-new.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{impl-exp.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\input{experiments.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{conclusion.tex}
+
+\newpage
+
+\bibliographystyle{alpha}
+\bibliography{string}
+
+\newpage
+%% Appendix
+\appendix
+
+\input{appendix.tex}
+
+\end{document}
