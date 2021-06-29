@@ -199,32 +199,7 @@ Note that the priorities in PFAs have no impact on whether a string is accepted;
 
 %\begin{proposition}\label{prop-rwre-to-pfa}
 
-We associate with each $\cgexp$ $e$ a PFA $\cA_e$ and we define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the construction of PFA is done inductively.  %can be constructed 
-%(in linear time)
-
-% such that 
-%	\begin{itemize}
-%		\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
-%		%
-%		\item for subexpression $e'$ of $e$, $\cA_e$ contains at least one isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
-%	\end{itemize}
- 
-%Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
-
-%\begin{proof}
-%	For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that 
-%	\begin{itemize}
-%		\item it has a unique initial state without incoming transitions and each of its final states has no outgoing transitions,
-%		\item all the transitions out of the initial state are $\varepsilon$-transitions, 
-%		\item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
-%	\end{itemize}
-%	%The original construction on regular expressions
-%	%produces an FA without $\varepsilon$-transitions, which we denote by $G_e$.
-%	%We refer the reader to \cite{Gluskov61} for 
-%	%details of how to construct $G_e$. %\tl{is this just the textbook construction?}
-%	%
-%	%The pNFA $A_e$ is obtained by recursively adding priority to $G_e$ as follows:
-%	Specifically, $\cA_e$ is constructed as follows.
+We associate with each $\cgexp$ $e$ a PFA $\cA_e$ and we define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the construction of PFA is done inductively. 
 
 \paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \delta, \tau, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau(q_{\emptyset, 0}) = ((); ())$.
 		
@@ -292,7 +267,7 @@ Fig.~\ref{fig-reg2pfa-6} depicts the construction.
 		\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{$e = [e_1^{??}]$} 
+\paragraph{Case $e = [e_1^{??}]$} 
 Let $\cA_{e_1} = (Q_{e_1},
 		\Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. 
 Then 
@@ -309,21 +284,16 @@ Fig.~\ref{fig-reg2pfa-7} depicts the construction.
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
-			\includegraphics[width = 0.6\textwidth]{reg2pfa-7.pdf}
+			\includegraphics[width = 0.5\textwidth]{reg2pfa-7.pdf}
 			\caption{The PFA $\cA_{[e_1^{??}]}$}
 			\label{fig-reg2pfa-7}
 		\end{figure}
 	
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{$e = [e_1 \concat e_2]$} 
-Let $\cA_{e_1} = (Q_{e_1},
-		\Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, $\cA_{e_2} = (Q_{e_2}, \Sigma,
-		\delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$, and $\cA'_{e_2} = (Q'_{e_2}, \Sigma,
-		\delta'_{e_2}, \tau'_{e_2}, q'_{e_2,0}, (F'_{e_2, 1}, F'_{e_2,2}))$ be a fresh copy of $\cA_{e_2}$, then 
+\paragraph{Case $e = [e_1 \concat e_2]$} 
+Let $\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, $\cA_{e_2} = (Q_{e_2}, \Sigma, \delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$, and $\cA'_{e_2} = (Q'_{e_2}, \Sigma, \delta'_{e_2}, \tau'_{e_2}, q'_{e_2,0}, (F'_{e_2, 1}, F'_{e_2,2}))$ be a fresh copy of $\cA_{e_2}$, then 
 		$\cA_e = ( Q_{e_1} \cup Q_{e_2} \cup Q'_{e_2}, \Sigma, \delta_e, \tau_e, q_{e_1,0},
-		(F_{e_2,1}, F_{e_2,2} \cup F'_{e_2,1} \cup F'_{e_2,2}))$ (see Fig.~\ref{fig-reg2pfa-2}), where 
+		(F_{e_2,1}, F_{e_2,2} \cup F'_{e_2,1} \cup F'_{e_2,2}))$ where 
 		\begin{itemize}
 			\item for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, $\delta_e(q, a) = \delta_{e_i}(q, a)$,
 			%
@@ -333,7 +303,7 @@ Let $\cA_{e_1} = (Q_{e_1},
 			%
 			\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$, $\tau_e(q) = \tau_{e_1}(q)$, for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,1}) = ((q_{e_2,0}); ())$, and for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e_1,2}) = ((q'_{e_2,0}), ())$.
 		\end{itemize}
-		%  
+ Fig.~\ref{fig-reg2pfa-2} depicts the construction. 
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
@@ -345,10 +315,9 @@ Let $\cA_{e_1} = (Q_{e_1},
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{$e = [e_1^{\ast}]$} 
-Let  
-		$\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, then 
-		$\cA_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,0}, f_{e,1}\}, \Sigma, \delta_e, \tau_e, q_{e,0}, (\{f_{e,0}\}, \{f_{e,1}\}))$, where 
+\paragraph{Case $e = [e_1^{\ast}]$} 
+Let $\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then
+\[ \cA_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,0}, f_{e,1}\}, \Sigma, \delta_e, \tau_e, q_{e,0}, (\{f_{e,0}\}, \{f_{e,1}\}))\] where 
 		\begin{itemize}
 			\item $q_{e,0}, f_{e,0} \not \in Q_{e_1}$,
 			
@@ -361,19 +330,13 @@ Let
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{Case $e = [e_1^{+}]$} then $\cA_e$ is constructed as $\cA_{[e_1 \concat [e^\ast_1]]}$.
 		
-		\begin{figure}[ht]
-			\centering
-			%\rule{\linewidth}{0cm}
-			\includegraphics[width = 0.8\textwidth]{reg2pfa-3.pdf}
-			\caption{The PFA $\cA_{[e_1^\ast]}$ and $\cA_{[e_1^{\ast?}]}$}
-			\label{fig-reg2pfa-3}
-		\end{figure}  
+ 
 		
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\ast?}]$} let  
-		$\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$, then 
-		$\cA_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,0}, f_{e,1}\}, \Sigma, \delta_e, \tau_e, q_{e,0}, (\{f_{e,0}\}, \{f_{e,1}\}))$ (see Fig.~\ref{fig-reg2pfa-3}), where 
+\paragraph{Case $e = [e_1^{\ast?}]$} Let  
+		$\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
+\[\cA_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,0}, f_{e,1}\}, \Sigma, \delta_e, \tau_e, q_{e,0}, (\{f_{e,0}\}, \{f_{e,1}\}))\]  where 
 		\begin{itemize}
 			\item $q_{e,0}, f_{e,0} \not \in Q_{e_1}$,
 			
@@ -383,31 +346,60 @@ Let
 			\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((f_{e,0}, q_{e_1,0}); ())$,  $\tau_e(q) = ((q_{e_1,0});())$ for every $q \in F_{e_1,1}$, $\tau_e(q) = ((f_{e,1}, q_{e_1,0});())$ for every $q \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $f_{e,0}$ and $q_{e_1,0}$ , from each $q \in F_{e_1,1}$ to  $q_{e_1,0}$, and from each $q \in F_{e_1,2}$ to $f_{e,1}$ and $q_{e_1,0}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $q_{e_1,0}$ and from $q \in F_{e_1,2}$ to $q_{e_1,0}$ are of the lowest priority.)
 		\end{itemize}
 
-
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{Case $e = [e_1^{+?}]$} then $\cA_e$ is constructed as $\cA_{[e_1 \concat [e_1^{*?}]]}$.
 
+Fig.~\ref{fig-reg2pfa-3} depicts the construction. 
+\begin{figure}[ht]
+	\centering
+	%\rule{\linewidth}{0cm}
+	\includegraphics[width = 0.8\textwidth]{reg2pfa-3.pdf}
+	\caption{The PFA $\cA_{[e_1^\ast]}$ and $\cA_{[e_1^{\ast?}]}$}
+	\label{fig-reg2pfa-3}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$}, then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$, where $\cA_{e_1^{m_1}}$ is the PFA corresponding to consecutive concatenations of $m_1$ copies of $e_1$, and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ is illustrated in Fig.~\ref{fig-reg2pfa-4}, which consists of $m_2-m_1$ copies of $\cA_{e_1}$, say $(\cA^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority), and a fresh state $f^\prime_1$ (of the lowest priority). The accepting states of $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cA^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$. )
+\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$} Then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$, where $\cA_{e_1^{m_1}}$ is the PFA corresponding to consecutive concatenations of $m_1$ copies of $e_1$, and $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ is illustrated in Fig.~\ref{fig-reg2pfa-4}, which consists of $m_2-m_1$ copies of $\cA_{e_1}$, say $(\cA^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority), and a fresh state $f^\prime_1$ (of the lowest priority). The accepting states of $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cA^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$. )
 		%
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
-			\includegraphics[width = 0.95\textwidth]{reg2pfa-4.pdf}
+			\includegraphics[width = 0.8\textwidth]{reg2pfa-4.pdf}
 			\caption{The PFA $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$}
 			\label{fig-reg2pfa-4}
 		\end{figure}  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\{m_1,m_2\}?}]$} then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$, where $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$ is illustrated in Fig.~\ref{fig-reg2pfa-5}, which is the same as $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ in Fig.~\ref{fig-reg2pfa-4}, except that the priorities of $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are reversed.
+\paragraph{Case $e = [e_1^{\{m_1,m_2\}?}]$} Then $\cA_e$ is constructed as the concatenation of $\cA_{e_1^{m_1}}$ and $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$, where $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$ is illustrated in Fig.~\ref{fig-reg2pfa-5}, which is the same as $\cA^\prime_{e_1^{\{1,m_2-m_1\}}}$ in Fig.~\ref{fig-reg2pfa-4}, except that the priorities of $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are reversed.
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
-			\includegraphics[width = 0.95\textwidth]{reg2pfa-5.pdf}
+			\includegraphics[width = 0.8\textwidth]{reg2pfa-5.pdf}
 			\caption{The PFA $\cA^\prime_{e_1^{\{1,m_2-m_1\}?}}$}
 			\label{fig-reg2pfa-5}
 		\end{figure}  
- 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ %can be constructed 
+%(in linear time)
+
+% such that 
+%	\begin{itemize}
+%		\item $\cA_e$ has a unique initial state without incoming transitions and a unique final state without outgoing transitions,
+%		%
+%		\item for subexpression $e'$ of $e$, $\cA_e$ contains at least one isomorphic copy of $\cA_{e'}$ (i.e. the PFA constructed for $e'$), denoted by ${\sf Sub}_{e'}[\cA_e]$. 
+%	\end{itemize}
+
+%Let us use ${\sf Sub}_{e'}[\cA_e]$ to denote the isomorphic copy of $\cA_{e'}$ in $\cA_e$, as mentioned in Proposition~\ref{prop-rwre-to-pfa}.
+
+%\begin{proof}
+%	For any $e \in \cgexp$, a PFA $\cA_e$ is constructed recursively in the sequel. The constructed PFA $\cA_e$ satisfies that 
+%	\begin{itemize}
+%		\item it has a unique initial state without incoming transitions and each of its final states has no outgoing transitions,
+%		\item all the transitions out of the initial state are $\varepsilon$-transitions, 
+%		\item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
+%	\end{itemize}
+
 
