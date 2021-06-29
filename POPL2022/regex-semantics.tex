@@ -1,11 +1,13 @@
 %!TEX root = main.tex
 
 \section{Regular Expressions a la JavaScript}\label{sec-rwre}
-In this section, we introduce the regular expressions which will be used in the string constraints. The semantics of the regular language conforms to the JavaScript language. It should be emphasized that the strings accepted by the regular expresses introduced here are still regular, but the parsing of the string is significantly different from classic regular languages. For this purpose, we utilize prioritized finite-state automata \cite{BM17}, which extend classic finite-state automata with priorities, to capture, among others, the greedy/lazy semantics of Kleene star/plus. 
+In this section, we introduce the regular expressions which will be used in the string constraints. 
+%The semantics of the regular language conforms to the JavaScript language. 
+It should be emphasized that the strings accepted by the regular expresses introduced here are still regular, but the parsing of the string is significantly different from classic regular languages. For this purpose, we utilize prioritized finite-state automata \cite{BM17}, which extend classic finite-state automata with priorities, to capture, among others, the greedy/lazy semantics of Kleene star/plus in the regular expression. 
 
 Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 %
-We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$ and $\varepsilon$ to denote the empty string. Moreover, for convenience, we use $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
+We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$, $\varepsilon$ to denote the empty string, and $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,18 +21,22 @@ We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \em
 
 \begin{definition}[Regular expressions, $\regexp$]
 	
-\begin{multline*}
-e \eqdef \emptyset \mid \varepsilon \mid a \mid [e^?] \mid [e^{??}] \mid  (e) \mid %\$n \mid 
+%\begin{multline*}
+\[
+\begin{split}
+e & \eqdef  \emptyset \mid \varepsilon \mid a \mid [e^?] \mid [e^{??}] \mid  (e) \mid %\$n \mid 
 [e + e] \mid [e \concat e] \mid \\
-[e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid [e^{\{m_1,m_2\}}] \mid [e^{\{m_1,m_2\}?}] 
-\end{multline*}
+ &          [e^*] \mid [e^+] \mid [e^{*?}] \mid  [e^{+?}] \mid [e^{\{m_1,m_2\}}] \mid [e^{\{m_1,m_2\}?}] 
+\end{split}
+\]
+%\end{multline*}
 %	
 where $a \in \Sigma$,  $n \in \Int^+$, $m_1,m_2 \in \Nat$ with $m_1 \le m_2$. 
 	%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity.  
 \end{definition}
 %We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. 
 %
-For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $[\Gamma^\ast] \equiv [[[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast]$. Similarly for $[\Gamma^{\ast?}]$, $[\Gamma^+]$, and $[\Gamma^{+?}]$. We write $|e|$ for the length of $e$, i.e. the number of symbols occurring in $e$.
+For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $[\Gamma^\ast] \equiv [[[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast]$. Similarly for $[\Gamma^{\ast?}]$, $[\Gamma^+]$, and $[\Gamma^{+?}]$. We write $|e|$ for the length of $e$, i.e., the number of symbols occurring in $e$.
 %
 Note that square brackets $[]$ are used for the operator precedence and the parentheses $()$ are used for \emph{capturing groups}. 
  %
@@ -176,23 +182,6 @@ Note that the priorities in PFAs have no impact on whether a string is accepted;
 
 
 
-\begin{example}\label{exmp-pfa}
-	The PFA corresponding to the RWRE $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ 
-	%in Example~\ref{exmp-regex-match-tree}
-	%
-	 is illustrated in Fig.~\ref{fig-pfa}, where the dashed (resp. thicker solid) lines represent the $\varepsilon$-transitions of lower (resp. higher) priorities than non-$\varepsilon$ transitions (if there is any), and the doubly circled states are final states. For instance, $\delta(q_1, \ell) = (q_1)$ for every $\ell \in \{0, \dots, 9\}$, $\delta(q_1, .) = ()$, $\tau(q_1) = ((); (q_2))$. Since the $\varepsilon$-transition has lower priority than the $\ell$-transition at the state $q_1$, whenever the currently scanned letter is $\ell \in \{0,\cdots,9\}$ at $q_1$,  the PFA will choose to go to $q_1$ greedily, until there is no more $\ell  \in \{0,\cdots,9\}$. (In this case, it has to choose the $\epsilon$-transition and goes to $q_2$.)
-	%
-	\begin{figure}[ht]
-		
-		\centering
-		%\rule{\linewidth}{0cm}
-		\includegraphics[width=0.9\textwidth]{pfa-new.pdf}
-		\caption{The PFA for $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, where $\Gamma = \{0, \cdots, 9\}$}
-		\label{fig-pfa}
-		
-	\end{figure}
-\end{example}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %We can adapt the PFA construction in \cite{BDM14}, which in turn is a variant of the standard Thompson construction \cite{Thompson68}, and show the following result. 
@@ -206,8 +195,8 @@ We associate with each $\cgexp$ $e$ a PFA $\cA_e$ and we define the semantics of
 
 \paragraph{Case $e = \varepsilon$} $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \delta, \tau, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, where  $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$, $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$, and $\tau(f_{\varepsilon,0}) = ((); ())$. 
 		
-\paragraph{Case If $e = a$} $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \delta, \tau, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where $\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_{a,0}) = ((q_{a,1}); ())$, $\tau(q_{a,1}) = ((); ())$, and $\tau(f_{a,0}) = ((); ())$.
-		
+\paragraph{Case $e = a$} $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \delta, \tau, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where $\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_{a,0}) = ((q_{a,1}); ())$, $\tau(q_{a,1}) = ((); ())$, and $\tau(f_{a,0}) = ((); ())$.
+%		
 \begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
@@ -225,7 +214,6 @@ We associate with each $\cgexp$ $e$ a PFA $\cA_e$ and we define the semantics of
 \[\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))\] and 
 \[\cA_{e_2} = (Q_{e_2}, \Sigma, \delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))\] 
 then 
-		%
 \[\cA_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma,
 		\delta_e, \tau_e, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
 		\begin{itemize}
@@ -403,3 +391,20 @@ Fig.~\ref{fig-reg2pfa-3} depicts the construction.
 %	\end{itemize}
 
 
+
+\begin{example}\label{exmp-pfa}
+	The PFA corresponding to the RWRE $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ 
+	%in Example~\ref{exmp-regex-match-tree}
+	%
+	is illustrated in Fig.~\ref{fig-pfa}, where the dashed (resp. thicker solid) lines represent the $\varepsilon$-transitions of lower (resp. higher) priorities than non-$\varepsilon$ transitions (if there is any), and the doubly circled states are final states. For instance, $\delta(q_1, \ell) = (q_1)$ for every $\ell \in \{0, \dots, 9\}$, $\delta(q_1, .) = ()$, $\tau(q_1) = ((); (q_2))$. Since the $\varepsilon$-transition has lower priority than the $\ell$-transition at the state $q_1$, whenever the currently scanned letter is $\ell \in \{0,\cdots,9\}$ at $q_1$,  the PFA will choose to go to $q_1$ greedily, until there is no more $\ell  \in \{0,\cdots,9\}$. (In this case, it has to choose the $\epsilon$-transition and goes to $q_2$.)
+	%
+	\begin{figure}[ht]
+		
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width=0.9\textwidth]{pfa-new.pdf}
+		\caption{The PFA for $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, where $\Gamma = \{0, \cdots, 9\}$}
+		\label{fig-pfa}
+		
+	\end{figure}
+\end{example}
