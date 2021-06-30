@@ -7,12 +7,36 @@
 {
 %\small
 \begin{minted}[linenos]{javascript}
+    function DBLPtoACM(authorList)
+    {
+      var autListReg = /^[A-Z]\w*(\s[A-Z]\w*)*(\sand\s[A-Z]\w*(\s[A-Z]\w*)*)*$/;
+      if (autListReg.test(authorList)) {
+        var nameReg = /([A-Z]\w*(?:\s[A-Z]\w*)*)\s([A-Z]\w*)((\sand\s)|$)/g;
+        return authorList.replace(nameReg, "$2, $1$3");
+      }
+      else return authorList;
+    }
+\end{minted}
+}
+\end{center}
+\caption{Change the author list from the DBLP format to the ACM format}
+\label{fig-run-exmp}
+\end{figure*}
+
+\zhilin{The text description to be modified}
+
+\OMIT{
+\begin{figure*}[htbp]
+\begin{center}
+{
+%\small
+\begin{minted}[linenos]{javascript}
     function changeNameFormat(authorList)
     {
       var autListReg = /^([\w-\.\s]+,[\w-\.\s]+\sand\s)*[\w-\.\s]+,[\w-\.\s]+$/;
       if (autListReg.test(authorList)) {
         var nameReg = /([\w-\.]+(?:\s+[\w-\.]+)*),\s*([\w-\.]+(?:\s+[\w-\.]+)*)((\s+and\s+)|$)/g;
-        return authorList.replace(nameReg, "$2 $1$3");
+        return authorList.replace(nameReg, "$1$3");
       }
       else return authorList;
     }
@@ -22,7 +46,7 @@
 \caption{Change the name format of an author list: A motivating example}
 \label{fig-run-exmp}
 \end{figure*}
-
+}
 
 We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main approach of this paper. 
 The function ``changeNameFormat''  in Figure~\ref{fig-run-exmp} transforms the name format of an author list from the ACM bibtex style to the DBLP bibtex style. For instance,  if a paper is authored by Alice Brown and John Smith, then the author list in the ACM bibtex style is ``Brown, Alice and Smith, John'', while  in the DBLP bibtex style it is ``Alice Brown and John Smith''. 
