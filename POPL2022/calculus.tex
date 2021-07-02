@@ -1,0 +1,93 @@
+%!TEX root = main.tex
+
+\section{A Propagation-Based Calculus}
+\label{sect:calculus}
+
+\begin{table}
+  \begin{gather*}
+    \infer
+    {\seqq{\phi \wedge \psi}}
+    {\seqq{\phi, \psi}}
+    \qquad
+    \infer
+    {\seqq{ \neg(\phi \vee \psi)}}
+    {\seqq{ \neg\phi, \neg\psi}}
+    \qquad
+    \infer
+    {\seqq{\phi \vee \psi}}
+    {\seqq{\phi} & \seqq{\psi}}
+    \qquad
+    \infer
+    {\seqq{\neg(\phi \wedge \psi)}}
+    {\seqq{\neg\phi} & \seqq{\neg\psi}}
+    \qquad
+    \infer
+    {\seqq{ \neg\neg\phi}}
+    {\seqq{\phi}}
+    \\
+    \infer
+    {\seqq{x \not\in e}}
+    {\seqq{x \in e^C}}
+    \qquad
+    \infer[\text{where~} y \text{~is fresh}]
+    {\seqq{x \not= f(x_1, \ldots, x_n)}}
+    {\seqq{x \not= y, y = f(x_1, \ldots, x_n)}}
+    \qquad
+    \infer
+    {\seqq{}}
+    {\seqq{x \in e} & \seqq{x \in e^C}}
+    \\[2ex]
+    \infer[\text{if~} \lang{e_1} \cap \cdots \cap\lang{e_1} = \emptyset]
+    {\seqq{x \in e_1, \ldots, x \in e_n}}
+    {*}
+    \\
+    \infer[\text{if~} \lang{e_1} \cap \cdots \cap\lang{e_1} \subseteq \lang{e}]
+    {\seqq{x \in e, x \in e_1, \ldots, x \in e_n}}
+    {\seqq{x \in e_1, \ldots, x \in e_n}}
+    \\
+    \infer[\text{if~} n > 1 \text{~and~} \lang{e_1} \cap \cdots \cap\lang{e_1} = \lang{e}]
+    {\seqq{x \in e_1, \ldots, x \in e_n}}
+    {\seqq{x \in e}}
+    \\[2ex]
+    \infer
+    {\seqq{x \in e, x = y}}
+    {\seqq{x \in e, x = y, y \in e}}
+    \qquad
+    \infer[\text{if~} |\lang{e}| = 1]
+    {\seqq{x \in e, x \not= y}}
+    {\seqq{x \in e, x \not= y, y \in e^C}}
+    \\
+    \infer[\text{if~} \lang{e_1} \cap \lang{e_2} = \emptyset]
+    {\seqq{x \in e_1, x \not= y, y \in e_2}}
+    {\seqq{x \in e_1, y \in e_2}}
+    \\[2ex]
+    \infer[\text{if~} \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n})]
+    {\seqq{x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
+    {\seqq{x \in e, x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
+    \\
+    \infer[\text{if~}
+    \begin{array}{l}
+      \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n}),
+      \\
+      |\lang{e_1}| = \cdots = |\lang{e_n}| = 1
+    \end{array}]
+    {\seqq{x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
+    {\seqq{x \in e, x_1 \in e_1, \ldots, x_n \in e_n}}
+    \\
+    \infer[\text{if~}
+    \bigcup_{i=1}^k \big( \lang{e_1^i} \times \cdots \times \lang{e_n^i} \big) =
+    f^{-1}(\lang{e})]
+    {\seqq{x \in e, x = f(x_1, \ldots, x_n)}}
+    {\big\{\seqq{x \in e, x = f(x_1, \ldots, x_n),
+        x_1 \in e_1^i, \ldots, x_n \in e_n^i}\big\}_{i=1}^k}
+  \end{gather*}
+  
+  \caption{Rules of the one-sided sequent calculus}
+\end{table}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
