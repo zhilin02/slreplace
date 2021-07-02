@@ -2,9 +2,11 @@
 
 
 
-We are ready to define prioritized streaming string transducers. 
-In the definition, the special symbol $\nullchar$ is introduced to capture the situation that $\extract_{i,e}(x)$ returns $\nullchar$, i.e. $x \in \Lang(e)$ but the $i$-th capturing group of $e$ is not matched.
-
+%We are ready to define prioritized streaming string transducers. 
+%In the definition, 
+%
+%The special symbol $\nullchar$ is introduced to capture the situation that $\extract_{i,e}(x)$ returns $\nullchar$, i.e. $x \in \Lang(e)$ but the $i$-th capturing group of $e$ is not matched.
+%
 
 \paragraph{Semantics}
 We now define the formal semantics of $\regexp$. Traditionally, regular expressions are interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In our case when the regular expression is used in string constraints arisen from analysis of programming language such as JavaScript, %owing to the introduction of greedy/lazy semantics,  
@@ -68,14 +70,21 @@ what we need is not only the language denoted by the regular expression, but als
 
 %\begin{proposition}\label{prop-rwre-to-pfa}
 
-We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
+%We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-\paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \delta, \tau, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau(q_{\emptyset, 0}) = ((); ())$.
+\paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \emptyset, \delta, \tau, \emptyset, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\emptyset, 0}) = ((); ())$.
 		
 
-\paragraph{Case $e = \varepsilon$} $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \delta, \tau, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, where  $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$, $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$, and $\tau(f_{\varepsilon,0}) = ((); ())$. 
+\paragraph{Case $e = \varepsilon$} $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x \}, \delta, \tau, E, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
+%
+where $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$;  $\tau(f_{\varepsilon,0}) = ((); ())$; for each transition $(q, a, q')$, $E(q,a,q')(x) =xa$.
 		
-\paragraph{Case $e = a$} $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \delta, \tau, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where $\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$, $\tau(q_{a,0}) = ((q_{a,1}); ())$, $\tau(q_{a,1}) = ((); ())$, and $\tau(f_{a,0}) = ((); ())$.
+\paragraph{Case $e = a$} $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \{x\}, \delta, \tau, E, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where 
+$\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$; 
+%
+$\tau(q_{a,0}) = ((q_{a,1}); ())$, $\tau(q_{a,1}) = ((); ())$, and $\tau(f_{a,0}) = ((); ())$; 
+%
+for each transition $(q, a, q')$, $E(q,a,q')(x) =xa$.
 %		
 \begin{figure}[ht]
 			\centering
@@ -91,17 +100,19 @@ We associate with each regular expression $e$ a PFA $\cA_e$ and define the seman
 		
 
 \paragraph{Case $e = [e_1 + e_2]$} Let 
-\[\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))\] and 
-\[\cA_{e_2} = (Q_{e_2}, \Sigma, \delta_{e_2}, \tau_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))\] 
-then 
-\[\cA_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma,
-		\delta_e, \tau_e, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
+\[\cA_{e_1} = (Q_{e_1}, \Sigma, X_1, \delta_{e_1}, \tau_{e_1}, E_1,  q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))\] and 
+\[\cA_{e_2} = (Q_{e_2}, \Sigma, X_2, \delta_{e_2}, \tau_{e_2}, E_2, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))\] 
+with $X_1\cap X_2=\emptyset$. 
+Then 
+\[\cA_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma, X_1\cup X_2, 
+		\delta_e, \tau_e, E, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
 		\begin{itemize}
 			\item $q_{e,0}  \not \in Q_{e_1} \cup Q_{e_2}$, 
 			\item $\delta_e(q, a) = \delta_{e_i}(q, a)$ for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, 
 			$\delta_e(q_{e,0}, a)  = ()$ for every $a \in \Sigma$, 
 			%
 			\item $\tau_e(q) = \tau_{e_i}(q)$ for every $q \in Q_{e_i}$ ($i =1,2$), $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$.
+			\item for each transition $(q, a, q')$ from $\delta_i$ for $i\in\{1,2\}$, $E(q,a,q')(x) =xa$ and $E(q_{e,0},a,q')(x) =\varepsilon$
 		\end{itemize}
 Fig.~\ref{fig-reg2pfa-1} depicts the construction.  	
 		\begin{figure}[ht]
@@ -114,15 +125,16 @@ Fig.~\ref{fig-reg2pfa-1} depicts the construction.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Case $e = [e_1^?]$} Let $\cA_{e_1} = (Q_{e_1}, \Sigma, \delta_{e_1}, \tau_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
-\[\cA_e = (Q_{e_1} \cup \{q_{\varepsilon}\}, \Sigma,
-		\delta_e, \tau_e, q_{e,0}, (\{q_{\varepsilon}\}, F_{e_1,2}))\]
+\paragraph{Case $e = [e_1^?]$} Let $\cA_{e_1} = (Q_{e_1}, \Sigma, X, \delta_{e_1}, \tau_{e_1}, E, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
+\[\cA_e = (Q_{e_1} \cup \{q_{\varepsilon}, q_{e,0}\}, \Sigma, X, 
+		\delta_e, \tau_e, E', q_{e,0}, (\{q_{\varepsilon}\}, F_{e_1,2}))\]
 where  
 		\begin{itemize}
 			\item $q_{e,0}  \not \in Q_{e_1}$
 			\item $\delta_e(q, a) = \delta_{e_1}(q, a)$ for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q_{e,0}, a)  = ()$ and $\delta_e(q_{\varepsilon}, a) = ()$ for every $a \in \Sigma$, 
 			%
-			\item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{\varepsilon}); ())$.
+			\item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{\varepsilon}); ())$,
+			\item for each transition $(q, a, q')$ from $\delta_{e_1}$, $E'(q,a,q')(x) =xa$ and $E(q_{e,0},a,q')(x) =\varepsilon$
 		\end{itemize}
 %
 Fig.~\ref{fig-reg2pfa-6} depicts the construction.
