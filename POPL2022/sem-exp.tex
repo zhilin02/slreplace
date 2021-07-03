@@ -1,11 +1,23 @@
 %!TEX root = main.tex
 
 We have defined the formal semantics of regular-expression matching by constructing PSSTs out of regular expressions. 
-In the sequel, we do experiments to validate the formal semantics against the actual semantics of Javascript regular expressions.
+In the sequel, we do experiments to validate the formal semantics against the actual semantics of Javascript regular-expression matching.
 
-how to generate regexs
+Let $\opset$ denote the set of {\regexp} operators, namely, alternation $+$, concatenation $\concat$, optional $?$, lazy optional $??$, Kleene star $*$, lazy Kleene star $*?$, Kleene plus $+$, lazy Kleene plus $+?$, repetition $\{m_1,m_2\}$, and lazy repetition $\{m_1,m_2\}?$. Moreover, let $\opset^{2}$ resp. $\opset^{3}$ denote the set of pairs resp. triples of operators from $\opset$. 
+Aiming at a good coverage of different syntactical ingredients of {\regexp}, we will generate regular expressions for every element of $\opset^{\le 3} = \opset \cup \opset^2 \cup \opset^3$.
+As arguments of these operators, we consider the following character sets: $\mathbb{S} = \{a, \ldots, z\}$, $\mathbb{C}=\{A, \ldots, Z\}$, $\mathbb{D} = \{0,\ldots,9\}$, and $\mathbb{O}$, which is the set of ASCII letters not belonging to $\mathbb{S} \cup \mathbb{C} \cup \mathbb{D}$.
+Intuitively, these character sets correspond to Javascript character classes [a-z], [A-Z], [0-9], and [{\textasciicircum}a-zA-Z0-9] (where {\textasciicircum} means complement).
+Moreover, for the regular expression generated for each element of $\opset^{\le 3}$, we will set the subexpression corresponding to its first component as a capturing group. 
+For instance, for the pair $(*?, *)$, we generate the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$.
 
-the smt templates
-
-the javascript templates
-
+Then for each generated regular expression $e$, we construct a PSST $\psst_e$, whose output corresponds to the matching of the first capturing group in $e$.  Moreover, we generate from $\psst_e$ an input string $w$ as well as the corresponding output $w'$. Let {\sf reg} be the Javascript regular expression corresponding to $e$. Then we execute the following Javascript program 
+\begin{center}
+{
+\small
+\begin{minted}{javascript}
+      var x = w; 
+      console.log(x.match(reg)[1]);
+\end{minted}
+}
+\end{center}
+and confirm that its output is equal to $w'$, thus validating that the formal semantics of  regular-expression matching defined by PSSTs are consistent with the actual semantics of Javascript {\sf match} function. For instance, for the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$, we generate from the $\psst_e$ the input string $aaaaaaaaaa$, together with the output $a$. Then we execute the corresponding Javascript program and obtain the same output $a$.
