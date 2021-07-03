@@ -156,13 +156,95 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
 \subsection{From string functions $\extract$, $\replace$, and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
 
-
     \medskip
 
     \noindent{\bf Lemma~\ref{lem-str-fun-to-psst}}.
-    \emph{For each string function $f = \extract_{i,e}$, $\replace_{\pat, \rep}$, or $\replaceall_{\pat, \rep}$, a PSST $\cT_f$ can be constructed such that
-    $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$}
+    \emph{The path feasibility of $\strline_{\sf reg}$ reduces to path feasibility of string-manipulating programs consisting of a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.}
 
+    The proof is in two steps: first we remove $\$0$, $\refbefore$, and $\refafter$, then we encode the remaining replacements with PSSTs.
+
+    \subsubsection{Removing Special References}
+
+
+    The first step in our proof is to remove the special references $\$0$, $\refbefore$, and $\refafter$ from the replacement strings.
+    These can be replaced in a series of steps, leaving only PSST transductions and replacement strings with only simple references ($\$i$).
+    We will just consider $\replaceall$ as $\replace$ is almost identical.
+
+    First, to remove $\$0$, suppose we have a statement
+    $y := \replaceall_{\pat, \rep}(x)$
+    with $\$0$ in $\rep$.
+    We simply substitute
+    $y := \replaceall_{\pat', \rep'}(x)$
+    where
+        $\pat' = (\pat)$, and
+        $\rep' = \rep[\$1 / \$0, \$2 / \$1, \ldots, \$(k+1) / \$k]$.
+    That is, we make the complete match an explicit (first) capture, which shifts the indexes of the remaining capture groups by 1.
+
+    Now suppose we have a statement
+    $y := \replaceall_{\pat, \rep}(x)$
+    with $\refbefore$ or $\refafter$ in $\rep$.
+    We replace it with the following statements, explained below, where
+    $y_1, \ldots, y_5$
+    are fresh variables.
+    \[
+        \begin{array}{l}
+            y_1 := \replaceall_{(\pat), \langle\$1\rangle}(x); \\
+            y_2 := \psst_{\langle}(y_1); \\
+            y_3 := \psst_{\mathrm{rev}}(y_2); \\
+            y_4 := \psst_{\rangle}(y_3); \\
+            y_5 := \psst_{\mathrm{rev}}(y_4); \\
+            y := \replaceall_{\pat', \rep'}(y_5)
+        \end{array}
+    \]
+
+    The first step is to mark the matched parts of the string with $\langle$ and $\rangle$ brackets (where $\langle$ and $\rangle$ are not part of the main alphabet).
+    This is achieved by the first $\replaceall$.
+
+    Next, we use a PSST $\psst_{\langle}$ that passes over the marked word.
+    This is a copyful PSST that simply stores the word read so far into a variable $X$, except for the $\langle$ and $\rangle$ characters.
+    It also has an output variable $O$, to which it also copies each character directly, except $\langle$.
+    When it encounters $\langle$ it appends to $O$ the string
+    $\langle X \langle$.
+    That is, it puts the entire string preceding each $\langle$ into the output, surrounded by $\langle$ at the start and end.
+    This is copyful since $X$ will be copied to both $X$ and $O$ in this step.
+    For example, suppose the input string were
+    $a b \langle c \rangle d \langle e \rangle f$,
+    the output of $\psst_\langle$ would be
+    $a b \langle \underline{a b} \langle c \rangle d \langle \underline{a b c d} \langle e \rangle f$.
+    We have underlined the strings inserted for readability.
+
+    The next step is to do the same for $\rangle$.
+    To achieve this we first reverse the string so that a PSST can read the end of the string first.
+    A similar transduction to $\psst_\langle$ is performed before the string is reversed again.
+    In our example the resulting string is
+    $a b \langle \underline{a b} \langle c \rangle \underline{d e f} \rangle d \langle \underline{a b c d} \langle e \rangle \underline{f} \rangle f$.
+
+    Finally, we have
+    $y := \replaceall_{\pat', \rep'}(y_5)$
+    where
+    $\pat' =
+         \langle (\Sigma^{*?}) \langle
+         \pat
+         \rangle (\Sigma^{*?}) \rangle$, and
+    \[
+        \rep' = \rep[
+            \$1 / \refbefore,
+            \$2 / \$1,
+            \ldots
+            \$(k+1) / \$k,
+            \$(k+2) / \refafter
+        ] \ .
+    \]
+    That is, by inserting the preceding and succeeding text directly next to each match, we can use simple references $\$i$ instead of $\refbefore$ and $\refafter$.
+
+    \subsubsection{Encoding as PSSTs}
+
+    Once $\$0$, $\refbefore$, and $\refafter$ are removed from the replacement strings, then the string functions can be replaced by PSSTs.
+
+    \begin{lemma}
+        For each string function $f = \extract_{i,e}$, $\replace_{\pat, \rep}$, or $\replaceall_{\pat, \rep}$ without $\refbefore$ or $\refafter$ in the replacements strings, a PSST $\cT_f$ can be constructed such that
+        $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$
+    \end{lemma}
     \begin{proof}
         Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$.
         Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$, and ${\sf Sub}_{e'}[\cA_e]$ is any isomorphic copy of $\cA_{e'}$ in $\cA_e$.
