@@ -2,10 +2,7 @@
 
 \section{The String Constraint Language}\label{sec:logic}
 
-
-
-We define the string constraint language $\strline$
-as follows.
+We define the string constraint language $\strline$ below.
 \[
 \begin{array}{l c l}
 \smallskip
@@ -22,7 +19,7 @@ where
 %
 \item for the $\extract$ function, $i \in \Nat$, $e \in \cgexp$,
 %
-	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$,
+	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$ (where $\refexp$ is defined below),
 %
 	\item for assertions, $e \in \regexp$.
 \end{itemize}
@@ -35,11 +32,24 @@ Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th
 The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving RWREs, e.g. {\sf exec} and {\sf test}, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
 \end{remark}
 
+The function $\replaceall_{\pat, \rep}(x)$ is parameterized by the \emph{pattern} $\pat \in \regexp$ and the \emph{replacement string} $\rep \in \refexp$.
+For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$.
+The set $\refexp$ of replacement strings is defined using the following syntax, where $i \in \Nat$.
+\[
+    \rep = a \mid \$i \mid \refbefore \mid \refafter
+\]
+That is $\rep$ is a string of characters that may also contain \emph{references}.
+A reference $\$i$ where $i > 0$ is instantiated by the string matched by the $i$th capture group.
+For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$.
 
-The $\replaceall_{\pat, \rep}(x)$ function is parameterized by the
-\emph{pattern} $\pat \in \regexp$ and the \emph{replacement} string $\rep \in \refexp$. For an input string $x$, it identifies all %the first, second, $\dots$,
-matches of $\pat$ in $x$ and replaces them with strings specified by the replacement string $\rep$. (In $\rep$,  references may be used to refer to %are replaced by
-the corresponding matches of the capturing groups.)  For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$. The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces at most once.
+There are three special references\footnote{
+    The corresponding syntax for $\refbefore$ and $\refafter$ in JavaScript is $\$`$ and $\$'$.
+} $\$0$, $\refbefore$, and $\refafter$.
+These are instantiated by the matched text, the text occurring before the match, and the text occurring after the match respectively.
+In particular, if the input word is $u v w$ where $v$ has been matched and will be replaced, then $\$0$ takes the value $v$, $\refbefore$ takes the value $u$, and $\refafter$ takes the value $w$.
+When there are multiple matches in a $\replaceall$, the values of $\refbefore$ and $\refafter$ are always with respect to the original input string.
+
+The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
 
 Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is 1) each variable $x$ is assigned at most once; and 2) if $x$ is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
 %
