@@ -298,8 +298,24 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
         Next, we show how to construct the PSST for $\replaceall_{\pat, \rep}$.
 
-        Let $\$i_1, \cdots, \$i_k$ with $i_1 < \cdots < i_k$ be an enumeration of all the references in $\rep$.
-        Moreover, for every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group, and ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$ be any isomorphic copy of $\cA_{e'_{i_j}}$ in $\cA_\pat$.
+        Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$.
+        Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
+
+        By abuse of notation, we will write
+        $\rep[x_1/\$i_1,\cdots,x_k/\$i_k]$
+        to denote the replacement of the references, in order of appearance, by the contents of the variables $x_j$.
+        For example, in
+        $\rep = a \$1 a \$2 a \$1 a$
+        then
+        $\rep[x_1/\$i_1, x_2/\$i_2,x_3/\$i_3]$,
+        is $a w_1 a w_2 a w_3 a$ when $w_j$ is the value stored in $x_j$.
+
+        Although, in this notation, it is possible to substitute different occurrences of a reference with different word values, our encoding will always substitute the same value.
+        If $i_j = i_{j'}$ then $x_j$ will contain the same value as $x_{j'}$.
+        We use two variables in this case to satisfy the copyless property.
+        If we tried to use a single variable – e.g. $\rep[x/\$i_1,x/\$i_2]$ – then the resulting transition in the encoding below would not be copyless.
+
+        For every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group, and ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$ be any isomorphic copy of $\cA_{e'_{i_j}}$ in $\cA_\pat$.
 
         Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replaceall})
         \begin{itemize}
@@ -318,6 +334,17 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
             \caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
             \label{fig-psst-replaceall}
         \end{figure}
+
+        Observe that the PSST will be copyless: in all but the last case, variable assignments are of the form $x_j = x_j a$, $x_j = x_j$ or $x_j = \varepsilon$;
+        in the final case, when a replacement is made, the assignments are of the form
+        \[
+            \begin{array}{rcl}
+                x_0 &=& x_0 w_1 x_1 w_2 \cdots w_k x_k w_{k+1} \\
+                x_1 &=& \varepsilon \\
+                    &\vdots& \\
+                x_k &=& \varepsilon \ .
+            \end{array}
+        \]
 
         Formally, $\cT_{\replaceall_{\pat, \rep}} =$ $(Q \cup \{q'_0\}$, $\Sigma$, $X$, $\delta'$, $\tau', E, q'_0, F)$ where
         \begin{itemize}
@@ -351,7 +378,6 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                 \end{itemize}
                 %
         \end{itemize}
-        \qed
         \end{proof}
 
         The construction of the PSST for $\replace_{\pat, \rep}$ is similar and illustrated in Fig.~\ref{fig-psst-replace}. The details are omitted.
