@@ -8,7 +8,7 @@ Aiming at a good coverage of different syntactical ingredients of {\regexp}, we 
 As arguments of these operators, we consider the following character sets: $\mathbb{S} = \{$a, $\ldots$, z$\}$, $\mathbb{C}=\{$A, $\ldots$, Z$\}$, $\mathbb{D} = \{0,\ldots,9\}$, and $\mathbb{O}$, the set of ASCII symbols not belonging to $\mathbb{S} \cup \mathbb{C} \cup \mathbb{D}$.
 Intuitively, these character sets correspond to Javascript character classes [a-z], [A-Z], [0-9], and [{\textasciicircum}a-zA-Z0-9] (where {\textasciicircum} means complement).
 Moreover, for the regular expression generated for each element of $\opset^{\le 3}$, we will set the subexpression corresponding to its first component as a capturing group. 
-For instance, for the pair $(*?, *)$, we generate the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$. In then end, we generate $1441$ {\regexp} expressions. \zhilin{the number to be checked}
+For instance, for the pair $(*?, *)$, we generate the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$. In then end, we generate $10+10*10+10*10*10 = 1110$ {\regexp} expressions. \zhilin{the number to be checked}
 
 Then for each generated regular expression $e$, we construct a PSST $\psst_e$, whose output corresponds to the matching of the first capturing group in $e$.  Moreover, we generate from $\psst_e$ an input string $w$ as well as the corresponding output $w'$. We require that the length of $w$ is no less than some threshold (say $10$), in order to avoid the empty string and facilitate a  meaningful comparison with the actual semantics of Javascript regular-expression matching. 
 Let {\sf reg} be the Javascript regular expression corresponding to $e$. Then we execute the following Javascript program $\cP_{e,w}$,
