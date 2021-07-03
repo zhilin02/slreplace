@@ -10,7 +10,8 @@ Intuitively, these character sets correspond to Javascript character classes [a-
 Moreover, for the regular expression generated for each element of $\opset^{\le 3}$, we will set the subexpression corresponding to its first component as a capturing group. 
 For instance, for the pair $(*?, *)$, we generate the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$.
 
-Then for each generated regular expression $e$, we construct a PSST $\psst_e$, whose output corresponds to the matching of the first capturing group in $e$.  Moreover, we generate from $\psst_e$ an input string $w$ as well as the corresponding output $w'$. Let {\sf reg} be the Javascript regular expression corresponding to $e$. Then we execute the following Javascript program 
+Then for each generated regular expression $e$, we construct a PSST $\psst_e$, whose output corresponds to the matching of the first capturing group in $e$.  Moreover, we generate from $\psst_e$ an input string $w$ as well as the corresponding output $w'$. We require that the length of $w$ is no less than some threshold (say $10$), in order to facilitate a more interesting comparison with the actual semantics of Javascript regular-expression matching. 
+Let {\sf reg} be the Javascript regular expression corresponding to $e$. Then we execute the following Javascript program 
 \begin{center}
 {
 \small
@@ -20,4 +21,4 @@ Then for each generated regular expression $e$, we construct a PSST $\psst_e$, w
 \end{minted}
 }
 \end{center}
-and confirm that its output is equal to $w'$, thus validating that the formal semantics of  regular-expression matching defined by PSSTs are consistent with the actual semantics of Javascript {\sf match} function. For instance, for the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$, we generate from the $\psst_e$ the input string $aaaaaaaaaa$, together with the output $a$. Then we execute the corresponding Javascript program and obtain the same output $a$.
+and confirm that its output is equal to $w'$, thus validating that the formal semantics of  regular-expression matching defined by PSSTs are consistent with the actual semantics of Javascript {\sf match} function. For instance, for the {\regexp} expression $[([\mathbb{S}^*?])^{*}]$, we generate from the $\psst_e$ the input string $w= aaaaaaaaaa$, together with the output $a$. Then we generate from ${\sf reg}$ and $w$ the Javascript program, execute it, and obtain the same output $a$.
