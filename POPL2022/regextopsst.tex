@@ -72,12 +72,13 @@ what we need is not only the language denoted by the regular expression, but als
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-\paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \emptyset, \delta, \tau, \emptyset, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\emptyset, 0}) = ((); ())$.
+\paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \emptyset, \delta, \tau, E, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\emptyset, 0}) = ((); ())$; $E$ is indeed vacuous.
 		
 
 \paragraph{Case $e = \varepsilon$} $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x \}, \delta, \tau, E, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
 %
-where $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$;  $\tau(f_{\varepsilon,0}) = ((); ())$; for each transition $(q, a, q')$, $E(q,a,q')(x) =xa$.
+where $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$;  $\tau(f_{\varepsilon,0}) = ((); ())$; %for each transition $(q, a, q')$, 
+$E(q_{\varepsilon,0}, \varepsilon, f_{\varepsilon,0})(x) = \varepsilon$.
 		
 \paragraph{Case $e = a$} $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \{x\}, \delta, \tau, E, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where 
 $\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$; 
