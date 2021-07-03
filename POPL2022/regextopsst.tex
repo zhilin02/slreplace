@@ -103,7 +103,7 @@ for each transition $(q, a, q')$, $E(q,a,q')(x) =xa$.
 \paragraph{Case $e = [e_1 + e_2]$} Let 
 \[\cA_{e_1} = (Q_{e_1}, \Sigma, X_1, \delta_{e_1}, \tau_{e_1}, E_1,  q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))\] and 
 \[\cA_{e_2} = (Q_{e_2}, \Sigma, X_2, \delta_{e_2}, \tau_{e_2}, E_2, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))\] 
-with $X_1\cap X_2=\emptyset$. 
+ 
 Then 
 \[\cA_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma, X_1\cup X_2, 
 		\delta_e, \tau_e, E, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
@@ -179,9 +179,9 @@ Let
 %
 \[\cA_{e_2} = (Q_{e_2}, \Sigma, X_2, \delta_{e_2}, \tau_{e_2}, E_2, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))\] and
 %
-$\cA'_{e_2} = (Q'_{e_2}, \Sigma, X_2, \delta'_{e_2}, \tau'_{e_2}, E_2', q'_{e_2,0}, (F'_{e_2, 1}, F'_{e_2,2}))$ be a fresh copy of $\cA_{e_2}$. Then 
+$\cA'_{e_2} = (Q'_{e_2}, \Sigma, X_2, \delta'_{e_2}, \tau'_{e_2}, E_2', q'_{e_2,0}, (F'_{e_2, 1}, F'_{e_2,2}))$ be a fresh copy of $\cA_{e_2}$. We assume that $X_1\cap X_2=\emptyset$. Then 
 %
-\[\cA_e = ( Q_{e_1} \cup Q_{e_2} \cup Q'_{e_2}, \Sigma, X_1\cup X_2 \delta_e, \tau_e, q_{e_1,0}, (F_{e_2,1}, F_{e_2,2} \cup F'_{e_2,1} \cup F'_{e_2,2}))\] where 
+\[\cA_e = ( Q_{e_1} \cup Q_{e_2} \cup Q'_{e_2}, \Sigma, X_1\cup X_2, \delta_e, \tau_e, q_{e_1,0}, (F_{e_2,1}, F_{e_2,2} \cup F'_{e_2,1} \cup F'_{e_2,2}))\] where 
 	\begin{itemize}
 	 \item for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, $\delta_e(q, a) = \delta_{e_i}(q, a)$,
 			%
@@ -191,7 +191,7 @@ $\cA'_{e_2} = (Q'_{e_2}, \Sigma, X_2, \delta'_{e_2}, \tau'_{e_2}, E_2', q'_{e_2,
 			%
 	\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$, $\tau_e(q) = \tau_{e_1}(q)$, for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,1}) = ((q_{e_2,0}); ())$, and for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e_1,2}) = ((q'_{e_2,0}), ())$,
 	%
-	\item for $i\in \{1,2\}$, for each transition $(q, a, q')$ from $\delta_{e_i}$  $E(q,a,q')(x) = E_i(q,a,q')(x)$ for $x\in X_i$, and for $x\in X_2$, $E(f_{e_1,1},\varepsilon,q_{e_2,0})(x) =\varepsilon$, $E(f_{e_1,2},\varepsilon,q'_{e_2,0})(x) =\varepsilon$.
+	\item for $i\in \{1,2\}$ and each transition $(q, a, q')$ from $\delta_{e_i}$, $E(q,a,q')(x) = E_i(q,a,q')(x)$ for $x\in X_i$; for $x\in X_2$, $E(f_{e_1,1},\varepsilon,q_{e_2,0})(x) =\varepsilon$, $E(f_{e_1,2},\varepsilon,q'_{e_2,0})(x) =\varepsilon$.
   \end{itemize}
  Fig.~\ref{fig-reg2pfa-2} depicts the construction. 
 		\begin{figure}[ht]
