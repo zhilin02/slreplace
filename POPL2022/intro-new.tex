@@ -7,34 +7,63 @@
 
 %
 %Strings are among the most important data types. 
-Modern high-level programming languages such as JavaScript, Python, Java, and PHP natively support a variety of string operations, and use
-strings to store and process virtually all kinds of data or code.
-Applied string operations range from concatenation, length, substring, to complex functions 
-such as 
+In modern programming languages --- such as JavaScript, Python, Java, and PHP 
+--- the string data type plays a crucial role. 
+%, whereby it is commonplace to use
+%strings to represent all kinds of data
+A quick look at the string libraries for these languages is enough to convince
+oneself how well supported string manipulations are in these languages, in that
+a wealth of string operations and functions are readily available for the
+programmers.
+%natively 
+%support a wealth of string operations. 
+%strings to store and process virtually all kinds of data or code.
+Such operations include usual operators like concatenation, length, substring, 
+but also complex functions such as 
 %the functions dependent on regular expressions 
-match, replace, split, and parseInt 
+match, replace, split, and parseInt.
 %and character encoding/decoding.  
-As a result, string-manipulating programs are
-notoriously subtle, error-prone, and their potential bugs may bring
-severe security consequences. A typical example is cross-site
-scripting (XSS), which is among the OWASP Top 10 Application Security
-Risks.
+Unfortunately, it is well-known that string manipulations are error-prone and
+could even give rise to
+%As a result, string-manipulating 
+%in programs are
+%subtle  error-prone, and their potential 
+security vulnerabilities (e.g. cross-site scripting, a.k.a. XSS).
+%. A typical example is cross-site
+%scripting (XSS), which is among the OWASP Top 10 Application Security
+%Risks.
 %Regular expressions are widely used in string-manipulating programs. 
-An effective and increasingly popular method for identifying such bugs
-in  programs is symbolic execution, possibly in combination with dynamic
-analysis. This technique analyses a static path in
-a program, by viewing it as a constraint $\phi$, whose 
-feasibility can be checked by constraint solvers.
+One powerful method for identifying such bugs in programs is \emph{symbolic 
+execution}, possibly in combination with dynamic analysis. This technique 
+analyses a static path in a program, by viewing it as a constraint $\phi$, 
+whose feasibility can be checked by constraint solvers. This has motivated the
+highly active research area of \emph{string solving}, resulting in the
+development of numerous string solvers in the last decade or so including
+\cite{???}.
 
-Many important string functions in programming languages, such as exec, test, search, match, replace, and split in Javascript, as well as match, findall, search, sub, and split in Python, depend on regular expressions. 
+One highly challenging problem in the development of string solvers is the need
+to support increasingly more real-world string functions, especially because the
+initial stage of the development of string solvers typically assumed only simple
+functions (in particular, concatenation, regular constraints, and length
+constraints). For example, the importance of supporting functions like
+replaceAll function (i.e. replace with global flag) was explained in \cite{??};
+ever since, quite a number of string solvers support this operator.
+Unfortunately, this is far from enough because actual string manipulations
+performed in programming languages depend on Perl-style regular expressions,
+whose syntaxes and semantics are quite different from the notion of regular
+expressions in formal language theory \cite{HU79}.
+Indeed,
+many important string functions in programming languages, such as exec, test,
+search, match, replace, and split in Javascript, as well as match, findall,
+search, sub, and split in Python, depend on Perl-style regular expressions. 
 %\cite{JavascriptRegex,PythonRegex}.
 %String functions dependent on regular expressions are among the most important string operations in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 %Regular expression matching is one of the most important string operations
 %in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 %
-While regular expressions are a classical concept in formal language theory (see e.g. \cite{HU79}), 
+%While regular expressions are a classical concept in formal language theory (see e.g. \cite{HU79}), 
 %
-regular expressions in programming languages are dramatically different.
+%regular expressions in programming languages are dramatically different.
 
 %In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
 Classical regular expressions (abbreviated as RE) are built from letters by the operators of
