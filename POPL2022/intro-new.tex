@@ -12,8 +12,9 @@ strings to store and process virtually all kinds of data or code.
 Applied string operations range from concatenation, length, substring, to complex functions 
 such as 
 %the functions dependent on regular expressions 
-match, replace, split, parseInt, 
-and character encoding/decoding.  As a result, string-manipulating programs are
+match, replace, split, and parseInt 
+%and character encoding/decoding.  
+As a result, string-manipulating programs are
 notoriously subtle, error-prone, and their potential bugs may bring
 severe security consequences. A typical example is cross-site
 scripting (XSS), which is among the OWASP Top 10 Application Security
@@ -25,26 +26,24 @@ analysis. This technique analyses a static path in
 a program, by viewing it as a constraint $\phi$, whose 
 feasibility can be checked by constraint solvers.
 
-Regular expression is not only a classical concept in formal language theory (see e.g. \cite{HU79}), but also an indispensable part of the string library
-in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
-%
-Many important string functions in programming languages, such as exec, test, search, match, replace, and split in Javascript and match, findall, search, sub, and split in Python, involve regular expressions. 
+Many important string functions in programming languages, such as exec, test, search, match, replace, and split in Javascript, as well as match, findall, search, sub, and split in Python, depend on regular expressions. 
 %\cite{JavascriptRegex,PythonRegex}.
 %String functions dependent on regular expressions are among the most important string operations in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 %Regular expression matching is one of the most important string operations
 %in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 %
-Nevertheless, regular expressions in programming languages are dramatically different from 
-classical regular expressions in formal language theory. 
+While regular expressions are a classical concept in formal language theory (see e.g. \cite{HU79}), 
+%
+regular expressions in programming languages are dramatically different.
 
 %In the sequel, we call the former as \emph{real-word} regular expressions and the latter as \emph{classical} regular expressions. 
-Classical regular expressions are built from letters by the operators of
+Classical regular expressions (abbreviated as RE) are built from letters by the operators of
 concatenation, union, and Kleene star, and have nice compositional semantics. On
-the other hand, regular expressions in programming languages differ from classical ones mainly in the following two 
+the other hand, regular expressions in programming languages (abbreviated as PLRE) differ from classical ones mainly in the following two 
 aspects: 1) non-standard semantics of 
 operators, e.g., the non-commutative union, the greedy/lazy Kleene star/plus, and 2) new 
 features, e.g., capturing groups and backreferences.
-Regular expressions in programming languages are in general more expressive than classical ones, e.g., it is known that
+PLREs are in general more expressive than classical ones, e.g., it is known that
 with backreferences one can easily generate languages that are not even 
 context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 %Thus far, no work on string constraint solving has considered RWRE
@@ -53,7 +52,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 
 
 \begin{example}
-    Consider the RWRE \mintinline{javascript}{(\d+)(\d*)}. It has two capturing
+    Consider the PLRE \mintinline{javascript}{(\d+)(\d*)} in Javascript. It has two capturing
     groups, each within a pair of opening/closing brackets and  matching
     a string of digits (signified by \mintinline{javascript}{\d}). The second 
     capturing group
@@ -75,19 +74,23 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 %
 %The semantics of RWREs are tricky and can be different in different programming languages. 
 %Real-world regular expressions are challenging for string constraint solvers. The state-of-the-art string constraint solvers e.g. CVC4 and Z3-str only support classical regular expressions. 
-Regular-expression matching is the core of string functions involving regular expressions in programming languages. For instance, in Javascript, string functions exec, test, match, and search are all variants of regular-expression matching, moreover, the functions replace and split recursively call regular-expression matching as subprocedures. 
-Nevertheless, regular-expression matching in programming languages are dramatically different from that in formal language theory, in the following two aspects.
+Matching regular expressions to strings (abbreviated as regex-string matching) is the core of string functions dependent on PLREs. For instance, in Javascript, the string functions exec, test, match, and search are all variants of regex-string matching, moreover, the functions replace and split recursively call regex-string matching as a subprocedure. 
+Nevertheless, regex-string matching in programming languages are dramatically different from that in formal language theory, in the following two aspects.
 %It should be pointed out that if only the set of strings defined by regular expressions are concerned, regular expressions in programming languages (with backreferences ignored) are the same as classical regular expressions in formal language textbooks (e.g. \cite{HU79}). 
 %Nevertheless, matching of regular expressions to strings in programming languages, e.g. in the string functions ``exec()'', ``match()'' and ``test()'' , are much more involved: 
 \begin{enumerate}
-\item In programming languages, regular expressions are not required to be matched to the whole string, but to a substring, which intuitively corresponds to the first match of the regular expression in the string, moreover, the non-standard semantics of operators guarantee that this matching is \emph{deterministic} in the sense that for a given regular expression and a string, the matching returns a \emph{unique} substring (if there is any). For instance, the matching of $e=$\mintinline{javascript}{(\d+)(\d*)} to $ab123c$ returns $123$, instead of $1$ or $12$.
+\item Typically, PLREs are not required to be matched to the whole input string, but to a substring, which intuitively corresponds to the first match of the regular expression in the input, moreover, the non-standard semantics of operators guarantee that this matching is \emph{deterministic} in the sense that for a given regular expression and a string, the matching returns a \emph{unique} substring (if there is any). For instance, the matching of $e=$\mintinline{javascript}{(\d+)(\d*)} to ``ab123c'' returns ``123'', instead of ``1'' or ``12''.
 %
-\item Regular expressions in programming languages typically contain capturing groups, and the matchings of these capturing groups in strings should also be returned, moreover, these matchings are also deterministic. For instance, the matching of $e=$\mintinline{javascript}{(\d+)(\d*)} to $ab123c$ actually returns an array of strings [``123'', ``123'', ``''], where the first entry is the matching of  $e$, and the last two entries are the matchings of the two capturing groups.
+\item PLREs may contain capturing groups, and the matchings of these capturing groups in strings should also be returned, moreover, these matchings are deterministic as well. For instance, the matching of $e=$\mintinline{javascript}{(\d+)(\d*)} to ``ab123c'' returns  [``123'', ``123'', ``''], an array of strings, instead of just ``123'', where the first entry is the matching of  $e$, and the rest are the matchings of the two capturing groups.
 \end{enumerate}
 
-As a result of the fundamental role of regular expressions in string processing, almost all state-of-the-art string constraint solvers (e.g.
+ an indispensable part of the string library
+in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+
+
+As a result of the fundamental role of regular expressions in string processing, the state-of-the-art string constraint solvers (e.g.
 Z3, CVC4, Z3-str/2/3/4, ABC, Norn, Trau, OSTRICH, S2S, Qzy, Stranger, Sloth, Slog, Slent, Gecode+S, G-Strings, HAMPI) %... \anthony{make sure we add all}) 
- support regular expressions. Nevertheless, what they support is only \emph{classical} regular expressions and their matching, aka membership constraints, i.e. whether a string belongs to the language defined by a regular expression, as we know it from formal language theory.  
+ support regular expressions. Nevertheless, what they support is only the regex-string matching (aka membership constraints) for \emph{classical} regular expressions, i.e. whether a string belongs to the language defined by a regular expression, as we know it from formal language theory.  
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -132,12 +135,12 @@ REs.
 }
 
 
-Since the state-of-the-art string solvers support only the matchings of regular expressions and their matchings,
+Since string solvers support only the regex-string matching for classical REs, instead of PLREs, 
 % instead of RWREs,
   % are not primitively supported by state-of-the-art string solvers
 %(in fact, they are in general ,
 existing symbolic execution approaches that handle
-string-manipulating programs with apply workarounds.
+string-manipulating programs apply workarounds.
 We mention Aratha \cite{aratha} and \expose~\cite{LMK19}, both of which are
 symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
@@ -147,7 +150,7 @@ symbolic execution engines for JavaScript programs.
 %referred to by the backreference 
 %operator. 
 %On the other hand, 
-Both Aratha and \expose{} attempt to exploit string 
+Aratha and {\expose} attempt to exploit string 
 equations and classical regular expressions (as implemented in Z3 \cite{Z3}) supported by string
 solvers to capture the semantics of regular expressions in programming languages. 
 Unfortunately, the semantics of regular expressions in programming languages cannot in general be fully captured by string constraints with classical regular expressions. 
@@ -163,6 +166,8 @@ CEGAR (counter-example guided abstraction and refinement). This
 results in a rather severe price in both precision and performance: the
 refinement process may not terminate and the symbolic execution of even a simple
 program with regular expressions may need to be refined many times.
+
+\zhilin{stopped here}
 
 At a more theoretical level, there are no attempts to incorporate
 regular expressions in programming languages into a string constraint language, e.g., word equations
@@ -193,7 +198,6 @@ We conclude with two open questions:
  %to approach the genuine semantics of real-world regular expressions. 
 %Although the CEGAR approach of \expose{} made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
-\zhilin{stopped here}
 
 \paragraph*{Contributions.}
 The main contributions of the paper are to answer both (Q1) and (Q2) in the
