@@ -25,8 +25,8 @@
 \newcommand\isnum[2]{R^{#2}_{#1}}
 \newcommand\lmark{\langle}
 \newcommand\rmark{\rangle}
-\newcommand\sftrue{\top}
-\newcommand\sffalse{\bot}
+\newcommand\sftrue[1]{\top_{#1}}
+\newcommand\sffalse[1]{\bot_{#1}}
 \newcommand\sfvalue{v}
 
 \newcommand\tilesnum[1]{\tiles_{#1}}
@@ -462,23 +462,27 @@ but also in a pair with every other tile in the row beneath. The indices
 can be used to pick out the right pairs, but we will need further
 transductions to analyse the encoding of large numbers.
 
-To simplify matters, we apply $\psst^3_\expheight$. This transduction
-removes the tiles from the string, retaining each pair of indices where
-the tiles satisfy the vertical tiling relation. We use $\lmark$,
-$\spacer$, and $\rmark$ to delimit the indices. We are left with a
-string of the form
+To simplify matters, we apply $\psst^3_\expheight$. This transduction removes
+the tiles from the string, retaining each pair of indices where the tiles
+satisfy the vertical tiling relation. When the tiling relation is not
+satisfied, we insert $\sffalse{\expheight}$. We use $\lmark$, $\spacer$, and
+$\rmark$ to delimit the indices. We are left with a string of the form
 \[
     \bigwedge \bigvee \lmark
         \tenc{\expheight}{\idxi} \spacer \tenc{\expheight}{\idxj}
-    \rmark \ .
+    \rmark
+    \lor \sffalse{\expheight} \lor \cdots \lor \sffalse{\expheight} \ .
 \]
-We consider a pair
-$\lmark \tenc{\expheight}{\idxi} \spacer \tenc{\expheight}{\idxj} \rmark$
-to evaluate to true whenever $\idxi = \idxj$. The truth of the formula
-can be computed accordingly. However, it's not straightforward to check
-whether $\idxi = \idxj$ as they are large numbers. The key observation
-is that they are encoded as solutions to indexed tiling problems, which
-means we can go through a similar process to the transductions above.
+We will often elide the $\sffalse{\expheight}$ disjuncts for clarity. They
+will remain untouched until the formula is evaluated in the next section.
+
+We consider a pair $\lmark \tenc{\expheight}{\idxi} \spacer
+\tenc{\expheight}{\idxj} \rmark$ to evaluate to true whenever $\idxi = \idxj$.
+The truth of the formula can be computed accordingly. However, it's not
+straightforward to check whether $\idxi = \idxj$ as they are large numbers. The
+key observation is that they are encoded as solutions to indexed tiling
+problems, which means we can go through a similar process to the transductions
+above.
 
 First, recall that $\tenc{\expheight}{\idxi}$ is of the form
 \[
@@ -545,18 +549,21 @@ expanded into pairs of indices and tiles. The result is
         } \ .
     \end{array}
 \]
-The third transduction eliminates all pairs where we don't have
-$\vartile^\idxj_\idxk = \vartile^\idxi_{\idxk'}$ (recall, we need to
-check that $\idxi = \idxj$ so the tiles at each position should be the
+The third transduction replaces with $\sffalse{\expheight-1}$ all pairs where
+we don't have $\vartile^\idxj_\idxk = \vartile^\idxi_{\idxk'}$ (recall, we need
+to check that $\idxi = \idxj$ so the tiles at each position should be the
 same). As before, for a single pair, this leaves us with a string formula of
 the form
 \[
     \bigwedge \bigvee \lmark
         \tenc{\expheight-1}{\idxi'} \spacer \tenc{\expheight-1}{\idxj'}
-    \rmark \ .
+    \rmark
+    \lor \sffalse{\expheight-1} \lor \cdots \lor \sffalse{\expheight-1} \ .
 \]
-Recalling that there are many pairs in the input string, the output of
-this series of transductions is a string formula of the form
+Again, we will elide the $\sffalse{\expheight-1}$ disjuncts for clarity as they
+will be untouched until the formula is evaluated.  Recalling that there are
+many pairs in the input string, the output of this series of transductions is a
+string formula of the form
 \[
     \bigwedge \bigvee \bigwedge \bigvee \lmark
         \tenc{\expheight-1}{\idxi'} \spacer \tenc{\expheight-1}{\idxj'}
@@ -677,31 +684,29 @@ we leave the details to the reader. The same is true of the other similar
 transductions $\psst^1_{\idxi}$ and $\psst^2_{\idxi}$.
 
 Transduction $\psst^3_\expheight$ (and similarly the other $\psst^2_\idxi$)
-removes all pairs
+replaces all pairs
 \[
     \tenc{\expheight}{\idxi} \tile^2_\idxi
     \tenc{\expheight}{\idxi + 1} \tile^1_{\idxi+1}
 \]
-that do not satisfy the vertical tiling relation, and rewrites them to
+that do not satisfy the vertical tiling relation with $\sffalse{\expheight}$,
+and rewrites them to
 \[
     \lmark
         \tenc{1}{\idxi'} \spacer \tenc{1}{\idxj'}
     \rmark
 \]
 if the vertical tiling relation is matched. This can be done in two steps:
-first remove the non-matches, then replace the matches. To remove the
+first replace the non-matches, then replace the matches. To replace the
 non-matches we use $\replaceall_{\pat_1, \rep_1}$ where
 \[
     \begin{array}{rcl}
         \pat_1 &=& \sum\limits_{\tup{\tile_1, \tile_2} \notin \vrel}
-            \lor^?
             \isnum{\expheight}{\linlen} \tile_1
-            \isnum{\expheight}{\linlen} \tile_2
-            \lor^? \\
-        \rep_1 &=& \varepsilon \ .
+            \isnum{\expheight}{\linlen} \tile_2 \\
+        \rep_1 &=& \sffalse{\expheight} \ .
     \end{array}
 \]
-Notice, we also remove surrounding $\lor$ symbols when present.
 For the matches we use $\replaceall_{\pat_2, \rep_2}$ where
 \[
     \begin{array}{rcl}
@@ -772,7 +777,7 @@ The first transducer $\psst_1$ reads the string formula
 \]
 copies it to its output, except replacing each pair
 $\vartile \vartile'$
-with $\sftrue$ if $\vartile = \vartile'$ and with $\sffalse$ otherwise.
+with $\sftrue{1}$ if $\vartile = \vartile'$ and with $\sffalse{1}$ otherwise.
 This is requires two simple $\replaceall$ calls.
 
 The remaining transductions evaluate the innermost disjunction or conjunction as
@@ -780,16 +785,17 @@ appropriate. For example
 $\psst^\lor_1$
 replaces the innermost
 $\bigvee \sfvalue$
-with $\sftrue$ if $\sftrue$ appears somewhere in the disjunction and
-$\sffalse$ otherwise.
+with $\sftrue{1}$ if $\sftrue{1}$ appears somewhere in the disjunction and
+$\sffalse{1}$ otherwise.
 This can be done by greedily matching any sequence of characters from
-$\set{\sftrue, \sffalse, \lor}$
-that contains at least one $\sftrue$ and replacing the sequence with $\sftrue$,
+$\set{\sftrue{1}, \sffalse{1}, \lor}$
+that contains at least one $\sftrue{1}$ and replacing the sequence with $\sftrue{1}$,
 then greedily matching any remaining sequence of
-$\set{\sffalse, \lor}$
-and replacing it with $\sffalse$.
+$\set{\sffalse{1}, \lor}$
+and replacing it with $\sffalse{1}$.
+The evaluation of conjunctions works similarly, but inserts $\sftrue{2}$ and $\sffalse{2}$ in the move to the next level of evaluation.
 
-The final assert checks that $\svar_f$ contains only the character $\sftrue$
+The final assert checks that $\svar_f$ contains only the character $\sftrue{\expheight+1}$
 and fails otherwise.
 
 This completes the reduction.
