@@ -167,20 +167,21 @@ results in a rather severe price in both precision and performance: the
 refinement process may not terminate and the symbolic execution of even a simple
 program with regular expressions may need to be refined many times.
 
-\zhilin{stopped here}
+One of the main obstacles to the support of PLREs in string constraint solvers is find a proper formal semantics of regex-string matching for PLREs. There have been some attempt in this direction. In \cite{BDM14,BM17}, prioritized finite transducers (abbreviated as PFT) were introduced to capture the semantics of regex-string matching for Java.  PFTs extend finite-state automata with transition priorities and outputs. A translation from Java regular expressions to PFTs, adapted from the classical Thompson construction from regular expressions to finite-state automata, was provided in \cite{BDM14,BM17}, where priorities are used to model the greedy/lazy Kleene star/plus as well as the non-commutative union, moreover, indexed square brackets are inserted into the input string to pinpoint the matchings of the capturing groups.  The formal semantics of regex-string matching in \cite{BDM14,BM17} turns out to be \emph{insufficient} for string constraint solving in the following sense.
+\begin{itemize}
+\item The formal semantics is \emph{incomplete}, as it intends for a subclass of regular expressions $e$ where all subexpressions $e^*$ and $e^{*?}$ satisfy that the language defined by $e$ does \emph{not} contain the empty string. 
+%
+\item The formal semantics is \emph{not validated} to be consistent with the \emph{actual} semantics of Java regular expressions.
+%
+\item The formal semantics models the matchings of capturing groups only \emph{implicitly}, which hinders the cooperated reasoning of regex-string matching with the other string functions: In PFTs, the matchings of capturing groups are identified in the input by adding the indexed square brackets, but \emph{not explicitly returned as outputs}.  On the other hand, in regex-string matching for PLREs, e.g. in Javascript match function, the matchings of capturing groups are explictly returned as an array of strings, and these strings can be manipulated further. 
+\end{itemize}
 
-At a more theoretical level, there are no attempts to incorporate
-regular expressions in programming languages into a string constraint language, e.g., word equations
-\cite{Gut98}. Thus far, most decidability and complexity results regarding regular expressions in programming languages 
-solely focus on standard decision problems (e.g. membership and 
-emptiness being decidable and NP-complete \cite{FS19,BM17b}). 
 We conclude with two open questions:
 \begin{description}
-    \item[(Q1)] Define the formal semantics of regular-expression matchings in programming languages, where at least the non-standard semantics of operators and capturing groups are covered.
+    \item[(Q1)] Define the formal semantics of regex-string matching for PLREs and validate it against their actual semantics in programming languages.
     %
-    \item[(Q2)] Incorporate string functions involving regular expressions in programming languages (e.g. match and replace functions)
-        as primitives in a string constraint language and develop a 
-        fast string solver for them.
+    \item[(Q2)] Based on the progress in Q1, design algorithms for solving string constraints that contain PLRE-dependent functions (e.g. match and replace functions) as primitives, and develop a 
+        fast string solver.
 %    \item[(Q2)] Develop a reasonably expressive decidable string constraint 
 %        language that supports the replace  and
 %          match function with RWREs, as well as string concatenation.
@@ -198,6 +199,7 @@ We conclude with two open questions:
  %to approach the genuine semantics of real-world regular expressions. 
 %Although the CEGAR approach of \expose{} made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
+\zhilin{stopped here}
 
 \paragraph*{Contributions.}
 The main contributions of the paper are to answer both (Q1) and (Q2) in the
