@@ -80,10 +80,19 @@ In comparison, our goal here is to have a construction that \emph{works for arbi
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-\zhilin{stopped here}
+The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets, say $F_1$ and $F_2$, with the intention that $F_1$  and $F_2$ are responsible for accepting the empty string resp. non-empty strings. Note here for technical convenience, let us assume that $F$ in the construction is a set of final states, instead of an output function.
+
+We are going to recursively construct a PSST $\cT_e$ for each {\pcre} $e$, such that 
+%\begin{itemize}
+     %\item 
+     $\cT_e$ has a unique initial state without incoming transitions and each of its final states has no outgoing transitions,
+    %\item 
+    moreover, all the transitions out of the initial state are $\varepsilon$-transitions. 
+%     \item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
+%\end{itemize}
 
 \paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \emptyset, \delta, \tau, E, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\emptyset, 0}) = ((); ())$; $E$ is indeed vacuous.
-		
+
 
 \paragraph{Case $e = \varepsilon$} $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x \}, \delta, \tau, E, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
 %
