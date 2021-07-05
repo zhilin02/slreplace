@@ -585,5 +585,25 @@
 \newcommand\Tool{\text{OSTRICH+}}
 \newcommand{\OMIT}[1]{}
 
-\newcommand{\seq}[1]{\ensuremath{#1\vdash}}
+\newcommand{\seq}[1]{\ensuremath{#1}}
 \newcommand{\seqq}[1]{\seq{\Gamma\ifx#1\relax\else,#1\fi}}
+
+\newcommand{\infer}[3][]{%
+  \AxiomC{$#3$}
+  \ifx#1\relax\else\LeftLabel{\textsc{#1}}\fi
+  \UnaryInfC{$#2$}
+  \DisplayProof
+}
+\newcommand{\inferC}[3]{%
+  \AxiomC{$#3$}
+  \RightLabel{$~~#1$}
+  \UnaryInfC{$#2$}
+  \DisplayProof
+}
+\newcommand{\inferii}[4][]{%
+  \AxiomC{$#3$}
+  \AxiomC{$#4$}
+  \ifx#1\relax\else\LeftLabel{\textsc{#1}}\fi
+  \BinaryInfC{$#2$}
+  \DisplayProof
+}
