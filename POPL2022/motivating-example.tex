@@ -80,7 +80,7 @@ Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|.)) denote th
 \end{itemize}
 The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(nameReg, ``$\$$2, $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
 
-For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one needs to model both the greedy semantics of the Kleene star and store the matches of the two capturing groups in ${\sf nameReg}$ for latter references in "$\$2$, $\$$1". For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}). Then {\sf replace(nameReg, ``$\$$2, $\$$1'')} is captured by a PSST $\cT_{\sf nameReg}$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups.
+For a symbolic execution of the JavaScript program in Figure~\ref{fig-run-exmp}, one needs to model both the greedy semantics of the Kleene star and store the matches of the two capturing groups in ${\sf nameReg}$ for latter references in "$\$2$, $\$$1". For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}) by which {\sf replace(nameReg, ``$\$$2, $\$$1'')} is captured as a PSST $\cT_{\sf nameReg}$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups.
 
 \zhilin{stopped here}
 

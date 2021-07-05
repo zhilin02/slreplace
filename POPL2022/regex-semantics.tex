@@ -12,23 +12,47 @@ In PSSTs, transition priorities are used to capture the non-standard semantics o
 Because we also want to validate the formal semantics against the actual semantics of regex-matching in programming languages and there are subtle differences between the implementations of {\pcre} in different languages (e.g. Javascript and Python), it is necessary to choose one specific language to execute the validation.  We choose Javascript here, since it is one of the most widely used programming languages,  currently the top 1st active language in Github\footnote{https://githut.info/}. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\OMIT{
-It should be pointed out that if only the set of strings defined by regular expressions are concerned, regular expressions in Javascript (with backreferences ignored) are the same as classical regular expressions in formal language textbooks (e.g. \cite{HU79}). Nevertheless, matching of regular expressions to strings in Javascript, e.g. in the string functions ``exec()'', ``match()'' and ``test()'' , are much more involved: 
-\begin{enumerate}
-\item in Javascript, the regular expressions are not required to be matched to the whole string, but to a substring, which intuitively corresponds to the first match of the regular expression in the string, moreover, this matching is \emph{deterministic} in the sense that for a given regular expression and a string, the matching returns a \emph{unique} substring (if there is any), 
-%
-\item regular expressions in Javascript typically contain capturing groups, and the matchings of these capturing groups in strings should also be returned, moreover, these matchings are also deterministic.
-\end{enumerate}
-}
+%\OMIT{
+%It should be pointed out that if only the set of strings defined by regular expressions are concerned, regular expressions in Javascript (with backreferences ignored) are the same as classical regular expressions in formal language textbooks (e.g. \cite{HU79}). Nevertheless, matching of regular expressions to strings in Javascript, e.g. in the string functions ``exec()'', ``match()'' and ``test()'' , are much more involved: 
+%\begin{enumerate}
+%\item in Javascript, the regular expressions are not required to be matched to the whole string, but to a substring, which intuitively corresponds to the first match of the regular expression in the string, moreover, this matching is \emph{deterministic} in the sense that for a given regular expression and a string, the matching returns a \emph{unique} substring (if there is any), 
+%%
+%\item regular expressions in Javascript typically contain capturing groups, and the matchings of these capturing groups in strings should also be returned, moreover, these matchings are also deterministic.
+%\end{enumerate}
+%}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-In the sequel, we first define the syntax of {\pcre}. 
+ 
+We shall start with the syntax of regular expressions, which are essentially those regular expressions used in JavaScript. (We do not include backreferences though.) We then formalize the semantics of JavaScript Regex-string matching.
 %
-Then we define PSSTs and construct PSSTs out of {\pcre}s to define the semantics of regex-string matching. Finally, we validate the formal semantics against the actual Javascript semantics.
+The key %of the formal semantics 
+here is a new automata model prioritized streaming string transducers (PSSTs), where transition priorities are used to capture the non-standard semantics of regular-expression operators, and string variables are used to store the matchings of capturing groups. PSST combines two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. 
+
+%The formal semantics of Javascript regex-string matching is defined by constructing a PSST out of regular expressions. 
+
+
+
+%We now define the formal semantics of $\regexp$. 
+Note that traditionally regular expressions are interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. 
+%In our case when the regular expression is used in string constraints arisen from analysis of programming language such as JavaScript, %owing to the introduction of greedy/lazy semantics,  
+%what we need is not only the language denoted by the regular expression, but also the intermediate result when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, 
+%
+Here we present a more operational (as opposed traditional denotational) account of the semantics by constructing  PSSTs out of regular expressions (cf.\ Section~\ref{sect:regextopsst}). 
+%
+%. To this end, we harness an extension of finite-state automata with priorities, which \emph{defines} how a string is accepted by the given regular expression. We start with the standard finite-state automaton. 
+%
+Furthermore, we also carry out  extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in JavaScript (cf.\ Section~\ref{sect：valid}).
 
 %
-%Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in Javascript.
+%=======
+%
+%In the sequel, we first define the syntax of {\pcre}. 
+%%
+%Then we define PSSTs and construct PSSTs out of {\pcre}s to define the semantics of regex-string matching. Finally, we validate the formal semantics against the actual Javascript semantics.
+%
+%%
+%%Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in Javascript.
+%>>>>>>> 658ffd954615e7a463bc6ba5b933083613849a72
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -41,7 +65,7 @@ It should be emphasized that the strings accepted by the regular expresses intro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\medskip
+%\medskip
 
 Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 %
@@ -58,7 +82,7 @@ A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
-\subsection{Syntax of regular expressions}
+%\subsection{Syntax of regular expressions}
 
 \begin{definition}[Perl-Compatible Regular expressions, $\pcre$]
 	
@@ -101,11 +125,13 @@ For two $\regexp$s $e$ and $e'$, we say that $e'$ is a \emph{subexpression} of $
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Defining the Semantics of Regex-String Matching by PSSTs}
+ 
+\subsection{Defining the Semantics of Regex-String Matching by PSSTs} \label{sect:regextopsst}
+ 
 
 \input{regextopsst.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Validation experiments for the formal semantics}
+\subsection{Validation experiments for the formal semantics} \label{sect：valid}
 
 \input{sem-exp.tex}
