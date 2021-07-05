@@ -27,7 +27,7 @@
     \\
     \infer
     {\seqq{x \not\in e}}
-    {\seqq{x \in e^C}}
+    {\seqq{x \in e^c}}
     \qquad
     \infer[\text{where~} y \text{~is fresh}]
     {\seqq{x \not= f(x_1, \ldots, x_n)}}
@@ -35,17 +35,17 @@
     \qquad
     \infer
     {\seqq{}}
-    {\seqq{x \in e} & \seqq{x \in e^C}}
+    {\seqq{x \in e} & \seqq{x \in e^c}}
     \\[2ex]
-    \infer[\text{if~} \lang{e_1} \cap \cdots \cap\lang{e_1} = \emptyset]
+    \infer[\text{if~} \lang{e_1} \cap \cdots \cap\lang{e_n} = \emptyset]
     {\seqq{x \in e_1, \ldots, x \in e_n}}
     {*}
     \\
-    \infer[\text{if~} \lang{e_1} \cap \cdots \cap\lang{e_1} \subseteq \lang{e}]
+    \infer[\text{if~} \lang{e_1} \cap \cdots \cap\lang{e_n} \subseteq \lang{e}]
     {\seqq{x \in e, x \in e_1, \ldots, x \in e_n}}
     {\seqq{x \in e_1, \ldots, x \in e_n}}
     \\
-    \infer[\text{if~} n > 1 \text{~and~} \lang{e_1} \cap \cdots \cap\lang{e_1} = \lang{e}]
+    \infer[\text{if~} n > 1 \text{~and~} \lang{e_1} \cap \cdots \cap\lang{e_n} = \lang{e}]
     {\seqq{x \in e_1, \ldots, x \in e_n}}
     {\seqq{x \in e}}
     \\[2ex]
@@ -55,7 +55,7 @@
     \qquad
     \infer[\text{if~} |\lang{e}| = 1]
     {\seqq{x \in e, x \not= y}}
-    {\seqq{x \in e, y \in e^C}}
+    {\seqq{x \in e, y \in e^c}}
     \\
     \infer[\text{if~} \lang{e_1} \cap \lang{e_2} = \emptyset]
     {\seqq{x \in e_1, x \not= y, y \in e_2}}
@@ -66,11 +66,8 @@
     {\seqq{x \in e, x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
     \\
     \infer[\text{if~}
-    \begin{array}{l}
-      \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n}),
-      \\
-      |\lang{e_1}| = \cdots = |\lang{e_n}| = 1
-    \end{array}]
+    \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n}) \text{~and~} 
+    |\lang{e}|= 1]
     {\seqq{x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
     {\seqq{x \in e, x_1 \in e_1, \ldots, x_n \in e_n}}
     \\
