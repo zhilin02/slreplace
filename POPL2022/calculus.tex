@@ -24,76 +24,87 @@
     \infer
     {\seqq{ \neg\neg\phi}}
     {\seqq{\phi}}
-    \\
+    \\[1ex]
     \infer
     {\seqq{x \not\in e}}
     {\seqq{x \in e^c}}
     \qquad
-    \infer[\text{where~} y \text{~is fresh}]
+    \inferC{\text{where~} y \text{~is fresh}}
     {\seqq{x \not= f(x_1, \ldots, x_n)}}
     {\seqq{x \not= y, y = f(x_1, \ldots, x_n)}}
     \qquad
-    \inferii
+    \inferii[Cut]
     {\seqq{}}
     {\seqq{x \in e}}{\seqq{x \in e^c}}
     \\[2ex]
     \begin{array}{cl}
-      \infer
+      \infer[Close]
       {\seqq{x \in e_1, \ldots, x \in e_n}}
       {}
       &
         \text{if~} \lang{e_1} \cap \cdots \cap\lang{e_n} = \emptyset
       \\[2ex]
-      \infer
+      \infer[Subsume]
       {\seqq{x \in e, x \in e_1, \ldots, x \in e_n}}
       {\seqq{x \in e_1, \ldots, x \in e_n}}
       &
         \text{if~} \lang{e_1} \cap \cdots \cap\lang{e_n} \subseteq \lang{e}
       \\[2.5ex]
-      \infer
+      \infer[Intersect]
       {\seqq{x \in e_1, \ldots, x \in e_n}}
       {\seqq{x \in e}}
       &
-        \text{if~} n > 1 \text{~and~} \lang{e_1} \cap \cdots \cap\lang{e_n} = \lang{e}
+        \text{if~}
+        \begin{array}{l}
+          n > 1 \text{~and~}
+          \\
+          \lang{e_1} \cap \cdots \cap\lang{e_n} = \lang{e}
+        \end{array}
       \\[4ex]
-      \infer
+      \infer[$=$-Prop]
       {\seqq{x \in e, x = y}}
       {\seqq{x \in e, x = y, y \in e}}
       \\[3ex]
-      \infer
+      \infer[$\not=$-Prop-Elim]
       {\seqq{x \in e, x \not= y}}
       {\seqq{x \in e, y \in e^c}}
       &
         \text{if~} |\lang{e}| = 1
       \\[3ex]
-      \infer
+      \infer[$\not=$-Subsume]
       {\seqq{x \in e_1, x \not= y, y \in e_2}}
       {\seqq{x \in e_1, y \in e_2}}
       &
         \text{if~} \lang{e_1} \cap \lang{e_2} = \emptyset
       \\[4ex]
-      \infer
+      \infer[Fwd-Prop]
       {\seqq{x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
       {\seqq{x \in e, x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
       &
         \text{if~} \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n})
       \\[3ex]
-      \infer
+      \infer[Fwd-Prop-Elim]
       {\seqq{x = f(x_1, \ldots, x_n), x_1 \in e_1, \ldots, x_n \in e_n}}
       {\seqq{x \in e, x_1 \in e_1, \ldots, x_n \in e_n}}
       &
         \text{if~}
-        \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n}) \text{~and~} 
-        |\lang{e}|= 1
+        \begin{array}{l}
+          \lang{e} = f(\lang{e_1}, \ldots, \lang{e_n})
+          \\
+          \text{and~} 
+          |\lang{e}|= 1
+          \end{array}
       \\[3ex]
-      \infer
+      \infer[Bwd-Prop]
       {\seqq{x \in e, x = f(x_1, \ldots, x_n)}}
       {\big\{\seqq{x \in e, x = f(x_1, \ldots, x_n),
       x_1 \in e_1^i, \ldots, x_n \in e_n^i}\big\}_{i=1}^k}
       &
         \text{if~}
-    \bigcup_{i=1}^k \big( \lang{e_1^i} \times \cdots \times \lang{e_n^i} \big) =
-    f^{-1}(\lang{e})
+        \begin{array}{l}
+          f^{-1}(\lang{e}) = \\
+          \bigcup_{i=1}^k \big( \lang{e_1^i} \times \cdots \times \lang{e_n^i} \big)
+          \end{array}
     \end{array}
   \end{gather*}
   
