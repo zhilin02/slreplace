@@ -8,10 +8,18 @@
 %The special symbol $\nullchar$ is introduced to capture the situation that $\extract_{i,e}(x)$ returns $\nullchar$, i.e. $x \in \Lang(e)$ but the $i$-th capturing group of $e$ is not matched.
 %
 
-\paragraph{Semantics}
-We now define the formal semantics of $\regexp$. Traditionally, regular expressions are interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In our case when the regular expression is used in string constraints arisen from analysis of programming language such as JavaScript, %owing to the introduction of greedy/lazy semantics,  
-what we need is not only the language denoted by the regular expression, but also the intermediate result when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditional denotational) account of the semantics for regular expression. To this end, we harness an extension of finite-state automata with priorities, which \emph{defines} how a string is accepted by the given regular expression. We start with the standard finite-state automaton.  
+%\paragraph{Semantics}
+We now define the formal semantics of the regex-string matching for $\pcre$. 
+The semantics is defined by recursively constructing PSSTs out of {\pcre}s.
 
+In \cite{BDM14,BM17}, a construction from regular expressions to prioritized finite transducers (abbreviated as PFT) was given. The construction therein is a variant of the classical Thompson construction from regular expressions to nondeterministic finite automata \cite{Thompson68}. In particular, the size of the constructed PFT is linear in the size of the given regular expression. 
+%
+
+One may tempt to believe that the construction in \cite{BDM14,BM17} can be easily adapted to construct PSSTs out of {\pcre}s. 
+%
+Nevertheless, the construction in \cite{BDM14,BM17} works only for regular expressions where all the subexpressions $e^*$ or $e^{*?}$ satisfy that the language defined by $e$ does \emph{not} contain the empty string, moreover, the construction was not validated against the actual semantics of regex-string matching in programming languages. 
+%
+In comparison, our goal here is to have a construction that \emph{works for arbitrary {\pcre}s and is consistent with the actual semantics of  regex-string matching in Javascript}. It turns out that our construction of PSSTs out of {\pcre}s in the sequel requires some new ideas and is considerably different from that in  \cite{BDM14,BM17}. In particular, the size of the constructed PSST can be \emph{exponential} in the size of the given regular expression in the worst case.
 
 %\subsection{Semantics of \regexp[\sf CG]}
 %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
@@ -71,6 +79,8 @@ what we need is not only the language denoted by the regular expression, but als
 %\begin{proposition}\label{prop-rwre-to-pfa}
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
+
+\zhilin{stopped here}
 
 \paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \emptyset, \delta, \tau, E, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\emptyset, 0}) = ((); ())$; $E$ is indeed vacuous.
 		

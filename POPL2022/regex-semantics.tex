@@ -1,7 +1,15 @@
 %!TEX root = main.tex
 
-\section{Formal Semantics of Regex-string Matching In JavaScript}\label{sec-rwre}
-Our goal in this section is to define the formal semantics of regex-string matching in JavaScript. 
+\section{Formal Semantics of Regex-string Matching For {\pcre}}\label{sec-rwre}
+%
+Our goal in this section is to define the formal semantics of regex-string matching for {\pcre}. 
+Traditionally, a regular expression in formal language theory is interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In the context of string constraint solving, as {\pcre}s are used as arguments in string functions (e.g. match and replace in Javascript), %owing to the introduction of greedy/lazy semantics,  
+what we need is not only the language denoted by the regular expression, but also the intermediate results when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditionally denotational) account of the semantics for regular expressions. To this end, we harness an extension of finite-state automata with transition priorities and string variables, called prioritized streaming string transducers (abbreviated as PSST), to define how a string is parsed by the given {\pcre} expression. 
+%We start with the standard finite-state automaton.  
+
+In PSSTs, transition priorities are used to capture the non-standard semantics of {\pcre} operators and string variables are used to store the matchings of capturing groups. PSSTs are a synergy of two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of {\pcre} regex-string matching is defined by constructing PSSTs out of {\pcre} expressions. 
+
+Because we also want to validate the formal semantics against the actual semantics of regex-matching in programming languages and there are subtle differences between the implementations of {\pcre} in different languages (e.g. Javascript and Python), it is necessary to choose one specific language to execute the validation.  We choose Javascript here, since it is one of the most widely used programming languages,  currently the top 1st active language in Github\footnote{https://githut.info/}. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \OMIT{
@@ -15,13 +23,12 @@ It should be pointed out that if only the set of strings defined by regular expr
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In the sequel, we first define the syntax of regular expressions, which is essentially the regular expressions in Javascript, with the backreferences ignored. 
+In the sequel, we first define the syntax of {\pcre}. 
 %
-Then we formalize the semantics of Javascript Regex-string matching.
+Then we define PSSTs and construct PSSTs out of {\pcre}s to define the semantics of regex-string matching. Finally, we validate the formal semantics against the actual Javascript semantics.
 
-The key of the formal semantics is a novel automata model, called prioritized streaming string transducers (abbreviated as PSST), where transition priorities are used to capture the non-standard semantics of regular-expression operators and string variables are used to store the matchings of capturing groups. PSST is a synergy of two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of Javascript regex-string matching is defined by constructing a PSST out of regular expressions. 
 %
-Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in Javascript.
+%Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in Javascript.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -53,7 +60,7 @@ A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w
 
 \subsection{Syntax of regular expressions}
 
-\begin{definition}[Regular expressions, $\regexp$]
+\begin{definition}[Perl-Compatible Regular expressions, $\pcre$]
 	
 %\begin{multline*}
 \[
@@ -94,7 +101,7 @@ For two $\regexp$s $e$ and $e'$, we say that $e'$ is a \emph{subexpression} of $
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{From regular expressions to PSSTs}
+\subsection{Defining the Semantics of Regex-String Matching by PSSTs}
 
 \input{regextopsst.tex}
 
