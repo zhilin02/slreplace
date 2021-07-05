@@ -142,8 +142,9 @@ A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, 
 \item $Q$ is a finite set of states, 
 \item $\Sigma$ is the input and output alphabet, 
 \item $X$ is a finite set of string variables, 
-\item $\delta \in Q \times \Sigma \rightarrow \overline{Q}$, 
-\item $\tau \in Q \rightarrow \overline{Q} \times \overline{Q}$ such that for every $q \in Q$, if $\tau(q) = (P_1; P_2)$, then $P_1 \cap P_2 = \emptyset$. (Intuitively, $\tau(q)=(P_1; P_2)$ specifies the $\varepsilon$-transitions at $q$, with the intuition that the $\varepsilon$-transitions to the states in $P_1$ (resp. $P_2$) have higher (resp. lower) priorities than the non-$\varepsilon$-transitions out of $q$.)
+\item $\delta \in Q \times \Sigma \rightarrow \overline{Q}$ defines the non-$\varepsilon$ transitions as well as their priorities (from highest to lowest),
+% 
+\item $\tau \in Q \rightarrow \overline{Q} \times \overline{Q}$ such that for every $q \in Q$, if $\tau(q) = (P_1; P_2)$, then $P_1 \cap P_2 = \emptyset$, (Intuitively, $\tau(q)=(P_1; P_2)$ specifies the $\varepsilon$-transitions at $q$, with the intuition that the $\varepsilon$-transitions to the states in $P_1$ (resp. $P_2$) have higher (resp. lower) priorities than the non-$\varepsilon$-transitions out of $q$.)
 \item $E$ associates with each transition a string-variable assignment function, i.e., $E$ is partial function from $Q \times \Sigma^\varepsilon \times
   Q$ to $X \rightarrow (X \cup \Sigma)^{\ast}$ such that its domain is the set of tuples $(q, a, q')$ satisfying that either $a \in \Sigma$ and $q' \in \delta(q, a)$ or $a = \varepsilon$ and $q' \in \tau(q)$,
 \item  $q_0 \in Q$ is the initial state, and
@@ -153,7 +154,7 @@ A \emph{prioritized streaming string transducer} (PSST) is a tuple $\psst = (Q, 
 For $\tau(q)=(P_1; P_2)$, we will use $\pi_1(\tau(q))$ and $\pi_2(\tau(q))$ to denote $P_1$ and $P_2$ respectively.  
 %With slight abuse of notation, we write $q\in (P_1; P_2)$ for $q\in P_1\cup P_2$. 
 %Intuitively, $\tau(q)=(P_1; P_2)$ specifies the $\varepsilon$-transitions at $q$, with the intuition that the $\varepsilon$-transitions to the states in $P_1$ (resp. $P_2$) have higher (resp. lower) priorities than the non-$\varepsilon$-transitions out of $q$.
-The size of $\psst$, denoted by $|\psst|$, is defined as $\sum \limits_{(q, a, q') \in \dom(E)} \sum_{x \in X} |E((q, a, q'))(x)|$, where $|E((q, a, q'))(x)|$ is the length of $E(q, a, q')(x)$, i.e., the number of symbols from $X \cup \Sigma$ in it.
+The size of $\psst$, denoted by $|\psst|$, is defined as $\sum \limits_{(q, a, q') \in \dom(E)} \sum \limits_{x \in X} |E((q, a, q'))(x)|$, where $|E((q, a, q'))(x)|$ is the length of $E(q, a, q')(x)$, i.e., the number of symbols from $X \cup \Sigma$ in it.
 
 A run of $\psst$ on a string $w$ is a sequence $q_0 a_1 s_1 q_1 \ldots a_m s_m q_m$ such that
 \begin{itemize}

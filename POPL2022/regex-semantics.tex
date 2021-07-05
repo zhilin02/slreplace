@@ -1,22 +1,27 @@
 %!TEX root = main.tex
 
-\section{Formal Semantics of Regular Expression Matching In JavaScript}\label{sec-rwre}
-Our goal in this section is to define the formal semantics of regular expression matching in JavaScript. 
-%
+\section{Formal Semantics of Regex-string Matching In JavaScript}\label{sec-rwre}
+Our goal in this section is to define the formal semantics of regex-string matching in JavaScript. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
 It should be pointed out that if only the set of strings defined by regular expressions are concerned, regular expressions in Javascript (with backreferences ignored) are the same as classical regular expressions in formal language textbooks (e.g. \cite{HU79}). Nevertheless, matching of regular expressions to strings in Javascript, e.g. in the string functions ``exec()'', ``match()'' and ``test()'' , are much more involved: 
 \begin{enumerate}
 \item in Javascript, the regular expressions are not required to be matched to the whole string, but to a substring, which intuitively corresponds to the first match of the regular expression in the string, moreover, this matching is \emph{deterministic} in the sense that for a given regular expression and a string, the matching returns a \emph{unique} substring (if there is any), 
 %
 \item regular expressions in Javascript typically contain capturing groups, and the matchings of these capturing groups in strings should also be returned, moreover, these matchings are also deterministic.
 \end{enumerate}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In the sequel, we first define the syntax of regular expressions, which is essentially the regular expressions in Javascript, with the backreferences ignored. 
 %
-Then we formalize the Javascript semantics of matchings of regular expressions to strings. The aforementioned determinism of matchings of regular expressions to strings are attributed to the non-standard semantics of regular-expression operators in Javascript, e.g. the greedy/lazy semantics of Kleene star/plus operators as well as the non-commutative alternation operator.  
+Then we formalize the semantics of Javascript Regex-string matching.
 
-The key of the formal semantics is a novel automata model, called prioritized streaming string transducers (abbreviated as PSST), where transition priorities are used to capture the non-standard semantics of regular-expression operators and string variables are used to store the matchings of capturing groups. PSST is a synergy of two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of Javascript regular-expression matching is defined by constructing a PSST out of regular expressions. 
+The key of the formal semantics is a novel automata model, called prioritized streaming string transducers (abbreviated as PSST), where transition priorities are used to capture the non-standard semantics of regular-expression operators and string variables are used to store the matchings of capturing groups. PSST is a synergy of two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of Javascript regex-string matching is defined by constructing a PSST out of regular expressions. 
 %
-Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regular-expression matching in Javascript.
+Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in Javascript.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,11 +33,13 @@ It should be emphasized that the strings accepted by the regular expresses intro
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 \medskip
 
 Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 %
-We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$, $\varepsilon$ to denote the empty string, and $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
+We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$, $\varepsilon$ to denote the empty string, and $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. 
+A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
