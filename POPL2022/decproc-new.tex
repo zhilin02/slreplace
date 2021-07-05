@@ -11,6 +11,7 @@ We first show that $\extract$, $\replace$, and $\replaceall$ functions can be re
 
 The proof is given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
 The class of programs of the above form is denoted by $\strline'_{\sf reg}$.
+We note that, when the replacement strings do not contain $\refbefore$ or $\refafter$, the PSSTs in the reduction satisfy the \emph{copyless} property~\cite{AC10}, whereas ``copyful'' PSSTs are needed for $\refbefore$ and $\refafter$.
 
 Next, we follow the backward reasoning approach proposed in \cite{CCH+18,CHL+19} to solve the path feasibility of $\strline'_{\sf reg}$, where the key is to show that the pre-images of regular languages  under PSSTs  are regular and can be computed effectively.
 
@@ -36,7 +37,11 @@ With Lemma~\ref{lem:psst_preimage}, we  solve the path feasibility of $\strline'
 Let $S'$ be the resulting $\strline'_{\sf reg}$ program containing no assignment statements. Then the path feasibility of $S'$ can be solved by checking the nonemptiness of the intersection of regular constraints for the input variables, which is known to be \pspace-complete \cite{Kozen77}.
 
 
-\paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up, the aforementioned decision procedure has a non-elementary complexity in the worst-case. Nevertheless, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per query a few seconds (see Section~\ref{sect:impl}).
+\paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up, the aforementioned decision procedure has a non-elementary complexity in the worst-case. In fact, this is optimal and a matching lower-bound is given in Appendix~\ref{sec:tower-hard}.
+
+When $\refbefore$ and $\refafter$ are not used, the PSSTs in the reduction are copyless, which means the exponential blow-up in the size of the input \FA{} $\Aut$ can be avoided. This means that the exponentials do not stack on top of each other during the backwards analysis and the non-elementary blow-up is not necessary.
+
+Moreover, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per query a few seconds (see Section~\ref{sect:impl}).
 
 
 

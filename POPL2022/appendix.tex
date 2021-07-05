@@ -466,6 +466,14 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
             The above construction  does not utilize the so-called \tmtextit{copyless} property (i.e. for each transition $t$ and each variable $x$, $x$ appears at most once on the right-hand side of the assignment for $t$) \cite{AC10,AD11},
             thus it works for general, or \textit{copyful}, PSSTs \cite{FR17}.
+            It can be noted that the powerset in
+            $\rho \in (\cP(Q_A \times Q_A ))^{X}$
+            is required to handle copyful transductions as the contents of a variable may be used in many different situations, each requiring a different abstraction.
+            If the PSST is copyless, we can instead use
+            $\rho \in (Q_A \times Q_A)^{X}$.
+            That is, each variable is used only once, and hence only one abstraction pair is needed.
+            The powerset construction in the transitions can be replaced by a non-deterministic choice of the particular pair of states from $Q_A$ that should be kept.
+            This avoids the construction being exponential in the size of $A$, which in turn avoids the tower of exponential blow up in the backwards reasoning.
 
             %The formal construction of $\cB$ is omitted, due to the page limit. The interested readers can read Appendix~\ref{app-pre-image} for more details.
 
