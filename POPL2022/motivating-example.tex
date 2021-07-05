@@ -10,9 +10,9 @@
     function authorNameDBLPtoACM(authorList)
     {
       var autListReg = 
-          /^[A-Z](\w*|\.)(\s[A-Z](\w*|\.))*(\sand\s[A-Z](\w*|\.)(\s[A-Z](\w*|\.))*)*$/;
+          /^[A-Z](\w*|.)(\s[A-Z](\w*|.))*(\sand\s[A-Z](\w*|.)(\s[A-Z](\w*|.))*)*$/;
       if (autListReg.test(authorList)) {
-        var nameReg = /([A-Z](?:\w*|\.)(?:\s[A-Z](?:\w*|\.))*)([A-Z](?:\w*|\.))/g;
+        var nameReg = /([A-Z](?:\w*|.)(?:\s[A-Z](?:\w*|.))*)([A-Z](?:\w*|.))/g;
         return authorList.replace(nameReg, "$2, $1");
       }
       else return authorList;
@@ -68,9 +68,9 @@ The DBLP name format of each author is specified by the regular expression {\sf 
 %a family name (a sequence of alphabetic letters, $-$ or $.$), followed by the comma, then a given name, finally the word ``and'' or $\$$ denoting the end of the input, where $\backslash s$ represents the blank symbol and $\backslash w$ represents alphabetic letters, digits, or the underline symbol $\_$. 
 \begin{itemize}
 \item There are two capturing groups in {\sf nameReg}, one for recording the concatenation of the given name and middle names, and the other for recording the family name. 
-Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.)) denote the non-capturing groups, i.e. matching the subexpression, but not remembering the match.
+Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|.)) denote the non-capturing groups, i.e. matching the subexpression, but not remembering the match.
 %
-\item The \emph{greedy} semantics of the Kleene star * is utilized here to guarantee that the subexpression (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* matches all the middle names (since there may exist multiple middle names) and thus ${\sf nameReg}$ matches the full name. For instance, the first match of ${\sf nameReg}$ in  ``Alice M. Brown and John Smith'' is ``Alice M. Brown'', instead of ``Alice M.''. In comparison, if the semantics of * is assumed to be non-greedy, then (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* can be matched to the empty string, thus ${\sf nameReg}$ is matched to ``Alice M.'', which is what we would like to avoid. Therefore, the greedy semantics of * is essential for the correctness of ``authorNameDBLPtoACM''.
+\item The \emph{greedy} semantics of the Kleene star * is utilized here to guarantee that the subexpression (?:$\backslash$s[A-Z](?:$\backslash$w*|.))* matches all the middle names (since there may exist multiple middle names) and thus ${\sf nameReg}$ matches the full name. For instance, the first match of ${\sf nameReg}$ in  ``Alice M. Brown and John Smith'' is ``Alice M. Brown'', instead of ``Alice M.''. In comparison, if the semantics of * is assumed to be non-greedy, then (?:$\backslash$s[A-Z](?:$\backslash$w*|.))* can be matched to the empty string, thus ${\sf nameReg}$ is matched to ``Alice M.'', which is what we would like to avoid. Therefore, the greedy semantics of * is essential for the correctness of ``authorNameDBLPtoACM''.
 %Similarly, the regular expression {\sf reLast} describes the name format of the last author, except that it replaces the word ``and'' by the symbol $\$$, denoting the end of the author list. 
 %
 \item Moreover, the global flag ``g'' is used in {\sf nameReg} so that the name format of each author is transformed. 
