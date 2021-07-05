@@ -200,9 +200,11 @@ $\{(w, \psst(w)) \mid w \in \Sigma^\ast, \psst(w)  \neq \bot\}$.
 
 
 \begin{example}
-\zhilin{to be cleaned}
-The PSST $\cT_{\tt extract_{decimalReg,1}}=(Q, \Sigma, X, \delta, \tau, E,  q_{0}, F)$ mentioned in Section~\ref{sec:mot} is obtained from the PFA in Fig.~\ref{fig-pfa} by adding $x_1 := x_1 \ell$ to each $\ell$-transition going into $q_1$ (see Fig.~\ref{fig-psst-exmp}). More specifically, in $\cT_{\tt extract_{decimalReg,1}}$, we have $\Sigma = \{0,\cdots,9, .\}$, $X= \{x_1\}$ with $x_1$ recording the matches of the 1st capturing group, $F(q_{6}) = x_1$ denotes the final output, and $\delta, \tau, E$ are illustrated by the edges in Fig.~\ref{fig-psst-exmp}, where the dashed/ticker solid edges denote the $\varepsilon$-transitions of lower/higher priorities than the non-$\varepsilon$-transitions and the symbol $\ell$ is used to denote the currently scanned input letter. Note that the identity assignments, e.g. $E(q_3, ., q_4)(x_1) = x_1$, are omitted in Fig.~\ref{fig-psst-exmp}, for readability.   
-
+The PSST $\cT=(Q, \Sigma, X, \delta, \tau, E,  q_{0}, F)$ to extract the matching of the first capturing group for the regular expression \mintinline{javascript}{(\d+)(\d*)} in Example~\ref{exm-plre} is illustrated in Fig.~\ref{fig-psst-exmp}, where $x_1$ and $x_2$ store the matchings of the two capturing groups. More specifically, in $\cT$, we have $\Sigma = \{0,\cdots,9\}$, $X= \{x_1,x_2\}$, $F(q_{4}) = x_1$ denotes the final output, and $\delta, \tau, E$ are illustrated by the edges in Fig.~\ref{fig-psst-exmp}, where the dashed edges denote the $\varepsilon$-transitions of lower priorities than the non-$\varepsilon$-transitions and the symbol $\ell$ is used to denote the currently scanned input letter. Note that the identity assignments, e.g. $E(q_2, \varepsilon, q_3)(x_1) = x_1$, are omitted in Fig.~\ref{fig-psst-exmp}, for readability.  For the input string $w$=``2050'', the accepting run of $\cT$ on $w$, namely, a run of $\cT$ on $w$ ending at $q_4$ and of the highest priority, is 
+\[
+q_0 \xrightarrow[x_1:=\varepsilon]{\varepsilon} q_1 \xrightarrow[x_1:=x_12]{2} q_2  \xrightarrow[x_1:=x_10]{0} q_2  \xrightarrow[x_1:=x_15]{5} q_2  \xrightarrow[x_1:=x_10]{0} q_2,  \xrightarrow[x_2:=\varepsilon]{\varepsilon} q_3  \xrightarrow{\varepsilon} q_4,
+\]
+where the value of $x_1$ and $x_2$ when reaching the state $q_4$ are ``2050'' and $\varepsilon$ respectively. 
 %From $\delta(q_4, \backslash s) = q_5q_{6}$, we know that $q_5$ is prior to $q_6$. 
 %Therefore, whenever $\cT_{\sf nameReg}$ reads $\backslash$s at the state $q_3$,  it will choose to go the state $q_5$ greedily, unless this choice would lead to the nonacceptance (in this case, $q_6$ will be chosen). 
 
@@ -210,8 +212,8 @@ The PSST $\cT_{\tt extract_{decimalReg,1}}=(Q, \Sigma, X, \delta, \tau, E,  q_{0
 
 \centering
 %\rule{\linewidth}{0cm}
-\includegraphics[width=0.95\textwidth]{psst-epsilon-exmp-new.pdf}
-\caption{The PSST $\cT_{\tt extract_{decimalReg,1}}$}
+\includegraphics[width=0.8\textwidth]{psst-exmp-decimal.pdf}
+\caption{The PSST $\cT$: Extract the matching of the first capturing group in ($\backslash$d+)($\backslash$d*)}
 \label{fig-psst-exmp}
 
 \end{figure*}
