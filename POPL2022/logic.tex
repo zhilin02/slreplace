@@ -6,10 +6,10 @@ We define the string constraint language $\strline$ below.
 \[
 \begin{array}{l c l}
 \smallskip
-S & \eqdef  & z:= x \concat y \mid y := \extract_{i, e}(x) \mid
-y := \replace_{\pat, \rep}(x) \mid \\
-& & y := \replaceall_{\pat, \rep}(x)   \mid
- \ASSERT{x \in e} \mid S; S\
+\varphi & \eqdef  & z = x \concat y \mid y  = \extract_{i, e}(x) \mid
+y  = \replace_{\pat, \rep}(x) \mid \\
+& & y = \replaceall_{\pat, \rep}(x)   \mid
+ \ASSERT{x \in e} \mid \varphi \wedge \varphi\
 \label{eq:SL}
 \end{array}
 \]
@@ -17,41 +17,48 @@ where
 \begin{itemize}
 	\item $\concat$ is the string concatenation operation which concatenates two strings,
 %
-\item for the $\extract$ function, $i \in \Nat$, $e \in \cgexp$,
+\item for the $\extract$ function, $i \in \Nat$, $e \in \regexp$,
 %
-	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$ (where $\refexp$ is defined below),
+	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$, where $\refexp$ is defined as a concatenation of letters from $\Sigma$, the references $\$i$ ($i \in \Nat$), as well as $\refbefore$ and $\refafter$, (Intuitively, $\$0$ denotes the matching of $\pat$, $\$i$ with $i > 0$ denotes the the matching of the $i$th capture group, $\refbefore$ and $\refafter$ denote the prefix before resp. suffix after the matching of $\pat$.)
 %
 	\item for assertions, $e \in \regexp$.
 \end{itemize}
 
-The $\extract$ function is used to model the regular-expression match function in programming languages.
-Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the accepting match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. For instance, assuming $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$,   $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exmp-regex-semantics}. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns $\nullchar$. For instance, when $[[a^+] + ([a^*])]$ is matched against the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$.
+The $\extract$ function is used to model the regex-string matching for PLREs.
+Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. For instance, assuming $e = ([\mathbb{D}^+])([\mathbb{D}^*])$ where $\mathbb{D}=\{0,\ldots, 9\}$, $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exm-plre}. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns $\nullchar$. For instance, when $[[a^+] + ([a^*])]$ is matched against the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. \zhilin{to be consistent with the definition of semantics of regex-string matching}
 
 
 \begin{remark}
-The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving RWREs, e.g. {\sf exec} and {\sf test}, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
+The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving $\regexp$s, e.g. {\sf exec} and {\sf test}, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
 \end{remark}
 
 The function $\replaceall_{\pat, \rep}(x)$ is parameterized by the \emph{pattern} $\pat \in \regexp$ and the \emph{replacement string} $\rep \in \refexp$.
 For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$.
-The set $\refexp$ of replacement strings is defined using the following syntax, where $i \in \Nat$.
-\[
-    \rep = a \mid \$i \mid \refbefore \mid \refafter
-\]
-That is $\rep$ is a string of characters that may also contain \emph{references}.
-A reference $\$i$ where $i > 0$ is instantiated by the string matched by the $i$th capture group.
-For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$.
-
+%The set $\refexp$ of replacement strings is defined using the following syntax, where $i \in \Nat$.
+%\[
+%    \rep = a \mid \$i \mid \refbefore \mid \refafter
+%\]
+%That is $\rep$ is a string of characters that may also contain \emph{references}.
+%A reference $\$i$ where $i > 0$ is instantiated by the string matched by the $i$th capture group.
+%For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$.
+%
+A reference $\$i$ where $i > 0$ is instantiated by the matching of the $i$th capture group.
 There are three special references\footnote{
     The corresponding syntax for $\refbefore$ and $\refafter$ in JavaScript is $\$`$ and $\$'$.
 } $\$0$, $\refbefore$, and $\refafter$.
 These are instantiated by the matched text, the text occurring before the match, and the text occurring after the match respectively.
 In particular, if the input word is $u v w$ where $v$ has been matched and will be replaced, then $\$0$ takes the value $v$, $\refbefore$ takes the value $u$, and $\refafter$ takes the value $w$.
-When there are multiple matches in a $\replaceall$, the values of $\refbefore$ and $\refafter$ are always with respect to the original input string.
+When there are multiple matches in a $\replaceall$, the values of $\refbefore$ and $\refafter$ are always with respect to the original input string $x$.
 
 The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
 
-Without loss of generality, we assume that all the $\strline$ programs are in single static assignment (SSA) form, that is 1) each variable $x$ is assigned at most once; and 2) if $x$ is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
+A $\strline$ formula is said to be \emph{straight-line}, if 1) each variable $x$ occurs in the left-hand side of equations at most once; and 2) if $x$ occurs in the left-hand side of some equation, then all its occurrences on the right-hand sides of the equations or in assertions are after the equation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
+Without loss of generality, we assume that 
+all the $\strline$ programs are in single static assignment (SSA) form, that is 1) each variable $x$ is assigned at most once; and 2) if $x$ is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
 %
 For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur on the left hand sides of assignment statements.
 
@@ -73,3 +80,6 @@ Note that $\strline_{\sf reg}$  allows backreferences in replacement parameters 
 The path feasibility of $\strline_{\sf reg}$ is decidable.
 \end{theorem}
 The decision procedure for $\strline_{\sf reg}$ utilizes a new automata model called prioritized streaming string transducers, which will be defined in the next section.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -80,7 +80,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 %constraint language, while preserving 
 
 
-\begin{example}
+\begin{example}\label{exm-plre}
     Consider the PLRE \mintinline{javascript}{(\d+)(\d*)} in Javascript. It has two capturing
     groups, each within a pair of opening/closing brackets and  matching
     a string of digits (signified by \mintinline{javascript}{\d}). The second 
@@ -113,8 +113,8 @@ Nevertheless, regex-string matching in programming languages are dramatically di
 \item PLREs may contain capturing groups, and the matchings of these capturing groups in strings should also be returned, moreover, these matchings are deterministic as well. For instance, the matching of $e=$\mintinline{javascript}{(\d+)(\d*)} to ``ab123c'' returns  [``123'', ``123'', ``''], an array of strings, instead of just ``123'', where the first entry is the matching of  $e$, and the rest are the matchings of the two capturing groups.
 \end{enumerate}
 
- an indispensable part of the string library
-in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+% an indispensable part of the string library
+%in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 
 
 As a result of the fundamental role of regular expressions in string processing, the state-of-the-art string constraint solvers (e.g.
