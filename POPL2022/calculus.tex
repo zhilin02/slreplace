@@ -32,7 +32,7 @@
     {\seqq{x \not\in e}}
     {\seqq{x \in e^c}}
     \quad
-    \inferC{\text{where~} y \text{~is fresh}}
+    \inferC[\ruleName{$\not=$}]{\text{where~} y \text{~is fresh}}
     {\seqq{x \not= f(x_1, \ldots, x_n)}}
     {\seqq{x \not= y, y = f(x_1, \ldots, x_n)}}
     \quad
@@ -120,11 +120,11 @@ $\strline$, state its correctness, and observe that it gives rise to a
 decision procedure for the fragment $\strline_{\sf reg}$ of formulas
 that are straightline and do not contain back-references. The calculus
 is based on the principle of propagating regular language constraints
-by computing images and post-images of string functions. To work out
-the gist of the approach, the calculus is kept minimalist, but it is
-amenable to standard SMT optimizations such as non-chronological
-back-tracking and conflict-driven learning, techniques that are
-included in our implementation.
+by computing images and post-images of string functions. The calculus
+is deliberately kept minimalist, but it is amenable to standard SMT
+optimizations such as non-chronological back-tracking and
+conflict-driven learning, techniques that are included in our
+implementation.
 %
 Our calculus is parameterized in the set of
 considered string functions; in this paper, we work with the set
@@ -208,6 +208,8 @@ of single words.
   [...]
 \end{example}
 
+\paragraph{Proofs and proof rules.}
+
 More formally, proof rules are relations between a finite list of
 sequents (the premises), and a single sequent (the conclusion). Proofs
 are finite trees growing upward, in which each node is labeled with a
@@ -217,7 +219,24 @@ from the proof root to a leaf. A branch is closed if a closure rule (a
 rule without premises) has been applied to its leaf, and open
 otherwise. A proof is closed if all of its branches are closed.
 
-The proof rules of the calculus are shown in Table~\ref{tab:calculus}.
+The proof rules of the calculus are shown in
+Table~\ref{tab:calculus}. The first row shows standard proof rules to
+handle Boolean operators; see, e.g.,
+\cite{DBLP:books/daglib/0022394}. Rule~\ruleName{$\not\in$} turns
+negated membership predicates into positive ones through
+complementation, and rule~\ruleName{$\not=$} negative function
+applications into positive ones. As a result, only disequations
+between variables remain. The rule~\ruleName{Cut} can be use to
+introduce case splits, and is mainly needed to extract solutions once
+propagation has converged.
+
+The rule~\ruleName{Close} closes proof branches that contain
+contradictory regex constraints, and is the only closure rule in our
+calculus. Rule~\ruleName{Subsume} removes regex constraints that are
+implied by other constraints in a sequent, and \ruleName{Intersect}
+replaces multiple regex constraints with a single constraint.
+
+\paragraph{Properties of the calculus.}
 
 \begin{lemma}[Soundness]
   The sequent calculus defined by Table~\ref{tab:calculus} is sound:

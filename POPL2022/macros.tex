@@ -597,10 +597,11 @@
   \UnaryInfC{$#2$}
   \DisplayProof
 }
-\newcommand{\inferC}[3]{%
-  \AxiomC{$#3$}
-  \RightLabel{$~~#1$}
-  \UnaryInfC{$#2$}
+\newcommand{\inferC}[4][]{%
+  \AxiomC{$#4$}
+  \RightLabel{$~~#2$}
+  \ifx#1\relax\else\LeftLabel{\ruleName{#1}}\fi
+  \UnaryInfC{$#3$}
   \DisplayProof
 }
 \newcommand{\inferii}[4][]{%
