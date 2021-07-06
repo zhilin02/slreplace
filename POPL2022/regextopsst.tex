@@ -92,7 +92,7 @@ By default, all the PSSTs from now on satisfy these assumptions.
 
 For PSSTs of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$, we introduce a notation to be used in the construction, namely, the concatenation of two PSSTs. 
 
-\begin{definition}[Concatenation of two PSSTs]
+\begin{definition}[Concatenation of two PSSTs]\label{def-psstconcat}
 For $i \in \{1,2\}$, let $\cT_i = (Q_i, \Sigma, X_i, \delta_i, \tau_i, E_i, q_{i,0}, (F_{i,1}, F_{i,2}))$ be a PSST. Then the \emph{concatenation} of $\cT_1$ and $\cT_2$, denoted by $\cT_1 \concat \cT_2$, is defined as follows (see Figure~\ref{fig-reg2pfa-2}): 
 Let  
 $\cT'_{2} = (Q'_{2}, \Sigma, X_{2}, \delta'_{2}, \tau'_{2}, E_{2}', q'_{2,0}, (F'_{2, 1}, F'_{2,2}))$ be a fresh copy of $\cT_{2}$, but with the string variables of $\cT_{2}$ kept unchanged. 
@@ -420,9 +420,9 @@ where
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ (see Figure~\ref{fig-reg2pfa-4})} We first construct $\cT^{(m_1)}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$. Note that $\cT^{(m_1)}_{e_1}$ is different from $\cT_{e_1^{m_1}}$ ($e_1^{m_1}$ is the concatenation of the expression $e_1$ for $m_1$ times). In particular, the set of string variables in $\cT^{(m_1)}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
+\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ for $1 \le m_1 < m_2$ (see Figure~\ref{fig-reg2pfa-4})} We first construct $\cT^{(m_1)}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$ (Recall Definition~\ref{def-psstconcat} for the concatenation of PSSTs). Note that $\cT^{(m_1)}_{e_1}$ is different from $\cT_{e_1^{m_1}}$, the PSST constructed from $e_1^{m_1}$, the concatenation of the expression $e_1$ for $m_1$ times. In particular, the set of string variables in $\cT^{(m_1)}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
 
-Then $\cT_e$ is constructed as the concatenation of $\cT_{e_1^{m_1}}$ and $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$, where $\cT_{e_1^{m_1}}$ is the PSST corresponding to consecutive concatenations of $m_1$ copies of $e_1$, and $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ is illustrated in Fig.~\ref{fig-reg2pfa-4}, which consists of $m_2-m_1$ copies of $\cT_{e_1}$, say $(\cT^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority), and a fresh state $f^\prime_1$ (of the lowest priority). The final states of $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cT^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$. )
+Then we construct the PSST $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ (see Fig.~\ref{fig-reg2pfa-4}), which consists of $m_2-m_1$ copies of $\cT_{e_1}$, denoted by $(\cT^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ with $1\le i < m_2-m_1$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority) and a fresh state $f^\prime_1$ (of the lowest priority). The final states of $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cT^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$. ) Note that the set of string variables in $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ is still $X_{e_1}$.
 		%
 		\begin{figure}[ht]
 			\centering
@@ -432,9 +432,10 @@ Then $\cT_e$ is constructed as the concatenation of $\cT_{e_1^{m_1}}$ and $\cT^\
 			\label{fig-reg2pfa-4}
 		\end{figure}  
 
+Finally, we construct $\cT_e$ from $\cT^{(m_1)}_{e_1} \concat \cT^\prime_{e_1^{\{1,m_2-m_1\}}}$, the concatenation of $\cT^{(m_1)}_{e_1}$ and $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{(m_1)}_{e_1}$),  and the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(p, a, q)(x_e) = x_e a$ for each transition $(p, a, q)$ in  $\cT^{(m_1)}_{e_1} \concat \cT^\prime_{e_1^{\{1,m_2-m_1\}}}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\{m_1,m_2\}?}]$} Then $\cT_e$ is constructed as the concatenation of $\cT_{e_1^{m_1}}$ and $\cT^\prime_{e_1^{\{1,m_2-m_1\}?}}$, where $\cT^\prime_{e_1^{\{1,m_2-m_1\}?}}$ is illustrated in Fig.~\ref{fig-reg2pfa-5}, which is the same as $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ in Fig.~\ref{fig-reg2pfa-4}, except that the priorities of $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are reversed.
+\paragraph{Case $e = [e_1^{\{m_1,m_2\}?}]$} Then $\cT_e$ is constructed as the concatenation of $\cT^{(m_1)}_{e_1}$ and $\cT^\prime_{e_1^{\{1,m_2-m_1\}?}}$, where $\cT^\prime_{e_1^{\{1,m_2-m_1\}?}}$ is illustrated in Fig.~\ref{fig-reg2pfa-5}, which is the same as $\cT^\prime_{e_1^{\{1,m_2-m_1\}}}$ in Fig.~\ref{fig-reg2pfa-4}, except that the priorities of the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of the $\varepsilon$-transitions out of each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are swapped.
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
