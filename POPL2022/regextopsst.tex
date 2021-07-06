@@ -85,7 +85,7 @@ In comparison, our goal here is to have a construction that \emph{works for arbi
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets, say $F_1$ and $F_2$, with the intention that $F_1$  and $F_2$ are responsible for accepting the empty string resp. non-empty strings. Note here for technical convenience, let us assume that $F$ in the construction is a set of final states, instead of an output function.
+The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets, say $F_1$ and $F_2$, with the intention that $F_1$  and $F_2$ are responsible for accepting the empty string resp. non-empty strings. Note here for technical convenience, let us assume that $F$ in a PSST is a set of final states, instead of an output function. Therefore, the PSSTs constructed in the sequel are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$.
 
 We are going to recursively construct a PSST $\cT_e$ for each {\pcre} $e$, such that 
 %\begin{itemize}
@@ -95,86 +95,102 @@ We are going to recursively construct a PSST $\cT_e$ for each {\pcre} $e$, such 
     moreover, all the transitions out of the initial state are $\varepsilon$-transitions. 
 %     \item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
 %\end{itemize}
+We also assume that in $\cT_e$, a string variable $x_{e'}$ is introduced for each subexpression $e'$ of $e$. 
+%Moreover, a special symbol $\nullchar$ is introduced to deal with the situation that a subexpression $e'$ is not matched. If this happens, then the value of $e'$ is undefined and $\nullchar$ is assigned to $x_{e'}$. 
+%Let $X_e$ denote the set of string variables introduced for $e$.
 
-\paragraph{Case $e =\emptyset$} $\cA_e = (\{q_{\emptyset, 0}\}, \Sigma, \emptyset, \delta, \tau, E, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\emptyset, 0}) = ((); ())$; $E$ is indeed vacuous.
+\paragraph{Case $e =\emptyset$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_\emptyset = (\{q_{\emptyset, 0}\}, \Sigma, \{x_{\emptyset}\}, \delta_\emptyset, \tau_\emptyset, E_\emptyset, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where $\delta_\emptyset(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau_\emptyset(q_{\emptyset, 0}) = ((); ())$, and $E_\emptyset$ is vacuous here. 
 
 
-\paragraph{Case $e = \varepsilon$} $\cA_e = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x \}, \delta, \tau, E, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
+\paragraph{Case $e = \varepsilon$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_\varepsilon = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x_\varepsilon\}, \delta_\varepsilon, \tau_\varepsilon, E_\varepsilon, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
 %
-where $\delta(q_{\varepsilon,0}, a) = \delta(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$; $\tau(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$;  $\tau(f_{\varepsilon,0}) = ((); ())$; %for each transition $(q, a, q')$, 
-$E(q_{\varepsilon,0}, \varepsilon, f_{\varepsilon,0})(x) = \varepsilon$.
+where $\delta_\varepsilon(q_{\varepsilon,0}, a) = \delta_\varepsilon(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$, $\tau_\varepsilon(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$,  $\tau_\varepsilon(f_{\varepsilon,0}) = ((); ())$, %for each transition $(q, a, q')$, 
+and $E_\varepsilon(q_{\varepsilon,0}, \varepsilon, f_{\varepsilon,0})(x) = \varepsilon$. Note $F_2 = \emptyset$ here. 
 		
-\paragraph{Case $e = a$} $\cA_e = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \{x\}, \delta, \tau, E, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where 
-$\delta(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta(q_{a,1}, a) = (f_{a,0})$, $\delta(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$; 
+\paragraph{Case $e = a$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_a = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \{x_a\}, \delta_a, \tau_a, E_a, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where 
+$\delta_a(q_{a,0}, b) = ()$ for every $b \in \Sigma$, $\delta_a(q_{a,1}, a) = (f_{a,0})$, $\delta_a(q_{a,1}, b) = ()$ for every $b \in \Sigma \setminus \{a\}$,
 %
-$\tau(q_{a,0}) = ((q_{a,1}); ())$, $\tau(q_{a,1}) = ((); ())$, and $\tau(f_{a,0}) = ((); ())$; 
+$\tau_a(q_{a,0}) = ((q_{a,1}); ())$, $\tau_a(q_{a,1}) = ((); ())$, and $\tau_a(f_{a,0}) = ((); ())$, 
 %
-for each transition $(q, a, q')$, $E(q,a,q')(x) =xa$.
+$E_a(q_{a,0}, \varepsilon, q_{a,1})(x_a) = \varepsilon$, and $E_a(q_{a,1}, a, f_{a,0})(x_a) =x_aa$. Note $F_1 = \emptyset$ here. 
 %		
 \begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
 			\includegraphics[width = 0.4\textwidth]{reg2pfa-0.pdf}
-			\caption{The PFA $\cA_{\emptyset}$, $\cA_{\varepsilon}$, and $\cA_{a}$ }
+			\caption{The PSST $\cT_{\emptyset}$, $\cT_{\varepsilon}$, and $\cT_{a}$ }
 			\label{fig-reg2pfa-0}
 \end{figure}  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 		
-\paragraph{Case $e = (e_1)$} $\cA_e = \cA_{e_1}$.
+\paragraph{Case $e = (e_1)$} $\cT_e$ is adapted from $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1},  q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$ by adding the string variable $x_e$ and the assignments for $x_e$, that is, $X_e = X_{e_1} \cup \{x_e\}$ and for each transition $(q, a, q')$ in $\cT_{e_1} $ with $a \in \Sigma^\varepsilon$, we have $E_e(q, a, q')(x_e) = E_{e_1}(q, a, q')(x_{e_1})$. 
 		
 
-\paragraph{Case $e = [e_1 + e_2]$} Let 
-\[\cA_{e_1} = (Q_{e_1}, \Sigma, X_1, \delta_{e_1}, \tau_{e_1}, E_1,  q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))\] and 
-\[\cA_{e_2} = (Q_{e_2}, \Sigma, X_2, \delta_{e_2}, \tau_{e_2}, E_2, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))\] 
+\paragraph{Case $e = [e_1 + e_2]$ (see Figure~\ref{fig-reg2pfa-1})} For $i \in \{1, 2\}$, let  
+$\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i},  q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. 
+%$\cT_{e_2} = (Q_{e_2}, \Sigma, X_{e_2}, \delta_{e_2}, \tau_{e_2}, E_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$.
  
 Then 
-\[\cA_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma, X_1\cup X_2, 
-		\delta_e, \tau_e, E, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
+\[\cT_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma, X_e, 
+		\delta_e, \tau_e, E_e, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
 		\begin{itemize}
 			\item $q_{e,0}  \not \in Q_{e_1} \cup Q_{e_2}$, 
+			 \item  $X_{e_1} \cup X_{e_2} \cup \{x_e\}$,
 			\item $\delta_e(q, a) = \delta_{e_i}(q, a)$ for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, 
 			$\delta_e(q_{e,0}, a)  = ()$ for every $a \in \Sigma$, 
 			%
-			\item $\tau_e(q) = \tau_{e_i}(q)$ for every $q \in Q_{e_i}$ ($i =1,2$), $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$.
-			\item for each transition $(q, a, q')$ from $\delta_i$ for $i\in\{1,2\}$, $E(q,a,q')(x) =xa$ and $E(q_{e,0},a,q')(x) =\varepsilon$
+			\item $\tau_e(q) = \tau_{e_i}(q)$ for every $i \in \{1,2\}$ and $q \in Q_{e_i}$, and $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$,
+			\item $E_e$ is defined as follows: 
+			\begin{itemize}
+			\item for each $i\in\{1,2\}$, $(q, a, q')$ in $\cT_{e_i}$ (where $a \in \Sigma^\varepsilon$), $x \in X_{e_i}$ and $x' \in X_{e} \setminus X_{e_i}$, $E_e(q,a,q')(x) = E_{e_i}(q,a,q')(x)$ and $E_e(q,a,q')(x') =x'$, 
+			\item $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_{e}) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x_{e}) =\varepsilon$, and $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x) =x$ for every $x \in X_{e_1} \cup X_{e_2}$.
+			\end{itemize}
 		\end{itemize}
-Fig.~\ref{fig-reg2pfa-1} depicts the construction.  	
+%Fig.~\ref{fig-reg2pfa-1} depicts the construction.  	
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
-			\includegraphics[width = 0.6\textwidth]{reg2pfa-1.pdf}
-			\caption{The PFA $\cA_{[e_1+e_2]}$}
+			\includegraphics[width = 0.5\textwidth]{reg2pfa-1.pdf}
+			\caption{The PSST $\cT_{[e_1+e_2]}$}
 			\label{fig-reg2pfa-1}
 		\end{figure}  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Case $e = [e_1^?]$} Let $\cA_{e_1} = (Q_{e_1}, \Sigma, X, \delta_{e_1}, \tau_{e_1}, E_1, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
-\[\cA_e = (Q_{e_1} \cup \{q_{\varepsilon}, q_{e,0}\}, \Sigma, X, 
-		\delta_e, \tau_e, E, q_{e,0}, (\{q_{\varepsilon}\}, F_{e_1,2}))\]
+\paragraph{Case $e = [e_1^?]$ (see Figure~\ref{fig-reg2pfa-6})} Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
+\[\cT_e = (Q_{e_1} \cup \{q_{e,0}, f_{\varepsilon}\}, \Sigma, X_{e_1} \cup \{x_e\}, 
+		\delta_e, \tau_e, E_{e}, q_{e,0}, (\{f_{\varepsilon}\}, F_{e_1,2}))\]
 where  
 		\begin{itemize}
-			\item $q_{e,0}  \not \in Q_{e_1}$
-			\item $\delta_e(q, a) = \delta_{e_1}(q, a)$ for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q_{e,0}, a)  = ()$ and $\delta_e(q_{\varepsilon}, a) = ()$ for every $a \in \Sigma$, 
+			\item $q_{e,0}, f_\varepsilon  \not \in Q_{e_1}$,
+			\item $\delta_e(q, a) = \delta_{e_1}(q, a)$ for every $q \in Q_{e_1}$ and $a \in \Sigma$, $\delta_e(q_{e,0}, a)  = ()$ and $\delta_e(f_{\varepsilon}, a) = ()$ for every $a \in \Sigma$, 
 			%
-			\item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{\varepsilon}); ())$,
-			\item for each transition $(q, a, q')$ from $\delta_{e_1}$, $E(q,a,q')(x) =E_1(q, a,q')$ and $E(q_{e,0},\varepsilon,q_{\varepsilon})(x) =\varepsilon$
+			\item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{\varepsilon}); ())$,
+			\item $E_e$ is defined as follows: 
+			\begin{itemize}
+			\item for each transition $(q, a, q')$ in $\cT_{e_1}$ (where $a \in \Sigma^\varepsilon$) and $x \in X_{e_1}$, $E_e(q,a,q')(x) =E_{e_1}(q, a,q')(x)$, 
+			%
+			\item $E_e(q_{e,0},\varepsilon,q_{e_1, 0})(x_e) = E_e(q_{e,0},\varepsilon,f_{\varepsilon})(x_e) =\varepsilon$,  and for each $x \in X_{e_1}$, $E_e(q_{e,0},\varepsilon,q_{e_1, 0})(x)  = E_e(q_{e,0},\varepsilon, f_{\varepsilon})(x) =x$. 
+			\end{itemize}
 		\end{itemize}
 %
-Fig.~\ref{fig-reg2pfa-6} depicts the construction.
+%Fig.~\ref{fig-reg2pfa-6} depicts the construction.
 		\begin{figure}[ht]
 			\centering
 			%\rule{\linewidth}{0cm}
-			\includegraphics[width = 0.6\textwidth]{reg2pfa-6.pdf}
-			\caption{The PFA $\cA_{[e_1^?]}$}
+			\includegraphics[width = 0.8\textwidth]{reg2pfa-6.pdf}
+			\caption{The PSST $\cT_{[e_1^?]}$ and $\cT_{[e_1^{??}]}$}
 			\label{fig-reg2pfa-6}
 		\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{??}]$} 
-Let $\cA_{e_1} = (Q_{e_1},
-		\Sigma, X, \delta_{e_1}, \tau_{e_1}, E_1 , q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. 
+\paragraph{Case $e = [e_1^{??}]$ (see Figure~\ref{fig-reg2pfa-6})}  In this case, $\cT_{[e_1^{??}]}$ is  almost the same as $\cT_{[e_1^{?}]}$. The only difference is that the priorities of the two $\varepsilon$-transitions out of $q_{e,0}$ are swapped, namely, $\tau_e(q_{e,0}) = ((f_{\varepsilon}, q_{e_1,0}); ())$ here.
+%
+\OMIT
+{
+Let $\cT_{e_1} = (Q_{e_1},
+		\Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1} , q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. 
 Then 
 \[\cA_e = (Q_{e_1} \cup \{q_{e,0}, q_{\varepsilon}\}, \Sigma, X, 
 		\delta_e, \tau_e, E, q_{e,0}, (\{q_{\varepsilon}\}, F_{e_1,2}))\] 
@@ -187,6 +203,9 @@ where
 			
 			\item for each transition $(q, a, q')$ from $\delta_{e_1}$, $E(q,a,q')(x) = E_1(q,a,q')(x)$ and $E(q_{e,0},\varepsilon,q_{\varepsilon})(x) =\varepsilon$
 		\end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
 Fig.~\ref{fig-reg2pfa-7} depicts the construction. 
 		\begin{figure}[ht]
 			\centering
@@ -195,7 +214,7 @@ Fig.~\ref{fig-reg2pfa-7} depicts the construction.
 			\caption{The PFA $\cA_{[e_1^{??}]}$}
 			\label{fig-reg2pfa-7}
 		\end{figure}
-	
+}	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{Case $e = [e_1 \concat e_2]$} 
 Let 
