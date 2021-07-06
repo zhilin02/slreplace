@@ -1,29 +1,47 @@
 %!TEX root = main.tex
 
-\section{A Propagation-Based Calculus}
+\section{A Propagation-Based Calculus for String Constraints}
 \label{sect:calculus}
+
+\philipp{problem: the calculus also uses complemented regular
+  expressions; should we add those to the considered regex language?}
+
+We now introduce our calculus for solving string constraints in
+$\strline$, state its correctness, and observe that it gives rise to
+decision procedures for several fragments, including for
+$\strline_{\sf reg}$ formulas that are straightline and do not contain
+back-references. The calculus is based on the principle of propagating
+regular language constraints by computing images and post-images of
+string functions. The calculus is parameterized in the set of string
+functions; in this paper, we work with the set
+$\{\concat, \extract_{i, e}, \replace_{\pat, \rep}, \replaceall_{\pat,
+  \rep}\}$ consisting of concatenation, extraction, and replacement,
+but also other functions that can be represented as PSSTs can be
+included.
+
+%The calculus 
 
 \begin{table}
   \begin{gather*}
     \infer
-    {\seqq{\phi \wedge \psi}}
-    {\seqq{\phi, \psi}}
+    {\seqq{\varphi \wedge \psi}}
+    {\seqq{\varphi, \psi}}
     \qquad
     \infer
-    {\seqq{ \neg(\phi \vee \psi)}}
-    {\seqq{ \neg\phi, \neg\psi}}
+    {\seqq{ \neg(\varphi \vee \psi)}}
+    {\seqq{ \neg\varphi, \neg\psi}}
     \qquad
     \inferii
-    {\seqq{\phi \vee \psi}}
-    {\seqq{\phi}}{\seqq{\psi}}
+    {\seqq{\varphi \vee \psi}}
+    {\seqq{\varphi}}{\seqq{\psi}}
     \qquad
     \inferii
-    {\seqq{\neg(\phi \wedge \psi)}}
-    {\seqq{\neg\phi}}{\seqq{\neg\psi}}
+    {\seqq{\neg(\varphi \wedge \psi)}}
+    {\seqq{\neg\varphi}}{\seqq{\neg\psi}}
     \qquad
     \infer
-    {\seqq{ \neg\neg\phi}}
-    {\seqq{\phi}}
+    {\seqq{ \neg\neg\varphi}}
+    {\seqq{\varphi}}
     \\[1ex]
     \infer
     {\seqq{x \not\in e}}

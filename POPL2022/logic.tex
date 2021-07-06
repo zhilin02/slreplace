@@ -3,6 +3,7 @@
 \section{The String Constraint Language}\label{sec:logic}
 
 We define the string constraint language $\strline$ below.
+\philipp{why not add negation and disjunctions as well?}
 \[
 \begin{array}{l c l}
 \smallskip
@@ -21,7 +22,7 @@ where
 %
 	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$, where $\refexp$ is defined as a concatenation of letters from $\Sigma$, the references $\$i$ ($i \in \Nat$), as well as $\refbefore$ and $\refafter$, (Intuitively, $\$0$ denotes the matching of $\pat$, $\$i$ with $i > 0$ denotes the the matching of the $i$th capture group, $\refbefore$ and $\refafter$ denote the prefix before resp. suffix after the matching of $\pat$.)
 %
-	\item for assertions, $e \in \regexp$.
+	\item for assertions, $e \in \regexp$.\philipp{I believe we should remove the word ``assert'', it is easier/more readable to consider constraints like $x \in e \wedge y \in e' \wedge ...$}
 \end{itemize}
 
 The $\extract$ function is used to model the regex-string matching for PLREs.
