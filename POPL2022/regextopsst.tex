@@ -22,7 +22,7 @@ In \cite{BDM14,BM17}, a construction from regular expressions to prioritized fin
 
 One may tempt to believe that the construction in \cite{BDM14,BM17} can be easily adapted to construct PSSTs out of {\pcre}s. 
 %
-Nevertheless, the construction in \cite{BDM14,BM17} works only for regular expressions where all the subexpressions $e^*$ or $e^{*?}$ satisfy that the language defined by $e$ does \emph{not} contain the empty string, moreover, the construction was not validated against the actual semantics of regex-string matching in programming languages. 
+Nevertheless, the construction in \cite{BDM14,BM17} does \emph{not} work for so called \emph{problematic regular expressions}, namely,  those regular expressions that contain the subexpressions $e^*$ or $e^{*?}$ satisfying that  $\varepsilon \in \Lang(e)$. Moreover, the construction therein did not consider the repetition operators $[e_1^{\{m_1,m_2\}}]$ or $[e_1^{\{m_1,m_2\}?}]$. Finally, the construction therein was not validated against the actual semantics of regex-string matching in programming languages. 
 %
 In comparison, our goal here is to have a construction that \emph{works for arbitrary {\pcre}s and is consistent with the actual semantics of  regex-string matching in Javascript}. It turns out that our construction of PSSTs out of {\pcre}s in the sequel requires some new ideas and is considerably different from that in  \cite{BDM14,BM17}. In particular, the size of the constructed PSST can be \emph{exponential} in the size of the given regular expression in the worst case.
 
@@ -130,7 +130,7 @@ where
 			\label{fig-psstconcat}
 		\end{figure}  
 \end{definition}
-Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$.
+Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$. We would also like to remark that if $F_{1,1} = \emptyset$ or $F_{2,1} = \emptyset$, then \emph{one copy} of $\cT_2$, instead of two copies, is already sufficient for the concatenation.
 
 We are going to recursively construct a PSST $\cT_e$ for each {\pcre} $e$, such that 
 %\begin{itemize}
@@ -468,17 +468,20 @@ Finally, we construct $\cT_e$ from $\cT^{(m_1)}_{e_1} \concat \cT^\prime_{e_1^{\
 
 
 \begin{example}\label{exmp-pfa}
-	The PFA corresponding to the RWRE $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ 
+Let us consider the {\pcre} $e = [a^+]$. 
+%	The PFA corresponding to the RWRE $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ 
 	%in Example~\ref{exmp-regex-match-tree}
 	%
-	is illustrated in Fig.~\ref{fig-pfa}, where the dashed (resp. thicker solid) lines represent the $\varepsilon$-transitions of lower (resp. higher) priorities than non-$\varepsilon$ transitions (if there is any), and the doubly circled states are final states. For instance, $\delta(q_1, \ell) = (q_1)$ for every $\ell \in \{0, \dots, 9\}$, $\delta(q_1, .) = ()$, $\tau(q_1) = ((); (q_2))$. Since the $\varepsilon$-transition has lower priority than the $\ell$-transition at the state $q_1$, whenever the currently scanned letter is $\ell \in \{0,\cdots,9\}$ at $q_1$,  the PFA will choose to go to $q_1$ greedily, until there is no more $\ell  \in \{0,\cdots,9\}$. (In this case, it has to choose the $\epsilon$-transition and goes to $q_2$.)
+We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obtained from $\cT_{a^*}$ by removing the string variable $x_{[a^*]}$, see Figure~\ref{fig-pfa}).  Then we construct $\cT_{e}$ from $\cT_{a} \concat \cT^-_{a^*}$ by adding the initial state $q_{[a^+],0}$, the string variable $x_{[a^+]}$, as well as the assignments for $x_{[a^+]}$ (see Figure~\ref{fig-pfa}). Note here only one copy of $\cT^-_{a^*}$ is used in $\cT_{a} \concat \cT^-_{a^*}$, since $\varepsilon$ is not accepted by $\cT_{a}$.
+ %
+%illustrated in Fig.~\ref{fig-pfa}, where the dashed (resp. thicker solid) lines represent the $\varepsilon$-transitions of lower (resp. higher) priorities than non-$\varepsilon$ transitions (if there is any), and the doubly circled states are final states. For instance, $\delta(q_1, \ell) = (q_1)$ for every $\ell \in \{0, \dots, 9\}$, $\delta(q_1, .) = ()$, $\tau(q_1) = ((); (q_2))$. Since the $\varepsilon$-transition has lower priority than the $\ell$-transition at the state $q_1$, whenever the currently scanned letter is $\ell \in \{0,\cdots,9\}$ at $q_1$,  the PFA will choose to go to $q_1$ greedily, until there is no more $\ell  \in \{0,\cdots,9\}$. (In this case, it has to choose the $\epsilon$-transition and goes to $q_2$.)
 	%
 	\begin{figure}[ht]
 		
 		\centering
 		%\rule{\linewidth}{0cm}
 		\includegraphics[width=0.9\textwidth]{pfa-new.pdf}
-		\caption{The PFA for $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$, where $\Gamma = \{0, \cdots, 9\}$}
+		\caption{The PSST $\cT_e$ for $e = [a^+]$}
 		\label{fig-pfa}
 		
 	\end{figure}
