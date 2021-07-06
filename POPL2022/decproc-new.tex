@@ -2,7 +2,36 @@
 
 \subsection{Decision Procedure for $\strline_{\sf reg}$} \label{sec:decision}
 
-The goal of this section is to prove Theorem~\ref{thm-main}, i.e., the decidability of the path feasibility of $\strline_{\sf reg}$.
+The goal of this section is to prove Theorem~\ref{thm-main}, i.e., the
+decidability of the path feasibility of $\strline_{\sf reg}$. To this
+end we define a terminating strategy to apply the rules in
+Table~\ref{tab:calculus} to a formula in the $\strline_{\sf reg}$
+fragment:
+\begin{itemize}
+\item \emph{Phase 1:} apply the Boolean rules (first row of
+  Table~\ref{tab:calculus}) to eliminate Boolean operators.
+\item \emph{Phase 2:} apply rule~\ruleName{Bwd-Prop} to all regex
+  constraints and all function applications on all proof
+  branches. Whenever contradictory regex constraints occur in a proof
+  goal, use \ruleName{Close} to close the branch. In addition apply
+  \ruleName{=-Prop} to systematically propagate constraints across
+  equations.  This phase terminates because $\strline_{\sf reg}$
+  formulas are acyclic.
+
+  If all branches are closed as a result of Phase~2, the considered
+  formula is unsatisfiable; otherwise Phase~3 will extract a solution.
+\item \emph{Phase 3:} select an open branch of the proof. On this
+  branch, determine the set~$I$ of input variables, which are the
+  string variables that do not occur as left-hand side of equations or
+  function applications. For every $x \in I$, use rule~\ruleName{Cut}
+  to introduce an assignment~$x \in w$ that is consistent with the
+  regex constraints on $x$. Then systematically apply
+  \ruleName{Subsume}, \ruleName{=-Prop}, \ruleName{Fwd-Prop-Elim} to
+  evaluate all remaining formulas and turn the proof goal into a
+  solution.
+\end{itemize}
+
+\OMIT{
 We first show that $\extract$, $\replace$, and $\replaceall$ functions can be replace with PSST transductions.
 
 \begin{lemma}\label{lem-str-fun-to-psst}
@@ -11,23 +40,10 @@ We first show that $\extract$, $\replace$, and $\replaceall$ functions can be re
 
 The proof is given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
 The class of programs of the above form is denoted by $\strline'_{\sf reg}$.
-We note that, when the replacement strings do not contain $\refbefore$ or $\refafter$, the PSSTs in the reduction satisfy the \emph{copyless} property~\cite{AC10}, whereas ``copyful'' PSSTs are needed for $\refbefore$ and $\refafter$.
 
 Next, we follow the backward reasoning approach proposed in \cite{CCH+18,CHL+19} to solve the path feasibility of $\strline'_{\sf reg}$, where the key is to show that the pre-images of regular languages  under PSSTs  are regular and can be computed effectively.
 
-\begin{definition}[Pre-image]
-For a string relation $R \subseteq \Sigma^* \times (\Sigma^* \cup \{\nullchar\})$ and $L \subseteq \Sigma^*$, we define the \emph{pre-image} of $L$ under $R$ as $R^{-1}(L):=\{w \in \Sigma^* \mid \exists w'.\ w' \in L \mbox{ and } (w, w') \in R\}$.
-\end{definition}
 
-
- \begin{lemma}[Pre-image of regular languages under PSSTs]
-  \label{lem:psst_preimage}
-  Given a PSST $\psst = (Q_T, \Sigma$, $X$, $\delta_T$, $\tau_T$, $E_T$,  $q_{0, T}$, $F_T$) and an \FA{} $\Aut
-  = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $\cB = (Q_B,
-  \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
-\end{lemma}
-
-The proof of Lemma~\ref{lem:psst_preimage} is given in Appendix~\ref{app-pre-image}.
 With Lemma~\ref{lem:psst_preimage}, we  solve the path feasibility of $\strline'_{\sf reg}$ by repeating the following procedure, until no more assignment statements are left. Let $S$ be the current $\strline'_{\sf reg}$ program.
 \begin{itemize}
 \item If the last assignment statement of $S$ is $y:=\cT(x)$, then let $\ASSERT{y \in \cA_1}$, $\cdots$, $\ASSERT{y \in \cA_n}$ be an enumeration of all the assertion statements for $y$ in $S$. Compute $\cR^{-1}_\cT(\Lang(\cA_1))$ as an FA $\cB_1$, $\cdots$, and $\cR^{-1}_\cT(\Lang(\cA_n))$ as $\cB_n$. Remove  the assignment  $y:=\cT(x)$ and add the assertion statements $\ASSERT{x \in \cB_1}$; $\cdots$; $\ASSERT{x \in \cB_n}$.
@@ -35,7 +51,7 @@ With Lemma~\ref{lem:psst_preimage}, we  solve the path feasibility of $\strline'
 \item If the last assignment statement of $S$ is $z:=x \concat y$, then let $\ASSERT{z \in \cA_1}$, $\cdots$, $\ASSERT{z \in \cA_n}$ be an enumeration of all the assertion statements for $z$ in $S$. Compute $\concat^{-1}(\Lang(\cA_1))$, the pre-image of $\concat$ under $\Lang(\cA_1)$, as a collection of FA pairs $(\cB_{1,j}, \cC_{1,j})_{j \in [m_1]}$, $\cdots$, and $\concat^{-1}(\Lang(\cA_n))$ as $(\cB_{n, j}, \cC_{n,j})_{j \in [m_n]}$ (c.f. \cite{CHL+19}). Remove the assignment $z:=x \concat y$, nondeterministically choose the indices $j_1 \in [m_1], \cdots, j_n \in [m_n]$, and add the assertion statements $\ASSERT{x \in \cB_{1,j_1}}; \ASSERT{y \in \cC_{1, j_1}}$; $\cdots$; $\ASSERT{x \in \cB_{n,j_n}}; \ASSERT{y \in \cC_{n, j_n}}$.
 \end{itemize}
 Let $S'$ be the resulting $\strline'_{\sf reg}$ program containing no assignment statements. Then the path feasibility of $S'$ can be solved by checking the nonemptiness of the intersection of regular constraints for the input variables, which is known to be \pspace-complete \cite{Kozen77}.
-
+}
 
 \paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up, the aforementioned decision procedure has a non-elementary complexity in the worst-case. In fact, this is optimal and a matching lower-bound is given in Appendix~\ref{sec:tower-hard}.
 
@@ -46,6 +62,7 @@ Moreover, since the number of PSSTs is usually small in the path constraints of 
 
 
 \begin{remark}
+  \philipp{move to related work?}
 The procedure above extends the backward-reasoning approach in \cite{CHL+19}, since standard one-way and two-way finite-state transducers were considered therein and PSSTs, in particular priorities, are beyond them\footnote{It is known that deterministic streaming string transducers are expressively equivalent to two-way deterministic finite-state transducers, which, nevertheless, is not the case for nondeterministic transducers \cite{AC10,AD11}.}.
 %, PSSTs we introduce PSST, a new transducer model that covers the $\extract_{i,e}$ and $\replaceall_{\sf pat, rep}$ functions, where priorities are used to model the greedy/non-greedy semantics of $*$/$*?$ and string variables are used to store the matches of capturing groups.
 \end{remark}
@@ -230,3 +247,9 @@ The procedure above extends the backward-reasoning approach in \cite{CHL+19}, si
 
 %\tl{another way is to first define B as a PFA, could make the construction a bit modular?}\zhilin{Add a counter example for this natural idea.}
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:

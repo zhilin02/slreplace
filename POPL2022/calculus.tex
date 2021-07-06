@@ -67,6 +67,8 @@
       \infer[$=$-Prop]
       {\seqq{x \in e, x = y}}
       {\seqq{x \in e, x = y, y \in e}}
+      &
+        \philipp{also \ruleName{=-Prop-Elim}?}
       \\[3ex]
       \infer[$\not=$-Prop-Elim]
       {\seqq{x \in e, x \not= y}}
@@ -126,14 +128,13 @@ optimizations such as non-chronological back-tracking and
 conflict-driven learning, techniques that are included in our
 implementation.
 %
-Our calculus is parameterized in the set of
-considered string functions; in this paper, we work with the set
-$\{\concat, \extract_{i, e}, \replace_{\pat, \rep}, \replaceall_{\pat,
-  \rep}\}$ consisting of concatenation, extraction, and replacement,
-but it can be extended by other functions that can be represented as
-PSSTs.
+Our calculus is parameterized in the set of considered string
+functions; in this paper, we work with the set
+$\{\concat, \extract, \replace, \replaceall\}$ consisting of
+concatenation, extraction, and replacement, but it can be extended by
+other functions that can be represented as PSSTs.
 
-\subsection{Sequents and Proof Rules}
+\subsection{Sequents}
 
 The calculus operates on \emph{one-sided sequents,} and can be
 interpreted as a sequent calculus in the sense of
@@ -152,10 +153,7 @@ sequent~$\seq{x_1 \in w_1, x_2 \in w_2, \ldots, x_n \in w_n}$ that
 defines the values of string variables using regexes that only consist
 of single words.
 
-\begin{table}
-  \caption{Proof of unsatisfiability from Example~\ref{ex:calc1}}
-  \label{tab:calcEx1}
-
+\begin{figure}
   \begin{prooftree}
     \AxiomC{}
     \LeftLabel{\ruleName{Close}}
@@ -175,7 +173,10 @@ of single words.
       \wedge x = \replaceall_{a,
     b}(x)$}
   \end{prooftree}
-\end{table}
+
+  \caption{Proof of unsatisfiability from Example~\ref{ex:calc1}}
+  \label{fig:calcEx1}
+\end{figure}
 
 \begin{example}
   \label{ex:calc1}
@@ -188,7 +189,7 @@ of single words.
   \end{equation}
   To this end, we construct a proof tree that has \eqref{eq:calcEx1}
   as its root by applying proof rules until all proof goals have been
-  closed (Table~\ref{tab:calcEx1}). The proof is growing upward, and
+  closed (Figure~\ref{fig:calcEx1}). The proof is growing upward, and
   is built by first eliminating the conjunctions~$\wedge$, resulting
   in a list formulas. Next, we apply the rule~\ruleName{Fwd-Prop} for
   \emph{forward-propagation} of a regular expression constraint. Given
@@ -205,10 +206,10 @@ of single words.
     \label{eq:calcEx2}
     x = y \concat z \wedge x \in a^+ \wedge r = \replaceall_{a, b}(x)
   \end{equation}
-  [...]
+  [to be continued]
 \end{example}
 
-\paragraph{Proofs and proof rules.}
+\subsection{Proofs and Proof Rules}
 
 More formally, proof rules are relations between a finite list of
 sequents (the premises), and a single sequent (the conclusion). Proofs
@@ -225,19 +226,101 @@ handle Boolean operators; see, e.g.,
 \cite{DBLP:books/daglib/0022394}. Rule~\ruleName{$\not\in$} turns
 negated membership predicates into positive ones through
 complementation, and rule~\ruleName{$\not=$} negative function
-applications into positive ones. As a result, only disequations
-between variables remain. The rule~\ruleName{Cut} can be use to
+applications into positive ones. As a result, only disequalities
+between string variables remain. The rule~\ruleName{Cut} can be use to
 introduce case splits, and is mainly needed to extract solutions once
-propagation has converged.
+propagation has converged (as shown in Example~\ref{ex:calc1}).
 
 The rule~\ruleName{Close} closes proof branches that contain
-contradictory regex constraints, and is the only closure rule in our
-calculus. Rule~\ruleName{Subsume} removes regex constraints that are
-implied by other constraints in a sequent, and \ruleName{Intersect}
-replaces multiple regex constraints with a single constraint.
+contradictory regex constraints, and is the only closure rule needed
+in our calculus. \ruleName{Subsume} removes regex constraints
+that are implied by other constraints in a sequent, and
+\ruleName{Intersect} replaces multiple regexes with a single
+constraint.
 
-\paragraph{Properties of the calculus.}
+The next three rules handle equations between string
+variables. Rule~\ruleName{=-Prop} propagates regex constraints from
+the left-hand side to the right-hand side of an equation;
+\ruleName{$\not$=-Prop-Elim} similarly turns a singleton regex for the
+left-hand side of a disequality into a regex constraint on the
+right-hand side. As a side-effect, the latter rule also removes the
+disequality, which is implied by the resulting two regex constraints.
+As a convention, we allow application of \ruleName{=-Prop} and
+\ruleName{$\not$=-Prop-Elim} in both directions, left-to-right and
+right-to-left. Finally, \ruleName{$\not=$-Subsume} eliminates
+disequalities that are implied by the regex constraints of a proof
+goal.
 
+The last three rules handle applications of functions
+$f \in \{\concat, \extract, \replace, \replaceall\}$ through
+propagation. Rule~\ruleName{Fwd-Prop} defines forward propagation, and
+adds a regex constraint~$x \in e$ on the value of a function derived
+from constraints on the arguments. The regex~$e$ encodes the image of
+the argument regexes under $f$:
+%
+\begin{definition}[Image]
+  For an $n$-ary string
+  function~$f : \Sigma^* \times \cdots \times \Sigma^* \to \Sigma^*$
+  and languages $L_1, \ldots, L_n \subseteq \Sigma^*$, we define the
+  \emph{image} of $L_1, \ldots, L_n$ under $f$ as
+  $f(L_1, \ldots, L_n) = \{f(w_1, \ldots, w_n) \in \Sigma^* \mid w_1
+  \in L_1, \ldots, w_n \in L_n \}$.
+\end{definition}
+
+Forward propagation is often useful to prune proof branches. It is
+easy to see, however, that the image of regular languages under the
+functions considered in this paper are not always regular; for
+instance, $\replace_{\pat,\$0\$0}$ can map regular languages to
+context-sensitive languages. In such cases, the side condition of
+\ruleName{Fwd-Prop} cannot be satisfied by any regex~$e$, and the rule
+is not applicable.
+
+Rule~\ruleName{Fwd-Prop-Elim} handles the special case of forward
+propagation producing a singleton language. In this case, the function
+application is not needed for further reasoning and can be
+eliminated. This rule is mainly used during the extraction of
+solutions (as shown in Example~\ref{ex:calc1}).
+
+Rule~\ruleName{Bwd-Prop} defines the dual case of backward
+propagation, and derives regex constraints about function arguments
+from a constraint on the function value. The argument constraints
+encode the \emph{pre-image} of the result language:
+
+\begin{definition}[Pre-image]
+  For an $n$-ary string
+  function~$f : \Sigma^* \times \cdots \times \Sigma^* \to \Sigma^*$
+  and a language $L \subseteq \Sigma^*$, we define the
+  \emph{pre-image} of $L$ under $f$ as the relation
+  $f^{-1}(L) = \{(w_1, \ldots, w_n) \in (\Sigma^*)^n \mid 
+  f(w_1, \ldots, w_n) \in L\}$.
+\end{definition}
+A \textbf{key result} of the paper is that pre-images of regular
+languages under the functions considered in the paper can always be
+represented in the
+form~$\bigcup_{i=1}^k ( \lang{e_1^i} \times \cdots \times \lang{e_n^i}
+)$, i.e., they are \emph{recognizable languages.} This implies that
+\ruleName{Bwd-Prop} is applicable whenever a regex constraint for the
+result of a function application exists, and prepares the ground for
+the decidability result in the next section.  For concatenation,
+recognizability was shown in \cite{Abdulla14,CHL+19}. This paper
+contributes the corresponding result for all functions defined by
+PSSTs:
+%
+\begin{lemma}[Pre-image of regular languages under PSSTs]
+  \label{lem:psst_preimage}
+  Given a PSST $\psst = (Q_T, \Sigma$, $X$, $\delta_T$, $\tau_T$, $E_T$,  $q_{0, T}$, $F_T$) and an \FA{} $\Aut
+  = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $\cB = (Q_B,
+  \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
+\end{lemma}
+The proof of Lemma~\ref{lem:psst_preimage} is given in
+Appendix~\ref{app-pre-image}, and the reduction of
+$\extract, \replace, \replaceall$ to PSSTs in
+Appendix~\ref{appendix:sec-extract-replace-to-psst}. 
+We note that, when the replacement strings do not contain $\refbefore$ or $\refafter$, the PSSTs in the reduction satisfy the \emph{copyless} property~\cite{AC10}, whereas ``copyful'' PSSTs are needed for $\refbefore$ and $\refafter$.
+
+\medskip
+%
+We can finally observe that the calculus is sound:
 \begin{lemma}[Soundness]
   The sequent calculus defined by Table~\ref{tab:calculus} is sound:
   (i) the root of a closed proof is an unsatisfiable sequent; and (ii)
@@ -247,6 +330,12 @@ replaces multiple regex constraints with a single constraint.
   assignment~$\{x_1 \mapsto w_1, x_2 \mapsto w_2, \ldots, x_n \mapsto
   w_n\}$ is a satisfying assignment of the root sequent.
 \end{lemma}
+
+\begin{proof}
+  By showing that each of the proof rules in Table~\ref{tab:calculus}
+  is an equivalence transformation: the conclusion of a proof rule is
+  equivalent to the disjunction of the premises.
+\end{proof}
 
 %%% Local Variables:
 %%% mode: latex
