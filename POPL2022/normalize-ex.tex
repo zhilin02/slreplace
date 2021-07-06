@@ -1,0 +1,21 @@
+\begin{figure}[tb]
+\begin{center}
+\begin{minted}[linenos]{javascript}
+function normalize(decimal) {
+  const decimalReg = /^(\d+)\.?(\d*)$/;
+  var   decomp     = decimal.match(decimalReg);
+  var   result     = "";
+  if (decomp) {
+    var integer    = decomp[1].replace(/^0+/, "");
+    var fractional = decomp[2].replace(/0+$/, "");
+    if (integer    !== "") result = integer; else result = "0"; 
+    if (fractional !== "") result = result + "." + fractional;
+  }
+  return result;
+}
+\end{minted}
+\end{center}
+\caption{Normalize a decimal by removing the leading and trailing zeros
+    \label{fig-run-exmp}}
+\end{figure}
+
