@@ -4,35 +4,38 @@
 \label{sect:calculus}
 
 \begin{table}
+  \caption{Rules of the one-sided sequent calculus}
+  \label{tab:calculus}
+  
   \begin{gather*}
-    \infer
+    \infer[$\wedge$]
     {\seqq{\varphi \wedge \psi}}
     {\seqq{\varphi, \psi}}
-    \qquad
-    \infer
+    \quad
+    \infer[$\neg\wedge$]
     {\seqq{ \neg(\varphi \vee \psi)}}
     {\seqq{ \neg\varphi, \neg\psi}}
-    \qquad
-    \inferii
+    \quad
+    \inferii[$\vee$]
     {\seqq{\varphi \vee \psi}}
     {\seqq{\varphi}}{\seqq{\psi}}
-    \qquad
-    \inferii
+    \quad
+    \inferii[$\neg\vee$]
     {\seqq{\neg(\varphi \wedge \psi)}}
     {\seqq{\neg\varphi}}{\seqq{\neg\psi}}
-    \qquad
-    \infer
+    \quad
+    \infer[$\neg\neg$]
     {\seqq{ \neg\neg\varphi}}
     {\seqq{\varphi}}
     \\[1ex]
-    \infer
+    \infer[$\not\in$]
     {\seqq{x \not\in e}}
     {\seqq{x \in e^c}}
-    \qquad
+    \quad
     \inferC{\text{where~} y \text{~is fresh}}
     {\seqq{x \not= f(x_1, \ldots, x_n)}}
     {\seqq{x \not= y, y = f(x_1, \ldots, x_n)}}
-    \qquad
+    \quad
     \inferii[Cut]
     {\seqq{}}
     {\seqq{x \in e}}{\seqq{x \in e^c}}
@@ -107,25 +110,30 @@
           \end{array}
     \end{array}
   \end{gather*}
-  
-  \caption{Rules of the one-sided sequent calculus}
 \end{table}
 
 \philipp{problem: the calculus also uses complemented regular
   expressions; should we add those to the considered regex language?}
 
 We now introduce our calculus for solving string constraints in
-$\strline$, state its correctness, and observe that it gives rise to
-decision procedures for several fragments, including for
-$\strline_{\sf reg}$ formulas that are straightline and do not contain
-back-references. The calculus is based on the principle of propagating
-regular language constraints by computing images and post-images of
-string functions. The calculus is parameterized in the set of
+$\strline$, state its correctness, and observe that it gives rise to a
+decision procedure for the fragment $\strline_{\sf reg}$ of formulas
+that are straightline and do not contain back-references. The calculus
+is based on the principle of propagating regular language constraints
+by computing images and post-images of string functions. To work out
+the gist of the approach, the calculus is kept minimalist, but it is
+amenable to standard SMT optimizations such as non-chronological
+back-tracking and conflict-driven learning, techniques that are
+included in our implementation.
+%
+Our calculus is parameterized in the set of
 considered string functions; in this paper, we work with the set
 $\{\concat, \extract_{i, e}, \replace_{\pat, \rep}, \replaceall_{\pat,
   \rep}\}$ consisting of concatenation, extraction, and replacement,
 but it can be extended by other functions that can be represented as
 PSSTs.
+
+\subsection{Sequents and Proof Rules}
 
 The calculus operates on \emph{one-sided sequents,} and can be
 interpreted as a sequent calculus in the sense of
@@ -144,21 +152,82 @@ sequent~$\seq{x_1 \in w_1, x_2 \in w_2, \ldots, x_n \in w_n}$ that
 defines the values of string variables using regexes that only consist
 of single words.
 
+\begin{table}
+  \caption{Proof of unsatisfiability from Example~\ref{ex:calc1}}
+  \label{tab:calcEx1}
+
+  \begin{prooftree}
+    \AxiomC{}
+    \LeftLabel{\ruleName{Close}}
+    \UnaryInfC{$x \in a^+\Sigma^*,
+      x = y \concat z, y \in a^+, z \in \Sigma^*,
+      x \in (a^c)^+, x = \replaceall_{a,
+        b}(x)$}
+    \LeftLabel{\ruleName{Fwd-Prop}}
+    \UnaryInfC{$x \in a^+\Sigma^*,
+      x = y \concat z, y \in a^+, z \in \Sigma^*, x = \replaceall_{a,
+        b}(x)$}
+    \LeftLabel{\ruleName{Fwd-Prop}}
+    \UnaryInfC{$x = y \concat z, y \in a^+, z \in \Sigma^*, x = \replaceall_{a,
+        b}(x)$}
+    \LeftLabel{\ruleName{$\wedge^*$}}
+    \UnaryInfC{$x = y \concat z \wedge y \in a^+ \wedge z \in \Sigma^*
+      \wedge x = \replaceall_{a,
+    b}(x)$}
+  \end{prooftree}
+\end{table}
+
 \begin{example}
-  We first illustrate the calculus by showing that the constraint
-  $$x = y \concat z \wedge y \in a^+ \wedge x = \replaceall_{a,
-    b}(x)$$
-  is unsatisfiable.
+  \label{ex:calc1}
+  We first illustrate the calculus by showing unsatisfiability of the
+  constraint:
+  \begin{equation}
+    \label{eq:calcEx1}
+    x = y \concat z \wedge y \in a^+ \wedge z \in \Sigma^*
+    \wedge x = \replaceall_{a, b}(x)
+  \end{equation}
+  To this end, we construct a proof tree that has \eqref{eq:calcEx1}
+  as its root by applying proof rules until all proof goals have been
+  closed (Table~\ref{tab:calcEx1}). The proof is growing upward, and
+  is built by first eliminating the conjunctions~$\wedge$, resulting
+  in a list formulas. Next, we apply the rule~\ruleName{Fwd-Prop} for
+  \emph{forward-propagation} of a regular expression constraint. Given
+  that $y \in a^+, z \in \Sigma^*$, from the
+  equation~$x = y \concat z$ we can conclude that $x \in
+  a^+\Sigma^*$. From $x \in a^+\Sigma^*$ and
+  $x = \replaceall_{a, b}(x)$, we can next conclude that
+  $x \in (a^c)^+$, i.e., $x$ cannot contain the letter~$a$. Finally,
+  the proof can be closed because the languages~$a^+\Sigma^*$ and
+  $(a^c)^+$ are disjoint.
+
+  We next consider the case of a satisfiable formula in $\strline_{\sf reg}$:
+  \begin{equation}
+    \label{eq:calcEx2}
+    x = y \concat z \wedge x \in a^+ \wedge r = \replaceall_{a, b}(x)
+  \end{equation}
+  [...]
 \end{example}
 
 More formally, proof rules are relations between a finite list of
 sequents (the premises), and a single sequent (the conclusion). Proofs
 are finite trees growing upward, in which each node is labeled with a
-sequent, and each node is related to the node(s) directly above it
-through an instance of a proof rule. A proof branch is a path from the
-proof root to a leaf. A branch is closed if the last rule on the
-branch does not have any premises, and open otherwise. A proof is
-closed if all of its branches are closed.
+sequent, and each non-leaf node is related to the node(s) directly
+above it through an instance of a proof rule. A proof branch is a path
+from the proof root to a leaf. A branch is closed if a closure rule (a
+rule without premises) has been applied to its leaf, and open
+otherwise. A proof is closed if all of its branches are closed.
+
+The proof rules of the calculus are shown in Table~\ref{tab:calculus}.
+
+\begin{lemma}[Soundness]
+  The sequent calculus defined by Table~\ref{tab:calculus} is sound:
+  (i) the root of a closed proof is an unsatisfiable sequent; and (ii)
+  if a proof has an open branch that ends with a
+  solution~$\seq{x_1 \in w_1, x_2 \in w_2, \ldots, x_n \in w_n}$, then
+  the
+  assignment~$\{x_1 \mapsto w_1, x_2 \mapsto w_2, \ldots, x_n \mapsto
+  w_n\}$ is a satisfying assignment of the root sequent.
+\end{lemma}
 
 %%% Local Variables:
 %%% mode: latex

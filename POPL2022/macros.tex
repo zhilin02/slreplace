@@ -589,9 +589,11 @@
 \newcommand{\seq}[1]{\ensuremath{#1}}
 \newcommand{\seqq}[1]{\seq{\Gamma\ifx#1\relax\else,#1\fi}}
 
+\newcommand{\ruleName}[1]{\textsc{#1}}
+
 \newcommand{\infer}[3][]{%
   \AxiomC{$#3$}
-  \ifx#1\relax\else\LeftLabel{\textsc{#1}}\fi
+  \ifx#1\relax\else\LeftLabel{\ruleName{#1}}\fi
   \UnaryInfC{$#2$}
   \DisplayProof
 }
@@ -604,7 +606,7 @@
 \newcommand{\inferii}[4][]{%
   \AxiomC{$#3$}
   \AxiomC{$#4$}
-  \ifx#1\relax\else\LeftLabel{\textsc{#1}}\fi
+  \ifx#1\relax\else\LeftLabel{\ruleName{#1}}\fi
   \BinaryInfC{$#2$}
   \DisplayProof
 }
