@@ -3,7 +3,7 @@
 \section{The String Constraint Language}\label{sec:logic}
 
 We define the string constraint language $\strline$ below.
-\philipp{why not add negation and disjunctions as well?}
+\philipp{why not add negation and disjunctions as well?}\zhilin{added, but when we define straight-line fragment, we assume that there is no negation or disjunction ?}
 \[
 \begin{array}{l c l}
 \smallskip
@@ -11,7 +11,7 @@ We define the string constraint language $\strline$ below.
 y  = \replace_{\pat, \rep}(x) \mid 
 \\
 & & y = \replaceall_{\pat, \rep}(x)   \mid
- x \in e \mid \varphi \wedge \varphi \mid \varphi \vee \varphi\
+ x \in e \mid \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
 \label{eq:SL}
 \end{array}
 \]
@@ -57,7 +57,7 @@ When there are multiple matches in a $\replaceall$, the values of $\refbefore$ a
 
 The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
 
-A $\strline$ formula is said to be \emph{straight-line}, if 1) each variable $x$ occurs in the left-hand side of equations at most once; and 2) if $x$ occurs in the left-hand side of some equation, then all its occurrences on the right-hand sides of the equations or in assertions are after the equation.
+A $\strline$ formula is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) each variable $x$ occurs in the left-hand side of equations at most once; and 3) the equations can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that for each variable $x$, if $x = x_i$, then $x$ does not occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

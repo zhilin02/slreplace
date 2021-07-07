@@ -1,11 +1,11 @@
 %!TEX root = main.tex
 
-\subsection{Decision Procedure for $\strline_{\sf reg}$} \label{sec:decision}
+\subsection{Decision Procedure for $\strlinesl$} \label{sec:decision}
 
 The goal of this section is to prove Theorem~\ref{thm-main}, i.e., the
-decidability of the path feasibility of $\strline_{\sf reg}$. To this
+decidability of the path feasibility of $\strlinesl$. To this
 end we define a terminating strategy to apply the rules in
-Table~\ref{tab:calculus} to a formula in the $\strline_{\sf reg}$
+Table~\ref{tab:calculus} to a formula in the $\strlinesl$
 fragment:
 \begin{itemize}
 \item \emph{Phase 1:} apply the Boolean rules (first row of
@@ -15,7 +15,7 @@ fragment:
   branches. Whenever contradictory regex constraints occur in a proof
   goal, use \ruleName{Close} to close the branch. In addition apply
   \ruleName{=-Prop} to systematically propagate constraints across
-  equations.  This phase terminates because $\strline_{\sf reg}$
+  equations.  This phase terminates because $\strlinesl$
   formulas are acyclic.
 
   If all branches are closed as a result of Phase~2, the considered
@@ -35,7 +35,7 @@ fragment:
 We first show that $\extract$, $\replace$, and $\replaceall$ functions can be replace with PSST transductions.
 
 \begin{lemma}\label{lem-str-fun-to-psst}
-    The path feasibility of $\strline_{\sf reg}$ reduces to path feasibility of string-manipulating programs consisting of a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.
+    The path feasibility of $\strlinesl$ reduces to path feasibility of string-manipulating programs consisting of a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.
 \end{lemma}
 
 The proof is given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
@@ -89,7 +89,7 @@ The procedure above extends the backward-reasoning approach in \cite{CHL+19}, si
 %
 %%
 %%\begin{theorem}\label{thm-main}
-%%The path feasibility of $\strline_{\sf reg}$ is decidable.
+%%The path feasibility of $\strlinesl$ is decidable.
 %%\end{theorem}
 %%
 %
