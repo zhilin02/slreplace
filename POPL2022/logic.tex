@@ -6,11 +6,11 @@ We define the string constraint language $\strline$ below.
 \[
 \begin{array}{l c l}
 \smallskip
-\varphi & \eqdef  & z = x \concat y \mid y  = \extract_{i, e}(x) \mid
+\varphi & \eqdef  & x = y \mid z = x \concat y \mid y  = \extract_{i, e}(x) \mid
 y  = \replace_{\pat, \rep}(x) \mid 
 \\
 & & y = \replaceall_{\pat, \rep}(x)   \mid
- x \in e \mid \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
+ x \in e \mid  \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
 \label{eq:SL}
 \end{array}
 \]
@@ -58,7 +58,7 @@ When there are multiple matches in a $\replaceall$, the values of $\refbefore$ a
 
 The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
 
-A $\strline$ formula is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) each variable $x$ occurs in the left-hand side of equations at most once; and 3) the equations can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that for each variable $x$, if $x = x_i$, then $x$ does not occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
+A $\strline$ formula $\varphi$ is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) the equations in $\varphi$ can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that $x_1,\ldots, x_n$ are mutually distinct, moreover, for each $i \in [n]$, $x_i$ does \emph{not} occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

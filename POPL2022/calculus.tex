@@ -125,7 +125,7 @@ $\strline$, state its correctness, and observe that it gives rise to a
 decision procedure for the fragment $\strlinesl$ of formulas that are
 straightline and do not contain back-references. The calculus is based
 on the principle of propagating regular language constraints by
-computing images and post-images of string functions. We deliberately
+computing images and pre-images of string functions. We deliberately
 keep the calculus minimalist and focus on the main proof rules; for an
 implementation, the calculus has to be complemented with a suitable
 strategy for applying the rules, as well as standard SMT optimizations
@@ -347,8 +347,8 @@ PSSTs:
   \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
 \end{lemma}
 The proof of Lemma~\ref{lem:psst_preimage} is given in
-Appendix~\ref{app-pre-image}, and the reduction of
-$\extract, \replace, \replaceall$ to PSSTs in
+Appendix~\ref{app-pre-image}. Moreover, we have already known that $\extract$ is equivalent to a PSST (see Section~\ref{sec:logic}). The reduction of
+$\replace, \replaceall$ to PSSTs is given in
 Appendix~\ref{appendix:sec-extract-replace-to-psst}. 
 We note that, when the replacement strings do not contain $\refbefore$ or $\refafter$, the PSSTs in the reduction satisfy the \emph{copyless} property~\cite{AC10}, whereas ``copyful'' PSSTs are needed for $\refbefore$ and $\refafter$.
 
