@@ -4,7 +4,9 @@
 \label{sect:calculus}
 
 \begin{table}
-  \caption{Rules of the one-sided sequent calculus}
+  \caption{Rules of the one-sided sequent calculus. A term
+    $e^c$ denotes the complement of a regular expression~$e$,  i.e.,
+    ~$\lang{e^c} = \Sigma^* \setminus \lang{e}$.}
   \label{tab:calculus}
   
   \begin{gather*}
@@ -67,8 +69,12 @@
       \infer[$=$-Prop]
       {\seqq{x \in e, x = y}}
       {\seqq{x \in e, x = y, y \in e}}
+      \\[3ex]
+      \infer[$=$-Prop-Elim]
+      {\seqq{x \in e, x = y}}
+      {\seqq{x \in e, y \in e}}
       &
-        \philipp{also \ruleName{=-Prop-Elim}?}
+        \text{if~} |\lang{e}| = 1
       \\[3ex]
       \infer[$\not=$-Prop-Elim]
       {\seqq{x \in e, x \not= y}}
@@ -114,32 +120,30 @@
   \end{gather*}
 \end{table}
 
-\philipp{problem: the calculus also uses complemented regular
-  expressions; should we add those to the considered regex language?}
-
 We now introduce our calculus for solving string constraints in
 $\strline$, state its correctness, and observe that it gives rise to a
-decision procedure for the fragment $\strline_{\sf reg}$ of formulas
-that are straightline and do not contain back-references. The calculus
-is based on the principle of propagating regular language constraints
-by computing images and post-images of string functions. The calculus
-is deliberately kept minimalist, but it is amenable to standard SMT
-optimizations such as non-chronological back-tracking and
-conflict-driven learning, techniques that are included in our
-implementation.
+decision procedure for the fragment $\strlinesl$ of formulas that are
+straightline and do not contain back-references. The calculus is based
+on the principle of propagating regular language constraints by
+computing images and post-images of string functions. We deliberately
+keep the calculus minimalist and focus on the main proof rules; for an
+implementation, the calculus has to be complemented with a suitable
+strategy for applying the rules, as well as standard SMT optimizations
+such as non-chronological back-tracking and conflict-driven learning.
 %
 Our calculus is parameterized in the set of considered string
 functions; in this paper, we work with the set
 $\{\concat, \extract, \replace, \replaceall\}$ consisting of
-concatenation, extraction, and replacement, but it can be extended by
-other functions that can be represented as PSSTs.
+concatenation, extraction, and replacement, but this set can be
+extended by other functions for which images and/or pre-images can be
+computed (see Section~\ref{sec:rules}).
 
 \subsection{Sequents}
 
 The calculus operates on \emph{one-sided sequents,} and can be
 interpreted as a sequent calculus in the sense of
 Gentzen~\cite{Gentzen35} in which all formulas are located in the
-antecedent (left of the turnstile~$\vdash$). A one-sided sequent is a
+antecedent (to the left of the turnstile~$\vdash$). A one-sided sequent is a
 finite set $\Gamma \subseteq \strline$ of string constraints. For sake
 of presentation, we write sequents as lists of formulas separated by
 comma, and $\seqq{\varphi_1, \ldots, \varphi_n}$ for the union
@@ -174,8 +178,36 @@ of single words.
     b}(x)$}
   \end{prooftree}
 
-  \caption{Proof of unsatisfiability from Example~\ref{ex:calc1}}
+  \caption{Proof of unsatisfiability for \eqref{eq:calcEx1} in
+    Example~\ref{ex:calc1}}
   \label{fig:calcEx1}
+\end{figure}
+
+\begin{figure}
+  \begin{prooftree}
+    \AxiomC{$x \in a, z \in a, y \in \epsilon, r \in b$}
+    \LeftLabel{\ruleName{Subsume$\mbox{}^*$}}
+    \UnaryInfC{$x \in a, z \in a, y \in \epsilon, r \in b, \ldots$}
+    \LeftLabel{\ruleName{Fwd-Prop-Elim}}
+    \UnaryInfC{$z \in a, y \in \epsilon, x \in a, r = \replaceall_{a, b}(x), \ldots$}
+    \LeftLabel{\ruleName{Fwd-Prop-Elim}}
+    \UnaryInfC{$z \in a, y \in \epsilon, x = y \cdot z, \ldots$}
+    \AxiomC{$\vdots$}
+    \UnaryInfC{$z \in a^c, \ldots$}
+    \LeftLabel{\ruleName{Cut}}
+    \BinaryInfC{$y \in \epsilon, z \in a^+, x = y \concat z, 
+      x \in a^+, \ldots$}
+    \AxiomC{$\vdots$}
+    \UnaryInfC{$y \in a^+, z \in a^*, \ldots$}
+    \LeftLabel{\ruleName{Bwd-Prop}}
+    \BinaryInfC{$x = y \concat z, x \in a^+, r = \replaceall_{a, b}(x)$}
+    \LeftLabel{\ruleName{$\wedge^*$}}
+    \UnaryInfC{$x = y \concat z \wedge x \in a^+ \wedge r = \replaceall_{a, b}(x)$}
+  \end{prooftree}
+
+  \caption{Proof of satisfiability for \eqref{eq:calcEx2} in
+    Example~\ref{ex:calc1}}
+  \label{fig:calcEx2}
 \end{figure}
 
 \begin{example}
@@ -188,10 +220,10 @@ of single words.
     \wedge x = \replaceall_{a, b}(x)
   \end{equation}
   To this end, we construct a proof tree that has \eqref{eq:calcEx1}
-  as its root by applying proof rules until all proof goals have been
+  as its root, by applying proof rules until all proof goals have been
   closed (Figure~\ref{fig:calcEx1}). The proof is growing upward, and
   is built by first eliminating the conjunctions~$\wedge$, resulting
-  in a list formulas. Next, we apply the rule~\ruleName{Fwd-Prop} for
+  in a list of formulas. Next, we apply the rule~\ruleName{Fwd-Prop} for
   \emph{forward-propagation} of a regular expression constraint. Given
   that $y \in a^+, z \in \Sigma^*$, from the
   equation~$x = y \concat z$ we can conclude that $x \in
@@ -201,7 +233,7 @@ of single words.
   the proof can be closed because the languages~$a^+\Sigma^*$ and
   $(a^c)^+$ are disjoint.
 
-  We next consider the case of a satisfiable formula in $\strline_{\sf reg}$:
+  We next consider the case of a satisfiable formula in $\strlinesl$:
   \begin{equation}
     \label{eq:calcEx2}
     x = y \concat z \wedge x \in a^+ \wedge r = \replaceall_{a, b}(x)
@@ -210,6 +242,7 @@ of single words.
 \end{example}
 
 \subsection{Proofs and Proof Rules}
+\label{sec:rules}
 
 More formally, proof rules are relations between a finite list of
 sequents (the premises), and a single sequent (the conclusion). Proofs
@@ -238,14 +271,15 @@ that are implied by other constraints in a sequent, and
 \ruleName{Intersect} replaces multiple regexes with a single
 constraint.
 
-The next three rules handle equations between string
+The next four rules handle equations between string
 variables. Rule~\ruleName{=-Prop} propagates regex constraints from
 the left-hand side to the right-hand side of an equation;
-\ruleName{$\not$=-Prop-Elim} similarly turns a singleton regex for the
-left-hand side of a disequality into a regex constraint on the
-right-hand side. As a side-effect, the latter rule also removes the
-disequality, which is implied by the resulting two regex constraints.
-As a convention, we allow application of \ruleName{=-Prop} and
+\ruleName{=-Prop-Elim} in addition removes the equation in the case
+where the propagated constraint has a unique solution. The
+rule~\ruleName{$\not$=-Prop-Elim} similarly turns a singleton regex
+for the left-hand side of a disequality into a regex constraint on the
+right-hand side.  As a convention, we allow application of
+\ruleName{=-Prop}, \ruleName{=-Prop-Elim}, and
 \ruleName{$\not$=-Prop-Elim} in both directions, left-to-right and
 right-to-left. Finally, \ruleName{$\not=$-Subsume} eliminates
 disequalities that are implied by the regex constraints of a proof
@@ -254,9 +288,9 @@ goal.
 The last three rules handle applications of functions
 $f \in \{\concat, \extract, \replace, \replaceall\}$ through
 propagation. Rule~\ruleName{Fwd-Prop} defines forward propagation, and
-adds a regex constraint~$x \in e$ on the value of a function derived
-from constraints on the arguments. The regex~$e$ encodes the image of
-the argument regexes under $f$:
+adds a regex constraint~$x \in e$ for the value of a function by
+propagating constraints about the arguments. The regex~$e$ encodes
+the image of the argument regexes under $f$:
 %
 \begin{definition}[Image]
   For an $n$-ary string
@@ -268,7 +302,7 @@ the argument regexes under $f$:
 \end{definition}
 
 Forward propagation is often useful to prune proof branches. It is
-easy to see, however, that the image of regular languages under the
+easy to see, however, that the images of regular languages under the
 functions considered in this paper are not always regular; for
 instance, $\replace_{\pat,\$0\$0}$ can map regular languages to
 context-sensitive languages. In such cases, the side condition of
@@ -282,10 +316,10 @@ eliminated. This rule is mainly used during the extraction of
 solutions (as shown in Example~\ref{ex:calc1}).
 
 Rule~\ruleName{Bwd-Prop} defines the dual case of backward
-propagation, and derives regex constraints about function arguments
-from a constraint on the function value. The argument constraints
-encode the \emph{pre-image} of the result language:
-
+propagation, and derives regex constraints for function arguments
+from a constraint about the function value. The argument constraints
+encode the \emph{pre-image} of the propagated language:
+%
 \begin{definition}[Pre-image]
   For an $n$-ary string
   function~$f : \Sigma^* \times \cdots \times \Sigma^* \to \Sigma^*$
@@ -298,7 +332,7 @@ A \textbf{key result} of the paper is that pre-images of regular
 languages under the functions considered in the paper can always be
 represented in the
 form~$\bigcup_{i=1}^k ( \lang{e_1^i} \times \cdots \times \lang{e_n^i}
-)$, i.e., they are \emph{recognizable languages.} This implies that
+)$, i.e., they are \emph{recognizable languages}~\cite{X}. This implies that
 \ruleName{Bwd-Prop} is applicable whenever a regex constraint for the
 result of a function application exists, and prepares the ground for
 the decidability result in the next section.  For concatenation,
