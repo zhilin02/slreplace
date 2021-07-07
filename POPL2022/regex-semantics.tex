@@ -7,9 +7,9 @@ Traditionally, a regular expression in formal language theory is interpreted as 
 what we need is not only the language denoted by the regular expression, but also the intermediate results when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditionally denotational) account of the semantics for regular expressions. To this end, we harness an extension of finite-state automata with transition priorities and string variables, called prioritized streaming string transducers (abbreviated as \PSST), to define how a string is parsed by the given regular expression. 
 %We start with the standard finite-state automaton.  
 
-In {\PSST}s, transition priorities are used to capture the non-standard semantics of {\regexp} operators whereas string variables are used to store the matchings of capturing groups. {\PSST}s are a synergy of two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of {\regexp}-string matching is defined by constructing {\PSST}s out of regular expressions. 
-
-Because we also want to validate the formal semantics against the actual semantics of regex-matching in programming languages and there are subtle differences between the implementations of {\regexp} in different languages (e.g. Javascript and Python), it is necessary to choose one specific language to execute the validation.  We choose Javascript here, since it is one of the most widely used programming languages,  currently the top 1st active language in Github\footnote{https://githut.info/}. 
+In {\PSST}s, transition priorities are used to capture the non-standard semantics of {\regexp} operators whereas string variables are used to store the matchings of capturing groups. {\PSST}s combine two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of {\regexp}-string matching is defined by constructing {\PSST}s out of regular expressions. 
+%
+As we shall validate the formal semantics against the actual one of {\regexp}-string matching in programming languages and there are subtle differences between the implementations of {\regexp} in different languages (e.g. JavaScript and Python), it is necessary to choose one specific language to exercise the validation. We choose JavaScript here, since it is one of the most widely used programming languages,  currently the top-one active language in Github.\footnote{https://githut.info/}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\OMIT{
@@ -22,26 +22,27 @@ Because we also want to validate the formal semantics against the actual semanti
 %}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
-We shall start with the syntax of regular expressions, which are essentially those regular expressions used in JavaScript. (We do not include backreferences though.) We then formalize the semantics of JavaScript Regex-string matching.
+We shall start with the syntax of regular expressions, which are essentially those used in JavaScript. (We do not include backreferences though.) We then formalize the semantics of JavaScript \regexp-string matching in Section~\ref{sect:regextopsst}; the experimental validation is presented in 
+%Furthermore, we also carry out  extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in JavaScript (cf.\ 
+Section~\ref{sect：valid}).
 %
-The key %of the formal semantics 
-here is a new automata model prioritized streaming string transducers (PSSTs), where transition priorities are used to capture the non-standard semantics of regular-expression operators, and string variables are used to store the matchings of capturing groups. PSST combines two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. 
+%The key %of the formal semantics 
+%here is a new automata model prioritized streaming string transducers (PSSTs), where transition priorities are used to capture the non-standard semantics of regular-expression operators, and string variables are used to store the matchings of capturing groups. PSST combines two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. 
 
 %The formal semantics of Javascript regex-string matching is defined by constructing a PSST out of regular expressions. 
 
 
 
 %We now define the formal semantics of $\regexp$. 
-Note that traditionally regular expressions are interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. 
+%Note that traditionally regular expressions are interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. 
 %In our case when the regular expression is used in string constraints arisen from analysis of programming language such as JavaScript, %owing to the introduction of greedy/lazy semantics,  
 %what we need is not only the language denoted by the regular expression, but also the intermediate result when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, 
 %
-Here we present a more operational (as opposed traditional denotational) account of the semantics by constructing  PSSTs out of regular expressions (cf.\ Section~\ref{sect:regextopsst}). 
+%Here we present a more operational (as opposed traditional denotational) account of the semantics by constructing  PSSTs out of regular expressions (cf.\ Section~\ref{sect:regextopsst}). 
 %
 %. To this end, we harness an extension of finite-state automata with priorities, which \emph{defines} how a string is accepted by the given regular expression. We start with the standard finite-state automaton. 
 %
-Furthermore, we also carry out  extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in JavaScript (cf.\ Section~\ref{sect：valid}).
+
 
 %
 %=======
@@ -110,7 +111,7 @@ Note that square brackets $[]$ are used for the operator precedence and the pare
 
 The operator $[e^*]$ is the \emph{greedy} Kleene star, meaning that $e$ should be matched as many times as possible. In contrast, the operator $[e^{*?}]$ is the \emph{lazy} Kleene star, meaning $e$ should be matched  as few times as possible. The Kleene plus operators $[e^+]$ and $[e^{+?}]$ are similar to $[e^*]$ and $[e^{*?}]$ but $e$ should be matched at least once. Moreover, as expected,  the repetition operators $[e^{\{m_1,m_2\}}]$ require the number of times that $e$ is matched is between $m_1$ and $m_2$ and $[e^{\{m_1,m_2\}?}]$ is the lazy variant. Likewise, the optional operator has greedy and lazy variants $[e^?]$ and $[e^{??}]$, respectively.
 
-For two $\regexp$s $e$ and $e'$, we say that $e'$ is a \emph{subexpression} of $e$,
+For two $\regexp$ $e$ and $e'$, we say that $e'$ is a \emph{subexpression} of $e$,
   	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e_1^?], [e_1^{??}], [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, $e_1^{\{m_1, m_2\}}$, $e_1^{\{m_1, m_2\}?}$ or $( e_1)$, and $e'$ is a subexpression of $e_1$. We use $S(e)$ to denote the set of subexpressions of $e$. %
  
 % 
@@ -119,7 +120,7 @@ For two $\regexp$s $e$ and $e'$, we say that $e'$ is a \emph{subexpression} of $
 %%\tl{define the semantics here?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Prioritized streaming string transducers (PSST)}
+\subsection{Prioritized streaming string transducers (\PSST)}
 
 \input{psst-epsilon.tex}
 
