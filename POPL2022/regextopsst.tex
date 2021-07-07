@@ -13,11 +13,7 @@
 %We now define the formal semantics of $\regexp$. Traditionally, regular expressions are interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In our case when the regular expression is used in string constraints arisen from analysis of programming language such as JavaScript, %owing to the introduction of greedy/lazy semantics,  
 %what we need is not only the language denoted by the regular expression, but also the intermediate result when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditional denotational) account of the semantics for regular expression. To this end, we harness an extension of finite-state automata with priorities, which \emph{defines} how a string is accepted by the given regular expression. We start with the standard finite-state automaton.  
  
-We now define the formal semantics of the regex-string matching for $\pcre$. 
-The semantics is defined by recursively constructing PSSTs out of {\pcre}s.
- 
-
-In \cite{BDM14,BM17}, a construction from regular expressions to prioritized finite transducers (abbreviated as PFT) was given. The construction therein is a variant of the classical Thompson construction from regular expressions to nondeterministic finite automata \cite{Thompson68}. In particular, the size of the constructed PFT is linear in the size of the given regular expression. 
+We now define the formal semantics of the \regexp-string matching, which  is defined by recursively constructing {\PSST}s out of regular expressions. In \cite{BDM14,BM17}, a construction from regular expressions to prioritized finite transducers (PFT) was given. The construction therein is a variant of the classical Thompson construction from regular expressions to nondeterministic finite automata \cite{Thompson68}. In particular, the size of the constructed PFT is linear in the size of the given regular expression. 
 %
 
 One may tempt to believe that the construction in \cite{BDM14,BM17} can be easily adapted to construct PSSTs out of {\pcre}s. 
