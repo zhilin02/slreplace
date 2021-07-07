@@ -8,9 +8,10 @@ We define the string constraint language $\strline$ below.
 \begin{array}{l c l}
 \smallskip
 \varphi & \eqdef  & z = x \concat y \mid y  = \extract_{i, e}(x) \mid
-y  = \replace_{\pat, \rep}(x) \mid \\
+y  = \replace_{\pat, \rep}(x) \mid 
+\\
 & & y = \replaceall_{\pat, \rep}(x)   \mid
- \ASSERT{x \in e} \mid \varphi \wedge \varphi\
+ x \in e \mid \varphi \wedge \varphi \mid \varphi \vee \varphi\
 \label{eq:SL}
 \end{array}
 \]
@@ -18,16 +19,18 @@ where
 \begin{itemize}
 	\item $\concat$ is the string concatenation operation which concatenates two strings,
 %
-\item for the $\extract$ function, $i \in \Nat$, $e \in \regexp$,
+\item  $e \in \regexp$ and $\pat \in \regexp$,
 %
-	\item  for the $\replace$ and $\replaceall$ operation, $\pat\in \regexp$, $\rep \in \refexp$, where $\refexp$ is defined as a concatenation of letters from $\Sigma$, the references $\$i$ ($i \in \Nat$), as well as $\refbefore$ and $\refafter$, (Intuitively, $\$0$ denotes the matching of $\pat$, $\$i$ with $i > 0$ denotes the the matching of the $i$th capture group, $\refbefore$ and $\refafter$ denote the prefix before resp. suffix after the matching of $\pat$.)
+\item for the $\extract$ function, $i \in \Nat$,
 %
-	\item for assertions, $e \in \regexp$.\philipp{I believe we should remove the word ``assert'', it is easier/more readable to consider constraints like $x \in e \wedge y \in e' \wedge ...$}
+	\item  for the $\replace$ and $\replaceall$ operation, $\rep \in \refexp$, where $\refexp$ is defined as a concatenation of letters from $\Sigma$, the references $\$i$ ($i \in \Nat$), as well as $\refbefore$ and $\refafter$. (Intuitively, $\$0$ denotes the matching of $\pat$, $\$i$ with $i > 0$ denotes the the matching of the $i$th capture group, $\refbefore$ and $\refafter$ denote the prefix before resp. suffix after the matching of $\pat$.)
+%
+%	\item for assertions, $e \in \regexp$.\philipp{I believe we should remove the word ``assert'', it is easier/more readable to consider constraints like $x \in e \wedge y \in e' \wedge ...$}
 \end{itemize}
 
 The $\extract$ function is used to model the regex-string matching for PLREs.
 Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. For instance, assuming $e = ([\mathbb{D}^+])([\mathbb{D}^*])$ where $\mathbb{D}=\{0,\ldots, 9\}$, $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exm-plre}. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns $\nullchar$. For instance, when $[[a^+] + ([a^*])]$ is matched against the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. \zhilin{to be consistent with the definition of semantics of regex-string matching}\philipp{I'm for removing the special case
-  $\nullchar$, just use the empty string instead.}
+  $\nullchar$, just use the empty string instead.}\zhilin{for me, $\nullchar$ is important to guarantee the consistency with Javascript semantics. }
 
 
 \begin{remark}
