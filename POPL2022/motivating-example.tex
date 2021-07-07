@@ -113,15 +113,28 @@ For enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-r
 %
 where {\sf postConReg} = \mintinline{javascript}{/^.*\sand[^,]*\sand.*$/}, and $\cA_{\sf autListReg}, \cA_{\sf postConReg}$ are the finite-state automata corresponding {\sf autListReg} and {\sf postConReg} respectively. 
 
-\zhilin{@Philip, The following paragraphs to be checked. }
-To solve the string constraint, we first show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}).
+\zhilin{@Philip, please check}
+Then we apply the proof rules in Section~\ref{sect:calculus} to solve the string constraint, in the following three phases. The string constraint solving relies on the fact that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}).
 %
-Then we compute the pre-image of the regular language defined by $\cA_{\sf postConReg}$ under $\cT$, which is a finite-state automaton $\cB$, apply the proof rule {\ruleName{Bwd-Prop}} in Section~\ref{sect:calculus}, and obtain the following constraint,
+\begin{itemize}
+\item \emph{Phase 1:} Apply the Boolean rules (first row of
+  Table~\ref{tab:calculus}) to eliminate Boolean operators and obtain the sequent 
+  %
+  \[
+  {\sf authorList} \in \cA_{\sf autListReg}, {\sf result} = \cT({\sf authorList}), {\sf result} \in \cA_{\sf postConReg}.
+  \]
+%
+\item \emph{Phase 2:} We compute the pre-image of the regular language defined by $\cA_{\sf postConReg}$ under $\cT$, which is a finite-state automaton $\cB$, apply the proof rule {\ruleName{Bwd-Prop}}, and obtain the following sequent,
 %
 \[{\sf authorList} \in \cA_{\sf autListReg}, {\sf result} = \cT({\sf authorList}),  {\sf result} \in \cA_{\sf postConReg}, {\sf authorList} \in \cB.\]
 %
-
-For this constraint, we can check the nonemptiness of the intersection of $\Lang(\cA_{\sf autListReg})$ and $\Lang(\cB)$. It turns out that the intersection is nonempty and there is some string $w$ belonging to the intersection. Then we add ${\sf authorList} \in w$ to the constraint, apply the proof rule {\ruleName{Fwd-Prop-Elim}}, and  
-%
-\[{\sf authorList} \in \cA_{\sf autListReg}, {\sf authorList} \in w,  {\sf result} \in \cA_{\sf postConReg}, {\sf authorList} \in \cB.\]
-This shows that the original constraint is satisfiable.
+\item \emph{Phase 3:} Since ${\sf authorList}$ is an input string variable, namely,  the
+  string variable that does not occur as left-hand side of equations or
+  function applications,  we apply rule~\ruleName{Cut} for ${\sf authorList}$ and 
+ introduce an assignment~${\sf authorList} \in w$ that is consistent with the
+  regex constraints on ${\sf authorList}$, i.e ${\sf authorList} \in \cA_{\sf autListReg}$ and ${\sf authorList} \in \cB$. 
+  Then systematically apply
+  \ruleName{Subsume}, \ruleName{Fwd-Prop-Elim} to
+  evaluate all remaining formulas and turn the proof goal into a
+  solution, thus showing the original string constraint is satisfiable.
+\end{itemize}
