@@ -104,7 +104,7 @@ in the following two examples.
     %\qed
 \end{example}
 
-\begin{example}
+\begin{example}\label{ex:normalize}
     We quickly mention the difficulty posed by the match function in JavaScript,
     in combination with replace; this example will be discussed in more
     detail in Section \ref{sec:mot}. Consider the snippet in Figure 
@@ -347,9 +347,56 @@ We conclude with two open questions:
  %to approach the genuine semantics of real-world regular expressions. 
 %Although the CEGAR approach of \expose{} made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
-\zhilin{stopped here}
-
 \paragraph*{Contributions.}
+In this paper, we provide \emph{the first} string theory and string solver that
+natively support \regexp{}. Not only can our theory/solver easily express and 
+solve Example
+\ref{exmp-name-swap} and Example \ref{ex:normalize} --- which hitherto no 
+existing string solvers and string analysis can handle --- our experimentation
+using a library of real-world regular expressions (involving more than 100,000
+benchmarks) suggests that our solver outperforms existing methods (i.e.
+\cite{aratha,LMK19}) by 30x-50x. We provide more details of our contributions
+below.
+
+Our string theory provides for the first time a native support of the match and the 
+replace functions, which can use JavaScript\footnote{JavaScript was chosen 
+because it is the most relevant to string solving 
+\cite{BEK,Berkeley-JavaScript}, owing to vulnerabilities in JavaScripts 
+caused by string manipulations. Our method can be easily adapted to Regex
+semantics in other languages.} RegEx in the input arguments. Here is a quick
+summary of our string constraint language (see Section \ref{sec:logic} for
+more details):
+\[
+\begin{array}{l c l}
+\smallskip
+\varphi & \eqdef  & z = x \concat y \mid y  = \extract_{i, e}(x) \mid
+y  = \replace_{\pat, \rep}(x) \mid 
+\\
+& & y = \replaceall_{\pat, \rep}(x)   \mid
+ x \in e \mid \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
+\label{eq:SL}
+\end{array}
+\]
+where $e, \pat$ is a \regexp{}, $i \in \mathbb{N}$, $x,y,z$ are variables, and $\rep$ 
+is the so-called
+the replacement string (which might refer to strings matched in capture groups,
+as in Example \ref{exmp-name-swap}). Apart from the standard concatenation
+operator $\concat$, we support $\extract$, which extracts the string matched by
+the $i$th capture group in the \regexp{} $e$ (note that match can be simulated
+by several calls to $\extract$). We also support $\replace$ 
+(resp.~$\replaceall$), which replaces the first occurrence (resp.~all
+occurrences) of substrings in $x$ matched by $\pat$ by $\rep$. Our solver/theory
+also cover the most important features of \regexp{} (including greedy/lazy
+matching, capture groups, among others) that make up xx\% of the benchmarks from
+\cite{LMK19}. More importantly, we have performed an extensive experiment
+validating our semantics of \regexp{} against JavaScript semantics. \anthony{Say
+details here. Maybe good to say which ECMAScript}.
+
+Our string solver is based on a first-order sequent calculus ...
+\anthony{Philipp, maybe you want to say something here?}
+
+\anthony{This is the end of my intro for now; below can be erased as needed}
+
 The main contributions of the paper are to answer both (Q1) and (Q2) in the
 positive for a reasonable fragment of RWREs. In particular, we consider the 
 problem of path feasibility of a simple symbolic path constraint language
