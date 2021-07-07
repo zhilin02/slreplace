@@ -7,8 +7,7 @@
 
 %
 %Strings are among the most important data types. 
-In modern programming languages --- such as JavaScript, Python, Java, and PHP 
---- the string data type plays a crucial role. 
+In modern programming languages---such as JavaScript, Python, Java, and PHP---the string data type plays a crucial role. 
 %, whereby it is commonplace to use
 %strings to represent all kinds of data
 A quick look at the string libraries for these languages is enough to convince
@@ -35,7 +34,7 @@ security vulnerabilities (e.g. cross-site scripting, a.k.a. XSS).
 %Regular expressions are widely used in string-manipulating programs. 
 One powerful method for identifying such bugs in programs is \emph{symbolic 
 execution} (possibly in combination with dynamic analysis), which
-analyses symbolic paths in a program by viewing them as constraints $\phi$, 
+analyses symbolic paths in a program by viewing them as constraints %$\phi$, 
 whose feasibility are to be checked by constraint solvers. 
 %As far as string data
 %types, 
@@ -46,17 +45,17 @@ development of numerous string solvers in the last decade or so including
 %\cite{???}.
 %As a result of the fundamental role of regular expressions in string processing, the state-of-the-art string constraint solvers (e.g.
 Z3, CVC4, Z3-str/2/3/4, ABC, Norn, Trau, OSTRICH, S2S, Qzy, Stranger, Sloth,
-Slog, Slent, Gecode+S, G-Strings, HAMPI, among many others. \cite{??}
-. %... \anthony{make sure we add all}) 
+Slog, Slent, Gecode+S, G-Strings, HAMPI, among many others. %\cite{??}
+%... \anthony{make sure we add all}) 
  %support regular expressions. Nevertheless, what they support is only the regex-string matching (aka membership constraints) for \emph{classical} regular expressions, i.e. whether a string belongs to the language defined by a regular expression, as we know it from formal language theory.  
 
-One highly challenging problem in the development of string solvers is the need
+One challenging problem in the development of string solvers is the need
 to support increasingly more real-world string functions, especially because the
 initial stage of the development of string solvers typically assumed only simple
 functions (in particular, concatenation, regular constraints, and sometimes also
 length constraints). For example, the importance of supporting functions like
-replaceAll function (i.e. replace with global flag) in a strong solver was 
-elaborated in \cite{??};
+replaceAll function (i.e. replace with global flag) in a string solver was 
+elaborated in \cite{CCH+18};
 ever since, quite a number of string solvers support this operator.
 Unfortunately, the gap between the string functions that are supported by 
 current string solvers and those supported by modern programming languages 
@@ -65,15 +64,15 @@ constraint solving,
 %performed in programming languages depend on 
 the widely used \emph{Regular Expressions} in modern programming
 languages
-(among others, JavaScript, Python, etc.) --- which we call \emph{RegEx} 
-in the sequel --- are one important and frequently-occuring feature in
+(among others, JavaScript, Python, etc.)---which we call \emph{RegEx} 
+in the sequel---are one important and frequently-occurring feature in
 programs that are difficult for existing SMT theories over 
 strings to model and solve, especially because their syntaxes and semantics 
 substantially differ from the notion of regular expressions in formal 
 language theory \cite{HU79}. Indeed,
-many important string functions in programming languages --- such as exec, test,
-search, match, replace, and split in Javascript, as well as match, findall,
-search, sub, and split in Python --- can and often do exploit RegEx, giving 
+many important string functions in programming languages---such as exec, test,
+search, match, replace, and split in JavaScript, as well as match, findall,
+search, sub, and split in Python---can and often do exploit RegEx, giving 
 rise to path constraints that are difficult (if not impossible) to precisely 
 capture in existing string solving frameworks. We illustrate these difficulties
 in the following two examples.
@@ -125,7 +124,7 @@ and finally  \texttt{normalize("0250") == "250"}. As the reader might have
 
 \input{normalize-ex}
 
-The above examples epitomize the difficulties that are arise from the
+The above examples epitomize the difficulties that are arisen from the
 interaction between RegEx and string functions in programs. Firstly,
 RegEx uses the deterministic semantics for pattern matching (like greedy
 semantics in the above example, but the so-called \emph{lazy} matching is
@@ -157,9 +156,9 @@ This results in a rather severe price in both precision and performance: the
 refinement process may not terminate even for extremely simple programs
 (e.g. the above examples). \anthony{Zhilin: please check this}
 
-Therefore, the current state-of-affairs is highly unsatisfactory because even 
-the introduction of very simple RegEx expressions in programs (e.g. see above 
-examples) result in path constraints that can\emph{not} be solved by existing 
+Therefore, the current state-of-affairs is unsatisfactory because even 
+the introduction of very simple RegEx expressions in programs (e.g. the above 
+examples) results in path constraints that can \emph{not} be solved by existing 
 symbolic executions in combination with string solvers. In this paper, we would
 like to firstly advocate that string solvers should provide support of RegEx 
 (at least at some levels) in their SMT theories. Existing work
