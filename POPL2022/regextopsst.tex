@@ -16,11 +16,12 @@
 We now define the formal semantics of the \regexp-string matching, which  is defined by recursively constructing {\PSST}s out of regular expressions. In \cite{BDM14,BM17}, a construction from regular expressions to prioritized finite transducers (PFT) was given. The construction therein is a variant of the classical Thompson construction from regular expressions to nondeterministic finite automata \cite{Thompson68}. In particular, the size of the constructed PFT is linear in the size of the given regular expression. 
 %
 
-One may tempt to believe that the construction in \cite{BDM14,BM17} can be easily adapted to construct PSSTs out of {\pcre}s. 
+One may be tempted to think that the construction in \cite{BDM14,BM17} can be easily adapted to construct {\PSST}s out of regular expressions. 
 %
-Nevertheless, the construction in \cite{BDM14,BM17} does \emph{not} work for so called \emph{problematic regular expressions}, namely,  those regular expressions that contain the subexpressions $e^*$ or $e^{*?}$ satisfying that  $\varepsilon \in \Lang(e)$. Moreover, the construction therein did not consider the repetition operators $[e_1^{\{m_1,m_2\}}]$ or $[e_1^{\{m_1,m_2\}?}]$. Finally, the construction therein was not validated against the actual semantics of regex-string matching in programming languages. 
+Nevertheless, the construction in \cite{BDM14,BM17} does \emph{not} work for so called \emph{problematic regular expressions}, i.e.,  those regular expressions that contain the subexpressions $e^*$ or $e^{*?}$ with $\varepsilon \in \Lang(e)$. Moreover, the construction therein did not consider the repetition operators $[e_1^{\{m_1,m_2\}}]$ or $[e_1^{\{m_1,m_2\}?}]$. 
+%Finally, the construction therein was not validated against the actual semantics of regex-string matching in programming languages. 
 %
-In comparison, our goal here is to have a construction that \emph{works for arbitrary {\pcre}s and is consistent with the actual semantics of  regex-string matching in Javascript}. It turns out that our construction of PSSTs out of {\pcre}s in the sequel requires some new ideas and is considerably different from that in  \cite{BDM14,BM17}. In particular, the size of the constructed PSST can be \emph{exponential} in the size of the given regular expression in the worst case.
+In comparison, our goal here is to have a construction that works for arbitrary regular expressions and is consistent with the actual semantics of \regexp-string matching in JavaScript. It turns out that our construction of {\PSST}s requires new ideas and is considerably different from that in \cite{BDM14,BM17}. In particular, the size of the constructed {\PSST} can be \emph{exponential} in the size of the given regular expression in the worst case.
 
 %\subsection{Semantics of \regexp[\sf CG]}
 %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
@@ -81,12 +82,14 @@ In comparison, our goal here is to have a construction that \emph{works for arbi
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets, say $F_1$ and $F_2$, with the intention that $F_1$  and $F_2$ are responsible for accepting the empty string resp. non-empty strings. Note here for technical convenience, let us assume that $F$ in a PSST is a set of final states, instead of an output function. Therefore, the PSSTs constructed in the sequel are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
+The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. Note here for technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed in the sequel are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
+%
+Furthermore, to deal with the situation that some capturing group may not be matched to any string and its value is undefined, we introduce a special symbol $\nullchar$ %for denoting this situation 
+and assume that the initial values of all the string variables are $\nullchar$. %To avoid the tediousness, 
+For simplicity, in the definition of a {\PSST}, if $\delta(q, a, q') = ()$ or $\tau(q, \varepsilon, q') = ((); ())$,  they will not be stated explicitly. Moreover, we will omit all the assignments $E(q, a, q')(x)$ such that $E(q, a, q')(x) = x$.
+%By default, all the PSSTs from now on satisfy these assumptions. 
 
-Furthermore, in order to deal with the situation that some capturing group may not be matched to any string and its value is undefined, we introduce a special symbol $\nullchar$ for denoting this situation and assume that the initial values of all the string variables are $\nullchar$. To avoid the tediousness, in the definition of a PSST, if $\delta(q, a, q') = ()$ or $\tau(q, \varepsilon, q') = ((); ())$, then we will not state them explicitly, moreover, we will omit all the assignments $E(q, a, q')(x)$ such that $E(q, a, q')(x) = x$.
-By default, all the PSSTs from now on satisfy these assumptions. 
-
-For PSSTs of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$, we introduce a notation to be used in the construction, namely, the concatenation of two PSSTs. 
+For {\PSST}s of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$, we introduce a notation to be used in the construction, namely, the concatenation of two {\PSST}s. 
 
 \begin{definition}[Concatenation of two PSSTs]\label{def-psstconcat}
 For $i \in \{1,2\}$, let $\cT_i = (Q_i, \Sigma, X_i, \delta_i, \tau_i, E_i, q_{i,0}, (F_{i,1}, F_{i,2}))$ be a PSST. Then the \emph{concatenation} of $\cT_1$ and $\cT_2$, denoted by $\cT_1 \concat \cT_2$, is defined as follows (see Figure~\ref{fig-reg2pfa-2}): 
