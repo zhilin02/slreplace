@@ -81,8 +81,8 @@ in the following two examples.
 %    We shall give a more extensive example in Section \ref{sec:mot}, which 
 %    simultaneously involves both match and replace. 
     We briefly mention the difficulty posed by the replace
-    function in JavaScript; a more detailed example can be found
-    in Section \ref{sec:mot}. Consider the snippet
+    function in JavaScript; a slightly different but more detailed example can be found
+    in Section \ref{sec:mot}. Consider the Javascript code snippet
     \begin{minted}{javascript}
         var namesReg = /([A-Za-z]+) ([A-Za-z]+)/g;
         var newAuthorList = authorList.replace(nameReg, "$2, $1");
@@ -92,11 +92,15 @@ in the following two examples.
     the above program would convert this to last name, followed by first name
     format. For instance, \texttt{"Don Knuth; Alan Turing"} would
     be converted to \texttt{"Knuth, Don; Turing, Alan"}.
+    A natural post condition for this code snippet one would like to check is the existence of at least one ``,'' between two occurrences of ``;''.
+\OMIT
+{   
     Suppose that the number of people in \texttt{authorList} and 
-    \texttt{newAuthorList} are capped to 20. In this case, we would want to
-    check if the string \texttt{newAuthorList} could contain
-    more than 19 \texttt{';'}, assuming that \texttt{authorList} contains at most
-    than 19 \texttt{';'}.
+   \texttt{newAuthorList} is capped to 4. In this case, we would want to
+   check if the string \texttt{newAuthorList} could contain
+   more than 4 \texttt{';'}, assuming that \texttt{authorList} contains at most
+   than 4 \texttt{';'}.
+}
     %\qed
 \end{example}
 
