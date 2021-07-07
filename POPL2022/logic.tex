@@ -6,11 +6,11 @@ We define the string constraint language $\strline$ below.
 \[
 \begin{array}{l c l}
 \smallskip
-\varphi & \eqdef  & z = x \concat y \mid y  = \extract_{i, e}(x) \mid
+\varphi & \eqdef  & x = y \mid z = x \concat y \mid y  = \extract_{i, e}(x) \mid
 y  = \replace_{\pat, \rep}(x) \mid 
 \\
 & & y = \replaceall_{\pat, \rep}(x)   \mid
- x \in e \mid \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
+ x \in e \mid  \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
 \label{eq:SL}
 \end{array}
 \]
@@ -27,17 +27,19 @@ where
 %	\item for assertions, $e \in \regexp$.\philipp{I believe we should remove the word ``assert'', it is easier/more readable to consider constraints like $x \in e \wedge y \in e' \wedge ...$}
 \end{itemize}
 
-The $\extract$ function is used to model the regex-string matching for PLREs.
-Specifically, the $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. For instance, assuming $e = ([\mathbb{D}^+])([\mathbb{D}^*])$ where $\mathbb{D}=\{0,\ldots, 9\}$, $\extract_{1, e}(0250)=0250$ and $\extract_{2, e}(0250)=\varepsilon$, as shown in Example~\ref{exm-plre}. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns $\nullchar$. For instance, when $[[a^+] + ([a^*])]$ is matched against the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. \zhilin{to be consistent with the definition of semantics of regex-string matching}\philipp{I'm for removing the special case
-  $\nullchar$, just use the empty string instead.}\zhilin{for me, $\nullchar$ is important to guarantee the consistency with Javascript semantics. }
+The $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns a special symbol $\nullchar$, denoting the fact that its value is undefined. For instance, when $[[a^+] + ([a^*])]$ is matched to the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. 
+The formal semantics of $\extract_{i, e}(x)$ is defined by the PSST $\cT_e$ constructed from $e$ in Section~\ref{sec-rwre}, with all the string variables, except the string variable corresponding to the $i$-th capturing group, removed.
+%
+%\zhilin{to be consistent with the definition of semantics of regex-string matching}\philipp{I'm for removing the special case
+%  $\nullchar$, just use the empty string instead.}\zhilin{for me, $\nullchar$ is important to guarantee the consistency with Javascript semantics. }
 
 
 \begin{remark}
-The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving $\regexp$s, e.g. {\sf exec} and {\sf test}, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
+The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$,  assuming that $reg$ does not contain the global flag. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving $\regexp$s, e.g. {\sf exec} and {\sf test}, without global flags, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
 \end{remark}
 
 The function $\replaceall_{\pat, \rep}(x)$ is parameterized by the \emph{pattern} $\pat \in \regexp$ and the \emph{replacement string} $\rep \in \refexp$.
-For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$.
+For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$. More specifically, $\replaceall_{\pat, \rep}(x)$ finds the first match of $\pat$ in $x$ and replace the match with $\rep$, let $x'$ be the suffix of $x$ after the first match of $\pat$,  then it finds the first match of $\pat$ in $x'$ and replace the match with $\rep$, and so on.
 %The set $\refexp$ of replacement strings is defined using the following syntax, where $i \in \Nat$.
 %\[
 %    \rep = a \mid \$i \mid \refbefore \mid \refafter
@@ -46,9 +48,9 @@ For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces
 %A reference $\$i$ where $i > 0$ is instantiated by the string matched by the $i$th capture group.
 %For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$.
 %
-A reference $\$i$ where $i > 0$ is instantiated by the matching of the $i$th capture group.
+A reference $\$i$ where $i > 0$ is instantiated by the matching of the $i$th capturing group.
 There are three special references\footnote{
-    The corresponding syntax for $\refbefore$ and $\refafter$ in JavaScript is $\$`$ and $\$'$.
+    The corresponding syntax for $\$0$, $\refbefore$ and $\refafter$ in JavaScript are $\$\&$, $\$`$, and $\$'$.
 } $\$0$, $\refbefore$, and $\refafter$.
 These are instantiated by the matched text, the text occurring before the match, and the text occurring after the match respectively.
 In particular, if the input word is $u v w$ where $v$ has been matched and will be replaced, then $\$0$ takes the value $v$, $\refbefore$ takes the value $u$, and $\refafter$ takes the value $w$.
@@ -56,7 +58,7 @@ When there are multiple matches in a $\replaceall$, the values of $\refbefore$ a
 
 The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
 
-A $\strline$ formula is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) each variable $x$ occurs in the left-hand side of equations at most once; and 3) the equations can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that for each variable $x$, if $x = x_i$, then $x$ does not occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
+A $\strline$ formula $\varphi$ is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) the equations in $\varphi$ can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that $x_1,\ldots, x_n$ are mutually distinct, moreover, for each $i \in [n]$, $x_i$ does \emph{not} occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

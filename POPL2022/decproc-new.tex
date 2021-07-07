@@ -2,11 +2,20 @@
 
 \subsection{Decision Procedure for $\strlinesl$} \label{sec:decision}
 
-The goal of this section is to prove Theorem~\ref{thm-main}, i.e., the
-decidability of the path feasibility of $\strlinesl$. To this
-end we define a terminating strategy to apply the rules in
-Table~\ref{tab:calculus} to a formula in the $\strlinesl$
-fragment:
+One of the main results of this paper is the decidability of the
+$\strlinesl$ fragment of straightline formulas including
+concatenation, extract, replace, and replaceAll:
+%
+\begin{theorem}\label{thm-main}
+  Satisfiability of $\strlinesl$ formulas is decidable.
+\end{theorem}
+
+\begin{proof}
+  We define a terminating strategy to apply the rules in
+  Table~\ref{tab:calculus} to formulas in the $\strlinesl$
+  fragment. The resulting proofs will either be closed, proving
+  unsatisfiability, or have at least one satisfiable goal containing a
+  solution:
 \begin{itemize}
 \item \emph{Phase 1:} apply the Boolean rules (first row of
   Table~\ref{tab:calculus}) to eliminate Boolean operators.
@@ -19,7 +28,8 @@ fragment:
   formulas are acyclic.
 
   If all branches are closed as a result of Phase~2, the considered
-  formula is unsatisfiable; otherwise Phase~3 will extract a solution.
+  formula is unsatisfiable; otherwise, we can conclude satisfiability,
+  and Phase~3 will extract a solution.
 \item \emph{Phase 3:} select an open branch of the proof. On this
   branch, determine the set~$I$ of input variables, which are the
   string variables that do not occur as left-hand side of equations or
@@ -30,6 +40,7 @@ fragment:
   evaluate all remaining formulas and turn the proof goal into a
   solution.
 \end{itemize}
+\end{proof}
 
 \OMIT{
 We first show that $\extract$, $\replace$, and $\replaceall$ functions can be replace with PSST transductions.
