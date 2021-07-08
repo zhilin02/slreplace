@@ -66,8 +66,7 @@ Let $S'$ be the resulting $\strline'_{\sf reg}$ program containing no assignment
 
 \paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up, the aforementioned decision procedure has a non-elementary complexity in the worst-case. In fact, this is optimal and a matching lower-bound is given in Appendix~\ref{sec:tower-hard}.
 
-When $\refbefore$ and $\refafter$ are not used, the PSSTs in the reduction are copyless, which means the exponential blow-up in the size of the input \FA{} $\Aut$ can be avoided. This means that the exponentials do not stack on top of each other during the backwards analysis and the non-elementary blow-up is not necessary. 
-%\zhilin{I think we should be careful  about the complexity here, since the current transformation from Regexes to PSSTs with two disjoint subsets of final states does incur an exponential blow-up (See Section 3).}
+When $\refbefore$ and $\refafter$ are not used, the PSSTs in the reduction are copyless, which means the exponential blow-up in the size of the input \FA{} $\Aut$ can be avoided. This means that the exponentials do not stack on top of each other during the backwards analysis and the non-elementary blow-up is not necessary.
 
 Moreover, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per query a few seconds (see Section~\ref{sect:impl}).
 
