@@ -43,28 +43,10 @@
 	%
 	%. To this end, we harness an extension of finite-state automata with priorities, which \emph{defines} how a string is accepted by the given regular expression. We start with the standard finite-state automaton. 
 	%
-	
-	
-	%
-	%=======
-	%
-	%In the sequel, we first define the syntax of {\regexp}. 
-	%%
-	%Then we define PSSTs and construct PSSTs out of {\regexp}s to define the semantics of regex-string matching. Finally, we validate the formal semantics against the actual Javascript semantics.
-	%
-	%%
-	%%Furthermore, we also do extensive experiments to validate the formal semantics against the actual semantics of regex-string matching in Javascript.
-	%>>>>>>> 658ffd954615e7a463bc6ba5b933083613849a72
-	
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	\OMIT{
-		In this section, we introduce the regular expressions which will be used in the string constraints. 
-		%The semantics of the regular language conforms to the JavaScript language. 
-		It should be emphasized that the strings accepted by the regular expresses introduced here are still regular, but the parsing of the string is significantly different from classic regular languages. For this purpose, we utilize prioritized finite-state automata \cite{BM17}, which extend classic finite-state automata with priorities, to capture, among others, the greedy/lazy semantics of Kleene star/plus in the regular expression. 
-	}
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%% start 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 In this section, we define the string constraint language. Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 %
 We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$, $\varepsilon$ to denote the empty string, and $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. 
@@ -81,7 +63,8 @@ A string $w'$ is called a \emph{prefix} (resp. \emph{suffix}) of $w$ if $w = w'w
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
 %\subsection{Syntax of regular expressions}
-We start with a definition of regular expressions tailored to its usage in modern programming language. 
+We start with the syntax of regular expressions %tailored to its usage in modern programming language. We shall start with the syntax of regular expressions, 
+which are essentially those used in JavaScript. (We do not include backreferences though.)
 \begin{definition}[Regular expressions, {\regexp}]	
 	%\begin{multline*}
 	\[
