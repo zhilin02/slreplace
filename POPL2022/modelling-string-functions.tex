@@ -6,6 +6,10 @@ That is, we can reduce satisfiability of our string logic to satisfiability of a
     The satisfiability of $\strline$ reduces to the satisfiability of boolean combinations of formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
 \end{lemma}
 
+First, observe that membership tests $x \in e$ can be reduced to FA membership tests $x \in \cA$ using standard techniques.
+Features such a greediness and capture groups do not affect whether a word matches a regular expression, they only affect \emph{how} a word matches a expression.
+Thus, for membership tests, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
+
 We give a sketch of the encoding of $\replaceall$ here.
 Full formal details, and the encoding of $\extract$, are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
 The encoding of $\replace$ is almost identical to that of $\replaceall$.
