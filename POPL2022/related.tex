@@ -1,0 +1,51 @@
+\section{Related Work}
+\label{sec-related}
+
+In this section, we will discuss related results. In particular, we will discuss
+(1) results on string solving, and (2) results on modelling and reasoning about 
+\regexp{} constraints. 
+
+\subsection{String Constraint Solving}
+As we discussed Section \ref{sec-intro}, there has been a wealth of research
+activities focussing on the development of string solving algorithms, especially
+in the past ten decade or so. Solvers are typically using a combination
+of different techniques to check the satisfiability of string constraints,
+including word-based methods, automata methods, and unfolding-based methods
+like the translation to bit-vector constraints.
+We mention among others the following string solvers:
+Z3 \cite{Z3}, CVC4 \cite{cvc4}, Z3-str/2/3/4 \cite{Z3-str,Z3-str2,Z3-str3,BerzishMurphy2021},
+ ABC \cite{ABC}, Norn
+\cite{Abdulla14}, Trau \cite{Z3-trau,AbdullaACDHRR18-trau,Abdulla17}, OSTRICH
+\cite{CHL+19}, S2S \cite{DBLP:conf/aplas/LeH18}, Qzy \cite{cox2017model}, Stranger \cite{Stranger}, Sloth
+\cite{HJLRV18,AbdullaA+19},
+Slog \cite{fang-yu-circuits}, Slent \cite{WC+18}, Gecode+S \cite{DBLP:conf/cpaior/ScottFPS17}, G-Strings \cite{DBLP:conf/cp/AmadiniGST17}, HAMPI
+\cite{HAMPI}, and S3 \cite{S3}. 
+Most modern string solvers provide support of concatenation and regular 
+constraints. The push (e.g. see
+\cite{GB16,Vijay-length,HAMPI,Berkeley-JavaScript,LB16,S3})
+towards incorporating other functions --- e.g. length, 
+string-number conversions, replace, replaceAll --- in a string theory has been an
+important theme in the area, owing to the desire to able to reason 
+about increasingly more complex real-world string-manipulating programs.
+These functions, among others, have now been part of the SMT-LIB Unicode Strings
+standard\footnote{See
+\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}. 
+To the best of our knowledge, at the moment there is no solver that
+supports \regexp\ features like greedy/lazing matching or capturing
+groups (apart from our own solver \ostrich).
+For a recent comparison of the solvers, we refer the
+reader to the survey \cite{Ama20}.
+
+\subsection{Modelling and Reasoning about \regexp{}}
+%This paper is concerned with string constraint solving in general, but the focus is on the interplay of regular expressions in modern programming language and solving constraints involving complex string functions. Both of them are monumental research fields for which we will only discuss the work which are most pertinent to ours. 
+
+Variants and extensions of regular expressions to capture their usage in programming languages have received attentions %been investigated 
+from both theory and practice. In formal language theory, regular expressions with capturing groups and backreferences were considered in \cite{CSY03,CN09} and also more recently in \cite{Freydenberger13,Schmid16,BM17b,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of these regular expression, namely, the non-commutative union and the greedy/lazy semantics of Kleene star/plus, were not addressed therein. In software engineering community, % have also received attention in the software engineering community. 
+some empirical studies were reported for these regular expressions recently, including portability across different programing languages \cite{DMC+19} and DDos attacks \cite{SP18}, as well as how programmers write them in practice \cite{MDD+19}.
+
+
+Prioritized finite-state automata and prioritized finite-state transducers were proposed in \cite{BM17}. Prioritized finite-state transducers add indexed brackets to the input string in order to identify the matches of capturing groups. It is hard---if not impossible---to use prioritized finite-state transducers to model replace(all) function in general, e.g. swapping the first and last name as in Example~\ref{exmp-name-swap}. In contrast, {\PSST}s store the matches of capturing groups into string variables, which can then be referred to, thus allowing us to conveniently model the match and replace(all) function. 
+%
+Streaming string transducers were also used in \cite{ZAM19} to solve the straight-line string constraints with concatenation, finite-state transducers, and regular constraints.
+
+For string constraints solving in general, we refer the readers to the recent survey \cite{Ama20}. In this work, we consider a string constraint language which is undecidable in general, and propose a propagation-based calculus to solve the constraints. However, we also identified a straight-line fragment including concatenation, extract, replace(All) which turns to be decidable. The decision procedure we use extends the backward-reasoning approach in \cite{CHL+19}, where only standard one-way and two-way finite-state transducers were considered. 
