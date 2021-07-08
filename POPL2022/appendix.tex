@@ -2,7 +2,9 @@
 
 \section{Appendix}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
 \subsection{Backward Reasoning in the Motivating Example}\label{app-br-mot-exmp}
 
 The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solved by ``backward'' reasoning as follows:
@@ -60,7 +62,9 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
     Note that the above program uses backreferences in assertion statements.
     We can achieve the same reduction by replacing $\ASSERT{z \in (\Sigma^+)\#\$1}$ in the above program with $z':= \replace(\Sigma^+\#\$1, \top); \ASSERT{z' \in \top}$, where $\top \not \in \Sigma$. Note that the program resulted from the replacement uses backreferences only in the pattern parameter of the $\replace$ function.
 \end{proof}
-
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \subsection{Proof for Theorem \ref{theorem:regex_pnfa_equiv}}
 %
@@ -154,14 +158,14 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
 %======================================================
 
-\subsection{From string functions $\extract$, $\replace$, and $\replaceall$ to PSST}\label{appendix:sec-extract-replace-to-psst}
+\subsection{From $\extract$, $\replace$ and $\replaceall$ to PSSTs}\label{appendix:sec-extract-replace-to-psst}
 
-    \medskip
+%    \noindent{\bf Lemma~\ref{lem-str-fun-to-psst}}.
+\begin{lemma}\label{lem-str-fun-to-psst}
+    The satisfiability of $\strlinesl$ reduces to the satisfiability of the string constraints that are a conjunction of the formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
+\end{lemma}
 
-    \noindent{\bf Lemma~\ref{lem-str-fun-to-psst}}.
-    \emph{The path feasibility of $\strline_{\sf reg}$ reduces to path feasibility of string-manipulating programs consisting of a sequence of the statements of the form $z:=x \concat y$, $y:=\cT(x)$, and $\ASSERT{x \in \cA}$, where $\cT$ is a PSST and $\cA$ is an FA.}
-
-    The proof is in two steps: first we remove $\$0$, $\refbefore$, and $\refafter$, then we encode the remaining replacements with PSSTs.
+    The proof is in two steps: first we remove $\$0$, $\refbefore$, and $\refafter$, then we encode the remaining string functions with PSSTs.
 
     \subsubsection{Removing Special References}
 
@@ -237,7 +241,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
     \]
     That is, by inserting the preceding and succeeding text directly next to each match, we can use simple references $\$i$ instead of $\refbefore$ and $\refafter$.
 
-    \subsubsection{Encoding as PSSTs}
+    \subsubsection{Encoding string functions as PSSTs}
 
     Once $\$0$, $\refbefore$, and $\refafter$ are removed from the replacement strings, then the string functions can be replaced by PSSTs.
 
@@ -246,6 +250,12 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
         $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$
     \end{lemma}
     \begin{proof}
+    As we already mentioned in Section~\ref{sec:logic}, $\extract_{i,e}$ can be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all the string variables, except the string variable $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group,  and setting the output expression of the final states as $x_{e'}$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT
+{
         Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$.
         Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$, and ${\sf Sub}_{e'}[\cA_e]$ is any isomorphic copy of $\cA_{e'}$ in $\cA_e$.
 
@@ -295,8 +305,11 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                 \end{itemize}
                 %
         \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        Next, we show how to construct the PSST for $\replaceall_{\pat, \rep}$.
+        Next, we show how to construct the PSST for $\replaceall_{\pat, \rep}$ where all the references in $\rep$ are of the form $\$i$.
 
         Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$.
         Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
@@ -315,17 +328,19 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
         We use two variables in this case to satisfy the copyless property.
         If we tried to use a single variable – e.g. $\rep[x/\$i_1,x/\$i_2]$ – then the resulting transition in the encoding below would not be copyless.
 
-        For every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$-th capturing group, and ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$ be any isomorphic copy of $\cA_{e'_{i_j}}$ in $\cA_\pat$.
-
-        Suppose $\cA_\pat = (Q, \Sigma, \delta, \tau, q_0, f_0)$. Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cA_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replaceall})
+         Suppose $\cT_\pat = (Q_{\pat}, \Sigma, X_{\pat}, \delta_{\pat}, \tau_{\pat}, q_{\pat,0}, (F_{\pat,1}, F_{\pat,2}))$.  
+         %For every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$th capturing group, and $\mathscr{S}_{e'_{i_j}}[\cT_\pat]$ be the set of isomorphic copies of $\cT_{e'_{i_j}}$ in $\cT_\pat$. (Recall that in the construction of $\cT_e$ in Section~\ref{sec-rwre}, there may be multiple copies of $\cT_{e'_{i_j}}$ for a subexpression $e'_{i_j}$.)
+%
+   Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cT_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replaceall})
         \begin{itemize}
-            \item $\cT_{\replaceall_{\pat,\rep}}$ goes from $q'_0$ to $q_0$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position,
+            \item $\cT_{\replaceall_{\pat,\rep}}$ goes from $q'_0$ to $q_{\pat,0}$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position,
                 %
             \item when $\cT_{\replaceall_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, which stores the output of $\cT_{\replaceall_{\pat,\rep}}$,
                 %
-            \item starting from $q_0$, $\cT_{\replaceall_{\pat,\rep}}$ simulates $\cA_\pat$ and stores the matches of the $\$i_1$-th, $\ldots$, $\$i_k$-th capturing groups of $\pat$ into the string variables $x_1, \cdots, x_k$ respectively,
+            \item starting from $q_{\pat, 0}$, $\cT_{\replaceall_{\pat,\rep}}$ simulates $\cT_\pat$ and stores the matches of capturing groups of $\pat$ into the string variables, in particular, 
+            the matches of the $i_1$th, $\ldots$, $i_k$th capturing groups into the string variables $x_{e'_{i_1}}, \cdots, x_{e'_{i_k}}$ respectively,
                 %
-            \item when the first match of $\pat$ is found, $\cT_{\replaceall_{\pat,\rep}}$ goes from $f_0$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_1/\$_{i_1}, \cdots, x_k/\$_{i_k}]$, to the end of $x_0$, resets the values of $x_1,\cdots,x_k$ to $\varepsilon$ and keeps searching for the next match of $\pat$.
+            \item when the first match of $\pat$ is found, $\cT_{\replaceall_{\pat,\rep}}$ goes from $f_{\pat,1} \in F_{\pat, 1}$ or $f_{\pat, 2} \in F_{\pat, 2}$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_{e'_{i_1}}/\$_{i_1}, \cdots, x_{e'_{i_k}}/\$_{i_k}]$, to the end of $x_0$, resets the values of al the string variables, except $x_0$, to $\nullchar$, and keeps searching for the next match of $\pat$.
         \end{itemize}
 
         \begin{figure}[ht]
@@ -335,47 +350,49 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
             \label{fig-psst-replaceall}
         \end{figure}
 
-        Observe that the PSST will be copyless: in all but the last case, variable assignments are of the form $x_j = x_j a$, $x_j = x_j$ or $x_j = \varepsilon$;
+        Observe that the PSST will be copyless: in all but the last case, variable assignments are of the form $x_{e'} = x_{e'} a$, $x_{e'} = x_{e'}$, $x_{e'} = \varepsilon$, or $x_{e'} = \nullchar$;
         in the final case, when a replacement is made, the assignments are of the form
         \[
             \begin{array}{rcl}
-                x_0 &=& x_0 w_1 x_1 w_2 \cdots w_k x_k w_{k+1} \\
-                x_1 &=& \varepsilon \\
+                x_0 &=& x_0 w_1 x_{e'_1} w_2 \cdots w_k x_{e'_k} w_{k+1} \\
+                x_{e'_1} &=& \nullchar \\
                     &\vdots& \\
-                x_k &=& \varepsilon \ .
+                x_{e'_k} &=& \nullchar \ .
             \end{array}
         \]
 
-        Formally, $\cT_{\replaceall_{\pat, \rep}} =$ $(Q \cup \{q'_0\}$, $\Sigma$, $X$, $\delta'$, $\tau', E, q'_0, F)$ where
+        Formally, $\cT_{\replaceall_{\pat, \rep}} = (Q_\pat \cup \{q'_0\}$, $\Sigma$, $X'$, $\delta'$, $\tau', E', q'_0, F')$ where
         \begin{itemize}
-            \item $q'_0 \not \in Q$,
+            \item $q'_0 \not \in Q_\pat$,
 
-            \item  $X = \{x_0, x_1, \cdots, x_k\}$,
+            \item  $X' = \{x_0\} \cup X_\pat$,
                 %
-            \item $F(q'_0) = x_0$, and $F(q')$ is undefined for every $q' \in Q$,
+            \item $F'(q'_0) = x_0$, and $F'(q')$ is undefined for every $q' \in Q_\pat$,
                 %
-            \item $\delta'$ and $\tau'$ are obtained from $\delta$ and $\tau$ as follows,
-                \begin{itemize}
-                    \item $\delta'(q'_0, a) = (q'_0)$ for every $a \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
+            \item $\delta'$ comprises the transitions in $\delta_\pat$, and the transition $\delta'(q'_0, a) = (q'_0)$ for $a \in \Sigma$,
+            
+            \item  $\tau'$ comprises the transitions in $\tau_\pat$, the transitions $\tau'(q'_0) = ((q_{\pat, 0}); ())$, $\tau'(f_{\pat, 1}) = ((q_{\pat, 0}); ())$ and $\tau'(f_{\pat, 2}) = ((q_{\pat, 0}); ())$ for $f_{\pat, 1} \in F_{\pat, 1}$ and $f_{\pat, 2} \in F_{\pat, 2}$,
+%                \begin{itemize}
+%                    \item $\delta'(q'_0, a) = (q'_0)$ for every $a \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
                         %
-                    \item for every $q \in Q \setminus \{f_0\}$ and $a \in \Sigma$, $\delta'(q, a) = \delta(q, a)$ and $\tau'(q) = \tau(q)$,
+  %                  \item for every $q \in Q \setminus \{f_0\}$ and $a \in \Sigma$, $\delta'(q, a) = \delta(q, a)$ and $\tau'(q) = \tau(q)$,
                         %
-                    \item $\delta'(f_0, a) = ()$ for every $a \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
-                \end{itemize}
+ %                   \item $\delta'(f_0, a) = ()$ for every $a \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
+%                \end{itemize}
                 %
-            \item $E$ is defined as follows,
-                \begin{itemize}
-                    \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, a, q')(x_0) = x_0$,
+            \item $E'$ inherits $E_\pat$, and includes the assignments $E'(q'_0, a, q'_0)(x_0)  = x_0 a$ for $a \in \Sigma$, $E'(f, \varepsilon, q'_0) (x_0) = x_0\rep[x_{e'_{i_1}}/\$i_1, \ldots, x_{e'_{i_k}}/i_k]$ and $E'(f, \varepsilon, q'_0) (x) = \nullchar$ for every  $f \in F_{\pat,1} \cup F_{\pat, 2}$ and $x \in X_\pat$.
+%                \begin{itemize}
+%                    \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, a, q')(x_0) = x_0$,
                         %
-                    \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ and every $j \in [k]$,  if $(q, a, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, a, q')(x_j) = x_ja$, otherwise, $E(q, a, q')(x_j) = x_j$,
+ %                   \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ and every $j \in [k]$,  if $(q, a, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, a, q')(x_j) = x_ja$, otherwise, $E(q, a, q')(x_j) = x_j$,
                         %
-                    \item  for every $a \in \Sigma$ and $j \in [k]$, $E(q'_0, a, q'_0)(x_0) = x_0a$ and $E(q'_0, a, q'_0)$$(x_j) = x_j$,
-
-                    \item $E(q'_0, \varepsilon, q_0)(x_j) = x_j$ for every $j \in [k] \cup \{0\}$,
+ %                   \item  for every $a \in \Sigma$ and $j \in [k]$, $E(q'_0, a, q'_0)(x_0) = x_0a$ and $E(q'_0, a, q'_0)$$(x_j) = x_j$,
+%
+ %                   \item $E(q'_0, \varepsilon, q_0)(x_j) = x_j$ for every $j \in [k] \cup \{0\}$,
                         %
-                    \item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, moreover, for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, where $ \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$ denotes the string term obtained from $\rep$ by replacing every occurrence of $\$i_1,\cdots, \$i_k$ with $x_1,\cdots,x_k$ respectively.
+%                    \item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, moreover, for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, where $ \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$ denotes the string term obtained from $\rep$ by replacing every occurrence of $\$i_1,\cdots, \$i_k$ with $x_1,\cdots,x_k$ respectively.
                         %
-                \end{itemize}
+ %               \end{itemize}
                 %
         \end{itemize}
         \end{proof}
@@ -389,17 +406,34 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
         \end{figure}
 
 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \subsection{Construction of an FA $\cB$ for $\cR^{-1}_\cT(\Lang(\cA))$}\label{app-pre-image}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proof of Lemma~\ref{lem:psst_preimage}}\label{app-pre-image}
 
+%Construction of an FA $\cB$ for $\cR^{-1}_\cT(\Lang(\cA))$
+
+\medskip
+
+\noindent {\bf Lemma~\ref{lem:psst_preimage}}.
+\emph{  Given a PSST $\psst = (Q_T, \Sigma$, $X$, $\delta_T$, $\tau_T$, $E_T$,  $q_{0, T}$, $F_T$) and an \FA{} $\Aut
+  = (Q_A, \Sigma, \delta_A, q_{0, A}, F_A)$, we can compute an \FA{} $\cB = (Q_B,
+  \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
+}
+
+\medskip
+
+We prove Lemma~\ref{lem:psst_preimage} in the sequel.
 
         Let $\psst = (Q_T, \Sigma$, $X, \delta_T, \tau_T, E_T,  q_{0, T}, F_T)$ be a PSST  and $\Aut
         = (Q_A, \Sigma$, $\delta_A$, $q_{0, A}$, $F_A)$ be an \FA{}. Without loss of generality, we assume that $\Aut$ contains no $\varepsilon$-transitions. For convenience, we use $\cE(\tau_T)$ to denote $\{(q, q') \mid q' \in \tau_T(q)\}$. For convenience, for $a \in \Sigma$, we use $\delta^{(a)}_A$ to denote the  relation $\{(q, q') \mid (q, a, q') \in \delta_A\}$.
 
         To illustrate the intuition of the proof of Lemma~\ref{lem:psst_preimage}, let us start with the following natural idea of firstly constructing a PFA $\cB$ for the pre-image: $\cB$ simulates a run of $\psst$ on $w$, and, for each $x \in X$, records an $\Aut$-abstraction of the string stored in $x$, that is, the set of state pairs $(p, q) \in Q_A \times Q_A$ such that starting from $p$, $\Aut$ can reach $q$ after reading the string stored in $x$. Specifically, the states of $\cB$ are of the form $(q, \rho)$ with $q \in Q$ and $\rho \in (\cP(Q_A \times Q_A ))^{X}$. Moreover, the priorities of $\cB$ inherit those of $\psst$. The PFA $\cB$ is then transformed to an equivalent FA by simply dropping all priorities. We refer to this FA as $\cB'$.
 
-        Nevertheless, it turns out that this construction is flawed: A string $w$ is in $\cR^{-1}_{\cT}(\Lang(\Aut))$ iff the (unique) accepting run of $\cT$ on $w$ produces an output $w'$ that is accepted by $\Aut$. However, a string $w$ is accepted by $\cB'$ iff \emph{there is a run of $\cT$ on $w$, not necessarily of the highest priority}, producing an output $w'$ that is accepted by $\Aut$. The following example illustrates the flaw of the construction above.
+        Nevertheless, it turns out that this construction is flawed: A string $w$ is in $\cR^{-1}_{\cT}(\Lang(\Aut))$ iff the (unique) accepting run of $\cT$ on $w$ produces an output $w'$ that is accepted by $\Aut$. However, a string $w$ is accepted by $\cB'$ iff \emph{there is a run of $\cT$ on $w$, not necessarily of the highest priority}, producing an output $w'$ that is accepted by $\Aut$. 
+        
+
+\OMIT{        
+The following example illustrates the flaw of the construction above.
 
         \begin{example}
             \label{pre-image-count-examp}
@@ -413,6 +447,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
             Let us consider $w = 10$. The accepting run of $\cT_{\tt extract_{decimalReg,1}}$ on $w$ is $q_0 \xrightarrow[x_1:=x_11]{1} q_1 \xrightarrow[x_1:=x_10]{0} q_1 \xrightarrow{\varepsilon} q_2 \xrightarrow{\varepsilon} q_3 \xrightarrow{\varepsilon} q_4 \xrightarrow{\varepsilon} q_5 \xrightarrow{\varepsilon} q_6$, producing an output $10 \not \in \Lang(\cA)$. Therefore, $10 \not \in \cR_\cT^{-1}(\Lang(\cA))$. Nevertheless, if we consider the FA $\cB'$ constructed from $\cT$ and $\cA$,  it turns out that $\cB'$ does accept $w$, witnessed by the run $(q_0, \{(p_0,p_0)\}) \xrightarrow{1} (q_1, \{(p_0, p_0)\}) \xrightarrow{\varepsilon} (q_2, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_3, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_4, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_5, \{(p_0, p_0)\}) \xrightarrow{0}  (q_5, \{(p_0, p_0)\}) \xrightarrow{\varepsilon}  (q_6, \{(p_0, p_0)\})$, where $\{(p_0, p_0)\}$ is the $\cA$-abstraction of the strings $\varepsilon$ and $1$. On the other hand, the run of $\cB'$ corresponding to the accepting run of $\cT$ on $w$, i.e. $(q_0, \{(p_0, p_0)\}) \xrightarrow{1} (q_1, \{(p_0, p_0)\}) \xrightarrow{0} (q_1, \emptyset) \xrightarrow{\varepsilon}  (q_2, \emptyset) \xrightarrow{\varepsilon} (q_3, \emptyset) \xrightarrow{\varepsilon} (q_4, \emptyset) \xrightarrow{\varepsilon} (q_5, \emptyset) \xrightarrow{\varepsilon} (q_6, \emptyset)$, is not accepting, where $\{(p_0,p_0)\}$ is the $\cA$-abstraction of $\varepsilon$ as well as $1$, and $\emptyset$ is the $\cA$-abstraction of $10$.
         \end{example}
+}
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -679,6 +714,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                     \end{itemize}
                     %\end{proof}
 
+\OMIT{
                     \begin{example}
                         Let us continue Example~\ref{pre-image-count-examp}. Suppose $\cT_{\tt extract_{decimalReg,1}} = (Q_T, \Sigma$, $X, \delta_T$, $\tau_T, E_T,  q_{0, T}, F_T)$. Then the FA defining $\cR^{-1}_{\cT_{\tt extract_{decimalReg,1}}}(\Lang(\Aut))$ constructed by using the aforementioned procedure is illustrated in Fig. \ref{fig-psst-preimage-exmp}, where the final states are those doubly boxed states, moreover, the states reachable from the state $(q_2, \emptyset, \{(q_1,q_2)\}, \{q_1\})$ are omitted because no final states are unreachable from those states, which are therefore redundant. Let us exemplify the construction by considering the state $(q_5, \{(p_0,p_0)\}, \{(q_1,q_2), (q_2,q_3), (q_3,q_4), (q_4, q_5)\}, \{q_1,q_3\})$. For each letter $\ell \in \{0,\cdots, 9\}$, the state $(q_5, \{(p_0,p_0)\}, \emptyset, \{q_1,q_2, q_3, q_4, q_5, q_6\})$ is reached from it, since $\delta_T(q_5,\ell)  = (q_5)$, $\delta_T(q_1,\ell) = (q_1)$ and $(\tau^{(ip)}_T)^*(\{q_1\}) = \{q_1, q_2, q_3, q_4, q_5, q_6\}$. The state $(q_6, \{(p_0,p_0)\}, \{(q_5,q_6)\}, \{q_1, q_2, q_3, q_4, q_5, q_6\})$ is not a final state since $q_6$ is in $\{q_1, q_2, q_3, q_4, q_5, q_6\}$ and $F_T(q_6)$ is defined.
                         %For efficiency, we minimize the FA after the construction. See Section \ref{sect:impl} for implementation details.
@@ -696,7 +732,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                     \begin{remark}
                         The computation of the pre-image of an FA $\cA$ under a PSST $\cT$ can be understood from a different angle: At first, $\cT$ can be turned into an equivalent a streaming string transducer $\cT'$, then the pre-image of $\cA$ under $\cT'$ is computed. Therefore, from the viewpoint of expressibility, PSSTs and SSTs are equivalent. Nevertheless, PSSTs are exponentially more succinct than SSTs, moreover, the priorities in PSSTs are very convenient for modeling the greedy/lazy semantics of Kleene star.
                     \end{remark}
-
+}
 
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
