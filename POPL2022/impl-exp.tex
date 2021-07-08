@@ -144,23 +144,29 @@ fun(x);
 
 \subsection{Experimental evaluation}
 
-Our experiments have the purpose of answering the following main questions:
+Our experiments have the purpose of answering the following main questions:\zhilin{@Philip, removed R1, please check}
 
 \medskip
-\noindent
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT
+{
 \textbf{R1:} Are the  {\regexp}s defined in this paper
 suitable to encode regular expressions in programming languages,
 for instance ECMAScript regular expressions~\cite{ECMAScript11}?\zhilin{Should R1 be removed, since we already have semantics validation experiments ?}\philipp{yes, I think we should remove it; everybody agrees?}
-\\
-\textbf{R2:} How does \ostrich\ compare to other solvers that can
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\textbf{R1:} How does \ostrich\ compare to other solvers that can
 handle real-world regular expressions, including greedy/lazy
 quantifiers and capturing groups?
 \\
-\textbf{R3:} How does \ostrich\ perform in the context of symbolic execution,
+\textbf{R2:} How does \ostrich\ perform in the context of symbolic execution,
 the primary application of string constraint solving?
 
 %
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT
+{
 \paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
 expressions to \regexps, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
@@ -175,46 +181,10 @@ follows the targeted path. The results are summarized in Table~\ref{tab:exp-r1};
 no inconsistencies were observed in the experiments, showing that the
 semantics in this paper are indeed suitable for capturing ES11
 semantics.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{table}[t]
-
-	\begin{center}
-	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
-	\hline
-	   & 
-	  \multicolumn{6}{c|}{\textbf{Aratha+\ostrich}} &\multicolumn{6}{c|}{\textbf{\expose{}+Z3}}
-	  \\
-    & 
-	  \multicolumn{6}{c|}{~\# paths covered within 60s~~} &\multicolumn{6}{c@{\quad}|}{~\# paths covered within 60s}
-	  \\
-	   & ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~ &
-	    ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
-	  \\\hline
-	  \textbf{\expose{}} &  14 & 9 & 9 & 2 & 15 & 0  & 15 & 8 & 9 & 2 & 15 & 1  
-	  \\
-	  \emph{(49 programs)} & \multicolumn{6}{c|}{Average time: \textbf{6.49}s} & \multicolumn{6}{c@{\quad}|}{Average time: 13.46s}\\
-	  & \multicolumn{6}{c|}{Total \#paths covered:124}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:120}	  
-	  \\\hline
-	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
-	  \\
-	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.30}s} & \multicolumn{6}{c@{\quad}|}{Average time: 23.66s}\\
-	  & \multicolumn{6}{c|}{Total \#paths covered: 49}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 47}	  
-	  \\\hline
-	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 12 & 23 & 3 & 0 & 0 & 22
-	  \\
-	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{2.71}s} & \multicolumn{6}{c@{\quad}|}{Average time: 41.73s}\\
-	  & \multicolumn{6}{c|}{Total \#paths covered: 32}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 29}	  
-	  \\\hline
-	\end{tabular}
-	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R1} and \textbf{R3}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
-	\label{tab:exp-r1}
-	
-\end{table}
-
-
-\paragraph{For \textbf{R2}:} There are no standard string benchmarks
+\paragraph{For \textbf{R1}:} There are no standard string benchmarks
 involving \regexps, and we are not aware of other constraint solvers
 supporting capturing groups, neither among the SMT nor the CP
 solvers. %(e.g.,
@@ -228,7 +198,7 @@ semantics.\footnote{We considered replacing Z3 with \ostrich\ in
   for capture groups, would have required the rewrite of substantial
   parts of \expose{}.}
 %
-For \textbf{R2}, we compared \ostrich\ with \expose{} on 98,117
+For \textbf{R1}, we compared \ostrich\ with \expose{} on 98,117
 \regexps\ taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
@@ -281,7 +251,7 @@ queries and four paths, respectively.
   \end{tabular}
   \end{center}
   \caption{The number of queries answered by \ostrich, and number of
-    paths covered by \expose{}, in the \textbf{R2} experiments. 
+    paths covered by \expose{}, in the \textbf{R1} experiments. 
     Experiments were done on an AMD Opteron 2220 SE machine, running
     64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
     60s wall-clock time, 2GB memory, and the number of tests
@@ -311,8 +281,10 @@ show that \ostrich\ is a highly competitive solver for \regexps.
 
 
 
-\paragraph{For \textbf{R3}:} We compare Aratha+{\ostrich} with
-\expose{}+Z3 on the benchmarks from \textbf{R1}. In
+\paragraph{For \textbf{R2}:} We compare Aratha+{\ostrich} with
+\expose{}+Z3 on the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
+as well as some other JavaScript programs containing match or replace
+functions extracted from Github. In
 Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
 60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
 discover feasible paths more quickly than \expose{}+Z3, however: on
@@ -333,3 +305,42 @@ therefore not terminate on some programs.
 Overall, the experiments indicate that {\ostrich} is more
 efficient than the CEGAR-augmented symbolic execution for dealing
 with \regexps.
+
+
+\begin{table}[t]
+
+	\begin{center}
+	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
+	\hline
+	   & 
+	  \multicolumn{6}{c|}{\textbf{Aratha+\ostrich}} &\multicolumn{6}{c|}{\textbf{\expose{}+Z3}}
+	  \\
+    & 
+	  \multicolumn{6}{c|}{~\# paths covered within 60s~~} &\multicolumn{6}{c@{\quad}|}{~\# paths covered within 60s}
+	  \\
+	   & ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~ &
+	    ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
+	  \\\hline
+	  \textbf{\expose{}} &  14 & 9 & 9 & 2 & 15 & 0  & 15 & 8 & 9 & 2 & 15 & 1  
+	  \\
+	  \emph{(49 programs)} & \multicolumn{6}{c|}{Average time: \textbf{6.49}s} & \multicolumn{6}{c@{\quad}|}{Average time: 13.46s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered:124}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:120}	  
+	  \\\hline
+	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
+	  \\
+	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.30}s} & \multicolumn{6}{c@{\quad}|}{Average time: 23.66s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 49}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 47}	  
+	  \\\hline
+	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 12 & 23 & 3 & 0 & 0 & 22
+	  \\
+	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{2.71}s} & \multicolumn{6}{c@{\quad}|}{Average time: 41.73s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 32}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 29}	  
+	  \\\hline
+	\end{tabular}
+	\end{center}
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R2}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
+    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
+	\label{tab:exp-r1}
+	
+\end{table}
+
