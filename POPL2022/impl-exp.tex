@@ -3,7 +3,7 @@
 \section{Implementation and Experiments}
 \label{sect:impl}
 
-For our experiments we have implemented an SMT solver,
+For our experiments, we have implemented an SMT solver,
 \ostrich,\footnote{Name anonymized for doubly-blind review, and will
   be provided in the final version.} based on the calculus for
 $\strline$.  \ostrich\ extends the open-source solver
@@ -27,19 +27,19 @@ from OSTRICH.
 Our solver extends classical regular expressions in SMT-LIB
 with indexed {\sf re.capture} and {\sf re.reference} operators, which
 denote capturing groups and references to them. We also add {\sf
-  re.*?}, {\sf re.+?} and {\sf re.loop?} for the lazy counterparts of
+  re.*?}, {\sf re.+?}, and {\sf re.loop?} as the lazy counterparts of
 Kleene star, plus operator, and loop operator.
 
-The three string operators that use these extended real world regular
-expressions are {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
+Three new string operators are introduced to make use of these extended regular
+expressions: {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
 {\sf str.extract}. The operators {\sf str.replace\_cg} and {\sf
   str.replace\_cg\_all} are the counterparts of the standard {\sf
   str.replace\_re} and {\sf replace\_re\_all} operators, and allow
 capturing groups in the match pattern and references in the
 replacement pattern. As an example, the following constraint swaps the
-first name and the last name (see Example~\ref{exmp-name-swap}),
+first name and the last name, as in Example~\ref{exmp-name-swap}:
 %lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
-%
+
 {\small
 \begin{minted}{lisp}
 (= w (str.replace_cg_all v
@@ -58,7 +58,7 @@ not be mapped to a \PSST.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
 $\strline$. For instance,
-%
+
 {\small
 \begin{minted}{lisp}
   ((_ str.extract 1)
@@ -82,15 +82,16 @@ string, respectively. We add \textsf{re.begin-anchor} and
 the semantics of anchors and is able to solve constraints containing
 these operators.
 
-The implementation in \ostrich\ revolves around PSSTs. The three string
-operators mentioned above will be converted into an equivalent PSST
-(see Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich}
-then iterates the dependency graph and repeatedly eliminates
-them. More specifically, we first use Lemma \ref{lem:psst_preimage} to
-back-propagate regular constraints on string variables and check
-satisfiability, and then use forward concrete evaluation to generate a
-model. We omit the details here due to space restrictions, and refer
-the readers to the baseline \cite{CHL+19}.
+The implementation in \ostrich\ revolves around PSSTs. The three
+string operators mentioned above will be converted into an equivalent
+PSST (see
+Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then
+iteratively applies the propagation rules from
+Section~\ref{sect:calculus} to derive further \regexp\ constraints,
+and eventually either detect a contradiction, or converge
+and find a fixed-point. For straight-line formulas, the existence of a
+fixed-point implies satisfiability, and a solution can then be
+constructed as described in Section~\ref{sect:calculus}.
 
 \subsection{Experimental evaluation}
 
@@ -116,7 +117,7 @@ the readers to the baseline \cite{CHL+19}.
 (pop 1)
 \end{minted}
   \end{minipage}\hfill
-  \raisebox{-19ex}{\rule{0.4pt}{40ex}}\hfill
+  \raisebox{-19.2ex}{\rule{0.4pt}{40ex}}\hfill
   \begin{minipage}{0.43\linewidth}
 \begin{minted}{js}
 function fun(x) {
