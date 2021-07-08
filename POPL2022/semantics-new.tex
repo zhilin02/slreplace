@@ -1,13 +1,20 @@
-\section{Semantics}
+\section{Semantics of string functions via {\PSST}}
 
-Our goal in this section is to define the formal semantics of {\regexp}-string matching. 
-Traditionally, a regular expression in formal language theory is interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In the context of string constraint solving, as regular expressions are used as arguments in string functions (e.g., {\sf match} and {\sf replace} in JavaScript), %owing to the introduction of greedy/lazy semantics,  
-what we need is not only the language denoted by the regular expression, but also the intermediate results when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditionally denotational) account of the semantics for regular expressions. To this end, we harness an extension of finite-state automata with transition priorities and string variables, called prioritized streaming string transducers (abbreviated as \PSST), to define how a string is parsed by the given regular expression. 
-%We start with the standard finite-state automaton.  
+Our goal in this section is to define the formal semantics of the string functions used in  $\strline$, such as $\extract$, $\replace$ and $\replaceall$. To this end, we need to first define the semantics of {\regexp}-string matching. One of the key novelties here is to utilize an extension of finite-state automata with transition priorities and string variables, called prioritized streaming string transducers (abbreviated as \PSST). It turns out that {\PSST} provides a convenient means to capture the non-standard semantics of {\regexp} operators and to store the matching of capturing groups in {\regexp}, which paves the way to define the semantics of string functions (and the string constraint language). 
+%, to define how a string is parsed by the given regular expression. 
 
-In {\PSST}s, transition priorities are used to capture the non-standard semantics of {\regexp} operators whereas string variables are used to store the matchings of capturing groups. {\PSST}s combine two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of {\regexp}-string matching is defined by constructing {\PSST}s out of regular expressions. 
+
+
+%Traditionally, a regular expression in formal language theory is interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In the context of string constraint solving, as regular expressions are used as arguments in string functions (e.g., {\sf match} and {\sf replace} in JavaScript), %owing to the introduction of greedy/lazy semantics,  
+%what we need is not only the language denoted by the regular expression, but also the intermediate results when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditionally denotational) account of the semantics for regular expressions. 
 %
-As we shall validate the formal semantics against the actual one of {\regexp}-string matching in programming languages and there are subtle differences between the implementations of {\regexp} in different languages (e.g. JavaScript and Python), it is necessary to choose one specific language to exercise the validation. We choose JavaScript here, since it is one of the most widely used programming languages,  currently the top-one active language in Github.\footnote{https://githut.info/}
+%
+%To this end, we harness an extension of finite-state automata with transition priorities and string variables, called prioritized streaming string transducers (abbreviated as \PSST), to define how a string is parsed by the given regular expression. 
+%%We start with the standard finite-state automaton.  
+%
+%In {\PSST}s, transition priorities are used to capture the non-standard semantics of {\regexp} operators whereas string variables are used to store the matchings of capturing groups. {\PSST}s combine two automata models introduced before, namely, prioritized finite-state automata \cite{BM17} and streaming string transducers \cite{AC10,AD11}. The formal semantics of {\regexp}-string matching is defined by constructing {\PSST}s out of regular expressions. 
+%%
+%As we shall validate the formal semantics against the actual one of {\regexp}-string matching in programming languages and there are subtle differences between the implementations of {\regexp} in different languages (e.g. JavaScript and Python), it is necessary to choose one specific language to exercise the validation. We choose JavaScript here, since it is one of the most widely used programming languages,  currently the top-one active language in Github.\footnote{https://githut.info/}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\OMIT{
@@ -84,3 +91,5 @@ Section~\ref{sect：valid}).
 \subsection{Validation experiments for the formal semantics} \label{sect：valid}
 
 \input{sem-exp.tex}
+
+\subsection{Semantics of string functions}
