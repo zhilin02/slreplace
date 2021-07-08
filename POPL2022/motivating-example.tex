@@ -1,7 +1,11 @@
 %!TEX root = main.tex
 
-\section{Motivating Example}\label{sec:mot}
+\section{Worked Out Examples}\label{sec:mot}
 
+In this section, we provide two worked out examples to illustrate our string
+solving method. 
+
+\subsection{Worked Out Example \#1}
 \begin{figure*}[htbp]
 \begin{center}
 {
@@ -52,7 +56,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main approach of this paper. The function ``authorNameDBLPtoACM'' in Figure~\ref{fig-run-exmp} transforms %the name format of 
+%We use the 
+Consider the JavaScript program in Figure~\ref{fig-run-exmp}; this example is
+similar to Example \ref{exmp-name-swap} from the Introduction.
+%to illustrate our
+%Consider the JavaScript program in Fi
+The function ``authorNameDBLPtoACM'' in 
+Figure~\ref{fig-run-exmp} transforms %the name format of 
 an author list in the DBLP bibtex style to the one in the ACM bibtex style. For instance,  if a paper is authored by Alice M. Brown and John Smith, then the author list in the DBLP bibtex style is ``Alice M. Brown and John Smith'', while it is ``Brown, Alice M. and Smith, John'' in the ACM bibtex style . 
 
 The input of the function ``authorNameDBLPtoACM'' is {\sf authorList}, which is expected to follow the pattern specified by the regular expression {\sf autListReg}. Intuitively, {\sf autListReg} stipulates that {\sf authorList} %can be obtained by joining 
@@ -140,3 +150,5 @@ $\cB$, formula~\eqref{eq:motiv} is therefore equivalent to
 To show that this formula (and thus \eqref{eq:motiv}) is
 unsatisfiable, it is now enough to prove that the languages defined by
 $\cB$ and {\sf autListReg} are disjoint.
+
+\input{example2}

@@ -1,7 +1,9 @@
 %!TEX root = main.tex
 
-\section{Motivating Example}\label{sec:mot}
+\section{Motivating Examples}\label{sec:mot}
 
+We illustrate our method 
+\subsection{Worked Out Example \#1}
 \begin{figure}[tb]
 \begin{center}
 \begin{minted}[linenos]{javascript}
@@ -25,7 +27,7 @@ function normalize(decimal) {
 
 \end{figure}
 
-We use the JavaScript program in Fig.~\ref{fig-run-exmp} as a running example to
+We use the JavaScript program in Fig.~\ref{fig-run-exmp} as a th example to
 illustrate our approach. %The example been adapted from typical JavaScript
 %applications.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
@@ -112,3 +114,5 @@ terminology as \cite{CHL+19}):
 At first, we show that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}).
 Then, path feasibility of the program in \eqref{eqn:exmp} can be checked by following the ``backward'' reasoning approach from \cite{CHL+19}.
 First, we compute the pre-images of regular languages under the concatenation operation and remove the last assignment statement. Then, we compute the pre-images of regular languages under the PSSTs $\cT_{\tt extract_{decimalReg,2}}$ as well as $\cT_{\scriptsize\tt replace(\mbox{\tt /0+\$/, ""})}$, and remove the second assignment statement. Similarly for the first assignment statement. In the end, a program containing only regular membership queries (but possibly including disjunctions) is obtained, whose feasibility is reduced to checking the nonemptiness of the intersection of regular languages, which is known to be decidable (\pspace-complete). (See Appendix~\ref{app-br-mot-exmp} for more details.)
+
+\input{example2}
