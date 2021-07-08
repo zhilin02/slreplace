@@ -19,7 +19,21 @@ Z3 \cite{Z3}, CVC4 \cite{cvc4}, Z3-str/2/3/4 \cite{Z3-str,Z3-str2,Z3-str3,Berzis
 \cite{CHL+19}, S2S \cite{DBLP:conf/aplas/LeH18}, Qzy \cite{cox2017model}, Stranger \cite{Stranger}, Sloth
 \cite{HJLRV18,AbdullaA+19},
 Slog \cite{fang-yu-circuits}, Slent \cite{WC+18}, Gecode+S \cite{DBLP:conf/cpaior/ScottFPS17}, G-Strings \cite{DBLP:conf/cp/AmadiniGST17}, HAMPI
-\cite{HAMPI}. For a recent comparison of the solvers, we refer the
+\cite{HAMPI}, and S3 \cite{S3}. 
+Most modern string solvers provide support of concatenation and regular 
+constraints. The push (e.g. see
+\cite{GB16,Vijay-length,HAMPI,Berkeley-JavaScript,LB16,S3})
+towards incorporating other functions --- e.g. length, 
+string-number conversions, replace, replaceAll --- in a string theory has been an
+important theme in the area, owing to the desire to able to reason 
+about increasingly more complex real-world string-manipulating programs.
+These functions, among others, have now been part of the SMT-LIB Unicode Strings
+standard\footnote{See
+\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}. 
+To the best of our knowledge, at the moment there is no solver that
+supports \regexp\ features like greedy/lazing matching or capturing
+groups (apart from our own solver \ostrich).
+For a recent comparison of the solvers, we refer the
 reader to the survey \cite{Ama20}.
 
 \subsection{Modelling and Reasoning about \regexp{}}
