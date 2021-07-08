@@ -1,9 +1,6 @@
-%!TEX root = main.tex
+\section{Semantics}
 
-\section{String Constraint Language}
-%\section{Formal Semantics of {\regexp}-string Matching}\label{sec-rwre}
-%
-\OMIT{Our goal in this section is to define the formal semantics of {\regexp}-string matching. 
+Our goal in this section is to define the formal semantics of {\regexp}-string matching. 
 Traditionally, a regular expression in formal language theory is interpreted as a regular language, i.e., a set of strings, which can be defined inductively in a rather straightforward way. In the context of string constraint solving, as regular expressions are used as arguments in string functions (e.g., {\sf match} and {\sf replace} in JavaScript), %owing to the introduction of greedy/lazy semantics,  
 what we need is not only the language denoted by the regular expression, but also the intermediate results when parsing a string against the given regular expression. This is especially the case when the capturing group is involved. As a result, we need a more operational (as opposed traditionally denotational) account of the semantics for regular expressions. To this end, we harness an extension of finite-state automata with transition priorities and string variables, called prioritized streaming string transducers (abbreviated as \PSST), to define how a string is parsed by the given regular expression. 
 %We start with the standard finite-state automaton.  
@@ -59,68 +56,31 @@ Section~\ref{sect：valid}).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \OMIT{
-In this section, we introduce the regular expressions which will be used in the string constraints. 
-%The semantics of the regular language conforms to the JavaScript language. 
-It should be emphasized that the strings accepted by the regular expresses introduced here are still regular, but the parsing of the string is significantly different from classic regular languages. For this purpose, we utilize prioritized finite-state automata \cite{BM17}, which extend classic finite-state automata with priorities, to capture, among others, the greedy/lazy semantics of Kleene star/plus in the regular expression. 
+	In this section, we introduce the regular expressions which will be used in the string constraints. 
+	%The semantics of the regular language conforms to the JavaScript language. 
+	It should be emphasized that the strings accepted by the regular expresses introduced here are still regular, but the parsing of the string is significantly different from classic regular languages. For this purpose, we utilize prioritized finite-state automata \cite{BM17}, which extend classic finite-state automata with priorities, to capture, among others, the greedy/lazy semantics of Kleene star/plus in the regular expression. 
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %\medskip
-}
-
-Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
-%
-We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$, $\varepsilon$ to denote the empty string, and $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. 
-A string $w'$ is called a \emph{prefix} of $w$ if $w = w'w''$ for some string $w''$. We use $\pref(w)$ to denote the set of prefixes of $w$. For a prefix $w_1$ of $w$, let $w = w_1 w_2$, then we use $w_1^{-1}w$ to denote $w_2$.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\hide{
-%	\tl{this part can be moved to intro?}
-%	Regular expressions are a well-known concept in formal language. %and  have the same expressibility as finite state automata. 
-%	Many programming languages provide build-in regular expressions %capabilities either built-in 
-%	or otherwise via libraries. Programmers widely use regular expressions in software development, especially in the development of web applications. However, it should be emphasized that regular expressions used in programming languages are considerably different from those in formal language theory, mainly on the following aspects: greedy/non-greedy semantics of the quantifiers ($*$ and its variant $+$), non-commutativity of the alternation operator, capturing groups, and backreferences. In the sequel, we take all these aspects into account and define the class of real-world regular expressions considered in this paper. 
-%}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Prioritized streaming string transducers (\PSST)}
 
-%\subsection{Syntax of regular expressions}
+\input{psst-epsilon.tex}
 
-\begin{definition}[Regular expressions, {\regexp}]
-	
-%\begin{multline*}
-\[
-\begin{split}
-e & \eqdef  \emptyset \mid \varepsilon \mid a \mid  (e) \mid %\$n \mid 
-[e + e] \mid [e \concat e] \mid [e^?] \mid [e^{??}] \mid  \\
- &          [e^*]  \mid [e^{*?}] \mid [e^+] \mid  [e^{+?}] \mid [e^{\{m_1,m_2\}}] \mid [e^{\{m_1,m_2\}?}] 
-\end{split}
-\]
-%\end{multline*}
-%	
-where $a \in \Sigma$,  $n \in \Int^+$, $m_1,m_2 \in \Nat$ with $m_1 \le m_2$. 
-	%	Since $+$ is associative and commutative, we also write $(e_1 + e_2) + e_3$ as $e_1 + e_2 + e_3$ for brevity.  
-\end{definition}
-%We abbreviate $[e \concat [e^*]]$ as $[e^+]$ and $[e \concat [e^{*?}]]$ as $[e^{+?}]$. 
-%
-For $\Gamma = \{a_1, \ldots, a_k\}\subseteq \Sigma$, we write $\Gamma$ for  $[[\cdots [a_1 + a_2] + \cdots] + a_k]$ and thus $[\Gamma^\ast] \equiv [[[\cdots [a_1 + a_2] + \cdots] + a_k]^\ast]$. Similarly for $[\Gamma^{\ast?}]$, $[\Gamma^+]$, and $[\Gamma^{+?}]$. We write $|e|$ for the length of $e$, i.e., the number of symbols occurring in $e$.
-%
-Note that square brackets $[]$ are used for the operator precedence and the parentheses $()$ are used for \emph{capturing groups}. 
- %
-%Parenthesis pairs are indexed according to the occurrence sequence of their left parentheses, and it is required that every back reference $\$ n$ occurs after the $n$-th pair of parentheses. For instance, $[[([[a+b]^*]) \concat c] \concat \$1]$ is in {\regexp}, where $\$1$ refers to the matching of the subexpression $[[a+b]^*]$. Intuitively, it denotes the set of strings of the form $u c u$, where $u$ is a string of $a$ and $b$. 
-%
 
-The operator $[e^*]$ is the \emph{greedy} Kleene star, meaning that $e$ should be matched as many times as possible. In contrast, the operator $[e^{*?}]$ is the \emph{lazy} Kleene star, meaning $e$ should be matched  as few times as possible. The Kleene plus operators $[e^+]$ and $[e^{+?}]$ are similar to $[e^*]$ and $[e^{*?}]$ but $e$ should be matched at least once. Moreover, as expected,  the repetition operators $[e^{\{m_1,m_2\}}]$ require the number of times that $e$ is matched is between $m_1$ and $m_2$ and $[e^{\{m_1,m_2\}?}]$ is the lazy variant. Likewise, the optional operator has greedy and lazy variants $[e^?]$ and $[e^{??}]$, respectively. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-For two {\regexp} $e$ and $e'$, we say that $e'$ is a \emph{subexpression} of $e$,
-  	if one of the following conditions holds: 1) $e'=e$, 2) $e = [e_1 \cdot e_2]$ or $[e_1 + e_2]$, and $e'$ is a subexpression of $e_1$ or $e_2$, 3) $e = [e_1^?], [e_1^{??}], [e_1^{\ast}]$, $[e_1^{+}]$, $[e_1^{\ast?}]$, $[e_1^{+?}]$, $e_1^{\{m_1, m_2\}}$, $e_1^{\{m_1, m_2\}?}$ or $( e_1)$, and $e'$ is a subexpression of $e_1$. We use $S(e)$ to denote the set of subexpressions of $e$. %
- 
-% 
-%We use $\cgexp$ to denote the fragment of {\regexp} excluding backreferences $\$ n$ (where {\sf reg} represents regular languages), and $\refexp$ to denote the set of regular expressions generated by a concatenation of letters and backreferences, formally %regular expressions 
-%defined by $e \eqdef \varepsilon \mid a \mid \$n \mid [e \concat e]$.  
-%%\tl{define the semantics here?}
+\subsection{Defining the Semantics of \regexp-String Matching by PSSTs} \label{sect:regextopsst}
 
-\subsection{The String Constraint Language}\label{sec:logic}
 
-\input{logic.tex}
+\input{regextopsst.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Validation experiments for the formal semantics} \label{sect：valid}
+
+\input{sem-exp.tex}
