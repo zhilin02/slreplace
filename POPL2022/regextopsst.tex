@@ -191,7 +191,7 @@ Then
 		\begin{itemize}
 %			\item $q_{e,0}  \not \in Q_{e_1} \cup Q_{e_2}$, 
 %			 \item  $X_e = X_{e_1} \cup X_{e_2} \cup \{x_e\}$,
-			\item $\delta_e$ is the union of $\delta_{e_1}$ and $\delta_{e_2}$,
+			\item $\delta_e$ comprises the transitions in $\delta_{e_1}$ and $\delta_{e_2}$,
 %			defined as follows:
 %			\begin{itemize}
 %			\item $\delta_e(q, a) = \delta_{e_i}(q, a)$ for every $i \in \{1,2\}$, $q \in Q_{e_i}$ and $a \in \Sigma$, 
@@ -199,7 +199,7 @@ Then
 %			\item $\delta_e(q_{e,0}, a)  = ()$ for every $a \in \Sigma$, 
 %			\end{itemize}
 			%
-			\item $\tau_e$ is the union of $\tau_{e_1}$, $\tau_{e_2}$, and the set of transitions $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$,
+			\item $\tau_e$ comprises the transitions in $\tau_{e_1}$ and $\tau_{e_2}$, as well as the transition $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$,
 %			defined as follows: 
 %			\begin{itemize}
 %			\item $\tau_e(q) = \tau_{e_i}(q)$ for every $i \in \{1,2\}$ and $q \in Q_{e_i}$, 
@@ -293,7 +293,7 @@ where
 %			\item $\delta_e(q_{e,0}, a)  = ()$ and $\delta_e(f_{\varepsilon}, a) = ()$ for every $a \in \Sigma$, 
 %			\end{itemize}
 			%
-			\item $\tau_e$ is the union of $\tau_{e_1}$ and the set of transitions $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{\varepsilon}); ())$,
+			\item $\tau_e$ comprises the transitions in $\tau_{e_1}$, as well as the transition $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{\varepsilon}); ())$,
 %			\begin{itemize}
 %			\item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, 
 %			\item $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{\varepsilon}); ())$,
@@ -364,7 +364,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 %			\end{itemize}
 			%moreover, $\delta(q_0, a) = \delta(f_0, a)  = ()$,
 %
-			\item $\tau_e$ is the union of $\tau_{e_1}$ and the set of transitions $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{e,1}); ())$,  $\tau_e(f_{e_1,1}) = ((q_{e_1,0});())$ for every $f_{e_1,1} \in F_{e_1,1}$, and $\tau_e(f_{e_1,2}) = ((q_{e_1,0}, f_{e,2});())$ for every $f_{e_1,2} \in F_{e_1,2}$,
+			\item $\tau_e$ comprises the transitions in $\tau_{e_1}$,  as well as the transitions $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{e,1}); ())$,  $\tau_e(f_{e_1,1}) = ((q_{e_1,0});())$ for every $f_{e_1,1} \in F_{e_1,1}$, and $\tau_e(f_{e_1,2}) = ((q_{e_1,0}, f_{e,2});())$ for every $f_{e_1,2} \in F_{e_1,2}$, 
 %			defined as follows: 
 %			\begin{itemize}
 %			\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((q_{e_1,0},f_{e,0}); ())$,  $\tau_e(f_{e_1,1}) = ((q_{e_1,0});())$ for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,2}) = ((q_{e_1,0}, f_{e,1});())$ for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $q_{e_1,0}$ and $f_{e,0}$, from each $f_{e_1,1} \in F_{e_1,1}$ to $q_{e_1,0}$, and from $f_{e_1,2} \in F_{e_1,2}$ to $q_{e_1,0}$ and $f_{e,1}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $f_{e,0}$ and from $f_{e_1,2} \in F_{e_1,2}$ to $f_{e,1}$ are of the lowest priority.)
