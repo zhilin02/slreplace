@@ -52,7 +52,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main approach of this paper. The function ``authorNameDBLPtoACM'' in Figure~\ref{fig-run-exmp} transforms the %name format of 
+We use the JavaScript program in Figure~\ref{fig-run-exmp} as a motivating example to illustrate the main approach of this paper. The function ``authorNameDBLPtoACM'' in Figure~\ref{fig-run-exmp} transforms %the name format of 
 an author list in the DBLP bibtex style to the one in the ACM bibtex style. For instance,  if a paper is authored by Alice M. Brown and John Smith, then the author list in the DBLP bibtex style is ``Alice M. Brown and John Smith'', while it is ``Brown, Alice M. and Smith, John'' in the ACM bibtex style . 
 
 The input of the function ``authorNameDBLPtoACM'' is {\sf authorList}, which is expected to follow the pattern specified by the regular expression {\sf autListReg}. Intuitively, {\sf autListReg} stipulates that {\sf authorList} %can be obtained by joining 
@@ -80,7 +80,7 @@ Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|.)) denote th
 \end{itemize}
 The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(nameReg, ``$\$$2, $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
 
-A natural post-condition of {\sf authorNameDBLPtoACM} is that there exists at least one occurrence of the comma symbol between every two occurrences of $\sf and$. 
+A natural post-condition of {\sf authorNameDBLPtoACM} is that there exists at least one occurrence of the comma symbol between every two occurrences of ``$\sf and$''. 
 %
 This post-condition has to be established by the function on \emph{every} execution path.  As
 an example, consider the path shown in Fig.~\ref{fig-run-exmp-path},
@@ -107,34 +107,36 @@ program executes to the end.
 \label{fig-run-exmp-path}
 \end{figure}
 
-For enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp-path}, one needs to model both the greedy semantics of the Kleene star and store the matches of capturing groups. For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}) by which {\sf replace(nameReg, ``$\$$2, $\$$1'')} is captured as a PSST $\cT$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups as well as the return value. Then the  symbolic execution of the program in Fig.~\ref{fig-run-exmp-path} can be equivalently turned into the satisfiability of the following string constraint,
+To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp-path}, one needs to model both the greedy semantics of the Kleene star and store the matches of capturing groups. For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}) by which {\sf replace(nameReg, ``$\$$2, $\$$1'')} is captured as a PSST $\cT$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups as well as the return value. Then the  symbolic execution of the program in Fig.~\ref{fig-run-exmp-path} can be equivalently turned into the satisfiability of the following string constraint,
 %
-\[{\sf authorList} \in \cA_{\sf autListReg}\wedge {\sf result} = \cT({\sf authorList}) \wedge {\sf result} \in \cA_{\sf postConReg},\]
+\begin{equation}
+  \label{eq:motiv}
+{\sf authorList} \in {\sf autListReg}\wedge {\sf result} = \cT({\sf authorList}) \wedge {\sf result} \in {\sf postConReg},
+\end{equation}
 %
-where {\sf postConReg} = \mintinline{javascript}{/^.*\sand[^,]*\sand.*$/}, and $\cA_{\sf autListReg}, \cA_{\sf postConReg}$ are the finite-state automata corresponding {\sf autListReg} and {\sf postConReg} respectively. 
+where {\sf postConReg} =
+\mintinline{javascript}{/^.*\sand[^,]*\sand.*$/}, and {\sf postConReg}
+as in Fig.~\ref{fig-run-exmp}.
 
-\zhilin{@Philip, please check}
-Then we apply the proof rules in Section~\ref{sect:calculus} to solve the string constraint, in the following three phases. The string constraint solving relies on the fact that the pre-images of regular languages under PSSTs are regular (see Lemma~\ref{lem:psst_preimage}).
-%
-\begin{itemize}
-\item \emph{Phase 1:} Apply the Boolean rules (first row of
-  Table~\ref{tab:calculus}) to eliminate Boolean operators and obtain the sequent 
-  %
-  \[
-  {\sf authorList} \in \cA_{\sf autListReg}, {\sf result} = \cT({\sf authorList}), {\sf result} \in \cA_{\sf postConReg}.
-  \]
-%
-\item \emph{Phase 2:} We compute the pre-image of the regular language defined by $\cA_{\sf postConReg}$ under $\cT$, which is a finite-state automaton $\cB$, apply the proof rule {\ruleName{Bwd-Prop}}, and obtain the following sequent,
-%
-\[{\sf authorList} \in \cA_{\sf autListReg}, {\sf result} = \cT({\sf authorList}),  {\sf result} \in \cA_{\sf postConReg}, {\sf authorList} \in \cB.\]
-%
-\item \emph{Phase 3:} Since ${\sf authorList}$ is an input string variable, namely,  the
-  string variable that does not occur as left-hand side of equations or
-  function applications,  we apply rule~\ruleName{Cut} for ${\sf authorList}$ and 
- introduce an assignment~${\sf authorList} \in w$ that is consistent with the
-  regex constraints on ${\sf authorList}$, i.e ${\sf authorList} \in \cA_{\sf autListReg}$ and ${\sf authorList} \in \cB$. 
-  Then systematically apply
-  \ruleName{Subsume} and \ruleName{Fwd-Prop-Elim} to
-  evaluate all remaining formulas and turn the proof goal into a
-  solution, thus showing the original string constraint is satisfiable.
-\end{itemize}
+Our solver is able to show that \eqref{eq:motiv} is unsatisfiable. On
+the calculus level (introduced in more detail in
+Section~\ref{sect:calculus}), the main inference step applied for this
+purpose is the computation of the \emph{pre-image} of {\sf postConReg}
+under the function
+$\cT$; in other words, we compute the language of all strings that are
+mapped to incorrect strings (containing two ``\textsf{and}''s without
+a comma in between) by
+$\cT$. This inference step relies on the fact that the pre-images of
+regular languages under PSSTs are regular (see
+Lemma~\ref{lem:psst_preimage}). Denoting the pre-image of {\sf
+  postConReg}  by
+$\cB$, formula~\eqref{eq:motiv} is therefore equivalent to
+\begin{equation}
+  \label{eq:motiv2}
+  {\sf authorList} \in \cB \wedge
+{\sf authorList} \in {\sf autListReg}\wedge {\sf result} = \cT({\sf authorList}) \wedge {\sf result} \in {\sf postConReg}.
+\end{equation}
+
+To show that this formula (and thus \eqref{eq:motiv}) is
+unsatisfiable, it is now enough to prove that the languages defined by
+$\cB$ and {\sf autListReg} are disjoint.
