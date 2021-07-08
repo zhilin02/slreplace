@@ -3,11 +3,12 @@ The $\extract$, $\replace$ and $\replaceall$ functions can be accurately modeled
 That is, we can reduce satisfiability of our string logic to satisfiability of a logic containing only concatenation, PSST transductions, and membership of regular languages.
 
 \begin{lemma}\label{lem-str-fun-to-psst}
-    The satisfiability of $\strline$ reduces to the satisfiability of the string constraints that are boolean combinations of formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
+    The satisfiability of $\strline$ reduces to the satisfiability of boolean combinations of formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
 \end{lemma}
 
 We give a sketch of the encoding of $\replaceall$ here.
-Full details are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
+Full formal details, and the encoding of $\extract$, are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
+The encoding of $\replace$ is almost identical to that of $\replaceall$.
 
 A call $\replaceall_{\pat, \rep}(x)$ replaces every match of $\pat$ in the value of $x$ by a value determined by the replacement string $\rep$.
 In addition to literal characters, $\rep$ may also contain references $\$i$, $\refbefore$, or $\refafter$.
@@ -25,10 +26,10 @@ Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
 By abuse of notation, we will write
 $\rep[x_1/\$i_1,\cdots,x_k/\$i_k]$
 to denote the replacement of the references, in order of appearance, by the contents of the variables $x_j$.
-For example, in
+For example, if
 $\rep = a \$1 a \$2 a \$1 a$
 then
-$\rep[x_1/\$i_1, x_2/\$i_2,x_3/\$i_3]$,
+$\rep[x_1/\$i_1, x_2/\$i_2,x_3/\$i_3]$
 is $a w_1 a w_2 a w_3 a$ when $w_j$ is the value stored in $x_j$.
 
 Although, in this notation, it is possible to substitute different occurrences of a reference with different word values, our encoding will always substitute the same value.
@@ -51,7 +52,7 @@ Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cT_\pat$ by adding a fre
 
 It may be observed that the PSST will be copyless.
 That is, the value of a variable is not copied to two or more variables during a transition.
-In all but the last case, variables are only copied to themselves via assignments of the form $x_{e'} = x_{e'} a$, $x_{e'} = x_{e'}$, $x_{e'} = \varepsilon$, or $x_{e'} = \nullchar$.
+In all but the last case, variables are only copied to themselves, via assignments of the form $x_{e'} = x_{e'} a$, $x_{e'} = x_{e'}$, $x_{e'} = \varepsilon$, or $x_{e'} = \nullchar$.
 In the final case, when a replacement is made, the assignments are of the form
 $x_0 = x_0 w_1 x_{e'_1} w_2 \cdots w_k x_{e'_k} w_{k+1}$
 and
