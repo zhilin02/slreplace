@@ -65,7 +65,7 @@ similar to Example \ref{exmp-name-swap} from the Introduction.
 %Consider the JavaScript program in Fi
 The function ``authorNameDBLPtoACM'' in 
 Figure~\ref{fig-run-exmp} transforms %the name format of 
-an author list in the DBLP bibtex style to the one in the ACM bibtex style. For instance,  if a paper is authored by Alice M. Brown and John Smith, then the author list in the DBLP bibtex style is ``Alice M. Brown and John Smith'', while it is ``Brown, Alice M. and Smith, John'' in the ACM bibtex style . 
+an author list in the DBLP BibTeX style to the one in the ACM BibTeX style. For instance,  if a paper is authored by Alice M. Brown and John Smith, then the author list in the DBLP BibTeX style is ``Alice M. Brown and John Smith'', while it is ``Brown, Alice M. and Smith, John'' in the ACM BibTeX style . 
 
 The input of the function ``authorNameDBLPtoACM'' is {\sf authorList}, which is expected to follow the pattern specified by the regular expression {\sf autListReg}. Intuitively, {\sf autListReg} stipulates that {\sf authorList} %can be obtained by joining 
 %is the concatenation of  
@@ -97,7 +97,7 @@ A natural post-condition of {\sf authorNameDBLPtoACM} is that there exists at le
 This post-condition has to be established by the function on \emph{every} execution path.  As
 an example, consider the path shown in Fig.~\ref{fig-run-exmp-path},
 in which the branches taken in the program are represented as
-\texttt{assume} statements. The negated post-condition is captured by
+\texttt{assume} statements. The negated post-condition is enforced by
 the regular expression in the last \texttt{assume}. For this path, the
 post-condition can be proved by showing that the program in
 Fig.~\ref{fig-run-exmp-path} is infeasible: there does not exist an
@@ -119,7 +119,7 @@ program executes to the end.
 \label{fig-run-exmp-path}
 \end{figure}
 
-To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp-path}, one needs to model both the greedy semantics of the Kleene star and store the matches of capturing groups. For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}) by which {\sf replace(nameReg, ``$\$$2, $\$$1'')} is captured as a PSST $\cT$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups as well as the return value. Then the  symbolic execution of the program in Fig.~\ref{fig-run-exmp-path} can be equivalently turned into the satisfiability of the following string constraint,
+To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp-path}, one needs to model both the greedy semantics of the Kleene star and store the matches of capturing groups. For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}) by which {\sf replace(nameReg, ``$\$$2, $\$$1'')} is represented as a PSST $\cT$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups as well as the return value. Then the  symbolic execution of the program in Fig.~\ref{fig-run-exmp-path} can be equivalently turned into the satisfiability of the following string constraint,
 %
 \begin{equation}
   \label{eq:motiv}
@@ -127,7 +127,7 @@ To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-ru
 \end{equation}
 %
 where {\sf postConReg} =
-\mintinline{javascript}{/^.*\sand[^,]*\sand.*$/}, and {\sf postConReg}
+\mintinline{javascript}{/^.*\sand[^,]*\sand.*$/}, and {\sf autListReg}
 as in Fig.~\ref{fig-run-exmp}.
 
 Our solver is able to show that \eqref{eq:motiv} is unsatisfiable. On
