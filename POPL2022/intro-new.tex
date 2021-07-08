@@ -124,15 +124,15 @@ and finally  \texttt{normalize("0250") == "250"}. As the reader might have
 
 \input{normalize-ex}
 
-The above examples epitomize the difficulties that are arisen from the
+The above examples epitomize the difficulties that have arisen from the
 interaction between RegEx and string functions in programs. Firstly,
-RegEx uses the deterministic semantics for pattern matching (like greedy
+RegEx uses deterministic semantics for pattern matching (like greedy
 semantics in the above example, but the so-called \emph{lazy} matching is
 also possible), and allows features that do not exist in regular expressions in
 formal language theory, e.g., capture groups (those in brackets) in the above
 example. Secondly, string functions in programs can exploit RegEx in an
 intricate manner, e.g., by means of references \$1 and \$2 in Example 
-\ref{exmp-name-swap}) in the above example. Hitherto, no existing string solvers
+\ref{exmp-name-swap}. Hitherto, no existing string solvers
 can support any of these features. This is despite the fact that regular 
 constraints and the replace functions are allowed in modern string solvers, 
 to the extent that the semantics of regular expressions is used and that 
