@@ -107,7 +107,7 @@ in the following two examples.
     We quickly mention the difficulty posed by the match function in JavaScript,
     in combination with replace. %; this example will be discussed in more
     %detail in Section \ref{sec:mot}. 
-    Consider the snippet in Figure 
+    Consider the code snippet in Figure 
     \ref{fig-run-exmp-normalize}.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
 {\tt decimal}. For instance, 
@@ -115,10 +115,10 @@ in the following two examples.
  \texttt{normalize("0.250") == "0.25"},
  \texttt{normalize("02.50") == "2.5"},
  \texttt{normalize("025.0") == "25"},
-and finally  \texttt{normalize("0250") == "250"}. As the reader might have
+and  \texttt{normalize("0250") == "250"}. As the reader might have
     guessed, the function match actually returns an array of strings,
     corresponding to those that are matched in the \emph{capture groups} (two 
-    in our example) in the RegEx using the \emph{greedy} semantics. One might be
+    in our example) in the RegEx using the \emph{greedy} semantics of the Kleene star/plus operator. One might be
     interested in checking, for instance, that there is a way to generate a
     the string \texttt{"0.0007"}, but not the string \texttt{"00.007"}.
 \end{example}
@@ -163,7 +163,7 @@ abstraction and refinement) is used in \cite{LMK19}, while ensuring that an
 %CEGAR (counter-example guided abstraction and refinement). 
 This results in a rather severe price in both precision and performance: the
 refinement process may not terminate even for extremely simple programs
-(e.g. the aforementioned examples). 
+(e.g. the above examples). 
 %\anthony{Zhilin: please check this}\zhilin{The description is consistent with the experimental results.}
 
 Therefore, the current state-of-affairs is unsatisfactory because even 
@@ -365,19 +365,18 @@ We conclude with two open questions:
 \paragraph*{Contributions.}
 In this paper, we provide \emph{the first} string theory and string solver that
 natively support \regexp{}. Not only can our theory/solver easily express and 
-solve Example
-\ref{exmp-name-swap} and Example \ref{ex:normalize} --- which hitherto no 
-existing string solvers and string analysis can handle --- our experimentation
+solve Example~\ref{exmp-name-swap} and Example~\ref{ex:normalize} --- which hitherto no 
+existing string solvers and string analysis can handle --- our experiments
 using a library of real-world regular expressions (involving more than 100,000
-benchmarks) suggests that our solver substantially outperforms the existing 
-method (i.e.  \cite{LMK19}); by 30--50-fold in our benchmarking. 
+benchmarks) suggest that our solver substantially outperforms the existing 
+method (i.e.  \cite{LMK19}); by 30--50-fold in these benchmarks. 
 %We provide 
 %more details of our contributions
 %\philipp{agreed. we should also say what parameter 30x-50x refers to} 
 We provide more details of our contributions below.
 
 Our string theory provides for the first time a native support of the match and the 
-replace functions, which can use JavaScript\footnote{JavaScript was chosen 
+replace functions, which use JavaScript\footnote{JavaScript was chosen 
 because it is most relevant to string solving 
 \cite{BEK,Berkeley-JavaScript}, due to vulnerabilities in JavaScripts 
 caused by string manipulations. Our method can be easily adapted to Regex
@@ -395,7 +394,7 @@ y  = \replace_{\pat, \rep}(x) \mid
 \label{eq:SL}
 \end{array}
 \]
-where $e, \pat$ is a \regexp{}, $i \in \mathbb{N}$, $x,y,z$ are variables, and $\rep$ 
+where $e, \pat$ are \regexp{}s, $i \in \mathbb{N}$, $x,y,z$ are variables, and $\rep$ 
 is called the
 replacement string and might refer to strings matched in capture groups,
 as in Example \ref{exmp-name-swap}. Apart from the standard concatenation
@@ -405,33 +404,53 @@ by several calls to $\extract$). We also support $\replace$
 (resp.~$\replaceall$), which replaces the first occurrence (resp.~all
 %<<<<<<< HEAD
 occurrences) of substrings in $x$ matched by $\pat$ by $\rep$. Our solver/theory
-also cover the most important features of \regexp{} (including greedy/lazy
+also covers the most important features of \regexp{} (including greedy/lazy
 matching, capture groups, among others) that make up 74.97\% of the \regexp{}
-expressions of \cite{LMK19} across 415,487 NPM packages. More importantly, we 
+expressions of \cite{LMK19} across 415,487 NPM packages. 
+
+Our string solver is based on a formalization of the semantics of the $\extract$, $\replace$, and $\replaceall$ functions.
+%
+To this end, we introduce a new 
+transducer model called \emph{Prioritized Streaming String Transducer (PSST)},
+which is inspired by %extends and combines 
+two automata/transducer models: prioritized finite-state automata \cite{BM17} 
+and streaming string transducers \cite{AC10,AD11}. PSSTs allow us to precisely
+capture the non-standard semantics of \regexp{} operators (e.g. greedy/lazy Kleene star) by priorities and 
+deal with capture groups by string variables. 
+We show that $\extract$, $\replace$, and $\replaceall$ can all be expressed as PSSTs, thus providing formal semantics for these functions.
+%
+More importantly, we 
 have performed an extensive experiment
 validating our semantics of \regexp{} against JavaScript semantics. 
 %\anthony{Say
 %details here. Maybe good to say which ECMAScript}.\zhilin{How to define the Regex semantics by PSSTs deserves a place in the intro.}
 
-Our string solver is based on a sound sequent calculus (implemented in the 
+Moreover, our string solver relies on a sound sequent calculus (implemented in the 
 standard DPLL(T) setting of SMT solvers~\cite{NieuwenhuisetalJACM2006}) 
 %Our calculus is sound for the
 that attempts to 
-(1) \emph{propagate} \regexp{} constraints in the formula around by means of
+(1) \emph{propagate} regular constraints (i.e. the constraints $x \in e$) in the formula around by means of
 the string functions $\cdot$, $\replace$, $\replaceall$, and $\extract$, and 
-(2) either detects conflicting constraints, or find a satisfiable assignment.
+(2) either detect conflicting regular constraints, or find a satisfiable assignment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
 Here, a \regexp{} constraint on a set $S$ of variables simply refers to a 
 boolean
 combination of constraints of the form $x \in \Lang(e)$, for a variable 
 $x \in S$ and \regexp{} $e$.
-A single step of the \regexp{}-constraint propagation computes either the 
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+A single step of the regular-constraint propagation computes either the 
 $post$-image or the $pre$-image of the above functions. In particular, 
 %In order to perform a single step of this constraint propagation, we perform
 it is crucial that each step of our constraint propagation is 
-\regexp{}-preserving. Since the $post$-image is not always \regexp{}-preserving,
-we only propagate by taking $post$-image when this is \regexp{}-preserving.
+regular-constraint-preserving. Since the $post$-image is not always regular-constraint-preserving,
+we only propagate by taking $post$-image when this is regular-constraint-preserving.
 On the other hand, one of our crucial results is that that taking $pre$-image 
-is always \regexp{}-preserving. To this end, we introduce a new 
+is always regular-constraint-preserving. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
+To this end, we introduce a new 
 transducer model called \emph{Prioritized Streaming String Transducer (PSST)},
 which is inspired by %extends and combines 
 two automata/transducer models: prioritized finite-state automata \cite{BM17} 
@@ -439,7 +458,9 @@ and streaming string transducers \cite{AC10,AD11}. PSSTs allow us to precisely
 capture the non-standard semantics of \regexp{} operators by priorities and 
 deal with capture groups by string variables. 
 We show that extract and replace functions can be expressed in terms of PSSTs.
-Crucially, we show that \regexp{}-constraints are \emph{effectively closed under
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+More precisely, we show that regular constraints are \emph{effectively closed under
 taking $pre$-image of functions captured in PSSTs}.
 Finally, despite the fact that our above string theory is undecidable
 (which follows from \cite{LB16}), we show that our string solving algorithm is

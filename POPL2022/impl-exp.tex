@@ -3,48 +3,58 @@
 \section{Implementation and Experiments}
 \label{sect:impl}
 
-We have implemented the proof calculus for $\strline$ in the SMT
-solver \ostrich,\footnote{Name anonymized for doubly-blind review,
-and will be provided in the final version.} extending the
-open-source solver OSTRICH~\cite{CHL+19}.
+For our experiments we have implemented an SMT solver,
+\ostrich,\footnote{Name anonymized for doubly-blind review, and will
+  be provided in the final version.} based on the calculus for
+$\strline$.  \ostrich\ extends the open-source solver
+OSTRICH~\cite{CHL+19}, and is able to decide satisfiability of
+$\strlinesl$ formulas. \ostrich\ also inherits support for most of the
+other operations of the SMT-LIB theory of Unicode
+strings\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
+from OSTRICH.
+
 %\cite{CHL+19}, %\url{https://github.com/uuverifiers/ostrich}}
 %which provides a modular and easy-to-use framework for extending all
 %sorts of string operations. 
-As shown in Section \ref{sec:decision},
-PSSTs satisfy the conditions required by the backward reasoning
-approach of OSTRICH, which enables us to integrate our logic with
-standard string theory. The resulting extended theory of strings is a
-conservative extension of the SMT-LIB theory of Unicode
-strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
+%As shown in Section \ref{sec:decision},
+%PSSTs satisfy the conditions required by the backward reasoning
+%approach of OSTRICH, which enables us to integrate our logic with
+%standard string theory. 
+
 
 \subsection{Implementation}
 
-Our implementation extends classical regular expressions in SMT-LIB
+Our solver extends classical regular expressions in SMT-LIB
 with indexed {\sf re.capture} and {\sf re.reference} operators, which
-denote capturing groups and references to them. We also add {\sf re.*?}, {\sf re.+?} and {\sf re.loop?} for the lazy counterparts of Kleene star, plus operator and loop operator.
+denote capturing groups and references to them. We also add {\sf
+  re.*?}, {\sf re.+?} and {\sf re.loop?} for the lazy counterparts of
+Kleene star, plus operator, and loop operator.
 
 The three string operators that use these extended real world regular
 expressions are {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
-{\sf str.extract}. Operators {\sf str.replace\_cg} and {\sf
-  str.replace\_cg\_all} are counterparts of the standard {\sf
+{\sf str.extract}. The operators {\sf str.replace\_cg} and {\sf
+  str.replace\_cg\_all} are the counterparts of the standard {\sf
   str.replace\_re} and {\sf replace\_re\_all} operators, and allow
 capturing groups in the match pattern and references in the
-replacement pattern. As an example, the following constraint swaps the first name and the last name (see Example~\ref{exmp-name-swap}),
+replacement pattern. As an example, the following constraint swaps the
+first name and the last name (see Example~\ref{exmp-name-swap}),
 %lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
 %
 {\small
 \begin{minted}{lisp}
 (= w (str.replace_cg_all v (re.++  
- ((_ re.capture 1)(re.+ (re.union (re.range "A" "Z")(re.range "a" "z"))))
+ ((_ re.capture 1) (re.+ (re.union (re.range "A" "Z") (re.range "a" "z"))))
  (str.to.re " ") 
- ((_ re.capture 2)(re.+ (re.union (re.range "A" "Z")(re.range "a" "z")))))
+ ((_ re.capture 2) (re.+ (re.union (re.range "A" "Z") (re.range "a" "z")))))
  (re.++ (_ re.reference 2) (_ re.reference 1))))
 \end{minted}
 }
 %
 The replacement string is written as a regular expression only
-containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf re.reference}. In contrast to the standard operators, using string variables in the 
-replacement parameter is not allowed.
+containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf
+  re.reference}. The use of string variables in the replacement
+parameter is not allowed, since the resulting transformation could
+not be mapped to a \PSST.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
 $\strlinesl$. For instance,
