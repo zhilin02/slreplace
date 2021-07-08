@@ -27,7 +27,7 @@ could even give rise to
 %As a result, string-manipulating 
 %in programs are
 %subtle  error-prone, and their potential 
-security vulnerabilities (e.g. cross-site scripting, a.k.a. XSS).
+security vulnerabilities (e.g.\ cross-site scripting, a.k.a. XSS).
 %. A typical example is cross-site
 %scripting (XSS), which is among the OWASP Top 10 Application Security
 %Risks.
@@ -44,37 +44,34 @@ the highly active research area of \emph{string solving}, resulting in the
 development of numerous string solvers in the last decade or so including
 %\cite{???}.
 %As a result of the fundamental role of regular expressions in string processing, the state-of-the-art string constraint solvers (e.g.
-Z3 \cite{Z3}, CVC4 \cite{cvc4}, Z3-str/2/3/4 \cite{Z3-str,Z3-str2,Z3-str3,BerzishMurphy2021},
- ABC \cite{ABC}, Norn
-\cite{Abdulla14}, Trau \cite{Z3-trau,AbdullaACDHRR18-trau,Abdulla17}, OSTRICH
-\cite{CHL+19}, S2S \cite{DBLP:conf/aplas/LeH18}, Qzy \cite{cox2017model}, Stranger \cite{Stranger}, Sloth
-\cite{HJLRV18,AbdullaA+19},
-Slog \cite{fang-yu-circuits}, Slent \cite{WC+18}, Gecode+S \cite{DBLP:conf/cpaior/ScottFPS17}, G-Strings \cite{DBLP:conf/cp/AmadiniGST17}, HAMPI
-\cite{HAMPI}, among many others. %\cite{??}
+Z3~\cite{Z3}, CVC4~\cite{cvc4}, Z3-str/2/3/4~\cite{Z3-str,Z3-str2,Z3-str3,BerzishMurphy2021},
+ ABC~\cite{ABC}, Norn~\cite{Abdulla14},
+Trau~\cite{Z3-trau,AbdullaACDHRR18-trau,Abdulla17}, OSTRICH~\cite{CHL+19}, S2S~\cite{DBLP:conf/aplas/LeH18}, Qzy~\cite{cox2017model}, Stranger~\cite{Stranger}, Sloth~\cite{HJLRV18,AbdullaA+19},
+Slog~\cite{fang-yu-circuits}, Slent~\cite{WC+18}, Gecode+S~\cite{DBLP:conf/cpaior/ScottFPS17}, G-Strings~\cite{DBLP:conf/cp/AmadiniGST17}, HAMPI~\cite{HAMPI}, among many others. %\cite{??}
 %... \anthony{make sure we add all}) 
  %support regular expressions. Nevertheless, what they support is only the regex-string matching (aka membership constraints) for \emph{classical} regular expressions, i.e. whether a string belongs to the language defined by a regular expression, as we know it from formal language theory.  
 
 One challenging problem in the development of string solvers is the need
-to support increasingly more real-world string functions, especially because the
+to support an increasing number of real-world string functions, especially because the
 initial stage of the development of string solvers typically assumed only simple
 functions (in particular, concatenation, regular constraints, and sometimes also
 length constraints). For example, the importance of supporting functions like
-replaceAll function (i.e. replace with global flag) in a string solver was 
-elaborated in \cite{CCH+18};
+the replaceAll function (i.e.\ replace with global flag) in a string solver was 
+elaborated in~\cite{CCH+18};
 ever since, quite a number of string solvers support this operator.
 Unfortunately, the gap between the string functions that are supported by 
 current string solvers and those supported by modern programming languages 
-is still too big. As convincingly argued in \cite{LMK19} in the context of 
+is still too big. As convincingly argued in~\cite{LMK19} in the context of 
 constraint solving, 
 %performed in programming languages depend on 
 the widely used \emph{Regular Expressions} in modern programming
 languages
 (among others, JavaScript, Python, etc.)---which we call \emph{RegEx} 
-in the sequel---are one important and frequently-occurring feature in
+in the sequel---are one important and frequently occurring feature in
 programs that are difficult for existing SMT theories over 
 strings to model and solve, especially because their syntaxes and semantics 
 substantially differ from the notion of regular expressions in formal 
-language theory \cite{HU79}. Indeed,
+language theory~\cite{HU79}. Indeed,
 many important string functions in programming languages---such as exec, test,
 search, match, replace, and split in JavaScript, as well as match, findall,
 search, sub, and split in Python---can and often do exploit RegEx, giving 
@@ -84,9 +81,9 @@ in the following two examples.
 \begin{example}\label{exmp-name-swap}
 %    We shall give a more extensive example in Section \ref{sec:mot}, which 
 %    simultaneously involves both match and replace. 
-    We briefly mention the difficulty posed by the replace
+    We briefly mention the challenges posed by the replace
     function in JavaScript; a slightly different but more detailed example can be found
-    in Section \ref{sec:mot}. Consider the Javascript code snippet
+    in Section~\ref{sec:mot}. Consider the Javascript code snippet
     \begin{minted}{javascript}
         var namesReg = /([A-Za-z]+) ([A-Za-z]+)/g;
         var newAuthorList = authorList.replace(nameReg, "$2, $1");
@@ -109,11 +106,10 @@ in the following two examples.
 \end{example}
 
 \begin{example}\label{ex:normalize}
-    We quickly mention the difficulty posed by the match function in JavaScript,
+    We consider the match function in JavaScript,
     in combination with replace. %; this example will be discussed in more
     %detail in Section \ref{sec:mot}. 
-    Consider the code snippet in Figure 
-    \ref{fig-run-exmp-normalize}.
+    Consider the code snippet in Figure~\ref{fig-run-exmp-normalize}.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
 {\tt decimal}. For instance, 
 %we get results
@@ -137,52 +133,49 @@ semantics in the above example, but the so-called \emph{lazy} matching is
 also possible), and allows features that do not exist in regular expressions in
 formal language theory, e.g., capture groups (those in brackets) in the above
 example. Secondly, string functions in programs can exploit RegEx in an
-intricate manner, e.g., by means of references \$1 and \$2 in Example 
-\ref{exmp-name-swap}. Hitherto, no existing string solvers
+intricate manner, e.g., by means of references \$1 and \$2 in Example~\ref{exmp-name-swap}. Hitherto, no existing string solvers
 can support any of these features. This is despite the fact that \emph{idealized
 versions} of regular 
 constraints and the replace functions are allowed in modern string solvers
-(e.g. see \cite{AbdullaACDHRR18-trau,HJLRV18,cvc4,TCJ16,YABI14,CHL+19}), i.e., 
+(e.g.\ see~\cite{AbdullaACDHRR18-trau,HJLRV18,cvc4,TCJ16,YABI14,CHL+19}), i.e., 
 features that can be found in the above examples like capture groups, 
 greedy/lazy matching, and references are not supported.
 %in that the semantics of regular expressions\philipp{not sure what this is supposed to tell} is used and that 
 %RegEx features like capture groups are not allowed. 
 This limitation of existing
-string solvers was already mentioned in the recent paper \cite{LMK19}.
+string solvers was already mentioned in the recent paper~\cite{LMK19}.
 
 In view of the aforementioned limitation of string solvers, what solutions are
 possible? One recently proposed solution is to map the path constraints
 generated by string-manipulating programs that exploit RegEx into constraints
 in the SMT theories
-supported by existing string solvers. In fact, this was done in recent papers
-\cite{LMK19}, where the path constraints are mapped to constraints
-in the theory of strings with concatenation and regular constraints in Z3 
-\cite{Z3}. Unfortunately, this mapping is an \emph{approximation}, since
+supported by existing string solvers. In fact, this was done in recent papers~\cite{LMK19}, where the path constraints are mapped to constraints
+in the theory of strings with concatenation and regular constraints in Z3~\cite{Z3}. Unfortunately, this mapping is an \emph{approximation}, since
 such complex string manipulations are generally \emph{inexpressible} in any 
 string theories supported by existing string solvers.
 %
 %\philipp{too general, just say that they are not expressible in the SMT-LIB theory?}. 
 To leverage this, CEGAR (counter-example guided 
-abstraction and refinement) is used in \cite{LMK19}, while ensuring that an
+abstraction and refinement) is used in~\cite{LMK19}, while ensuring that an
 \emph{under-approximation} is preserved. 
 %CEGAR (counter-example guided abstraction and refinement). 
 This results in a rather severe price in both precision and performance: the
 refinement process may not terminate even for extremely simple programs
-(e.g. the above examples). 
+(e.g.\ the above examples).
 %\anthony{Zhilin: please check this}\zhilin{The description is consistent with the experimental results.}
 
 Therefore, the current state-of-affairs is unsatisfactory because even 
-the introduction of very simple RegEx expressions in programs (e.g. the above 
+the introduction of very simple RegEx expressions in programs (e.g.\ the above 
 examples) results in path constraints that can \emph{not} be solved by existing 
 symbolic executions in combination with string solvers. In this paper, we would
-like to firstly advocate that string solvers should \emph{natively} support of
-important features \regexp{}
+like to firstly advocate that string solvers should \emph{natively} support
+important features of \regexp{}
 %\philipp{should be reformulated. current solvers support RegEx \emph{on some level}, namely excluding look-arounds, capture groups, etc.}) 
 in their SMT theories. 
 Existing work
-(e.g. the reduction to Z3 provided by \cite{LMK19}) shows that this is a 
+(e.g.\ the reduction to Z3 provided by~\cite{LMK19}) shows that this is a 
 monumental theoretical and programming task, 
-not to mention the lost in precision and the performance penalty. Secondly, we 
+not to mention the loss in precision and the performance penalty. Secondly, we 
 present \emph{the first} string
 theory and string solver that natively provide such a support.
 
@@ -192,11 +185,11 @@ theory and string solver that natively provide such a support.
 %program with regular expressions may need to be refined many times.
 
 %\cite{JavascriptRegex,PythonRegex}.
-%String functions dependent on regular expressions are among the most important string operations in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+%String functions dependent on regular expressions are among the most important string operations in programming languages~\cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 %Regular expression matching is one of the most important string operations
-%in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+%in programming languages~\cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 %
-%While regular expressions are a classical concept in formal language theory (see e.g. \cite{HU79}), 
+%While regular expressions are a classical concept in formal language theory (see e.g.~\cite{HU79}), 
 %
 %regular expressions in programming languages are dramatically different.
 
@@ -210,7 +203,7 @@ operators, e.g., the non-commutative union, the greedy/lazy Kleene star/plus, an
 features, e.g., capturing groups and backreferences.
 PLREs are in general more expressive than classical ones, e.g., it is known that
 with backreferences one can easily generate languages that are not even 
-context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
+context-free (e.g.\ see~\cite{FS19,Aho90,BM17b}). %It is an open question whether
 %Thus far, no work on string constraint solving has considered RWRE
 %It is an open question whether RWRE can be incorporated into a string 
 %constraint language, while preserving 
@@ -222,7 +215,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
     a string of digits (signified by \mintinline{javascript}{\d}). The second 
     capturing group
     could be matched with an empty sequence of digits. Given a string of digits
-    (e.g. \texttt{"2050"}), the entire string will always be matched by the
+    (e.g.\ \texttt{"2050"}), the entire string will always be matched by the
     first subexpression \mintinline{javascript}{(\d+)}, owing to the greedy semantics of
     Kleene plus. 
 
@@ -243,7 +236,7 @@ context-free (e.g. see \cite{FS19,Aho90,BM17b}). %It is an open question whether
 \OMIT{
 Matching regular expressions to strings (abbreviated as regex-string matching) is the core of string functions dependent on PLREs. For instance, in Javascript, the string functions exec, test, match, and search are all variants of regex-string matching, moreover, the functions replace and split recursively call regex-string matching as a subprocedure. 
 Nevertheless, regex-string matching in programming languages are dramatically different from that in formal language theory, in the following two aspects.
-%It should be pointed out that if only the set of strings defined by regular expressions are concerned, regular expressions in programming languages (with backreferences ignored) are the same as classical regular expressions in formal language textbooks (e.g. \cite{HU79}). 
+%It should be pointed out that if only the set of strings defined by regular expressions are concerned, regular expressions in programming languages (with backreferences ignored) are the same as classical regular expressions in formal language textbooks (e.g.~\cite{HU79}). 
 %Nevertheless, matching of regular expressions to strings in programming languages, e.g. in the string functions ``exec()'', ``match()'' and ``test()'' , are much more involved: 
 \begin{enumerate}
 \item Typically, PLREs are not required to be matched to the whole input string, but to a substring, which intuitively corresponds to the first match of the regular expression in the input, moreover, the non-standard semantics of operators guarantee that this matching is \emph{deterministic} in the sense that for a given regular expression and a string, the matching returns a \emph{unique} substring (if there is any). For instance, the matching of $e=$\mintinline{javascript}{(\d+)(\d*)} to ``ab123c'' returns ``123'', instead of ``1'' or ``12''.
@@ -252,7 +245,7 @@ Nevertheless, regex-string matching in programming languages are dramatically di
 \end{enumerate}
 }
 % an indispensable part of the string library
-%in programming languages \cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
+%in programming languages~\cite{Berkeley-JavaScript,BM17,LMK19,HAMPI}.
 
 
 %As a result of the fundamental role of regular expressions in string processing, the state-of-the-art string constraint solvers (e.g.
@@ -265,7 +258,7 @@ Nevertheless, regex-string matching in programming languages are dramatically di
 \OMIT{
 To make matters worse,
 RWREs in real-world programs are also commonly used in combination with
-other string operations (e.g. match and replace(all) functions \cite{LMK19}),
+other string operations (e.g.\ match and replace(all) functions~\cite{LMK19}),
 which pose additional challenges to symbolic execution tools.
 On a given string $s$ and a RWRE $e$, the match function allows one to extract 
 the last match of a capturing group $(e')$ with respect to the first match of $e$ in $s$. 
@@ -309,7 +302,7 @@ Since string solvers support only the regex-string matching for classical REs, i
 %(in fact, they are in general ,
 existing symbolic execution approaches that handle
 string-manipulating programs apply workarounds.
-We mention Aratha \cite{aratha} and \expose~\cite{LMK19}, both of which are
+We mention Aratha~\cite{aratha} and \expose~\cite{LMK19}, both of which are
 symbolic execution engines for JavaScript programs.
 %symbolic executors of string manipulating programs, e.g. 
 %Aratha performs a rough approximation to the 
@@ -319,7 +312,7 @@ symbolic execution engines for JavaScript programs.
 %operator. 
 %On the other hand, 
 Aratha and {\expose} attempt to exploit string 
-equations and classical regular expressions (as implemented in Z3 \cite{Z3}) supported by string
+equations and classical regular expressions (as implemented in Z3~\cite{Z3}) supported by string
 solvers to capture the semantics of regular expressions in programming languages. 
 Unfortunately, the semantics of regular expressions in programming languages cannot in general be fully captured by string constraints with classical regular expressions. 
 %This is caused by
@@ -335,7 +328,7 @@ results in a rather severe price in both precision and performance: the
 refinement process may not terminate and the symbolic execution of even a simple
 program with regular expressions may need to be refined many times.
 
-One of the main obstacles to the support of PLREs in string constraint solvers is find a proper formal semantics of regex-string matching for PLREs. There have been some attempt in this direction. In \cite{BDM14,BM17}, prioritized finite transducers (abbreviated as PFT) were introduced to capture the semantics of regex-string matching for Java.  PFTs extend finite-state automata with transition priorities and outputs. A translation from Java regular expressions to PFTs, adapted from the classical Thompson construction from regular expressions to finite-state automata, was provided in \cite{BDM14,BM17}, where priorities are used to model the greedy/lazy Kleene star/plus as well as the non-commutative union, moreover, indexed square brackets are inserted into the input string to pinpoint the matchings of the capturing groups.  The formal semantics of regex-string matching in \cite{BDM14,BM17} turns out to be \emph{insufficient} for string constraint solving in the following sense.
+One of the main obstacles to the support of PLREs in string constraint solvers is find a proper formal semantics of regex-string matching for PLREs. There have been some attempt in this direction. In~\cite{BDM14,BM17}, prioritized finite transducers (abbreviated as PFT) were introduced to capture the semantics of regex-string matching for Java.  PFTs extend finite-state automata with transition priorities and outputs. A translation from Java regular expressions to PFTs, adapted from the classical Thompson construction from regular expressions to finite-state automata, was provided in~\cite{BDM14,BM17}, where priorities are used to model the greedy/lazy Kleene star/plus as well as the non-commutative union, moreover, indexed square brackets are inserted into the input string to pinpoint the matchings of the capturing groups.  The formal semantics of regex-string matching in~\cite{BDM14,BM17} turns out to be \emph{insufficient} for string constraint solving in the following sense.
 \begin{itemize}
 \item The formal semantics is \emph{incomplete}, as it intends for a subclass of regular expressions $e$ where all subexpressions $e^*$ and $e^{*?}$ satisfy that the language defined by $e$ does \emph{not} contain the empty string. 
 %
@@ -348,14 +341,14 @@ We conclude with two open questions:
 \begin{description}
     \item[(Q1)] Define the formal semantics of regex-string matching for PLREs and validate it against their actual semantics in programming languages.
     %
-    \item[(Q2)] Based on the progress in Q1, design algorithms for solving string constraints that contain PLRE-dependent functions (e.g. match and replace functions) as primitives, and develop a 
+    \item[(Q2)] Based on the progress in Q1, design algorithms for solving string constraints that contain PLRE-dependent functions (e.g.\ match and replace functions) as primitives, and develop a 
         fast string solver.
 %    \item[(Q2)] Develop a reasonably expressive decidable string constraint 
 %        language that supports the replace  and
 %          match function with RWREs, as well as string concatenation.
 \end{description}
 %For one, satisfiability of string equations with regular constraints is
-%well-known to be PSPACE-complete \cite{J16,Kozen77,P04}. For another, to the 
+%well-known to be PSPACE-complete~\cite{J16,Kozen77,P04}. For another, to the 
 %best of our knowledge, no existing string solver is complete for string 
 %equations with regular constraints.
 
@@ -374,7 +367,7 @@ solve Example~\ref{exmp-name-swap} and Example~\ref{ex:normalize} --- which hith
 existing string solvers and string analysis can handle --- our experiments
 using a library of real-world regular expressions (involving more than 100,000
 benchmarks) suggest that our solver substantially outperforms the existing 
-method (i.e.  \cite{LMK19}); by 30--50-fold in these benchmarks. 
+method (i.e.~\cite{LMK19}); by 30--50-fold in these benchmarks.
 %We provide 
 %more details of our contributions
 %\philipp{agreed. we should also say what parameter 30x-50x refers to} 
@@ -382,11 +375,10 @@ We provide more details of our contributions below.
 
 Our string theory provides for the first time a native support of the match and the 
 replace functions, which use JavaScript\footnote{JavaScript was chosen 
-because it is most relevant to string solving 
-\cite{BEK,Berkeley-JavaScript}, due to vulnerabilities in JavaScripts 
+because it is most relevant to string solving~\cite{BEK,Berkeley-JavaScript}, due to vulnerabilities in JavaScripts 
 caused by string manipulations. Our method can be easily adapted to Regex
 semantics in other languages.} RegEx in the input arguments. Here is a quick
-summary of our string constraint language (see Section \ref{sec:logic} for
+summary of our string constraint language (see Section~\ref{sec:logic} for
 more details):
 \[
 \begin{array}{l c l}
@@ -402,7 +394,7 @@ y  = \replace_{\pat, \rep}(x) \mid
 where $e, \pat$ are \regexp{}s, $i \in \mathbb{N}$, $x,y,z$ are variables, and $\rep$ 
 is called the
 replacement string and might refer to strings matched in capture groups,
-as in Example \ref{exmp-name-swap}. Apart from the standard concatenation
+as in Example~\ref{exmp-name-swap}. Apart from the standard concatenation
 operator $\concat$, we support $\extract$, which extracts the string matched by
 the $i$th capture group in the \regexp{} $e$ (note that match can be simulated
 by several calls to $\extract$). We also support $\replace$ 
@@ -411,7 +403,7 @@ by several calls to $\extract$). We also support $\replace$
 occurrences) of substrings in $x$ matched by $\pat$ by $\rep$. Our solver/theory
 also covers the most important features of \regexp{} (including greedy/lazy
 matching, capture groups, among others) that make up 74.97\% of the \regexp{}
-expressions of \cite{LMK19} across 415,487 NPM packages. 
+expressions of~\cite{LMK19} across 415,487 NPM packages. 
 
 A crucial step in the development of our string solver is a formalization of
 the semantics of the $\extract$, $\replace$, and $\replaceall$ functions in
@@ -421,8 +413,8 @@ properties; see below).
 To this end, we introduce a new 
 transducer model called \emph{Prioritized Streaming String Transducer (PSST)},
 which is inspired by %extends and combines 
-two automata/transducer models: prioritized finite-state automata \cite{BM17} 
-and streaming string transducers \cite{AC10,AD11}. PSSTs allow us to precisely
+two automata/transducer models: prioritized finite-state automata~\cite{BM17} 
+and streaming string transducers~\cite{AC10,AD11}. PSSTs allow us to precisely
 capture the non-standard semantics of \regexp{} operators (e.g. greedy/lazy Kleene star) by priorities and 
 deal with capture groups by string variables. 
 We show that $\extract$, $\replace$, and $\replaceall$ can all be expressed as 
@@ -436,7 +428,7 @@ the standard DPLL(T) setting of SMT solvers~\cite{NieuwenhuisetalJACM2006})
 will exploit crucial closure and algorithmic properties satisfied by PSST.
 %Our calculus is sound for the
 In particular, the solver attempts to
-(1) \emph{propagate} regular constraints (i.e. the constraints $x \in e$) in the formula around by means of
+(1) \emph{propagate} regular constraints (i.e.\ the constraints $x \in e$) in the formula around by means of
 the string functions $\cdot$, $\replace$, $\replaceall$, and $\extract$, and 
 (2) either detect conflicting regular constraints, or find a satisfiable assignment.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -461,8 +453,8 @@ always preserves regularity:
 To this end, we introduce a new 
 transducer model called \emph{Prioritized Streaming String Transducer (PSST)},
 which is inspired by %extends and combines 
-two automata/transducer models: prioritized finite-state automata \cite{BM17} 
-and streaming string transducers \cite{AC10,AD11}. PSSTs allow us to precisely
+two automata/transducer models: prioritized finite-state automata~\cite{BM17} 
+and streaming string transducers~\cite{AC10,AD11}. PSSTs allow us to precisely
 capture the non-standard semantics of \regexp{} operators by priorities and 
 deal with capture groups by string variables. 
 We show that extract and replace functions can be expressed in terms of PSSTs.
@@ -471,16 +463,16 @@ We show that extract and replace functions can be expressed in terms of PSSTs.
 regular constraints are \emph{effectively closed under
 taking $pre$-image of functions captured in PSSTs}.
 Finally, despite the fact that our above string theory is undecidable
-(which follows from \cite{LB16}), we show that our string solving algorithm is
+(which follows from~\cite{LB16}), we show that our string solving algorithm is
 guaranteed to terminate (and therefore is also complete) under the assumption
 that the input formula syntactically satisfies the so-called 
 \emph{straight-line restriction}.
 
 We implement our decision procedure in a new solver \ostrich\  
 on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
-and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of JavaScript programs (with 98,117 programs in each collection), from a library of real-world regular expressions \cite{DMC+19}, by using two simple JavaScript program templates containing match and replace functions respectively.  
- Then we generate all the four (resp. three) path constraints for each match (resp. replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp. three) queries in 97.9\% (resp. 97.6\%) of the match (resp. replace) SMT files, with the average time 1.19 (resp. 1.48) seconds per file. 
-Running \expose{} \cite{LMK19} on the same benchmarks\footnote{More precisely, since
+and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of JavaScript programs (with 98,117 programs in each collection), from a library of real-world regular expressions~\cite{DMC+19}, by using two simple JavaScript program templates containing match and replace functions respectively.  
+ Then we generate all the four (resp.\ three) path constraints for each match (resp.\ replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp.\ three) queries in 97.9\% (resp.\ 97.6\%) of the match (resp.\ replace) SMT files, with the average time 1.19 (resp.\ 1.48) seconds per file. 
+Running \expose{}~\cite{LMK19} on the same benchmarks\footnote{More precisely, since
 \expose{} is a symbolic execution engine that calls Z3, one can create a small 
 wraparound function, which in effect turns \expose{} into a string solver.}
 with a fixed time budget (otherwise, 
@@ -554,34 +546,32 @@ RWREs. In particular, $\rep$ is a concatenation of string
 constants and backreferences, while $e, \pat$ are RWREs that allow non-commutative
 unions, greedy/lazy Kleene stars, and capturing groups, but \emph{not} 
 backreferences.  An example of a symbolic path in this fragment is in
-Example \ref{exmp-name-swap}.
+Example~\ref{exmp-name-swap}.
 We complement this by proving undecidability when we permit
 backreferences in $e$ or $\pat$.
 Our decidable fragment of RWREs supports a significant portion of the 
-frequently used features in RWREs (as indicated by the data analysis in
-\cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
+frequently used features in RWREs (as indicated by the data analysis in~\cite{LMK19} across 415,487 NPM packages) including capturing groups ($\sim$39\%), 
 global flag ($\sim$30\%), and greedy/lazy Kleene stars ($\sim$23\%). Features
 such as backreferences turned out to be not so frequently used ($\sim$0.8\%).
 These statistics are also consistent with the RWRE usage statistics for Python across
-3,898 projects \cite{CS16}, e.g., capturing groups are the most frequently used
+3,898 projects~\cite{CS16}, e.g., capturing groups are the most frequently used
 features of RWREs ($\sim$53\% out of the found RWREs), while backreferences are
-not frequently used ($\sim$0.1\%). Moreover, in a recent library of over 500,000 RWREs collected from open-source programs \cite{DMC+19},  backreferences occur in less than 0.2\% of them, and our decidable fragment is able to cover $\sim$80\% of them.
+not frequently used ($\sim$0.1\%). Moreover, in a recent library of over 500,000 RWREs collected from open-source programs~\cite{DMC+19},  backreferences occur in less than 0.2\% of them, and our decidable fragment is able to cover $\sim$80\% of them.
 %\anthony{Can you guys add some other statistics here perhaps?}
 
 %This paper proposes a novel approach to support real-world regular expressions in string constraint solving. 
 Our decision procedure requires that we introduce a new automata model, called 
 prioritized streaming string transducers (PSSTs), which extends and combines 
-prioritized finite-state automata \cite{BM17} and streaming string transducers 
-\cite{AC10,AD11}. With PSSTs, we encode the non-standard semantics of regular 
+prioritized finite-state automata~\cite{BM17} and streaming string transducers~\cite{AC10,AD11}. With PSSTs, we encode the non-standard semantics of regular 
 expression operators by priorities and deal with capturing groups by string variables. 
 The widely used string functions involving regular expressions, e.g. match and replace(all), can be easily transformed into PSSTs. 
 
-We then design a decision procedure for a class of string constraints with RWREs. The decision procedure extends the backward reasoning approach proposed in \cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
+We then design a decision procedure for a class of string constraints with RWREs. The decision procedure extends the backward reasoning approach proposed in~\cite{CHL+19} to PSSTs. Specifically, we show that the pre-images of regular languages under PSSTs are regular and can be computed effectively. 
 
 We implement the decision procedure in our new solver \ostrich\  
 on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
- and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of JavaScript programs (with 98,117 programs in each collection), from a library of real-world regular expressions \cite{DMC+19}, by using two simple JavaScript program templates containing match and replace functions respectively.  
- Then we generate all the four (resp. three) path constraints for each match (resp. replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp. three) queries in 97.9\% (resp. 97.6\%) of the match (resp. replace) SMT files, with the average time 1.19 (resp. 1.48) seconds per file. For comparison, we also run \expose{} on the JavaScript programs. \expose{} covers 91.5\% (resp. 63.2\%) of feasible paths in the match (resp. replace) programs reported by {\ostrich}, with  the average time 28.0 (resp. 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. 
+ and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of JavaScript programs (with 98,117 programs in each collection), from a library of real-world regular expressions~\cite{DMC+19}, by using two simple JavaScript program templates containing match and replace functions respectively.  
+ Then we generate all the four (resp. three) path constraints for each match (resp.\ replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp.\ three) queries in 97.9\% (resp.\ 97.6\%) of the match (resp.\ replace) SMT files, with the average time 1.19 (resp.\ 1.48) seconds per file. For comparison, we also run \expose{} on the JavaScript programs. \expose{} covers 91.5\% (resp.\ 63.2\%) of feasible paths in the match (resp.\ replace) programs reported by {\ostrich}, with  the average time 28.0 (resp.\ 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. 
  %\zhilin{I rephrased a bit. @Philipp, please check.}
  }
 
@@ -597,10 +587,9 @@ Strings are a fundamental data type in virtually all programming languages.
 %(XSS), which is among the OWASP Top 10 Application Security Risks
 %\cite{owasp17}. 
 
-One effective automatic testing method for identifying subtle programming errors  is based on \emph{symbolic execution}
-\cite{king76} and combinations with dynamic analysis
-called \emph{dynamic symbolic execution} \cite{jalangi,DART,EXE,CUTE,KLEE}.
-See \cite{symbex-survey} for an excellent survey. 
+One effective automatic testing method for identifying subtle programming errors  is based on \emph{symbolic execution}~\cite{king76} and combinations with dynamic analysis
+called \emph{dynamic symbolic execution}~\cite{jalangi,DART,EXE,CUTE,KLEE}.
+See~\cite{symbex-survey} for an excellent survey. 
 
 Unlike purely random testing,
 which runs only \emph{concrete} program executions on different
@@ -608,7 +597,7 @@ inputs, the techniques of symbolic execution analyse \emph{static} paths
 (also called symbolic executions) through the software system under test.
 Such a path can be viewed as a constraint $\varphi$ (over
 appropriate data domains) and the hope is that a fast
-solver is available for checking the satisfiability of $\varphi$ (i.e. to check
+solver is available for checking the satisfiability of $\varphi$ (i.e.\ to check
 the \emph{feasibility} of the static path), which can be used for generating
 inputs that lead to certain parts of the program or an erroneous behaviour.
 %a undesirable program behaviour.
@@ -638,11 +627,9 @@ which may be used to replace all occurrences of a string matching a pattern by
 another string. 
 
 The replace function (especially 
-the replace-all functionality) is omnipresent in HTML5 applications
-\cite{LB16,TCJ16,YABI14}. 
-%\mat{What does it mean for the replace function to be convincingly argued?}
+the replace-all functionality) is omnipresent in HTML5 applications~\cite{LB16,TCJ16,YABI14}. 
 
-A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for "find" or "find and replace" operations on strings, or for input validation.  
+A regular expression (shortened as regex) is a sequence of characters that define a search pattern. Usually such patterns are used by string-searching algorithms for ``find'' or ``find and replace'' operations on strings, or for input validation.  
 
 The semantics of regular expressions with capturing groups and backreferences is rather involved. One of the reasons is that different languages may choose different semantics for a regex to match the string when the regex is served as a pattern. 
 
