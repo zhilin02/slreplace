@@ -107,7 +107,7 @@ in the following two examples.
     We quickly mention the difficulty posed by the match function in JavaScript,
     in combination with replace; this example will be discussed in more
     detail in Section \ref{sec:mot}. Consider the snippet in Figure 
-    \ref{fig-run-exmp}.
+    \ref{fig-run-exmp-normalize}.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
 {\tt decimal}. For instance, 
 %we get results
@@ -154,7 +154,7 @@ abstraction and refinement) is used in \cite{LMK19}, while ensuring that an
 %CEGAR (counter-example guided abstraction and refinement). 
 This results in a rather severe price in both precision and performance: the
 refinement process may not terminate even for extremely simple programs
-(e.g. the above examples). \anthony{Zhilin: please check this}
+(e.g. the aforementioned examples). \anthony{Zhilin: please check this}\zhilin{The description is consistent with the experimental results.}
 
 Therefore, the current state-of-affairs is unsatisfactory because even 
 the introduction of very simple RegEx expressions in programs (e.g. the above 
@@ -166,6 +166,8 @@ like to firstly advocate that string solvers should provide support of RegEx
 monumental theoretical and programming task, although this can come at a 
 cost of precision and performance. Secondly, we present \emph{the first} string
 theory and string solver that natively provide such a support.
+
+\zhilin{I think we should say why the current string solvers do not support Regexes, what are the challenges? For me, the challenges are to establish a proper framework where the semantics of string functions involving Regexes can be formally defined and reasoned about.  Then we state how we deal with the difficulties in the contributions below.}
 
 %and the symbolic execution of even a simple
 %program with regular expressions may need to be refined many times.
@@ -354,7 +356,7 @@ solve Example
 existing string solvers and string analysis can handle --- our experimentation
 using a library of real-world regular expressions (involving more than 100,000
 benchmarks) suggests that our solver outperforms existing methods (i.e.
-\cite{aratha,LMK19}) by 30x-50x. We provide more details of our contributions
+\cite{aratha,LMK19}) by 30x-50x. \zhilin{I think Aratha should be removed here. We do not compare with Aratha, since it is unable to deal with Regexes.} We provide more details of our contributions
 below.
 
 Our string theory provides for the first time a native support of the match and the 
@@ -368,7 +370,7 @@ more details):
 \[
 \begin{array}{l c l}
 \smallskip
-\varphi & \eqdef  & z = x \concat y \mid y  = \extract_{i, e}(x) \mid
+\varphi & \eqdef  & x = y \mid z = x \concat y \mid y  = \extract_{i, e}(x) \mid
 y  = \replace_{\pat, \rep}(x) \mid 
 \\
 & & y = \replaceall_{\pat, \rep}(x)   \mid
@@ -389,7 +391,7 @@ also cover the most important features of \regexp{} (including greedy/lazy
 matching, capture groups, among others) that make up 75\% of the benchmarks from
 \cite{LMK19}. More importantly, we have performed an extensive experiment
 validating our semantics of \regexp{} against JavaScript semantics. \anthony{Say
-details here. Maybe good to say which ECMAScript}.
+details here. Maybe good to say which ECMAScript}.\zhilin{How to define the Regex semantics by PSSTs deserves a place in the intro.}
 
 Our string solver is based on a first-order sequent calculus ...
 \anthony{Philipp, maybe you want to say something here?}
