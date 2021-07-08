@@ -44,8 +44,12 @@ the highly active research area of \emph{string solving}, resulting in the
 development of numerous string solvers in the last decade or so including
 %\cite{???}.
 %As a result of the fundamental role of regular expressions in string processing, the state-of-the-art string constraint solvers (e.g.
-Z3, CVC4, Z3-str/2/3/4, ABC, Norn, Trau, OSTRICH, S2S, Qzy, Stranger, Sloth,
-Slog, Slent, Gecode+S, G-Strings, HAMPI, among many others. %\cite{??}
+Z3 \cite{Z3}, CVC4 \cite{cvc4}, Z3-str/2/3/4, ABC \cite{ABC}, Norn
+\cite{Abdulla14}, Trau \cite{Z3-trau,AbdullaACDHRR18-trau,Abdulla17}, OSTRICH
+\cite{CHL+19}, S2S, Qzy, Stranger \cite{Stranger}, Sloth
+\cite{HJLRV18,AbdullaA+19},
+Slog \cite{fang-yu-circuits}, Slent \cite{WC+18}, Gecode+S, G-Strings, HAMPI
+\cite{HAMPI}, among many others. %\cite{??}
 %... \anthony{make sure we add all}) 
  %support regular expressions. Nevertheless, what they support is only the regex-string matching (aka membership constraints) for \emph{classical} regular expressions, i.e. whether a string belongs to the language defined by a regular expression, as we know it from formal language theory.  
 
@@ -181,7 +185,7 @@ not to mention the lost in precision and the performance penalty. Secondly, we
 present \emph{the first} string
 theory and string solver that natively provide such a support.
 
-\zhilin{I think we should say why the current string solvers do not support Regexes, what are the challenges? For me, the challenges are to establish a proper framework where the semantics of string functions involving Regexes can be formally defined and reasoned about.  Then we state how we deal with the difficulties in the contributions below.}
+%\zhilin{I think we should say why the current string solvers do not support Regexes, what are the challenges? For me, the challenges are to establish a proper framework where the semantics of string functions involving Regexes can be formally defined and reasoned about.  Then we state how we deal with the difficulties in the contributions below.}
 
 %and the symbolic execution of even a simple
 %program with regular expressions may need to be refined many times.
@@ -408,7 +412,10 @@ also covers the most important features of \regexp{} (including greedy/lazy
 matching, capture groups, among others) that make up 74.97\% of the \regexp{}
 expressions of \cite{LMK19} across 415,487 NPM packages. 
 
-Our string solver is based on a formalization of the semantics of the $\extract$, $\replace$, and $\replaceall$ functions.
+A crucial step in the development of our string solver is a formalization of
+the semantics of the $\extract$, $\replace$, and $\replaceall$ functions in
+an automata-theoretic model that is amenable to analysis (among others, closure
+properties; see below).
 %
 To this end, we introduce a new 
 transducer model called \emph{Prioritized Streaming String Transducer (PSST)},
@@ -417,18 +424,17 @@ two automata/transducer models: prioritized finite-state automata \cite{BM17}
 and streaming string transducers \cite{AC10,AD11}. PSSTs allow us to precisely
 capture the non-standard semantics of \regexp{} operators (e.g. greedy/lazy Kleene star) by priorities and 
 deal with capture groups by string variables. 
-We show that $\extract$, $\replace$, and $\replaceall$ can all be expressed as PSSTs, thus providing formal semantics for these functions.
-%
-More importantly, we 
-have performed an extensive experiment
-validating our semantics of \regexp{} against JavaScript semantics. 
+We show that $\extract$, $\replace$, and $\replaceall$ can all be expressed as 
+PSSTs. More importantly, we have performed an extensive experiment
+validating our formalization against JavaScript semantics. 
 %\anthony{Say
 %details here. Maybe good to say which ECMAScript}.\zhilin{How to define the Regex semantics by PSSTs deserves a place in the intro.}
 
-Moreover, our string solver relies on a sound sequent calculus (implemented in the 
-standard DPLL(T) setting of SMT solvers~\cite{NieuwenhuisetalJACM2006}) 
+Next, by means of a a sound sequent calculus, our string solver (implemented in 
+the standard DPLL(T) setting of SMT solvers~\cite{NieuwenhuisetalJACM2006}) 
+will exploit crucial closure and algorithmic properties satisfied by PSST.
 %Our calculus is sound for the
-that attempts to 
+In particular, the solver attempts to
 (1) \emph{propagate} regular constraints (i.e. the constraints $x \in e$) in the formula around by means of
 the string functions $\cdot$, $\replace$, $\replaceall$, and $\extract$, and 
 (2) either detect conflicting regular constraints, or find a satisfiable assignment.
@@ -443,11 +449,12 @@ $x \in S$ and \regexp{} $e$.
 A single step of the regular-constraint propagation computes either the 
 $post$-image or the $pre$-image of the above functions. In particular, 
 %In order to perform a single step of this constraint propagation, we perform
-it is crucial that each step of our constraint propagation is 
-regular-constraint-preserving. Since the $post$-image is not always regular-constraint-preserving,
-we only propagate by taking $post$-image when this is regular-constraint-preserving.
+it is crucial that each step of our constraint propagation preserves
+regularity of the constraints.
+Since the $post$-image does not always preserve regularity,
+we only propagate by taking $post$-image when regularity is preserved.
 On the other hand, one of our crucial results is that that taking $pre$-image 
-is always regular-constraint-preserving. 
+always preserves regularity:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \OMIT{
 To this end, we introduce a new 
@@ -460,7 +467,7 @@ deal with capture groups by string variables.
 We show that extract and replace functions can be expressed in terms of PSSTs.
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-More precisely, we show that regular constraints are \emph{effectively closed under
+regular constraints are \emph{effectively closed under
 taking $pre$-image of functions captured in PSSTs}.
 Finally, despite the fact that our above string theory is undecidable
 (which follows from \cite{LB16}), we show that our string solving algorithm is
@@ -478,7 +485,12 @@ wraparound function, which in effect turns \expose{} into a string solver.}
 with a fixed time budget (otherwise, 
 it won't terminate), we show that \ostrich{} offers a 30x--50x speedup in 
 comparison to \expose{}, making \ostrich{} the fastest string solver that
-handles \regexp{}.
+handles \regexp{}.\philipp{this should be reformulated; earlier we claim
+that we have the only string solver supporting RegEx, so it does not make
+sense to say we have the fastest now.}
+
+\paragraph{Organization.}
+
  %For comparison, we also run \expose{} on the JavaScript programs. \expose{} covers 91.5\% (resp. 63.2\%) of feasible paths in the match (resp. replace) programs reported by {\ostrich}, with  the average time 28.0 (resp. 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. 
  %\zhilin{I rephrased a bit. @Philipp, please check.}
 
@@ -510,7 +522,6 @@ handles \regexp{}.
 %details here. Maybe good to say which ECMAScript}.\zhilin{How to define the Regex semantics by PSSTs deserves a place in the intro.}
 %
 %>>>>>>> c6117587482f1b6896fb29218b278793bcf07fa6
-\anthony{This is the end of my intro for now; below can be erased as needed}
 
 \OMIT{
 The main contributions of the paper are to answer both (Q1) and (Q2) in the
