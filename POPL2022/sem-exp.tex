@@ -1,7 +1,8 @@
 %!TEX root = main.tex
 \paragraph{Validation experiments for the formal semantics} \label{sect：valid}
-We have defined the formal semantics of the regular-expression matching by constructing PSSTs out of regular expressions. 
-In the sequel, we conduct experiments to validate the formal semantics against the actual semantics of JavaScript regular-expression matching.
+We have defined %the formal semantics of the regular-expression 
+{\regexp}-string matching by constructing {\PSST}s. %out of regular expressions. 
+In the sequel, we conduct experiments to validate the formal semantics against the actual JavaScript {\regexp}-string matching.
 
 Let $\opset$ denote the set of {\regexp} operators, namely, alternation $+$, concatenation $\concat$, optional $?$, lazy optional $??$, Kleene star $*$, lazy Kleene star $*?$, Kleene plus $+$, lazy Kleene plus $+?$, repetition $\{m_1,m_2\}$, and lazy repetition $\{m_1,m_2\}?$. Moreover, let $\opset^{2}$ (resp. $\opset^{3}$) denote the set of pairs (resp. triples) of operators from $\opset$. 
 Aiming at a good coverage of different syntactical ingredients of {\regexp}, we generate regular expressions for every element of $\opset^{\le 3} = \opset \cup \opset^2 \cup \opset^3$.

@@ -2,7 +2,7 @@
 
 \section{Appendix}
 
-\subsection{Construction of {\PSST} from {\regexp}}
+\subsection{Construction of {\PSST} from {\regexp}} \label{app:reg2psst}
 
 \paragraph{Case $e =\emptyset$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_\emptyset = (\{q_{\emptyset, 0}\}, \Sigma, \{x_{\emptyset}\}, \delta_\emptyset, \tau_\emptyset, E_\emptyset, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where there are no transitions out of $q_{\emptyset,0}$, namely, $\delta_\emptyset(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau_\emptyset(q_{\emptyset, 0}) = ((); ())$, and $E_\emptyset$ is vacuous here.
 %$\delta_\emptyset(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau_\emptyset(q_{\emptyset, 0}) = ((); ())$, and $E_\emptyset$ is vacuous here. 
@@ -283,7 +283,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 \subsection{From $\extract$, $\replace$ and $\replaceall$ to PSSTs}\label{appendix:sec-extract-replace-to-psst}
 
 \noindent{\bf Lemma~\ref{lem-str-fun-to-psst}}.
-    The satisfiability of $\strline$ reduces to the satisfiability of the string constraints that are a boolean combinations of formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
+    The satisfiability of $\strline$ reduces to the satisfiability of boolean combinations of formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
 
     The proof is in two steps: first we remove $\$0$, $\refbefore$, and $\refafter$, then we encode the remaining string functions with PSSTs.
 
@@ -370,12 +370,10 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
         $$\cR_{f} = \{(w, w') \mid w'= f(w)\}.$$
     \end{lemma}
     \begin{proof}
-    As we already mentioned in Section~\ref{sec:logic}, $\extract_{i,e}$ can be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all the string variables, except the string variable $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group,  and setting the output expression of the final states as $x_{e'}$. 
+    The $\extract_{i,e}$ can function be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all the string variables, except the string variable $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group,  and setting the output expression of the final states as $x_{e'}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\OMIT
-{
         Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$.
         Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$, and ${\sf Sub}_{e'}[\cA_e]$ is any isomorphic copy of $\cA_{e'}$ in $\cA_e$.
 
@@ -425,63 +423,12 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                 \end{itemize}
                 %
         \end{itemize}
-}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        Next, we show how to construct the PSST for $\replaceall_{\pat, \rep}$ where all the references in $\rep$ are of the form $\$i$.
-
-        Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$.
-        Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
-
-        By abuse of notation, we will write
-        $\rep[x_1/\$i_1,\cdots,x_k/\$i_k]$
-        to denote the replacement of the references, in order of appearance, by the contents of the variables $x_j$.
-        For example, in
-        $\rep = a \$1 a \$2 a \$1 a$
-        then
-        $\rep[x_1/\$i_1, x_2/\$i_2,x_3/\$i_3]$,
-        is $a w_1 a w_2 a w_3 a$ when $w_j$ is the value stored in $x_j$.
-
-        Although, in this notation, it is possible to substitute different occurrences of a reference with different word values, our encoding will always substitute the same value.
-        If $i_j = i_{j'}$ then $x_j$ will contain the same value as $x_{j'}$.
-        We use two variables in this case to satisfy the copyless property.
-        If we tried to use a single variable – e.g. $\rep[x/\$i_1,x/\$i_2]$ – then the resulting transition in the encoding below would not be copyless.
-
-         Suppose $\cT_\pat = (Q_{\pat}, \Sigma, X_{\pat}, \delta_{\pat}, \tau_{\pat}, q_{\pat,0}, (F_{\pat,1}, F_{\pat,2}))$.  
-         %For every $j \in [k]$, let $e'_{i_j}$ be the subexpression of $\pat$ corresponding to the $i_j$th capturing group, and $\mathscr{S}_{e'_{i_j}}[\cT_\pat]$ be the set of isomorphic copies of $\cT_{e'_{i_j}}$ in $\cT_\pat$. (Recall that in the construction of $\cT_e$ in Section~\ref{sec-rwre}, there may be multiple copies of $\cT_{e'_{i_j}}$ for a subexpression $e'_{i_j}$.)
-%
-   Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cT_\pat$ by adding a fresh state $q'_0$ such that (see Fig.~\ref{fig-psst-replaceall})
-        \begin{itemize}
-            \item $\cT_{\replaceall_{\pat,\rep}}$ goes from $q'_0$ to $q_{\pat,0}$ via an $\varepsilon$-transition of higher priority than the non-$\varepsilon$-transitions, in order to search the first match of $\pat$ starting from the current position,
-                %
-            \item when $\cT_{\replaceall_{\pat,\rep}}$ stays at $q'_0$, it keeps appending the current letter to the end of $x_0$, which stores the output of $\cT_{\replaceall_{\pat,\rep}}$,
-                %
-            \item starting from $q_{\pat, 0}$, $\cT_{\replaceall_{\pat,\rep}}$ simulates $\cT_\pat$ and stores the matches of capturing groups of $\pat$ into the string variables, in particular, 
-            the matches of the $i_1$th, $\ldots$, $i_k$th capturing groups into the string variables $x_{e'_{i_1}}, \cdots, x_{e'_{i_k}}$ respectively,
-                %
-            \item when the first match of $\pat$ is found, $\cT_{\replaceall_{\pat,\rep}}$ goes from $f_{\pat,1} \in F_{\pat, 1}$ or $f_{\pat, 2} \in F_{\pat, 2}$ to $q'_0$ via an $\varepsilon$-transition, appends the replacement string, which is $\rep[x_{e'_{i_1}}/\$_{i_1}, \cdots, x_{e'_{i_k}}/\$_{i_k}]$, to the end of $x_0$, resets the values of al the string variables, except $x_0$, to $\nullchar$, and keeps searching for the next match of $\pat$.
-        \end{itemize}
-
-        \begin{figure}[ht]
-            \centering
-            \includegraphics[scale=0.9]{psst-replaceall.pdf}
-            \caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
-            \label{fig-psst-replaceall}
-        \end{figure}
-
-        Observe that the PSST will be copyless: in all but the last case, variable assignments are of the form $x_{e'} = x_{e'} a$, $x_{e'} = x_{e'}$, $x_{e'} = \varepsilon$, or $x_{e'} = \nullchar$;
-        in the final case, when a replacement is made, the assignments are of the form
-        \[
-            \begin{array}{rcl}
-                x_0 &=& x_0 w_1 x_{e'_1} w_2 \cdots w_k x_{e'_k} w_{k+1} \\
-                x_{e'_1} &=& \nullchar \\
-                    &\vdots& \\
-                x_{e'_k} &=& \nullchar \ .
-            \end{array}
-        \]
-
-        Formally, $\cT_{\replaceall_{\pat, \rep}} = (Q_\pat \cup \{q'_0\}$, $\Sigma$, $X'$, $\delta'$, $\tau', E', q'_0, F')$ where
+        Next, we give the construction of the PSST for $\replaceall_{\pat, \rep}$ where all the references in $\rep$ are of the form $\$i$.
+        Recall $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$.
+        Let $\cT_{\replaceall_{\pat, \rep}} = (Q_\pat \cup \{q'_0\}$, $\Sigma$, $X'$, $\delta'$, $\tau', E', q'_0, F')$ where
         \begin{itemize}
             \item $q'_0 \not \in Q_\pat$,
 
@@ -490,29 +437,29 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
             \item $F'(q'_0) = x_0$, and $F'(q')$ is undefined for every $q' \in Q_\pat$,
                 %
             \item $\delta'$ comprises the transitions in $\delta_\pat$, and the transition $\delta'(q'_0, a) = (q'_0)$ for $a \in \Sigma$,
-            
+
             \item  $\tau'$ comprises the transitions in $\tau_\pat$, the transitions $\tau'(q'_0) = ((q_{\pat, 0}); ())$, $\tau'(f_{\pat, 1}) = ((q_{\pat, 0}); ())$ and $\tau'(f_{\pat, 2}) = ((q_{\pat, 0}); ())$ for $f_{\pat, 1} \in F_{\pat, 1}$ and $f_{\pat, 2} \in F_{\pat, 2}$,
-%                \begin{itemize}
-%                    \item $\delta'(q'_0, a) = (q'_0)$ for every $a \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
+                \begin{itemize}
+                    \item $\delta'(q'_0, a) = (q'_0)$ for every $a \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
                         %
-  %                  \item for every $q \in Q \setminus \{f_0\}$ and $a \in \Sigma$, $\delta'(q, a) = \delta(q, a)$ and $\tau'(q) = \tau(q)$,
+                    \item for every $q \in Q \setminus \{f_0\}$ and $a \in \Sigma$, $\delta'(q, a) = \delta(q, a)$ and $\tau'(q) = \tau(q)$,
                         %
- %                   \item $\delta'(f_0, a) = ()$ for every $a \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
-%                \end{itemize}
+                    \item $\delta'(f_0, a) = ()$ for every $a \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
+                \end{itemize}
                 %
             \item $E'$ inherits $E_\pat$, and includes the assignments $E'(q'_0, a, q'_0)(x_0)  = x_0 a$ for $a \in \Sigma$, $E'(f, \varepsilon, q'_0) (x_0) = x_0\rep[x_{e'_{i_1}}/\$i_1, \ldots, x_{e'_{i_k}}/i_k]$ and $E'(f, \varepsilon, q'_0) (x) = \nullchar$ for every  $f \in F_{\pat,1} \cup F_{\pat, 2}$ and $x \in X_\pat$.
-%                \begin{itemize}
-%                    \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, a, q')(x_0) = x_0$,
+                \begin{itemize}
+                    \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, a, q')(x_0) = x_0$,
                         %
- %                   \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ and every $j \in [k]$,  if $(q, a, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, a, q')(x_j) = x_ja$, otherwise, $E(q, a, q')(x_j) = x_j$,
+                    \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ and every $j \in [k]$,  if $(q, a, q')$ occurs in ${\sf Sub}_{e'_{i_j}}[\cA_\pat]$, then $E(q, a, q')(x_j) = x_ja$, otherwise, $E(q, a, q')(x_j) = x_j$,
                         %
- %                   \item  for every $a \in \Sigma$ and $j \in [k]$, $E(q'_0, a, q'_0)(x_0) = x_0a$ and $E(q'_0, a, q'_0)$$(x_j) = x_j$,
+                    \item  for every $a \in \Sigma$ and $j \in [k]$, $E(q'_0, a, q'_0)(x_0) = x_0a$ and $E(q'_0, a, q'_0)$$(x_j) = x_j$,
 %
- %                   \item $E(q'_0, \varepsilon, q_0)(x_j) = x_j$ for every $j \in [k] \cup \{0\}$,
+                    \item $E(q'_0, \varepsilon, q_0)(x_j) = x_j$ for every $j \in [k] \cup \{0\}$,
                         %
-%                    \item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, moreover, for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, where $ \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$ denotes the string term obtained from $\rep$ by replacing every occurrence of $\$i_1,\cdots, \$i_k$ with $x_1,\cdots,x_k$ respectively.
+                    \item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, moreover, for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, where $ \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$ denotes the string term obtained from $\rep$ by replacing every occurrence of $\$i_1,\cdots, \$i_k$ with $x_1,\cdots,x_k$ respectively.
                         %
- %               \end{itemize}
+                \end{itemize}
                 %
         \end{itemize}
         \end{proof}

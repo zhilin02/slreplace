@@ -31,15 +31,12 @@ As a result, we shall present an operational (as opposed to traditional denotati
 
 
 %, which  is defined by recursively constructing {\PSST}s out of regular expressions.
-Note that in \cite{BDM14,BM17}, a construction from {\regexp} to prioritized finite transducers (PFT) was given. The construction therein is a variant of the classical Thompson construction from regular expressions to nondeterministic finite automata \cite{Thompson68}. In particular, the size of the constructed PFT is linear in the size of the given regular expression. 
-%
-
-One may be tempted to think that the construction in \cite{BDM14,BM17} can be easily adapted to construct {\PSST}s out of regular expressions. 
+Note that in \cite{BDM14,BM17}, a construction from {\regexp} to prioritized finite transducers (PFT) was given. The construction therein is a variant of the classical Thompson construction from regular expressions to nondeterministic finite automata \cite{Thompson68}. In particular, the size of the constructed PFT is linear in the size of the given regular expression. One may be tempted to think that the construction in \cite{BDM14,BM17} can be easily adapted to construct {\PSST}s out of regular expressions. 
 %
 Nevertheless, the construction in \cite{BDM14,BM17} does \emph{not} work for so called \emph{problematic regular expressions}, i.e.,  those regular expressions that contain the subexpressions $e^*$ or $e^{*?}$ with $\varepsilon \in \Lang(e)$. Moreover, the construction therein did not consider the repetition operators $[e_1^{\{m_1,m_2\}}]$ or $[e_1^{\{m_1,m_2\}?}]$. 
 %Finally, the construction therein was not validated against the actual semantics of regex-string matching in programming languages. 
 %
-In comparison, our goal here is to have a construction that works for arbitrary regular expressions and is consistent with the actual semantics of \regexp-string matching in JavaScript. It turns out that our construction of {\PSST}s is considerably different from that in \cite{BDM14,BM17}. In particular, the size of the constructed {\PSST} can be \emph{exponential} in the size of the given regular expression in the worst case.
+Our construction, which is considerably different from that in \cite{BDM14,BM17}, works for arbitrary regular expressions and is consistent with the actual \regexp-string matching in JavaScript. In particular, the size of the constructed {\PSST} can be \emph{exponential} in the size of the given regular expression in the worst case.
 
 %\subsection{Semantics of \regexp[\sf CG]}
 %In this section, we give one of the many semantics of \regexp[\sf CG], which we will utilize for $\replaceall$.
@@ -147,20 +144,15 @@ where
 			\label{fig-psstconcat}
 		\end{figure}  
 \end{definition}
-Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$. We would also like to remark that if $F_{1,1} = \emptyset$ or $F_{2,1} = \emptyset$, then \emph{one copy} of $\cT_2$, instead of two copies, is already sufficient for the concatenation.
+Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$. We   remark that if $F_{1,1} = \emptyset$ or $F_{2,1} = \emptyset$, then \emph{one copy} of $\cT_2$, instead of two copies, is already sufficient for the concatenation.
 
-We are going to recursively construct a PSST $\cT_e$ for each {\pcre} $e$, such that 
-%\begin{itemize}
-     %\item 
-     the initial state has no incoming transitions and each of its final states has no outgoing transitions,
-    %\item 
-    moreover, all the transitions out of the initial state are $\varepsilon$-transitions. 
-%     \item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
-%\end{itemize}
-
+We shall recursively construct a {\PSST} $\cT_e$ for each {\pcre} $e$, such that the initial state has no incoming transitions and each of its final states has no outgoing transitions. Moreover, all the transitions out of the initial state are $\varepsilon$-transitions. 
+%
 For convenience, we assign a unique index for each subexpression in a {\pcre}. 
 %Let us use $\idx_e$ to denote the index function associated with a {\pcre} $e$. 
 We assume that in $\cT_e$, a string variable $x_{e'}$ is introduced for each subexpression $e'$ of $e$. 
+
+Note that the construction is technical and below we only select to present some representative cases. Our cases are relegated to Appendix~\ref{app:reg2psst}.
 %Moreover, a special symbol $\nullchar$ is introduced to deal with the situation that a subexpression $e'$ is not matched. If this happens, then the value of $e'$ is undefined and $\nullchar$ is assigned to $x_{e'}$. 
 %Let $X_e$ denote the set of string variables introduced for $e$.
 
@@ -205,11 +197,11 @@ We assume that in $\cT_e$, a string variable $x_{e'}$ is introduced for each sub
 \paragraph{Case $e = [e_1 + e_2]$ (see Figure~\ref{fig-reg2pfa-1})} For $i \in \{1, 2\}$, let  
 $\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i},  q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. Moreover, let us assume that $X_{e_1} \cap X_{e_2} = \emptyset$.
 %$\cT_{e_2} = (Q_{e_2}, \Sigma, X_{e_2}, \delta_{e_2}, \tau_{e_2}, E_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$.
- 
+% 
 Then 
 \[\cT_e = (Q_{e_1} \cup Q_{e_2} \cup \{q_{e,0}\}, \Sigma, X_{e_1} \cup X_{e_2} \cup \{x_e\}, 
 		\delta_e, \tau_e, E_e, q_{e,0}, (F_{e_1,1} \cup F_{e_2,1}, F_{e_1,2} \cup F_{e_2,2}))\] where  
-		\begin{itemize}
+\begin{itemize}
 %			\item $q_{e,0}  \not \in Q_{e_1} \cup Q_{e_2}$, 
 %			 \item  $X_e = X_{e_1} \cup X_{e_2} \cup \{x_e\}$,
 			\item $\delta_e$ comprises the transitions in $\delta_{e_1}$ and $\delta_{e_2}$,
@@ -232,7 +224,7 @@ Then
 %			\item for each $i\in\{1,2\}$, transition $(q, a, q')$ in $\cT_{e_i}$ (where $a \in \Sigma^\varepsilon$), $x \in X_{e_i}$ and $x' \in X_{e} \setminus X_{e_i}$, $E_e(q,a,q')(x) = E_{e_i}(q,a,q')(x)$ and $E_e(q,a,q')(x') =x'$, 
 %			\item $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_{e}) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x_{e}) =\varepsilon$, and $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x) =x$ for every $x \in X_{e_1} \cup X_{e_2}$.
 %			\end{itemize}
-		\end{itemize}
+\end{itemize}
 %Fig.~\ref{fig-reg2pfa-1} depicts the construction.  	
 		\begin{figure}[ht]
 			\centering
