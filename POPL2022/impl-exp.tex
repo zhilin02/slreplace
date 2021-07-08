@@ -3,7 +3,7 @@
 \section{Implementation and Experiments}
 \label{sect:impl}
 
-We have implemented our decision procedure for $\strline_{\sf reg}$ in the SMT
+We have implemented the proof calculus for $\strline$ in the SMT
 solver \ostrich,\footnote{Name anonymized for doubly-blind review,
 and will be provided in the final version.} extending the
 open-source solver OSTRICH~\cite{CHL+19}.
@@ -47,7 +47,7 @@ containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf re.reference}. 
 replacement parameter is not allowed.
 
 The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
-$\strline_{\sf reg}$. For instance,
+$\strlinesl$. For instance,
 %
 {\small
 \begin{minted}{lisp}
@@ -123,9 +123,9 @@ Our experiments have the purpose of answering the following main questions:
 
 \medskip
 \noindent
-\textbf{R1:} Are the  RWREs defined in this paper
+\textbf{R1:} Are the  {\regexp}s defined in this paper
 suitable to encode regular expressions in programming languages,
-for instance ECMAScript regular expressions~\cite{ECMAScript11}?
+for instance ECMAScript regular expressions~\cite{ECMAScript11}?\zhilin{Should R1 be removed, since we already have semantics validation experiments ?}
 \\
 \textbf{R2:} How does \ostrich\ compare to other solvers that can
 handle real-world regular expressions, e.g., greedy/lazy
@@ -137,7 +137,7 @@ the primary application of string constraint solving?
 %
 
 \paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
-expressions to RWREs, and integrated \ostrich\ into the symbolic
+expressions to {\regexp}s, and integrated \ostrich\ into the symbolic
 execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
 the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
 as well as some other JavaScript programs containing match or replace
@@ -190,13 +190,13 @@ semantics.
 
 
 \paragraph{For \textbf{R2}:} There are no standard string benchmarks
-involving RWREs, and we are not aware of other constraint solvers
+involving {\regexp}s, and we are not aware of other constraint solvers
 supporting capturing groups, neither among the SMT nor the CP
 solvers. %(e.g.,
 %\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
 The closest related work is the algorithm implemented in \expose{}, which
 applies Z3~\cite{Z3} for solving string constraints, but augments
-it with a refinement loop to approximate the RWRE
+it with a refinement loop to approximate the {\regexp}
 semantics.\footnote{We considered replacing Z3 with \ostrich\ in
   \expose{} for the experiments. However, \expose{} integrates Z3 using its
   C API, and changing to \ostrich, with native support
@@ -204,7 +204,7 @@ semantics.\footnote{We considered replacing Z3 with \ostrich\ in
   parts of \expose{}.}
 %
 For \textbf{R2}, we compared \ostrich\ with \expose{} on 98,117
-RWREs taken from \cite{DMC+19}.
+{\regexp}s taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
 SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
@@ -281,7 +281,7 @@ showing that this class of constraints is harder; the runtime of
 \expose{} is on average 37x higher than that of \ostrich.  Overall,
 even taking into account that \expose{} has to analyze JavaScript
 code, as opposed to the SMT-LIB given to \ostrich, the experiments
-show that \ostrich\ is a highly competitive solver for RWREs.
+show that \ostrich\ is a highly competitive solver for {\regexp}s.
 
 
 
@@ -307,4 +307,4 @@ therefore not terminate on some programs.
 %ADTs, arrays, and bit-vectors. 
 Overall, the experiments indicate that {\ostrich} is more
 efficient than the CEGAR-augmented symbolic execution for dealing
-with RWREs.
+with {\regexp}s.
