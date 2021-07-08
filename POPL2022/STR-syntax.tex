@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-\section{A String Constraint Language}
+\section{A String Constraint Language Natively Supporting \regexp}
 \label{sec:logic}
 %\section{Formal Semantics of {\regexp}-string Matching}\label{sec-rwre}
 %
@@ -48,7 +48,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% start 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we define the string constraint language. Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
+In this section, we define a string constraint language natively supporting {\regexp}. Throughout the paper, $\Int^+$ denotes the set of positive integers, and  $\nat$ denotes the set of natural numbers. Furthermore, for $n\in \Int^+$, let $[n]:=\{1, \ldots, n\}$. 
 %
 We use $\Sigma$ to denote a finite set of letters, called \emph{alphabet}. A \emph{string} over $\Sigma$ is a finite sequence of letters from $\Sigma$. We use $\Sigma^*$ to denote the set of strings over $\Sigma$, $\varepsilon$ to denote the empty string, and $\Sigma^\varepsilon$ to denote $\Sigma \cup \{\varepsilon\}$. 
 A string $w'$ is called a \emph{prefix} (resp. \emph{suffix}) of $w$ if $w = w'w''$ (resp. $w = w'' w'$) for some string $w''$. 
@@ -64,8 +64,8 @@ A string $w'$ is called a \emph{prefix} (resp. \emph{suffix}) of $w$ if $w = w'w
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
 %\subsection{Syntax of regular expressions}
-We start with the syntax of regular expressions %tailored to its usage in modern programming language. We shall start with the syntax of regular expressions, 
-which are essentially those used in JavaScript. (We do not include backreferences though.)
+We start with the syntax of {\regexp} %tailored to its usage in modern programming language. We shall start with the syntax of regular expressions, 
+which is essentially that used in JavaScript. (We do not include backreferences though.)
 \begin{definition}[Regular expressions, {\regexp}]	
 	%\begin{multline*}
 	\[

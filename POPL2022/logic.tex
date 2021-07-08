@@ -1,6 +1,8 @@
 %!TEX root = main.tex
 
-In the rest of this section, we define the string constraint language $\strline$.
+In the rest of this section, we define the string constraint language $\strline$. 
+
+The syntax of $\strline$ is defined by the following rules.
 \[
 \begin{array}{l c l}
 \smallskip
@@ -26,7 +28,8 @@ where
 \end{itemize}
 
 The $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns a special symbol $\nullchar$, denoting the fact that its value is undefined. For instance, when $[[a^+] + ([a^*])]$ is matched to the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. 
-The formal semantics of $\extract_{i, e}(x)$ is defined by the {\PSST} $\cT_e$ constructed from $e$ in Section~\ref{sect:regextopsst}, with all the string variables, except the string variable corresponding to the $i$-th capturing group, removed.
+
+%by the {\PSST} $\cT_e$ constructed from $e$ , with all the string variables, except the string variable corresponding to the $i$-th capturing group, removed.
 %
 %\zhilin{to be consistent with the definition of semantics of regex-string matching}\philipp{I'm for removing the special case
 %  $\nullchar$, just use the empty string instead.}\zhilin{for me, $\nullchar$ is important to guarantee the consistency with Javascript semantics. }
@@ -57,6 +60,8 @@ When there are multiple matches in a $\replaceall$, the values of $\refbefore$ a
 The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
 
 A $\strline$ formula $\varphi$ is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) the equations in $\varphi$ can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that $x_1,\ldots, x_n$ are mutually distinct, moreover, for each $i \in [n]$, $x_i$ does \emph{not} occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
+
+As a crucial step for solving the string constraints in $\strline$, we are going to define the formal semantics of the $\extract_{i, e}(x)$, $\replace_{\pat, \rep}(x)$, and $\replaceall_{\pat, \rep}(x)$ functions in the next section.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
