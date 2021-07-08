@@ -133,11 +133,16 @@ formal language theory, e.g., capture groups (those in brackets) in the above
 example. Secondly, string functions in programs can exploit RegEx in an
 intricate manner, e.g., by means of references \$1 and \$2 in Example 
 \ref{exmp-name-swap}. Hitherto, no existing string solvers
-can support any of these features. This is despite the fact that regular 
-constraints and the replace functions are allowed in modern string solvers, 
-to the extent that the semantics of regular expressions\philipp{not sure what this is supposed to tell} is used and that 
-RegEx features like capture groups are not allowed. This limitation of existing
-string solvers was already mentioned in recent papers \cite{LMK19}.
+can support any of these features. This is despite the fact that \emph{idealized
+versions} of regular 
+constraints and the replace functions are allowed in modern string solvers
+(e.g. see \cite{AbdullaACDHRR18-trau,HJLRV18,cvc4,TCJ16,YABI14,CHL+19}), i.e., 
+features that can be found in the above examples like capture groups, 
+greedy/lazy matching, and references are not supported.
+%in that the semantics of regular expressions\philipp{not sure what this is supposed to tell} is used and that 
+%RegEx features like capture groups are not allowed. 
+This limitation of existing
+string solvers was already mentioned in the recent paper \cite{LMK19}.
 
 In view of the aforementioned limitation of string solvers, what solutions are
 possible? One recently proposed solution is to map the path constraints
@@ -146,25 +151,33 @@ in the SMT theories
 supported by existing string solvers. In fact, this was done in recent papers
 \cite{LMK19}, where the path constraints are mapped to constraints
 in the theory of strings with concatenation and regular constraints in Z3 
-\cite{Z3}. Unfortunately, this mapping is an \emph{approximation} at best\philipp{remove ``at best'', it is an approximation!}, since
+\cite{Z3}. Unfortunately, this mapping is an \emph{approximation}, since
 such complex string manipulations are generally \emph{inexpressible} in any 
-existing string theories\philipp{too general, just say that they are not expressible in the SMT-LIB theory?}. To leverage this, CEGAR (counter-example guided 
+string theories supported by existing string solvers.
+%
+%\philipp{too general, just say that they are not expressible in the SMT-LIB theory?}. 
+To leverage this, CEGAR (counter-example guided 
 abstraction and refinement) is used in \cite{LMK19}, while ensuring that an
 \emph{under-approximation} is preserved. 
 %CEGAR (counter-example guided abstraction and refinement). 
 This results in a rather severe price in both precision and performance: the
 refinement process may not terminate even for extremely simple programs
-(e.g. the aforementioned examples). \anthony{Zhilin: please check this}\zhilin{The description is consistent with the experimental results.}
+(e.g. the aforementioned examples). 
+%\anthony{Zhilin: please check this}\zhilin{The description is consistent with the experimental results.}
 
 Therefore, the current state-of-affairs is unsatisfactory because even 
 the introduction of very simple RegEx expressions in programs (e.g. the above 
 examples) results in path constraints that can \emph{not} be solved by existing 
 symbolic executions in combination with string solvers. In this paper, we would
-like to firstly advocate that string solvers should provide support of RegEx 
-(at least at some levels\philipp{should be reformulated. current solvers support RegEx \emph{on some level}, namely excluding look-arounds, capture groups, etc.}) in their SMT theories. Existing work
+like to firstly advocate that string solvers should \emph{natively} support of
+important features \regexp{}
+%\philipp{should be reformulated. current solvers support RegEx \emph{on some level}, namely excluding look-arounds, capture groups, etc.}) 
+in their SMT theories. 
+Existing work
 (e.g. the reduction to Z3 provided by \cite{LMK19}) shows that this is a 
-monumental theoretical and programming task, although\philipp{``and in addition''?} this can come at a 
-cost of precision and performance. Secondly, we present \emph{the first} string
+monumental theoretical and programming task, 
+not to mention the lost in precision and the performance penalty. Secondly, we 
+present \emph{the first} string
 theory and string solver that natively provide such a support.
 
 \zhilin{I think we should say why the current string solvers do not support Regexes, what are the challenges? For me, the challenges are to establish a proper framework where the semantics of string functions involving Regexes can be formally defined and reasoned about.  Then we state how we deal with the difficulties in the contributions below.}
@@ -355,15 +368,17 @@ solve Example
 \ref{exmp-name-swap} and Example \ref{ex:normalize} --- which hitherto no 
 existing string solvers and string analysis can handle --- our experimentation
 using a library of real-world regular expressions (involving more than 100,000
-benchmarks) suggests that our solver outperforms existing methods (i.e.
-\cite{LMK19}) by 30x--50x. We provide more details of our contributions
-\philipp{agreed. we should also say what parameter 30x-50x refers to} We provide more details of our contributions
-below.
+benchmarks) suggests that our solver substantially outperforms the existing 
+method (i.e.  \cite{LMK19}); by 30--50-fold in our benchmarking. 
+%We provide 
+%more details of our contributions
+%\philipp{agreed. we should also say what parameter 30x-50x refers to} 
+We provide more details of our contributions below.
 
 Our string theory provides for the first time a native support of the match and the 
 replace functions, which can use JavaScript\footnote{JavaScript was chosen 
-because it is the most relevant to string solving 
-\cite{BEK,Berkeley-JavaScript}, owing to vulnerabilities in JavaScripts 
+because it is most relevant to string solving 
+\cite{BEK,Berkeley-JavaScript}, due to vulnerabilities in JavaScripts 
 caused by string manipulations. Our method can be easily adapted to Regex
 semantics in other languages.} RegEx in the input arguments. Here is a quick
 summary of our string constraint language (see Section \ref{sec:logic} for
@@ -390,9 +405,9 @@ by several calls to $\extract$). We also support $\replace$
 %<<<<<<< HEAD
 occurrences) of substrings in $x$ matched by $\pat$ by $\rep$. Our solver/theory
 also cover the most important features of \regexp{} (including greedy/lazy
-matching, capture groups, among others) that make up 74.97\% of the benchmarks 
-from
-\cite{LMK19}. More importantly, we have performed an extensive experiment
+matching, capture groups, among others) that make up 74.97\% of the \regexp{}
+expressions of \cite{LMK19} across 415,487 NPM packages. More importantly, we 
+have performed an extensive experiment
 validating our semantics of \regexp{} against JavaScript semantics. 
 %\anthony{Say
 %details here. Maybe good to say which ECMAScript}.\zhilin{How to define the Regex semantics by PSSTs deserves a place in the intro.}
