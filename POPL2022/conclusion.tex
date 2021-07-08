@@ -1,6 +1,6 @@
 %!TEX root = main.tex
 
-\section{Related Work and Conclusion}\label{sec-related}
+\section{Conclusion}\label{sec-related}
 
 %At a more theoretical level, there are no attempts to incorporate
 %regular expressions in programming languages into a string constraint language, e.g., word equations
@@ -8,18 +8,6 @@
 %solely focus on standard decision problems (e.g. membership and 
 %emptiness being decidable and NP-complete \cite{FS19,BM17b}). 
 
-This paper is concerned with string constraint solving in general, but the focus is on the interplay of regular expressions in modern programming language and solving constraints involving complex string functions. Both of them are monumental research fields for which we will only discuss the work which are most pertinent to ours. 
-
-Variants and extensions of regular expressions to capture their usage in programming languages have received attentions %been investigated 
-from both theory and practice. In formal language theory, regular expressions with capturing groups and backreferences were considered in \cite{CSY03,CN09} and also more recently in \cite{Freydenberger13,Schmid16,BM17b,FS19}, where the expressibility issues and decision problems were investigated. Nevertheless, some basic features of these regular expression, namely, the non-commutative union and the greedy/lazy semantics of Kleene star/plus, were not addressed therein. In software engineering community, % have also received attention in the software engineering community. 
-some empirical studies were reported for these regular expressions recently, including portability across different programing languages \cite{DMC+19} and DDos attacks \cite{SP18}, as well as how programmers write them in practice \cite{MDD+19}.
-
-
-Prioritized finite-state automata and prioritized finite-state transducers were proposed in \cite{BM17}. Prioritized finite-state transducers add indexed brackets to the input string in order to identify the matches of capturing groups. It is hard---if not impossible---to use prioritized finite-state transducers to model replace(all) function in general, e.g. swapping the first and last name as in Example~\ref{exmp-name-swap}. In contrast, {\PSST}s store the matches of capturing groups into string variables, which can then be referred to, thus allowing us to conveniently model the match and replace(all) function. 
-%
-Streaming string transducers were also used in \cite{ZAM19} to solve the straight-line string constraints with concatenation, finite-state transducers, and regular constraints.
-
-For string constraints solving in general, we refer the readers to the recent survey \cite{Ama20}. In this work, we consider a string constraint language which is undecidable in general, and propose a propagation-based calculus to solve the constraints. However, we also identified a straight-line fragment including concatenation, extract, replace(All) which turns to be decidable. The decision procedure we use extends the backward-reasoning approach in \cite{CHL+19}, where only standard one-way and two-way finite-state transducers were considered. 
 
 %and PSSTs, in particular priorities, are beyond them\footnote{It is known that deterministic streaming string transducers are expressively equivalent to two-way deterministic finite-state transducers, which, nevertheless, is not the case for nondeterministic transducers \cite{AC10,AD11}.}.
 %%, PSSTs we introduce PSST, a new transducer model that covers the $\extract_{i,e}$ and $\replaceall_{\sf pat, rep}$ functions, where priorities are used to model the greedy/non-greedy semantics of $*$/$*?$ and string variables are used to store the matches of capturing groups.
@@ -28,7 +16,6 @@ For string constraints solving in general, we refer the readers to the recent su
 %\section{Conclusion}
 
 %Real-world regular expressions (RWRE) in programming languages differ drastically from classical regular expressions, for instance, they adopt the greedy/lazy semantics of Kleene star and include new features of capturing groups and back references. 
-\paragraph{Conclusion}
 In this paper, we proposed a novel approach for natively supporting regular expressions from modern programming language in string constraint solving. We introduced prioritized streaming string transducers ({\PSST}s) to capture \regexp-string matching and validate the conformance of the semantics to JavaScript string functions.   
 
 Furthermore, we defined a string constraint language and put forward procedures, formulated as a propagation-based calculus, to solve the constraints. Although the satisfiability of the constraint language is generally undecidable, we identified a decidable straight-line fragment for which the decision procedure, as well as the complexity analysis, is presented.  
