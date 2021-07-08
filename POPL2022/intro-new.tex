@@ -107,7 +107,7 @@ in the following two examples.
     We quickly mention the difficulty posed by the match function in JavaScript,
     in combination with replace. %; this example will be discussed in more
     %detail in Section \ref{sec:mot}. 
-    Consider the snippet in Figure 
+    Consider the code snippet in Figure 
     \ref{fig-run-exmp-normalize}.
  The function {\tt normalize}   removes leading and trailing zeros from a decimal string with the input %a string variable 
 {\tt decimal}. For instance, 
@@ -115,10 +115,10 @@ in the following two examples.
  \texttt{normalize("0.250") == "0.25"},
  \texttt{normalize("02.50") == "2.5"},
  \texttt{normalize("025.0") == "25"},
-and finally  \texttt{normalize("0250") == "250"}. As the reader might have
+and  \texttt{normalize("0250") == "250"}. As the reader might have
     guessed, the function match actually returns an array of strings,
     corresponding to those that are matched in the \emph{capture groups} (two 
-    in our example) in the RegEx using the \emph{greedy} semantics. One might be
+    in our example) in the RegEx using the \emph{greedy} semantics of the Kleene star/plus operator. One might be
     interested in checking, for instance, that there is a way to generate a
     the string \texttt{"0.0007"}, but not the string \texttt{"00.007"}.
 \end{example}
@@ -365,8 +365,7 @@ We conclude with two open questions:
 \paragraph*{Contributions.}
 In this paper, we provide \emph{the first} string theory and string solver that
 natively support \regexp{}. Not only can our theory/solver easily express and 
-solve Example
-\ref{exmp-name-swap} and Example \ref{ex:normalize} --- which hitherto no 
+solve Example~\ref{exmp-name-swap} and Example~\ref{ex:normalize} --- which hitherto no 
 existing string solvers and string analysis can handle --- our experimentation
 using a library of real-world regular expressions (involving more than 100,000
 benchmarks) suggests that our solver substantially outperforms the existing 
