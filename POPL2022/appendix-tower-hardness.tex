@@ -4,6 +4,7 @@
 \newcommand\alphabet{\Sigma}
 
 \newcommand\rebrac[1]{\left[#1\right]}
+\newcommand\fbrac[1]{\left\langle#1\right\rangle}
 
 \newcommand\idxi{i}
 \newcommand\idxj{j}
@@ -364,11 +365,10 @@ disjunction symbol to indicate that, after the transduction, the tile should
 match one of the tiles copied after it. Between each pair of a tile and a
 copied row, we use the conjunction symbol to indicate that every disjunction
 should have one match. The result is shown below. To aid readability, we
-underline the copied rows.  The parentheses are also to aid readability and are
-not part of the transducer output.
+underline the copied rows. The parentheses $\fbrac{}$ are also inserted to aid future parsing.
 \[
     \begin{array}{c}
-        \brac{
+        \fbrac{
             \tenc{\expheight}{1} \tile^2_1
                 \lor
                 \underline{\fullrow{1}}
@@ -376,13 +376,13 @@ not part of the transducer output.
         \land
         \ldots
         \land
-        \brac{
+        \fbrac{
             \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
                 \lor
                 \underline{\fullrow{1}}
         } \\
         \land \ldots \land \\
-        \brac{
+        \fbrac{
             \tenc{\expheight}{1} \tile^\tileheight_1
                 \lor
                 \underline{\fullrow{\tileheight-1}}
@@ -390,7 +390,7 @@ not part of the transducer output.
         \land
         \ldots
         \land
-        \brac{
+        \fbrac{
             \tenc{\expheight}{\nmax{\expheight}}
                 \tile^\tileheight_{\nmax{\expheight}}
                 \lor
@@ -405,11 +405,10 @@ previous row (up to the next $\land$ symbol). This leaves us with a
 conjunction of disjunctions of pairs. Inside each disjunct, we need to
 verify that one pair has matching indices and tiles that satisfy the
 vertical tiling relation $\vrel$. The result of the second transduction
-is shown below.  Again, the parentheses are for readability and do not
-appear in the transducer output.
+is shown below.
 \[
     \begin{array}{c}
-        \brac{
+        \fbrac{
             \tenc{\expheight}{1} \tile^2_1
             \tenc{\expheight}{1} \tile^1_1
             \lor
@@ -421,7 +420,7 @@ appear in the transducer output.
             \land
             \ldots
             \land
-            \brac{
+            \fbrac{
                 \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
                 \tenc{\expheight}{1} \tile^1_1
                 \lor
@@ -431,7 +430,7 @@ appear in the transducer output.
                 \tenc{\expheight}{\nmax{\expheight}} \tile^1_{\nmax{\expheight}}
             } \\
         \land \ldots \land \\
-        \brac{
+        \fbrac{
             \tenc{\expheight}{1} \tile^\tileheight_1
             \tenc{\expheight}{1} \tile^{\tileheight-1}_1
             \lor
@@ -444,7 +443,7 @@ appear in the transducer output.
             \land
             \ldots
             \land
-            \brac{
+            \fbrac{
                 \tenc{\expheight}{\nmax{\expheight}}
                     \tile^\tileheight_{\nmax{\expheight}}
                 \tenc{\expheight}{1} \tile^{\tileheight-1}_1
@@ -504,7 +503,7 @@ index. That is, each pair
 \]
 is rewritten to
 \[
-    \brac{
+    \fbrac{
         \tenc{\expheight-1}{1} \vartile^\idxj_1
         \lor
         \tenc{\expheight}{\idxi}
@@ -512,7 +511,7 @@ is rewritten to
     \land
     \ldots
     \land
-    \brac{
+    \fbrac{
         \tenc{\expheight-1}{\nmax{\expheight-1}}
             \vartile^\idxj_{\nmax{\expheight-1}}
         \lor
@@ -523,7 +522,7 @@ Then we apply a similar second transduction: each disjunction is
 expanded into pairs of indices and tiles. The result is
 \[
     \begin{array}{c}
-        \brac{
+        \fbrac{
             \tenc{\expheight-1}{1} \vartile^\idxj_1
             \tenc{\expheight-1}{1} \vartile^\idxi_1
             \lor
@@ -536,7 +535,7 @@ expanded into pairs of indices and tiles. The result is
         \land
         \ldots
         \land \\
-        \brac{
+        \fbrac{
             \tenc{\expheight-1}{\nmax{\expheight-1}}
                 \vartile^\idxj_{\nmax{\expheight-1}}
             \tenc{\expheight-1}{1} \vartile^\idxi_1
@@ -606,7 +605,7 @@ First, consider $\psst^1_\expheight$.  We start with
 We are aiming for
 \[
     \begin{array}{c}
-        \brac{
+        \fbrac{
             \tenc{\expheight}{1} \tile^2_1
                 \lor
                 \fullrow{1}
@@ -614,13 +613,13 @@ We are aiming for
         \land
         \ldots
         \land
-        \brac{
+        \fbrac{
             \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
                 \lor
                 \fullrow{1}
         } \\
         \land \ldots \land \\
-        \brac{
+        \fbrac{
             \tenc{\expheight}{1} \tile^\tileheight_1
                 \lor
                 \fullrow{\tileheight-1}
@@ -628,7 +627,7 @@ We are aiming for
         \land
         \ldots
         \land
-        \brac{
+        \fbrac{
             \tenc{\expheight}{\nmax{\expheight}}
                 \tile^\tileheight_{\nmax{\expheight}}
                 \lor
@@ -678,7 +677,7 @@ where
 Notice, the pattern above matches any row containing at least one
 $\triangleright$. This means only the first row will be deleted as delimiters
 have already been removed from the other rows.  To complete the step, we
-replace all $\spacer$ with $\land$ using one final $\replaceall$.
+replace all $\spacer$ with $\land$ and insert the parenthesis $\fbrac{}$ using another $\replaceall$ (and a concatenation at the beginning and the end of the string).
 
 The transduction $\psst^2_\expheight$ uses similar techniques to the above and
 we leave the details to the reader. The same is true of the other similar
@@ -742,9 +741,11 @@ This can be done with a single $\replaceall_{\pat, \rep}$ where
                 (\tilesnum{1}) \ldots (\tilesnum{1})
             \rangle \\
         \rep &=&
-            \$1 \$(\linlen + 1)
-            \land \cdots \land
-            \$\linlen \$(2\linlen) \ . \\
+            \langle
+                \$1 \$(\linlen + 1)
+                \land \cdots \land
+                \$\linlen \$(2\linlen)
+            \rangle \ . \\
     \end{array}
 \]
 
@@ -782,7 +783,7 @@ with $\sftrue{1}$ if $\vartile = \vartile'$ and with $\sffalse{1}$ otherwise.
 This is requires two simple $\replaceall$ calls.
 
 The remaining transductions evaluate the innermost disjunction or conjunction as
-appropriate. For example
+appropriate (the parenthesis $\fbrac{}$ are helpful here). For example
 $\psst^\lor_1$
 replaces the innermost
 $\bigvee \sfvalue$
