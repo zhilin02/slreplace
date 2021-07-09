@@ -40,18 +40,21 @@ groups and references.
 %
 %The semantics of real-world regular expressions are better to be encoded as faithfully as possible. For instance, in dynamic symbolic execution of string manipulating programs, in order to generate the inputs for execution paths and improve coverage,  the semantics of real-world regular expressions are better to be encoded as faithfully as possible in string constraint solvers.
 %% contribution
-In this paper, we advocate that string solvers should natively support
-important features of \regexp{} and propose such an approach. 
+While symbolic execution of programs containing {\regexp}s appeals for string solvers natively supporting important features of \regexp{}, such a string solver is hitherto missing.  
+%
+In this paper, 
+%we advocate that string solvers should natively support
+%important features of \regexp{} and 
+we propose the first string theory and string solver that natively provide such a support.
 %of natively supporting these features of REs in string constraint solving. 
-The approach relies on a string constraint language including \regexp{}-dependent string functions such as extract and replace(all). 
+%Our approach relies on a string constraint language including \regexp{}-dependent string functions such as extract and replace(all). 
 %
 The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to formalize the semantics of \regexp{}-dependent string functions.
 PSSTs combine \emph{priorities}, which have previously been introduced
 in prioritized finite-state automata to capture greedy/lazy semantics,
 with \emph{string variables} as in streaming string transducers to
-model capturing groups. We carry out extensive empirical studies
-to validate our formalization of \regexp{}-dependent functions as {\PSST}s with respect to JavaScript
-semantics.
+model capturing groups. We validate the consistency of the formal semantics with the actual JavaScript
+semantics by extensive experiments.
 %
 %non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables.
 %the non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables.
@@ -62,15 +65,14 @@ semantics.
 %and do extensive experiments to evaluate its performance.
 %
 %We formulate a string constraint language including complex string functions such as extract and replace(all), and 
-The approach solves the string constraints by using a sound sequent calculus that exploits nice closure and algorithmic properties of
+Our string solver relies on a sound sequent calculus that exploits nice closure and algorithmic properties of
 {\PSST}s, and performs a kind of propagation of regular constraints by means of 
 taking post-images or pre-images. %, as well as to measure the performance of our solver., 
-In particular, we show that {\PSST}s preserve regularity, i.e. pre-images of regular constraints under {\PSST}s are regular. 
-Although the satisfiability of the constraint language is generally 
+%In particular, we show that {\PSST}s preserve regularity, i.e. pre-images of regular constraints under {\PSST}s are regular and can be effectively computed. 
+Although the satisfiability of the string constraint language is generally 
 undecidable, we show that our approach is complete for the so-called straight-line fragment.
 %
-We evaluate its performance on over 195\,000 string constraints generated from an open-source {\regexp} library. The experimental results show the efficacy
-of our approach, drastically improving the existing methods (via symbolic execution) in  both precision and efficiency.
+We evaluate the performance of our string solver on over 195\,000 string constraints generated from an open-source {\regexp} library. The experimental results show the efficacy of our approach, drastically improving the existing methods (via symbolic execution) in  both precision and efficiency.
 %Our approach dramatically improves the CEGAR-based approach for RWREs in both
 %precision and efficiency.
 %To the best of our knowledge, this work represents the first string constraint solver supporting RWREs.
