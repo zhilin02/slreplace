@@ -34,13 +34,13 @@ Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$. Moreover, let $e'_{i_1},\ld
 Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
 
 By abuse of notation, we will write
-$\rep[x_1/\$i_1,\cdots,x_k/\$i_k]$
-to denote the replacement of the references, in order of appearance, by the contents of the variables $x_j$.
+$\rep[x_{e'_{i_1}}/\$i_1,\cdots,x_{e'_{i_k}}/\$i_k]$
+to denote the replacement of the references, in order of appearance, by the contents of the variables $x_{e'_{i_j}}$.
 For example, if
 $\rep = a \$1 a \$2 a \$1 a$
 then
-$\rep[x_1/\$i_1, x_2/\$i_2,x_3/\$i_3]$
-is $a w_1 a w_2 a w_3 a$ when $w_j$ is the value stored in $x_j$.
+$\rep[x_{e'_{i_1}}/\$i_1, x_{e'_{i_2}}/\$i_2,x_{e'_{i_3}}/\$i_3]$
+is $a w_1 a w_2 a w_3 a$ when $w_j$ is the value stored in $x_{e'_{i_j}}$.
 
 Although, in this notation, it is possible to substitute different occurrences of a reference with different word values, our encoding will always substitute the same value.
 That is, if $i_j = i_{j'}$ then $x_j$ will contain the same value as $x_{j'}$.
