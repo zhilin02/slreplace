@@ -2,16 +2,15 @@
 
 \section{Conclusion}\label{sec-related}
 The challenge of reasoning about string constraints with regular expressions
-stems from functions like match and replace that exploit them
-via features like capturing groups, not to mention the subtle deterministic
-(greedy/lazy) matching. Our result in the paper provides the first string 
+stems from functions like match and replace that exploit features like capturing groups, not to mention the subtle deterministic
+(greedy/lazy) matching. Our results provide the first string 
 solving method that natively supports and effectively handles \regexp{}, which 
 is a large order of magnitude faster than the symbolic execution engine 
 \expose{} \cite{LMK19} tailored to constraints with regular expressions, 
 which is at the moment the only available method for reasoning about string 
 constraints with regular expressions. Our solver \ostrich{} relies on two ingredients: 
 (i) Prioritized Streaming String Transducers (used to capture subtle non-standard
-semantics of \regexp{}, while at the same time is amenable to analysis), and
+semantics of \regexp{}, while being amenable to analysis), and
 (ii) a sequent calculus that exploits nice closure and algorithmic properties of
 \PSST, and performs a kind of propagation of regular constraints by means of 
 taking post-images or pre-images. We have also carried out thorough empirical studies
