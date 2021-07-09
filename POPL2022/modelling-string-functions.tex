@@ -12,6 +12,9 @@ Features such a greediness and capture groups do not affect whether a word match
 Thus, for  regular constraints, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
 
 The $\extract_{i,e}$ function can function be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all the string variables, except the string variable $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group, and setting the output expression of the final states as $x_{e'}$.
+%First, observe that membership tests $x \in e$ can be reduced to FA membership tests $x \in \cA$ using standard techniques.
+%Features such a greediness and capturing groups do not affect whether a word matches a regular expression, they only affect \emph{how} a word matches a expression.
+%Thus, for membership tests, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
 
 We give a sketch of the encoding of $\replaceall$ here.
 Full formal details are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.

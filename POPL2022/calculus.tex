@@ -128,6 +128,8 @@ to choose a suitable effective representation of \regexp{}
 membership constraints, for instance using finite-state automata.\footnote{
     Recall features such as greediness do not need to be modeled for simple membership queries as they do not change the accepted language.
 }
+In particular, we use the fact that---for membership---\regexp{} can be complemented.
+We denote the complement of $e$ in a membership constraint by $e^c$.
 %
 Our calculus is parameterized in the set of considered string
 functions; in this paper, we work with the set
@@ -368,10 +370,7 @@ PSSTs:
   \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
 \end{lemma}
 The proof of Lemma~\ref{lem:psst_preimage} is given in
-Appendix~\ref{app-pre-image}. Moreover, we have already shown that $\extract$ is equivalent to a PSST (see Section~\ref{sec:logic}). The reduction of
-$\replace, \replaceall$ to PSSTs is given in
-Appendix~\ref{appendix:sec-extract-replace-to-psst}. 
-We note that, when the replacement strings do not contain $\refbefore$ or $\refafter$, the PSSTs in the reduction satisfy the \emph{copyless} property~\cite{AC10}, whereas ``copyful'' PSSTs are needed for $\refbefore$ and $\refafter$.
+Appendix~\ref{app-pre-image}. Moreover, we have already shown in Lemma~\ref{lem-str-fun-to-psst} that $\extract$, $\replace$, and $\replaceall$ can be reduced to PSSTs.
 
 \medskip
 %
