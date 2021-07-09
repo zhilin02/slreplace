@@ -5,9 +5,10 @@
 Regular expressions (RE) are a classical concept in formal language theory.
 %, which are expressions built from characters by the operators of concatenation, union, and Kleene star.
 %Real-world regular expressions (RWRE) 
-In programming languages such as JavaScript, REs feature non-standard semantics of operators (e.g. non-commutative union and
-greedy/lazy Kleene star), as well as additional features such as capturing
+Nevertheless, regular expressions in programming languages ({\regexp}) such as JavaScript, feature non-standard semantics of operators 
+(e.g. greedy/lazy Kleene star), as well as additional features such as capturing
 groups and references.
+%e.g. non-commutative union and
 %% symbolic execution requires faithful encoding of regex semantics
 %String constraint solvers are one of the cornerstones of the analysis and verification of string manipulating programs. Faithful encoding of the semantics of real-world regular expressions in string constraint solvers facilitates more precise program analysis and verification.
 %% state of the art string constraint solvers
@@ -42,7 +43,7 @@ groups and references.
 In this paper, we advocate that string solvers should natively support
 important features of \regexp{} and propose such an approach. 
 %of natively supporting these features of REs in string constraint solving. 
-The approach utilizes a string constraint language including \regexp{}-dependent string functions such as extract and replace(all). 
+The approach relies on a string constraint language including \regexp{}-dependent string functions such as extract and replace(all). 
 %
 The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to formalize the semantics of \regexp{}-dependent string functions.
 PSSTs combine \emph{priorities}, which have previously been introduced
@@ -61,14 +62,14 @@ semantics.
 %and do extensive experiments to evaluate its performance.
 %
 %We formulate a string constraint language including complex string functions such as extract and replace(all), and 
-The approach solves the string constraints by using a sequent calculus that exploits nice closure and algorithmic properties of
-\PSST, and performs a kind of propagation of regular constraints by means of 
+The approach solves the string constraints by using a sound sequent calculus that exploits nice closure and algorithmic properties of
+{\PSST}s, and performs a kind of propagation of regular constraints by means of 
 taking post-images or pre-images. %, as well as to measure the performance of our solver., 
-In particular, we show that {\PSST} preserves regularity, i.e. pre-images of regular constraints under {\PSST} are still regular. 
+In particular, we show that {\PSST}s preserve regularity, i.e. pre-images of regular constraints under {\PSST}s are regular. 
 Although the satisfiability of the constraint language is generally 
 undecidable, we show that our approach is complete for the so-called straight-line fragment.
 %
-We evaluate its performance on over 195\,000 string constraints generated from open-source programs. The experimental results show the efficacy
+We evaluate its performance on over 195\,000 string constraints generated from an open-source {\regexp} library. The experimental results show the efficacy
 of our approach, drastically improving the existing methods (via symbolic execution) in  both precision and efficiency.
 %Our approach dramatically improves the CEGAR-based approach for RWREs in both
 %precision and efficiency.
