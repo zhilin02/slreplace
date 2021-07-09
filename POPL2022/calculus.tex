@@ -164,7 +164,7 @@ of single words.
     \LeftLabel{\ruleName{Close}}
     \UnaryInfC{$x \in a^+\Sigma^*,
       x = y \concat z, y \in a^+, z \in \Sigma^*,
-      x \in (a^c)^+, x = \replaceall_{a,
+      x \in b^+(a^c)^*, x = \replaceall_{a,
         b}(x)$}
     \LeftLabel{\ruleName{Fwd-Prop}}
     \UnaryInfC{$x \in a^+\Sigma^*,
@@ -234,9 +234,10 @@ of single words.
   equation~$x = y \concat z$ we can conclude that $x \in
   a^+\Sigma^*$. From $x \in a^+\Sigma^*$ and
   $x = \replaceall_{a, b}(x)$, we can next conclude that
-  $x \in (a^c)^+$, i.e., $x$ cannot contain the letter~$a$. Finally,
+  $x \in b^+(a^c)^*$, i.e., $x$ starts with $b$ and
+  cannot contain the letter~$a$. Finally,
   the proof can be closed because the languages~$a^+\Sigma^*$ and
-  $(a^c)^+$ are disjoint.
+  $b^+(a^c)^*$ are disjoint.
 \end{example}
 
 \begin{example}
