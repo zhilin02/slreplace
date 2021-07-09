@@ -198,19 +198,19 @@ semantics.\footnote{We considered replacing Z3 with \ostrich\ in
   for capturing groups, would have required the rewrite of substantial
   parts of \expose{}.}
 %
-For \textbf{R1}, we compared \ostrich\ with \expose{} on 98,117
+For \textbf{R1}, we compared \ostrich\ with \expose{}+Z3 on 98,117
 \regexps\ taken from \cite{DMC+19}.
 
 For each of the regular expressions, we created four harnesses: two in
 SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
-\expose{}. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
+\expose{}+Z3. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
 regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
 the replace-all function to simulate typical string processing;
 \verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
 replacement string \verb!"$1"!. The three paths of the JavaScript
 function~\verb!fun! correspond to the three queries in the SMT-LIB
 script, so that a direct comparison can be made between the results of
-the SMT-LIB queries and the set of paths covered by \expose{}. The other
+the SMT-LIB queries and the set of paths covered by \expose{}+Z3. The other
 two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
 use the match function instead of replace-all, and contain four
 queries and four paths, respectively.
@@ -251,11 +251,11 @@ queries and four paths, respectively.
   \end{tabular}
   \end{center}
   \caption{The number of queries answered by \ostrich, and number of
-    paths covered by \expose{}, in the \textbf{R1} experiments. 
+    paths covered by \expose{}+Z3, in the \textbf{R1} experiments. 
     Experiments were done on an AMD Opteron 2220 SE machine, running
     64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
     60s wall-clock time, 2GB memory, and the number of tests
-    executed concurrently by \expose\ to 1.  Average time is
+    executed concurrently by \expose{}+Z3 to 1.  Average time is
     wall-clock time per benchmark, timeouts count as 60s.}
   \label{tab:exp-r2}
   \vspace{-8mm}
@@ -268,22 +268,24 @@ Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
 in 96,126 of the match benchmarks (97.9\%), and all three queries in
 95,735 of the replace-all benchmarks (97.6\%). The errors in 1,132 cases
 are due to back-references in \verb!<re1>!, which are not handled by
-\ostrich. \expose{} can on the match problems cover 228,888 paths in
+\ostrich. \expose{}+Z3 can on the match problems cover 228,888 paths in
 total (91.5\% of the number of sat results of \ostrich), although the
-runtime of \expose{} is on average 23x higher than that of
-\ostrich. For replace, \expose{} can cover 173,007 paths (63.2\%),
+runtime of \expose{}+Z3 is on average 23x higher than that of
+\ostrich. For replace, \expose{}+Z3 can cover 173,007 paths (63.2\%),
 showing that this class of constraints is harder; the runtime of
-\expose{} is on average 37x higher than that of \ostrich.  Overall,
-even taking into account that \expose{} has to analyze JavaScript
+\expose{}+Z3 is on average 37x higher than that of \ostrich.  Overall,
+even taking into account that \expose{}+Z3 has to analyze JavaScript
 code, as opposed to the SMT-LIB given to \ostrich, the experiments
 show that \ostrich\ is a highly competitive solver for \regexps.
 
 
 
 
-\paragraph{For \textbf{R2}:} We compare Aratha+{\ostrich} with
+\paragraph{For \textbf{R2}:} For this experiment,
+we  integrated \ostrich\ into the symbolic
+execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
 \expose{}+Z3 on the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
-as well as some other JavaScript programs containing match or replace
+as well as a collection of other JavaScript programs containing match or replace
 functions extracted from Github. In
 Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
 60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
