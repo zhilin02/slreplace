@@ -391,7 +391,7 @@ y  = \replace_{\pat, \rep}(x) \mid
 \label{eq:SL}
 \end{array}
 \]
-where $e, \pat$ are \regexp{}s, $i \in \mathbb{N}$, $x,y,z$ are variables, and $\rep$ 
+where $e, \pat$ are \regexps, $i \in \mathbb{N}$, $x,y,z$ are variables, and $\rep$ 
 is called the
 replacement string and might refer to strings matched in capturing groups,
 as in Example~\ref{exmp-name-swap}. Apart from the standard concatenation
@@ -478,12 +478,12 @@ wraparound function, which in effect turns \expose{} into a string solver.}
 with a fixed time budget (otherwise, 
 it won't terminate), we show that \ostrich{} offers a 30x--50x speedup in 
 comparison to \expose{}, making \ostrich{} the first string solver that
-is able to handle \regexp{}s precisely and efficiently.
+is able to handle \regexps{} precisely and efficiently.
 %\philipp{this should be reformulated; earlier we claim
 %that we have the only string solver supporting RegEx, so it does not make
 %sense to say we have the fastest now.}\zhilin{the footnote is dangerous in the sense that we are claiming that we are the first solver supporting Regex and then we are saying that Expose can act as a string solver supporting Regex.}
 
-\paragraph{Organization.} In Section~\ref{sec:mot}, more details of Example~\ref{exmp-name-swap} are worked out to illustrate our approach. The string constraint language supporting {\regexp}s is presented in Section~\ref{sec:logic}. The semantics of the {\regexp}-dependent string functions are formally defined via PSSTs in Section~\ref{sec:semantics}. The sequent calculus for solving the string constraints is introduced in Section~\ref{sect:calculus}. The implementation of the string solver and experiments are described in Section~\ref{sect:impl}. The related work is given in Section~\ref{sec-related}. Finally, Section~\ref{sec-conc} concludes this paper.
+\paragraph{Organization.} In Section~\ref{sec:mot}, more details of Example~\ref{exmp-name-swap} are worked out to illustrate our approach. The string constraint language supporting {\regexps} is presented in Section~\ref{sec:logic}. The semantics of the {\regexp}-dependent string functions are formally defined via PSSTs in Section~\ref{sec:semantics}. The sequent calculus for solving the string constraints is introduced in Section~\ref{sect:calculus}. The implementation of the string solver and experiments are described in Section~\ref{sect:impl}. The related work is given in Section~\ref{sec-related}. Finally, Section~\ref{sec-conc} concludes this paper.
 
  %For comparison, we also run \expose{} on the JavaScript programs. \expose{} covers 91.5\% (resp. 63.2\%) of feasible paths in the match (resp. replace) programs reported by {\ostrich}, with  the average time 28.0 (resp. 55.0) seconds per program. The huge difference of the running time as well as the path coverage shows that our approach can reason about RWREs in a much more efficient and precise way than the CEGAR-based approach. 
  %\zhilin{I rephrased a bit. @Philipp, please check.}
