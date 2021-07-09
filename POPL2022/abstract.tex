@@ -4,21 +4,22 @@
 %% some background on regular expressions
 Regular expressions (RE) are a classical concept in formal language theory.
 %, which are expressions built from characters by the operators of concatenation, union, and Kleene star.
-Real-world regular expressions (RWRE) in programming languages differ from REs
-in the non-standard semantics of operators (e.g. non-commutative union and
+%Real-world regular expressions (RWRE) 
+In programming languages such as JavaScript, REs features non-standard semantics of operators (e.g. non-commutative union and
 greedy/lazy Kleene star), as well as additional features such as capturing
 groups and references.
 %% symbolic execution requires faithful encoding of regex semantics
 %String constraint solvers are one of the cornerstones of the analysis and verification of string manipulating programs. Faithful encoding of the semantics of real-world regular expressions in string constraint solvers facilitates more precise program analysis and verification.
 %% state of the art string constraint solvers
 %The semantics of real-word regular expressions are tricky and vary in different programming languages. It is challenging for string constraint solvers to support real-world regular expressions.
-While REs are supported by state-of-the-art string constraint solvers,
-RWREs are thus far unsupported. Recent work suggests that
-the mismatch between REs and RWREs
- %in string constraint
-%solvers and RWREs in programming languages
-%hinders the precision and efficiency
-makes it difficult for symbolic execution engines to handle RWREs, where approximation of RWREs is usually needed.
+%While REs are supported by state-of-the-art string constraint solvers,
+%REs are thus far unsupported. 
+%Recent work suggests that
+%the mismatch between REs and RWREs
+% %in string constraint
+%%solvers and RWREs in programming languages
+%%hinders the precision and efficiency
+%makes it difficult for symbolic execution engines to handle RWREs, where approximation of RWREs is usually needed.
 %
 %For instance,
 %%which are hitherto
@@ -38,20 +39,32 @@ makes it difficult for symbolic execution engines to handle RWREs, where approxi
 %
 %The semantics of real-world regular expressions are better to be encoded as faithfully as possible. For instance, in dynamic symbolic execution of string manipulating programs, in order to generate the inputs for execution paths and improve coverage,  the semantics of real-world regular expressions are better to be encoded as faithfully as possible in string constraint solvers.
 %% contribution
-In this paper, we propose an approach of natively supporting RWREs in string constraint solving. The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to model the string functions involving RWREs.
+In this paper, we advocate that string solvers should natively support
+important features of \regexp{} and propose such an approach. 
+%of natively supporting these features of REs in string constraint solving. 
+The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to model the string functions involving \regexp{}.
 PSSTs combine \emph{priorities}, which have previously been introduced
 in prioritized finite-state automata to capture greedy/lazy semantics,
 with \emph{string variables} as in streaming string transducers to
-model capturing groups.
+model capturing groups. We carry out thorough empirical studies
+to validate our formalization of \regexp{} as {\PSST} with respect to JavaScript
+semantics.
 %
 %non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables.
 %the non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables.
-Based on PSSTs, we design a decision procedure for string constraints with
-RWREs and provide its implementation.
+%Based on PSSTs, we design a decision procedure for string constraints with
+%RWREs and provide its implementation.
 %% implementation and experiments
 %We implement the decision procedure
 %and do extensive experiments to evaluate its performance.
-We evaluate its performance on over 195\,000 string constraints generated from RWREs in open-source programs. The experimental results show the efficacy
+%
+We formulate a string constraint language including complex string functions such as extract and replace(all), and provide a sequent calculus that exploits nice closure and algorithmic properties of
+\PSST, and performs a kind of propagation of regular constraints by means of 
+taking post-images or pre-images. %, as well as to measure the performance of our solver., 
+Although the satisfiability of the constraint language is generally 
+undecidable, we show that our approach is complete for the so-called straight-line fragment.
+%
+We evaluate its performance on over 195\,000 string constraints generated from open-source programs. The experimental results show the efficacy
 of our approach, drastically improving the existing methods (via symbolic execution) in  both precision and efficiency.
 %Our approach dramatically improves the CEGAR-based approach for RWREs in both
 %precision and efficiency.
