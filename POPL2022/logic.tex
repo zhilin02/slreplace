@@ -27,7 +27,7 @@ where
 %	\item for assertions, $e \in \regexp$.\philipp{I believe we should remove the word ``assert'', it is easier/more readable to consider constraints like $x \in e \wedge y \in e' \wedge ...$}
 \end{itemize}
 
-The $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. Moreover, if the $i$-the capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns a special symbol $\nullchar$, denoting the fact that its value is undefined. For instance, when $[[a^+] + ([a^*])]$ is matched to the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. 
+The $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. Moreover, if the $i$-th capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns a special symbol $\nullchar$, denoting the fact that its value is undefined. For instance, when $[[a^+] + ([a^*])]$ is matched to the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. 
 
 %by the {\PSST} $\cT_e$ constructed from $e$ , with all the string variables, except the string variable corresponding to the $i$-th capturing group, removed.
 %
@@ -40,7 +40,7 @@ The match function in programming languages, e.g. $\sf str.match(reg)$ function 
 \end{remark}
 
 The function $\replaceall_{\pat, \rep}(x)$ is parameterized by the \emph{pattern} $\pat \in \regexp$ and the \emph{replacement string} $\rep \in \refexp$.
-For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$. More specifically, $\replaceall_{\pat, \rep}(x)$ finds the first match of $\pat$ in $x$ and replace the match with $\rep$, let $x'$ be the suffix of $x$ after the first match of $\pat$,  then it finds the first match of $\pat$ in $x'$ and replace the match with $\rep$, and so on.
+For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$. More specifically, $\replaceall_{\pat, \rep}(x)$ finds the first match of $\pat$ in $x$ and replaces the match with $\rep$, let $x'$ be the suffix of $x$ after the first match of $\pat$,  then it finds the first match of $\pat$ in $x'$ and replace the match with $\rep$, and so on.
 %The set $\refexp$ of replacement strings is defined using the following syntax, where $i \in \Nat$.
 %\[
 %    \rep = a \mid \$i \mid \refbefore \mid \refafter
@@ -49,7 +49,7 @@ For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces
 %A reference $\$i$ where $i > 0$ is instantiated by the string matched by the $i$th capture group.
 %For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$.
 %
-A reference $\$i$ where $i > 0$ is instantiated by the matching of the $i$th capturing group.
+A reference $\$i$ where $i > 0$ is instantiated by the matching of the $i$-th capturing group.
 There are three special references\footnote{
     The corresponding syntax for $\$0$, $\refbefore$ and $\refafter$ in JavaScript are $\$\&$, $\$`$, and $\$'$.
 } $\$0$, $\refbefore$, and $\refafter$.
