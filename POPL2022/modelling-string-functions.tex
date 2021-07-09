@@ -1,3 +1,4 @@
+%!TEX root = main.tex
 
 The $\extract$, $\replace$ and $\replaceall$ functions can be accurately modeled using PSSTs.
 That is, we can reduce satisfiability of our string logic to satisfiability of a logic containing only concatenation, PSST transductions, and membership of regular languages.
@@ -6,12 +7,14 @@ That is, we can reduce satisfiability of our string logic to satisfiability of a
     The satisfiability of $\strline$ reduces to the satisfiability of boolean combinations of formulas of the form $z=x \concat y$, $y=\cT(x)$, and $x \in \cA$, where $\cT$ is a PSST and $\cA$ is an FA.
 \end{lemma}
 
-First, observe that membership tests $x \in e$ can be reduced to FA membership tests $x \in \cA$ using standard techniques.
-Features such a greediness and capture groups do not affect whether a word matches a regular expression, they only affect \emph{how} a word matches a expression.
-Thus, for membership tests, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
+First, observe that regular constraints (aka membership queries) $x \in e$ can be reduced to FA membership queries $x \in \cA$ using standard techniques.
+Features such a greediness and capture groups do not affect whether a word matches a {\regexp}, they only affect \emph{how} a string matches it.
+Thus, for  regular constraints, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
+
+The $\extract_{i,e}$ function can function be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all the string variables, except the string variable $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group, and setting the output expression of the final states as $x_{e'}$.
 
 We give a sketch of the encoding of $\replaceall$ here.
-Full formal details, and the encoding of $\extract$, are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
+Full formal details are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
 The encoding of $\replace$ is almost identical to that of $\replaceall$.
 
 A call $\replaceall_{\pat, \rep}(x)$ replaces every match of $\pat$ in the value of $x$ by a value determined by the replacement string $\rep$.
@@ -24,7 +27,7 @@ The reference $\$0$ can be eliminated by wrapping each pattern with an explicit 
 We show informally how to construct the PSST for $\replaceall_{\pat, \rep}$ where all the references in $\rep$ are of the form $\$i$ with $i > 0$.
 The full reduction is given in the appendix.
 
-Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$.
+Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$. Moreover, let $e'_{i_1},\ldots, e'_{i_k}$ be the subexpressions of $\pat$ corresponding to the $i_1$th, $\ldots$, $i_k$th capturing groups.
 Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
 
 By abuse of notation, we will write
@@ -58,9 +61,9 @@ It may be observed that the PSST will be copyless.
 That is, the value of a variable is not copied to two or more variables during a transition.
 In all but the last case, variables are only copied to themselves, via assignments of the form $x_{e'} = x_{e'} a$, $x_{e'} = x_{e'}$, $x_{e'} = \varepsilon$, or $x_{e'} = \nullchar$.
 In the final case, when a replacement is made, the assignments are of the form
-$x_0 = x_0 w_1 x_{e'_1} w_2 \cdots w_k x_{e'_k} w_{k+1}$
+$x_0 = x_0 w_1 x_{e'_{i_1}} w_2 \cdots w_k x_{e'_{i_k}} w_{k+1}$
 and
-$x_{e'_i} = \nullchar$.
+$x_{e'} = \nullchar$ for all the variables $x_{e'} \in X_\pat$.
 Again, only one copy of the value of each variable is retained to the next step.
 
 Copyful PSSTs are only needed when removing $\refbefore$ and $\refafter$ from the replacement strings.
@@ -71,7 +74,7 @@ By having a separate variable for each occurence of $\$i$ in the replacement str
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[scale=0.9]{psst-replaceall.pdf}
+    \includegraphics[scale=0.7]{psst-replaceall.pdf}
     \caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
     \label{fig-psst-replaceall}
 \end{figure}

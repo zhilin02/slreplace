@@ -117,7 +117,7 @@ Note that the priorities in PFAs have no impact on whether a string is accepted;
 %a new class of transducers that combine prioritized finite-state automata \cite{BM17} %which combines the expressive power of 
 %and streaming string transducers \cite{AC10,AD11}.
 
-For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_n) \mid \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of sequences of non-repetitive elements from $Q$. In particular, the empty sequence $\varepsilon \in \overline{Q}$. Note that the length of each sequence from $\overline{Q}$ is bounded by  $| Q |$. For a sequence $P = (q_1, \ldots, q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if  $q = q_i$ for some $i \in [n]$. Moreover, for $P_1 = (q_1, \ldots, q_m) \in \overline{Q}$ and $P_2 = (q'_1, \ldots, q'_n) \in \overline{Q}$, we say $P_1 \cap P_2 = \emptyset$ if $\{q_1, \ldots, q_m\} \cap \{q'_1, \ldots, q'_n\} = \emptyset$.
+For a finite set $Q$, let $\overline{Q} = \bigcup_{n\in \Nat}\{ (q_1, \ldots, q_n) \mid \forall i \in [n], q_i \in Q \wedge \forall i,j \in[n], i \neq j \rightarrow q_i \neq q_j \}$. Intuitively, $\overline{Q}$ is the set of sequences of non-repetitive elements from $Q$. In particular, the empty sequence $() \in \overline{Q}$. Note that the length of each sequence from $\overline{Q}$ is bounded by  $| Q |$. For a sequence $P = (q_1, \ldots, q_n) \in \overline{Q}$ and  $q \in Q$, we write $q \in P$ if  $q = q_i$ for some $i \in [n]$. Moreover, for $P_1 = (q_1, \ldots, q_m) \in \overline{Q}$ and $P_2 = (q'_1, \ldots, q'_n) \in \overline{Q}$, we say $P_1 \cap P_2 = \emptyset$ if $\{q_1, \ldots, q_m\} \cap \{q'_1, \ldots, q'_n\} = \emptyset$.
     
 
 
@@ -170,7 +170,7 @@ A run of $\psst$ on a string $w$ is a sequence $q_0 a_1 s_1 q_1 \ldots a_m s_m q
 \item for every subsequence $q_i a_{i+1} s_{i+1} q_{i+1} \ldots a_{j} s_j q_j$ such that  $i < j$ and $a_{i+1} = \cdots = a_j = \varepsilon$,  it holds that each $\varepsilon$-transition occurs at most once in it, namely, for every $k, l: i \le k < l < j$, $(q_k, q_{k+1}) \neq (q_l, q_{l+1})$.
 \end{itemize}
 Note that it is possible that $\delta(q, a) = ()$, that is, there is no $a$-transition out of $q$. 
-It is easy to observe that, given a string $w$, the length of a run of $\psst$ on $w$, i.e. the number of transitions in it, is $O(|w||\psst|)$. 
+From the assumption that each $\varepsilon$-transition occurs at most once in a sequence of $\varepsilon$-transitions, we deduce that given a string $w$, the length of a run of $\psst$ on $w$, i.e. the number of transitions in it, is $O(|w||\psst|)$. 
 
 %A run of $\psst$ is the sequence $q_0 a_1 s_1 q_1 \ldots a_m s_m q_m$, where $F (q_m)$ is defined and for each $i \in [m], q_i \in \delta (q_{i-1}, a_i)$ and $s_i = E (q_{i - 1}, a_i, q_i)$. 
 For any pair of runs $R = q_0 a_1 s_1 \ldots a_m s_m q_m$ and $R' = q_0 a'_1
@@ -200,10 +200,10 @@ $\{(w, \psst(w)) \mid w \in \Sigma^\ast, \psst(w)  \neq \bot\}$.
 
 
 \begin{example}
-The {\PSST} $\cT=(Q, \Sigma, X, \delta, \tau, E,  q_{0}, F)$ to extract the matching of the first capturing group for the regular expression \mintinline{javascript}{(\d+)(\d*)} 
+The {\PSST} $\cT=(Q, \Sigma, X, \delta, \tau, E,  q_{0}, F)$ to extract the match of the first capturing group for the regular expression \mintinline{javascript}{(\d+)(\d*)} 
 %in Example~\ref{exm-plre} 
 %
-is illustrated in Fig.~\ref{fig-psst-exmp}, where $x_1$ and $x_2$ store the matchings of the two capturing groups. More specifically, in $\cT$ we have $\Sigma = \{0,\cdots,9\}$, $X= \{x_1,x_2\}$, $F(q_{4}) = x_1$ denotes the final output, and $\delta, \tau, E$ are illustrated %by the edges 
+is illustrated in Fig.~\ref{fig-psst-exmp}, where $x_1$ and $x_2$ store the matches of the two capturing groups. More specifically, in $\cT$ we have $\Sigma = \{0,\cdots,9\}$, $X= \{x_1,x_2\}$, $F(q_{4}) = x_1$ denotes the final output, and $\delta, \tau, E$ are illustrated %by the edges 
 in Fig.~\ref{fig-psst-exmp}, where the dashed edges denote the $\varepsilon$-transitions of lower priorities than the non-$\varepsilon$-transitions and the symbol $\ell$ denotes the currently scanned input letter. For instance, for the state $q_2$, $\delta(q_2, \ell) = (q_2)$ for $\ell \in \{0,\ldots, 9\}$, $\tau(q_2) = (();(q_3))$, $E(q_2, \ell, q_2)(x_1) = x_1 \ell$, $E(q_2, \ell, q_2)(x_2) = x_2$,  $E(q_2, \varepsilon, q_3)(x_1) = x_1$, and $E(q_2, \varepsilon, q_3)(x_2) = \varepsilon$. Note that the identity assignments, e.g. $E(q_2, \varepsilon, q_3)(x_1) = x_1$, are omitted in Fig.~\ref{fig-psst-exmp} for readability.  For the input string $w$=``2050'', the accepting run of $\cT$ on $w$ %, namely, a run of $\cT$ on $w$ ending at $q_4$ and of the highest priority, 
 is 
 \[
@@ -221,6 +221,7 @@ where the value of $x_1$ and $x_2$ when reaching the state $q_4$ are ``2050'' an
 \label{fig-psst-exmp}
 \end{figure*}
 \end{example}
+
 
   
 %  $\tmop{Out} (r) =
