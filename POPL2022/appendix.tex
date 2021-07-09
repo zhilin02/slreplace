@@ -365,6 +365,7 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
         Let $e'$ be the subexpression corresponding to the $i$-th capturing group of $e$. In particular, if $i=0$, then $e' = e$.
         Suppose $\cA_e = (Q, \Sigma, \delta, \tau, q_0, f_0)$, and ${\sf Sub}_{e'}[\cA_e]$ is any isomorphic copy of $\cA_{e'}$ in $\cA_e$.
 
@@ -414,12 +415,14 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                 \end{itemize}
                 %
         \end{itemize}
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         Next, we give the construction of the PSST for $\replaceall_{\pat, \rep}$ where all the references in $\rep$ are of the form $\$i$.
-        Recall $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$.
-        Let $\cT_{\replaceall_{\pat, \rep}} = (Q_\pat \cup \{q'_0\}$, $\Sigma$, $X'$, $\delta'$, $\tau', E', q'_0, F')$ where
+        
+        Recall $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$. Let $e'_{i_1},\ldots, e'_{i_k}$ denote the subexpressions of $\pat$ corresponding to the $i_1$th, $\ldots$, $i_k$th capturing groups of $\pat$.
+        Then $\cT_{\replaceall_{\pat, \rep}} = (Q_\pat \cup \{q'_0\}$, $\Sigma$, $X'$, $\delta'$, $\tau', E', q'_0, F')$ where
         \begin{itemize}
             \item $q'_0 \not \in Q_\pat$,
 
@@ -430,6 +433,8 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
             \item $\delta'$ comprises the transitions in $\delta_\pat$, and the transition $\delta'(q'_0, a) = (q'_0)$ for $a \in \Sigma$,
 
             \item  $\tau'$ comprises the transitions in $\tau_\pat$, the transitions $\tau'(q'_0) = ((q_{\pat, 0}); ())$, $\tau'(f_{\pat, 1}) = ((q_{\pat, 0}); ())$ and $\tau'(f_{\pat, 2}) = ((q_{\pat, 0}); ())$ for $f_{\pat, 1} \in F_{\pat, 1}$ and $f_{\pat, 2} \in F_{\pat, 2}$,
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
                 \begin{itemize}
                     \item $\delta'(q'_0, a) = (q'_0)$ for every $a \in \Sigma$, and $\tau'(q'_0) = ((q_0); ())$,
                         %
@@ -437,8 +442,12 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                         %
                     \item $\delta'(f_0, a) = ()$ for every $a \in \Sigma$ and $\tau'(f_0) = ((q'_0); ())$,
                 \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %
             \item $E'$ inherits $E_\pat$, and includes the assignments $E'(q'_0, a, q'_0)(x_0)  = x_0 a$ for $a \in \Sigma$, $E'(f, \varepsilon, q'_0) (x_0) = x_0\rep[x_{e'_{i_1}}/\$i_1, \ldots, x_{e'_{i_k}}/i_k]$ and $E'(f, \varepsilon, q'_0) (x) = \nullchar$ for every  $f \in F_{\pat,1} \cup F_{\pat, 2}$ and $x \in X_\pat$.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
                 \begin{itemize}
                     \item for every transition $(q, a, q')$ with $a \in \Sigma^\varepsilon$ in $\cA_\pat$, $E(q, a, q')(x_0) = x_0$,
                         %
@@ -451,6 +460,8 @@ The path feasibility problem of the program in Equation~(\ref{eqn:exmp}) is solv
                     \item $E(f_0, \varepsilon, q'_0)(x_0) = x_0 \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$, moreover, for every $j \in [k]$, $E(f_0, \varepsilon, q'_0)(x_j) = \varepsilon$, where $ \rep[x_1/\$i_1,\ldots, x_k/\$i_k]$ denotes the string term obtained from $\rep$ by replacing every occurrence of $\$i_1,\cdots, \$i_k$ with $x_1,\cdots,x_k$ respectively.
                         %
                 \end{itemize}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %
         \end{itemize}
         \end{proof}
