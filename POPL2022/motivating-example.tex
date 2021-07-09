@@ -26,6 +26,7 @@
 \end{center}
 \caption{Change the author list from the DBLP format to the ACM format}
 \label{fig-run-exmp}
+\vspace{-2mm}
 \end{figure*}
 
 
@@ -117,6 +118,7 @@ program executes to the end.
 \end{center}
 \caption{Symbolic execution of a path of the JavaScript program in Fig.~\ref{fig-run-exmp}}
 \label{fig-run-exmp-path}
+\vspace{-4mm}
 \end{figure}
 
 To enable symbolic execution of the JavaScript programs like in Fig.~\ref{fig-run-exmp-path}, one needs to model both the greedy semantics of the Kleene star and store the matches of capturing groups. For this purpose, we introduce prioritized streaming string transducers (PSST, cf.\ Section~\ref{sec-rwre}) by which {\sf replace(nameReg, ``$\$$2, $\$$1'')} is represented as a PSST $\cT$, where the \emph{priorities} are used to model the greedy semantics of $*$ and the \emph{string variables} are used to record the matches of the capturing groups as well as the return value. Then the  symbolic execution of the program in Fig.~\ref{fig-run-exmp-path} can be equivalently turned into the satisfiability of the following string constraint,
