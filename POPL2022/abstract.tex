@@ -5,7 +5,7 @@
 Regular expressions (RE) are a classical concept in formal language theory.
 %, which are expressions built from characters by the operators of concatenation, union, and Kleene star.
 %Real-world regular expressions (RWRE) 
-Nevertheless, regular expressions in programming languages ({\regexp}) such as JavaScript, feature non-standard semantics of operators 
+On the other hand, regular expressions in programming languages ({\regexp}) such as JavaScript, feature non-standard semantics of operators 
 (e.g. greedy/lazy Kleene star), as well as additional features such as capturing
 groups and references.
 %e.g. non-commutative union and
@@ -49,7 +49,7 @@ we propose the first string theory and string solver that natively provide such 
 %of natively supporting these features of REs in string constraint solving. 
 %Our approach relies on a string constraint language including \regexp{}-dependent string functions such as extract and replace(all). 
 %
-The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to formalize the semantics of \regexp{}-dependent string functions.
+The key idea of our string solver is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to formalize the semantics of \regexp{}-dependent string functions.
 PSSTs combine \emph{priorities}, which have previously been introduced
 in prioritized finite-state automata to capture greedy/lazy semantics,
 with \emph{string variables} as in streaming string transducers to
@@ -65,8 +65,11 @@ semantics by extensive experiments.
 %and do extensive experiments to evaluate its performance.
 %
 %We formulate a string constraint language including complex string functions such as extract and replace(all), and 
-Our string solver relies on a sound sequent calculus that exploits nice closure and algorithmic properties of
-{\PSST}s, and performs a kind of propagation of regular constraints by means of 
+Furthermore, to solve the string constraints, we show that {\PSST}s enjoy nice closure and algorithmic properties, 
+in particular, the regularity-preserving property (i.e. pre-images of regular constraints under {\PSST}s are regular), 
+and introduce a sound sequent calculus that 
+exploits these properties and 
+performs a kind of propagation of regular constraints by means of 
 taking post-images or pre-images. %, as well as to measure the performance of our solver., 
 %In particular, we show that {\PSST}s preserve regularity, i.e. pre-images of regular constraints under {\PSST}s are regular and can be effectively computed. 
 Although the satisfiability of the string constraint language is generally 
