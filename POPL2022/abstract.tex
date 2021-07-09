@@ -42,12 +42,14 @@ groups and references.
 In this paper, we advocate that string solvers should natively support
 important features of \regexp{} and propose such an approach. 
 %of natively supporting these features of REs in string constraint solving. 
-The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to model the string functions involving \regexp{}.
+The approach utilizes a string constraint language including \regexp{}-dependent string functions such as extract and replace(all). 
+%
+The key idea of our approach is to introduce a new automata model, called \emph{prioritized streaming string transducers} (PSST), to formalize the semantics of \regexp{}-dependent string functions.
 PSSTs combine \emph{priorities}, which have previously been introduced
 in prioritized finite-state automata to capture greedy/lazy semantics,
 with \emph{string variables} as in streaming string transducers to
-model capturing groups. We carry out thorough empirical studies
-to validate our formalization of \regexp{} as {\PSST} with respect to JavaScript
+model capturing groups. We carry out extensive empirical studies
+to validate our formalization of \regexp{}-dependent functions as {\PSST}s with respect to JavaScript
 semantics.
 %
 %non-standard semantics of regular expression operators can be modeled by priorities and new features of capturing groups and back references can be modeled by string variables.
@@ -58,9 +60,11 @@ semantics.
 %We implement the decision procedure
 %and do extensive experiments to evaluate its performance.
 %
-We formulate a string constraint language including complex string functions such as extract and replace(all), and provide a sequent calculus that exploits nice closure and algorithmic properties of
+%We formulate a string constraint language including complex string functions such as extract and replace(all), and 
+The approach relies on a sequent calculus that exploits nice closure and algorithmic properties of
 \PSST, and performs a kind of propagation of regular constraints by means of 
 taking post-images or pre-images. %, as well as to measure the performance of our solver., 
+In particular, we show that {\PSST} preserves regularity, i.e. pre-images of regular constraints under {\PSST} are still regular. 
 Although the satisfiability of the constraint language is generally 
 undecidable, we show that our approach is complete for the so-called straight-line fragment.
 %
