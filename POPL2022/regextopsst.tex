@@ -433,6 +433,10 @@ where
 		\end{itemize}
 }
 
+
+\paragraph{Case $e = [e_1^{+}]$}  We first construct $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, where $\cT^-_{[e^\ast_1]}$ is obtained from $\cT_{[e^\ast_1]}$ by dropping the string variable $x_{[e^\ast_1]}$. Therefore, $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$ have the same set of string variables, $X_{e_1}$. Then we construct $\cT_{e}$ by adding into $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$ a fresh state $q_{e,0}$ as the initial state, and the transitions $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, as well as the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$. 
+%(Note that in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$, the values of all variables in $X_{e_1}$ are reset when entering $ \cT^-_{[e^\ast_1]}$ and $(\cT^-_{[e^\ast_1]})'$.)
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ for $1 \le m_1 < m_2$ (see Figure~\ref{fig-reg2pfa-4})} We first construct $\cT^{\{m_1\}}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$ (Recall Definition~\ref{def-psstconcat} for the concatenation of PSSTs). Note that $\cT^{\{m_1\}}_{e_1}$ is different from $\cT_{e_1^{m_1}}$, the PSST constructed from $e_1^{m_1}$, the concatenation of the expression $e_1$ for $m_1$ times. In particular, the set of string variables in $\cT^{\{m_1\}}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
 
