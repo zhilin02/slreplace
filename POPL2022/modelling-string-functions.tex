@@ -11,17 +11,14 @@ First, observe that regular constraints (aka membership queries) $x \in e$ can b
 Features such a greediness and capture groups do not affect whether a word matches a {\regexp}, they only affect \emph{how} a string matches it.
 Thus, for  regular constraints, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
 
-The $\extract_{i,e}$ function can function be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all the string variables, except the string variable $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group, and setting the output expression of the final states as $x_{e'}$.
-%First, observe that membership tests $x \in e$ can be reduced to FA membership tests $x \in \cA$ using standard techniques.
-%Features such a greediness and capturing groups do not affect whether a word matches a regular expression, they only affect \emph{how} a word matches a expression.
-%Thus, for membership tests, these features can be ignored and a standard translation from regular expressions to finite automata can be used.
+The $\extract_{i,e}$ function can be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all string variables, except $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group, and setting the output expression of the final states as $x_{e'}$.
 
 We give a sketch of the encoding of $\replaceall$ here.
 Full formal details are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
 The encoding of $\replace$ is almost identical to that of $\replaceall$.
 
-A call $\replaceall_{\pat, \rep}(x)$ replaces every match of $\pat$ in the value of $x$ by a value determined by the replacement string $\rep$.
-In addition to literal characters, $\rep$ may also contain references $\$i$, $\refbefore$, or $\refafter$.
+A call $\replaceall_{\pat, \rep}(x)$ replaces every match of $\pat$ by a value determined by the replacement string $\rep$.
+Recall, $\rep$ may contain references $\$i$, $\refbefore$, or $\refafter$.
 The first step in our reduction to PSSTs is to eliminate the special references $\$0$, $\refbefore$, and $\refafter$.
 In essence, this simplification uses PSST transductions to insert the contextual information needed by $\refbefore$ and $\refafter$ alongside each substring that will be replaced.
 Then, the call to $\replaceall$ can be rewritten to include this information in the match, and use standard references ($\$i$) in the replacement string.
@@ -32,11 +29,10 @@ The full reduction is given in the appendix.
 
 Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$. Moreover, let $e'_{i_1},\ldots, e'_{i_k}$ be the subexpressions of $\pat$ corresponding to the $i_1$th, $\ldots$, $i_k$th capturing groups.
 Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
-
 By abuse of notation, we will write
 $\rep[x_{e'_{i_1}}/\$i_1,\cdots,x_{e'_{i_k}}/\$i_k]$
 to denote the replacement of the references, in order of appearance, by the contents of the variables $x_{e'_{i_j}}$.
-For example, if
+E.g., if
 $\rep = a \$1 a \$2 a \$1 a$
 then
 $\rep[x_{e'_{i_1}}/\$i_1, x_{e'_{i_2}}/\$i_2,x_{e'_{i_3}}/\$i_3]$
@@ -63,11 +59,11 @@ Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cT_\pat$ by adding a fre
 It may be observed that the PSST will be copyless.
 That is, the value of a variable is not copied to two or more variables during a transition.
 In all but the last case, variables are only copied to themselves, via assignments of the form $x_{e'} = x_{e'} a$, $x_{e'} = x_{e'}$, $x_{e'} = \varepsilon$, or $x_{e'} = \nullchar$.
-In the final case, when a replacement is made, the assignments are of the form
+In the final case, when a replacement is made, the assignments are
 $x_0 = x_0 w_1 x_{e'_{i_1}} w_2 \cdots w_k x_{e'_{i_k}} w_{k+1}$
 and
 $x_{e'} = \nullchar$ for all the variables $x_{e'} \in X_\pat$.
-Again, only one copy of the value of each variable is retained to the next step.
+Again, only one copy of the value of each variable is retained.
 
 Copyful PSSTs are only needed when removing $\refbefore$ and $\refafter$ from the replacement strings.
 To see this, consider the prefix preceding the first replacement in a string.
