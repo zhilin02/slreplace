@@ -84,8 +84,8 @@ these operators.
 
 The implementation in \ostrich\ revolves around PSSTs. The three
 string operators mentioned above will be converted into an equivalent
-PSST (see
-Appendix~\ref{appendix:sec-extract-replace-to-psst}). {\ostrich} then
+PSST (see \ifproceeding the full version of the paper \cite{popl22-full}).
+\else Appendix~\ref{appendix:sec-extract-replace-to-psst}). \fi {\ostrich} then
 iteratively applies the propagation rules from
 Section~\ref{sect:calculus} to derive further \regexp\ constraints,
 and eventually either detect a contradiction, or converge
@@ -141,6 +141,13 @@ fun(x);
   \label{fig:harness}
   \vspace{-4mm}
 \end{figure}
+
+
+\color{red}
+EMU focuses on SL, and implements the procedure in Theorem 5.7. In addition, similar to other SMT solvers, EMU applies simplification rules to formulas before invoking the SL procedure. See the rules in Table 1, in particular Fwd-Prop-Elim, =-Prop, Subsume, Close, etc. This enables EMU to solve formulas outside of the SL fragment, but is not a complete procedure for non-SL formulas. We can add more details in the next version.
+\color{black}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Experimental evaluation}
 

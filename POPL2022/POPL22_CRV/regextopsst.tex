@@ -154,7 +154,11 @@ We shall recursively construct a {\PSST} $\cT_e$ for each {\pcre} $e$, such that
 %Let us use $\idx_e$ to denote the index function associated with a {\pcre} $e$. 
 We assume that in $\cT_e$, a string variable $x_{e'}$ is introduced for each subexpression $e'$ of $e$. 
 
-Note that the construction is technical and below we only select to present some representative cases. The other cases are relegated to Appendix~\ref{app:reg2psst}.
+Note that the construction is technical and below we only select to present some representative cases. The other cases are
+%
+\ifproceeding given in the full version of the paper \cite{popl22-full}. 
+\else relegated to Appendix~\ref{app:reg2psst}. 
+\fi
 %Moreover, a special symbol $\nullchar$ is introduced to deal with the situation that a subexpression $e'$ is not matched. If this happens, then the value of $e'$ is undefined and $\nullchar$ is assigned to $x_{e'}$. 
 %Let $X_e$ denote the set of string variables introduced for $e$.
 
@@ -511,7 +515,17 @@ Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1
 %		\item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
 %	\end{itemize}
 
+\color{red}
+{
+\begin{remark}
+	[Berglund and van der Merwe 2017a] do not address some “tricky” regex, i.e., regexes containing the empty word. Our solution is to have separate, accepting states for empty and non-empty words respectively. We sometimes need two copies of automata to respect this separation. The necessity of this separation is better explained by examples e.g. (a*?)*, which will be added.
+\end{remark}
+}
 
+\begin{remark}
+	Extract and replace use regexes with non-classical semantics and references in replace. Pre-image recognizability was not known; previous results consider classical regular expressions without references (a non-example is Example 1.1). PSSTs elegantly capture the new semantics and prove pre-image recognizability. Handling lookahead/backreferences is non-trivial, partly due to the undecidability of the resulting SL fragment (e.g. with backreferences). We can investigate alternating PSSTs or product constructions for lookahead, and extend PSSTs to inspect variable contents for backreferences.
+\end{remark}
+\color{black}
 
 \begin{example}\label{exmp-pfa}
 Consider {\pcre} $e = [a^+]$. 

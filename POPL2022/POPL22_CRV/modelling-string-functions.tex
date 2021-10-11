@@ -14,7 +14,7 @@ Thus, for  regular constraints, these features can be ignored and a standard tra
 The $\extract_{i,e}$ function can be defined by a PSST $\cT_{i,e}$ obtained from the PSST $\cT_e$ (see Section~\ref{sect:regextopsst}) by removing all string variables, except $x_{e'}$, where $e'$ is the subexpression of $e$ corresponding to the $i$th capturing group, and setting the output expression of the final states as $x_{e'}$.
 
 We give a sketch of the encoding of $\replaceall$ here.
-Full formal details are given in Appendix~\ref{appendix:sec-extract-replace-to-psst}.
+Full formal details are given in \ifproceeding the full version of the paper \cite{popl22-full}. \else Appendix~\ref{appendix:sec-extract-replace-to-psst}. \fi
 The encoding of $\replace$ is almost identical to that of $\replaceall$.
 
 A call $\replaceall_{\pat, \rep}(x)$ replaces every match of $\pat$ by a value determined by the replacement string $\rep$.
@@ -25,7 +25,9 @@ Then, the call to $\replaceall$ can be rewritten to include this information in 
 The reference $\$0$ can be eliminated by wrapping each pattern with an explicit capturing group.
 
 We show informally how to construct the PSST for $\replaceall_{\pat, \rep}$ where all the references in $\rep$ are of the form $\$i$ with $i > 0$.
-The full reduction is given in the appendix.
+The full reduction is given in the 
+\ifproceeding given in the full version of the paper \cite{popl22-full}.
+\else appendix. \fi
 
 Let $\rep = w_1 \$i_1 w_2 \cdots w_k \$i_k w_{k+1}$. Moreover, let $e'_{i_1},\ldots, e'_{i_k}$ be the subexpressions of $\pat$ corresponding to the $i_1$th, $\ldots$, $i_k$th capturing groups.
 Note, in particular, that we may have $i_j = i_{j'}$ with $j \neq j'$.
