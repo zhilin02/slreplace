@@ -1,0 +1,62 @@
+%!TEX root = main.tex
+
+\section{Conclusion}\label{sec-conc}
+The challenge of reasoning about string constraints with regular expressions
+stems from functions like match and replace that exploit features like capturing groups, not to mention the subtle deterministic
+(greedy/lazy) matching. Our results provide the first string 
+solving method that natively supports and effectively handles \regexp{}, which 
+is a large order of magnitude faster than the symbolic execution engine 
+\expose{} \cite{LMK19} tailored to constraints with regular expressions, 
+which is at the moment the only available method for reasoning about string 
+constraints with regular expressions. Our solver \ostrich{} relies on two ingredients: 
+(i) Prioritized Streaming String Transducers (used to capture subtle non-standard
+semantics of \regexp{}, while being amenable to analysis), and
+(ii) a sequent calculus that exploits nice closure and algorithmic properties of
+\PSST, and performs a kind of propagation of regular constraints by means of 
+taking post-images or pre-images. We have also carried out thorough empirical studies
+to validate our formalization of \regexp{} as {\PSST} with respect to JavaScript
+semantics, as well as to measure the performance of our solver.
+Finally, although the satisfiability of the constraint language is %generally 
+undecidable, we have also shown that our solver terminates (and therefore is
+complete) for the %so-called 
+straight-line fragment.
+
+ %for which the decision procedure, as well as the complexity analysis.
+
+%We 
+%introduced prioritized streaming string transducers ({\PSST}s) to capture \regexp-string matching and validate the conformance of the semantics to JavaScript string functions.   
+
+%At a more theoretical level, there are no attempts to incorporate
+%regular expressions in programming languages into a string constraint language, e.g., word equations
+%\cite{Gut98}. Thus far, most decidability and complexity results regarding regular expressions in programming languages 
+%solely focus on standard decision problems (e.g. membership and 
+%emptiness being decidable and NP-complete \cite{FS19,BM17b}). 
+
+
+%and PSSTs, in particular priorities, are beyond them\footnote{It is known that deterministic streaming string transducers are expressively equivalent to two-way deterministic finite-state transducers, which, nevertheless, is not the case for nondeterministic transducers \cite{AC10,AD11}.}.
+%%, PSSTs we introduce PSST, a new transducer model that covers the $\extract_{i,e}$ and $\replaceall_{\sf pat, rep}$ functions, where priorities are used to model the greedy/non-greedy semantics of $*$/$*?$ and string variables are used to store the matches of capturing groups.
+ 
+
+%\section{Conclusion}
+
+%Real-world regular expressions (RWRE) in programming languages differ drastically from classical regular expressions, for instance, they adopt the greedy/lazy semantics of Kleene star and include new features of capturing groups and back references. 
+%In this paper, we proposed a novel approach for natively supporting regular expressions from modern programming language in string constraint solving. 
+%We 
+%introduced prioritized streaming string transducers ({\PSST}s) to capture \regexp-string matching and validate the conformance of the semantics to JavaScript string functions.   
+
+%Furthermore, we defined a string constraint language and put forward procedures, formulated as a propagation-based calculus, to solve the constraints. Although the satisfiability of the constraint language is generally undecidable, we identified a decidable straight-line fragment for which the decision procedure, as well as the complexity analysis, is presented.  
+% we introduced a model the string functions involving real-world regular expressions. 
+%
+%We showed that the pre-images of regular languages under PSSTs are regular and designed a decision procedure for string constraints with RWREs. 
+%We implemented the solution algorithms and carried out extensive experiments. The experimental results showed that our approach significantly improves the CEGAR-based approach in both precision and performance. To the best of our knowledge, this work represents the first string constraint solver that natively supports regular expression used in modern programming languages. 
+
+Several avenues for future work are obvious. Firstly, it would be interesting to
+see how \expose{} could be used in combination with our solver \ostrich{}. This
+would essentially lift \ostrich{} to a symbolic execution engine (i.e. working
+at the level of programs). Secondly, it would be desirable to incorporate other
+features of \regexp{} that are not yet considered in our framework, e.g.,
+lookahead and backreferences. Finally, since strings do not live in isolation in
+a real-world program, there is a real need to also extend our work with other
+data types, in particular integer data types.
+
+%For the future work, it is interesting to extend this work to deal with more advanced features of regular expressions, e.g., lookahead and lookbehind. It is also desirable to support additional string functions involving the integer data type. %, in addition to those involving RWREs.
