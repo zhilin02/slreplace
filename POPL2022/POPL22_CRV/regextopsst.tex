@@ -97,7 +97,11 @@ Our construction, which is considerably different from that in \cite{BDM14,BM17}
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. Note here for technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed in the sequel are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
+The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. To ensure this, making copies of {\PSST} might be needed during the construction, as is done in concatenation of two {\PSST}s (Definition \ref{def-psstconcat}), which leads to the worst case exponential blowup.
+
+However, the separation of $F$ into two sets is necessary for correct modeling of {\regexp} semantics. This is justified by the observation that in real world languages like JavaScript, the behaviour of certain {\regexp} operator, like greedy Kleene star $e^*$, is influenced by whether the subexpression $e$ matches an empty string. For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} substrings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in \cite{BDM14, BM17}'s setting. By giving a more precise semantics to those operators and keep track of if their subexpression is matched to $\varepsilon$, we can successfully handle this class of expression.
+
+Note here for technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed below are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
 %
 Furthermore, to deal with the situation that some capturing group may not be matched to any string and its value is undefined, we introduce a special symbol $\nullchar$ %for denoting this situation 
 and assume that the initial values of all the string variables are $\nullchar$. %To avoid the tediousness, 
@@ -516,11 +520,6 @@ Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1
 %	\end{itemize}
 
 \color{red}
-{
-\begin{remark}
-	[Berglund and van der Merwe 2017a] do not address some “tricky” regex, i.e., regexes containing the empty word. Our solution is to have separate, accepting states for empty and non-empty words respectively. We sometimes need two copies of automata to respect this separation. The necessity of this separation is better explained by examples e.g. (a*?)*, which will be added.
-\end{remark}
-}
 
 \begin{remark}
 	Extract and replace use regexes with non-classical semantics and references in replace. Pre-image recognizability was not known; previous results consider classical regular expressions without references (a non-example is Example 1.1). PSSTs elegantly capture the new semantics and prove pre-image recognizability. Handling lookahead/backreferences is non-trivial, partly due to the undecidability of the resulting SL fragment (e.g. with backreferences). We can investigate alternating PSSTs or product constructions for lookahead, and extend PSSTs to inspect variable contents for backreferences.
