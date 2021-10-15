@@ -99,9 +99,9 @@ Our construction, which is considerably different from that in \cite{BDM14,BM17}
 
 The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. To ensure this, making copies of {\PSST} might be needed during the construction, as is done in concatenation of two {\PSST}s (Definition \ref{def-psstconcat}), which leads to the worst case exponential blowup.
 
-However, the separation of $F$ into two sets is necessary for correct modeling of {\regexp} semantics. This is justified by the observation that in real world languages like JavaScript, the behaviour of certain {\regexp} operator, like greedy Kleene star $e^*$, is influenced by whether the subexpression $e$ matches an empty string. For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} substrings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in \cite{BDM14, BM17}'s setting. By giving a more precise semantics to those operators and keep track of if their subexpression is matched to $\varepsilon$, we can successfully handle this class of expression.
+However, the separation of $F$ into two sets is necessary for correct modeling of {\regexp} semantics. This is justified by the observation that in real world languages like JavaScript, the behaviour of certain {\regexp} operator, like greedy Kleene star $e^*$, is influenced by whether the subexpression $e$ matches an empty string. For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} strings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in \cite{BDM14, BM17}'s setting. By spliting the the set of final states, we keep track of the emptyness of subexpressions during the match, and thus give a more fine-grained semantics to those operators and successfully handle this class of expression.
 
-Note here for technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed below are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
+For technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed below are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
 %
 Furthermore, to deal with the situation that some capturing group may not be matched to any string and its value is undefined, we introduce a special symbol $\nullchar$ %for denoting this situation 
 and assume that the initial values of all the string variables are $\nullchar$. %To avoid the tediousness, 
@@ -158,7 +158,7 @@ We shall recursively construct a {\PSST} $\cT_e$ for each {\pcre} $e$, such that
 %Let us use $\idx_e$ to denote the index function associated with a {\pcre} $e$. 
 We assume that in $\cT_e$, a string variable $x_{e'}$ is introduced for each subexpression $e'$ of $e$. 
 
-Note that the construction is technical and below we only select to present some representative cases. The other cases are
+The construction is technical and below we only select to present some representative cases. The other cases are
 %
 \ifproceeding given in the full version of the paper \cite{popl22-full}. 
 \else relegated to Appendix~\ref{app:reg2psst}. 
