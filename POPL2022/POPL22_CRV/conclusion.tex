@@ -53,9 +53,19 @@ straight-line fragment.
 Several avenues for future work are obvious. Firstly, it would be interesting to
 see how \expose{} could be used in combination with our solver \ostrich{}. This
 would essentially lift \ostrich{} to a symbolic execution engine (i.e. working
-at the level of programs). Secondly, it would be desirable to incorporate other
-features of \regexp{} that are not yet considered in our framework, e.g.,
-lookahead and backreferences. Finally, since strings do not live in isolation in
+at the level of programs).
+
+Secondly, it would be desirable to incorporate other features of \regexp{} that
+are not yet considered in our framework, e.g., lookahead and backreferences.
+\mat{change}
+To handle lookahead we may consider alternating variants of the transducers used here.
+Alternating automata~\cite{CKS81} are effectively able to branch and run parallel checks on the input.
+These variants will need to model the subtle interplay between lookahead and references.
+Backreferences may be handled by allowing some inspection of variable contents during transducer runs.
+There is some precedent for this in higher-order automata~\cite{M76,E91}, whose stacks allow runs to be influenced by repeated and interesting use of stored data.
+\mat{endchange}
+
+Finally, since strings do not live in isolation in
 a real-world program, there is a real need to also extend our work with other
 data types, in particular integer data types.
 
