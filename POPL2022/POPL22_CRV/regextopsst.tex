@@ -99,9 +99,11 @@ Our construction, which is considerably different from that in \cite{BDM14,BM17}
 
 The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. To ensure this, making copies of {\PSST} might be needed during the construction, as is done in concatenation of two {\PSST}s (Definition \ref{def-psstconcat}), which leads to the worst case exponential blow-up.
 
+\zhilin{To be polished: 
 However, the separation of $F$ into two sets is necessary for correct modeling of {\regexp} semantics. This is justified by the observation that in real world languages like JavaScript, the behaviour of certain {\regexp} operator, like greedy Kleene star $e^*$, is influenced by whether the subexpression $e$ matches an empty string. 
 %
 For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} strings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in the setting of \cite{BDM14, BM17}. By splitting the set of final states, we keep track of the emptiness of subexpressions during the match, and thus give a more fine-grained semantics to those operators and successfully handle this class of expression.
+}
 
 For technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed below are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
 %
