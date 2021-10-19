@@ -97,9 +97,10 @@ Our construction, which is considerably different from that in \cite{BDM14,BM17}
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. To ensure this, making copies of {\PSST} might be needed during the construction, as is done in concatenation of two {\PSST}s (Definition \ref{def-psstconcat}), which leads to the worst case exponential blow-up.
+The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. The necessity of this splitting will be illustrated in Example~\ref{exmp-psst-partition}.
 
-\zhilin{To be polished: 
+\OMIT{To be polished: 
+To ensure this, making copies of {\PSST} might be needed during the construction, as is done in concatenation of two {\PSST}s (Definition \ref{def-psstconcat}), which leads to the worst case exponential blow-up.
 However, the separation of $F$ into two sets is necessary for correct modeling of {\regexp} semantics. This is justified by the observation that in real world languages like JavaScript, the behaviour of certain {\regexp} operator, like greedy Kleene star $e^*$, is influenced by whether the subexpression $e$ matches an empty string. 
 %
 For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} strings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in the setting of \cite{BDM14, BM17}. By splitting the set of final states, we keep track of the emptiness of subexpressions during the match, and thus give a more fine-grained semantics to those operators and successfully handle this class of expression.
@@ -541,6 +542,36 @@ We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obt
 		\includegraphics[width=0.9\textwidth]{pfa-new.pdf}
 		\caption{The PSST $\cT_e$ for $e = [a^+]$}
 		\label{fig-pfa}
+		\vspace{-4mm}
+	\end{figure}
+\end{example}
+
+
+\zhilin{the necessity of final-state-set splitting is illustrated below.}
+
+At last, we use the following example to illustrate the necessity of splitting the set of final states into two disjoint subsets.
+
+\begin{example}\label{exmp-psst-partition}
+Consider {\pcre} $e = [([a^{*?}])^{*}]$. If we execute ``$aaa$''.match(/($a$*?)*/) in node.js, then the result is the array $[$``aaa'', ``a''$]$, where ($a$*?)* is matched to ``$aaa$'' and ($a$*?) is matched to $a$. If we do not split the set of final states into two disjoint subsets, then we obtain a PSST $\cT^\prime_e$ as illustrated in Fig.~\ref{fig-psst-partition}. The accepting run of $\cT^\prime_e$ on $w  = aaa$ is 
+%
+%{\small
+$$
+\begin{array}{l}
+\smallskip
+q_{[([a^{*?}])^{*}]} \xrightarrow{\varepsilon} q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} f_{([a^{*?}])} \xrightarrow{\varepsilon} q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} q_{a, 0} \xrightarrow{\varepsilon} \\
+ \hspace*{6mm} q_{a, 1} \xrightarrow{a} f_a \xrightarrow{\epsilon} f_{([a^{*?}])} \xrightarrow{\epsilon} q_{([a^{*?}]), 0} \xrightarrow{\epsilon} f_{([a^{*?}])}  \xrightarrow{\epsilon}  f_{[([a^{*?}])^*]},
+\end{array}
+$$
+where $x_{e} = a$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched to ``$a$''  and  $([a^{*?}])$ is matched to $\varepsilon$. Therefore, the semantics of $e$ defined by $\cT^\prime_e$  is \emph{inconsistent} with semantics of /($a$*?)*/ in node.js.
+%}
+%
+	\begin{figure}[tb]
+%		\vspace{-2mm}
+		\centering
+		%\rule{\linewidth}{0cm}
+		\includegraphics[width=0.9\textwidth]{psst-partition.pdf}
+		\caption{The PSST $\cT^\prime_e$ for $e = [([a^{*?}])^{*}]$ with a single set of final states}
+		\label{fig-psst-partition}
 		\vspace{-4mm}
 	\end{figure}
 \end{example}
