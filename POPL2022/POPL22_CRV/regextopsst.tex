@@ -152,7 +152,7 @@ where
 			\vspace{-4mm}
 		\end{figure}  
 \end{definition}
-Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$. We   remark that if $F_{1,1} = \emptyset$ or $F_{2,1} = \emptyset$, then \emph{one copy} of $\cT_2$, instead of two copies, is sufficient for the concatenation.
+Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$. We remark that if $F_{1,1} = \emptyset$ or $F_{2,1} = \emptyset$, then \emph{one copy} of $\cT_2$, instead of two copies, is sufficient for the concatenation.
 
 We shall recursively construct a {\PSST} $\cT_e$ for each {\pcre} $e$, such that the initial state has no incoming transitions and each of its final states has no outgoing transitions. Moreover, all the transitions out of the initial state are $\varepsilon$-transitions. 
 %
@@ -521,12 +521,7 @@ Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1
 %		\item the set of final states is divided into two disjoint subsets $F_1, F_2$ such that for each $w \in \Sigma^*$ satisfying that $q_0 \xrightarrow[\cA_e]{w} q$ for some $q \in F_1$ (resp. $q \in F_2$), $w = \varepsilon$ (resp. $w \neq \varepsilon$).
 %	\end{itemize}
 
-\color{red}
 
-\begin{remark}
-	Extract and replace use regexes with non-classical semantics and references in replace. Pre-image recognizability was not known; previous results consider classical regular expressions without references (a non-example is Example 1.1). PSSTs elegantly capture the new semantics and prove pre-image recognizability. Handling lookahead/backreferences is non-trivial, partly due to the undecidability of the resulting SL fragment (e.g. with backreferences). We can investigate alternating PSSTs or product constructions for lookahead, and extend PSSTs to inspect variable contents for backreferences.
-\end{remark}
-\color{black}
 
 \begin{example}\label{exmp-pfa}
 Consider {\pcre} $e = [a^+]$. 
@@ -548,3 +543,12 @@ We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obt
 	\end{figure}
 \end{example}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\color{red}
+%% a discussion of lookahead etc. 
+%\begin{remark}
+%Notice that $\extract$ and $\replace$ use regexes with non-classical semantics whereas %. It is previously not known wPre-image recognizability was not known; 
+%previous results considered classical regular expressions without references (a non-example is Example \ref{exmp-name-swap}). We exploit PSSTs to capture the new semantics and prove pre-image recognizability. Handling other features such as lookahead/backreferences is non-trivial, partly due to the undecidability of the resulting SL fragment (e.g., with backreferences). 
+%One may investigate alternating PSSTs or product constructions for lookahead, and extend PSSTs to inspect variable contents for backreferences, which are left as future work.
+%\end{remark}
+%\color{black}
