@@ -562,7 +562,7 @@ q_{[([a^{*?}])^{*}]} \xrightarrow{\varepsilon} q_{([a^{*?}]), 0} \xrightarrow{\v
  \hspace*{6mm} q_{a, 1} \xrightarrow{a} f_a \xrightarrow{\epsilon} f_{([a^{*?}])} \xrightarrow{\epsilon} q_{([a^{*?}]), 0} \xrightarrow{\epsilon} f_{([a^{*?}])}  \xrightarrow{\epsilon}  f_{[([a^{*?}])^*]},
 \end{array}
 $$
-where $x_{e} = a$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched to ``$a$''  and  $([a^{*?}])$ is matched to $\varepsilon$. Therefore, the semantics of $e$ defined by $\cT^\prime_e$  is \emph{inconsistent} with semantics of /($a$*?)*/ in node.js.
+where $x_{e} = a$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched to ``$a$''  and  $([a^{*?}])$ is matched to $\varepsilon$. Therefore, the semantics of $e$ defined by $\cT^\prime_e$  is \emph{inconsistent} with semantics of /($a$*?)*/ in node.js. Intuitively, the semantics of /($a$*?)*/ in node.js requires that either it is matched to $\varepsilon$ in whole and the subexpression $a$*? is \emph{not} matched at all, or it is matched to a concatenation of \emph{non-empty} strings where each of them matches $a$*?. This semantics can be captured by splitting the set of final states of PSSTs into two disjoint subsets.
 %}
 %
 	\begin{figure}[tb]
@@ -575,6 +575,8 @@ where $x_{e} = a$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched t
 		\vspace{-4mm}
 	\end{figure}
 \end{example}
+
+%For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} strings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in the setting of \cite{BDM14, BM17}. By splitting the set of final states, we keep track of the emptiness of subexpressions during the match, and thus give a more fine-grained semantics to those operators and successfully handle this class of expression.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\color{red}
