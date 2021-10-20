@@ -552,42 +552,39 @@ We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obt
 At last, we use the following example to illustrate the necessity of splitting the set of final states into two disjoint subsets.
 
 \begin{example}\label{exmp-psst-partition}
-Consider {\pcre} $e = [([a^{*?}])^{*}]$. If we execute ``$aaa$''.match(/($a$*?)*/) in node.js, then the result is the array $[$``aaa'', ``a''$]$, which means ($a$*?)* is matched to ``$aaa$'' and ($a$*?) is matched to $a$. If we do not split the set of final states into two disjoint subsets, then we obtain a PSST $\cT^\prime_e$ as illustrated in Fig.~\ref{fig-psst-partition}. The accepting run of $\cT^\prime_e$ on $w  = aaa$ is 
-
-\zhilei{The run on $aaa$ should be complete, with $x_e = aaa$ and $x_{([a^{*?}])} = \varepsilon$}
+Consider {\pcre} $e = [([a^{*?}])^{*}]$. If we execute ``$aaa$''.match(/($a$*?)*/) in node.js, then the result is the array $[$``$aaa$'', ``$a$''$]$, which means ($a$*?)* is matched to ``$aaa$'' and ($a$*?) is matched to $a$. If we do not split the set of final states into two disjoint subsets, then we obtain a PSST $\cT^\prime_e$ as illustrated in Fig.~\ref{fig-psst-partition}. The accepting run of $\cT^\prime_e$ on $w  = aaa$ is 
+%
+%\zhilei{The run on $aaa$ should be complete, with $x_e = aaa$ and $x_{([a^{*?}])} = \varepsilon$}
 $$
 \begin{array}{l}
-\smallskip
 q_{[([a^{*?}])^{*}]} \xrightarrow{\varepsilon} 
 q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} 
 f_{([a^{*?}])} \xrightarrow{\varepsilon} 
 q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} 
-q_{a, 0} \xrightarrow{\varepsilon} \\
+q_{a, 0} \xrightarrow{\varepsilon}
+q_{a, 1} \xrightarrow{a} 
+f_a \xrightarrow{\varepsilon} 
+f_{([a^{*?}])} \xrightarrow{\varepsilon} 
+\\
 \hspace*{8mm} 
+q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} 
+q_{a, 0} \xrightarrow{\varepsilon} 
 q_{a, 1} \xrightarrow{a} 
 f_a \xrightarrow{\varepsilon} 
 f_{([a^{*?}])} \xrightarrow{\varepsilon} 
 q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} 
-
-q_{a, 0} \xrightarrow{\varepsilon} \\
-\hspace*{8mm} 
+q_{a, 0} \xrightarrow{\varepsilon} 
 q_{a, 1} \xrightarrow{a} 
 f_a \xrightarrow{\varepsilon} 
 f_{([a^{*?}])} \xrightarrow{\varepsilon} 
+\\
+\hspace*{12mm} 
 q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} 
-
-q_{a, 0} \xrightarrow{\varepsilon} \\
-\hspace*{8mm} 
-q_{a, 1} \xrightarrow{a} 
-f_a \xrightarrow{\varepsilon} 
-f_{([a^{*?}])} \xrightarrow{\varepsilon} 
-q_{([a^{*?}]), 0} \xrightarrow{\varepsilon} 
-
 f_{([a^{*?}])} \xrightarrow{\varepsilon} 
 f_{[([a^{*?}])^*]},
 \end{array}
 $$
-where $x_{e} = aaa$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched to ``$a$''  and  $([a^{*?}])$ is matched to $\varepsilon$. Therefore, the semantics of $e$ defined by $\cT^\prime_e$  is \emph{inconsistent} with semantics of /($a$*?)*/ in node.js. Intuitively, the semantics of /($a$*?)*/ in node.js requires that either it is matched to $\varepsilon$ in whole and the subexpression $a$*? is \emph{not} matched at all, or it is matched to a concatenation of \emph{non-empty} strings where each of them matches $a$*?. This semantics can be captured by splitting the set of final states of PSSTs into two disjoint subsets.
+where $x_{e} = aaa$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched to ``$aaa$''  and  $([a^{*?}])$ is matched to $\varepsilon$. Therefore, the semantics of $e$ defined by $\cT^\prime_e$  is \emph{inconsistent} with semantics of /($a$*?)*/ in node.js. Intuitively, the semantics of /($a$*?)*/ in node.js requires that either it is matched to $\varepsilon$ in whole and the subexpression $a$*? is \emph{not} matched at all, or it is matched to a concatenation of \emph{non-empty} strings where each of them matches $a$*?. This semantics can be captured by (adapted) PSSTs where the set of final states is split into two disjoint subsets.
 %
 	\begin{figure}[tb]
 %		\vspace{-2mm}
