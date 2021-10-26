@@ -91,16 +91,22 @@ string, respectively. We add \textsf{re.begin-anchor} and
 the semantics of anchors and is able to solve constraints containing
 these operators.
 
-The implementation in \ostrich\ revolves around PSSTs. The three
-string operators mentioned above will be converted into an equivalent
-PSST (see \ifproceeding the full version of the paper \cite{popl22-full}).
-\else Appendix~\ref{appendix:sec-extract-replace-to-psst}). \fi {\ostrich} then
-iteratively applies the propagation rules from
+\ostrich\ implements the procedure in Theorem~\ref{thm-main}, and
+focuses on SL formulas. The three string operators mentioned above
+will be converted into an equivalent PSST (see \ifproceeding the full
+version of the paper \cite{popl22-full}).  \else
+Appendix~\ref{appendix:sec-extract-replace-to-psst}). \fi {\ostrich}
+then iteratively applies the propagation rules from
 Section~\ref{sect:calculus} to derive further \regexp\ constraints,
-and eventually either detect a contradiction, or converge
-and find a fixed-point. For straight-line formulas, the existence of a
+and eventually either detect a contradiction, or converge and find a
+fixed-point. For straight-line formulas, the existence of a
 fixed-point implies satisfiability, and a solution can then be
-constructed as described in Section~\ref{sect:calculus}.
+constructed as described in Section~\ref{sect:calculus}.  In addition,
+similar to other SMT solvers, {\ostrich} applies simplification rules
+(e.g., {\sf Fwd-Prop-Elim, =-Prop, Subsume, Close}, etc in
+Table~\ref{tab:calculus}) to formulas before invoking the SL
+procedure.  This enables \ostrich\ to solve some formulas outside of the SL
+fragment, but is not a complete procedure for non-SL formulas.
 
 \begin{figure}[tb]
   \scriptsize
@@ -150,11 +156,6 @@ fun(x);
   \label{fig:harness}
   \vspace{-4mm}
 \end{figure}
-
-\tl{@Philipp, you may add more details here.}
-\color{red}
-Note that {\ostrich} focuses on SL, and implements the procedure in Theorem~\ref{thm-main}. In addition, similar to other SMT solvers, {\ostrich} applies simplification rules (e.g., {\sf Fwd-Prop-Elim, =-Prop, Subsume, Close}, etc in Table~\ref{tab:calculus}) to formulas before invoking the SL procedure.  This enables EMU to solve formulas outside of the SL fragment, but is not a complete procedure for non-SL formulas. 
-\color{black}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -246,13 +247,13 @@ queries and four paths, respectively.
      & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
      & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~
     \\\hline
-    \textbf{Match}  & 172 & 92 & 61 & 534 & 96,126 & 1,132
-    & ~3,333 & 9,274 & 36,916 & 48,594 & ---
+    \textbf{Match}  & 422 & 249 & 751 & 386 & 95,175 & 1,134
+    & ~3,333 & 9,274 & 36,916 & 48,594 & 0
     \\
-     \emph{(98,117} & \multicolumn{6}{c|}{Average time: 1.19s}
+     \emph{(98,117} & \multicolumn{6}{c|}{Average time: 1.57s}
     &\multicolumn{5}{c|}{Average time: 28.0s}
     \\
-    \emph{~~benchm.)} & \multicolumn{6}{c|}{Total \#sat: 249,975, \#unsat: 136,345}
+    \emph{~~benchm.)} & \multicolumn{6}{c|}{Total \#sat: 250,947, \#unsat: 132,662}
     & \multicolumn{5}{c|}{Total \#paths covered: 228,888}
     \\\hline
     \textbf{Replace} & 445 & 229 & 576 & 95,735 & --- & 1,132
@@ -267,7 +268,7 @@ queries and four paths, respectively.
   \end{tabular}
   \end{center}
   \caption{The number of queries answered by \ostrich, and number of
-    paths covered by \expose{}+Z3, in the \textbf{R1} experiments. 
+    paths covered by \expose{}+Z3, in \textbf{R1}. 
     Experiments were done on an AMD Opteron 2220 SE machine, running
     64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
     60s wall-clock time, 2GB memory, and the number of tests
@@ -281,12 +282,12 @@ queries and four paths, respectively.
 
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
-in 96,126 of the match benchmarks (97.9\%), and all three queries in
-95,735 of the replace-all benchmarks (97.6\%). The errors in 1,132 cases
+in 95,175 of the match benchmarks (97\%), and all three queries in
+95,735 of the replace-all benchmarks (97.6\%). The errors in 1,134 cases
 are due to back-references in \verb!<re1>!, which are not handled by
 \ostrich. \expose{}+Z3 can on the match problems cover 228,888 paths in
 total (91.5\% of the number of sat results of \ostrich), although the
-runtime of \expose{}+Z3 is on average 23x higher than that of
+runtime of \expose{}+Z3 is on average 18x higher than that of
 \ostrich. For replace, \expose{}+Z3 can cover 173,007 paths (63.2\%),
 showing that this class of constraints is harder; the runtime of
 \expose{}+Z3 is on average 37x higher than that of \ostrich.  Overall,
