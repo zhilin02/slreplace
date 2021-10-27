@@ -244,8 +244,8 @@ queries and four paths, respectively.
       & \multicolumn{6}{c|}{\# queries solved within 60s}
       & \multicolumn{5}{c|}{\# paths covered within 60s}
     \\
-     & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~ & ~~\#Err~~
-     & ~~0~~ & ~~1~~ & ~~2~~ & ~~3~~ & ~~4~~
+     & 0 & 1 & 2 & 3 & 4 & \#Err
+     & 0 & 1 & 2 & 3 & 4
     \\\hline
     \textbf{Match}  & 422 & 249 & 751 & 386 & 95,175 & 1,134
     & ~3,333 & 9,274 & 36,916 & 48,594 & 0
@@ -256,13 +256,13 @@ queries and four paths, respectively.
     \emph{~~benchm.)} & \multicolumn{6}{c|}{Total \#sat: 250,947, \#unsat: 132,662}
     & \multicolumn{5}{c|}{Total \#paths covered: 228,888}
     \\\hline
-    \textbf{Replace} & 445 & 229 & 576 & 95,735 & --- & 1,132
+    \textbf{Replace} & 4,170 & 2,463 & 555 & 89,794 & --- & 1,135
     & ~5,281 & 18,221 & 69,059 & 5,556 & ---
     \\
-    \emph{(98,117} & \multicolumn{6}{c|}{Average time: 1.48s}
+    \emph{(98,117} & \multicolumn{6}{c|}{Average time: 6,62s}
     & \multicolumn{5}{c|}{Average time: 55.0s}
     \\
-    \emph{~~bench.)} & \multicolumn{6}{c|}{Total \#sat: 273,927, \#unsat: 14,659}
+    \emph{~~bench.)} & \multicolumn{6}{c|}{Total \#sat: 259,354, \#unsat: 13,601}
     & \multicolumn{5}{c|}{Total \#paths covered: 173,007}
       \\\hline
   \end{tabular}
@@ -283,17 +283,18 @@ queries and four paths, respectively.
 The results of this experiment are shown in
 Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
 in 95,175 of the match benchmarks (97\%), and all three queries in
-95,735 of the replace-all benchmarks (97.6\%). The errors in 1,134 cases
-are due to back-references in \verb!<re1>!, which are not handled by
-\ostrich. \expose{}+Z3 can on the match problems cover 228,888 paths in
-total (91.5\% of the number of sat results of \ostrich), although the
-runtime of \expose{}+Z3 is on average 18x higher than that of
-\ostrich. For replace, \expose{}+Z3 can cover 173,007 paths (63.2\%),
-showing that this class of constraints is harder; the runtime of
-\expose{}+Z3 is on average 37x higher than that of \ostrich.  Overall,
-even taking into account that \expose{}+Z3 has to analyze JavaScript
-code, as opposed to the SMT-LIB given to \ostrich, the experiments
-show that \ostrich\ is a highly competitive solver for \regexps.
+89,794 of the replace-all benchmarks (91.5\%). The errors in 1,134
+cases (resp., 1,135 cases) are mainly due to back-references in
+\verb!<re1>!, which are not handled by \ostrich. \expose{}+Z3 can
+cover 228,888 paths of the match problems in total (91.2\% of the
+number of sat results of \ostrich), although the runtime of
+\expose{}+Z3 is on average 18x higher than that of \ostrich. For
+replace, \expose{}+Z3 can cover 173,007 paths (63.2\%), showing that
+this class of constraints is harder; the runtime of \expose{}+Z3 is on
+average 37x higher than that of \ostrich.  Overall, even taking into
+account that \expose{}+Z3 has to analyze JavaScript code, as opposed
+to the SMT-LIB given to \ostrich, the experiments show that \ostrich\
+is a highly competitive solver for \regexps.
 
 \smallskip
 {\em For \textbf{R2}:} For this experiment,
