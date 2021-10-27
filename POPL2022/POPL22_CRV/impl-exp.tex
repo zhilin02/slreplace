@@ -154,7 +154,6 @@ fun(x);
   \caption{Harnesses with replace-all: SMT-LIB for \ostrich\ (left),
     and JavaScript for \expose{} (right).}
   \label{fig:harness}
-  \vspace{-4mm}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -275,57 +274,6 @@ queries and four paths, respectively.
     executed concurrently by \expose{}+Z3 to 1.  Average time is
     wall-clock time per benchmark, timeouts count as 60s.}
   \label{tab:exp-r2}
-  \vspace{-8mm}
-\end{table}
-
-
-
-The results of this experiment are shown in
-Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
-in 95,175 of the match benchmarks (97\%), and all three queries in
-89,794 of the replace-all benchmarks (91.5\%). The errors in 1,134
-cases (resp., 1,135 cases) are mainly due to back-references in
-\verb!<re1>!, which are not handled by \ostrich. \expose{}+Z3 can
-cover 228,888 paths of the match problems in total (91.2\% of the
-number of sat results of \ostrich), although the runtime of
-\expose{}+Z3 is on average 18x higher than that of \ostrich. For
-replace, \expose{}+Z3 can cover 173,007 paths (63.2\%), showing that
-this class of constraints is harder; the runtime of \expose{}+Z3 is on
-average 37x higher than that of \ostrich.  Overall, even taking into
-account that \expose{}+Z3 has to analyze JavaScript code, as opposed
-to the SMT-LIB given to \ostrich, the experiments show that \ostrich\
-is a highly competitive solver for \regexps.
-
-\smallskip
-{\em For \textbf{R2}:} For this experiment,
-we  integrated \ostrich\ into the symbolic
-execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
-\expose{}+Z3 on the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
-as well as a collection of other JavaScript programs containing match or replace
-functions extracted from Github. In
-Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
-60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
-discover feasible paths more quickly than \expose{}+Z3, however: on
-all three families of benchmarks, Aratha+{\ostrich} terminates on
-average in less than 10s, and it discovers all paths 
-within 35s. \expose{}+Z3 needs the full 60s for
-29 of the programs (``T.O.'' in the table),
-and it finds new paths until the end of the 60s. Since \expose{}+Z3
-handles the replace-all operation by unrolling, it is not able to
-prove infeasibility of paths involving such operations, and will
-therefore not terminate on some programs.
-%is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
-%able to cover more paths. The smaller speedup compared to the results
-%for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path constraints.
-%SMT-LIB queries
-%produced by Aratha are not pure string constraints, but also include
-%ADTs, arrays, and bit-vectors. 
-Overall, the experiments indicate that {\ostrich} is more
-efficient than the CEGAR-augmented symbolic execution for dealing
-with \regexps.
-
-
-\begin{table}[t]
 
 	\begin{center}
 	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
@@ -359,6 +307,53 @@ with \regexps.
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R2}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
     wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
-	  \vspace{-1cm}
 \end{table}
+
+
+
+The results of this experiment are shown in
+Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
+in 95,175 of the match benchmarks (97\%), and all three queries in
+89,794 of the replace-all benchmarks (91.5\%). The errors in 1,134
+cases (resp., 1,135 cases) are mainly due to back-references in
+\verb!<re1>!, which are not handled by \ostrich. \expose{}+Z3 can
+cover 228,888 paths of the match problems in total (91.2\% of the
+number of sat results of \ostrich), although the runtime of
+\expose{}+Z3 is on average 18x higher than that of \ostrich. For
+replace, \expose{}+Z3 can cover 173,007 paths (66.7\%), showing that
+this class of constraints is harder; the runtime of \expose{}+Z3 is on
+average 8x higher than that of \ostrich.  Overall, even taking into
+account that \expose{}+Z3 has to analyze JavaScript code, as opposed
+to the SMT-LIB given to \ostrich, the experiments show that \ostrich\
+is a highly competitive solver for \regexps.
+
+\smallskip
+{\em For \textbf{R2}:} For this experiment,
+we  integrated \ostrich\ into the symbolic
+execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
+\expose{}+Z3 on the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
+as well as a collection of other JavaScript programs containing match or replace
+functions extracted from Github. In
+Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
+60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
+discover feasible paths more quickly than \expose{}+Z3, however: on
+all three families of benchmarks, Aratha+{\ostrich} terminates on
+average in less than 10s, and it discovers all paths 
+within 35s. \expose{}+Z3 needs the full 60s for
+29 of the programs (``T.O.'' in the table),
+and it finds new paths until the end of the 60s. Since \expose{}+Z3
+handles the replace-all operation by unrolling, it is not able to
+prove infeasibility of paths involving such operations, and will
+therefore not terminate on some programs.
+%is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
+%able to cover more paths. The smaller speedup compared to the results
+%for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path constraints.
+%SMT-LIB queries
+%produced by Aratha are not pure string constraints, but also include
+%ADTs, arrays, and bit-vectors. 
+Overall, the experiments indicate that {\ostrich} is more
+efficient than the CEGAR-augmented symbolic execution for dealing
+with \regexps.
+
+
 
