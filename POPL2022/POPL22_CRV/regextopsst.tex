@@ -47,7 +47,7 @@ Our construction, which is considerably different from that in \cite{BDM14,BM17}
 %By a mutual induction on $|w|$ and $|e|$, we can show that $|\cM_{w}(e)|$, the size of $\cM_{w}(e)$, is at most $|w||e|$.  
 
 %\begin{example}\label{exmp-regex-match-tree}
-%	Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\Gamma = \{0,1,\cdots,9\}$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Figure~\ref{fig-regex-semantics-decimal}(i), (ii), (iii), and (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted. % to avoid tediousness.
+%	Let $w= 0250$ and $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ where $\Gamma = \{0,1,\cdots,9\}$. Note that $e$ is essentially {\tt decimalReg} in the motivating example. Then $\cM_{w}(e) = \{T_1,T_2,T_3, T_4\}$ as illustrated in Fig.~\ref{fig-regex-semantics-decimal}(i), (ii), (iii), and (iv), where the match trees rooted at $(0, \Gamma)$, $(2, \Gamma)$, and $(5, \Gamma)$ are omitted. % to avoid tediousness.
 %	\begin{figure}[htb]
 %		\centering
 %		%\rule{\linewidth}{0cm}
@@ -97,7 +97,17 @@ Our construction, which is considerably different from that in \cite{BDM14,BM17}
 
 %We associate with each regular expression $e$ a PFA $\cA_e$ and define the semantics of $e$ as the language accepted by $\cA_e$. As expected, the PFA $\cA_e$ is constructed inductively. 
 
-The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. The necessity of this splitting will be illustrated in Example~\ref{exmp-psst-partition}.
+For technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function, in the sequel. 
+%
+The main idea of the construction is to split the set of final states, $F$, into two disjoint subsets $F_1$ and $F_2$, with the intention that $F_1$ and $F_2$ are responsible for accepting the empty string resp. non-empty strings. 
+Therefore, the {\PSST}s constructed below are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
+The necessity of this splitting will be illustrated in Example~\ref{exmp-psst-partition}.
+
+Furthermore, to deal with the situation that some capturing group may not be matched to any string and its value is undefined, we introduce a special symbol $\nullchar$ %for denoting this situation 
+and assume that the initial values of all the string variables are $\nullchar$. %To avoid the tediousness, 
+For simplicity, in the definition of a {\PSST}, if $\delta(q, a, q') = ()$ or $\tau(q, \varepsilon, q') = ((); ())$,  they will not be stated explicitly. Moreover, we will omit all the assignments $E(q, a, q')(x)$ such that $E(q, a, q')(x) = x$.
+%By default, all the PSSTs from now on satisfy these assumptions. 
+
 
 \OMIT{To be polished: 
 To ensure this, making copies of {\PSST} might be needed during the construction, as is done in concatenation of two {\PSST}s (Definition \ref{def-psstconcat}), which leads to the worst case exponential blow-up.
@@ -106,17 +116,11 @@ However, the separation of $F$ into two sets is necessary for correct modeling o
 For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistically and in this case the subexpression $a^{*?}$ is not entered and matched at all, or it matches the concatenation of a number of \emph{non-empty} strings which are accepted by $a^{*?}$. Note that this is an instance of problematic regular expression in the setting of \cite{BDM14, BM17}. By splitting the set of final states, we keep track of the emptiness of subexpressions during the match, and thus give a more fine-grained semantics to those operators and successfully handle this class of expression.
 }
 
-For technical convenience, we assume that $F$ in a {\PSST} is a set of final states, instead of an output function. Therefore, the {\PSST}s constructed below are of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$. 
-%
-Furthermore, to deal with the situation that some capturing group may not be matched to any string and its value is undefined, we introduce a special symbol $\nullchar$ %for denoting this situation 
-and assume that the initial values of all the string variables are $\nullchar$. %To avoid the tediousness, 
-For simplicity, in the definition of a {\PSST}, if $\delta(q, a, q') = ()$ or $\tau(q, \varepsilon, q') = ((); ())$,  they will not be stated explicitly. Moreover, we will omit all the assignments $E(q, a, q')(x)$ such that $E(q, a, q')(x) = x$.
-%By default, all the PSSTs from now on satisfy these assumptions. 
 
 For {\PSST}s of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$, we introduce a notation to be used in the construction, namely, the concatenation of two {\PSST}s. 
 
 \begin{definition}[Concatenation of two PSSTs]\label{def-psstconcat}
-For $i \in \{1,2\}$, let $\cT_i = (Q_i, \Sigma, X_i, \delta_i, \tau_i, E_i, q_{i,0}, (F_{i,1}, F_{i,2}))$ be a PSST. Then the \emph{concatenation} of $\cT_1$ and $\cT_2$, denoted by $\cT_1 \concat \cT_2$, is defined as follows (see Figure~\ref{fig-psstconcat}): 
+For $i \in \{1,2\}$, let $\cT_i = (Q_i, \Sigma, X_i, \delta_i, \tau_i, E_i, q_{i,0}, (F_{i,1}, F_{i,2}))$ be a PSST. Then the \emph{concatenation} of $\cT_1$ and $\cT_2$, denoted by $\cT_1 \concat \cT_2$, is defined as follows (see Fig.~\ref{fig-psstconcat}): 
 Let  
 $\cT'_{2} = (Q'_{2}, \Sigma, X_{2}, \delta'_{2}, \tau'_{2}, E_{2}', q'_{2,0}, (F'_{2, 1}, F'_{2,2}))$ be a fresh copy of $\cT_{2}$, but with the string variables of $\cT_{2}$ kept unchanged. 
 Then 
@@ -165,7 +169,7 @@ We assume that in $\cT_e$, a string variable $x_{e'}$ is introduced for each sub
 
 The construction is technical and below we only select to present some representative cases. The other cases are
 %
-\ifproceeding given in the full version of the paper \cite{popl22-full}. 
+\ifproceeding given in the long version of this paper \cite{popl22-full}. 
 \else relegated to Appendix~\ref{app:reg2psst}. 
 \fi
 %Moreover, a special symbol $\nullchar$ is introduced to deal with the situation that a subexpression $e'$ is not matched. If this happens, then the value of $e'$ is undefined and $\nullchar$ is assigned to $x_{e'}$. 
@@ -173,18 +177,18 @@ The construction is technical and below we only select to present some represent
 
 %%%%%%%%%%%%%%%%% move to appendix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\paragraph{Case $e =\emptyset$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_\emptyset = (\{q_{\emptyset, 0}\}, \Sigma, \{x_{\emptyset}\}, \delta_\emptyset, \tau_\emptyset, E_\emptyset, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where there are no transitions out of $q_{\emptyset,0}$, namely, $\delta_\emptyset(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau_\emptyset(q_{\emptyset, 0}) = ((); ())$, and $E_\emptyset$ is vacuous here.
+%\paragraph{Case $e =\emptyset$ (see Fig.~\ref{fig-reg2pfa-0})} $\cT_\emptyset = (\{q_{\emptyset, 0}\}, \Sigma, \{x_{\emptyset}\}, \delta_\emptyset, \tau_\emptyset, E_\emptyset, q_{\emptyset, 0}, (\emptyset, \emptyset))$, where there are no transitions out of $q_{\emptyset,0}$, namely, $\delta_\emptyset(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau_\emptyset(q_{\emptyset, 0}) = ((); ())$, and $E_\emptyset$ is vacuous here.
 %%$\delta_\emptyset(q_{\emptyset, 0}, a) = ()$ for every $a \in \Sigma$, $\tau_\emptyset(q_{\emptyset, 0}) = ((); ())$, and $E_\emptyset$ is vacuous here. 
 %
 %
-%\paragraph{Case $e = \varepsilon$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_\varepsilon = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x_\varepsilon\}, \delta_\varepsilon, \tau_\varepsilon, E_\varepsilon, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
+%\paragraph{Case $e = \varepsilon$ (see Fig.~\ref{fig-reg2pfa-0})} $\cT_\varepsilon = (\{q_{\varepsilon, 0}, f_{\varepsilon,0}\}, \Sigma, \{x_\varepsilon\}, \delta_\varepsilon, \tau_\varepsilon, E_\varepsilon, q_{\varepsilon,0}, (\{f_{\varepsilon,0}\}, \emptyset))$, 
 %%
 %where 
 %%$\delta_\varepsilon(q_{\varepsilon,0}, a) = \delta_\varepsilon(f_{\varepsilon,0}, a) = ()$ for every $a \in \Sigma$, 
 %$\tau_\varepsilon(q_{\varepsilon,0}) = ((f_{\varepsilon,0}); ())$, %for each transition $(q, a, q')$, 
 %and $E_\varepsilon(q_{\varepsilon,0}, \varepsilon, f_{\varepsilon,0})(x) = \varepsilon$. Note $F_2 = \emptyset$ here. 
 %		
-%\paragraph{Case $e = a$ (see Figure~\ref{fig-reg2pfa-0})} $\cT_a = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \{x_a\}, \delta_a, \tau_a, E_a, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where 
+%\paragraph{Case $e = a$ (see Fig.~\ref{fig-reg2pfa-0})} $\cT_a = (\{q_{a,0}, q_{a,1}, f_{a,0}\}, \Sigma, \{x_a\}, \delta_a, \tau_a, E_a, q_{a,0}, (\emptyset, \{f_{a,0}\}))$, where 
 %%$\delta_a(q_{a,0}, b) = ()$ for every $b \in \Sigma$, 
 %$\tau_a(q_{a,0}) = ((q_{a,1}); ())$, 
 %%
@@ -209,7 +213,7 @@ The construction is technical and below we only select to present some represent
 \paragraph{Case $e = (e_1)$} $\cT_e$ is adapted from $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1},  q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$ by adding the string variable $x_e$ and the assignments for $x_e$, that is, $X_e = X_{e_1} \cup \{x_e\}$ and for each transition $(q, a, q')$ in $\cT_{e_1} $ with $a \in \Sigma^\varepsilon$, we have $E_e(q, a, q')(x_e) = E_{e_1}(q, a, q')(x_{e_1})$. 
 		
 
-\paragraph{Case $e = [e_1 + e_2]$ (see Figure~\ref{fig-reg2pfa-1})} For $i \in \{1, 2\}$, let  
+\paragraph{Case $e = [e_1 + e_2]$ (see Fig.~\ref{fig-reg2pfa-1})} For $i \in \{1, 2\}$, let  
 $\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i},  q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. Moreover, let us assume that $X_{e_1} \cap X_{e_2} = \emptyset$.
 %$\cT_{e_2} = (Q_{e_2}, \Sigma, X_{e_2}, \delta_{e_2}, \tau_{e_2}, E_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$.
 % 
@@ -233,7 +237,7 @@ Then
 %			\item $\tau_e(q) = \tau_{e_i}(q)$ for every $i \in \{1,2\}$ and $q \in Q_{e_i}$, 
 %			\item $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$,
 %			\end{itemize}
-			\item $E_e$ inherits $E_{e_1}$, $E_{e_2}$, and the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_{e}) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x_{e}) =\varepsilon$, as well as $E_e(q,a, q')(x_{e}) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ and $\cT_{e_2}$ (where $a \in \Sigma^\varepsilon$).
+			\item $E_e$ inherits $E_{e_1}$, $E_{e_2}$, and includes the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_{e}) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x_{e}) =\varepsilon$, as well as $E_e(q,a, q')(x_{e}) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ and $\cT_{e_2}$ (where $a \in \Sigma^\varepsilon$).
 			%  is defined as follows: 
 %			\begin{itemize}
 %			\item for each $i\in\{1,2\}$, transition $(q, a, q')$ in $\cT_{e_i}$ (where $a \in \Sigma^\varepsilon$), $x \in X_{e_i}$ and $x' \in X_{e} \setminus X_{e_i}$, $E_e(q,a,q')(x) = E_{e_i}(q,a,q')(x)$ and $E_e(q,a,q')(x') =x'$, 
@@ -256,7 +260,7 @@ Then
 %\paragraph{Case $e = [e_1 \concat e_2]$} 
 %For $i \in \{1,2\}$, let  
 %$\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i}, q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. Moreover, let us assume that $X_{e_1}\cap X_{e_2}=\emptyset$.
-%Then $\cT_e$ is obtained from $\cT_{e_1} \concat \cT_{e_2}$ (the concatenation of $\cT_{e_1}$ and $\cT_{e_2}$, see Figure~\ref{fig-psstconcat}) by adding a string variable $x_e$, a fresh state $q_{e,0}$ as the initial state, the transition $\tau_e(q_{e,0}) = (q_{e_1,0})$, and the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1}$, $\cT_{e_2}$, and $\cT'_{e_2}$ (where $a \in \Sigma^\varepsilon$).
+%Then $\cT_e$ is obtained from $\cT_{e_1} \concat \cT_{e_2}$ (the concatenation of $\cT_{e_1}$ and $\cT_{e_2}$, see Fig.~\ref{fig-psstconcat}) by adding a string variable $x_e$, a fresh state $q_{e,0}$ as the initial state, the transition $\tau_e(q_{e,0}) = (q_{e_1,0})$, and the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1}$, $\cT_{e_2}$, and $\cT'_{e_2}$ (where $a \in \Sigma^\varepsilon$).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\OMIT{
 %Suppose that
@@ -313,10 +317,10 @@ Then
 \paragraph{Case $e = [e_1 \concat e_2]$} 
 For $i \in \{1,2\}$, let  
 $\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i}, q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. Moreover, let us assume that $X_{e_1}\cap X_{e_2}=\emptyset$.
-Then $\cT_e$ is obtained from $\cT_{e_1} \concat \cT_{e_2}$ (the concatenation of $\cT_{e_1}$ and $\cT_{e_2}$, see Figure~\ref{fig-psstconcat}) by adding a string variable $x_e$, a fresh state $q_{e,0}$ as the initial state, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, and the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1}$, $\cT_{e_2}$, and $\cT'_{e_2}$ (where $a \in \Sigma^\varepsilon$).
+Then $\cT_e$ is obtained from $\cT_{e_1} \concat \cT_{e_2}$ (the concatenation of $\cT_{e_1}$ and $\cT_{e_2}$, see Fig.~\ref{fig-psstconcat}) by adding a string variable $x_e$, a fresh state $q_{e,0}$ as the initial state, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, and the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1}$, $\cT_{e_2}$, and $\cT'_{e_2}$ (where $a \in \Sigma^\varepsilon$).
 
 
-\paragraph{Case $e = [e_1^?]$ (see Figure~\ref{fig-reg2pfa-6})} Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
+\paragraph{Case $e = [e_1^?]$ (see Fig.~\ref{fig-reg2pfa-6})} Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then 
 \[\cT_e = (Q_{e_1} \cup \{q_{e,0}, f_{\varepsilon}\}, \Sigma, X_{e_1} \cup \{x_e\}, 
 		\delta_e, \tau_e, E_{e}, q_{e,0}, (\{f_{\varepsilon}\}, F_{e_1,2}))\]
 where  
@@ -333,7 +337,7 @@ where
 %			\item $\tau_e(q) = \tau_{e_1}(q)$ for every $q \in Q_{e_1}$, 
 %			\item $\tau_e(q_{e,0}) = ((q_{e_1,0}, f_{\varepsilon}); ())$,
 %			\end{itemize}
-			\item $E_e$ inherits $E_{e_1}$ and the assignments $E_e(q_{e,0},\varepsilon,q_{e_1, 0})(x_e) = E_e(q_{e,0},\varepsilon,f_{\varepsilon})(x_e) =\varepsilon$, as well as $E_e(q, a, q')(x_e) =x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ (where $a \in \Sigma^\varepsilon$).
+			\item $E_e$ inherits $E_{e_1}$ and includes the assignments $E_e(q_{e,0},\varepsilon,q_{e_1, 0})(x_e) = E_e(q_{e,0},\varepsilon,f_{\varepsilon})(x_e) =\varepsilon$, as well as $E_e(q, a, q')(x_e) =x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ (where $a \in \Sigma^\varepsilon$).
 %			defined as follows: 
 %			\begin{itemize}
 %			\item for each transition $(q, a, q')$ in $\cT_{e_1}$ (where $a \in \Sigma^\varepsilon$), $E_e(q,a,q')(x_e) =x_ea$, and for every $x \in X_{e_1}$, $E_e(q,a,q')(x) =E_{e_1}(q, a,q')(x)$, 
@@ -341,6 +345,7 @@ where
 %			\item $E_e(q_{e,0},\varepsilon,q_{e_1, 0})(x_e) = E_e(q_{e,0},\varepsilon,f_{\varepsilon})(x_e) =\varepsilon$,  and for each $x \in X_{e_1}$, $E_e(q_{e,0},\varepsilon,q_{e_1, 0})(x)  = E_e(q_{e,0},\varepsilon, f_{\varepsilon})(x) =x$. 
 %			\end{itemize}
 		\end{itemize}
+Note that $F_{e_1,1}$ is not included into $F_{e,1}$ here.
 %
 %Fig.~\ref{fig-reg2pfa-6} depicts the construction.
 		\begin{figure}[tb]
@@ -354,7 +359,7 @@ where
 		\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{??}]$ (see Figure~\ref{fig-reg2pfa-6})}  In this case, $\cT_{[e_1^{??}]}$ is  almost the same as $\cT_{[e_1^{?}]}$. The only difference is that the priorities of the two $\varepsilon$-transitions out of $q_{e,0}$ are swapped, namely, $\tau_e(q_{e,0}) = ((f_{\varepsilon}, q_{e_1,0}); ())$ here.
+\paragraph{Case $e = [e_1^{??}]$ (see Fig.~\ref{fig-reg2pfa-6})}  In this case, $\cT_{[e_1^{??}]}$ is  almost the same as $\cT_{[e_1^{?}]}$. The only difference is that the priorities of the two $\varepsilon$-transitions out of $q_{e,0}$ are swapped, namely, $\tau_e(q_{e,0}) = ((f_{\varepsilon}, q_{e_1,0}); ())$ here.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \OMIT
 {
@@ -387,7 +392,7 @@ Fig.~\ref{fig-reg2pfa-7} depicts the construction.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\paragraph{Case $e = [e_1^{\ast}]$ (see Figure~\ref{fig-reg2pfa-3})} 
+\paragraph{Case $e = [e_1^{\ast}]$ (see Fig.~\ref{fig-reg2pfa-3})} 
 Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. Then
 \[ \cT_e = (Q_{e_1} \cup \{q_{e,0}, f_{e,1}, f_{e,2}\}, \Sigma, X_{e}, \delta_e, E_{e}, \tau_e, q_{e,0}, (\{f_{e,1}\}, \{f_{e,2}\}))\] where 
 		\begin{itemize}
@@ -406,7 +411,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 %			\begin{itemize}
 %			\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((q_{e_1,0},f_{e,0}); ())$,  $\tau_e(f_{e_1,1}) = ((q_{e_1,0});())$ for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,2}) = ((q_{e_1,0}, f_{e,1});())$ for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $q_{e_1,0}$ and $f_{e,0}$, from each $f_{e_1,1} \in F_{e_1,1}$ to $q_{e_1,0}$, and from $f_{e_1,2} \in F_{e_1,2}$ to $q_{e_1,0}$ and $f_{e,1}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $f_{e,0}$ and from $f_{e_1,2} \in F_{e_1,2}$ to $f_{e,1}$ are of the lowest priority.)
 %			\end{itemize}
-			\item $E_e$ inherits $E_{e_1}$ and the assignments $E_e(q_{e,0},\varepsilon,f_{e,1})(x_e) = E_e(q_{e,0},\varepsilon,q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(f_{e_1,1},\varepsilon, q_{e_1,0})(x) = E_e(f_{e_1,2},\varepsilon, q_{e_1,0})(x)= \nullchar$ for every $f_{e_1,1} \in F_{e_1,1}$, $f_{e_1,2} \in F_{e_1,2}$, and $x \in X_{e_1}$. (Intuitively, the values of all the string variables in $X_{e_1}$ are reset when starting a new iteration of $e_1$.)
+			\item $E_e$ inherits $E_{e_1}$ and includes the assignments $E_e(q_{e,0},\varepsilon,f_{e,1})(x_e) = E_e(q_{e,0},\varepsilon,q_{e_1,0})(x_e) = \varepsilon$, $E_e(f_{e_1,1},\varepsilon, q_{e_1,0})(x) = E_e(f_{e_1,2},\varepsilon, q_{e_1,0})(x)= \nullchar$ for every $f_{e_1,1} \in F_{e_1,1}$, $f_{e_1,2} \in F_{e_1,2}$, and $x \in X_{e_1}$, as well as $E_e(q, a, q')(x_e) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ with $a \in \Sigma^\varepsilon$. (Intuitively, the values of all the string variables in $X_{e_1}$ are reset when starting a new iteration of $e_1$.)
 %			 is defined as follows: 
 %			\begin{itemize}
 %			\item for each transition $(q, a, q')$ in $\cT_{e_1}$, $E_e(q,a,q')(x_e) = x_e a$, and for every $x \in X_{e_1}$, $E_e(q,a,q')(x) = E_{e_1}(q,a,q')(x)$, 
@@ -427,7 +432,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\ast?}]$ (see Figure~\ref{fig-reg2pfa-3})} The construction is almost the same as $e = [e_1^{\ast}]$. The only difference is that the priorities of the $\varepsilon$-transitions out of $q_{e,0}$ resp. $f_{e_1,2} \in F_{e_1,2}$ are swapped.
+\paragraph{Case $e = [e_1^{\ast?}]$ (see Fig.~\ref{fig-reg2pfa-3})} The construction is almost the same as $e = [e_1^{\ast}]$. The only difference is that the priorities of the $\varepsilon$-transitions out of $q_{e,0}$ resp. $f_{e_1,2} \in F_{e_1,2}$ are swapped.
 %
 \OMIT{
 Let $\cA_{e_1} = (Q_{e_1}, \Sigma, X_1, \delta_{e_1}, \tau_{e_1}, E_1, q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$. 
@@ -447,11 +452,11 @@ where
 }
 
 
-\paragraph{Case $e = [e_1^{+}]$}  We first construct $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, where $\cT^-_{[e^\ast_1]}$ is obtained from $\cT_{[e^\ast_1]}$ by dropping the string variable $x_{[e^\ast_1]}$. Therefore, $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$ have the same set of string variables, $X_{e_1}$. Then we construct $\cT_{e}$ by adding into $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$ a fresh state $q_{e,0}$ as the initial state, and the transitions $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, as well as the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$. 
+\paragraph{Case $e = [e_1^{+}]$}  We first construct $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, where $\cT^-_{[e^\ast_1]}$ is obtained from $\cT_{[e^\ast_1]}$ by dropping the string variable $x_{[e^\ast_1]}$. Therefore, $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$ have the same set of string variables, $X_{e_1}$. Then we construct $\cT_{e}$ by adding into $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$ a fresh state $q_{e,0}$ as the initial state, and the transitions $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, as well as the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(q, a, q')(x_e) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$. 
 %(Note that in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$, the values of all variables in $X_{e_1}$ are reset when entering $ \cT^-_{[e^\ast_1]}$ and $(\cT^-_{[e^\ast_1]})'$.)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ for $1 \le m_1 < m_2$ (see Figure~\ref{fig-reg2pfa-4})} We first construct $\cT^{\{m_1\}}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$ (Recall Definition~\ref{def-psstconcat} for the concatenation of PSSTs). Note that $\cT^{\{m_1\}}_{e_1}$ is different from $\cT_{e_1^{m_1}}$, the PSST constructed from $e_1^{m_1}$, the concatenation of the expression $e_1$ for $m_1$ times. In particular, the set of string variables in $\cT^{\{m_1\}}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
+\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ for $1 \le m_1 < m_2$ (see Fig.~\ref{fig-reg2pfa-4})} We first construct $\cT^{\{m_1\}}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$ (Recall Definition~\ref{def-psstconcat} for the concatenation of PSSTs). Note that $\cT^{\{m_1\}}_{e_1}$ is different from $\cT_{e_1^{m_1}}$, the PSST constructed from $e_1^{m_1}$, the concatenation of the expression $e_1$ for $m_1$ times. In particular, the set of string variables in $\cT^{\{m_1\}}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
 
 Then we construct the PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$ (see Fig.~\ref{fig-reg2pfa-4}), which consists of $m_2-m_1$ copies of $\cT_{e_1}$, denoted by $(\cT^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ with $1\le i < m_2-m_1$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority) and a fresh state $f^\prime_1$ (of the lowest priority). The final states of $\cT^{\{1,m_2-m_1\}}_{e_1}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cT^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cT^{\{1,m_2-m_1\}}_{e_1}$. ) Note that the set of string variables in $\cT^{\{1,m_2-m_1\}}_{e_1}$ is still $X_{e_1}$.
 %
@@ -465,7 +470,7 @@ Then we construct the PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$ (see Fig.~\ref{fig-reg2pf
 	\vspace{-4mm}
 \end{figure}  
 
-Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$, the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}}_{e_1}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{\{m_1\}}_{e_1}$),  and the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(p, a, q)(x_e) = x_e a$ for each transition $(p, a, q)$ in  $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$.
+Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$, the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}}_{e_1}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{\{m_1\}}_{e_1}$),  and the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(q, a, q')(x_e) = x_e a$ for each transition $(q, a, q')$ in  $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% move to appendix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\paragraph{Case $e = [e_1^{+}]$}  We first construct $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, where $\cT^-_{[e^\ast_1]}$ is obtained from $\cT_{[e^\ast_1]}$ by dropping the string variable $x_{[e^\ast_1]}$. Therefore, $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$ have the same set of string variables, $X_{e_1}$. Then we construct $\cT_{e}$ by adding into $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$, the concatenation of $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, a fresh state $q_{e,0}$ as the initial state, and the transitions $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, as well as the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$. (Note that in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$, the values of all variables in $X_{e_1}$ are reset when entering $ \cT^-_{[e^\ast_1]}$ and $(\cT^-_{[e^\ast_1]})'$.)
@@ -479,7 +484,7 @@ Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ for $1 \le m_1 < m_2$ (see Figure~\ref{fig-reg2pfa-4})} We first construct $\cT^{\{m_1\}}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$ (Recall Definition~\ref{def-psstconcat} for the concatenation of PSSTs). Note that $\cT^{\{m_1\}}_{e_1}$ is different from $\cT_{e_1^{m_1}}$, the PSST constructed from $e_1^{m_1}$, the concatenation of the expression $e_1$ for $m_1$ times. In particular, the set of string variables in $\cT^{\{m_1\}}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
+%\paragraph{Case $e = [e_1^{\{m_1,m_2\}}]$ for $1 \le m_1 < m_2$ (see Fig.~\ref{fig-reg2pfa-4})} We first construct $\cT^{\{m_1\}}_{e_1}$ as the concatenation of $m_1$ copies of $\cT_{e_1}$ (Recall Definition~\ref{def-psstconcat} for the concatenation of PSSTs). Note that $\cT^{\{m_1\}}_{e_1}$ is different from $\cT_{e_1^{m_1}}$, the PSST constructed from $e_1^{m_1}$, the concatenation of the expression $e_1$ for $m_1$ times. In particular, the set of string variables in $\cT^{\{m_1\}}_{e_1}$ is $X_{e_1}$, which is different from that of $\cT_{e_1^{m_1}}$. 
 %
 %Then we construct the PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$ (see Fig.~\ref{fig-reg2pfa-4}), which consists of $m_2-m_1$ copies of $\cT_{e_1}$, denoted by $(\cT^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ with $1\le i < m_2-m_1$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority) and a fresh state $f^\prime_1$ (of the lowest priority). The final states of $\cT^{\{1,m_2-m_1\}}_{e_1}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cT^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cT^{\{1,m_2-m_1\}}_{e_1}$. ) Note that the set of string variables in $\cT^{\{1,m_2-m_1\}}_{e_1}$ is still $X_{e_1}$.
 %		%
@@ -494,7 +499,7 @@ Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1
 %Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$, the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}}_{e_1}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{\{m_1\}}_{e_1}$),  and the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(p, a, q)(x_e) = x_e a$ for each transition $(p, a, q)$ in  $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\paragraph{Case $e = [e_1^{\{m_1,m_2\}?}]$ for $1 \le m_1 < m_2$ (see Figure~\ref{fig-reg2pfa-5})} Then $\cT_e$ is constructed as the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}?}_{e_1}$, where $\cT^{\{1,m_2-m_1\}?}_{e_1}$ is illustrated in Figure~\ref{fig-reg2pfa-5}, which is the same as $\cT^{\{1,m_2-m_1\}}_{e_1}$ in Figure~\ref{fig-reg2pfa-4}, except that the priorities of the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of the $\varepsilon$-transitions out of each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are swapped.
+%\paragraph{Case $e = [e_1^{\{m_1,m_2\}?}]$ for $1 \le m_1 < m_2$ (see Fig.~\ref{fig-reg2pfa-5})} Then $\cT_e$ is constructed as the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}?}_{e_1}$, where $\cT^{\{1,m_2-m_1\}?}_{e_1}$ is illustrated in Fig.~\ref{fig-reg2pfa-5}, which is the same as $\cT^{\{1,m_2-m_1\}}_{e_1}$ in Fig.~\ref{fig-reg2pfa-4}, except that the priorities of the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to $f^\prime_0$ has the highest priority and  the priorities of the $\varepsilon$-transitions out of each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ to $f^\prime_1$ are swapped.
 %		\begin{figure}[ht]
 %			\centering
 %			%\rule{\linewidth}{0cm}
@@ -531,7 +536,7 @@ Consider {\pcre} $e = [a^+]$.
 %	The PFA corresponding to the RWRE $e = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ 
 	%in Example~\ref{exmp-regex-match-tree}
 	%
-We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obtained from $\cT_{a^*}$ by removing the string variable $x_{[a^*]}$, see Figure~\ref{fig-pfa}).  Then we construct $\cT_{e}$ from $\cT_{a} \concat \cT^-_{a^*}$ by adding the initial state $q_{[a^+],0}$, the string variable $x_{[a^+]}$, as well as the assignments for $x_{[a^+]}$ (see Figure~\ref{fig-pfa}). Note here only one copy of $\cT^-_{a^*}$ is used in $\cT_{a} \concat \cT^-_{a^*}$, since $\varepsilon$ is not accepted by $\cT_{a}$.
+We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obtained from $\cT_{a^*}$ by removing the string variable $x_{[a^*]}$, see Fig.~\ref{fig-pfa}).  Then we construct $\cT_{e}$ from $\cT_{a} \concat \cT^-_{a^*}$ by adding the initial state $q_{[a^+],0}$, the string variable $x_{[a^+]}$, as well as the assignments for $x_{[a^+]}$ (see Fig.~\ref{fig-pfa}). Note here only one copy of $\cT^-_{a^*}$ is used in $\cT_{a} \concat \cT^-_{a^*}$, since $\varepsilon$ is not accepted by $\cT_{a}$.
  %
 %illustrated in Fig.~\ref{fig-pfa}, where the dashed (resp. thicker solid) lines represent the $\varepsilon$-transitions of lower (resp. higher) priorities than non-$\varepsilon$ transitions (if there is any), and the doubly circled states are final states. For instance, $\delta(q_1, \ell) = (q_1)$ for every $\ell \in \{0, \dots, 9\}$, $\delta(q_1, .) = ()$, $\tau(q_1) = ((); (q_2))$. Since the $\varepsilon$-transition has lower priority than the $\ell$-transition at the state $q_1$, whenever the currently scanned letter is $\ell \in \{0,\cdots,9\}$ at $q_1$,  the PFA will choose to go to $q_1$ greedily, until there is no more $\ell  \in \{0,\cdots,9\}$. (In this case, it has to choose the $\epsilon$-transition and goes to $q_2$.)
 	%
@@ -552,7 +557,7 @@ The following example illustrates the necessity of splitting final states into t
 
 \begin{example}\label{exmp-psst-partition}
 Consider {\pcre} $e = [([a^{*?}])^{*}]$. If we execute ``$aaa$''.match(/($a$*?)*/)  in node.js, then 
-the result is the array $[$``$aaa$'', ``$a$''$]$, which means ($a$*?)* is matched to ``$aaa$'' and ($a$*?) is matched to $a$. If we did not split the set of final states into two disjoint subsets, we would have obtained a {\PSST} $\cT^\prime_e$ as illustrated in Figure~\ref{fig-psst-partition}. The accepting run of $\cT^\prime_e$ on $w  = aaa$ is 
+the result is the array $[$``$aaa$'', ``$a$''$]$, which means ($a$*?)* is matched to ``$aaa$'' and ($a$*?) is matched to $a$. If we did not split the set of final states into two disjoint subsets, we would have obtained a {\PSST} $\cT^\prime_e$ as illustrated in Fig.~\ref{fig-psst-partition}, to simulate the matching of $e$ against words. The accepting run of $\cT^\prime_e$ on $w  = aaa$ is 
 %
 %\zhilei{The run on $aaa$ should be complete, with $x_e = aaa$ and $x_{([a^{*?}])} = \varepsilon$}
 $$

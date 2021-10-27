@@ -425,7 +425,7 @@ validating our formalization against JavaScript semantics.
 
 Next, by means of a sound sequent calculus, our string solver (implemented in 
 the standard DPLL(T) setting of SMT solvers~\cite{NieuwenhuisetalJACM2006}) 
-will exploit crucial closure and algorithmic properties satisfied by PSST.
+will exploit crucial closure and algorithmic properties satisfied by PSSTs.
 %Our calculus is sound for the
 In particular, the solver attempts to
 (1) \emph{propagate} regular constraints (i.e.\ the constraints $x \in e$) in the formula around by means of
@@ -468,8 +468,9 @@ guaranteed to terminate (and therefore is also complete) under the assumption
 that the input formula syntactically satisfies the so-called 
 \emph{straight-line restriction}.
 
-We implement our decision procedure in a new solver \ostrich\  
-on top of the existing open-source solver~OSTRICH~\cite{CHL+19},
+We implement our decision procedure 
+%in a new solver \ostrich\  
+on top of the open-source solver~OSTRICH~\cite{CHL+19},
 and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of JavaScript programs (with 98,117 programs in each collection), from a library of real-world regular expressions~\cite{DMC+19}, by using two simple JavaScript program templates containing match and replace functions respectively.  
  Then we generate all the four (resp.\ three) path constraints for each match (resp.\ replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp.\ three) queries in 97.9\% (resp.\ 97.6\%) of the match (resp.\ replace) SMT files, with the average time 1.19 (resp.\ 1.48) seconds per file. 
 Running \expose{}~\cite{LMK19} on the same benchmarks\footnote{More precisely, since
