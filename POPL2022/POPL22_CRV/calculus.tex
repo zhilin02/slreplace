@@ -116,7 +116,7 @@
 \end{table}
 
 We now introduce our calculus for solving string constraints in
-$\strline$, state its correctness, and observe that it gives rise to a
+$\strline$ (see Table~\ref{tab:calculus}), state its correctness, and observe that it gives rise to a
 decision procedure for the fragment $\strlinesl$ of straightline
 formulas. The calculus is based on the principle of propagating
 regular language constraints by computing images and pre-images of
@@ -226,7 +226,7 @@ of single words.
   \end{equation}
   To this end, we construct a proof tree that has \eqref{eq:calcEx1}
   as its root, by applying proof rules until all proof goals have been
-  closed (Figure~\ref{fig:calcEx1}). The proof is growing upward, and
+  closed (Fig.~\ref{fig:calcEx1}). The proof is growing upward, and
   is built by first eliminating the conjunctions~$\wedge$, resulting
   in a list of formulas. Next, we apply the rule~\ruleName{Fwd-Prop} for
   \emph{forward-propagation} of a regular expression constraint. Given
@@ -247,7 +247,7 @@ of single words.
     \label{eq:calcEx2}
     x = y \concat z \wedge x \in a^+ \wedge r = \replaceall_{a, b}(x)
   \end{equation}
-  Figure~\ref{fig:calcEx2} shows how a solution can be constructed for
+  Fig.~\ref{fig:calcEx2} shows how a solution can be constructed for
   this formula. The strategy is to first derive constraints for the
   variables~$y, z$ whose value is not determined by any
   equation. Given that $x \in a^+$, from the equation $x = y \cdot z$
@@ -374,7 +374,7 @@ PSSTs:
   \Sigma, \delta_B, q_{0, B}, F_B)$ in exponential time  such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
 \end{lemma}
 The proof of Lemma~\ref{lem:psst_preimage} is given in
-\ifproceeding the full version of the paper \cite{popl22-full}.
+\ifproceeding the long version of the paper \cite{popl22-full}.
 \else Appendix~\ref{app-pre-image}. \fi Moreover, we have already shown in Lemma~\ref{lem-str-fun-to-psst} that $\extract$, $\replace$, and $\replaceall$ can be reduced to PSSTs.
 
 \medskip
