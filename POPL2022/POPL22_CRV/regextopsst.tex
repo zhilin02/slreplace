@@ -150,13 +150,13 @@ where
   \end{itemize}
 % Fig.~\ref{fig-reg2pfa-2} depicts the construction. 
 		\begin{figure}[tb]
-			\vspace{-2mm}
+%			\vspace{-2mm}
 			\centering
 			%\rule{\linewidth}{0cm}
 			\includegraphics[width = 0.5\textwidth]{psstconcat.pdf}
 			\caption{$\cT_1\concat \cT_2$: Concatenation of $\cT_1$ and $\cT_2$}
 			\label{fig-psstconcat}
-			\vspace{-4mm}
+%			\vspace{-4mm}
 		\end{figure}  
 \end{definition}
 Note that in the above definition, it is possible that $X_1 \cap X_2 \neq \emptyset$. We remark that if $F_{1,1} = \emptyset$ or $F_{2,1} = \emptyset$, then \emph{one copy} of $\cT_2$, instead of two copies, is sufficient for the concatenation.
@@ -246,13 +246,13 @@ Then
 \end{itemize}
 %Fig.~\ref{fig-reg2pfa-1} depicts the construction.  	
 		\begin{figure}[ht]
-		\vspace{-2mm}
+%		\vspace{-2mm}
 			\centering
 			%\rule{\linewidth}{0cm}
 			\includegraphics[width = 0.6\textwidth]{reg2pfa-1.pdf}
 			\caption{The PSST $\cT_{[e_1+e_2]}$}
 			\label{fig-reg2pfa-1}
-			\vspace{-4mm}
+%			\vspace{-4mm}
 		\end{figure}  
 
 
@@ -349,13 +349,13 @@ Note that $F_{e_1,1}$ is not included into $F_{e,1}$ here.
 %
 %Fig.~\ref{fig-reg2pfa-6} depicts the construction.
 		\begin{figure}[tb]
-		\vspace{-2mm}
+%		\vspace{-2mm}
 			\centering
 			%\rule{\linewidth}{0cm}
 			\includegraphics[width = 0.8\textwidth]{reg2pfa-6.pdf}
 			\caption{The PSST $\cT_{[e_1^?]}$ and $\cT_{[e_1^{??}]}$}
 			\label{fig-reg2pfa-6}
-			\vspace{-4mm}
+%			\vspace{-4mm}
 		\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -428,7 +428,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 	\includegraphics[width = 0.8\textwidth]{reg2pfa-3.pdf}
 	\caption{The PSST $\cT_{[e_1^\ast]}$ and $\cT_{[e_1^{\ast?}]}$}
 	\label{fig-reg2pfa-3}
-	\vspace{-4mm}
+%	\vspace{-4mm}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -461,13 +461,13 @@ where
 Then we construct the PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$ (see Fig.~\ref{fig-reg2pfa-4}), which consists of $m_2-m_1$ copies of $\cT_{e_1}$, denoted by $(\cT^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ with $1\le i < m_2-m_1$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority) and a fresh state $f^\prime_1$ (of the lowest priority). The final states of $\cT^{\{1,m_2-m_1\}}_{e_1}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cT^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cT^{\{1,m_2-m_1\}}_{e_1}$. ) Note that the set of string variables in $\cT^{\{1,m_2-m_1\}}_{e_1}$ is still $X_{e_1}$.
 %
 \begin{figure}[tb]
-	\vspace{-2mm}
+%	\vspace{-2mm}
 	\centering
 	%\rule{\linewidth}{0cm}
 	\includegraphics[width = 0.8\textwidth]{reg2pfa-4.pdf}
 	\caption{The PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$}
 	\label{fig-reg2pfa-4}
-	\vspace{-4mm}
+%	\vspace{-4mm}
 \end{figure}  
 
 Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$, the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}}_{e_1}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{\{m_1\}}_{e_1}$),  and the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(q, a, q')(x_e) = x_e a$ for each transition $(q, a, q')$ in  $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$.
@@ -547,7 +547,7 @@ We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obt
 		\includegraphics[width=0.9\textwidth]{pfa-new.pdf}
 		\caption{The PSST $\cT_e$ for $e = [a^+]$}
 		\label{fig-pfa}
-		\vspace{-4mm}
+%		\vspace{-4mm}
 	\end{figure}
 \end{example}
 
@@ -598,7 +598,7 @@ where $x_{e} = aaa$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched
 		\includegraphics[width=0.9\textwidth]{psst-partition.pdf}
 		\caption{The PSST $\cT^\prime_e$ for $e = [([a^{*?}])^{*}]$ with a single set of final states}
 		\label{fig-psst-partition}
-		\vspace{-4mm}
+%		\vspace{-4mm}
 	\end{figure}
 \end{example}
 
