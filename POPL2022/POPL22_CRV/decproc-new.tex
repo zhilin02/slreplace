@@ -73,8 +73,8 @@ That is, the pre-image automaton $\cB$ such that $\Lang(\cB) = \cR^{-1}_{\cT}(\L
 \mat{endchange}
 This means that the exponentials do not stack on top of each other during the backwards analysis and the non-elementary blow-up is not necessary.
 \mat{change}
-Since the PSST $\cT$ may be exponential in the size of the underlying regular expression, we may compute automata up to doubly exponential in size.
-\mat{QUESTION: does this mean we have an EXPSPACE algorithm?}
+Since the PSST $\cT$ may be exponential in the size of the underlying regular expression, we may compute automata that are up to double exponential in size. The states of these automata can be stored in exponential space and the transition relation can be computed on the fly. This leads to an exponential space algorithm. More details are \ifproceeding given in the long version of this paper \cite{popl22-full}.
+\else relegated to Appendix~\ref{app:expspace}.
 \mat{endchange}
 
 Moreover, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per query a few seconds (see Section~\ref{sect:impl}).
