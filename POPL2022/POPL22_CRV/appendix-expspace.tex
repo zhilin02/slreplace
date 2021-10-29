@@ -11,7 +11,7 @@ Since these states are combinations of states of PSSTs and finite automata const
 Thus, if the states can be stored in exponential space, the full algorithm will only require exponential space.
 
 We first consider the case where we have PSSTs and FAs rather than string functions using \regexp{}.
-Let $t$ be the size of the largest PSST and $f$ be the size of the largest FA.
+Let $n$ be the size of the largest PSST or FA.
 Let $x$ be the maximum number of variables in the PSST.
 Finally, let $\ell$ be the length of the longest branch of transductions and concatenations in the proof tree (which is linear in the size of the constraint).
 
@@ -27,10 +27,10 @@ where
     $S \subseteq Q_T$.
 Note, because we assume $\cT$ is copyless, $\rho$ is a function to pairs of states, not to sets of pairs of states.
 The space needed to store a state of of $\cB$ is hence
-$\bigO(s + 2 x s + 2 t)$
+$\bigO(s + 2 x s + 2 n)$
 where $s$ is the space required to store a state of $\Aut$.
 Consequently, after $\ell$ backwards propagations, we can store the states of the automaton in space
-$\bigO(2^\ell x^\ell \log(f) + 2 \ell t)$.
+$\bigO(2^\ell x^\ell n)$.
 That is, exponential space.
 This remains true when the PSST and FA may be exponential in the size of the $\regexp$.
 
