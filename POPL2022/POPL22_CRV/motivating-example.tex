@@ -17,7 +17,7 @@ an author list in the DBLP BibTeX style to the one in the ACM BibTeX style. For 
 function authorNameDBLPtoACM(authorList)
 {
   var autListReg 
-	    = /^[A-Z](\w*|.)(\s[A-Z](\w*|.))*(\sand\s[A-Z](\w*|.)(\s[A-Z](\w*|.))*)*$/;
+    = /^[A-Z](\w*|.)(\s[A-Z](\w*|.))*(\sand\s[A-Z](\w*|.)(\s[A-Z](\w*|.))*)*$/;
   if (autListReg.test(authorList)) {
     var nameReg = /([A-Z](?:\w*|.)(?:\s[A-Z](?:\w*|.))*)(\s[A-Z](?:\w*|.))/g;
     return authorList.replace(nameReg, "$2, $1");
@@ -81,7 +81,7 @@ Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|.)) denote th
 %
 \item The global flag ``g'' is used in {\sf nameReg} so that the name format of each author is transformed. 
 \end{itemize}
-The name format transformation is done by the {\sf replace} function, i.e. {\sf authorList.replace(nameReg, ``$\$$2, $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
+The name format transformation is via the {\sf replace} function, i.e. {\sf authorList.replace(nameReg, ``$\$$2, $\$$1'')}, where $\$1$ and $\$2$ refer to the match of the first and second capturing group respectively. 
 
 A natural post-condition of {\sf authorNameDBLPtoACM} is that there exists at least one occurrence of the comma symbol between every two occurrences of ``$\sf and$''. 
 %

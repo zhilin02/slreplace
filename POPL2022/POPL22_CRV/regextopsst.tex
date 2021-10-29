@@ -120,7 +120,7 @@ For example, the expression $(a^{*?})^*$ either matches $\varepsilon$ holistical
 For {\PSST}s of the form $(Q, \Sigma, X, \delta, \tau, E, q_0, (F_1, F_2))$, we introduce a notation to be used in the construction, namely, the concatenation of two {\PSST}s. 
 
 \begin{definition}[Concatenation of two PSSTs]\label{def-psstconcat}
-For $i \in \{1,2\}$, let $\cT_i = (Q_i, \Sigma, X_i, \delta_i, \tau_i, E_i, q_{i,0}, (F_{i,1}, F_{i,2}))$ be a PSST. Then the \emph{concatenation} of $\cT_1$ and $\cT_2$, denoted by $\cT_1 \concat \cT_2$, is defined as follows (see Fig.~\ref{fig-psstconcat}): 
+For $i \in \{1,2\}$, let $\cT_i$ be a PSST such that $\cT_i = (Q_i, \Sigma, X_i, \delta_i, \tau_i, E_i, q_{i,0}, (F_{i,1}, F_{i,2}))$. Then the \emph{concatenation} of $\cT_1$ and $\cT_2$, denoted by $\cT_1 \concat \cT_2$, is defined as follows (see Fig.~\ref{fig-psstconcat}): 
 Let  
 $\cT'_{2} = (Q'_{2}, \Sigma, X_{2}, \delta'_{2}, \tau'_{2}, E_{2}', q'_{2,0}, (F'_{2, 1}, F'_{2,2}))$ be a fresh copy of $\cT_{2}$, but with the string variables of $\cT_{2}$ kept unchanged. 
 Then 
@@ -213,8 +213,8 @@ The construction is technical and below we only select to present some represent
 \paragraph{Case $e = (e_1)$} $\cT_e$ is adapted from $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1},  q_{e_1,0}, (F_{e_1,1}, F_{e_1,2}))$ by adding the string variable $x_e$ and the assignments for $x_e$, that is, $X_e = X_{e_1} \cup \{x_e\}$ and for each transition $(q, a, q')$ in $\cT_{e_1} $ with $a \in \Sigma^\varepsilon$, we have $E_e(q, a, q')(x_e) = E_{e_1}(q, a, q')(x_{e_1})$. 
 		
 
-\paragraph{Case $e = [e_1 + e_2]$ (see Fig.~\ref{fig-reg2pfa-1})} For $i \in \{1, 2\}$, let  
-$\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i},  q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. Moreover, let us assume that $X_{e_1} \cap X_{e_2} = \emptyset$.
+\paragraph{Case $e = [e_1 + e_2]$ (see Fig.~\ref{fig-reg2pfa-1})} For $i \in \{1, 2\}$, let it be the case that we have
+$\cT_{e_i} = (Q_{e_i}, \Sigma, X_{e_i}, \delta_{e_i}, \tau_{e_i}, E_{e_i},  q_{e_i,0}, (F_{e_i,1}, F_{e_i,2}))$. Moreover, assume $X_{e_1} \cap X_{e_2} = \emptyset$.
 %$\cT_{e_2} = (Q_{e_2}, \Sigma, X_{e_2}, \delta_{e_2}, \tau_{e_2}, E_{e_2}, q_{e_2,0}, (F_{e_2, 1}, F_{e_2,2}))$.
 % 
 Then 
@@ -237,7 +237,7 @@ Then
 %			\item $\tau_e(q) = \tau_{e_i}(q)$ for every $i \in \{1,2\}$ and $q \in Q_{e_i}$, 
 %			\item $\tau_e(q_{e,0}) = ((q_{e_1,0},q_{e_2,0}); ())$,
 %			\end{itemize}
-			\item $E_e$ inherits $E_{e_1}$, $E_{e_2}$, and includes the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_{e}) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x_{e}) =\varepsilon$, as well as $E_e(q,a, q')(x_{e}) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ and $\cT_{e_2}$ (where $a \in \Sigma^\varepsilon$).
+			\item $E_e$ inherits $E_{e_1}$, $E_{e_2}$, plus the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_{e}) = E_e(q_{e,0}, \varepsilon, q_{e_2,0})(x_{e}) =\varepsilon$, as well as $E_e(q,a, q')(x_{e}) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ and $\cT_{e_2}$ (where $a \in \Sigma^\varepsilon$).
 			%  is defined as follows: 
 %			\begin{itemize}
 %			\item for each $i\in\{1,2\}$, transition $(q, a, q')$ in $\cT_{e_i}$ (where $a \in \Sigma^\varepsilon$), $x \in X_{e_i}$ and $x' \in X_{e} \setminus X_{e_i}$, $E_e(q,a,q')(x) = E_{e_i}(q,a,q')(x)$ and $E_e(q,a,q')(x') =x'$, 
@@ -411,7 +411,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 %			\begin{itemize}
 %			\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((q_{e_1,0},f_{e,0}); ())$,  $\tau_e(f_{e_1,1}) = ((q_{e_1,0});())$ for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,2}) = ((q_{e_1,0}, f_{e,1});())$ for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $q_{e_1,0}$ and $f_{e,0}$, from each $f_{e_1,1} \in F_{e_1,1}$ to $q_{e_1,0}$, and from $f_{e_1,2} \in F_{e_1,2}$ to $q_{e_1,0}$ and $f_{e,1}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $f_{e,0}$ and from $f_{e_1,2} \in F_{e_1,2}$ to $f_{e,1}$ are of the lowest priority.)
 %			\end{itemize}
-			\item $E_e$ inherits $E_{e_1}$ and includes the assignments $E_e(q_{e,0},\varepsilon,f_{e,1})(x_e) = E_e(q_{e,0},\varepsilon,q_{e_1,0})(x_e) = \varepsilon$, $E_e(f_{e_1,1},\varepsilon, q_{e_1,0})(x) = E_e(f_{e_1,2},\varepsilon, q_{e_1,0})(x)= \nullchar$ for every $f_{e_1,1} \in F_{e_1,1}$, $f_{e_1,2} \in F_{e_1,2}$, and $x \in X_{e_1}$, as well as $E_e(q, a, q')(x_e) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ with $a \in \Sigma^\varepsilon$. (Intuitively, the values of all the string variables in $X_{e_1}$ are reset when starting a new iteration of $e_1$.)
+			\item $E_e$ inherits $E_{e_1}$ plus the assignments $E_e(q_{e,0},\varepsilon,f_{e,1})(x_e) = E_e(q_{e,0},\varepsilon,q_{e_1,0})(x_e) = \varepsilon$, $E_e(f_{e_1,1},\varepsilon, q_{e_1,0})(x) = E_e(f_{e_1,2},\varepsilon, q_{e_1,0})(x)= \nullchar$ for every $f_{e_1,1} \in F_{e_1,1}$, $f_{e_1,2} \in F_{e_1,2}$, and $x \in X_{e_1}$, as well as $E_e(q, a, q')(x_e) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ with $a \in \Sigma^\varepsilon$. (Intuitively, the values of all the string variables in $X_{e_1}$ are reset when starting a new iteration of $e_1$.)
 %			 is defined as follows: 
 %			\begin{itemize}
 %			\item for each transition $(q, a, q')$ in $\cT_{e_1}$, $E_e(q,a,q')(x_e) = x_e a$, and for every $x \in X_{e_1}$, $E_e(q,a,q')(x) = E_{e_1}(q,a,q')(x)$, 
@@ -470,7 +470,7 @@ Then we construct the PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$ (see Fig.~\ref{fig-reg2pf
 %	\vspace{-4mm}
 \end{figure}  
 
-Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$, the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}}_{e_1}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{\{m_1\}}_{e_1}$),  and the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(q, a, q')(x_e) = x_e a$ for each transition $(q, a, q')$ in  $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$.
+Finally, we construct $\cT_e$ from $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$, the concatenation of $\cT^{\{m_1\}}_{e_1}$ and $\cT^{\{1,m_2-m_1\}}_{e_1}$, by adding a fresh state $q_{e,0}$, a string variable $x_e$, the $\varepsilon$-transition $\tau_e(q_{e,0}) = ((q_{e_1,0});())$ (assuming that $q_{e_1,0}$ is the initial state of $\cT^{\{m_1\}}_{e_1}$),  and also the assignments $E_e(q_{e_0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, as well as $E_e(q, a, q')(x_e) = x_e a$ for each transition $(q, a, q')$ in  $\cT^{\{m_1\}}_{e_1} \concat \cT^{\{1,m_2-m_1\}}_{e_1}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% move to appendix %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\paragraph{Case $e = [e_1^{+}]$}  We first construct $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, where $\cT^-_{[e^\ast_1]}$ is obtained from $\cT_{[e^\ast_1]}$ by dropping the string variable $x_{[e^\ast_1]}$. Therefore, $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$ have the same set of string variables, $X_{e_1}$. Then we construct $\cT_{e}$ by adding into $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$, the concatenation of $\cT_{e_1}$ and $\cT^-_{[e^\ast_1]}$, a fresh state $q_{e,0}$ as the initial state, and the transitions $\tau_e(q_{e,0}) = ((q_{e_1,0});())$, as well as the assignments $E_e(q_{e,0}, \varepsilon, q_{e_1,0})(x_e) = \varepsilon$, $E_e(p, a, q)(x_e) = x_e a$ for every transition $(p, a, q)$ in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$. (Note that in $\cT_{e_1} \concat \cT^-_{[e^\ast_1]}$, the values of all variables in $X_{e_1}$ are reset when entering $ \cT^-_{[e^\ast_1]}$ and $(\cT^-_{[e^\ast_1]})'$.)
