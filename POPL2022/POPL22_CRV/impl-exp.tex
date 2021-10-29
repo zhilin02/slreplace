@@ -258,7 +258,7 @@ queries and four paths, respectively.
     \textbf{Replace} & 4,170 & 2,463 & 555 & 89,794 & --- & 1,135
     & ~5,281 & 18,221 & 69,059 & 5,556 & ---
     \\
-    \emph{(98,117} & \multicolumn{6}{c|}{Average time: 6,62s}
+    \emph{(98,117} & \multicolumn{6}{c|}{Average time: 6.62s}
     & \multicolumn{5}{c|}{Average time: 55.0s}
     \\
     \emph{~~bench.)} & \multicolumn{6}{c|}{Total \#sat: 259,354, \#unsat: 13,601}
@@ -287,25 +287,25 @@ queries and four paths, respectively.
 	   & ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~ &
 	    ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
 	  \\\hline
-	  \textbf{\expose{}} &  14 & 9 & 9 & 2 & 15 & 0  & 15 & 8 & 9 & 2 & 15 & 1  
+	  \textbf{\expose{}} &  14 & 9 & 9 & 2 & 15 & 0  & 14 &  9 & 9 & 2 & 15 & 6  
 	  \\
-	  \emph{(49 programs)} & \multicolumn{6}{c|}{Average time: \textbf{6.49}s} & \multicolumn{6}{c@{\quad}|}{Average time: 13.46s}\\
-	  & \multicolumn{6}{c|}{Total \#paths covered:124}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:120}	  
+	  \emph{(49 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.66}s} & \multicolumn{6}{c@{\quad}|}{Average time: 57.44s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered:124}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:121}	  
 	  \\\hline
 	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
 	  \\
-	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.30}s} & \multicolumn{6}{c@{\quad}|}{Average time: 23.66s}\\
+	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{5.19}s} & \multicolumn{6}{c@{\quad}|}{Average time: 60.26s}\\
 	  & \multicolumn{6}{c|}{Total \#paths covered: 49}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 47}	  
 	  \\\hline
-	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 12 & 23 & 3 & 0 & 0 & 22
+	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 15 & 21 & 2 & 0 & 0 & 23
 	  \\
-	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{2.71}s} & \multicolumn{6}{c@{\quad}|}{Average time: 41.73s}\\
-	  & \multicolumn{6}{c|}{Total \#paths covered: 32}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 29}	  
+	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.14}s} & \multicolumn{6}{c@{\quad}|}{Average time: 95.34s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 32}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 25}	  
 	  \\\hline
 	\end{tabular}
 	\end{center}
-	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R2}. Experiments were done on an Intel-Xeon-E5-2690-@2.90GHz machine, running 64-bit Linux and Java 1.8. Runtime was limited to 60s wall-clock time. Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O. is the number of timeouts. Note that some paths may have already been covered before T.O. }
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R2}. Experiments were done on an Intel(R)-Core(TM)-i5-8265U-CPU-@1.60GHz cpu, running 64-bit Linux and Java 1.8. Runtime was limited to 120s wall-clock time. Average time is
+    wall-clock time needed per benchmark, and counts timeouts as 120s. \#T.O.\& Err is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
 \end{table}
 
@@ -335,13 +335,13 @@ execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
 as well as a collection of other JavaScript programs containing match or replace
 functions extracted from Github. In
 Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
-60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
+120s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
 discover feasible paths more quickly than \expose{}+Z3, however: on
 all three families of benchmarks, Aratha+{\ostrich} terminates on
 average in less than 10s, and it discovers all paths 
-within 35s. \expose{}+Z3 needs the full 60s for
-29 of the programs (``T.O.'' in the table),
-and it finds new paths until the end of the 60s. Since \expose{}+Z3
+within 20s. \expose{}+Z3 needs the full 120s for
+35 of the programs (``T.O.'' in the table),
+and it finds new paths until the end of the 120s. Since \expose{}+Z3
 handles the replace-all operation by unrolling, it is not able to
 prove infeasibility of paths involving such operations, and will
 therefore not terminate on some programs.

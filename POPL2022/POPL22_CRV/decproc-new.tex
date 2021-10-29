@@ -65,25 +65,33 @@ With Lemma~\ref{lem:psst_preimage}, we  solve the path feasibility of $\strline'
 Let $S'$ be the resulting $\strline'_{\sf reg}$ program containing no assignment statements. Then the path feasibility of $S'$ can be solved by checking the nonemptiness of the intersection of regular constraints for the input variables, which is known to be \pspace-complete \cite{Kozen77}.
 }
 
-\paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up in the size of the input automaton $\Aut$, the aforementioned decision procedure has a non-elementary complexity in the worst-case. In fact, this is optimal and a matching lower-bound is given in \ifproceeding the long version of the paper \cite{popl22-full}. \else Appendix~\ref{sec:tower-hard}. \fi
+\paragraph*{Complexity analysis.} Because the pre-image computation for each PSST incurs an exponential blow-up in the size of the input automaton $\Aut$, the aforementioned decision procedure has a non-elementary complexity in the worst-case. In fact, this is optimal and a matching lower-bound is given in 
+\ifproceeding the long version of the paper \cite{popl22-full}. \else Appendix~\ref{sec:tower-hard}. \fi
 
 When $\refbefore$ and $\refafter$ are not used, the PSSTs in the reduction are copyless, which means the exponential blow-up in the size of the input \FA{} $\Aut$ can be avoided.
-\mat{change}
+%\mat{change}
 That is, the pre-image automaton $\cB$ such that $\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$ is exponential only in the size of $\cT$ and not the size of $\Aut$.
-\mat{endchange}
+%\mat{endchange}
 This means that the exponentials do not stack on top of each other during the backwards analysis and the non-elementary blow-up is not necessary.
-\mat{change}
-Since the PSST $\cT$ may be exponential in the size of the underlying regular expression, we may compute automata up to doubly exponential in size.
-\mat{QUESTION: does this mean we have an EXPSPACE algorithm?}
-\mat{endchange}
+%\mat{change}
+Since the PSST $\cT$ may be exponential in the size of the underlying regular expression, we may compute automata that are up to double exponential in size. The states of these automata can be stored in exponential space and the transition relation can be computed on the fly. This leads to an exponential space algorithm. More details are \ifproceeding given in the long version of this paper \cite{popl22-full}.
+\else relegated to Appendix~\ref{app:expspace}.
+\fi
+%\mat{endchange}
 
 Moreover, since the number of PSSTs is usually small in the path constraints of string-manipulating programs, the performance of the decision procedure is actually good on the benchmarks we tested, with the average running time per query a few seconds (see Section~\ref{sect:impl}).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT{
 \color{red}
 \begin{remark}
 	The full logic is undecidable. We show the SL fragment is tower-of-exponentials complete. If all PSSTs are copyless (i.e. without $<- and $->) the tower-of-exponentials is avoided: the pre-image $Pre^-1_T(A)$ becomes exponential only in the PSST T and not the input automaton A, instead of both. PSSTs may be exponential in regex size, giving doubly exponential in total. Complexity analysis will be expanded in the next version.
 \end{remark}
 \color{black}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %move to related work
 %\begin{remark}

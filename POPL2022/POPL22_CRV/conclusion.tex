@@ -57,8 +57,8 @@ at the level of programs).
 
 Secondly, it would be desirable to incorporate other features of \regexp{} that
 are not yet considered in our framework, e.g., lookahead and backreferences.
-\mat{change}
-To handle lookahead we may consider alternating variants of the transducers used here.
+%\mat{change}
+To handle lookahead, we may consider alternating variants of the transducers used here.
 Alternating automata~\cite{CKS81} are effectively able to branch and run parallel checks on the input.
 These variants will need to model the subtle interplay between lookahead and references.
 Backreferences could be handled by allowing some inspection of variable contents during transducer runs.
@@ -66,7 +66,7 @@ There is some precedent for this in higher-order automata~\cite{M76,E91}, whose 
 However, the pre-image of string functions supporting \regexp{} with backreferences will not be regular in general, and it is known that emptiness of intersection of \regexp{} with backreferences is undecidable~\cite{CN09}.
 Decidability can be recovered in some cases~\cite{FS19}.
 We may study these cases or look for incomplete algorithms.
-\mat{endchange}
+%\mat{endchange}
 
 %\color{red}
 %% a discussion of lookahead etc. 
@@ -79,6 +79,6 @@ We may study these cases or look for incomplete algorithms.
 
 Finally, since strings do not live in isolation in
 a real-world program, there is a real need to also extend our work with other
-data types, in particular integer data types.
+data types, in particular the integer data type.
 
 %For the future work, it is interesting to extend this work to deal with more advanced features of regular expressions, e.g., lookahead and lookbehind. It is also desirable to support additional string functions involving the integer data type. %, in addition to those involving RWREs.

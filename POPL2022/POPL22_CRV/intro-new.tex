@@ -361,13 +361,14 @@ We conclude with two open questions:
 %Although the CEGAR approach of \expose{} made a first step towards tackling the semantics of real-world regular expressions in the analysis and verification of string-manipulating programs, it is still unsatisfactory in both the precision and performance: 1) although CEGAR approximates the semantics of real-world regular expressions to a greater precision, it is still imprecise, 2) tens of refinement steps or even more are needed for simple string-manipulating programs containing regular expressions. Direct support of real-world regular expressions in string constraint solvers would facilitate the improvement of both the precision and scalability of symbolic executions of string manipulating programs.
 
 \paragraph*{Contributions.}
-In this paper, we provide \emph{the first} string theory and string solver that
-natively support \regexp{}. Not only can our theory/solver easily express and 
-solve Example~\ref{exmp-name-swap} and Example~\ref{ex:normalize} --- which hitherto no 
-existing string solvers and string analysis can handle --- our experiments
-using a library of real-world regular expressions (involving more than 100,000
-benchmarks) suggest that our solver substantially outperforms the existing 
-method (i.e.~\cite{LMK19}); by 30--50-fold in these benchmarks.
+In this paper, we provide \emph{the first} string theory and string
+solver that natively support \regexp{}. Not only can our theory/solver
+easily express and solve Example~\ref{exmp-name-swap} and
+Example~\ref{ex:normalize} --- which hitherto no existing string
+solvers and string analysis can handle --- our experiments using a
+library of 98,117~real-world regular expressions indicate that our
+solver substantially outperforms the existing method~\cite{LMK19} in
+terms of the number of solved problems and runtime.
 %We provide 
 %more details of our contributions
 %\philipp{agreed. we should also say what parameter 30x-50x refers to} 
@@ -470,16 +471,22 @@ that the input formula syntactically satisfies the so-called
 
 We implement our decision procedure 
 %in a new solver \ostrich\  
-on top of the open-source solver~OSTRICH~\cite{CHL+19},
-and carry out extensive experiments to evaluate the performance. For the benchmarks, we generate two collections of JavaScript programs (with 98,117 programs in each collection), from a library of real-world regular expressions~\cite{DMC+19}, by using two simple JavaScript program templates containing match and replace functions respectively.  
- Then we generate all the four (resp.\ three) path constraints for each match (resp.\ replace) JavaScript program and put them into one SMT file. We run {\ostrich} on these SMT files. {\ostrich} is able to answer all four (resp.\ three) queries in 97.9\% (resp.\ 97.6\%) of the match (resp.\ replace) SMT files, with the average time 1.19 (resp.\ 1.48) seconds per file. 
-Running \expose{}~\cite{LMK19} on the same benchmarks\footnote{More precisely, since
-\expose{} is a symbolic execution engine that calls Z3, one can create a small 
-wraparound function, which in effect turns \expose{} into a string solver.}
-with a fixed time budget (otherwise, 
-it won't terminate), we show that \ostrich{} offers a 30x--50x speedup in 
-comparison to \expose{}, making \ostrich{} the first string solver that
-is able to handle \regexps{} precisely and efficiently.
+on top of the open-source solver~OSTRICH~\cite{CHL+19}, and carry out
+extensive experiments to evaluate the performance. For the benchmarks,
+we generate two collections of JavaScript programs (with 98,117
+programs in each collection), from a library of real-world regular
+expressions~\cite{DMC+19}, by using two simple JavaScript program
+templates containing match and replace functions, respectively.  Then
+we generate all the four (resp.\ three) path constraints for each
+match (resp.\ replace) JavaScript program and put them into one
+SMT-LIB script. {\ostrich} is able to answer all four (resp.\ three)
+queries in 97\% (resp.\ 91.5\%) of the match (resp.\ replace) scripts,
+with the average time 1.57s (resp.\ 6.62s) per file.  Running
+\expose{}~\cite{LMK19} with the same time budget on the same
+benchmarks, we show that \ostrich{} offers a 8x--18x speedup in
+comparison to \expose{}, while being able to cover substantially more
+paths (9.6\% more for match, 49.9\% more for replace), making \ostrich{} the first string solver that is able to
+handle \regexps{} precisely and efficiently.
 %\philipp{this should be reformulated; earlier we claim
 %that we have the only string solver supporting RegEx, so it does not make
 %sense to say we have the fastest now.}\zhilin{the footnote is dangerous in the sense that we are claiming that we are the first solver supporting Regex and then we are saying that Expose can act as a string solver supporting Regex.}
