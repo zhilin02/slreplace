@@ -305,7 +305,7 @@ queries and four paths, respectively.
 	\end{tabular}
 	\end{center}
 	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R2}. Experiments were done on an Intel(R)-Core(TM)-i5-8265U-CPU-@1.60GHz cpu, running 64-bit Linux and Java 1.8. Runtime was limited to 120s wall-clock time. Average time is
-    wall-clock time needed per benchmark, and counts timeouts as 60s. \#T.O.\& Err is the number of timeouts. Note that some paths may have already been covered before T.O. }
+    wall-clock time needed per benchmark, and counts timeouts as 120s. \#T.O.\& Err is the number of timeouts. Note that some paths may have already been covered before T.O. }
 	\label{tab:exp-r1}
 \end{table}
 
@@ -335,13 +335,13 @@ execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
 as well as a collection of other JavaScript programs containing match or replace
 functions extracted from Github. In
 Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
-60s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
+120s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
 discover feasible paths more quickly than \expose{}+Z3, however: on
 all three families of benchmarks, Aratha+{\ostrich} terminates on
 average in less than 10s, and it discovers all paths 
-within 35s. \expose{}+Z3 needs the full 60s for
-29 of the programs (``T.O.'' in the table),
-and it finds new paths until the end of the 60s. Since \expose{}+Z3
+within 20s. \expose{}+Z3 needs the full 120s for
+35 of the programs (``T.O.'' in the table),
+and it finds new paths until the end of the 120s. Since \expose{}+Z3
 handles the replace-all operation by unrolling, it is not able to
 prove infeasibility of paths involving such operations, and will
 therefore not terminate on some programs.
