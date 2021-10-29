@@ -13,12 +13,12 @@
 %strings\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
 %from OSTRICH.
 
-For our experiments, we have extended the open-source solver
+We extend the open-source solver
 OSTRICH~\cite{CHL+19} to support for $\strline$ %implemented %an SMT solver,
 %\ostrich,  
-based on the calculus. In particular, it is able to decide the satisfiability of
+based on the calculus. In particular, it can decide the satisfiability of
 $\strlinesl$ formulas. 
-The new extension can handle most of the
+The extension can handle most of the
 other operations of the SMT-LIB theory of Unicode
 strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
 %from OSTRICH.
@@ -45,7 +45,7 @@ expressions: {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
   str.replace\_cg\_all} are the counterparts of the standard {\sf
   str.replace\_re} and {\sf replace\_re\_all} operators, and allow
 capturing groups in the match pattern and references in the
-replacement pattern. As an example, the following constraint swaps the
+replacement pattern. E.g., the following constraint swaps the
 first name and the last name, as in Example~\ref{exmp-name-swap}:
 %lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
 
@@ -76,7 +76,7 @@ $\strline$. For instance,
 }
 
 \noindent
-extracts the left-most, longest sub-string consisting of only lower-case
+extracts the left-most, longest sub-string of lower-case
 characters from a string~$x$.
 
 Our implementation is able to handle \textit{anchors} as well,
@@ -217,7 +217,7 @@ semantics.\footnote{We considered replacing Z3 with \ostrich\ in
 For \textbf{R1}, we compared \ostrich\ with \expose{}+Z3 on 98,117
 \regexps\ taken from \cite{DMC+19}.
 
-For each of the regular expressions, we created four harnesses: two in
+For each regular expression, we created four harnesses: two in
 SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
 \expose{}+Z3. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
 regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with

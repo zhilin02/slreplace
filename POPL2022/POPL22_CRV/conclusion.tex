@@ -55,15 +55,15 @@ see how \expose{} could be used in combination with our solver \ostrich{}. This
 would essentially lift \ostrich{} to a symbolic execution engine (i.e. working
 at the level of programs).
 
-Secondly, it would be desirable to incorporate other features of \regexp{} that
-are not yet considered in our framework, e.g., lookahead and backreferences.
+Secondly, we could incorporate other features of \regexp{} that
+are not in our framework, e.g., lookahead and backreferences.
 %\mat{change}
-To handle lookahead, we may consider alternating variants of the transducers used here.
+To handle lookahead, we may consider alternating variants of PSSTs.
 Alternating automata~\cite{CKS81} are effectively able to branch and run parallel checks on the input.
-These variants will need to model the subtle interplay between lookahead and references.
+We will need to model the subtle interplay between lookahead and references.
 Backreferences could be handled by allowing some inspection of variable contents during transducer runs.
-There is some precedent for this in higher-order automata~\cite{M76,E91}, whose stacks allow runs to be influenced by repeated and interesting use of stored data.
-However, the pre-image of string functions supporting \regexp{} with backreferences will not be regular in general, and it is known that emptiness of intersection of \regexp{} with backreferences is undecidable~\cite{CN09}.
+There is some precedent for this in higher-order automata~\cite{M76,E91}, whose stacks non-trivially store and use data.
+However, the pre-image of string functions supporting \regexp{} with backreferences will not be regular in general, and emptiness of intersection of \regexp{} with backreferences is undecidable~\cite{CN09}.
 Decidability can be recovered in some cases~\cite{FS19}.
 We may study these cases or look for incomplete algorithms.
 %\mat{endchange}
