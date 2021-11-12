@@ -9,7 +9,7 @@ similar to Example \ref{exmp-name-swap} from the Introduction. The function ``au
 Figure~\ref{fig-run-exmp} transforms %the name format of 
 an author list in the DBLP BibTeX style to the one in the ACM BibTeX style. For instance,  if a paper is authored by Alice M. Brown and John Smith, then the author list in the DBLP BibTeX style is ``Alice M. Brown and John Smith'', while it is ``Brown, Alice M. and Smith, John'' in the ACM BibTeX style. 
 
-\begin{figure*}[tb]
+\begin{figure}[tb]
 %\vspace{-2mm}
 \begin{center}
 \small
@@ -29,7 +29,7 @@ function authorNameDBLPtoACM(authorList)
 %\vspace{-4mm}
 \caption{Change the author list from the DBLP format to the ACM format\label{fig-run-exmp}}
 %\vspace{-2mm}
-\end{figure*}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,10 +74,6 @@ Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|.)) denote th
 %
  
 \item The \emph{greedy} semantics of the Kleene star * is utilized here to guarantee that the subexpression (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* matches all the middle names (since there may exist multiple middle names) and thus ${\sf nameReg}$ matches the full name. For instance, the first match of ${\sf nameReg}$ in  ``Alice M. Brown and John Smith'' is ``Alice M. Brown'', instead of ``Alice M.''. In comparison, if the semantics of * is assumed to be non-greedy, then (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* can be matched to the empty string, thus ${\sf nameReg}$ is matched to ``Alice M.'', which is \emph{not} what we want. Therefore, the greedy semantics of * is essential for the correctness of ``authorNameDBLPtoACM''.
-%=======
-%\item The \emph{greedy} semantics of the Kleene star * is utilized here to guarantee that the subexpression (?:$\backslash$s[A-Z](?:$\backslash$w*|.))* matches all the middle names (since there may exist multiple middle names) and thus ${\sf nameReg}$ matches the full name. For instance, the first match of ${\sf nameReg}$ in  ``Alice M. Brown and John Smith'' is ``Alice M. Brown'', instead of ``Alice M.''. In comparison, if the semantics of * is assumed to be non-greedy, then (?:$\backslash$s[A-Z](?:$\backslash$w*|.))* can be matched to the empty string, thus ${\sf nameReg}$ is matched to ``Alice M.'', which is what we would like to avoid. Therefore, the greedy semantics of * is essential for the correctness of ``authorNameDBLPtoACM''.
-%>>>>>>> c103b21aed01d0787e4815264e14638bb78265a9
-%Similarly, the regular expression {\sf reLast} describes the name format of the last author, except that it replaces the word ``and'' by the symbol $\$$, denoting the end of the author list. 
 %
 \item The global flag ``g'' is used in {\sf nameReg} so that the name format of each author is transformed. 
 \end{itemize}
