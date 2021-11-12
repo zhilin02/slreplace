@@ -149,8 +149,8 @@ where
 	\item $E$ inherits all the assignments in $E_1$, $E_2$, and $E'_2$, and includes the following assignments:  for every $f_{1,1} \in F_{1,1}$, $f_{1,2} \in F_{1,2}$, and $x' \in X_2$, $E(f_{1,1}, \varepsilon, q_{2,0})(x') = E(f_{1,2}, \varepsilon, q'_{2,0})(x')= \nullchar$. (Intuitively, the values of all the variables in $X_2$ are reset when entering $\cT_2$ and $\cT'_2$.)
   \end{itemize}
 % Fig.~\ref{fig-reg2pfa-2} depicts the construction. 
-		\begin{figure}[tb]
-%			\vspace{-2mm}
+		\begin{figure}[ht]
+%			\vspace{2mm}
 			\centering
 			%\rule{\linewidth}{0cm}
 			\includegraphics[width = 0.5\textwidth]{psstconcat.pdf}
@@ -246,7 +246,7 @@ Then
 \end{itemize}
 %Fig.~\ref{fig-reg2pfa-1} depicts the construction.  	
 		\begin{figure}[ht]
-%		\vspace{-2mm}
+		\vspace{2mm}
 			\centering
 			%\rule{\linewidth}{0cm}
 			\includegraphics[width = 0.6\textwidth]{reg2pfa-1.pdf}
@@ -348,7 +348,7 @@ where
 Note that $F_{e_1,1}$ is not included into $F_{e,1}$ here.
 %
 %Fig.~\ref{fig-reg2pfa-6} depicts the construction.
-		\begin{figure}[tb]
+		\begin{figure}[htb]
 %		\vspace{-2mm}
 			\centering
 			%\rule{\linewidth}{0cm}
@@ -411,7 +411,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 %			\begin{itemize}
 %			\item for every $q \in Q_{e_1} \setminus (F_{e_1,1} \cup F_{e_1,2})$,  $\tau_e(q) = \tau_{e_1}(q)$, moreover, $\tau_e(q_{e,0}) = ((q_{e_1,0},f_{e,0}); ())$,  $\tau_e(f_{e_1,1}) = ((q_{e_1,0});())$ for every $f_{e_1,1} \in F_{e_1,1}$, $\tau_e(f_{e_1,2}) = ((q_{e_1,0}, f_{e,1});())$ for every $f_{e_1,2} \in F_{e_1,2}$, $\tau_e(f_{e,0}) =\tau_e(f_{e,1}) = (();())$. (Intuitively, the $\varepsilon$-transitions from $q_{e,0}$ to $q_{e_1,0}$ and $f_{e,0}$, from each $f_{e_1,1} \in F_{e_1,1}$ to $q_{e_1,0}$, and from $f_{e_1,2} \in F_{e_1,2}$ to $q_{e_1,0}$ and $f_{e,1}$ respectively are added, moreover, the $\varepsilon$-transition from $q_{e,0}$ to $f_{e,0}$ and from $f_{e_1,2} \in F_{e_1,2}$ to $f_{e,1}$ are of the lowest priority.)
 %			\end{itemize}
-			\item $E_e$ inherits $E_{e_1}$ plus the assignments $E_e(q_{e,0},\varepsilon,f_{e,1})(x_e) = E_e(q_{e,0},\varepsilon,q_{e_1,0})(x_e) = \varepsilon$, $E_e(f_{e_1,1},\varepsilon, q_{e_1,0})(x) = E_e(f_{e_1,2},\varepsilon, q_{e_1,0})(x)= \nullchar$ for every $f_{e_1,1} \in F_{e_1,1}$, $f_{e_1,2} \in F_{e_1,2}$, and $x \in X_{e_1}$, as well as $E_e(q, a, q')(x_e) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ with $a \in \Sigma^\varepsilon$. (Intuitively, the values of all the string variables in $X_{e_1}$ are reset when starting a new iteration of $e_1$.)
+			\item $E_e$ inherits $E_{e_1}$, and includes the assignments $E_e(q_{e,0},\varepsilon,f_{e,1})(x_e) = E_e(q_{e,0},\varepsilon,q_{e_1,0})(x_e) = \varepsilon$, $E_e(f_{e_1,1},\varepsilon, q_{e_1,0})(x) = E_e(f_{e_1,2},\varepsilon, q_{e_1,0})(x)= \nullchar$ for every $f_{e_1,1} \in F_{e_1,1}$, $f_{e_1,2} \in F_{e_1,2}$, and $x \in X_{e_1}$, as well as $E_e(q, a, q')(x_e) = x_e a$ for every transition $(q, a, q')$ in $\cT_{e_1}$ with $a \in \Sigma^\varepsilon$. (Intuitively, the values of all the string variables in $X_{e_1}$ are reset when starting a new iteration of $e_1$.)
 %			 is defined as follows: 
 %			\begin{itemize}
 %			\item for each transition $(q, a, q')$ in $\cT_{e_1}$, $E_e(q,a,q')(x_e) = x_e a$, and for every $x \in X_{e_1}$, $E_e(q,a,q')(x) = E_{e_1}(q,a,q')(x)$, 
@@ -422,7 +422,7 @@ Let $\cT_{e_1} = (Q_{e_1}, \Sigma, X_{e_1}, \delta_{e_1}, \tau_{e_1}, E_{e_1}, q
 		\end{itemize}
 
 %Fig.~\ref{fig-reg2pfa-3} depicts the construction. 
-\begin{figure}[tb]
+\begin{figure}[htb]
 	\centering
 	%\rule{\linewidth}{0cm}
 	\includegraphics[width = 0.8\textwidth]{reg2pfa-3.pdf}
@@ -460,7 +460,7 @@ where
 
 Then we construct the PSST $\cT^{\{1,m_2-m_1\}}_{e_1}$ (see Fig.~\ref{fig-reg2pfa-4}), which consists of $m_2-m_1$ copies of $\cT_{e_1}$, denoted by $(\cT^{(i)}_{e_1})_{i \in [m_2-m_1]}$, as well as the $\varepsilon$-transition from $q^{(1)}_{e_1,0}$ to a fresh state $f^\prime_0$ (of the lowest priority), and the $\varepsilon$-transitions from each $f^{(i)}_{e_1,2} \in F^{(i)}_{e_1,2}$ with $1\le i < m_2-m_1$ to $q^{(i+1)}_{e_1,0}$ (of the highest priority) and a fresh state $f^\prime_1$ (of the lowest priority). The final states of $\cT^{\{1,m_2-m_1\}}_{e_1}$ are $(\{f_0'\},\{f_1'\})$. (Intuitively, each $\cT^{(i)}_{e_1}$ accepts only nonempty strings, thus $f^{(i)}_{e_1,1} \in F^{(i)}_{e_1,1}$ contains no outgoing transitions in $\cT^{\{1,m_2-m_1\}}_{e_1}$. ) Note that the set of string variables in $\cT^{\{1,m_2-m_1\}}_{e_1}$ is still $X_{e_1}$.
 %
-\begin{figure}[tb]
+\begin{figure}[ht]
 %	\vspace{-2mm}
 	\centering
 	%\rule{\linewidth}{0cm}
@@ -540,7 +540,7 @@ We first construct $\cT_{a}$ and $\cT^-_{a^*}$ (recall that $\cT^-_{a^*}$ is obt
  %
 %illustrated in Fig.~\ref{fig-pfa}, where the dashed (resp. thicker solid) lines represent the $\varepsilon$-transitions of lower (resp. higher) priorities than non-$\varepsilon$ transitions (if there is any), and the doubly circled states are final states. For instance, $\delta(q_1, \ell) = (q_1)$ for every $\ell \in \{0, \dots, 9\}$, $\delta(q_1, .) = ()$, $\tau(q_1) = ((); (q_2))$. Since the $\varepsilon$-transition has lower priority than the $\ell$-transition at the state $q_1$, whenever the currently scanned letter is $\ell \in \{0,\cdots,9\}$ at $q_1$,  the PFA will choose to go to $q_1$ greedily, until there is no more $\ell  \in \{0,\cdots,9\}$. (In this case, it has to choose the $\epsilon$-transition and goes to $q_2$.)
 	%
-	\begin{figure}[tb]
+	\begin{figure}[ht]
 %		\vspace{-2mm}
 		\centering
 		%\rule{\linewidth}{0cm}
@@ -591,11 +591,11 @@ f_{[([a^{*?}])^*]},
 $$
 where $x_{e} = aaa$ and $ x_{([a^{*?}])} = \varepsilon$, namely, $e $ is matched to ``$aaa$''  and  $([a^{*?}])$ is matched to $\varepsilon$. Therefore, the semantics of $e$ defined by $\cT^\prime_e$  is \emph{inconsistent} with semantics of /($a$*?)*/ in node.js. Intuitively, the semantics of /($a$*?)*/ in node.js requires that either it is matched to $\varepsilon$ in whole and the subexpression $a$*? is \emph{not} matched at all, or it is matched to a concatenation of \emph{non-empty} strings each of which matches $a$*?. This semantics can be captured by (adapted) {\PSST}s where the set of final states is split into two disjoint subsets.
 %
-	\begin{figure}[tb]
+	\begin{figure}[htb]
 %		\vspace{-2mm}
 		\centering
 		%\rule{\linewidth}{0cm}
-		\includegraphics[width=0.9\textwidth]{psst-partition.pdf}
+		\includegraphics[width=0.8\textwidth]{psst-partition.pdf}
 		\caption{The PSST $\cT^\prime_e$ for $e = [([a^{*?}])^{*}]$ with a single set of final states}
 		\label{fig-psst-partition}
 %		\vspace{-4mm}

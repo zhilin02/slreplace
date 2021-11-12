@@ -4,32 +4,10 @@
 
 In this section, we provide a detailed example to illustrate our string
 solving method. 
-Consider the JavaScript program in Figure~\ref{fig-run-exmp}; this example is
+Consider the JavaScript program in Fig.~\ref{fig-run-exmp}; this example is
 similar to Example \ref{exmp-name-swap} from the Introduction. The function ``authorNameDBLPtoACM'' in 
 Figure~\ref{fig-run-exmp} transforms %the name format of 
 an author list in the DBLP BibTeX style to the one in the ACM BibTeX style. For instance,  if a paper is authored by Alice M. Brown and John Smith, then the author list in the DBLP BibTeX style is ``Alice M. Brown and John Smith'', while it is ``Brown, Alice M. and Smith, John'' in the ACM BibTeX style. 
-
-\begin{figure}[tb]
-%\vspace{-2mm}
-\begin{center}
-\small
-\begin{minted}{javascript}
-function authorNameDBLPtoACM(authorList)
-{
-  var autListReg 
-    = /^[A-Z](\w*|.)(\s[A-Z](\w*|.))*(\sand\s[A-Z](\w*|.)(\s[A-Z](\w*|.))*)*$/;
-  if (autListReg.test(authorList)) {
-    var nameReg = /([A-Z](?:\w*|.)(?:\s[A-Z](?:\w*|.))*)(\s[A-Z](?:\w*|.))/g;
-    return authorList.replace(nameReg, "$2, $1");
-  }
-  else return authorList;
-}
-\end{minted}
-\end{center}
-%\vspace{-4mm}
-\caption{Change the author list from the DBLP format to the ACM format\label{fig-run-exmp}}
-%\vspace{-2mm}
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,7 +43,30 @@ as a concatenation of a given name, middle names, and a family name, separated b
 %of alphabetic letters or  (denoted by $\backslash$w), bar (denoted by $-$), dot (denoted by $.$), or the blank symbol (denoted by $\backslash$s), with the comma in between. 
 The symbols \^{} and $\$$ denote the beginning and the end of a string input respectively.
 
-The DBLP name format of each author is specified by the regular expression {\sf nameReg}  in Figure~\ref{fig-run-exmp}, which describes the format of a full name.
+\begin{figure}[ht]
+%\vspace{-2mm}
+\begin{center}
+\small
+\begin{minted}{javascript}
+function authorNameDBLPtoACM(authorList)
+{
+  var autListReg 
+    = /^[A-Z](\w*|.)(\s[A-Z](\w*|.))*(\sand\s[A-Z](\w*|.)(\s[A-Z](\w*|.))*)*$/;
+  if (autListReg.test(authorList)) {
+    var nameReg = /([A-Z](?:\w*|.)(?:\s[A-Z](?:\w*|.))*)(\s[A-Z](?:\w*|.))/g;
+    return authorList.replace(nameReg, "$2, $1");
+  }
+  else return authorList;
+}
+\end{minted}
+\end{center}
+%\vspace{-4mm}
+\caption{Change the author list from the DBLP format to the ACM format\label{fig-run-exmp}}
+%\vspace{-2mm}
+\end{figure}
+
+
+The DBLP name format of each author is specified by the regular expression {\sf nameReg}  in Fig.~\ref{fig-run-exmp}, which describes the format of a full name.
 % of a given name, middle names, and a family name, separated by the blank symbol.
 %a family name (a sequence of alphabetic letters, $-$ or $.$), followed by the comma, then a given name, finally the word ``and'' or $\$$ denoting the end of the input, where $\backslash s$ represents the blank symbol and $\backslash w$ represents alphabetic letters, digits, or the underline symbol $\_$. 
 \begin{itemize}
@@ -73,7 +74,7 @@ The DBLP name format of each author is specified by the regular expression {\sf 
 Note that the symbols ?: in (?:$\backslash$s[A-Z](?:$\backslash$w*|.)) denote the non-capturing groups, i.e. matching the subexpression, but not remembering the match.
 %
  
-\item The \emph{greedy} semantics of the Kleene star * is utilized here to guarantee that the subexpression (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* matches all the middle names (since there may exist multiple middle names) and thus ${\sf nameReg}$ matches the full name. For instance, the first match of ${\sf nameReg}$ in  ``Alice M. Brown and John Smith'' is ``Alice M. Brown'', instead of ``Alice M.''. In comparison, if the semantics of * is assumed to be non-greedy, then (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* can be matched to the empty string, thus ${\sf nameReg}$ is matched to ``Alice M.'', which is \emph{not} what we want. Therefore, the greedy semantics of * is essential for the correctness of ``authorNameDBLPtoACM''.
+\item The \emph{greedy} semantics of the Kleene star * is utilized here to guarantee that the subexpression (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* matches all the middle names (since there may exist multiple middle names) and thus ${\sf nameReg}$ matches the full name. For instance, the first match of ${\sf nameReg}$ in  ``Alice M. Brown and John Smith'' should be ``Alice M. Brown'', instead of ``Alice M.''. In comparison, if the semantics of * is assumed to be non-greedy, then (?:$\backslash$s[A-Z](?:$\backslash$w*|$\backslash$.))* can be matched to the empty string, thus ${\sf nameReg}$ is matched to ``Alice M.'', which is \emph{not} what we want. Therefore, the greedy semantics of * is essential for the correctness of ``authorNameDBLPtoACM''.
 %
 \item The global flag ``g'' is used in {\sf nameReg} so that the name format of each author is transformed. 
 \end{itemize}
@@ -90,8 +91,8 @@ Fig.~\ref{fig-run-exmp-path} is infeasible: there does not exist an
 initial value {\sf authorList} so that no assumption fails and the
 program executes to the end.
 
-\begin{figure}[tb]
-%\vspace{-2mm}
+\begin{figure}[ht]
+\vspace{2mm}
 \begin{center}
 \small
 \begin{minted}[linenos]{javascript}
