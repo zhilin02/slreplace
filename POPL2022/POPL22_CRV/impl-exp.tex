@@ -111,53 +111,6 @@ Table~\ref{tab:calculus}) to formulas before invoking the SL
 procedure.  This enables \ostrich\ to solve some formulas outside of the SL
 fragment, but is not a complete procedure for non-SL formulas.
 
-\begin{figure}[tb]
-  \scriptsize
-
-  \begin{minipage}{0.55\linewidth}
-\begin{minted}{lisp}
-(declare-fun x () String)
-(define-fun  y () String (str.replace_cg_all x <re1> <repl>))
-(push 1)
-(assert (str.in.re x (re.++ re.all <re1> re.all)))
-(assert (str.in.re y (re.++ re.all <re2> re.all)))
-(check-sat) (get-model)
-(pop 1) (push 1)
-(assert (str.in.re x (re.++ re.all <re1> re.all)))
-(assert (not (str.in.re y 
-          (re.++ re.all <re2> re.all))))
-(check-sat) (get-model)
-(pop 1) (push 1)
-(assert (not (str.in.re x (re.++ re.all <re1> re.all))))
-(check-sat) (get-model)
-(pop 1)
-\end{minted}
-  \end{minipage}\hfill
-  \raisebox{-19.2ex}{\rule{0.4pt}{40ex}}\hfill
-  \begin{minipage}{0.43\linewidth}
-\begin{minted}{js}
-function fun(x) {
-   if(/<re1>/.test(x)) {
-      var y = x.replace(/<re1>/g, <repl>);
-      if(/<re2>/.test(y))
-        console.log("1");
-      else
-        console.log("2");
-   }
-   else
-       console.log("3");
-}
-
-var S$ = require("S$");
-var x = S$.symbol("x", "");
-fun(x);
-\end{minted}
-  \end{minipage}
-  
-  \caption{Harnesses with replace-all: SMT-LIB for \ostrich\ (left),
-    and JavaScript for \expose{} (right).}
-  \label{fig:harness}
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -220,6 +173,56 @@ semantics.\footnote{We considered replacing Z3 with \ostrich\ in
 For \textbf{R1}, we compared \ostrich\ with \expose{}+Z3 on 98,117
 \regexps\ taken from \cite{DMC+19}.
 
+\begin{figure}[htb]
+\vspace{2mm}
+  \scriptsize
+
+  \begin{minipage}{0.55\linewidth}
+\begin{minted}{lisp}
+(declare-fun x () String)
+(define-fun  y () String (str.replace_cg_all x <re1> <repl>))
+(push 1)
+(assert (str.in.re x (re.++ re.all <re1> re.all)))
+(assert (str.in.re y (re.++ re.all <re2> re.all)))
+(check-sat) (get-model)
+(pop 1) (push 1)
+(assert (str.in.re x (re.++ re.all <re1> re.all)))
+(assert (not (str.in.re y 
+          (re.++ re.all <re2> re.all))))
+(check-sat) (get-model)
+(pop 1) (push 1)
+(assert (not (str.in.re x (re.++ re.all <re1> re.all))))
+(check-sat) (get-model)
+(pop 1)
+\end{minted}
+  \end{minipage}\hfill
+  \raisebox{-19.2ex}{\rule{0.4pt}{40ex}}\hfill
+  \begin{minipage}{0.43\linewidth}
+\begin{minted}{js}
+function fun(x) {
+   if(/<re1>/.test(x)) {
+      var y = x.replace(/<re1>/g, <repl>);
+      if(/<re2>/.test(y))
+        console.log("1");
+      else
+        console.log("2");
+   }
+   else
+       console.log("3");
+}
+
+var S$ = require("S$");
+var x = S$.symbol("x", "");
+fun(x);
+\end{minted}
+  \end{minipage}
+  
+  \caption{Harnesses with replace-all: SMT-LIB for \ostrich\ (left),
+    and JavaScript for \expose{} (right).}
+  \label{fig:harness}
+\end{figure}
+
+
 For each regular expression, we created four harnesses: two in
 SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
 \expose{}+Z3. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
@@ -234,7 +237,7 @@ two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
 use the match function instead of replace-all, and contain four
 queries and four paths, respectively.
 
-\begin{table}[t]
+\begin{table}[ht]
   \small
   \begin{center}
   \begin{tabular}{|l@{~~}|*{6}{c}|*{5}{c}@{~~}|}
@@ -332,8 +335,8 @@ is a highly competitive solver for \regexps.
 
 \smallskip
 {\em For \textbf{R2}:} For this experiment,
-we  integrated \ostrich\ into the symbolic
-execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
+we  integrated \ostrich\ into Aratha~\cite{aratha},  a symbolic
+execution engine for Javascript.  We compare Aratha+{\ostrich} with
 \expose{}+Z3 on the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
 as well as a collection of other JavaScript programs containing match or replace
 functions extracted from Github. In

@@ -72,8 +72,19 @@ Then $\cT_{\replaceall_{\pat,\rep}}$ is obtained from $\cT_\pat$ by adding the f
     the matches of the $i_1$th, $\ldots$, $i_k$th capturing groups into the string variables $x_{e'_{i_1}}, \cdots, x_{e'_{i_k}}$ respectively), moreover, for each $j \in [k]$, $y_j$ is updated in the same way as $x_{e'_{i_j}}$ (in particular, for each transition $(q, a, q')$ in $\cT_\pat$ such that $E_\pat(q, a, q')(x_{e'_{i_j}}) = x_{e'_{i_j}} a$,  we have $E_\pat(q, a, q')(y_j) = y_j a$),
 
         %
-    \item when the first match of $\pat$ is found, $\cT_{\replaceall_{\pat,\rep}}$ goes from $f_{\pat,1} \in F_{\pat, 1}$ or $f_{\pat, 2} \in F_{\pat, 2}$ to $q'_0$ via an $\varepsilon$-transition, it then appends the replacement string, which is $\rep[(y_1, \cdots, y_k)/(\$i_1,\cdots, \$i_k)]$, to the end of $x_0$, resets the values of all the string variables, except $x_0$, to $\nullchar$, and keeps searching for the next match of $\pat$.
+    \item when the first match of $\pat$ is found, $\cT_{\replaceall_{\pat,\rep}}$ goes from $f_{\pat,1} \in F_{\pat, 1}$ or $f_{\pat, 2} \in F_{\pat, 2}$ to $q'_0$ via an $\varepsilon$-transition, it then appends $\rep[(y_1, \cdots, y_k)/(\$i_1,\cdots, \$i_k)]$ (which is the replacement string) to the end of $x_0$, resets the values of all the string variables, except $x_0$, to $\nullchar$, and keeps searching for the next match of $\pat$.
 \end{itemize}
+
+\begin{figure}[ht]
+%	\vspace{-2mm}
+    \centering
+    \includegraphics[scale=0.7]{psst-replaceall.pdf}
+    \caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
+    \label{fig-psst-replaceall}
+%    \vspace{-2mm}
+\end{figure}
+
+
 
 It may be observed that the PSST will be copyless.
 That is, the value of a variable is not copied to two or more variables during a transition.
@@ -90,14 +101,5 @@ To see this, consider the prefix preceding the first replacement in a string.
 If $\refbefore$ appears in the replacement string, this prefix will be copied an unbounded number of times (once for each matched and replaced substring).
 Conversely, references of the form $\$i$ are ``local'' to a single match.
 By having a separate variable for each occurence of $\$i$ in the replacement string, we can avoid having to make copies of the values of the variables.
-
-\begin{figure}[ht]
-%	\vspace{-2mm}
-    \centering
-    \includegraphics[scale=0.7]{psst-replaceall.pdf}
-    \caption{The PSST $\cT_{\replaceall_{\pat,\rep}}$}
-    \label{fig-psst-replaceall}
-%    \vspace{-2mm}
-\end{figure}
 
 
