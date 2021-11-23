@@ -1,0 +1,133 @@
+\documentclass{easychair}
+
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+
+\usepackage{mathrsfs}
+\usepackage{blindtext}
+\usepackage[cache=false]{minted}
+\usepackage{eqnarray}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{bussproofs}
+
+\pagestyle{plain}
+
+%\newif\ifdraft\drafttrue
+\newif\ifdraft\draftfalse
+\ifdraft
+\newcommand{\anthony}[1]{\color{red} {AL: #1 :LA} \color{black}}
+\newcommand{\zhilin}[1]{\color{brown} {ZL: #1 :LZ} \color{black}}
+\newcommand{\tl}[1]{\color{blue} {TL: #1 :LT} \color{black}}
+\newcommand{\mat}[1]{\color{cyan} {MH: #1 :HM} \color{black}}
+\newcommand{\philipp}[1]{\color{magenta} {PR: #1 :PR} \color{black}}
+\newcommand{\zhilei}[1]{\color{violet} {ZLH: #1 :HZL} \color{black}}
+\else
+\newcommand{\anthony}[1]{}
+\newcommand{\zhilin}[1]{}
+\newcommand{\tl}[1]{}
+\newcommand{\mat}[1]{}
+\newcommand{\zhilei}[1]{}
+\fi
+
+\newif\ifproceeding\proceedingtrue
+
+\input{macros}
+\input{environments}
+
+\titlerunning{Solving String Constraints With Regex-Dependent Functions}
+\title{Solving String Constraints With Regex-Dependent Functions Through Transducers With Priorities And Variables}
+
+\author{
+    Taolue Chen\inst{1}\thanks{Orcid ID: 0000-0002-5993-1665} \and
+    Alejandro Flores-Lamas\inst{2} \and
+    Matthew Hague\inst{2}\thanks{Orcid ID: 0000-0003-4913-3800} \and
+    Zhilei Han\inst{3}\thanks{Orcid ID: 0000-0001-9171-4997} \and
+    Denghang Hu\inst{4} \and
+    Shuanglong Kan\inst{5} \and
+    Anthony W. Lin\inst{5}\thanks{Orcid ID: 0000-0003-4715-5096} \and
+    Philipp R\"ummer\inst{6}\thanks{Orcid ID: 0000-0002-2733-7098} \and
+    Zhilin Wu\inst{4}
+}
+\institute{
+    Birkbeck, University of London, United Kingdom \and
+    Royal Holloway, University of London, United Kingdom \and
+    School of Software, Tsinghua University, China \and
+    State Key Laboratory of Computer Science, \\
+    Institute of Software, Chinese Academy of Sciences, China \and
+    TU Kaiserslautern, Germany \and
+    Uppsala University, Sweden
+}
+
+\authorrunning{
+    T. Chen,
+    A. Flores-Lamas,
+    M. Hague,
+    Z. Han,
+    D. Hu,
+    S. Kan,
+    A. Lin,
+    P. R\"ummer,
+    Z. Wu
+}
+
+\begin{document}
+
+\maketitle
+
+\input{abstract}
+
+\input{intro-new}
+\input{motivating-example}
+\input{STR-syntax}
+\input{semantics-new}
+\input{calculus}
+\input{decproc-new}
+\input{impl-exp}
+\input{related}
+\input{conclusion}
+
+\paragraph*{Acknowledgments}
+
+We thank Johannes Kinder and anonymous referees for their helpful feedback.
+%
+T. Chen is supported by Birkbeck BEI School under Grant No. ARTEFACT, National
+Natural Science Foundation of China under Grant No.~62072309, The State Key
+Laboratory of Novel Software Technology, Nanjing University under Grant
+No.~KFKT2018A16.
+%
+M. Hague and A. Flores-Lamas are supported by the Engineering and Physical
+Sciences Research Council under Grant No.~EP/T00021X/1.
+%
+S.~Kan and A.~Lin is supported by the European Research Council (ERC)
+under the European
+Union's Horizon 2020 research and innovation programme (grant agreement no
+759969).
+%
+P.\ R\"ummer is supported by the Swedish Research Council (VR)
+under grant~2018-04727, by the Swedish Foundation for Strategic
+Research (SSF) under the project WebSec (Ref.\ RIT17-0011), by the
+Wallenberg project UPDATE, and by grants from Microsoft and Amazon
+Web Services.
+%
+Z. Wu is supported by the National Natural Science Foundation of China under
+Grant No.~61872340.
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{string}
+
+\newpage
+
+\appendix
+
+\input{appendix}
+\input{appendix-tower-hardness}
+\input{appendix-expspace}
+
+\end{document}

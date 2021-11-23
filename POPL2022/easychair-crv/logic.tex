@@ -1,0 +1,94 @@
+%!TEX root = main.tex
+
+In the rest of this section, we define the string constraint language $\strline$. 
+
+The syntax of $\strline$ is defined by the following rules.
+\[
+\begin{array}{l c l}
+\smallskip
+\varphi & \eqdef  & x = y \mid z = x \concat y \mid y  = \extract_{i, e}(x) \mid
+y  = \replace_{\pat, \rep}(x) \mid 
+\\
+& & y = \replaceall_{\pat, \rep}(x)   \mid
+ x \in e \mid  \varphi \wedge \varphi \mid \varphi \vee \varphi \mid \neg \varphi \
+\label{eq:SL}
+\end{array}
+\]
+where
+\begin{itemize}
+	\item $\concat$ is the string concatenation operation which concatenates two strings,
+%
+\item  $e \in${\regexp} and $\pat \in${\regexp},
+%
+\item for the $\extract$ function, $i \in \Nat$,
+%
+	\item  for the $\replace$ and $\replaceall$ operation, $\rep \in \refexp$, where $\refexp$ is defined as a concatenation of letters from $\Sigma$, the references $\$i$ ($i \in \Nat$), as well as $\refbefore$ and $\refafter$. (Intuitively, $\$0$ denotes the matching of $\pat$, $\$i$ with $i > 0$ denotes the matching of the $i$-th capturing group, $\refbefore$ and $\refafter$ denote the prefix before resp. suffix after the matching of $\pat$.)
+%
+%	\item for assertions, $e \in \regexp$.\philipp{I believe we should remove the word ``assert'', it is easier/more readable to consider constraints like $x \in e \wedge y \in e' \wedge ...$}
+\end{itemize}
+
+The $\extract_{i, e}(x)$ function extracts the match of the $i$-th capturing group in the successful match of $e$ to $x$ for $x \in \Lang(e)$ (otherwise, the return value of the function is undefined). Note that $\extract_{i, e}(x)$ returns $x$ if $i=0$. Moreover, if the $i$-th capturing group of $e$ is \emph{not} matched, even if $x \in \Lang(e)$, then $\extract_{i, e}(x)$ returns a special symbol $\nullchar$, denoting the fact that its value is undefined. For instance, when $[[a^+] + ([a^*])]$ is matched to the string $aa$, $[a^+]$, instead of $([a^*])$, will be matched, since $[a^+]$ precedes $([a^*])$. Therefore, $\extract_{1, [[a^+] + ([a^*])]}(aa) = \nullchar$. 
+
+%by the {\PSST} $\cT_e$ constructed from $e$ , with all the string variables, except the string variable corresponding to the $i$-th capturing group, removed.
+%
+%\zhilin{to be consistent with the definition of semantics of regex-string matching}\philipp{I'm for removing the special case
+%  $\nullchar$, just use the empty string instead.}\zhilin{for me, $\nullchar$ is important to guarantee the consistency with Javascript semantics. }
+
+
+\begin{remark}
+The match function in programming languages, e.g. $\sf str.match(reg)$ function in JavaScript, finds the first match of $\sf reg$ in $\sf str$,  assuming that $\sf reg$ does not contain the global flag. We can use $\extract$ to express the first match of $\sf reg$ in $\sf str$ by adding $[\Sigma^{*?}]$ and $[\Sigma^*]$ before and after $\sf reg$ respectively. More generally, the value of the $i$-th capturing group in the first match of a $\regexp$ $\sf reg$ in $\sf str$ can be specified as $\extract_{i+1, {\sf reg'}}({\sf str})$, where ${\sf reg'} = [[[\Sigma^{*?}] \concat ({\sf reg})] \concat [\Sigma^*]]$. The other string functions involving regular expressions, e.g. {\sf exec} and {\sf test}, without global flags, are similar to {\sf match}, thus can be encoded by $\extract$ as well.
+\end{remark}
+
+The function $\replaceall_{\pat, \rep}(x)$ is parameterized by the \emph{pattern} $\pat \in \regexp$ and the \emph{replacement string} $\rep \in \refexp$.
+For an input string $x$, it identifies all matches of $\pat$ in $x$ and replaces them with strings specified by $\rep$. More specifically, $\replaceall_{\pat, \rep}(x)$ finds the first match of $\pat$ in $x$ and replaces the match with $\rep$, let $x'$ be the suffix of $x$ after the first match of $\pat$,  then it finds the first match of $\pat$ in $x'$ and replace the match with $\rep$, and so on.
+%The set $\refexp$ of replacement strings is defined using the following syntax, where $i \in \Nat$.
+%\[
+%    \rep = a \mid \$i \mid \refbefore \mid \refafter
+%\]
+%That is $\rep$ is a string of characters that may also contain \emph{references}.
+%A reference $\$i$ where $i > 0$ is instantiated by the string matched by the $i$th capture group.
+%For instance, let $w = 2.5, 3.4$, $\pat = [[([\Gamma^+])\concat .?] \concat ([\Gamma^*])]$ and $\rep = \$1$, then $\replaceall_{\pat, \rep}(w) = 2, 3$.
+%
+A reference $\$i$ where $i > 0$ is instantiated by the matching of the $i$-th capturing group.
+There are three special references\footnote{
+    The corresponding syntax for $\$0$, $\refbefore$ and $\refafter$ in JavaScript are $\$\&$, $\$`$, and $\$'$.
+} $\$0$, $\refbefore$, and $\refafter$.
+These are instantiated by the matched text, the text occurring before the match, and the text occurring after the match respectively.
+In particular, if the input word is $u v w$ where $v$ has been matched and will be replaced, then $\$0$ takes the value $v$, $\refbefore$ takes the value $u$, and $\refafter$ takes the value $w$.
+When there are multiple matches in a $\replaceall$, the values of $\refbefore$ and $\refafter$ are always with respect to the original input string $x$.
+
+The $\replace_{\pat, \rep}(x)$ function is similar to $\replaceall_{\pat, \rep}(x)$, except that it replaces only the first (leftmost) match of $\pat$.
+
+A $\strline$ formula $\varphi$ is said to be \emph{straight-line}, if 1) it contains neither negation nor disjunction, 2) the equations in $\varphi$ can be ordered into a sequence, say $x_1 = t_1, \ldots, x_n = t_n$, such that $x_1,\ldots, x_n$ are mutually distinct, moreover, for each $i \in [n]$, $x_i$ does \emph{not} occur in $t_1, \ldots, t_{i-1}$. Let $\strlinesl$ denote the set of straight-line $\strline$ formulas.
+
+As a crucial step for solving the string constraints in $\strline$, we shall define the formal semantics of the $\extract$, $\replace$, and $\replaceall$ functions in the next section.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\OMIT{
+%Without loss of generality, we assume that 
+%all the $\strline$ programs are in single static assignment (SSA) form, that is 1) each variable $x$ is assigned at most once; and 2) if $x$ is assigned, all its occurrences on the right hand sides of the assignment statements or in assertions are after the assignment statement of $x$.
+%%
+%For an $\strline$ program $S$, a variable $x$ occurring in $S$ is said to be an \emph{input} variable if $x$ does not occur on the left hand sides of assignment statements.
+%
+%The \emph{path feasibility} problem of an $\strline$ program is to decide whether there are valuations of the input variables so that the program can execute to the end.
+%This problem turns out to be undecidable, this is because of the backreferences in assertion statements or in pattern parameters of the $\replace$/$\replaceall$ function.
+%
+%\begin{proposition}\label{prop-und}
+%The path feasibility problem of $\strline$ is undecidable.
+%\end{proposition}
+%
+%
+%We shall show that the path feasibility problem becomes decidable, if the uses of backreferences in assertion statements and pattern parameters of the $\replace$/$\replaceall$ function are forbidden, which turns out to be the situation in practice,  according to the statistics in the literature (see Section~\ref{sec-intro}).
+%In the sequel, we will use $\strline_{\sf reg}$ to denote the collection of $\strline$ programs which are free of
+%backreferences in assertion statements as well as in pattern parameters of the $\replace$/$\replaceall$ function.
+%Note that $\strline_{\sf reg}$  allows backreferences in replacement parameters of $\replace$/$\replaceall$. The main result of this paper is as follows.
+%
+%
+%\begin{theorem}\label{thm-main}
+%The path feasibility of $\strline_{\sf reg}$ is decidable.
+%\end{theorem}
+%The decision procedure for $\strline_{\sf reg}$ utilizes a new automata model called prioritized streaming string transducers, which will be defined in the next section.
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,39 @@
+
+\subsection{Exponential Space Copyless Algorithm}
+\label{sec:appendix}
+
+We argue that, when the PSSTs are copyless, satisfiability for $\strlinesl$ can be decided in exponential space.
+
+The algorithm in the proof of Theorem~\ref{thm-main} for $\strlinesl$ applies a subset of the proof rules in Table~\ref{tab:calculus}. These proof rules branch on disjunctions and backward propagation through transductions and concatenations. We can explore all branches through the proof tree, storing the sequence of branches chosen in polynomial space. Thus, we can consider each branch independently.
+
+A branch consists of a backwards propagation through PSSTs and concatenations. We will argue that each state of the automata constructed can be stored in exponential space.
+Since these states are combinations of states of PSSTs and finite automata constructed by earlier stages of the algorithm, it is possible to calculate the next states from the current state on the fly.
+Thus, if the states can be stored in exponential space, the full algorithm will only require exponential space.
+
+We first consider the case where we have PSSTs and FAs rather than string functions using \regexp{}.
+Let $n$ be the size of the largest PSST or FA.
+Let $x$ be the maximum number of variables in the PSST.
+Finally, let $\ell$ be the length of the longest branch of transductions and concatenations in the proof tree (which is linear in the size of the constraint).
+
+The FA in the pre-image of a concatenation all have the same size as the output automaton $\cA$.
+The FA $\cB$ in the pre-image of a PSST $\cT$ with output automaton $\Aut$ is an automaton such that
+$\Lang(\cB) = \cR^{-1}_{\cT}(\Lang(\Aut))$.
+It has states of the form
+$(q, \rho, \Lambda, S)$,
+where
+    $q$ is a state of $\cT$,
+    $\rho$ is a function from variables of $\cT$ to pairs of states of $\Aut$,
+    $\Lambda \subseteq \cE(\tau_T)$, and
+    $S \subseteq Q_T$.
+Note, because we assume $\cT$ is copyless, $\rho$ is a function to pairs of states, not to sets of pairs of states.
+The space needed to store a state of of $\cB$ is hence
+$\bigO(s + 2 x s + 2 n)$
+where $s$ is the space required to store a state of $\Aut$.
+Consequently, after $\ell$ backwards propagations, we can store the states of the automaton in space
+$\bigO(2^\ell x^\ell n)$.
+That is, exponential space.
+This remains true when the PSST and FA may be exponential in the size of the $\regexp$.
+
+
+
+

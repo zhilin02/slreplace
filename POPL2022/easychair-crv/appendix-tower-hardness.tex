@@ -1,0 +1,803 @@
+
+\newcommand\scon{S}
+\newcommand\svar{x}
+\newcommand\alphabet{\Sigma}
+
+\newcommand\rebrac[1]{\left[#1\right]}
+\newcommand\fbrac[1]{\left\langle#1\right\rangle}
+
+\newcommand\idxi{i}
+\newcommand\idxj{j}
+\newcommand\idxk{k}
+\newcommand\numof{n}
+
+\newcommand\tiles{\Theta}
+\newcommand\nontiles{\overline{\Theta}}
+\newcommand\hrel{H}
+\newcommand\vrel{V}
+\newcommand\inittile{\tile^0}
+\newcommand\fintile{f}
+\newcommand\tile{t}
+\newcommand\vartile{d}
+\newcommand\linlen{\numof}
+\newcommand\tileheight{h}
+\newcommand\expheight{m}
+\newcommand\spacer{\#}
+\newcommand\isnum[2]{R^{#2}_{#1}}
+\newcommand\lmark{\langle}
+\newcommand\rmark{\rangle}
+\newcommand\sftrue[1]{\top_{#1}}
+\newcommand\sffalse[1]{\bot_{#1}}
+\newcommand\sfvalue{v}
+
+\newcommand\tilesnum[1]{\tiles_{#1}}
+\newcommand\hrelnum[1]{\hrel_{#1}}
+\newcommand\vrelnum[1]{\vrel_{#1}}
+\newcommand\inittilenum[1]{\inittile_{#1}}
+\newcommand\fintilenum[1]{\fintile_{#1}}
+\newcommand\nmax[1]{N_{#1}}
+\newcommand\tenc[2]{[#2]_{#1}}
+
+\newcommand\fullrow[1]{
+    \tenc{\expheight}{1} \tile^{#1}_1
+        \ldots
+        \tenc{\expheight}{\nmax{\expheight}}
+            \tile^{#1}_{\nmax{\expheight}}
+}
+
+\subsection{Tower-Hardness of String Constraints with Streaming String Transductions}
+\label{sec:tower-hard}
+
+We show that the satisfiability problem for $\strlinesl$ is Tower-hard.
+
+\begin{theorem}
+The satisfiability problem for $\strlinesl$ is Tower-hard.
+\end{theorem}
+
+Our proof will use tiling problems over extremely wide corridors.
+We first introduce these tiling problems, then how we will encode potential solutions as words.
+Finally, we will show how $\strlinesl$ can verify solutions.
+
+\subsubsection{Tiling Problems}
+
+A *tiling problem* is a tuple
+$\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
+where
+    $\tiles$ is a finite set of tiles,
+    $\hrel \subseteq \tiles \times \tiles$ is a horizontal matching relation,
+    $\vrel \subseteq \tiles \times \tiles$ is a vertical matching relation, and
+    $\inittile, \fintile \in \tiles$ are initial and final tiles respectively.
+
+A solution to a tiling problem over a $\linlen$-width corridor is a sequence
+\[
+    \begin{array}{c}
+        \tile^1_1 \ldots \tile^1_\linlen \\
+        \tile^2_1 \ldots \tile^2_\linlen \\
+        \ldots \\
+        \tile^\tileheight_1 \ldots \tile^\tileheight_\linlen
+    \end{array}
+\]
+where
+$\tile^1_1 = \inittile$,
+$\tile^\tileheight_\linlen = \fintile$,
+and for all
+$1 \leq \idxi < \linlen$
+and
+$1 \leq \idxj \leq \tileheight$
+we have
+$\tup{\tile^\idxj_\idxi, \tile^\idxj_{\idxi+1}} \in \hrel$
+and for all
+$1 \leq \idxi \leq \linlen$
+and
+$1 \leq \idxj < \tileheight$
+we have
+$\tup{\tile^\idxj_\idxi, \tile^{\idxj+1}_\idxi} \in \vrel$.
+Note, we will assume that $\inittile$ and $\fintile$ can only appear at
+the beginning and end of the tiling respectively.
+
+Tiling problems characterise many complexity classes~\cite{BGG97}. In
+particular, we will use the following facts.
+
+\begin{itemize}
+\item
+    For any $\linlen$-space Turing machine, there exists a tiling problem
+    of size polynomial in the size of the Turing machine, over a corridor
+    of width $\linlen$, that has a solution iff the $\linlen$-space Turing
+    machine has a terminating computation.
+
+\item
+    There is a fixed
+    $\tup{\tiles, \hrel, \vrel, \inittile, \fintile}$
+    such that for any width $\linlen$ there is a unique solution
+    \[
+      \begin{array}{c}
+          \tile^1_1 \ldots \tile^1_\linlen \\
+          \tile^2_1 \ldots \tile^2_\linlen \\
+          \ldots \\
+          \tile^\tileheight_1 \ldots \tile^\tileheight_\linlen
+      \end{array}
+    \]
+    and moreover $\tileheight$ is exponential in $\linlen$. One such
+    example is a Turing machine where the tape contents represent a binary
+    number. The Turing machine starts from a tape containing only $0$s
+    and finishes with a tape containing only $1$s by repeatedly
+    incrementing the binary encoding on the tape. This Turing machine can
+    be encoded as the required tiling problem.
+\end{itemize}
+
+\subsubsection{Large Numbers}
+
+The crux of the proof is encoding large numbers that can take values
+between $1$ and $\expheight$-fold exponential.
+
+A linear-length binary number could be encoded simply as a sequence of bits
+\[
+    b_0 \ldots b_\linlen \in \set{0,1}^\linlen \ .
+\]
+To aid with later constructions we will take a more oblique approach.
+Let
+$\tup{\tilesnum{1}, \hrelnum{1}, \vrelnum{1}, \inittilenum{1}, \fintilenum{1}}$
+be a copy of the fixed tiling problem from the previous section for
+which there is a unique solution, whose length must be exponential in
+the width. In the future, we will need several copies of this problem,
+hence the indexing here. Note, we assume each copy has disjoint tile
+sets. Fix a width $\linlen$ and let $\nmax{1}$ be the corresponding
+corridor length. A \emph{level-1} number can encode values from $1$ to
+$\nmax{1}$. In particular, for $1 \leq \idxi \leq \nmax{1}$ we define
+\[
+    \tenc{1}{\idxi} = \tile^\idxi_1 \ldots \tile^\idxi_\linlen
+\]
+where
+$\tile^\idxi_1 \ldots \tile^\idxi_\linlen$
+is the tiling of the $\idxi$th row of the unique solution to the tiling problem.
+
+A \emph{level-2} number will be derived from tiling a corridor of width
+$\nmax{1}$, and thus the number of rows will be doubly-exponential. For
+this, we require another copy $\tup{\tilesnum{2}, \hrelnum{2},
+\vrelnum{2}, \inittilenum{2}, \fintilenum{2}}$ of the above tiling
+problem. Moreover, let $\nmax{2}$ be the length of the solution for a
+corridor of width $\nmax{1}$. Then for any $1 \leq \idxi \leq \nmax{2}$ we
+define
+\[
+    \tenc{2}{\idxi} =
+        \tenc{1}{1} \tile^\idxi_1
+        \tenc{1}{2} \tile^\idxi_2
+        \ldots
+        \tenc{1}{\nmax{1}} \tile^\idxi_{\nmax{1}}
+\]
+where
+$\tile^\idxi_1 \ldots \tile^\idxi_{\nmax{1}}$
+is the tiling of the $\idxi$th row of the unique solution to the tiling
+problem. That is, the encoding indexes each tile with it's column
+number, where the column number is represented as a level-1 number.
+
+In general, a *level-$\expheight$* number is of length
+$(\expheight-1)$-fold exponential and can encode numbers
+$\expheight$-fold exponential in size. We use a copy
+$\tup{\tilesnum{\expheight},
+      \hrelnum{\expheight},
+      \vrelnum{\expheight},
+      \inittilenum{\expheight},
+      \fintilenum{\expheight}}$
+of the above tiling problem and use a corridor of width
+$\nmax{\expheight-1}$. We define $\nmax{\expheight}$ as the length of
+the unique solution to this problem. Then, for any $1 \leq \idxi \leq
+\nmax{\expheight}$ we have
+\[
+    \tenc{\expheight}{\idxi} =
+        \tenc{\expheight-1}{1} \tile^\idxi_1
+        \tenc{\expheight-1}{2} \tile^\idxi_2
+        \ldots
+        \tenc{\expheight-1}{\nmax{\expheight-1}}
+            \tile^\idxi_{\nmax{\expheight-1}}
+\]
+where
+$\tile^\idxi_1 \ldots \tile^\idxi_{\nmax{\expheight-1}}$
+is the tiling of the $\idxi$th row of the unique solution to the tiling problem.
+
+Note that we can define regular languages to check that a string is a
+large number. In particular
+\[
+    \isnum{\expheight}{\linlen} =
+    \begin{cases}
+        \rebrac{\tilesnum{1}}^\linlen & \expheight = 1 \\
+        \rebrac{
+            \isnum{\expheight-1}{\linlen}
+            \tilesnum{\expheight}
+        }^\ast  & \expheight > 1 \ .
+    \end{cases}
+\]
+
+\subsubsection{Hardness Proof}
+
+We show that the satisfiability problem for $\strlinesl$ is
+Tower-hard. We first introduce the basic framework of solving a hard
+tiling problem. Then we discuss the two phases of transductions required
+by the reduction. These are constructing a large boolean formula, and
+then evaluating the formula. This two phases are described in separate
+sections.
+
+\paragraph{The Framework}
+
+The proof is by reduction from a tiling problem over an
+$\expheight$-fold exponential width corridor. In general, solving such
+problems is hard for $\expheight$-ExpSpace.
+
+Let $\nmax{\expheight}$ be the width of the corridor. Fix a tiling
+problem
+\[
+    \tup{\tiles, \hrel, \vrel, \inittile, \fintile} \ .
+\]
+
+We will compose an $\strlinesl$ formula $\scon$ with a free
+variable $\svar$. If $\scon$ is satisfiable, $\svar$ will contain a
+string encoding a solution to the tiling problem. In particular, the
+value of $\svar$ will be of the form
+\[
+    \begin{array}{c}
+        \fullrow{1} \spacer \\
+        \fullrow{2} \spacer \\
+        \ldots \\
+        \fullrow{\tileheight} \spacer \ .
+    \end{array}
+\]
+That is, each row of the solution is separated by the $\spacer$ symbol.
+Between each tile of a row is it's index, encoded using the large number
+encoding described in the previous section.
+
+The formula $\scon$ will use a series of replacements and assertions to verify
+that the tiling encoded by $\svar$ is a valid solution to the tiling problem.
+We will give the formula in three steps.
+
+We will define the alphabet to be
+\[
+    \alphabet = \tiles \cup \nontiles
+\]
+where $\tiles$ is the set of tiles, and $\nontiles$ is the set of characters required to encode large numbers, plus $\spacer$.
+
+The first part is
+\[
+    \begin{array}{l}
+        \ASSERT{x \in
+            \rebrac{
+                \rebrac{
+                    \isnum{\expheight}{\linlen} \tiles
+                }^\ast
+                \spacer
+            }^\ast
+        }; \\
+        \ASSERT{x \in \isnum{\expheight}{\linlen} \inittile}; \\
+        \ASSERT{x \in \alphabet^\ast \fintile \spacer}; \\
+        \ASSERT{x \in
+            \rebrac{
+                \rebrac{
+                    \sum\limits_{\tup{\tile_1, \tile_2} \in \hrel}
+                        \isnum{\expheight}{\linlen} \tile_1
+                        \isnum{\expheight}{\linlen} \tile_2
+                }^\ast
+                \rebrac{\isnum{\expheight}{\linlen} \tiles}^?
+                \spacer
+            }^\ast
+        }; \\
+        \ASSERT{x \in
+            \rebrac{
+                \rebrac{\isnum{\expheight}{\linlen} \tiles}
+                \rebrac{
+                    \sum\limits_{\tup{\tile_1, \tile_2} \in \hrel}
+                        \isnum{\expheight}{\linlen} \tile_1
+                        \isnum{\expheight}{\linlen} \tile_2
+                }^\ast
+                \rebrac{\isnum{\expheight}{\linlen} \tiles}^?
+                \spacer
+            }^\ast
+        }; \\
+    \end{array}
+\]
+
+The first asserts simply verify the format of the value of $\svar$ is as
+expected and moreover, the first appearing element of $\tiles$ in the string is
+$\inittile$, and the last element is $\fintile$.
+
+The final two assertions check the horizontal tiling relation.  In particular,
+the first checks that even pairs of tiles are in $\hrel$, while the second
+checks odd pairs are in $\hrel$.
+
+
+The main challenge is checking the vertical tiling relation. This is
+done by a series of transductions operating in two main phases. The
+first phase rewrites the encoding into a kind of large Boolean formula,
+which is then evaluated in the second phase.
+
+\paragraph{Constructing the Large Boolean Formula}
+
+The next phase of the formula is shown below and explained afterwards.
+For convenience, we will describe the construction using transductions.
+After the explanation, we will describe how to achieve these transductions
+using $\replaceall$.
+\[
+    \begin{array}{l}
+        \svar^1_\expheight = \ap{\psst^1_\expheight}{\svar}; \\
+        \svar^2_\expheight = \ap{\psst^2_\expheight}{\svar^1_\expheight}; \\
+        \svar^3_\expheight = \ap{\psst^3_\expheight}{\svar^2_\expheight}; \\
+        \svar^1_{\expheight-1}
+            = \ap{\psst^1_{\expheight-1}}{\svar^3_\expheight}; \\
+        \svar^2_{\expheight-1}
+            = \ap{\psst^2_{\expheight-1}}{\svar^1_{\expheight-1}}; \\
+        \svar^3_{\expheight-1}
+            = \ap{\psst^3_{\expheight-1}}{\svar^2_{\expheight-1}}; \\
+        \ldots \\
+        \svar^1_1 = \ap{\psst^1_1}{\svar^3_2}; \\
+        \svar^2_1 = \ap{\psst^2_1}{\svar^1_1}; \\
+        \svar^3_1 = \ap{\psst^3_1}{\svar^2_1}; \\
+        \svar_0 = \ap{\psst_0}{\svar^3_1} \ .
+    \end{array}
+\]
+
+The Boolean formula is constructed by rewriting the encoding stored in
+$\svar$. We need to check the vertical tiling relation by comparing
+$\tile^\idxi_\idxj$ with $\tile^{\idxi+1}_\idxj$. However, these are
+separated by a huge number of other tiles, which also need to be checked
+against their counterpart in the next row.
+
+The goal of the transductions is to "rotate" the encoding so that
+instead of each tile being directly next to its horizontal counterpart,
+it is directly next to its vertical counterpart. Our transductions do
+not quite achieve this goal, but instead place the tiles in each row next to
+potential vertical counterparts. The Boolean formula contains large
+disjunctions over these possibilities and use the indexing by large
+numbers to pick out the correct pairs.
+
+The idea is best illustrated by showing the first three transductions,
+$\psst^1_\expheight$, $\psst^2_\expheight$, and $\psst^3_\expheight$.
+We start with
+\[
+    \begin{array}{c}
+        \fullrow{1} \spacer \\
+        \fullrow{2} \spacer \\
+        \ldots \\
+        \fullrow{\tileheight} \spacer \ .
+    \end{array}
+\]
+The transducer $\psst^1_\expheight$ saves the row it is currently reading.
+Then, when reading the next row, it outputs each index and tile of the current
+row followed by a copy of the last row. The output is shown below. We use a
+disjunction symbol to indicate that, after the transduction, the tile should
+match one of the tiles copied after it. Between each pair of a tile and a
+copied row, we use the conjunction symbol to indicate that every disjunction
+should have one match. The result is shown below. To aid readability, we
+underline the copied rows. The parentheses $\fbrac{}$ are also inserted to aid future parsing.
+\[
+    \begin{array}{c}
+        \fbrac{
+            \tenc{\expheight}{1} \tile^2_1
+                \lor
+                \underline{\fullrow{1}}
+        }
+        \land
+        \ldots
+        \land
+        \fbrac{
+            \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
+                \lor
+                \underline{\fullrow{1}}
+        } \\
+        \land \ldots \land \\
+        \fbrac{
+            \tenc{\expheight}{1} \tile^\tileheight_1
+                \lor
+                \underline{\fullrow{\tileheight-1}}
+        }
+        \land
+        \ldots
+        \land
+        \fbrac{
+            \tenc{\expheight}{\nmax{\expheight}}
+                \tile^\tileheight_{\nmax{\expheight}}
+                \lor
+                \underline{\fullrow{\tileheight-1}}
+        } \ .\\
+    \end{array}
+\]
+
+After this transduction, we apply $\psst^2_\expheight$. This
+transduction forms pairs of a tile, with all tiles following it from the
+previous row (up to the next $\land$ symbol). This leaves us with a
+conjunction of disjunctions of pairs. Inside each disjunct, we need to
+verify that one pair has matching indices and tiles that satisfy the
+vertical tiling relation $\vrel$. The result of the second transduction
+is shown below.
+\[
+    \begin{array}{c}
+        \fbrac{
+            \tenc{\expheight}{1} \tile^2_1
+            \tenc{\expheight}{1} \tile^1_1
+            \lor
+            \ldots
+            \lor
+            \tenc{\expheight}{1} \tile^2_1
+            \tenc{\expheight}{\nmax{\expheight}} \tile^1_{\nmax{\expheight}}
+        }
+            \land
+            \ldots
+            \land
+            \fbrac{
+                \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
+                \tenc{\expheight}{1} \tile^1_1
+                \lor
+                \ldots
+                \lor
+                \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
+                \tenc{\expheight}{\nmax{\expheight}} \tile^1_{\nmax{\expheight}}
+            } \\
+        \land \ldots \land \\
+        \fbrac{
+            \tenc{\expheight}{1} \tile^\tileheight_1
+            \tenc{\expheight}{1} \tile^{\tileheight-1}_1
+            \lor
+            \ldots
+            \lor
+            \tenc{\expheight}{1} \tile^\tileheight_1
+            \tenc{\expheight}{\nmax{\expheight}}
+                \tile^{\tileheight-1}_{\nmax{\expheight}}
+        }
+            \land
+            \ldots
+            \land
+            \fbrac{
+                \tenc{\expheight}{\nmax{\expheight}}
+                    \tile^\tileheight_{\nmax{\expheight}}
+                \tenc{\expheight}{1} \tile^{\tileheight-1}_1
+                \lor
+                \ldots
+                \lor
+                \tenc{\expheight}{\nmax{\expheight}}
+                    \tile^\tileheight_{\nmax{\expheight}}
+                \tenc{\expheight}{\nmax{\expheight}}
+                    \tile^{\tileheight-1}_{\nmax{\expheight}}
+            } \ .\\
+    \end{array}
+\]
+Notice that we now have each tile in a pair with its vertical neighbour,
+but also in a pair with every other tile in the row beneath. The indices
+can be used to pick out the right pairs, but we will need further
+transductions to analyse the encoding of large numbers.
+
+To simplify matters, we apply $\psst^3_\expheight$. This transduction removes
+the tiles from the string, retaining each pair of indices where the tiles
+satisfy the vertical tiling relation. When the tiling relation is not
+satisfied, we insert $\sffalse{\expheight}$. We use $\lmark$, $\spacer$, and
+$\rmark$ to delimit the indices. We are left with a string of the form
+\[
+    \bigwedge \bigvee \lmark
+        \tenc{\expheight}{\idxi} \spacer \tenc{\expheight}{\idxj}
+    \rmark
+    \lor \sffalse{\expheight} \lor \cdots \lor \sffalse{\expheight} \ .
+\]
+We will often elide the $\sffalse{\expheight}$ disjuncts for clarity. They
+will remain untouched until the formula is evaluated in the next section.
+
+We consider a pair $\lmark \tenc{\expheight}{\idxi} \spacer
+\tenc{\expheight}{\idxj} \rmark$ to evaluate to true whenever $\idxi = \idxj$.
+The truth of the formula can be computed accordingly. However, it's not
+straightforward to check whether $\idxi = \idxj$ as they are large numbers. The
+key observation is that they are encoded as solutions to indexed tiling
+problems, which means we can go through a similar process to the transductions
+above.
+
+First, recall that $\tenc{\expheight}{\idxi}$ is of the form
+\[
+    \tenc{\expheight-1}{1} \vartile^\idxi_1
+    \tenc{\expheight-1}{2} \vartile^\idxi_2
+    \ldots
+    \tenc{\expheight-1}{\nmax{\expheight-1}}
+        \vartile^\idxi_{\nmax{\expheight-1}}
+\]
+where we use $\vartile$ to indicate tiles instead of $\tile$.
+
+We apply three transductions $\psst^1_{\expheight-1}$,
+$\psst^2_{\expheight-1}$, and $\psst^3_{\expheight-1}$. The first copies
+the first index of each pair directly after the tiles of the second
+index. That is, each pair
+\[
+    \lmark \tenc{\expheight}{\idxi} \spacer \tenc{\expheight}{\idxj} \rmark
+\]
+is rewritten to
+\[
+    \fbrac{
+        \tenc{\expheight-1}{1} \vartile^\idxj_1
+        \lor
+        \tenc{\expheight}{\idxi}
+    }
+    \land
+    \ldots
+    \land
+    \fbrac{
+        \tenc{\expheight-1}{\nmax{\expheight-1}}
+            \vartile^\idxj_{\nmax{\expheight-1}}
+        \lor
+        \tenc{\expheight}{\idxi}
+    } \ .
+\]
+Then we apply a similar second transduction: each disjunction is
+expanded into pairs of indices and tiles. The result is
+\[
+    \begin{array}{c}
+        \fbrac{
+            \tenc{\expheight-1}{1} \vartile^\idxj_1
+            \tenc{\expheight-1}{1} \vartile^\idxi_1
+            \lor
+            \ldots
+            \lor
+            \tenc{\expheight-1}{1} \vartile^\idxj_1
+            \tenc{\expheight-1}{\nmax{\expheight-1}}
+                \vartile^\idxi_{\nmax{\expheight-1}}
+        } \\
+        \land
+        \ldots
+        \land \\
+        \fbrac{
+            \tenc{\expheight-1}{\nmax{\expheight-1}}
+                \vartile^\idxj_{\nmax{\expheight-1}}
+            \tenc{\expheight-1}{1} \vartile^\idxi_1
+            \lor
+            \ldots
+            \lor
+            \tenc{\expheight-1}{\nmax{\expheight-1}}
+                \vartile^\idxj_{\nmax{\expheight-1}}
+            \tenc{\expheight-1}{\nmax{\expheight-1}}
+                \vartile^\idxi_{\nmax{\expheight-1}}
+        } \ .
+    \end{array}
+\]
+The third transduction replaces with $\sffalse{\expheight-1}$ all pairs where
+we don't have $\vartile^\idxj_\idxk = \vartile^\idxi_{\idxk'}$ (recall, we need
+to check that $\idxi = \idxj$ so the tiles at each position should be the
+same). As before, for a single pair, this leaves us with a string formula of
+the form
+\[
+    \bigwedge \bigvee \lmark
+        \tenc{\expheight-1}{\idxi'} \spacer \tenc{\expheight-1}{\idxj'}
+    \rmark
+    \lor \sffalse{\expheight-1} \lor \cdots \lor \sffalse{\expheight-1} \ .
+\]
+Again, we will elide the $\sffalse{\expheight-1}$ disjuncts for clarity as they
+will be untouched until the formula is evaluated.  Recalling that there are
+many pairs in the input string, the output of this series of transductions is a
+string formula of the form
+\[
+    \bigwedge \bigvee \bigwedge \bigvee \lmark
+        \tenc{\expheight-1}{\idxi'} \spacer \tenc{\expheight-1}{\idxj'}
+    \rmark \ .
+\]
+
+We repeat these steps using $\psst^1_{\expheight-2}$,
+$\psst^2_{\expheight-2}$, $\psst^3_{\expheight-2}$ all the way down to
+$\psst^1_1$, $\psst^2_1$, $\psst^3_1$. We are left with a string formula of the
+form
+\[
+    \bigwedge \bigvee \cdots \bigwedge \bigvee \lmark
+        \tenc{1}{\idxi'} \spacer \tenc{1}{\idxj'}
+    \rmark \ .
+\]
+Recall each $\tenc{1}{\idxi'}$ is of the form
+\[
+    \vartile^{\idxi'}_1 \ldots \vartile^{\idxi'}_\linlen \ .
+\]
+The final step interleaves the tiles of the two numbers. The result is a string
+formula of the form
+\[
+    \bigwedge \bigvee \cdots \bigwedge \bigvee \bigwedge \vartile \vartile' \ .
+\]
+This is the formula that is evaluated in the next phase.
+
+To complete this section we need to implement the above transductions using
+$\replaceall$.
+
+First, consider $\psst^1_\expheight$.  We start with
+\[
+    \begin{array}{c}
+        \fullrow{1} \spacer \\
+        \fullrow{2} \spacer \\
+        \ldots \\
+        \fullrow{\tileheight} \spacer \ .
+    \end{array}
+\]
+We are aiming for
+\[
+    \begin{array}{c}
+        \fbrac{
+            \tenc{\expheight}{1} \tile^2_1
+                \lor
+                \fullrow{1}
+        }
+        \land
+        \ldots
+        \land
+        \fbrac{
+            \tenc{\expheight}{\nmax{\expheight}} \tile^2_{\nmax{\expheight}}
+                \lor
+                \fullrow{1}
+        } \\
+        \land \ldots \land \\
+        \fbrac{
+            \tenc{\expheight}{1} \tile^\tileheight_1
+                \lor
+                \fullrow{\tileheight-1}
+        }
+        \land
+        \ldots
+        \land
+        \fbrac{
+            \tenc{\expheight}{\nmax{\expheight}}
+                \tile^\tileheight_{\nmax{\expheight}}
+                \lor
+                \fullrow{\tileheight-1}
+        } \ .\\
+    \end{array}
+\]
+We use two $\replaceall$s. The first uses $\refbefore$ to do the main work of
+copying the previous row into the current row a huge number of times. In fact,
+$\refbefore$ will copy too much, as it will copy everything that came before,
+not just the last row. The second $\replaceall$ will cut down the contents of
+$\refbefore$ to only the last row. That is, we first apply
+$\replaceall_{\pat_1, \rep_1}$ and then $\replaceall_{\pat_2, \rep_2}$ where
+\[
+    \begin{array}{rcl}
+        \pat_1 &=& (\tile) \\
+        \rep_1 &=& \$1 \triangleleft \refbefore \triangleright
+    \end{array}
+\]
+and $\triangleleft$ and $\triangleright$ are two characters not in $\alphabet$,
+and, letting $\alphabet_\spacer = \alphabet \setminus \set{\spacer}$,
+\[
+    \begin{array}{rcl}
+        \pat_2 &=& \triangleleft
+                \alphabet_\spacer^\ast \spacer (
+                    \alphabet_\spacer^\ast
+                ) \spacer \alphabet_\spacer^\ast
+            \triangleright \\
+        \rep_2 &=& \lor \$1 \ .
+    \end{array}
+\]
+That is, the first replace adds after each tile the entire preceding string,
+delimited by $\triangleleft$ and $\triangleright$. The second replace picks out
+the final row of each string between $\triangleleft$ and $\triangleright$ and
+adds the $\lor$. Notice that the second replace does not match anything between
+$\triangleleft$ and $\triangleright$ on the first row. In fact, we need another
+$\replaceall$ to delete the first row. That is $\replaceall_{\pat_3, \rep_3}$
+where
+\[
+    \begin{array}{rcl}
+        \pat_3 &=& \rebrac{
+            \alphabet \cup \set{\triangleleft, \triangleright}
+            }^\ast \triangleright \alphabet_\spacer^\ast \spacer \\
+        \rep_3 &=& \varepsilon \ .
+    \end{array}
+\]
+Notice, the pattern above matches any row containing at least one
+$\triangleright$. This means only the first row will be deleted as delimiters
+have already been removed from the other rows.  To complete the step, we
+replace all $\spacer$ with $\land$ and insert the parenthesis $\fbrac{}$ using another $\replaceall$ (and a concatenation at the beginning and the end of the string).
+
+The transduction $\psst^2_\expheight$ uses similar techniques to the above and
+we leave the details to the reader. The same is true of the other similar
+transductions $\psst^1_{\idxi}$ and $\psst^2_{\idxi}$.
+
+Transduction $\psst^3_\expheight$ (and similarly the other $\psst^2_\idxi$)
+replaces all pairs
+\[
+    \tenc{\expheight}{\idxi} \tile^2_\idxi
+    \tenc{\expheight}{\idxi + 1} \tile^1_{\idxi+1}
+\]
+that do not satisfy the vertical tiling relation with $\sffalse{\expheight}$,
+and rewrites them to
+\[
+    \lmark
+        \tenc{1}{\idxi'} \spacer \tenc{1}{\idxj'}
+    \rmark
+\]
+if the vertical tiling relation is matched. This can be done in two steps:
+first replace the non-matches, then replace the matches. To replace the
+non-matches we use $\replaceall_{\pat_1, \rep_1}$ where
+\[
+    \begin{array}{rcl}
+        \pat_1 &=& \sum\limits_{\tup{\tile_1, \tile_2} \notin \vrel}
+            \isnum{\expheight}{\linlen} \tile_1
+            \isnum{\expheight}{\linlen} \tile_2 \\
+        \rep_1 &=& \sffalse{\expheight} \ .
+    \end{array}
+\]
+For the matches we use $\replaceall_{\pat_2, \rep_2}$ where
+\[
+    \begin{array}{rcl}
+        \pat_2 &=& \sum\limits_{\tup{\tile_1, \tile_2} \in \vrel}
+            (\isnum{\expheight}{\linlen}) \tile_1
+            (\isnum{\expheight}{\linlen}) \tile_2 \\
+        \rep_1 &=& \langle \$1 \spacer \$2 \rangle \ .
+    \end{array}
+\]
+
+The final transduction takes a string of the form
+\[
+    \bigwedge \bigvee \cdots \bigwedge \bigvee \lmark
+        \tenc{1}{\idxi'} \spacer \tenc{1}{\idxj'}
+    \rmark
+\]
+where each $\tenc{1}{\idxi'}$ is of the form
+\[
+    \vartile^{\idxi'}_1 \ldots \vartile^{\idxi'}_\linlen \ .
+\]
+We need to interleave the tiles of the two numbers, giving a string of the form
+\[
+    \bigwedge \bigvee \cdots \bigwedge \bigvee \bigwedge \vartile \vartile' \ .
+\]
+This can be done with a single $\replaceall_{\pat, \rep}$ where
+\[
+    \begin{array}{rcl}
+        \pat &=&
+            \langle
+                (\tilesnum{1}) \ldots (\tilesnum{1})
+            \spacer
+                (\tilesnum{1}) \ldots (\tilesnum{1})
+            \rangle \\
+        \rep &=&
+            \langle
+                \$1 \$(\linlen + 1)
+                \land \cdots \land
+                \$\linlen \$(2\linlen)
+            \rangle \ . \\
+    \end{array}
+\]
+
+\paragraph{Evaluating the Large Boolean Formula}
+
+The final phase of $\scon$ evaluates the Boolean formula and is shown below.
+Again we write the formula using transductions and explain how they can be done
+with $\replaceall$.
+\[
+    \begin{array}{c}
+        \svar^\land_0 = \ap{\psst_0}{\svar_0}; \\
+        \svar^\lor_1 = \ap{\psst^\land_0}{\svar^\land_0}; \\
+        \svar^\land_1 = \ap{\psst^\lor_1}{\svar^\lor_1}; \\
+        \svar^\lor_2 = \ap{\psst^\land_1}{\svar^\land_1}; \\
+        \svar^\land_2 = \ap{\psst^\lor_2}{\svar^\lor_2}; \\
+        \svar^\land_3 = \ap{\psst^\land_2}{\svar^\land_2}; \\
+        \ldots \\
+        \svar^\lor_\expheight
+            = \ap{\psst^\land_{\expheight-1}}{\svar^\land_{\expheight-1}}; \\
+        \svar^\land_\expheight
+            = \ap{\psst^\lor_\expheight}{\svar^\lor_{\expheight}}; \\
+        \svar_f
+            = \ap{\psst^\land_\expheight}{\svar^\lor_{\expheight}}; \\
+        \ASSERT{\svar_f \in \pat_f}
+    \end{array}
+\]
+
+The first transducer $\psst_1$ reads the string formula
+\[
+    \bigwedge \bigvee \cdots \bigwedge \bigvee \bigwedge \vartile \vartile' \ .
+\]
+copies it to its output, except replacing each pair
+$\vartile \vartile'$
+with $\sftrue{1}$ if $\vartile = \vartile'$ and with $\sffalse{1}$ otherwise.
+This is requires two simple $\replaceall$ calls.
+
+The remaining transductions evaluate the innermost disjunction or conjunction as
+appropriate (the parenthesis $\fbrac{}$ are helpful here). For example
+$\psst^\lor_1$
+replaces the innermost
+$\bigvee \sfvalue$
+with $\sftrue{1}$ if $\sftrue{1}$ appears somewhere in the disjunction and
+$\sffalse{1}$ otherwise.
+This can be done by greedily matching any sequence of characters from
+$\set{\sftrue{1}, \sffalse{1}, \lor}$
+that contains at least one $\sftrue{1}$ and replacing the sequence with $\sftrue{1}$,
+then greedily matching any remaining sequence of
+$\set{\sffalse{1}, \lor}$
+and replacing it with $\sffalse{1}$.
+The evaluation of conjunctions works similarly, but inserts $\sftrue{2}$ and $\sffalse{2}$ in the move to the next level of evaluation.
+
+The final assert checks that $\svar_f$ contains only the character $\sftrue{\expheight+1}$
+and fails otherwise.
+
+This completes the reduction.

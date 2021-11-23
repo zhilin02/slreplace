@@ -1,0 +1,362 @@
+%!TEX root = main.tex
+
+\section{Implementation and Experiments}
+\label{sect:impl}
+
+%For our experiments, we have implemented an SMT solver,
+%\ostrich, %\footnote{Name anonymized for doubly-blind review, and will  be provided in the final version.}
+%based on the calculus for
+%$\strline$.  \ostrich\ extends the open-source solver
+%OSTRICH~\cite{CHL+19}, and is able to decide satisfiability of
+%$\strlinesl$ formulas. \ostrich\ also inherits support for most of the
+%other operations of the SMT-LIB theory of Unicode
+%strings\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
+%from OSTRICH.
+
+We extend the open-source solver
+OSTRICH~\cite{CHL+19} to support for $\strline$ %implemented %an SMT solver,
+%\ostrich,
+based on the calculus. In particular, it can decide the satisfiability of
+$\strlinesl$ formulas.
+The extension can handle most of the
+other operations of the SMT-LIB theory of Unicode
+strings.\footnote{\url{http://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml}}
+%from OSTRICH.
+
+%\cite{CHL+19}, %\url{https://github.com/uuverifiers/ostrich}}
+%which provides a modular and easy-to-use framework for extending all
+%sorts of string operations.
+%As shown in Section \ref{sec:decision},
+%PSSTs satisfy the conditions required by the backward reasoning
+%approach of OSTRICH, which enables us to integrate our logic with
+%standard string theory.
+
+
+\subsection{Implementation}
+
+Our solver extends classical regular expressions in SMT-LIB
+with the indexed {\sf re.capture} and {\sf re.reference} operators, which
+denote capturing groups and references to them. We also add {\sf re.*?}, {\sf re.+?}, {\sf re.opt?} and {\sf re.loop?} as the lazy counterparts of
+Kleene star, plus operator, optional operator and loop operator.
+
+Three new string operators are introduced to make use of these extended regular
+expressions: {\sf str.replace\_cg}, {\sf str.replace\_cg\_all}, and
+{\sf str.extract}. The operators {\sf str.replace\_cg} and {\sf
+  str.replace\_cg\_all} are the counterparts of the standard {\sf
+  str.replace\_re} and {\sf replace\_re\_all} operators, and allow
+capturing groups in the match pattern and references in the
+replacement pattern. E.g., the following constraint swaps the
+first name and the last name, as in Example~\ref{exmp-name-swap}:
+%lower-case characters~$x$ with a sub-sequent upper-case character~$Y$:
+
+{\small
+\begin{minted}{lisp}
+(= w (str.replace_cg_all v
+      (re.++ ((_ re.capture 1)
+                 (re.+ (re.union (re.range "A" "Z") (re.range "a" "z"))))
+             (str.to.re " ")
+             ((_ re.capture 2)
+                 (re.+ (re.union (re.range "A" "Z") (re.range "a" "z")))))
+      (re.++ (_ re.reference 2) (_ re.reference 1))))
+\end{minted}
+}
+
+The replacement string is written as a regular expression only
+containing the operators {\sf re.++}, {\sf str.to\_re}, and {\sf
+  re.reference}. The use of string variables in the replacement
+parameter is not allowed, since the resulting transformation could
+not be mapped to a \PSST.
+
+The indexed operator {\sf str.extract} implements $\extract_{i, e}$ in
+$\strline$. For instance,
+
+{\small
+\begin{minted}{lisp}
+  ((_ str.extract 1)
+      (re.++ (re.*? re.allchar)((_ re.capture 1) (re.+ (re.range "a" "z")) re.all))
+      x)
+\end{minted}
+}
+
+\noindent
+extracts the left-most, longest sub-string of lower-case
+characters from a string~$x$.
+
+Our implementation is able to handle \textit{anchors} as well,
+although for reasons of presentation we did not introduce them as part
+of our formalism. Anchors match certain
+positions of a string without consuming any input characters. In most
+programming languages, it is common to use \verb!^!
+and
+\verb!$! in regular expressions to signify the start and end of a
+string, respectively. We add \textsf{re.begin-anchor} and
+\textsf{re.end-anchor} for them. Our implementation correctly models
+the semantics of anchors and is able to solve constraints containing
+these operators.
+
+\ostrich\ implements the procedure in Theorem~\ref{thm-main}, and
+focuses on SL formulas. The three string operators mentioned above
+will be converted into an equivalent PSST (see \ifproceeding the full
+version of the paper \cite{popl22-full}).  \else
+Appendix~\ref{appendix:sec-extract-replace-to-psst}). \fi {\ostrich}
+then iteratively applies the propagation rules from
+Section~\ref{sect:calculus} to derive further \regexp\ constraints,
+and eventually either detect a contradiction, or converge and find a
+fixed-point. For straight-line formulas, the existence of a
+fixed-point implies satisfiability, and a solution can then be
+constructed as described in Section~\ref{sect:calculus}.  In addition,
+similar to other SMT solvers, {\ostrich} applies simplification rules
+(e.g., {\sf Fwd-Prop-Elim, =-Prop, Subsume, Close}, etc in
+Table~\ref{tab:calculus}) to formulas before invoking the SL
+procedure.  This enables \ostrich\ to solve some formulas outside of the SL
+fragment, but is not a complete procedure for non-SL formulas.
+
+\begin{figure}[tb]
+  \scriptsize
+
+  \begin{minipage}{0.55\linewidth}
+\begin{minted}{lisp}
+(declare-fun x () String)
+(define-fun  y () String (str.replace_cg_all x <re1> <repl>))
+(push 1)
+(assert (str.in.re x (re.++ re.all <re1> re.all)))
+(assert (str.in.re y (re.++ re.all <re2> re.all)))
+(check-sat) (get-model)
+(pop 1) (push 1)
+(assert (str.in.re x (re.++ re.all <re1> re.all)))
+(assert (not (str.in.re y
+          (re.++ re.all <re2> re.all))))
+(check-sat) (get-model)
+(pop 1) (push 1)
+(assert (not (str.in.re x (re.++ re.all <re1> re.all))))
+(check-sat) (get-model)
+(pop 1)
+\end{minted}
+  \end{minipage}\hfill
+  \raisebox{-19.2ex}{\rule{0.4pt}{40ex}}\hfill
+  \begin{minipage}{0.43\linewidth}
+\begin{minted}{js}
+function fun(x) {
+   if(/<re1>/.test(x)) {
+      var y = x.replace(/<re1>/g, <repl>);
+      if(/<re2>/.test(y))
+        console.log("1");
+      else
+        console.log("2");
+   }
+   else
+       console.log("3");
+}
+
+var S$ = require("S$");
+var x = S$.symbol("x", "");
+fun(x);
+\end{minted}
+  \end{minipage}
+
+  \caption{Harnesses with replace-all: SMT-LIB for \ostrich\ (left),
+    and JavaScript for \expose{} (right).}
+  \label{fig:harness}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Experimental evaluation}
+
+Our experiments have the purpose of answering the following main questions:
+
+%\smallskip
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT
+{
+\textbf{R1:} Are the  {\regexp}s defined in this paper
+suitable to encode regular expressions in programming languages,
+for instance ECMAScript regular expressions~\cite{ECMAScript11}?\zhilin{Should R1 be removed, since we already have semantics validation experiments ?}\philipp{yes, I think we should remove it; everybody agrees?}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\textbf{R1:} How does \ostrich\ compare to other solvers that can
+handle real-world regular expressions, including greedy/lazy
+quantifiers and capturing groups?
+\\
+\textbf{R2:} How does \ostrich\ perform in the context of symbolic execution,
+the primary application of string constraint solving?
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\OMIT
+{
+\paragraph{For \textbf{R1}:} We implemented a translator from ECMAScript 11th Edition (ES11 for short) regular
+expressions to \regexps, and integrated \ostrich\ into the symbolic
+execution tool Aratha~\cite{aratha}. We then ran Aratha+\ostrich\ on
+the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
+as well as some other JavaScript programs containing match or replace
+functions extracted from Github. To verify the soundness of
+Aratha+\ostrich, we compared the results with those produced by
+\expose{}; we also checked the correctness of models computed by
+\ostrich\ by concretely executing the JavaScript program under test on
+the generated inputs, to confirm that the concrete execution indeed
+follows the targeted path. The results are summarized in Table~\ref{tab:exp-r1};
+no inconsistencies were observed in the experiments, showing that the
+semantics in this paper are indeed suitable for capturing ES11
+semantics.
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\smallskip
+{\em For \textbf{R1}:} There are no standard string benchmarks
+involving \regexps, and we are not aware of other constraint solvers
+supporting capturing groups, neither among the SMT nor the CP
+solvers. %(e.g.,
+%\cite{DBLP:conf/cpaior/ScottFPS17,DBLP:conf/cp/AmadiniGS20}).
+The closest related work is the algorithm implemented in \expose{}, which
+applies Z3~\cite{Z3} for solving string constraints, but augments
+it with a refinement loop to approximate the {\regexp}
+semantics.\footnote{We considered replacing Z3 with \ostrich\ in
+  \expose{} for the experiments. However, \expose{} integrates Z3 using its
+  C API, and changing to \ostrich, with native support
+  for capturing groups, would have required the rewrite of substantial
+  parts of \expose{}.}
+%
+For \textbf{R1}, we compared \ostrich\ with \expose{}+Z3 on 98,117
+\regexps\ taken from \cite{DMC+19}.
+
+For each regular expression, we created four harnesses: two in
+SMT-LIB, as inputs for \ostrich, and two in JavaScript, as inputs for
+\expose{}+Z3. The two harnesses shown in Fig.~\ref{fig:harness} use one of the
+regular expressions from \cite{DMC+19} (\verb!<re1>!) in combination with
+the replace-all function to simulate typical string processing;
+\verb!<re2>! is the fixed pattern \verb![a-z]+!, and \verb!<repl>! the
+replacement string \verb!"$1"!. The three paths of the JavaScript
+function~\verb!fun! correspond to the three queries in the SMT-LIB
+script, so that a direct comparison can be made between the results of
+the SMT-LIB queries and the set of paths covered by \expose{}+Z3. The other
+two harnesses are similar to the ones in Fig.~\ref{fig:harness}, but
+use the match function instead of replace-all, and contain four
+queries and four paths, respectively.
+
+\begin{table}[t]
+  \small
+  \begin{center}
+  \begin{tabular}{|l@{~~}|*{6}{c}|*{5}{c}@{~~}|}
+    \hline
+     &
+    \multicolumn{6}{c|}{\textbf{\ostrich}} &
+    \multicolumn{5}{c|}{\textbf{\expose{}+Z3}}
+    \\
+      & \multicolumn{6}{c|}{\# queries solved within 60s}
+      & \multicolumn{5}{c|}{\# paths covered within 60s}
+    \\
+     & 0 & 1 & 2 & 3 & 4 & \#Err
+     & 0 & 1 & 2 & 3 & 4
+    \\\hline
+    \textbf{Match}  & 422 & 249 & 751 & 386 & 95,175 & 1,134
+    & ~3,333 & 9,274 & 36,916 & 48,594 & 0
+    \\
+     \emph{(98,117} & \multicolumn{6}{c|}{Average time: 1.57s}
+    &\multicolumn{5}{c|}{Average time: 28.0s}
+    \\
+    \emph{~~benchm.)} & \multicolumn{6}{c|}{Total \#sat: 250,947, \#unsat: 132,662}
+    & \multicolumn{5}{c|}{Total \#paths covered: 228,888}
+    \\\hline
+    \textbf{Replace} & 4,170 & 2,463 & 555 & 89,794 & --- & 1,135
+    & ~5,281 & 18,221 & 69,059 & 5,556 & ---
+    \\
+    \emph{(98,117} & \multicolumn{6}{c|}{Average time: 6.62s}
+    & \multicolumn{5}{c|}{Average time: 55.0s}
+    \\
+    \emph{~~bench.)} & \multicolumn{6}{c|}{Total \#sat: 259,354, \#unsat: 13,601}
+    & \multicolumn{5}{c|}{Total \#paths covered: 173,007}
+      \\\hline
+  \end{tabular}
+  \end{center}
+  \caption{The number of queries answered by \ostrich, and number of
+    paths covered by \expose{}+Z3, in \textbf{R1}.
+    Experiments were done on an AMD Opteron 2220 SE machine, running
+    64-bit Linux and Java~1.8.  Runtime per benchmark was limited to
+    60s wall-clock time, 2GB memory, and the number of tests
+    executed concurrently by \expose{}+Z3 to 1.  Average time is
+    wall-clock time per benchmark, timeouts count as 60s.}
+  \label{tab:exp-r2}
+
+	\begin{center}
+	\begin{tabular}{|l@{\quad}|*{6}{c}|*{6}{c}|}
+	\hline
+	   &
+	  \multicolumn{6}{c|}{\textbf{Aratha+\ostrich}} &\multicolumn{6}{c|}{\textbf{\expose{}+Z3}}
+	  \\
+    &
+	  \multicolumn{6}{c|}{~\# paths covered within 120s~~} &\multicolumn{6}{c@{\quad}|}{~\# paths covered within 120s}
+	  \\
+	   & ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#Err~ &
+	    ~~0~  & ~1~ &  ~2~ & ~3~ & ~$\geq$4~ & ~\#T.O.~
+	  \\\hline
+	  \textbf{\expose{}} &  14 & 9 & 9 & 2 & 15 & 2  & 14 &  9 & 9 & 2 & 15 & 6
+	  \\
+	  \emph{(49 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.66}s} & \multicolumn{6}{c@{\quad}|}{Average time: 57.44s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered:124}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered:121}
+	  \\\hline
+	  \textbf{Match} & 3 & 7 & 12 & 6 & 0 & 0  & 3 & 8 & 12 & 5 & 0 & 6
+	  \\
+	  \emph{(28 programs)} & \multicolumn{6}{c|}{Average time: \textbf{5.19}s} & \multicolumn{6}{c@{\quad}|}{Average time: 60.26s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 49}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 47}
+	  \\\hline
+	  \textbf{Replace} & 12 & 20 & 6 & 0 & 0 & 0  & 15 & 21 & 2 & 0 & 0 & 23
+	  \\
+	  \emph{(38 programs)} & \multicolumn{6}{c|}{Average time: \textbf{4.14}s} & \multicolumn{6}{c@{\quad}|}{Average time: 95.34s}\\
+	  & \multicolumn{6}{c|}{Total \#paths covered: 32}  & \multicolumn{6}{c@{\quad}|}{Total \#paths covered: 25}
+	  \\\hline
+	\end{tabular}
+	\end{center}
+	\caption{Results of Expose+Z3 and Aratha+{\ostrich} on Javascript programs for \textbf{R2}. Experiments were done on an Intel(R)-Core(TM)-i5-8265U-CPU-@1.60GHz cpu, running 64-bit Linux and Java 1.8. Runtime was limited to 120s wall-clock time. Average time is
+    wall-clock time needed per benchmark, and counts timeouts as 120s. \#Err is the number of non-straight-line path constraints that OSTRICH fails to deal with and \#T.O is the number of timeouts. Note that some paths may have already been covered before T.O. }
+	\label{tab:exp-r1}
+\end{table}
+
+
+
+The results of this experiment are shown in
+Table~\ref{tab:exp-r2}. \ostrich\ is able to answer all four queries
+in 95,175 of the match benchmarks (97\%), and all three queries in
+89,794 of the replace-all benchmarks (91.5\%). The errors in 1,134
+cases (resp., 1,135 cases) are mainly due to back-references in
+\verb!<re1>!, which are not handled by \ostrich. \expose{}+Z3 can
+cover 228,888 paths of the match problems in total (91.2\% of the
+number of sat results of \ostrich), although the runtime of
+\expose{}+Z3 is on average 18x higher than that of \ostrich. For
+replace, \expose{}+Z3 can cover 173,007 paths (66.7\%), showing that
+this class of constraints is harder; the runtime of \expose{}+Z3 is on
+average 8x higher than that of \ostrich.  Overall, even taking into
+account that \expose{}+Z3 has to analyze JavaScript code, as opposed
+to the SMT-LIB given to \ostrich, the experiments show that \ostrich\
+is a highly competitive solver for \regexps.
+
+\smallskip
+{\em For \textbf{R2}:} For this experiment,
+we  integrated \ostrich\ into the symbolic
+execution tool Aratha~\cite{aratha}.  We compare Aratha+{\ostrich} with
+\expose{}+Z3 on the regression test suite of \expose{}~\cite{DBLP:conf/spin/LoringMK17},
+as well as a collection of other JavaScript programs containing match or replace
+functions extracted from Github. In
+Table~\ref{tab:exp-r1}, we can see that Aratha+{\ostrich} can within
+120s cover slightly more paths than \expose{}+Z3. Aratha+{\ostrich} can
+discover feasible paths much more quickly than \expose{}+Z3, however: on
+all three families of benchmarks, Aratha+{\ostrich} terminates on
+average in less than 10s, and it discovers all paths
+within 20s. \expose{}+Z3 needs the full 120s for
+35 of the programs (``T.O.'' in the table),
+and it finds new paths until the end of the 120s. Since \expose{}+Z3
+handles the replace-all operation by unrolling, it is not able to
+prove infeasibility of paths involving such operations, and will
+therefore not terminate on some programs.
+%is faster than \expose{}+Z3 by a factor between 1.7 and 15, while being
+%able to cover more paths. The smaller speedup compared to the results
+%for \textbf{R2} can be explained by the fact that Aratha should spend time in processing Javascript code, besides using {\ostrich} to solve path constraints.
+%SMT-LIB queries
+%produced by Aratha are not pure string constraints, but also include
+%ADTs, arrays, and bit-vectors.
+Overall, the experiments indicate that {\ostrich} is more
+efficient than the CEGAR-augmented symbolic execution for dealing
+with \regexps.
+
+
+
